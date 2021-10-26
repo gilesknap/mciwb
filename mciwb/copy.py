@@ -36,25 +36,16 @@ class Copy:
         self.get_signs()
 
     def __del__(self):
-        print("Copy object destructor")
         self.polling = False
 
     def get_signs(self):
-        self.client.give(
-            self.player_name,
-            """minecraft:oak_sign{BlockEntityTag:{Text1:'{"text":"start"}'},"""
-            """display:{Name:'{"text":"start"}'}}""",
+        entity = (
+            """minecraft:oak_sign{{BlockEntityTag:{{Text1:'{{"text":"{0}"}}'}},"""
+            """display:{{Name:'{{"text":"{0}"}}'}}}}"""
         )
-        self.client.give(
-            self.player_name,
-            """minecraft:oak_sign{BlockEntityTag:{Text1:'{"text":"stop"}'},"""
-            """display:{Name:'{"text":"stop"}'}}""",
-        )
-        self.client.give(
-            self.player_name,
-            """minecraft:oak_sign{BlockEntityTag:{Text1:'{"text":"paste"}'},"""
-            """display:{Name:'{"text":"paste"}'}}""",
-        )
+        self.client.give(self.player_name, entity.format("start"))
+        self.client.give(self.player_name, entity.format("stop"))
+        self.client.give(self.player_name, entity.format("paste"))
 
     def _set_pos_relative(self, x, y, z, relative):
         offset = Vec3(x, y, z)
@@ -86,6 +77,12 @@ class Copy:
         to the current player position
         """
         self.paste_vec = self._set_pos_relative(x, y, z, relative)
+        # adjust so the paste corner matches the start paste buffer
+        size = self.stop_vec - self.start_vec
+        if size.x < 0:
+            self.paste_vec += Vec3(size.x, 0, 0)
+        if size.z < 0:
+            self.paste_vec += Vec3(0, 0, size.z)
 
     def paste(self, x=0, y=0, z=0):
         """
@@ -124,10 +121,5 @@ class Copy:
             self.stop_vec = pos
         elif func == "paste":
             client.setblock(self.poll_client, sign_pos, Item.AIR)
-            size = self.stop_vec - self.start_vec
-            if size.x < 0:
-                pos += Vec3(size.x, 0, 0)
-            if size.z < 0:
-                pos += Vec3(0, 0, size.z)
-            self.paste_vec = pos
+            self.set_paste(*pos, relative=False)
             self.paste()

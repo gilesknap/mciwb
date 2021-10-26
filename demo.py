@@ -1,22 +1,20 @@
-from typing import cast
+from getpass import getpass
 from time import sleep
+from typing import cast
 
 from mcipc.rcon.item import Item
 from mcipc.rcon.je import Client
 from mcwb import Anchor3, Blocks, Cuboid, Vec3
 from mcwb.types import Planes3d
-from mciwb.copy import Copy
 
+from mciwb.copy import Copy
 from mciwb.player import Player
 
 useful_classes = [Player]
 
+
 # my server ports
-science = 20501, "spider"
-quest = 25575
-flat = 25901
-docker = 20201, "spider"
-docker2 = 30351, "CHANGEME!"
+science = 20501
 
 
 def setup(client):
@@ -45,9 +43,19 @@ def funky_cube(size: int) -> Cuboid:
 c: Client
 
 
+def bye():
+    # I cannot work out how to hook exit when there is a thread running
+    # (atexit only calls hooks after all threads are done)
+    # we need to tell threads to exit in order to leave gracefully
+    global cp
+    cp.__del__()
+    cp = None
+    exit()
+
+
 def connect():
-    port, passw = science
-    c = Client("localhost", port, passwd=passw)
+    passw = getpass(f"Password for mc server at port {science}: ")
+    c = Client("localhost", science, passwd=passw)
     c.connect(True)
     print("connected")
     # don't announce every rcon command

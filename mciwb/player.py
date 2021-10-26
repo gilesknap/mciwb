@@ -17,8 +17,10 @@ class Player:
         self.current_dir = Direction.NORTH
         self.dir()
 
-    def pos(self) -> Vec3:
-        data = self.client.data.get(entity=self.name, path="Pos")
+    def pos(self, client: Client = None) -> Vec3:
+        # if called in a thread then use the thread's client object
+        client = client or self.client
+        data = client.data.get(entity=self.name, path="Pos")
         match = regex_coord.search(data)
         if match:
             self.current_pos = Vec3(
