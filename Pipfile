@@ -1,0 +1,21 @@
+[[source]]
+url = "https://pypi.python.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[dev-packages]
+mciwb = {editable = true, extras = ["dev"], path = "."}
+
+[packages]
+mcipc = {editable = true, path = "../mcipc"}
+mcwb = {editable = true, path = "../mcwb"}
+mciwb = {editable = true, path = "."}
+
+[requires]
+python_version = "3.9"
+
+[pipenv]
+allow_prereleases = true
+
+[scripts]
+demo = "python -m demo"
