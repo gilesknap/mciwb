@@ -67,5 +67,5 @@ if __name__ == "__main__":
 
     fun_cube = Blocks(c, pos, cube, anchor=anchor)
 
-    p = Planes3d.XZ
-    fun_cube.rotate(p)
+    plane = Planes3d.XZ
+    fun_cube.rotate(plane)

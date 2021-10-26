@@ -13,26 +13,35 @@ class Player:
         self.client = client
         self.running = False
         self.name = name
+        self.current_pos = Vec3(0, 0, 0)
+        self.current_dir = Direction.NORTH
+        self.dir()
 
     def pos(self) -> Vec3:
         data = self.client.data.get(entity=self.name, path="Pos")
         match = regex_coord.search(data)
         if match:
-            result = Vec3(
+            self.current_pos = Vec3(
                 float(match.group(1)), float(match.group(2)), float(match.group(3))
             )
-            return result
+            return self.current_pos
 
         raise ValueError(f"player {self.name} does not exist")
 
-    def dir(self) -> Direction:
+    def dir(self, client: Client = None) -> Direction:
+        # if called in a thread then use the thread's client object
+        client = client or self.client
         start = -45
         for dir in [Direction.SOUTH, Direction.WEST, Direction.NORTH, Direction.EAST]:
             stop = start + 90
             entity = f"@p[y_rotation={start}..{stop},name={self.name}]"
-            data = self.client.data.get(entity=entity, path="Pos")
+            data = client.data.get(entity=entity, path="Pos")
             match = regex_coord.search(data)
             if match:
+                self.current_pos = Vec3(
+                    float(match.group(1)), float(match.group(2)), float(match.group(3))
+                )
+                self.current_dir = dir
                 return dir
             start += 90
 
