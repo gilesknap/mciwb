@@ -23,6 +23,7 @@ class Copy:
         self.start_vec = zero
         self.stop_vec = zero
         self.paste_vec = zero
+        self.size = zero
 
         # create our own client for the new thread
         self.polling = True
@@ -36,7 +37,19 @@ class Copy:
         self.get_signs()
 
     def __del__(self):
+        # terminate the poll thread
         self.polling = False
+
+    def __repr__(self) -> str:
+        report = (
+            "Minecraft copy tool status:\n"
+            "  player: {o.player_name} at {o.player.current_pos}\n"
+            "  copy buffer start: {o.start_vec}\n"
+            "  copy buffer stop: {o.stop_vec}\n"
+            "  copy buffer size: {o.size}\n"
+            "  paste point: {o.paste_vec}\n"
+        )
+        return report.format(o=self)
 
     def get_signs(self):
         entity = (
@@ -47,36 +60,37 @@ class Copy:
         self.client.give(self.player_name, entity.format("stop"))
         self.client.give(self.player_name, entity.format("paste"))
 
-    def _set_pos_relative(self, x, y, z, relative):
+    def _set_pos_relative(self, x, y, z, player_relative):
         offset = Vec3(x, y, z)
-        if relative:
+        if player_relative:
             pos = self.player.pos()
             return pos.with_ints() + offset
         else:
             return offset
 
-    def set_start(self, x=0, y=0, z=0, relative=True):
+    def set_start(self, x=0, y=0, z=0, player_relative=True):
         """
-        Set the start point of the paste buffer relative
+        Set the start point of the copy buffer relative
         to the current player position
         """
-        self.start_vec = self._set_pos_relative(x, y, z, relative)
+        self.start_vec = self._set_pos_relative(x, y, z, player_relative)
         # default paste back to same location (for use with paste offsets)
         self.paste_vec = self.start_vec
+        self.size = zero
 
-    def set_stop(self, x=0, y=0, z=0, relative=True):
+    def set_stop(self, x=0, y=0, z=0, player_relative=True):
         """
-        Set the start point of the paste buffer relative
+        Set the start point of the copy buffer relative
         to the current player position
         """
-        self.stop_vec = self._set_pos_relative(x, y, z, relative)
+        self.stop_vec = self._set_pos_relative(x, y, z, player_relative)
+        self.size = self.stop_vec - self.start_vec
 
-    def set_paste(self, x=0, y=0, z=0, relative=True):
+    def set_paste(self, x=0, y=0, z=0, player_relative=True):
         """
-        Set the paste point of the paste buffer relative
-        to the current player position
+        Set the paste point relative to the current player position
         """
-        self.paste_vec = self._set_pos_relative(x, y, z, relative)
+        self.paste_vec = self._set_pos_relative(x, y, z, player_relative)
         # adjust so the paste corner matches the start paste buffer
         size = self.stop_vec - self.start_vec
         if size.x < 0:
@@ -91,6 +105,38 @@ class Copy:
         dest = self.paste_vec + Vec3(x, y, z)
         result = self.client.clone(self.start_vec, self.stop_vec, dest)
         print(result)
+
+    def shift(self, x=0, y=0, z=0):
+        """
+        shift the position of the copy buffer
+        """
+        offset = Vec3(x, y, z)
+        self.set_start(*(self.start_vec + offset), player_relative=False)
+        self.set_stop(*(self.stop_vec + offset), player_relative=False)
+
+    def expand(self, x=0, y=0, z=0):
+        """
+        expand one or more of the dimensions of the copy buffer
+        """
+        expander = Vec3(x, y, z)
+        # use mutable start and stop here to make the code more readable
+        start = self.start_vec._asdict()
+        stop = self.stop_vec._asdict()
+
+        for dim in ["x", "y", "z"]:
+            if expander[dim] > 0:
+                if start[dim] >= stop[dim]:
+                    start[dim] += expander[dim]
+                else:
+                    stop[dim] += expander[dim]
+            elif expander[dim] < 0:
+                if start[dim] <= stop[dim]:
+                    start[dim] += expander[dim]
+                else:
+                    stop[dim] += expander[dim]
+
+        self.set_start(**start, player_relative=False)
+        self.set_stop(**stop, player_relative=False)
 
     def _poller(self):
         # check if a sign has been placed in front of the player
@@ -111,15 +157,11 @@ class Copy:
     def _function(self, func: str, pos: Vec3, sign_pos: Vec3):
         if func == "start":
             client.setblock(self.poll_client, sign_pos, Item.AIR)
-            self.start_vec = pos
-            # reset copy buffer to 1 block
-            self.stop_vec = pos
-            # default paste back to same location (for use with paste offsets)
-            self.paste_vec = pos
+            self.set_start(*pos, player_relative=False)
         elif func == "stop":
             client.setblock(self.poll_client, sign_pos, Item.AIR)
-            self.stop_vec = pos
+            self.set_stop(*pos, player_relative=False)
         elif func == "paste":
             client.setblock(self.poll_client, sign_pos, Item.AIR)
-            self.set_paste(*pos, relative=False)
+            self.set_paste(*pos, player_relative=False)
             self.paste()
