@@ -196,6 +196,7 @@ class Copy:
                 self.set_paste(*pos)
                 self.paste()
                 self.shift(y=1)
+                self.set_paste(*pos)
             elif func == Commands.clear.name:
                 self.fill()
         except BaseException as e:
