@@ -1,8 +1,9 @@
 """
 functions to allow interactive copy and paste of regions of a minecraft map
 """
-from enum import Enum
 import re
+import traceback
+from enum import Enum
 from threading import Thread
 from time import sleep
 
@@ -198,4 +199,6 @@ class Copy:
             elif func == Commands.clear.name:
                 self.fill()
         except BaseException as e:
-            self.client.tell(player=self.player_name, message=f"ERROR: {e}")
+            msg = traceback.format_exc()
+            self.client.tell(player=self.player_name, message=f"\n{msg}")
+            print(msg)
