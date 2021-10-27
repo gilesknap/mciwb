@@ -15,6 +15,14 @@ currently available. The player can then invoke these
 commands and indicate a block location by placing one of
 these signs in game.
 
+See the following video for a quick sample of the capabilities:
+
+<iframe width="560" height="315"
+src="https://www.youtube.com/embed/xzO02QOGlp8"
+frameborder="0"
+allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+allowfullscreen></iframe>
+
 ## Interactive Commands
 So far we have the following signs to drop. See demo.py for example usage.
 
