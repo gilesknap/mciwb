@@ -1,6 +1,7 @@
 """
 functions to allow interactive copy and paste of regions of a minecraft map
 """
+from enum import Enum
 import re
 from threading import Thread
 from time import sleep
@@ -15,6 +16,14 @@ sign_text = re.compile(r"""Text1: '{"text":"([^"]*)"}'}""")
 zero = Vec3(0, 0, 0)
 
 
+class Commands(Enum):
+    start = 0
+    stop = 1
+    paste = 2
+    floorpaste = 3
+    clear = 4
+
+
 class Copy:
     def __init__(self, client: Client, player_name: str):
         self.client = client
@@ -23,6 +32,7 @@ class Copy:
         self.start_vec = zero
         self.stop_vec = zero
         self.paste_vec = zero
+        self.clone_dest = zero
         self.size = zero
 
         # create our own client for the new thread
@@ -34,7 +44,7 @@ class Copy:
         self.poll_thread = Thread(target=self._poller)
         self.poll_thread.start()
 
-        self.get_signs()
+        self.give_signs()
 
     def __del__(self):
         # terminate the poll thread
@@ -51,16 +61,15 @@ class Copy:
         )
         return report.format(o=self)
 
-    def get_signs(self):
+    def give_signs(self):
         entity = (
             """minecraft:oak_sign{{BlockEntityTag:{{Text1:'{{"text":"{0}"}}'}},"""
             """display:{{Name:'{{"text":"{0}"}}'}}}}"""
         )
-        self.client.give(self.player_name, entity.format("start"))
-        self.client.give(self.player_name, entity.format("stop"))
-        self.client.give(self.player_name, entity.format("paste"))
+        for command in Commands:
+            self.client.give(self.player_name, entity.format(command.name))
 
-    def _set_pos_relative(self, x, y, z, player_relative):
+    def _set_pos(self, x, y, z, player_relative):
         offset = Vec3(x, y, z)
         if player_relative:
             pos = self.player.pos()
@@ -68,42 +77,45 @@ class Copy:
         else:
             return offset
 
-    def set_start(self, x=0, y=0, z=0, player_relative=True):
+    def set_start(self, x=0, y=0, z=0, player_relative=False):
         """
-        Set the start point of the copy buffer relative
-        to the current player position
+        Set the start point of the copy buffer
         """
-        self.start_vec = self._set_pos_relative(x, y, z, player_relative)
-        # default paste back to same location (for use with paste offsets)
-        self.paste_vec = self.start_vec
+        self.start_vec = self._set_pos(x, y, z, player_relative)
+        # setting start resets stop too for safety
+        self.stop_vec = self .start_vec
         self.size = zero
+        self.set_paste(*self.start_vec, player_relative=player_relative)
 
-    def set_stop(self, x=0, y=0, z=0, player_relative=True):
+    def set_stop(self, x=0, y=0, z=0, player_relative=False):
         """
-        Set the start point of the copy buffer relative
-        to the current player position
+        Set the start point of the copy buffer
         """
-        self.stop_vec = self._set_pos_relative(x, y, z, player_relative)
+        self.stop_vec = self._set_pos(x, y, z, player_relative)
         self.size = self.stop_vec - self.start_vec
+        self.set_paste(*self.start_vec, player_relative=player_relative)
 
-    def set_paste(self, x=0, y=0, z=0, player_relative=True):
+    def set_paste(self, x=0, y=0, z=0, player_relative=False):
         """
         Set the paste point relative to the current player position
         """
-        self.paste_vec = self._set_pos_relative(x, y, z, player_relative)
-        # adjust so the paste corner matches the start paste buffer
+        self.paste_vec = self._set_pos(x, y, z, player_relative)
+        # adjust clone dest so the paste corner matches the start paste buffer
+        self.clone_dest = self.paste_vec
         size = self.stop_vec - self.start_vec
         if size.x < 0:
-            self.paste_vec += Vec3(size.x, 0, 0)
+            self.clone_dest += Vec3(size.x, 0, 0)
         if size.z < 0:
-            self.paste_vec += Vec3(0, 0, size.z)
+            self.clone_dest += Vec3(0, 0, size.z)
 
     def paste(self, x=0, y=0, z=0):
         """
-        Copy the contents of past buffer to paste point + offsets x,y,z
+        Copy the contents of past buffer to paste point plus offset x y z
         """
-        dest = self.paste_vec + Vec3(x, y, z)
-        result = self.client.clone(self.start_vec, self.stop_vec, dest)
+        offset = Vec3(x, y, z)
+        result = self.client.clone(
+            self.start_vec, self.stop_vec, self.clone_dest + offset
+        )
         print(result)
 
     def shift(self, x=0, y=0, z=0):
@@ -111,8 +123,20 @@ class Copy:
         shift the position of the copy buffer
         """
         offset = Vec3(x, y, z)
-        self.set_start(*(self.start_vec + offset), player_relative=False)
-        self.set_stop(*(self.stop_vec + offset), player_relative=False)
+        current_stop = self.stop_vec
+        self.set_start(*(self.start_vec + offset))
+        self.set_stop(*(current_stop + offset))
+
+    def fill(self, item: Item = None, x=0, y=0, z=0):
+        """
+        fill the paste buffer offset by x y z with Air or a specified block
+        """
+        item = item or Item.AIR
+        offset = Vec3(x, y, z)
+        size = self.stop_vec - self.start_vec
+        end = self.paste_vec + size + offset
+        result = self.client.fill(self.paste_vec + offset, end, item.value)
+        print(result)
 
     def expand(self, x=0, y=0, z=0):
         """
@@ -125,43 +149,55 @@ class Copy:
 
         for dim in ["x", "y", "z"]:
             if expander[dim] > 0:
-                if start[dim] >= stop[dim]:
+                if start[dim] > stop[dim]:
                     start[dim] += expander[dim]
                 else:
                     stop[dim] += expander[dim]
             elif expander[dim] < 0:
-                if start[dim] <= stop[dim]:
+                if start[dim] < stop[dim]:
                     start[dim] += expander[dim]
                 else:
                     stop[dim] += expander[dim]
 
-        self.set_start(**start, player_relative=False)
-        self.set_stop(**stop, player_relative=False)
+        self.set_start(**start)
+        self.set_stop(**stop)
 
     def _poller(self):
-        # check if a sign has been placed in front of the player
-        # one - three blocks away
-
+        """
+        continually check if a sign has been placed in front of the player
+        one to three blocks away and take action based on sign text
+        """
         while self.polling:
             dir = self.player.dir(self.poll_client)
-            for distance in range(1, 4):
-                pos = self.player.current_pos + dir.value * distance
-                ipos = pos.with_ints()
-                data = self.poll_client.data.get(block=ipos)
-                match = sign_text.search(data)
-                if match:
-                    text = match.group(1)
-                    self._function(text, ipos + dir.value, ipos)
+            for height in range(-1, 3):
+                for distance in range(1, 4):
+                    pos = self.player.current_pos + dir.value * distance
+                    ipos = pos.with_ints() + Vec3(0, height, 0)
+                    data = self.poll_client.data.get(block=ipos)
+                    match = sign_text.search(data)
+                    if match:
+                        text = match.group(1)
+                        self._function(text, ipos + dir.value, ipos)
             sleep(0.5)
 
     def _function(self, func: str, pos: Vec3, sign_pos: Vec3):
-        if func == "start":
-            client.setblock(self.poll_client, sign_pos, Item.AIR)
-            self.set_start(*pos, player_relative=False)
-        elif func == "stop":
-            client.setblock(self.poll_client, sign_pos, Item.AIR)
-            self.set_stop(*pos, player_relative=False)
-        elif func == "paste":
-            client.setblock(self.poll_client, sign_pos, Item.AIR)
-            self.set_paste(*pos, player_relative=False)
+        """
+        performs the functions available by placing signs in front of player
+        """
+        client.setblock(self.poll_client, sign_pos, Item.AIR)
+        if func == Commands.start.name:
+            self.set_start(*pos)
+        elif func == Commands.stop.name:
+            self.set_stop(*pos)
+        elif func == Commands.paste.name:
+            self.set_paste(*pos)
             self.paste()
+        elif func == Commands.floorpaste.name:
+            pos -= Vec3(0, 1, 0)
+            self.shift(y=-1)
+            self.set_paste(*pos)
+            self.paste()
+            self.shift(y=1)
+            self.set_paste(*pos)
+        elif func == Commands.clear.name:
+            self.fill()

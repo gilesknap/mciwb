@@ -1,3 +1,4 @@
+import sys
 from getpass import getpass
 from time import sleep
 from typing import cast
@@ -11,6 +12,7 @@ from mciwb.copy import Copy
 from mciwb.player import Player
 
 useful_classes = [Player]
+
 
 
 # my server ports
@@ -54,7 +56,10 @@ def bye():
 
 
 def connect():
-    passw = getpass(f"Password for mc server at port {science}: ")
+    if len(sys.argv) > 1:
+        passw = sys.argv[1]
+    else:
+        passw = getpass(f"Password for mc server at port {science}: ")
     c = Client("localhost", science, passwd=passw)
     c.connect(True)
     print("connected")
