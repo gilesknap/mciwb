@@ -1,7 +1,8 @@
 # mciwb
 Minecraft Interactive world builder
 
-Additional functions for mcwb to allow world building using ipython and a minecraft client in tandem.
+Additional functions on top of the mcwb world builder library to allow 
+interactive world building using ipython and a minecraft client in tandem.
 
 ## Intro
 The interaction is achieved by dropping command signs into the world.
@@ -17,11 +18,7 @@ these signs in game.
 
 See the following video for a quick sample of the capabilities:
 
-<iframe width="560" height="315"
-src="https://www.youtube.com/embed/xzO02QOGlp8"
-frameborder="0"
-allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
-allowfullscreen></iframe>
+https://user-images.githubusercontent.com/964827/139144276-8c14ddc4-350f-4e7f-b393-2ec4187c5870.mp4
 
 ## Interactive Commands
 So far we have the following signs to drop. See demo.py for example usage.
