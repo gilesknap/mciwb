@@ -29,9 +29,9 @@ class Copy:
         self.client = client
         self.player_name = player_name
         self.player = Player(client, player_name)
-        self.start_vec = zero
-        self.stop_vec = zero
-        self.paste_vec = zero
+        self.start_vec: Vec3 = None
+        self.stop_vec: Vec3  = None
+        self.paste_vec: Vec3  = None
         self.clone_dest = zero
         self.size = zero
 
@@ -82,9 +82,6 @@ class Copy:
         Set the start point of the copy buffer
         """
         self.start_vec = self._set_pos(x, y, z, player_relative)
-        # setting start resets stop too for safety
-        self.stop_vec = self .start_vec
-        self.size = zero
         self.set_paste(*self.start_vec, player_relative=player_relative)
 
     def set_stop(self, x=0, y=0, z=0, player_relative=False):
@@ -123,9 +120,8 @@ class Copy:
         shift the position of the copy buffer
         """
         offset = Vec3(x, y, z)
-        current_stop = self.stop_vec
         self.set_start(*(self.start_vec + offset))
-        self.set_stop(*(current_stop + offset))
+        self.set_stop(*(self.stop_vec + offset))
 
     def fill(self, item: Item = None, x=0, y=0, z=0):
         """
@@ -184,20 +180,22 @@ class Copy:
         """
         performs the functions available by placing signs in front of player
         """
-        client.setblock(self.poll_client, sign_pos, Item.AIR)
-        if func == Commands.start.name:
-            self.set_start(*pos)
-        elif func == Commands.stop.name:
-            self.set_stop(*pos)
-        elif func == Commands.paste.name:
-            self.set_paste(*pos)
-            self.paste()
-        elif func == Commands.floorpaste.name:
-            pos -= Vec3(0, 1, 0)
-            self.shift(y=-1)
-            self.set_paste(*pos)
-            self.paste()
-            self.shift(y=1)
-            self.set_paste(*pos)
-        elif func == Commands.clear.name:
-            self.fill()
+        try:
+            client.setblock(self.poll_client, sign_pos, Item.AIR)
+            if func == Commands.start.name:
+                self.set_start(*pos)
+            elif func == Commands.stop.name:
+                self.set_stop(*pos)
+            elif func == Commands.paste.name:
+                self.set_paste(*pos)
+                self.paste()
+            elif func == Commands.floorpaste.name:
+                pos -= Vec3(0, 1, 0)
+                self.shift(y=-1)
+                self.set_paste(*pos)
+                self.paste()
+                self.shift(y=1)
+            elif func == Commands.clear.name:
+                self.fill()
+        except BaseException as e:
+            self.client.tell(player=self.player_name, message=f"ERROR: {e}")
