@@ -6,6 +6,7 @@ import traceback
 from enum import Enum
 from threading import Thread
 from time import sleep
+from typing import Optional
 
 from mcipc.rcon.enumerations import Item
 from mcipc.rcon.je import Client, client
@@ -30,9 +31,9 @@ class Copy:
         self.client = client
         self.player_name = player_name
         self.player = Player(client, player_name)
-        self.start_vec: Vec3 = None
-        self.stop_vec: Vec3  = None
-        self.paste_vec: Vec3  = None
+        self.start_b: Optional[Vec3] = None
+        self.stop_b: Optional[Vec3] = None
+        self.paste_b: Optional[Vec3] = None
         self.clone_dest = zero
         self.size = zero
 
@@ -82,25 +83,25 @@ class Copy:
         """
         Set the start point of the copy buffer
         """
-        self.start_vec = self._set_pos(x, y, z, player_relative)
-        self.set_paste(*self.start_vec, player_relative=player_relative)
+        self.start_b = self._set_pos(x, y, z, player_relative)
+        self.set_paste(*self.start_b, player_relative=player_relative)
 
     def set_stop(self, x=0, y=0, z=0, player_relative=False):
         """
         Set the start point of the copy buffer
         """
-        self.stop_vec = self._set_pos(x, y, z, player_relative)
-        self.size = self.stop_vec - self.start_vec
-        self.set_paste(*self.start_vec, player_relative=player_relative)
+        self.stop_b = self._set_pos(x, y, z, player_relative)
+        self.size = self.stop_b - self.start_b
+        self.set_paste(*self.start_b, player_relative=player_relative)
 
     def set_paste(self, x=0, y=0, z=0, player_relative=False):
         """
         Set the paste point relative to the current player position
         """
-        self.paste_vec = self._set_pos(x, y, z, player_relative)
+        self.paste_b = self._set_pos(x, y, z, player_relative)
         # adjust clone dest so the paste corner matches the start paste buffer
-        self.clone_dest = self.paste_vec
-        size = self.stop_vec - self.start_vec
+        self.clone_dest = self.paste_b
+        size = self.stop_b - self.start_b if self.stop_b and self.start_b else zero
         if size.x < 0:
             self.clone_dest += Vec3(size.x, 0, 0)
         if size.z < 0:
@@ -111,9 +112,7 @@ class Copy:
         Copy the contents of past buffer to paste point plus offset x y z
         """
         offset = Vec3(x, y, z)
-        result = self.client.clone(
-            self.start_vec, self.stop_vec, self.clone_dest + offset
-        )
+        result = self.client.clone(self.start_b, self.stop_b, self.clone_dest + offset)
         print(result)
 
     def shift(self, x=0, y=0, z=0):
@@ -121,8 +120,8 @@ class Copy:
         shift the position of the copy buffer
         """
         offset = Vec3(x, y, z)
-        self.set_start(*(self.start_vec + offset))
-        self.set_stop(*(self.stop_vec + offset))
+        self.set_start(*(self.start_b + offset))
+        self.set_stop(*(self.stop_b + offset))
 
     def fill(self, item: Item = None, x=0, y=0, z=0):
         """
@@ -130,9 +129,9 @@ class Copy:
         """
         item = item or Item.AIR
         offset = Vec3(x, y, z)
-        size = self.stop_vec - self.start_vec
-        end = self.paste_vec + size + offset
-        result = self.client.fill(self.paste_vec + offset, end, item.value)
+        size = self.stop_b - self.start_b
+        end = self.paste_b + size + offset
+        result = self.client.fill(self.paste_b + offset, end, item.value)
         print(result)
 
     def expand(self, x=0, y=0, z=0):
@@ -141,8 +140,8 @@ class Copy:
         """
         expander = Vec3(x, y, z)
         # use mutable start and stop here to make the code more readable
-        start = self.start_vec._asdict()
-        stop = self.stop_vec._asdict()
+        start = self.start_b._asdict()
+        stop = self.stop_b._asdict()
 
         for dim in ["x", "y", "z"]:
             if expander[dim] > 0:
