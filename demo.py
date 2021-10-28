@@ -5,6 +5,7 @@ from mcipc.rcon.item import Item
 from mcipc.rcon.je import Client
 from mcwb import Anchor3, Blocks, Cuboid, Vec3
 from mcwb.types import Planes3d
+from mciwb.backup import Backup
 
 from mciwb.copy import Copy
 from mciwb.player import Player
@@ -40,5 +41,10 @@ def connect():
 
 if __name__ == "__main__":
     c = connect()
-    p = Player(c, "TransformerScorn")
+    zipper = Backup(
+        "science",
+        "/mnt/bigdisk/mc-servers/science/science/",
+        "/mnt/bigdisk/MinecraftQuickBackups",
+        c
+    )
     cp = Copy(c, "TransformerScorn")
