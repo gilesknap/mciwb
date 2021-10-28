@@ -40,17 +40,17 @@ class Backup:
     def restore(self, fname: Path = None):
         if not fname:
             backups = self.backup_folder.glob("*.zip")
-            ordered = sorted(backups, key=os.path.getctime)
+            ordered = sorted(backups, key=os.path.getctime, reverse=True)
             fname = ordered[0]
         if not fname.exists():
             raise ValueError("{file} not found")
 
-        self.client.say(f"Preparing to restore from {fname}. WORLD GOING DOWN NOW.")
-
-        if input("This will overwrite recent changes. Are you sure? (y/n)") != "y":
-            self.client.say(f"Restore Cancelled.")
+        self.client.say(f"WORLD GOING DOWN NOW FOR RESTORE FROM BACKUP ...")
+        if input(f"Overwrite world with with {fname} (y/n)? : ") != "y":
+            self.client.say("Restore Cancelled.")
             return
 
+        print(f"Restoring {fname} ...")
         self.client.save_off()
 
         old_world = Path(str(self.world_folder) + "-old")
@@ -65,3 +65,6 @@ class Backup:
         # this assumes that there is an auto restart like docker. Manual
         # start will be required otherwise
         self.client.stop()
+
+        print("\n\nExiting ... Restart when your player has rejoined the world.")
+        os._exit(0)

@@ -11,6 +11,7 @@ from typing import Optional
 from mcipc.rcon.enumerations import Item
 from mcipc.rcon.je import Client, client
 from mcwb.types import Vec3
+from mciwb.backup import Backup
 
 from mciwb.player import Player
 
@@ -24,12 +25,14 @@ class Commands(Enum):
     paste = 2
     floorpaste = 3
     clear = 4
+    backup = 5
 
 
 class Copy:
-    def __init__(self, client: Client, player_name: str):
+    def __init__(self, client: Client, player_name: str, backup: Backup):
         self.client = client
         self.player_name = player_name
+        self.backup = backup
         self.player = Player(client, player_name)
         self.start_b: Optional[Vec3] = None
         self.stop_b: Optional[Vec3] = None
@@ -203,3 +206,5 @@ class Copy:
             self.set_paste(*pos)
         elif func == Commands.clear.name:
             self.fill()
+        elif func == Commands.backup.name:
+            self.backup.backup()

@@ -18,9 +18,12 @@ def bye():
     # I cannot work out how to hook exit when there is a thread running
     # (atexit only calls hooks after all threads are done)
     # we need to tell threads to exit in order to leave gracefully
-    global cp
-    cp.__del__()
-    cp = None
+    try:
+        global cp
+        cp.__del__()
+        cp = None
+    except Exception:
+        pass
     exit()
 
 
@@ -47,4 +50,4 @@ if __name__ == "__main__":
         "/mnt/bigdisk/MinecraftQuickBackups",
         c
     )
-    cp = Copy(c, "TransformerScorn")
+    cp = Copy(c, "TransformerScorn", zipper)
