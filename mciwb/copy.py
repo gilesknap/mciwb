@@ -56,10 +56,10 @@ class Copy:
         report = (
             "Minecraft copy tool status:\n"
             "  player: {o.player_name} at {o.player.current_pos}\n"
-            "  copy buffer start: {o.start_vec}\n"
-            "  copy buffer stop: {o.stop_vec}\n"
+            "  copy buffer start: {o.start_b}\n"
+            "  copy buffer stop: {o.stop_b}\n"
             "  copy buffer size: {o.size}\n"
-            "  paste point: {o.paste_vec}\n"
+            "  paste point: {o.paste_b}\n"
         )
         return report.format(o=self)
 
@@ -163,42 +163,43 @@ class Copy:
         continually check if a sign has been placed in front of the player
         one to three blocks away and take action based on sign text
         """
-        while self.polling:
-            dir = self.player.dir(self.poll_client)
-            for height in range(-1, 3):
-                for distance in range(1, 4):
-                    pos = self.player.current_pos + dir.value * distance
-                    ipos = pos.with_ints() + Vec3(0, height, 0)
-                    data = self.poll_client.data.get(block=ipos)
-                    match = sign_text.search(data)
-                    if match:
-                        text = match.group(1)
-                        self._function(text, ipos + dir.value, ipos)
-            sleep(0.5)
+        try:
+            while self.polling:
+                dir = self.player.dir(self.poll_client)
+                for height in range(-1, 3):
+                    for distance in range(1, 4):
+                        pos = self.player.current_pos + dir.value * distance
+                        ipos = pos.with_ints() + Vec3(0, height, 0)
+                        data = self.poll_client.data.get(block=ipos)
+                        match = sign_text.search(data)
+                        if match:
+                            text = match.group(1)
+                            self._function(text, ipos + dir.value, ipos)
+                sleep(0.5)
+
+        except BaseException as e:
+            msg = traceback.format_exc()
+            self.client.tell(player=self.player_name, message=f"\n{msg}")
+            print(msg)
 
     def _function(self, func: str, pos: Vec3, sign_pos: Vec3):
         """
         performs the functions available by placing signs in front of player
         """
-        try:
-            client.setblock(self.poll_client, sign_pos, Item.AIR)
-            if func == Commands.start.name:
-                self.set_start(*pos)
-            elif func == Commands.stop.name:
-                self.set_stop(*pos)
-            elif func == Commands.paste.name:
-                self.set_paste(*pos)
-                self.paste()
-            elif func == Commands.floorpaste.name:
-                pos -= Vec3(0, 1, 0)
-                self.shift(y=-1)
-                self.set_paste(*pos)
-                self.paste()
-                self.shift(y=1)
-                self.set_paste(*pos)
-            elif func == Commands.clear.name:
-                self.fill()
-        except BaseException as e:
-            msg = traceback.format_exc()
-            self.client.tell(player=self.player_name, message=f"\n{msg}")
-            print(msg)
+        client.setblock(self.poll_client, sign_pos, Item.AIR)
+        if func == Commands.start.name:
+            self.set_start(*pos)
+        elif func == Commands.stop.name:
+            self.set_stop(*pos)
+        elif func == Commands.paste.name:
+            self.set_paste(*pos)
+            self.paste()
+        elif func == Commands.floorpaste.name:
+            pos -= Vec3(0, 1, 0)
+            self.shift(y=-1)
+            self.set_paste(*pos)
+            self.paste()
+            self.shift(y=1)
+            self.set_paste(*pos)
+        elif func == Commands.clear.name:
+            self.fill()
