@@ -23,6 +23,7 @@ class Commands(Enum):
     paste = 2
     clear = 4
     backup = 5
+    expand = 6
 
 
 class Copy:
@@ -136,7 +137,8 @@ class Copy:
 
     def expand(self, x=0, y=0, z=0):
         """
-        expand one or more of the dimensions of the copy buffer
+        expand one or more of the dimensions of the copy buffer by relative
+        amounts
         """
         expander = Vec3(x, y, z)
         # use mutable start and stop here to make the code more readable
@@ -156,6 +158,27 @@ class Copy:
                     stop[dim] += expander[dim]
 
         self.set_start(**start)
+        self.set_stop(**stop)
+
+    def expand_to(self, x=0, y=0, z=0):
+        """
+        expand one or more of the dimensions of the copy buffer by moving
+        the end point outwards towards a fixed point (dimensions of the
+        fixed point that would move end point inwards are not used)
+        """
+        expander = Vec3(x, y, z)
+        # use mutable start and stop here to make the code more readable
+        start = self.start_b._asdict()
+        stop = self.stop_b._asdict()
+
+        for dim in ["x", "y", "z"]:
+            if start[dim] <= stop[dim]:
+                if expander[dim] > stop[dim]:
+                    stop[dim] = expander[dim]
+            elif start[dim] >= stop[dim]:
+                if expander[dim] < stop[dim]:
+                    stop[dim] = expander[dim]
+
         self.set_stop(**stop)
 
     dump = Vec3(0, 0, 0)
@@ -220,3 +243,5 @@ class Copy:
             self.fill()
         elif func == Commands.backup.name:
             self.backup.backup()
+        elif func == Commands.expand.name:
+            self.expand_to(*pos)
