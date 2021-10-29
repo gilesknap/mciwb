@@ -7,7 +7,7 @@ from enum import Enum
 from threading import Thread
 from time import sleep
 
-from mcipc.rcon.enumerations import Item
+from mcipc.rcon.enumerations import CloneMode, Item, MaskMode
 from mcipc.rcon.je import Client, client
 from mcwb.types import Direction, Vec3
 
@@ -24,6 +24,7 @@ class Commands(Enum):
     clear = 4
     backup = 5
     expand = 6
+    pasteforce = 7
 
 
 class Copy:
@@ -108,12 +109,20 @@ class Copy:
         if size.z < 0:
             self.clone_dest += Vec3(0, 0, size.z)
 
-    def paste(self, x=0, y=0, z=0):
+    def paste(self, x=0, y=0, z=0, force=False):
         """
         Copy the contents of past buffer to paste point plus offset x y z
         """
         offset = Vec3(x, y, z)
-        result = self.client.clone(self.start_b, self.stop_b, self.clone_dest + offset)
+        mode = CloneMode.FORCE if force else CloneMode.NORMAL
+        print(mode)
+        result = self.client.clone(
+            self.start_b,
+            self.stop_b,
+            self.clone_dest + offset,
+            mask_mode=MaskMode.REPLACE,
+            clone_mode=mode,
+        )
         print(result)
 
     def shift(self, x=0, y=0, z=0):
@@ -189,15 +198,15 @@ class Copy:
         determine the target block that the sign at pos indicates
         """
         # use 'execute if' with a benign command like seed
-        result = self.client.execute.if_.block(
-            pos, "minecraft:oak_wall_sign"
-        ).run("seed")
+        result = self.client.execute.if_.block(pos, "minecraft:oak_wall_sign").run(
+            "seed"
+        )
 
-        # signs target the block behind them
-        pos += dir.value
-
-        if "Seed" not in result:
-            # standing signs target the block below and behind
+        if "Seed" in result:
+            # wall signs target the block behind them
+            pos += dir.value
+        else:
+            # standing signs target the block below them
             pos += Vec3(0, -1, 0)
 
         return pos
@@ -220,8 +229,8 @@ class Copy:
                             text = match.group(1)
                             target = self.get_target_block(ipos, dir)
                             print(text, target)
-                            self._function(text, target)
                             client.setblock(self.poll_client, ipos, Item.AIR)
+                            self._function(text, target)
                 sleep(0.5)
 
             except BaseException:
@@ -239,6 +248,9 @@ class Copy:
         elif func == Commands.paste.name:
             self.set_paste(*pos)
             self.paste()
+        elif func == Commands.pasteforce.name:
+            self.set_paste(*pos)
+            self.paste(force=True)
         elif func == Commands.clear.name:
             self.fill()
         elif func == Commands.backup.name:

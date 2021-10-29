@@ -28,7 +28,7 @@ When you drop a sign you must be facing it. It will disappear when
 the sign has been detected by the poller and the function has executed.
 
 Note that the sign's target coordinates are the block **behind** it and
-a free standing sign targets the block below and behind it.
+a free standing sign targets the block below it.
 
 - **select**: set the start and stop point for the copy buffer, the last two
 uses of this command determine the bounding box of the copy buffer. The last
