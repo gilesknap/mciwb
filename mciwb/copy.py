@@ -1,6 +1,7 @@
 """
 functions to allow interactive copy and paste of regions of a minecraft map
 """
+from math import exp
 import re
 import traceback
 from enum import Enum
@@ -172,8 +173,7 @@ class Copy:
     def expand_to(self, x=0, y=0, z=0):
         """
         expand one or more of the dimensions of the copy buffer by moving
-        the end point outwards towards a fixed point (dimensions of the
-        fixed point that would move end point inwards are not used)
+        the faces outwards to the specified point
         """
         expander = Vec3(x, y, z)
         # use mutable start and stop here to make the code more readable
@@ -184,10 +184,15 @@ class Copy:
             if start[dim] <= stop[dim]:
                 if expander[dim] > stop[dim]:
                     stop[dim] = expander[dim]
+                elif expander[dim] < start[dim]:
+                    start[dim] = expander[dim]
             elif start[dim] >= stop[dim]:
                 if expander[dim] < stop[dim]:
                     stop[dim] = expander[dim]
+                elif expander[dim] > start[dim]:
+                    start[dim] = expander[dim]
 
+        self.set_start(**start)
         self.set_stop(**stop)
 
     dump = Vec3(0, 0, 0)
@@ -235,7 +240,6 @@ class Copy:
 
             except BaseException:
                 msg = traceback.format_exc()
-                self.client.tell(player=self.player_name, message=f"\n{msg}")
                 print(msg)
 
     def _function(self, func: str, pos: Vec3):

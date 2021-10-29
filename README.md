@@ -33,6 +33,7 @@ a free standing sign targets the block below it.
 - **select**: set the start and stop point for the copy buffer, the last two
 uses of this command determine the bounding box of the copy buffer. The last
 use determines the anchor point for the next paste
+- **expand**: expand the closest face of the copy buffer to the indicated point (can do all 6 faces)
 - **paste**: clone the contents of copy buffer to the current
 indicated location (anchored at the start point)
 - **clear**: clear the contents of the paste buffer
@@ -40,8 +41,6 @@ indicated location (anchored at the start point)
 
 ## Todo Interactive Commands
 
- (requires some preconfiguration)
-- **expand**: expand the closest face of the copy buffer to the indicated point (can do all 6 dimensions)
 - **shift**: shift the copy buffer until the closest face is at the indicated point
 
 ## Useful iPython Commands
@@ -57,15 +56,15 @@ outwards
 - **paste**: paste at the paste location with offset. Can
 be used in a loop to make repeating structures.
 - **restore**: restore the world to a previous backup
-- TODO Additional support in mcwb required (profile generators)
-
-  - **rectangle**: make a rectangle described by copy buffer
-  corners (expects one of the copy dimensions to be size 1)
-  - **elipse**: make a elipse described by copy buffer
-  corners (expects one of the copy dimensions to be size 1)
 
 ## Todo iPython Commands
 
 - **save**: save the copy buffer to a named file
 - **load**: load a file into the world at the copy buffer start point. Set the copy buffer to enclose the loaded structure
 - **rotate**: perform transforms on the copy buffer
+- Additional support in mcwb required (profile generators)
+
+  - **rectangle**: make a rectangle described by copy buffer
+  corners (expects one of the copy dimensions to be size 1)
+  - **elipse**: make a elipse described by copy buffer
+  corners (expects one of the copy dimensions to be size 1)

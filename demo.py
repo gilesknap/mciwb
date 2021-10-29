@@ -28,12 +28,17 @@ def bye():
 
 
 def connect():
-    port = int(sys.argv[1])
+    if len(sys.argv) > 1:
+        port = sys.argv[1]
+    else:
+        port = 20501
+
     if len(sys.argv) > 2:
         passw = sys.argv[2]
     else:
         passw = getpass(f"Password for localhost mc server at rcon port {port}: ")
-    c = Client("localhost", port, passwd=passw)
+
+    c = Client("localhost", int(port), passwd=passw)
     c.connect(True)
     print("connected")
     # don't announce every rcon command
