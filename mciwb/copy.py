@@ -6,13 +6,12 @@ import traceback
 from enum import Enum
 from threading import Thread
 from time import sleep
-from typing import Optional
 
 from mcipc.rcon.enumerations import Item
 from mcipc.rcon.je import Client, client
-from mcwb.types import Vec3
-from mciwb.backup import Backup
+from mcwb.types import Direction, Vec3
 
+from mciwb.backup import Backup
 from mciwb.player import Player
 
 sign_text = re.compile(r"""Text1: '{"text":"([^"]*)"}'}""")
@@ -20,10 +19,8 @@ zero = Vec3(0, 0, 0)
 
 
 class Commands(Enum):
-    start = 0
-    stop = 1
+    select = 0
     paste = 2
-    floorpaste = 3
     clear = 4
     backup = 5
 
@@ -34,9 +31,9 @@ class Copy:
         self.player_name = player_name
         self.backup = backup
         self.player = Player(client, player_name)
-        self.start_b: Optional[Vec3] = None
-        self.stop_b: Optional[Vec3] = None
-        self.paste_b: Optional[Vec3] = None
+        self.start_b: Vec3 = self.player.pos()
+        self.stop_b: Vec3 = self.start_b
+        self.paste_b: Vec3 = self.start_b
         self.clone_dest = zero
         self.size = zero
 
@@ -161,13 +158,34 @@ class Copy:
         self.set_start(**start)
         self.set_stop(**stop)
 
+    dump = Vec3(0, 0, 0)
+    extract_item = re.compile(r".*minecraft\:(?:blocks\/)?(.+)$")
+
+    def get_target_block(self, pos: Vec3, dir: Direction):
+        """
+        determine the target block that the sign at pos indicates
+        """
+        # use 'execute if' with a benign command like seed
+        result = self.client.execute.if_.block(
+            pos, "minecraft:oak_wall_sign"
+        ).run("seed")
+
+        # signs target the block behind them
+        pos += dir.value
+
+        if "Seed" not in result:
+            # standing signs target the block below and behind
+            pos += Vec3(0, -1, 0)
+
+        return pos
+
     def _poller(self):
         """
         continually check if a sign has been placed in front of the player
         one to three blocks away and take action based on sign text
         """
-        try:
-            while self.polling:
+        while self.polling:
+            try:
                 dir = self.player.dir(self.poll_client)
                 for height in range(-1, 3):
                     for distance in range(1, 4):
@@ -177,33 +195,27 @@ class Copy:
                         match = sign_text.search(data)
                         if match:
                             text = match.group(1)
-                            self._function(text, ipos + dir.value, ipos)
+                            target = self.get_target_block(ipos, dir)
+                            print(text, target)
+                            self._function(text, target)
+                            client.setblock(self.poll_client, ipos, Item.AIR)
                 sleep(0.5)
 
-        except BaseException as e:
-            msg = traceback.format_exc()
-            self.client.tell(player=self.player_name, message=f"\n{msg}")
-            print(msg)
+            except BaseException:
+                msg = traceback.format_exc()
+                self.client.tell(player=self.player_name, message=f"\n{msg}")
+                print(msg)
 
-    def _function(self, func: str, pos: Vec3, sign_pos: Vec3):
+    def _function(self, func: str, pos: Vec3):
         """
         performs the functions available by placing signs in front of player
         """
-        client.setblock(self.poll_client, sign_pos, Item.AIR)
-        if func == Commands.start.name:
+        if func == Commands.select.name:
+            self.set_stop(*self.start_b)
             self.set_start(*pos)
-        elif func == Commands.stop.name:
-            self.set_stop(*pos)
         elif func == Commands.paste.name:
             self.set_paste(*pos)
             self.paste()
-        elif func == Commands.floorpaste.name:
-            pos -= Vec3(0, 1, 0)
-            self.shift(y=-1)
-            self.set_paste(*pos)
-            self.paste()
-            self.shift(y=1)
-            self.set_paste(*pos)
         elif func == Commands.clear.name:
             self.fill()
         elif func == Commands.backup.name:

@@ -1,7 +1,7 @@
 # mciwb
 Minecraft Interactive world builder
 
-Additional functions on top of the mcwb world builder library to allow 
+Additional functions on top of the mcwb world builder library to allow
 interactive world building using ipython and a minecraft client in tandem.
 
 ## Intro
@@ -22,24 +22,24 @@ https://user-images.githubusercontent.com/964827/139144276-8c14ddc4-350f-4e7f-b3
 
 ## Interactive Commands
 So far we have the following signs to drop. See demo.py for example usage.
+(video shows start and stop signs which are now combined into 'select')
 
 When you drop a sign you must be facing it. It will disappear when
 the sign has been detected by the poller and the function has executed.
 
-Note that the sign's coordinates of action are the block **behind** it or the block it is attached to (which is also
-the block behind it)
+Note that the sign's target coordinates are the block **behind** it and
+a free standing sign targets the block below and behind it.
 
-- **start**: set the start point for the copy buffer (and anchor point for paste)
-- **stop**: set the opposite corner of the copy buffer
+- **select**: set the start and stop point for the copy buffer, the last two
+uses of this command determine the bounding box of the copy buffer. The last
+use determines the anchor point for the next paste
 - **paste**: clone the contents of copy buffer to the current
 indicated location (anchored at the start point)
-- **pastefloor** - shift the copy buffer down by 1 and paste it at the location
-  indicated but down by one (good for copying sections of floor)
 - **clear**: clear the contents of the paste buffer
+- **backup** create a zipped and dated backup of the world
 
 ## Todo Interactive Commands
 
-- **backup** create a zipped and dated backup of the world
  (requires some preconfiguration)
 - **expand**: expand the closest face of the copy buffer to the indicated point (can do all 6 dimensions)
 - **shift**: shift the copy buffer until the closest face is at the indicated point
@@ -56,7 +56,8 @@ The following useful commands are available on the Copy class:
 outwards
 - **paste**: paste at the paste location with offset. Can
 be used in a loop to make repeating structures.
-- Additional support in mcwb required (profile generators)
+- **restore**: restore the world to a previous backup
+- TODO Additional support in mcwb required (profile generators)
 
   - **rectangle**: make a rectangle described by copy buffer
   corners (expects one of the copy dimensions to be size 1)
@@ -68,4 +69,3 @@ be used in a loop to make repeating structures.
 - **save**: save the copy buffer to a named file
 - **load**: load a file into the world at the copy buffer start point. Set the copy buffer to enclose the loaded structure
 - **rotate**: perform transforms on the copy buffer
-- **restore**: restore the world to a previous backup
