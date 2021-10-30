@@ -1,9 +1,7 @@
 """
 functions to allow interactive copy and paste of regions of a minecraft map
 """
-from math import exp
 import re
-import traceback
 from enum import Enum
 from threading import Thread
 from time import sleep
@@ -21,14 +19,21 @@ zero = Vec3(0, 0, 0)
 
 class Commands(Enum):
     select = 0
+    expand = 1
     paste = 2
+    pasteforce = 3
     clear = 4
     backup = 5
-    expand = 6
-    pasteforce = 7
 
 
 class Copy:
+    """
+    Provides an interactive way to use copy and paste commands within a
+    Minecraft world.
+
+    Gives the player a set of command signs and spawns a thread to watch
+    for those signs being dropped in the world.
+    """
     def __init__(self, client: Client, player_name: str, backup: Backup):
         self.client = client
         self.player_name = player_name
@@ -67,6 +72,9 @@ class Copy:
         return report.format(o=self)
 
     def give_signs(self):
+        """
+        Give player one of each command sign
+        """
         entity = (
             """minecraft:oak_sign{{BlockEntityTag:{{Text1:'{{"text":"{0}"}}'}},"""
             """display:{{Name:'{{"text":"{0}"}}'}}}}"""
@@ -74,7 +82,7 @@ class Copy:
         for command in Commands:
             self.client.give(self.player_name, entity.format(command.name))
 
-    def _set_pos(self, x, y, z, player_relative):
+    def _calc_pos(self, x, y, z, player_relative):
         offset = Vec3(x, y, z)
         if player_relative:
             pos = self.player.pos()
@@ -86,14 +94,14 @@ class Copy:
         """
         Set the start point of the copy buffer
         """
-        self.start_b = self._set_pos(x, y, z, player_relative)
+        self.start_b = self._calc_pos(x, y, z, player_relative)
         self.set_paste(*self.start_b, player_relative=player_relative)
 
     def set_stop(self, x=0, y=0, z=0, player_relative=False):
         """
         Set the start point of the copy buffer
         """
-        self.stop_b = self._set_pos(x, y, z, player_relative)
+        self.stop_b = self._calc_pos(x, y, z, player_relative)
         self.size = self.stop_b - self.start_b
         self.set_paste(*self.start_b, player_relative=player_relative)
 
@@ -101,7 +109,7 @@ class Copy:
         """
         Set the paste point relative to the current player position
         """
-        self.paste_b = self._set_pos(x, y, z, player_relative)
+        self.paste_b = self._calc_pos(x, y, z, player_relative)
         # adjust clone dest so the paste corner matches the start paste buffer
         self.clone_dest = self.paste_b
         size = self.stop_b - self.start_b if self.stop_b and self.start_b else zero
@@ -236,11 +244,12 @@ class Copy:
                             print(text, target)
                             client.setblock(self.poll_client, ipos, Item.AIR)
                             self._function(text, target)
-                sleep(0.5)
-
-            except BaseException:
-                msg = traceback.format_exc()
-                print(msg)
+            except BrokenPipeError:
+                print("Connection to Minecraft Server lost, polling terminated")
+                self.polling = False
+            except BaseException as e:
+                print(e)
+            sleep(0.5)
 
     def _function(self, func: str, pos: Vec3):
         """
