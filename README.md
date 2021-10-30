@@ -22,7 +22,8 @@ https://user-images.githubusercontent.com/964827/139144276-8c14ddc4-350f-4e7f-b3
 
 ## Interactive Commands
 So far we have the following signs to drop. See demo.py for example usage.
-(video shows start and stop signs which are now combined into 'select')
+(video shows start and stop signs which are now combined into
+the single command 'select')
 
 When you drop a sign you must be facing it. It will disappear when
 the sign has been detected by the poller and the function has executed.
@@ -35,7 +36,7 @@ uses of this command determine the bounding box of the copy buffer. The last
 use determines the anchor point for the next paste
 - **expand**: expand the closest face of the copy buffer to the indicated point (can do all 6 faces)
 - **paste**: clone the contents of copy buffer to the current
-indicated location (anchored at the start point)
+indicated location (anchored at most recent 'select' point)
 - **clear**: clear the contents of the paste buffer
 - **backup** create a zipped and dated backup of the world
 
@@ -59,10 +60,12 @@ be used in a loop to make repeating structures.
 
 ## Todo iPython Commands
 
-- **save**: save the copy buffer to a named file
-- **load**: load a file into the world at the copy buffer start point. Set the copy buffer to enclose the loaded structure
-- **rotate**: perform transforms on the copy buffer
-- Additional support in mcwb required (profile generators)
+- These planned commands take advantage of exisiting functions in mcwb library.
+
+  - **save**: save the copy buffer to a named file
+  - **load**: load a file into the world at the copy buffer start point. Set the copy buffer to enclose the loaded structure
+  - **rotate**: perform transforms on the copy buffer
+- These require additional support in mcwb required (profile generators)
 
   - **rectangle**: make a rectangle described by copy buffer
   corners (expects one of the copy dimensions to be size 1)
