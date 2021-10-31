@@ -19,3 +19,8 @@ allow_prereleases = true
 
 [scripts]
 demo = "python -m demo"
+tests = "python -m pytest"
+docs = "sphinx-build -EWT --keep-going docs build/html"
+build = "python setup.py sdist bdist_wheel"
+# Delete any files that git ignore hides from us
+gitclean = "git clean -fdX"
