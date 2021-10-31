@@ -52,4 +52,5 @@ if __name__ == "__main__":
         "/mnt/bigdisk/MinecraftQuickBackups",
         c,
     )
-    cp = Copy(c, "TransformerScorn", zipper)
+    cp = Copy(c, "TransformerScorn", None)
+    cp.give_signs()

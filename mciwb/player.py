@@ -20,7 +20,8 @@ class Player:
     def pos(self, client: Client = None) -> Vec3:
         # if called in a thread then use the thread's client object
         client = client or self.client
-        data = client.data.get(entity=self.name, path="Pos")
+        entity = f"@e[name={self.name},limit=1]"
+        data = client.data.get(entity=entity, path="Pos")
         match = regex_coord.search(data)
         if match:
             self.current_pos = Vec3(
@@ -36,7 +37,7 @@ class Player:
         start = -45
         for dir in [Direction.SOUTH, Direction.WEST, Direction.NORTH, Direction.EAST]:
             stop = start + 90
-            entity = f"@p[y_rotation={start}..{stop},name={self.name}]"
+            entity = f"@e[y_rotation={start}..{stop},name={self.name},limit=1]"
             data = client.data.get(entity=entity, path="Pos")
             match = regex_coord.search(data)
             if match:

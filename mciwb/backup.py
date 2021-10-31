@@ -15,12 +15,17 @@ class Backup:
         self.world_folder = Path(world_folder)
         self.backup_folder = Path(backup_folder)
         self.client = client
-        if not self.backup_folder.exists():
-            raise ValueError("backup folder must exist")
-        if not (self.world_folder / "level.dat"):
-            raise ValueError(f"{world_folder} does not look like a minecraft world")
+        if self.name != "":
+            if not self.backup_folder.exists():
+                raise ValueError("backup folder must exist")
+            if not (self.world_folder / "level.dat"):
+                raise ValueError(f"{world_folder} does not look like a minecraft world")
 
     def backup(self):
+        if self.name == "":
+            self.client.say("No backup details available.")
+            return
+
         fname = datetime.strftime(datetime.now(), f"%y-%m-%d.%H.%M.%S-{self.name}.zip")
 
         self.client.say(f"Preparing to backup to {fname}")

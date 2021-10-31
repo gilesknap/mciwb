@@ -5,6 +5,7 @@ import re
 from enum import Enum
 from threading import Thread
 from time import sleep
+from typing import Optional
 
 from mcipc.rcon.enumerations import CloneMode, Item, MaskMode
 from mcipc.rcon.je import Client, client
@@ -34,10 +35,11 @@ class Copy:
     Gives the player a set of command signs and spawns a thread to watch
     for those signs being dropped in the world.
     """
-    def __init__(self, client: Client, player_name: str, backup: Backup):
+
+    def __init__(self, client: Client, player_name: str, backup: Backup = None):
         self.client = client
         self.player_name = player_name
-        self.backup = backup
+        self.backup: Backup = backup or Backup("", "", "", client)
         self.player = Player(client, player_name)
         self.start_b: Vec3 = self.player.pos()
         self.stop_b: Vec3 = self.start_b
@@ -53,8 +55,6 @@ class Copy:
         self.poll_client.connect(True)
         self.poll_thread = Thread(target=self._poller)
         self.poll_thread.start()
-
-        self.give_signs()
 
     def __del__(self):
         # terminate the poll thread

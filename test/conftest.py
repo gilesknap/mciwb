@@ -5,21 +5,29 @@ import docker
 import pytest
 from docker.models.containers import Container
 from mcipc.rcon.je import Client
+from mcwb.types import Vec3
+
+from mciwb.player import Player
 
 SERVER_PORT = 20400
 RCON_PORT = 20401
 RCON_PASSWORD = "pass"
+ENTITY_NAME = "george"
 
 
 @pytest.fixture(scope="session")
 def minecraft_server(request):
+    """
+    Spin up a test minecraft server and return a client object for its
+    RCON interface
+    """
     def close_minecraft():
         print("\nClosing the Minecraft Server ...")
         cont.stop()
 
     request.addfinalizer(close_minecraft)
 
-    client = docker.from_env()
+    docker_client = docker.from_env()
 
     env = {
         "EULA": "TRUE",
@@ -35,21 +43,50 @@ def minecraft_server(request):
         "SEED": 0,
         "LEVEL_TYPE": "FLAT",
         "ONLINE_MODE": "FALSE",
+        "OPS": "TransformerScorn",
+        "MODE": "creative",
     }
     cont = cast(
         Container,
-        client.containers.run(
+        docker_client.containers.run(
             "itzg/minecraft-server", detach=True, environment=env, network_mode="host"
         ),
     )
 
+    timeout = 100
     while b"RCON running" not in cont.logs():
         cont.reload()
         if cont.status != "running":
             logs = "\n".join(str(cont.logs()).split(r"\n"))
             raise RuntimeError(f"minecraft server failed to start\n\n{logs}")
         sleep(1)
+        if timeout := timeout - 1 == 0:
+            raise RuntimeError("Timeout Starting minecraft")
 
     client = Client("localhost", RCON_PORT, passwd=RCON_PASSWORD)
+    client.connect(True)
 
     return client
+
+
+@pytest.fixture(scope="session")
+def minecraft_player(minecraft_server):
+
+    # summon a fixed position, named entity as a substitute for a player
+    minecraft_server.setworldspawn(Vec3(1, 4, 0))
+    res = minecraft_server.summon(
+        "armor_stand", Vec3(0, 4, 0), {"CustomName": f'"{ENTITY_NAME}"'}
+    )
+    print(res)
+
+    for retry in range(10):
+        try:
+            player = Player(minecraft_server, ENTITY_NAME)
+        except ValueError:
+            sleep(1)
+        else:
+            break
+    else:
+        raise ValueError("dummy player creation failed")
+
+    return player
