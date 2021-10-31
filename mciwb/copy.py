@@ -95,6 +95,7 @@ class Copy:
         Set the start point of the copy buffer
         """
         self.start_b = self._calc_pos(x, y, z, player_relative)
+        self.size = self.stop_b - self.start_b
         self.set_paste(*self.start_b, player_relative=player_relative)
 
     def set_stop(self, x=0, y=0, z=0, player_relative=False):
@@ -103,7 +104,6 @@ class Copy:
         """
         self.stop_b = self._calc_pos(x, y, z, player_relative)
         self.size = self.stop_b - self.start_b
-        self.set_paste(*self.start_b, player_relative=player_relative)
 
     def set_paste(self, x=0, y=0, z=0, player_relative=False):
         """
@@ -112,11 +112,10 @@ class Copy:
         self.paste_b = self._calc_pos(x, y, z, player_relative)
         # adjust clone dest so the paste corner matches the start paste buffer
         self.clone_dest = self.paste_b
-        size = self.stop_b - self.start_b if self.stop_b and self.start_b else zero
-        if size.x < 0:
-            self.clone_dest += Vec3(size.x, 0, 0)
-        if size.z < 0:
-            self.clone_dest += Vec3(0, 0, size.z)
+        xoff = self.size.x if self.size.x < 0 else 0
+        yoff = self.size.y if self.size.y < 0 else 0
+        zoff = self.size.z if self.size.z < 0 else 0
+        self.clone_dest += Vec3(xoff, yoff, zoff)
 
     def paste(self, x=0, y=0, z=0, force=False):
         """
@@ -148,8 +147,7 @@ class Copy:
         """
         item = item or Item.AIR
         offset = Vec3(x, y, z)
-        size = self.stop_b - self.start_b
-        end = self.paste_b + size + offset
+        end = self.paste_b + self.size + offset
         result = self.client.fill(self.paste_b + offset, end, item.value)
         print(result)
 
