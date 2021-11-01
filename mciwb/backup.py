@@ -50,7 +50,7 @@ class Backup:
         if not fname.exists():
             raise ValueError("{file} not found")
 
-        self.client.say(f"WORLD GOING DOWN NOW FOR RESTORE FROM BACKUP ...")
+        self.client.say("WORLD GOING DOWN NOW FOR RESTORE FROM BACKUP ...")
         if input(f"Overwrite world with with {fname} (y/n)? : ") != "y":
             self.client.say("Restore Cancelled.")
             return

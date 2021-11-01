@@ -2,12 +2,11 @@
 System tests for the Copy class
 """
 
-from tests.conftest import ENTITY_NAME
-
 from mcipc.rcon.je import Client
 
 from mciwb.copy import Copy
 from mciwb.player import Player
+from tests.conftest import ENTITY_NAME
 
 
 def test_session_fixtures(minecraft_server: Client, minecraft_player: Player):

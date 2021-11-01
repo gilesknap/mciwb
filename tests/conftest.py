@@ -22,6 +22,7 @@ def minecraft_server(request):
     Spin up a test minecraft server and return a client object for its
     RCON interface
     """
+
     def close_minecraft():
         if cont and ("MCIWB_KEEP_SERVER" not in os.environ):
             print("\nClosing the Minecraft Server ...")

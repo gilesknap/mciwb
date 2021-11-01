@@ -129,4 +129,5 @@ dmypy.json
 .pyre/
 
 cov.xml
+.coverage
 

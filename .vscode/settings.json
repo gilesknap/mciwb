@@ -3,6 +3,7 @@
     "python.testing.unittestEnabled": false,
     "python.testing.pytestEnabled": true,
     "cSpell.words": [
-        "addfinalizer"
+        "addfinalizer",
+        "fname"
     ],
 }
