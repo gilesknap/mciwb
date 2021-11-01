@@ -5,7 +5,6 @@ import re
 from enum import Enum
 from threading import Thread
 from time import sleep
-from typing import Optional
 
 from mcipc.rcon.enumerations import CloneMode, Item, MaskMode
 from mcipc.rcon.je import Client, client

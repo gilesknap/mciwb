@@ -35,7 +35,7 @@ def connect():
         else getpass(f"Password for localhost mc server at rcon port {port}: ")
     )
 
-    c = Client("localhost", int(port), passwd=passwd)
+    c = Client("gknuc", int(port), passwd=passwd)
     c.connect(True)
     print("connected")
     # don't announce every rcon command

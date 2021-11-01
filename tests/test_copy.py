@@ -2,7 +2,8 @@
 System tests for the Copy class
 """
 
-from conftest import ENTITY_NAME
+from tests.conftest import ENTITY_NAME
+
 from mcipc.rcon.je import Client
 
 from mciwb.copy import Copy
