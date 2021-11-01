@@ -1,3 +1,4 @@
+import os
 from time import sleep
 from typing import cast
 
@@ -22,10 +23,21 @@ def minecraft_server(request):
     RCON interface
     """
     def close_minecraft():
-        print("\nClosing the Minecraft Server ...")
-        cont.stop()
+        if cont and ("MCIWB_KEEP_SERVER" not in os.environ):
+            print("\nClosing the Minecraft Server ...")
+            cont.stop()
 
     request.addfinalizer(close_minecraft)
+
+    client = Client("localhost", RCON_PORT, passwd=RCON_PASSWORD)
+    try:
+        # don't start if already running
+        client.connect(True)
+    except ConnectionRefusedError:
+        print("test minecraft server already running")
+    else:
+        cont = None
+        return client
 
     docker_client = docker.from_env()
 
@@ -63,7 +75,6 @@ def minecraft_server(request):
         if timeout := timeout - 1 == 0:
             raise RuntimeError("Timeout Starting minecraft")
 
-    client = Client("localhost", RCON_PORT, passwd=RCON_PASSWORD)
     client.connect(True)
 
     return client
