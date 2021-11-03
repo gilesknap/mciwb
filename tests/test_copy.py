@@ -69,4 +69,4 @@ def test_copy_anchors(minecraft_copy: Copy, minecraft_server: Client):
             finally:
                 t.clear(dest, anchor)
     finally:
-        t.clear(source, Anchor3.BOTTOM_NW)
+        t.clear(source)

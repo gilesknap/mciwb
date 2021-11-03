@@ -7,7 +7,7 @@ import pytest
 from docker.models.containers import Container
 from mcipc.rcon.enumerations import Item
 from mcipc.rcon.je import Client
-from mcwb.types import Items, Vec3
+from mcwb.types import Vec3
 
 from mciwb.copy import Copy
 from mciwb.player import Player
@@ -26,6 +26,8 @@ def minecraft_server(request):
     """
 
     def close_minecraft():
+        # set env var MCIWB_KEEP_SERVER to keep server alive for faster
+        # repeated tests and viewing the world with a minecraft client
         if cont and ("MCIWB_KEEP_SERVER" not in os.environ):
             print("\nClosing the Minecraft Server ...")
             cont.stop()

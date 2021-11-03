@@ -22,13 +22,13 @@ class TestCube:
 
         self.air = (((Item.AIR,) * 3) * 3) * 3
 
-    def create(self, pos: Vec3):
+    def create(self, pos: Vec3, anchor: Anchor3 = Anchor3.BOTTOM_NW):
         """
         create a set of blocks in the world at pos
         """
-        Blocks(self.client, pos, self.cube, anchor=Anchor3.BOTTOM_NW)
+        Blocks(self.client, pos, self.cube, anchor)
 
-    def test(self, pos: Vec3, anchor: Anchor3):
+    def test(self, pos: Vec3, anchor: Anchor3 = Anchor3.BOTTOM_NW):
         """
         test that the test cube blocks exist at pos
         """
@@ -37,7 +37,7 @@ class TestCube:
 
         return dest_cuboid == self.cube
 
-    def clear(self, pos: Vec3, anchor: Anchor3):
+    def clear(self, pos: Vec3, anchor: Anchor3 = Anchor3.BOTTOM_NW):
         """
         clear blocks at location
         """
