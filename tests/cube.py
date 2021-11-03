@@ -17,6 +17,8 @@ class TestCube:
         bottom_profile = [blue_row, blue_row, red_row]
         self.cube: Cuboid = [top_profile, middle_profile, bottom_profile]
         self.size = Vec3(2, 2, 2)
+        # TODO does Volume's use of size need review?
+        self.volume_size = Vec3(3, 3, 3)
 
         self.air = (((Item.AIR,) * 3) * 3) * 3
 
@@ -26,18 +28,18 @@ class TestCube:
         """
         Blocks(self.client, pos, self.cube, anchor=Anchor3.BOTTOM_NW)
 
-    def test(self, pos: Vec3):
+    def test(self, pos: Vec3, anchor: Anchor3):
         """
         test that the test cube blocks exist at pos
         """
-        dest_vol = Volume.from_corners(pos, pos + self.size)
+        dest_vol = Volume.from_anchor(pos, self.volume_size, anchor)
         dest_cuboid = grab(self.client, dest_vol)
 
         return dest_cuboid == self.cube
 
-    def clear(self, pos: Vec3):
+    def clear(self, pos: Vec3, anchor: Anchor3):
         """
         clear blocks at location
         """
-        volume = Volume.from_anchor(pos, Vec3(3, 3, 3), Anchor3.BOTTOM_NW)
+        volume = Volume.from_anchor(pos, self.volume_size, anchor)
         volume.fill(self.client, Item.AIR)
