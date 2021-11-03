@@ -5,9 +5,11 @@ from typing import cast
 import docker
 import pytest
 from docker.models.containers import Container
+from mcipc.rcon.enumerations import Item
 from mcipc.rcon.je import Client
-from mcwb.types import Vec3
+from mcwb.types import Items, Vec3
 
+from mciwb.copy import Copy
 from mciwb.player import Player
 
 SERVER_PORT = 20400
@@ -78,6 +80,10 @@ def minecraft_server(request):
 
     client.connect(True)
 
+    client.gamerule("sendCommandFeedback", False)
+    # TODO this needs to go in mcwb since this is where grab function is
+    client.setblock((0, 0, 0), Item.AIR.value)
+
     return client
 
 
@@ -102,3 +108,15 @@ def minecraft_player(minecraft_server):
         raise ValueError("dummy player creation failed")
 
     return player
+
+
+@pytest.fixture(scope="session")
+def minecraft_copy(request, minecraft_server: Client, minecraft_player: Player):
+    def stop_thread():
+        copy.polling = False
+        copy.poll_thread.join()
+
+    request.addfinalizer(stop_thread)
+
+    copy = Copy(minecraft_server, minecraft_player.name)
+    return copy

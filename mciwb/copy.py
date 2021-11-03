@@ -111,10 +111,10 @@ class Copy:
         self.paste_b = self._calc_pos(x, y, z, player_relative)
         # adjust clone dest so the paste corner matches the start paste buffer
         self.clone_dest = self.paste_b
-        xoff = self.size.x if self.size.x < 0 else 0
-        yoff = self.size.y if self.size.y < 0 else 0
-        zoff = self.size.z if self.size.z < 0 else 0
-        self.clone_dest += Vec3(xoff, yoff, zoff)
+        x_off = self.size.x if self.size.x < 0 else 0
+        y_off = self.size.y if self.size.y < 0 else 0
+        z_off = self.size.z if self.size.z < 0 else 0
+        self.clone_dest += Vec3(x_off, y_off, z_off)
 
     def paste(self, x=0, y=0, z=0, force=False):
         """

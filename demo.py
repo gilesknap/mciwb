@@ -28,14 +28,10 @@ def bye():
 
 
 def connect():
-    port = sys.argv[1] if len(sys.argv) > 1 else 20501
-    passwd = (
-        sys.argv[2]
-        if len(sys.argv)
-        else getpass(f"Password for localhost mc server at rcon port {port}: ")
-    )
+    port = sys.argv[1] if len(sys.argv) > 1 else 20401
+    passwd = sys.argv[2] if len(sys.argv) > 2 else 'pass'
 
-    c = Client("gknuc", int(port), passwd=passwd)
+    c = Client("localhost", int(port), passwd=passwd)
     c.connect(True)
     print("connected")
     # don't announce every rcon command
