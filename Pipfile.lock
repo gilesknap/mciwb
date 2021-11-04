@@ -30,11 +30,11 @@
         },
         "mcwb": {
             "hashes": [
-                "sha256:68ddf4f43ff64e4afb63e14200902c0f8d25c8d6221b08f54982904e537f10ee",
-                "sha256:f75569b5854735ca257fea612534b548477675d0501bc61bbb72cf66ae612b3c"
+                "sha256:90f81aafcf80572872304f286de75d5aa37d3ca387c81d9ce683cca0b91748ba",
+                "sha256:bb999cacfde3766ef9f2b02cac748c4b3a448618ea4d0c491762f58810b2ba6f"
             ],
             "markers": "python_version >= '3.8'",
-            "version": "==0.0.7"
+            "version": "==0.0.8"
         },
         "numpy": {
             "hashes": [
@@ -341,11 +341,11 @@
         },
         "mcwb": {
             "hashes": [
-                "sha256:68ddf4f43ff64e4afb63e14200902c0f8d25c8d6221b08f54982904e537f10ee",
-                "sha256:f75569b5854735ca257fea612534b548477675d0501bc61bbb72cf66ae612b3c"
+                "sha256:90f81aafcf80572872304f286de75d5aa37d3ca387c81d9ce683cca0b91748ba",
+                "sha256:bb999cacfde3766ef9f2b02cac748c4b3a448618ea4d0c491762f58810b2ba6f"
             ],
             "markers": "python_version >= '3.8'",
-            "version": "==0.0.7"
+            "version": "==0.0.8"
         },
         "mypy": {
             "hashes": [
