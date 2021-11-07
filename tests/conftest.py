@@ -118,7 +118,7 @@ def minecraft_player(minecraft_server):
     return player
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture(scope="function")
 def minecraft_copy(request, minecraft_server: Client, minecraft_player: Player):
     def stop_thread():
         copy.polling = False

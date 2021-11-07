@@ -2,8 +2,6 @@
 System tests for the Copy class
 """
 
-from time import sleep
-
 from mcipc.rcon.je import Client
 from mcwb.types import Anchor3, Vec3
 
@@ -40,13 +38,17 @@ def test_copy_anchors(minecraft_copy: Copy, minecraft_server: Client):
     place the cube offset in a different direction
     """
 
-    # TODO only handles one pair currently
+    # When running under github actions the poller and main thread seem to
+    # mix up each others responses so turn off polling for this test.
+    minecraft_copy.polling = False
+
     t = TestCube(minecraft_server)
     source = Vec3(2, 5, 2)
     t.create(source)
 
     dest = Vec3(10, 5, 2)
 
+    # try anchoring to each of the 8 corners of the cube
     corner_pairs = (
         ((2, 5, 2), (4, 7, 4), Anchor3.BOTTOM_NW),
         ((4, 5, 2), (2, 7, 4), Anchor3.BOTTOM_NE),
@@ -67,8 +69,6 @@ def test_copy_anchors(minecraft_copy: Copy, minecraft_server: Client):
             minecraft_copy.paste()
 
             try:
-                # slow servers may have a race condition :-(
-                sleep(0.1)
                 assert t.test(dest, anchor)
             finally:
                 t.clear(dest, anchor)
