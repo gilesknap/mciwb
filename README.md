@@ -1,6 +1,8 @@
 ![example workflow](https://github.com/gilesknap/mciwb/actions/workflows/code.yml/badge.svg)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=mctools_mciwb&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=mctools_mciwb)
 [![codecov](https://codecov.io/gh/gilesknap/mciwb/branch/main/graph/badge.svg?token=f2IoKUiNZF)](https://codecov.io/gh/gilesknap/mciwb)
+[![PyPI version](https://badge.fury.io/py/mciwb.svg)](https://badge.fury.io/py/mciwb)
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/4c514b64299e4ccd8c569d3e787245c7)](https://www.codacy.com/gh/gilesknap/mciwb/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=gilesknap/mciwb&amp;utm_campaign=Badge_Grade)
 # mciwb
 Minecraft Interactive world builder
 
