@@ -14,7 +14,7 @@ from mciwb.player import Player
 
 SERVER_PORT = 20400
 RCON_PORT = 20401
-RCON_P = "bigsecret"
+RCON_P = "pass"
 ENTITY_NAME = "george"
 
 
