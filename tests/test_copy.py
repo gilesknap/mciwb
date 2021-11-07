@@ -67,10 +67,11 @@ def test_copy_anchors(minecraft_copy: Copy, minecraft_server: Client):
             minecraft_copy.paste()
 
             try:
+                # slow servers may have a race condition :-(
+                sleep(0.1)
                 assert t.test(dest, anchor)
             finally:
                 t.clear(dest, anchor)
+
     finally:
         t.clear(source)
-        # slow servers may have a race condition :-(
-        sleep(0.1)
