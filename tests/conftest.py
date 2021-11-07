@@ -83,9 +83,9 @@ def minecraft_server(request):
     client.connect(True)
 
     # this ensures that the chunks near 0,0,0 are loaded
-    minecraft_server.setworldspawn(Vec3(1, 4, 0))
+    client.setworldspawn(Vec3(1, 4, 0))
 
-    # dont announce every rcon command
+    # don't announce every rcon command
     client.gamerule("sendCommandFeedback", False)
 
     # make sure that the grab function entities that are created as a side
