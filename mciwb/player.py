@@ -1,10 +1,13 @@
+import math
 import re
+from typing import Match, Pattern
 
 from mcipc.rcon.je import Client
 from mcwb import Vec3, Volume
 from mcwb.types import Direction
 
 regex_coord = re.compile(r"\[(-?\d+.?\d*)d, *(-?\d+.?\d*)d, *(-?\d+.?\d*)d\]")
+regex_angle = re.compile(r"-?\ *[0-9]+\.?[0-9]*(?:[Ee]\ *-?\ *[0-9]+)?")
 
 
 class Player:
@@ -17,37 +20,40 @@ class Player:
         self.current_dir = Direction.NORTH
         self.dir()
 
+    def _get_entity_data(
+        self, client: Client, path: str, regex: Pattern[str]
+    ) -> Match[str]:
+        """
+        Get entity data with retries - the remote function sometimes fails to find
+        an entity that does exist
+        """
+        for retry in range(5):
+            data = client.data.get(entity=f"@e[name={self.name},limit=1]", path=path)
+            match = regex.search(data)
+            if match:
+                return match
+
+        raise ValueError(f"player {self.name} not in the world")
+
     def pos(self, client: Client = None) -> Vec3:
         # if called in a thread then use the thread's client object
         client = client or self.client
-        data = client.data.get(entity=self.name, path="Pos")
-        match = regex_coord.search(data)
-        if match:
-            self.current_pos = Vec3(
-                float(match.group(1)), float(match.group(2)), float(match.group(3))
-            )
-            return self.current_pos
-
-        raise ValueError(f"player {self.name} does not exist")
+        match = self._get_entity_data(client, "Pos", regex_coord)
+        self.current_pos = Vec3(
+            float(match.group(1)), float(match.group(2)), float(match.group(3))
+        )
+        return self.current_pos
 
     def dir(self, client: Client = None) -> Direction:
         # if called in a thread then use the thread's client object
         client = client or self.client
-        start = -45
-        for dir in [Direction.SOUTH, Direction.WEST, Direction.NORTH, Direction.EAST]:
-            stop = start + 90
-            entity = f"@p[y_rotation={start}..{stop},name={self.name}]"
-            data = client.data.get(entity=entity, path="Pos")
-            match = regex_coord.search(data)
-            if match:
-                self.current_pos = Vec3(
-                    float(match.group(1)), float(match.group(2)), float(match.group(3))
-                )
-                self.current_dir = dir
-                return dir
-            start += 90
+        self.pos(client)
+        match = self._get_entity_data(client, "Rotation", regex_angle)
+        angle = float(match.group(0))
 
-        raise ValueError(f"player {self.name} does not exist")
+        dirs = [Direction.SOUTH, Direction.WEST, Direction.NORTH, Direction.EAST]
+        index = int(((math.floor(angle) + 45) % 360) / 90)
+        return dirs[index]
 
     @classmethod
     def players_in(cls, client: Client, volume: Volume):

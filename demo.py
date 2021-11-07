@@ -1,5 +1,4 @@
 import sys
-from getpass import getpass
 
 from mcipc.rcon.item import Item
 from mcipc.rcon.je import Client
@@ -28,12 +27,8 @@ def bye():
 
 
 def connect():
-    port = sys.argv[1] if len(sys.argv) > 1 else 20501
-    passwd = (
-        sys.argv[2]
-        if len(sys.argv)
-        else getpass(f"Password for localhost mc server at rcon port {port}: ")
-    )
+    port = sys.argv[1] if len(sys.argv) > 1 else 20401
+    passwd = sys.argv[2] if len(sys.argv) > 2 else "pass"
 
     c = Client("localhost", int(port), passwd=passwd)
     c.connect(True)
@@ -52,4 +47,5 @@ if __name__ == "__main__":
         "/mnt/bigdisk/MinecraftQuickBackups",
         c,
     )
-    cp = Copy(c, "TransformerScorn", zipper)
+    cp = Copy(c, "TransformerScorn", None)
+    cp.give_signs()

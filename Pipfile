@@ -7,8 +7,8 @@ name = "pypi"
 mciwb = {editable = true, extras = ["dev"], path = "."}
 
 [packages]
-mcipc = {editable = true, path = "../mcipc"}
-mcwb = {editable = true, path = "../mcwb"}
+#  mcipc = {editable = true, path = "../mcipc"}
+#  mcwb = {editable = true, path = "../mcwb"}
 mciwb = {editable = true, path = "."}
 
 [requires]
@@ -19,3 +19,8 @@ allow_prereleases = true
 
 [scripts]
 demo = "python -m demo"
+tests = "python -m pytest"
+docs = "sphinx-build -EWT --keep-going docs build/html"
+build = "python setup.py sdist bdist_wheel"
+# Delete any files that git ignore hides from us
+gitclean = "git clean -fdX"
