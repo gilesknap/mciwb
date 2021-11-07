@@ -72,6 +72,5 @@ def test_copy_anchors(minecraft_copy: Copy, minecraft_server: Client):
                 assert t.test(dest, anchor)
             finally:
                 t.clear(dest, anchor)
-
     finally:
         t.clear(source)
