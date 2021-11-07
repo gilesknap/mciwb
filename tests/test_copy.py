@@ -2,6 +2,8 @@
 System tests for the Copy class
 """
 
+from time import sleep
+
 from mcipc.rcon.je import Client
 from mcwb.types import Anchor3, Vec3
 
@@ -68,5 +70,8 @@ def test_copy_anchors(minecraft_copy: Copy, minecraft_server: Client):
                 assert t.test(dest, anchor)
             finally:
                 t.clear(dest, anchor)
+
+            # slow servers may have a race condition :-(
+            sleep(0.1)
     finally:
         t.clear(source)
