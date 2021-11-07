@@ -1,3 +1,5 @@
+![example workflow](https://github.com/gilesknap/mciwb/actions/workflows/code.yml/badge.svg)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=mctools_mciwb&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=mctools_mciwb)
 # mciwb
 Minecraft Interactive world builder
 
