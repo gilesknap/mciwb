@@ -44,9 +44,6 @@ jobs:
           umask 0002
           SOURCE_DATE_EPOCH=$(git log -1 --pretty=%ct) python -m build --sdist --wheel
 
-      - name: Get Docker
-        run: curl -fsSL https://get.docker.com -o get-docker.sh && sh get-docker.sh
-
       - name: Run Tests
         run: pipenv run tests
 
@@ -62,6 +59,19 @@ jobs:
         with:
           name: dist
           path: dist/*
+
+  sonarcloud:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        # Disabling shallow clone is recommended for improving relevancy of reporting
+        fetch-depth: 0
+    - name: SonarCloud Scan
+      uses: sonarsource/sonarcloud-github-action@master
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
   release:
     needs: [build]
