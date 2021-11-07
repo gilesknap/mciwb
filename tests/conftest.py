@@ -14,7 +14,7 @@ from mciwb.player import Player
 
 SERVER_PORT = 20400
 RCON_PORT = 20401
-RCON_PASSWORD = "pass"
+RCON_P = "bigsecret"
 ENTITY_NAME = "george"
 
 
@@ -34,7 +34,7 @@ def minecraft_server(request):
 
     request.addfinalizer(close_minecraft)
 
-    client = Client("localhost", RCON_PORT, passwd=RCON_PASSWORD)
+    client = Client("localhost", RCON_PORT, passwd=RCON_P)
     try:
         # don't start if already running
         client.connect(True)
@@ -51,7 +51,7 @@ def minecraft_server(request):
         "SERVER_PORT": SERVER_PORT,
         "RCON_PORT": RCON_PORT,
         "ENABLE_RCON": "true",
-        "RCON_PASSWORD": RCON_PASSWORD,
+        "RCON_PASSWORD": RCON_P,
         "GENERATE_STRUCTURES": "false",
         "SPAWN_ANIMALS": "false",
         "SPAWN_MONSTERS": "false",
@@ -82,7 +82,14 @@ def minecraft_server(request):
 
     client.connect(True)
 
+    # this ensures that the chunks near 0,0,0 are loaded
+    minecraft_server.setworldspawn(Vec3(1, 4, 0))
+
+    # dont announce every rcon command
     client.gamerule("sendCommandFeedback", False)
+
+    # make sure that the grab function entities that are created as a side
+    # effect will drop into the void
     # TODO this needs to go in mcwb since this is where grab function is
     client.setblock((0, 0, 0), Item.AIR.value)
 
@@ -93,7 +100,6 @@ def minecraft_server(request):
 def minecraft_player(minecraft_server):
 
     # summon a fixed position, named entity as a substitute for a player
-    minecraft_server.setworldspawn(Vec3(1, 4, 0))
     res = minecraft_server.summon(
         "armor_stand", Vec3(0, 4, 0), {"CustomName": f'"{ENTITY_NAME}"'}
     )

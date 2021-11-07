@@ -1,5 +1,4 @@
 import sys
-from getpass import getpass
 
 from mcipc.rcon.item import Item
 from mcipc.rcon.je import Client
@@ -29,7 +28,7 @@ def bye():
 
 def connect():
     port = sys.argv[1] if len(sys.argv) > 1 else 20401
-    passwd = sys.argv[2] if len(sys.argv) > 2 else 'pass'
+    passwd = sys.argv[2] if len(sys.argv) > 2 else "pass"
 
     c = Client("localhost", int(port), passwd=passwd)
     c.connect(True)
