@@ -5,7 +5,7 @@ from mcwb.itemlists import grab
 from mcwb.types import Anchor3, Cuboid, Vec3
 
 
-class TestCube:
+class SampleCube:
     def __init__(self, client: Client) -> None:
         self.client = client
 
