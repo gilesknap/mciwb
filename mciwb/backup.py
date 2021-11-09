@@ -65,7 +65,13 @@ class Backup:
         if old_world.exists():
             shutil.rmtree(old_world)
 
-        shutil.move(self.world_folder, old_world)
+        # backup for recovery from accidental recovery !
+        shutil.copytree(self.world_folder, old_world)
+
+        # remove old world files, not directories
+        for file in self.world_folder.glob("**/*"):
+            if file.is_file():
+                file.unlink()
 
         # restore zipped up backup to world folder
         with ZipFile(fname, "r") as zip:
