@@ -1,5 +1,6 @@
 import os
 import shutil
+from datetime import datetime
 from pathlib import Path
 from time import sleep
 from typing import cast
@@ -23,6 +24,20 @@ ENTITY_NAME = "george"
 data_folder = Path("/tmp/test-mc")
 container_name = "mciwb_server"
 
+def wait_server(cont: Container, start_time: datetime = datetime.now()):
+    """
+    Wait until the server is ready to accept rcon connections
+    """
+
+    timeout = 100
+    while b"RCON running" not in cont.logs(since=start_time):
+        cont.reload()
+        if cont.status != "running":
+            logs = "\n".join(str(cont.logs()).split(r"\n"))
+            raise RuntimeError(f"minecraft server failed to start\n\n{logs}")
+        sleep(1)
+        if timeout := timeout - 1 == 0:
+            raise RuntimeError("Timeout Starting minecraft")
 
 @pytest.fixture(scope="session")
 def minecraft_container(request: pytest.FixtureRequest):
@@ -76,6 +91,7 @@ def minecraft_container(request: pytest.FixtureRequest):
         shutil.rmtree(data_folder)
         data_folder.mkdir()
 
+    start_time = datetime.now()
     cont = cast(
         Container,
         docker_client.containers.run(
@@ -88,6 +104,8 @@ def minecraft_container(request: pytest.FixtureRequest):
             name=container_name,
         ),
     )
+
+    wait_server(cont, start_time)
 
     return cont
 

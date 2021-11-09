@@ -2,6 +2,7 @@ import os
 import shutil
 from datetime import datetime
 from pathlib import Path
+from time import sleep
 from zipfile import ZIP_DEFLATED, ZipFile
 
 from mcipc.rcon.je import Client
@@ -58,6 +59,7 @@ class Backup:
 
         print(f"Restoring {fname} ...")
         self.client.save_off()
+        self.client.save_all()
 
         old_world = Path(str(self.world_folder) + "-old")
         if old_world.exists():
@@ -65,6 +67,7 @@ class Backup:
 
         shutil.move(self.world_folder, old_world)
 
+        # restore zipped up backup to world folder
         with ZipFile(fname, "r") as zip:
             zip.extractall(path=self.world_folder)
 
@@ -73,6 +76,6 @@ class Backup:
         self.client.stop()
 
         print(
-            "\n\nServer is going down. Please exit interactive session and "
-            "rejoin when the Server has restarted"
+            "\n\nServer is going down. Please recreate and connect your"
+            "Client object once the server is up"
         )
