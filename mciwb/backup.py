@@ -43,7 +43,7 @@ class Backup:
         self.client.save_on()
         self.client.say("Backup Complete.")
 
-    def restore(self, fname: Path = None, yes=False):
+    def restore(self, fname: Path = None, yes=False, keep_current = True):
         if not fname:
             backups = self.backup_folder.glob("*.zip")
             ordered = sorted(backups, key=os.path.getctime, reverse=True)
@@ -61,12 +61,13 @@ class Backup:
         self.client.save_off()
         self.client.save_all()
 
-        old_world = Path(str(self.world_folder) + "-old")
-        if old_world.exists():
-            shutil.rmtree(old_world)
+        if keep_current:
+            old_world = Path(str(self.world_folder) + "-old")
+            if old_world.exists():
+                shutil.rmtree(old_world)
 
-        # backup for recovery from accidental recovery !
-        shutil.copytree(self.world_folder, old_world)
+            # backup for recovery from accidental recovery !
+            shutil.copytree(self.world_folder, old_world)
 
         # remove old world files, not directories
         for file in self.world_folder.glob("**/*"):
