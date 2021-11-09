@@ -24,6 +24,7 @@ ENTITY_NAME = "george"
 data_folder = Path("/tmp/test-mc")
 container_name = "mciwb_server"
 
+
 def wait_server(cont: Container, start_time: datetime = datetime.now()):
     """
     Wait until the server is ready to accept rcon connections
@@ -38,6 +39,7 @@ def wait_server(cont: Container, start_time: datetime = datetime.now()):
         sleep(1)
         if timeout := timeout - 1 == 0:
             raise RuntimeError("Timeout Starting minecraft")
+
 
 @pytest.fixture(scope="session")
 def minecraft_container(request: pytest.FixtureRequest):

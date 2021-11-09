@@ -28,7 +28,6 @@ def test_backup_restore(minecraft_client: Client, tmp_path):
     sleep(2)  # leave enough time for the server to go down
 
     client = client_connect()
-    sleep(2)  # leave enough time for initial chunks to load
 
     # TODO mcwb should break out a getblock function from grab
     grab_volume = Volume.from_corners(test_block, test_block)

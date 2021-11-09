@@ -2,7 +2,6 @@ import os
 import shutil
 from datetime import datetime
 from pathlib import Path
-from time import sleep
 from zipfile import ZIP_DEFLATED, ZipFile
 
 from mcipc.rcon.je import Client
@@ -43,7 +42,7 @@ class Backup:
         self.client.save_on()
         self.client.say("Backup Complete.")
 
-    def restore(self, fname: Path = None, yes=False, keep_current = True):
+    def restore(self, fname: Path = None, yes=False, keep_current=True):
         if not fname:
             backups = self.backup_folder.glob("*.zip")
             ordered = sorted(backups, key=os.path.getctime, reverse=True)
@@ -72,7 +71,11 @@ class Backup:
         # remove old world files, not directories
         for file in self.world_folder.glob("**/*"):
             if file.is_file():
-                file.unlink()
+                try:
+                    file.unlink()
+                except PermissionError:
+                    # this may be expected for some files depending on the filesystem
+                    pass
 
         # restore zipped up backup to world folder
         with ZipFile(fname, "r") as zip:
