@@ -8,7 +8,7 @@ from mcwb.types import Anchor3, Vec3
 from mciwb.copy import Copy
 from mciwb.player import Player
 from tests.conftest import ENTITY_NAME
-from tests.cube import TestCube
+from tests.cube import SampleCube
 
 
 def test_session_fixtures(minecraft_copy: Copy, minecraft_player: Player):
@@ -42,7 +42,7 @@ def test_copy_anchors(minecraft_copy: Copy, minecraft_client: Client):
     # mix up each others responses so turn off polling for this test.
     minecraft_copy.polling = False
 
-    t = TestCube(minecraft_client)
+    t = SampleCube(minecraft_client)
     source = Vec3(2, 5, 2)
     t.create(source)
 
