@@ -43,8 +43,8 @@ if __name__ == "__main__":
     zipper = Backup(
         "science",
         "/mnt/bigdisk/mc-servers/science/science/",
-        "/mnt/bigdisk/MinecraftQuickBackups"
-        )
+        "/mnt/bigdisk/MinecraftQuickBackups",
+    )
     c = connect()
     cp = Copy(c, "TransformerScorn", None)
     cp.give_signs()
