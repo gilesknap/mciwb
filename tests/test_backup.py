@@ -24,7 +24,7 @@ def test_backup_restore(minecraft_client: Client, tmp_path):
     backup.backup()
     minecraft_client.setblock(test_block, Item.YELLOW_CONCRETE.value)
 
-    backup.restore(yes=True, keep_current=False)
+    backup.restore(yes=True)
     sleep(2)  # leave enough time for the server to go down
 
     client = client_connect()

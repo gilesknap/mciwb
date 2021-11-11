@@ -5,6 +5,7 @@ import re
 from enum import Enum
 from threading import Thread
 from time import sleep
+from typing import Optional
 
 from mcipc.rcon.enumerations import CloneMode, Item, MaskMode
 from mcipc.rcon.je import Client, client
@@ -35,10 +36,14 @@ class Copy:
     for those signs being dropped in the world.
     """
 
+    # TODO does this need to use poll_client in the functions called from
+    # _functions? It feels like using a socket created in a different thread
+    # could be bad (and see the comment on test_copy_anchors)
+
     def __init__(self, client: Client, player_name: str, backup: Backup = None):
         self.client = client
         self.player_name = player_name
-        self.backup: Backup = backup or Backup("", "", "", client)
+        self.backup: Optional[Backup] = backup
         self.player = Player(client, player_name)
         self.start_b: Vec3 = self.player.pos()
         self.stop_b: Vec3 = self.start_b
@@ -232,14 +237,14 @@ class Copy:
                 for height in range(-1, 3):
                     for distance in range(1, 4):
                         pos = self.player.current_pos + dir.value * distance
-                        ipos = pos.with_ints() + Vec3(0, height, 0)
-                        data = self.poll_client.data.get(block=ipos)
+                        block_pos = pos.with_ints() + Vec3(0, height, 0)
+                        data = self.poll_client.data.get(block=block_pos)
                         match = sign_text.search(data)
                         if match:
                             text = match.group(1)
-                            target = self.get_target_block(ipos, dir)
+                            target = self.get_target_block(block_pos, dir)
                             print(text, target)
-                            client.setblock(self.poll_client, ipos, Item.AIR)
+                            client.setblock(self.poll_client, block_pos, Item.AIR)
                             self._function(text, target)
             except BrokenPipeError:
                 print("Connection to Minecraft Server lost, polling terminated")
@@ -264,6 +269,7 @@ class Copy:
         elif func == Commands.clear.name:
             self.fill()
         elif func == Commands.backup.name:
-            self.backup.backup()
+            if self.backup is not None:
+                self.backup.backup()
         elif func == Commands.expand.name:
             self.expand_to(*pos)
