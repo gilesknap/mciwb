@@ -2,6 +2,7 @@ import os
 import shutil
 from datetime import datetime
 from pathlib import Path
+from typing import Optional
 from zipfile import ZIP_DEFLATED, ZipFile
 
 from mcipc.rcon.je import Client
@@ -9,21 +10,25 @@ from mcipc.rcon.je import Client
 
 class Backup:
     def __init__(
-        self, world_name: str, world_folder: str, backup_folder: str, client: Client
+        self,
+        world_name: str,
+        world_folder: str,
+        backup_folder: str,
+        client: Optional[Client] = None,
     ):
         self.name = world_name
         self.world_folder = Path(world_folder)
         self.backup_folder = Path(backup_folder)
         self.client = client
-        if self.name != "":
-            if not self.backup_folder.exists():
-                raise ValueError("backup folder must exist")
-            if not (self.world_folder / "level.dat"):
-                raise ValueError(f"{world_folder} does not look like a minecraft world")
+
+        if not self.backup_folder.exists():
+            raise ValueError("backup folder must exist")
+        if not (self.world_folder / "level.dat"):
+            raise ValueError(f"{world_folder} does not look like a minecraft world")
 
     def backup(self):
-        if self.name == "":
-            self.client.say("No backup details available.")
+        if self.name == "" or self.client is None:
+            print("No backup details available.")
             return
 
         fname = datetime.strftime(datetime.now(), f"%y-%m-%d.%H.%M.%S-{self.name}.zip")
@@ -42,7 +47,12 @@ class Backup:
         self.client.save_on()
         self.client.say("Backup Complete.")
 
-    def restore(self, fname: Path = None):
+    def restore(self, fname: Path = None, yes=False):
+        """
+        restore world from backup. Note this function may be called in an instance
+        of Backup that has client = None. That is so it can be run while the
+        server is down.
+        """
         if not fname:
             backups = self.backup_folder.glob("*.zip")
             ordered = sorted(backups, key=os.path.getctime, reverse=True)
@@ -50,26 +60,29 @@ class Backup:
         if not fname.exists():
             raise ValueError("{file} not found")
 
-        self.client.say("WORLD GOING DOWN NOW FOR RESTORE FROM BACKUP ...")
-        if input(f"Overwrite world with with {fname} (y/n)? : ") != "y":
-            self.client.say("Restore Cancelled.")
-            return
-
-        print(f"Restoring {fname} ...")
-        self.client.save_off()
+        if not yes:
+            if self.client is not None:
+                self.client.say("SERVER GOING DOWN FOR RESTORE FROM BACKUP")
+            if input(f"Overwrite world with with {fname} (y/n)? : ") != "y":
+                if self.client is not None:
+                    self.client.say("Restore Cancelled.")
+                return
 
         old_world = Path(str(self.world_folder) + "-old")
         if old_world.exists():
             shutil.rmtree(old_world)
 
+        # backup for recovery from accidental recovery ! Note that on some filesystems
+        # it is OK to do this while the server is running. On other filesystems the
+        # server will need to be stopped before calling this function
         shutil.move(self.world_folder, old_world)
 
+        # restore zipped up backup to world folder
         with ZipFile(fname, "r") as zip:
             zip.extractall(path=self.world_folder)
 
-        # this assumes that there is an auto restart like docker. Manual
-        # start will be required otherwise
-        self.client.stop()
+        # stop the server - it will pick up the restore on restart
+        if self.client is not None:
+            self.client.stop()
 
-        print("\n\nExiting ... Restart when your player has rejoined the world.")
-        os._exit(0)
+        print(f"\n\nRestored from {fname}")
