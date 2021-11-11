@@ -89,11 +89,9 @@ def minecraft_container(request: pytest.FixtureRequest):
 
     if not data_folder.exists():
         data_folder.mkdir()
-        data_folder.chmod(mode=0o777)
     else:
         shutil.rmtree(data_folder)
         data_folder.mkdir()
-        data_folder.chmod(mode=0o777)
 
     start_time = datetime.now()
     cont = cast(
@@ -106,6 +104,7 @@ def minecraft_container(request: pytest.FixtureRequest):
             restart_policy={"Name": "always"},
             volumes={str(data_folder): {"bind": "/data", "mode": "rw"}},
             name=container_name,
+            user=os.getuid(),
         ),
     )
 
