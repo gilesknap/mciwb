@@ -89,9 +89,11 @@ def minecraft_container(request: pytest.FixtureRequest):
 
     if not data_folder.exists():
         data_folder.mkdir()
+        data_folder.chmod(mode=0o777)
     else:
         shutil.rmtree(data_folder)
         data_folder.mkdir()
+        data_folder.chmod(mode=0o777)
 
     start_time = datetime.now()
     cont = cast(
