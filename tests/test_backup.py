@@ -1,5 +1,4 @@
 from pathlib import Path
-from time import sleep
 
 from docker.models.containers import Container
 from mcipc.rcon.item import Item
@@ -9,7 +8,7 @@ from mcwb.types import Vec3
 from mcwb.volume import Volume
 
 from mciwb.backup import Backup
-from tests.conftest import client_connect, data_folder
+from tests.conftest import client_connect, data_folder, wait_server
 
 
 def test_backup_restore(
@@ -31,9 +30,9 @@ def test_backup_restore(
     backup.client = None
     backup.restore(yes=True)
     minecraft_container.start()
+    wait_server(minecraft_container)
 
     client = client_connect()
-    sleep(5)
 
     # TODO mcwb should break out a getblock function from grab
     grab_volume = Volume.from_corners(test_block, test_block)
