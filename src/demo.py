@@ -27,8 +27,8 @@ def bye():
 
 
 def connect():
-    port = sys.argv[1] if len(sys.argv) > 1 else 20401
-    passwd = sys.argv[2] if len(sys.argv) > 2 else "pass"
+    port = sys.argv[1] if len(sys.argv) > 1 else 31001
+    passwd = sys.argv[2] if len(sys.argv) > 2 else "TODO - supply this as an override on the command line "
 
     c = Client("localhost", int(port), passwd=passwd)
     c.connect(True)
@@ -40,11 +40,12 @@ def connect():
 
 
 if __name__ == "__main__":
-    zipper = Backup(
-        "science",
-        "/mnt/bigdisk/mc-servers/science/science/",
-        "/mnt/bigdisk/MinecraftQuickBackups",
-    )
+    # zipper = Backup(
+    #     "test",
+    #     "/mnt/bigdisk/mc-servers/science/science/",
+    #     "/mnt/bigdisk/MinecraftQuickBackups",
+    # )
+    zipper = None
     c = connect()
     cp = Copy(c, "TransformerScorn", None)
     cp.give_signs()
