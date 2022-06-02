@@ -75,7 +75,7 @@ class Backup:
         # backup for recovery from accidental recovery ! Note that on some filesystems
         # it is OK to do this while the server is running. On other filesystems the
         # server will need to be stopped before calling this function
-        shutil.move(self.world_folder, old_world)
+        shutil.move(str(self.world_folder), str(old_world))
 
         # restore zipped up backup to world folder
         with ZipFile(fname, "r") as zip:
