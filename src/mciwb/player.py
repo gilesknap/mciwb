@@ -51,10 +51,8 @@ class Player:
         match = self._get_entity_data(client, "Rotation", regex_angle)
         angle = float(match.group(0))
 
-        # TODO use cardinals here
-        dirs = [Direction.SOUTH, Direction.WEST, Direction.NORTH, Direction.EAST]
         index = int(((math.floor(angle) + 45) % 360) / 90)
-        return dirs[index]
+        return Direction.cardinals[index]
 
     @classmethod
     def players_in(cls, client: Client, volume: Volume):
