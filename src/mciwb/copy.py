@@ -14,7 +14,7 @@ from mcwb.types import Direction, Vec3
 from mciwb.backup import Backup
 from mciwb.player import Player
 
-sign_text = re.compile(r"""Text1: '{"text":"([^"]*)"}'}""")
+sign_text = re.compile(r"""Text1: '{"text":"([^"]*)"}'""")
 zero = Vec3(0, 0, 0)
 
 
@@ -127,7 +127,6 @@ class Copy:
         """
         offset = Vec3(x, y, z)
         mode = CloneMode.FORCE if force else CloneMode.NORMAL
-        print(mode)
         result = self.client.clone(
             self.start_b,
             self.stop_b,
@@ -152,7 +151,7 @@ class Copy:
         item = item or Item.AIR
         offset = Vec3(x, y, z)
         end = self.paste_b + self.size + offset
-        result = self.client.fill(self.paste_b + offset, end, item.value)
+        result = self.client.fill(self.paste_b + offset, end, str(item))
         print(result)
 
     def expand(self, x=0, y=0, z=0):
@@ -219,7 +218,7 @@ class Copy:
 
         if "Seed" in result:
             # wall signs target the block behind them
-            pos += dir.value
+            pos += dir
         else:
             # standing signs target the block below them
             pos += Vec3(0, -1, 0)
@@ -236,14 +235,13 @@ class Copy:
                 dir = self.player.dir(self.poll_client)
                 for height in range(-1, 3):
                     for distance in range(1, 4):
-                        pos = self.player.current_pos + dir.value * distance
+                        pos = self.player.current_pos + dir * distance
                         block_pos = pos.with_ints() + Vec3(0, height, 0)
                         data = self.poll_client.data.get(block=block_pos)
                         match = sign_text.search(data)
                         if match:
                             text = match.group(1)
                             target = self.get_target_block(block_pos, dir)
-                            print(text, target)
                             client.setblock(self.poll_client, block_pos, Item.AIR)
                             self._function(text, target)
             except BrokenPipeError:

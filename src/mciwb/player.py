@@ -44,13 +44,14 @@ class Player:
         )
         return self.current_pos
 
-    def dir(self, client: Client = None) -> Direction:
+    def dir(self, client: Client = None) -> Vec3:
         # if called in a thread then use the thread's client object
         client = client or self.client
         self.pos(client)
         match = self._get_entity_data(client, "Rotation", regex_angle)
         angle = float(match.group(0))
 
+        # TODO use cardinals here
         dirs = [Direction.SOUTH, Direction.WEST, Direction.NORTH, Direction.EAST]
         index = int(((math.floor(angle) + 45) % 360) / 90)
         return dirs[index]

@@ -3,11 +3,15 @@ import sys
 from mcipc.rcon.item import Item
 from mcipc.rcon.je import Client
 from mcwb import Anchor3, Blocks, Cuboid, Vec3
-from mcwb.types import Planes3d
+from mcwb.types import Direction, Planes3d
 
-# from mciwb.backup import Backup
 from mciwb.copy import Copy
 from mciwb.player import Player
+
+# Useful pre-imports for ipython
+imports = [
+    Direction,
+]
 
 # these classes pre imported for use in interactive shell
 useful_classes = [Item, Anchor3, Blocks, Cuboid, Vec3, Planes3d, Player]
@@ -34,7 +38,7 @@ def connect():
         else "TODO - supply this as an override on the command line "
     )
 
-    c = Client("localhost", int(port), passwd=passwd)
+    c = Client("nuc1", int(port), passwd=passwd)
     c.connect(True)
     print("connected")
     # don't announce every rcon command
