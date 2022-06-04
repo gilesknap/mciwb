@@ -12,7 +12,7 @@ from mcipc.rcon.enumerations import Item
 from mcipc.rcon.je import Client
 from mcwb.types import Vec3
 
-from mciwb.copy import Copy
+from mciwb.copyblock import Copy
 from mciwb.player import Player
 
 SERVER_PORT = 20400

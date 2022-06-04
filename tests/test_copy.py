@@ -5,7 +5,7 @@ System tests for the Copy class
 from mcipc.rcon.je import Client
 from mcwb.types import Anchor3, Vec3
 
-from mciwb.copy import Copy
+from mciwb.copyblock import Copy
 from mciwb.player import Player
 from tests.conftest import ENTITY_NAME
 from tests.cube import SampleCube

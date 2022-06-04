@@ -9,7 +9,7 @@ from typing import Optional
 
 from mcipc.rcon.enumerations import CloneMode, Item, MaskMode
 from mcipc.rcon.je import Client, client
-from mcwb.types import Direction, Vec3
+from mcwb.types import Number, Vec3
 
 from mciwb.backup import Backup
 from mciwb.player import Player
@@ -22,8 +22,8 @@ class Commands(Enum):
     select = 0
     expand = 1
     paste = 2
-    pasteforce = 3
-    clear = 4
+    clear = 3
+    paste_safe = 4
     backup = 5
 
 
@@ -94,22 +94,33 @@ class Copy:
         else:
             return offset
 
-    def set_start(self, x=0, y=0, z=0, player_relative=False):
+    def set_start(
+        self, x: Number = 0, y: Number = 0, z: Number = 0, player_relative=False
+    ):
         """
         Set the start point of the copy buffer
         """
         self.start_b = self._calc_pos(x, y, z, player_relative)
         self.size = self.stop_b - self.start_b
-        self.set_paste(*self.start_b, player_relative=player_relative)
+        self.set_paste(
+            self.start_b.x,
+            self.start_b.y,
+            self.start_b.z,
+            player_relative=player_relative,
+        )
 
-    def set_stop(self, x=0, y=0, z=0, player_relative=False):
+    def set_stop(
+        self, x: Number = 0, y: Number = 0, z: Number = 0, player_relative=False
+    ):
         """
         Set the start point of the copy buffer
         """
         self.stop_b = self._calc_pos(x, y, z, player_relative)
         self.size = self.stop_b - self.start_b
 
-    def set_paste(self, x=0, y=0, z=0, player_relative=False):
+    def set_paste(
+        self, x: Number = 0, y: Number = 0, z: Number = 0, player_relative=False
+    ):
         """
         Set the paste point relative to the current player position
         """
@@ -144,7 +155,7 @@ class Copy:
         self.set_start(*(self.start_b + offset))
         self.set_stop(*(self.stop_b + offset))
 
-    def fill(self, item: Item = None, x=0, y=0, z=0):
+    def fill(self, item: Item = Item.AIR, x=0, y=0, z=0):
         """
         fill the paste buffer offset by x y z with Air or a specified block
         """
@@ -207,7 +218,7 @@ class Copy:
     dump = Vec3(0, 0, 0)
     extract_item = re.compile(r".*minecraft\:(?:blocks\/)?(.+)$")
 
-    def get_target_block(self, pos: Vec3, dir: Direction):
+    def get_target_block(self, pos: Vec3, dir: Vec3):
         """
         determine the target block that the sign at pos indicates
         """
@@ -258,10 +269,10 @@ class Copy:
         if func == Commands.select.name:
             self.set_stop(*self.start_b)
             self.set_start(*pos)
-        elif func == Commands.paste.name:
+        elif func == Commands.paste_safe.name:
             self.set_paste(*pos)
             self.paste()
-        elif func == Commands.pasteforce.name:
+        elif func == Commands.paste.name:
             self.set_paste(*pos)
             self.paste(force=True)
         elif func == Commands.clear.name:

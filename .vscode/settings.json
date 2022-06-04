@@ -6,6 +6,7 @@
     "python.testing.pytestEnabled": true,
     "cSpell.words": [
         "addfinalizer",
+        "copyblock",
         "fname",
         "minecraft"
     ],
