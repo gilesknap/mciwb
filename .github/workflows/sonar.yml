@@ -1,6 +1,14 @@
 
 on:
   push:
+    branches:
+      # Restricting to these branches and tags stops duplicate jobs on internal
+      # PRs but stops CI running on internal branches without a PR. Delete the
+      # next 5 lines to restore the original behaviour
+      - master
+      - main
+    tags:
+      - "*"
   pull_request:
 
 jobs:

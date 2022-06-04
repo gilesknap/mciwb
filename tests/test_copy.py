@@ -23,10 +23,8 @@ def test_copy_reporting(minecraft_copy: Copy):
     """
     verify printing of the Copy object
     """
-    assert (
-        f"player: {ENTITY_NAME} at Vec3(x=0.5, y=4.0, z=0.5)"
-        in minecraft_copy.__repr__()
-    )
+
+    assert f"player: {ENTITY_NAME} at Vec3(x=0.5" in minecraft_copy.__repr__()
 
 
 def test_copy_anchors(minecraft_copy: Copy, minecraft_client: Client):
