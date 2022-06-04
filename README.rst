@@ -1,4 +1,4 @@
-|example workflow| |Quality Gate Status| |codecov| |PyPI version|
+|continuous integration| |Quality Gate Status| |codecov| |PyPI version|
 |Codacy Badge| 
 
 # mciwb Minecraft Interactive world builder
@@ -85,7 +85,9 @@ Todo iPython Commands
    -  **elipse**: make a elipse described by copy buffer corners
       (expects one of the copy dimensions to be size 1)
 
-.. |example workflow| image:: https://github.com/gilesknap/mciwb/actions/workflows/code.yml/badge.svg
+.. |continuous integration|
+        image:: https://github.com/gilesknap/mciwb/actions/workflows/code.yml/badge.svg
+        :target: https://github.com/gilesknap/mciwb/actions/workflows/code.yml
 .. |Quality Gate Status| 
         image:: https://sonarcloud.io/api/project_badges/measure?project=mctools_mciwb&metric=alert_status
         :target: https://sonarcloud.io/summary/new_code?id=mctools_mciwb

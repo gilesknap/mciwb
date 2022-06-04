@@ -2,6 +2,7 @@ import os
 import shutil
 from datetime import datetime
 from pathlib import Path
+from tempfile import mkdtemp
 from time import sleep
 from typing import cast
 
@@ -21,7 +22,7 @@ RCON_P = "pass"
 ENTITY_NAME = "george"
 
 # the locally mapped temporary folder for minecraft data
-data_folder = Path("/tmp/test-mc")
+data_folder = Path(mkdtemp())
 container_name = "mciwb_server"
 
 

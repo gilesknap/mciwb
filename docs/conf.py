@@ -9,7 +9,7 @@ import mciwb
 # -- General configuration ------------------------------------------------
 
 # General information about the project.
-project = "gphotos-sync"
+project = "mciwb"
 
 # The full version, including alpha/beta/rc tags.
 release = mciwb.__version__
