@@ -31,13 +31,14 @@ def wait_server(cont: Container, start_time: datetime = datetime.now()):
     """
 
     timeout = 100
-    while b"RCON running" not in cont.logs(since=start_time):
+    while b"RCON running" not in cont.logs():
         cont.reload()
         if cont.status != "running":
             logs = "\n".join(str(cont.logs()).split(r"\n"))
             raise RuntimeError(f"minecraft server failed to start\n\n{logs}")
         sleep(1)
-        if timeout := timeout - 1 == 0:
+        timeout -= 1
+        if timeout <= 0:
             raise RuntimeError("Timeout Starting minecraft")
 
 
