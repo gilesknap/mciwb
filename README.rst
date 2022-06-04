@@ -1,5 +1,7 @@
 |example workflow| |Quality Gate Status| |codecov| |PyPI version|
-|Codacy Badge| # mciwb Minecraft Interactive world builder
+|Codacy Badge| 
+
+# mciwb Minecraft Interactive world builder
 
 Additional functions on top of the mcwb world builder library to allow
 interactive world building using ipython and a minecraft client in
