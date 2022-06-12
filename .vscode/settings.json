@@ -8,6 +8,9 @@
         "addfinalizer",
         "copyblock",
         "fname",
-        "minecraft"
+        "gamerule",
+        "minecraft",
+        "setblock",
+        "tracebacklimit"
     ],
 }

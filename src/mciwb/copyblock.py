@@ -1,5 +1,11 @@
 """
 functions to allow interactive copy and paste of regions of a minecraft map
+
+TODO: refactor required ?
+  extract the player monitoring to a class
+  extract the copy paste functions to a class
+  create a framework for hooking signs to function and provide a default
+    mapping for copy/paste signs
 """
 import re
 from enum import Enum
@@ -40,11 +46,11 @@ class Copy:
     # _functions? It feels like using a socket created in a different thread
     # could be bad (and see the comment on test_copy_anchors)
 
-    def __init__(self, client: Client, player_name: str, backup: Backup = None):
+    def __init__(self, client: Client, player: Player, backup: Backup = None):
         self.client = client
-        self.player_name = player_name
         self.backup: Optional[Backup] = backup
-        self.player = Player(client, player_name)
+        self.player = player
+        self.player_name = player.name
         self.start_b: Vec3 = self.player.pos()
         self.stop_b: Vec3 = self.start_b
         self.paste_b: Vec3 = self.start_b
@@ -61,6 +67,9 @@ class Copy:
         self.poll_thread.start()
 
     def __del__(self):
+        self.stop()
+
+    def stop(self):
         # terminate the poll thread
         self.polling = False
 

@@ -1,6 +1,6 @@
 import math
 import re
-from typing import Match, Pattern
+from typing import Match, Optional, Pattern
 
 from mcipc.rcon.je import Client
 from mcwb import Vec3, Volume
@@ -44,7 +44,7 @@ class Player:
         )
         return self.current_pos
 
-    def dir(self, client: Client = None) -> Vec3:
+    def dir(self, client: Optional[Client] = None) -> Vec3:
         # if called in a thread then use the thread's client object
         client = client or self.client
         self.pos(client)
