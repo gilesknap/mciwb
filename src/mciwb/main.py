@@ -1,9 +1,11 @@
+from typing import Optional
+
 import typer
 from IPython.terminal.embed import InteractiveShellEmbed
 from mcipc.rcon.je import Client
 
 import mciwb as mc
-from mciwb import iwb
+from mciwb import __version__, iwb
 
 interactive_imports = [mc]
 
@@ -11,11 +13,24 @@ cmd: iwb.Iwb
 c: Client
 
 
+def version_callback(value: bool):
+    if value:
+        typer.echo(__version__)
+        raise typer.Exit()
+
+
 def main(
     server: str = typer.Option(..., prompt=True),
     port: int = typer.Option(..., prompt=True),
     passwd: str = typer.Option(..., prompt=True, hide_input=True),
     player: str = "",
+    version: Optional[bool] = typer.Option(
+        None,
+        "--version",
+        callback=version_callback,
+        is_eager=True,
+        help="Print the version of ibek and exit",
+    ),
 ):
     global cmd, c
     cmd = iwb.Iwb(server, port, passwd)
