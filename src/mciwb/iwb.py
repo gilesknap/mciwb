@@ -1,9 +1,11 @@
 import importlib
 import sys
-from typing import Dict
+from typing import Dict, Optional
 
+from mcipc.rcon.enumerations import SetblockMode
+from mcipc.rcon.item import Item
 from mcipc.rcon.je import Client
-from mcwb import Vec3
+from mcwb import Direction, Vec3
 
 from mciwb.copyblock import Copy
 from mciwb.player import Player
@@ -14,7 +16,7 @@ sys.tracebacklimit = 0
 class Iwb:
     """
     Interactive World Builder class. Provides a very simple interface for
-    interactive functions.
+    interactive functions for use in an IPython shell.
     """
 
     def __init__(self, server: str, port: int, passwd: str) -> None:
@@ -22,16 +24,16 @@ class Iwb:
         self._port = port
         self._passwd = passwd
 
-        self._client = self.connect(server, port, passwd)
+        self._client = self.connect()
 
         self.players: Dict[str, Player] = {}
         self.player: Player
         self.copiers: Dict[str, Copy] = {}
 
-    def connect(self, server: str, port: int, passwd: str):
-        c = Client(server, int(port), passwd=passwd)
+    def connect(self):
+        c = Client(self._server, int(self._port), passwd=self._passwd)
         c.connect(True)
-        print(f"Connected to {server} on {port}")
+        print(f"Connected to {self._server} on {self._port}")
         # don't announce every rcon command
         c.gamerule("sendCommandFeedback", False)
 
@@ -51,7 +53,25 @@ class Iwb:
     def stop(self):
         for copier in self.copiers.values():
             copier.stop()
+        print("Stopped monitoring all players for sign commands")
 
     @property
     def select_pos(self) -> Vec3:
         return self.copiers[self.player.name].start_b
+
+    def set_block(self, pos: Vec3, block: Item, facing: Optional[Vec3] = None):
+        int_pos = pos.with_ints()
+        nbt = []
+
+        if facing:
+            nbt.append(f"""facing={Direction.name(facing)}""")
+        block_str = f"""{block.value}[{",".join(nbt)}]"""
+
+        block_str = block.value
+        result = self._client.setblock(int_pos, block_str, SetblockMode.REPLACE)
+
+        # 'Could not set the block' is no error - means it was already set
+        if not any(
+            x in result for x in ["Changed the block", "Could not set the block"]
+        ):
+            print(result)

@@ -35,7 +35,7 @@ class Player:
 
         raise ValueError(f"player {self.name} not in the world")
 
-    def pos(self, client: Client = None) -> Vec3:
+    def pos(self, client: Optional[Client] = None) -> Vec3:
         # if called in a thread then use the thread's client object
         client = client or self.client
         match = self._get_entity_data(client, "Pos", regex_coord)

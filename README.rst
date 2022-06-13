@@ -68,6 +68,29 @@ The following useful commands are available on the Copy class:
    loop to make repeating structures.
 -  **restore**: restore the world to a previous backup
 
+Demo 
+====
+
+To try out the demo functions 
+
+- create a server with flat world and connect your client to it
+- clone the repo
+  - git clone git@github.com:gilesknap/mciwb.git
+  - cd mciwb
+- create a venv and install mciwb
+  - virtualenv .venv
+  - source .venv/bin/activate
+  - pip install -e .[dev]
+- launch with your server and player details
+  - mciwb --server nuc1 --port 31001 --player TransformerScorn
+- Move your player to observe 0,4,0
+- type these commands into iPython
+  - import demo.shapes as cool
+  - pos = pos = mc.Position(0,4,0)
+  - cool.pyramid( pos, 11)
+
+an 11 x 11 pyramid will be created
+
 Todo iPython Commands
 =====================
 

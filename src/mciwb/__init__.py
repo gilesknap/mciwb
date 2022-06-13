@@ -17,7 +17,7 @@ try:
     del get_version
 except (ImportError, LookupError):
     # Use installed version
-    from ._version import version as __version__
+    from ._version import version as __version__  # type: ignore
 else:
     __version__ = tmp_version
 

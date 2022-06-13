@@ -183,5 +183,5 @@ def minecraft_copy(request, minecraft_client: Client, minecraft_player: Player):
 
     request.addfinalizer(stop_thread)
 
-    copy = Copy(minecraft_client, minecraft_player.name)
+    copy = Copy(minecraft_client, minecraft_player)
     return copy

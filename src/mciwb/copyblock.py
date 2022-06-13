@@ -46,7 +46,7 @@ class Copy:
     # _functions? It feels like using a socket created in a different thread
     # could be bad (and see the comment on test_copy_anchors)
 
-    def __init__(self, client: Client, player: Player, backup: Backup = None):
+    def __init__(self, client: Client, player: Player, backup: Optional[Backup] = None):
         self.client = client
         self.backup: Optional[Backup] = backup
         self.player = player
@@ -199,7 +199,7 @@ class Copy:
         self.set_start(**start)
         self.set_stop(**stop)
 
-    def expand_to(self, x=0, y=0, z=0):
+    def expand_to(self, x: Number = 0, y: Number = 0, z: Number = 0):
         """
         expand one or more of the dimensions of the copy buffer by moving
         the faces outwards to the specified point
@@ -262,13 +262,15 @@ class Copy:
                         if match:
                             text = match.group(1)
                             target = self.get_target_block(block_pos, dir)
-                            client.setblock(self.poll_client, block_pos, Item.AIR)
+                            client.setblock(
+                                self.poll_client,
+                                block_pos,
+                                Item.AIR,  # type: ignore
+                            )
                             self._function(text, target)
             except BrokenPipeError:
                 print("Connection to Minecraft Server lost, polling terminated")
                 self.polling = False
-            except BaseException as e:
-                print(e)
             sleep(0.5)
 
     def _function(self, func: str, pos: Vec3):
