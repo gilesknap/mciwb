@@ -1,10 +1,14 @@
 import typer
 from IPython.terminal.embed import InteractiveShellEmbed
+from mcipc.rcon.je import Client
 
 import mciwb as mc
 from mciwb import iwb
 
 interactive_imports = [mc]
+
+cmd: iwb.Iwb
+c: Client
 
 
 def main(
