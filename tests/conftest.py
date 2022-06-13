@@ -2,6 +2,7 @@ import os
 import shutil
 from datetime import datetime
 from pathlib import Path
+from tempfile import mkdtemp
 from time import sleep
 from typing import cast
 
@@ -12,7 +13,7 @@ from mcipc.rcon.enumerations import Item
 from mcipc.rcon.je import Client
 from mcwb.types import Vec3
 
-from mciwb.copy import Copy
+from mciwb.copyblock import Copy
 from mciwb.player import Player
 
 SERVER_PORT = 20400
@@ -21,7 +22,7 @@ RCON_P = "pass"
 ENTITY_NAME = "george"
 
 # the locally mapped temporary folder for minecraft data
-data_folder = Path("/tmp/test-mc")
+data_folder = Path(mkdtemp())
 container_name = "mciwb_server"
 
 
@@ -31,13 +32,14 @@ def wait_server(cont: Container, start_time: datetime = datetime.now()):
     """
 
     timeout = 100
-    while b"RCON running" not in cont.logs(since=start_time):
+    while b"RCON running" not in cont.logs():
         cont.reload()
         if cont.status != "running":
             logs = "\n".join(str(cont.logs()).split(r"\n"))
             raise RuntimeError(f"minecraft server failed to start\n\n{logs}")
         sleep(1)
-        if timeout := timeout - 1 == 0:
+        timeout -= 1
+        if timeout <= 0:
             raise RuntimeError("Timeout Starting minecraft")
 
 
@@ -181,5 +183,5 @@ def minecraft_copy(request, minecraft_client: Client, minecraft_player: Player):
 
     request.addfinalizer(stop_thread)
 
-    copy = Copy(minecraft_client, minecraft_player.name)
+    copy = Copy(minecraft_client, minecraft_player)
     return copy

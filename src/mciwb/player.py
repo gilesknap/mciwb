@@ -1,6 +1,6 @@
 import math
 import re
-from typing import Match, Pattern
+from typing import Match, Optional, Pattern
 
 from mcipc.rcon.je import Client
 from mcwb import Vec3, Volume
@@ -35,7 +35,7 @@ class Player:
 
         raise ValueError(f"player {self.name} not in the world")
 
-    def pos(self, client: Client = None) -> Vec3:
+    def pos(self, client: Optional[Client] = None) -> Vec3:
         # if called in a thread then use the thread's client object
         client = client or self.client
         match = self._get_entity_data(client, "Pos", regex_coord)
@@ -44,16 +44,15 @@ class Player:
         )
         return self.current_pos
 
-    def dir(self, client: Client = None) -> Direction:
+    def dir(self, client: Optional[Client] = None) -> Vec3:
         # if called in a thread then use the thread's client object
         client = client or self.client
         self.pos(client)
         match = self._get_entity_data(client, "Rotation", regex_angle)
         angle = float(match.group(0))
 
-        dirs = [Direction.SOUTH, Direction.WEST, Direction.NORTH, Direction.EAST]
         index = int(((math.floor(angle) + 45) % 360) / 90)
-        return dirs[index]
+        return Direction.cardinals[index]
 
     @classmethod
     def players_in(cls, client: Client, volume: Volume):

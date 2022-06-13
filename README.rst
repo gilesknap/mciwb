@@ -1,5 +1,7 @@
-|example workflow| |Quality Gate Status| |codecov| |PyPI version|
-|Codacy Badge| # mciwb Minecraft Interactive world builder
+|continuous integration| |Quality Gate Status| |codecov| |PyPI version|
+|Codacy Badge| 
+
+# mciwb Minecraft Interactive world builder
 
 Additional functions on top of the mcwb world builder library to allow
 interactive world building using ipython and a minecraft client in
@@ -66,6 +68,29 @@ The following useful commands are available on the Copy class:
    loop to make repeating structures.
 -  **restore**: restore the world to a previous backup
 
+Demo 
+====
+
+To try out the demo functions 
+
+- create a server with flat world and connect your client to it
+- clone the repo
+  - git clone git@github.com:gilesknap/mciwb.git
+  - cd mciwb
+- create a venv and install mciwb
+  - virtualenv .venv
+  - source .venv/bin/activate
+  - pip install -e .[dev]
+- launch with your server and player details
+  - mciwb --server nuc1 --port 31001 --player TransformerScorn
+- Move your player to observe 0,4,0
+- type these commands into iPython
+  - import demo.shapes as cool
+  - pos = pos = mc.Position(0,4,0)
+  - cool.pyramid( pos, 11)
+
+an 11 x 11 pyramid will be created
+
 Todo iPython Commands
 =====================
 
@@ -83,7 +108,9 @@ Todo iPython Commands
    -  **elipse**: make a elipse described by copy buffer corners
       (expects one of the copy dimensions to be size 1)
 
-.. |example workflow| image:: https://github.com/gilesknap/mciwb/actions/workflows/code.yml/badge.svg
+.. |continuous integration|
+        image:: https://github.com/gilesknap/mciwb/actions/workflows/code.yml/badge.svg
+        :target: https://github.com/gilesknap/mciwb/actions/workflows/code.yml
 .. |Quality Gate Status| 
         image:: https://sonarcloud.io/api/project_badges/measure?project=mctools_mciwb&metric=alert_status
         :target: https://sonarcloud.io/summary/new_code?id=mctools_mciwb

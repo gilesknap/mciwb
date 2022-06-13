@@ -5,7 +5,7 @@ System tests for the Copy class
 from mcipc.rcon.je import Client
 from mcwb.types import Anchor3, Vec3
 
-from mciwb.copy import Copy
+from mciwb.copyblock import Copy
 from mciwb.player import Player
 from tests.conftest import ENTITY_NAME
 from tests.cube import SampleCube
@@ -23,10 +23,8 @@ def test_copy_reporting(minecraft_copy: Copy):
     """
     verify printing of the Copy object
     """
-    assert (
-        f"player: {ENTITY_NAME} at Vec3(x=0.5, y=4.0, z=0.5)"
-        in minecraft_copy.__repr__()
-    )
+
+    assert f"player: {ENTITY_NAME} at Vec3(x=0.5" in minecraft_copy.__repr__()
 
 
 def test_copy_anchors(minecraft_copy: Copy, minecraft_client: Client):

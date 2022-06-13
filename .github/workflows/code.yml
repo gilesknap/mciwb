@@ -32,7 +32,7 @@ jobs:
       fail-fast: false
       matrix:
         os: ["ubuntu-latest"]
-        python: ["3.8"]
+        python: ["3.9"]
 
     runs-on: ${{ matrix.os }}
     steps:
@@ -50,24 +50,14 @@ jobs:
           name: dist
           path: dist
 
-      - name: Install minimum python version
-        uses: actions/setup-python@v2
-        with:
-          python-version: ${{ matrix.python }}
-
-      - name: Install wheel in a venv and check cli works
-        # ${GITHUB_REPOSITORY##*/} is the repo name without org
-        # Replace this with the cli command if different to the repo name
-        run: pipx run --python $(which python${{ matrix.python }}) --spec dist/*.whl ${GITHUB_REPOSITORY##*/} --version
-
   test:
     strategy:
       fail-fast: false
       matrix:
-        os: ["ubuntu-latest", "windows-latest", "macos-latest"]
+        os: ["ubuntu-latest"]
         # keep matrix tight for now to avoid HTTP 429 errors
         # TODO: restore macos and 3.9 and 3.10
-        python: ["3.8", "3.9"]
+        python: ["3.9"]
         lock: [false]
 
         include:
@@ -156,77 +146,3 @@ jobs:
           TWINE_USERNAME: __token__
           TWINE_PASSWORD: ${{ secrets.pypi_token }}
         run: pipx run twine upload artifacts/dist/*
-
-  make-container:
-    needs: [lint, wheel, test]
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
-
-    steps:
-      - name: checkout
-        uses: actions/checkout@v2
-
-      - uses: actions/download-artifact@v2
-        with:
-          name: dist
-          path: dist
-
-      - name: Cache Docker layers
-        uses: actions/cache@v2
-        with:
-          path: /tmp/.buildx-cache
-          key: ${{ runner.os }}-buildx-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-buildx-
-
-      - name: Login to Docker Hub
-        if: github.event_name != 'pull_request'
-        uses: docker/login-action@v1
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
-
-      - name: Log in to GitHub Docker registry
-        if: github.event_name != 'pull_request'
-        uses: docker/login-action@v1
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Docker meta
-        id: meta
-        uses: docker/metadata-action@v4
-        with:
-          images: |
-            ghcr.io/${{ github.repository }}
-            # github repo and dockerhub tag must match for this to work
-            ${{ github.repository }}
-          # all pull requests share a single tag 'pr'
-          tags: |
-            type=ref,event=branch
-            type=ref,event=tag
-            type=raw,value=latest
-
-      # required for multi-arch build
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v1
-
-      - name: Set up Docker Buildx
-        id: buildx
-        uses: docker/setup-buildx-action@v1
-
-      - name: Build runtime image
-        uses: docker/build-push-action@v3
-        with:
-          file: .devcontainer/Dockerfile
-          context: .
-          platforms: linux/amd64,linux/arm/v7,linux/arm64/v8
-          push: ${{ github.event_name != 'pull_request' }}
-          build-args: BASE=python:3.10-slim
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
-          cache-from: type=local,src=/tmp/.buildx-cache
-          cache-to: type=local,dest=/tmp/.buildx-cache
