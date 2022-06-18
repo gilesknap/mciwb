@@ -1,16 +1,12 @@
 import importlib
-import sys
 from typing import Dict, Optional
 
-from mcipc.rcon.enumerations import SetblockMode
 from mcipc.rcon.item import Item
 from mcipc.rcon.je import Client
 from mcwb import Direction, Vec3
 
 from mciwb.copyblock import Copy
 from mciwb.player import Player
-
-sys.tracebacklimit = 0
 
 
 class Iwb:
@@ -65,12 +61,12 @@ class Iwb:
 
         if facing:
             nbt.append(f"""facing={Direction.name(facing)}""")
-        block_str = f"""{block.value}[{",".join(nbt)}]"""
+        block_str = f"""{block}[{",".join(nbt)}]"""
 
-        block_str = block.value
-        result = self._client.setblock(int_pos, block_str, SetblockMode.REPLACE)
+        result = self._client.setblock(int_pos, block_str)
 
-        # 'Could not set the block' is no error - means it was already set
+        # 'Could not set the block' is not an error - it means it was already set
+        #
         if not any(
             x in result for x in ["Changed the block", "Could not set the block"]
         ):

@@ -21,10 +21,10 @@ except (ImportError, LookupError):
 else:
     __version__ = tmp_version
 
+# imports here are used to bring commonly used classes into a single namespace
+# for ease of use for novice programmers
 __all__ = [
     "__version__",
-    # TODO: is this the right way to give easy access to classes in
-    # user provided functions?
     "Item",
     "Client",
     "Corner",

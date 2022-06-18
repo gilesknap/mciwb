@@ -1,13 +1,11 @@
+import sys
 from typing import Optional
 
 import typer
 from IPython.terminal.embed import InteractiveShellEmbed
 from mcipc.rcon.je import Client
 
-import mciwb as mc
 from mciwb import __version__, iwb
-
-interactive_imports = [mc]
 
 cmd: iwb.Iwb
 c: Client
@@ -17,6 +15,10 @@ def version_callback(value: bool):
     if value:
         typer.echo(__version__)
         raise typer.Exit()
+
+
+def exception_handler(exception_type, exception, traceback):
+    print("%s: %s" % (exception_type.__name__, exception), file=sys.stderr)
 
 
 def main(
@@ -44,6 +46,9 @@ def main(
     shell.magic(r"%load_ext autoreload")
     shell.magic(r"%autoreload 2")
     shell(colors="neutral")
+    # Also suppress traceback to avoid intimidating novice programmers
+    ipython = shell.get_ipython()
+    ipython._showtraceback = exception_handler
 
     # Terminate all threads after interactive session exits
     cmd.stop()
