@@ -45,11 +45,11 @@ def main(
     shell = InteractiveShellEmbed()
     shell.magic(r"%load_ext autoreload")
     shell.magic(r"%autoreload 2")
-    shell(colors="neutral")
     # Also suppress traceback to avoid intimidating novice programmers
     ipython = shell.get_ipython()
     ipython._showtraceback = exception_handler
-
+    # enter iPython shell until users exits
+    shell(colors="neutral")
     # Terminate all threads after interactive session exits
     cmd.stop()
 

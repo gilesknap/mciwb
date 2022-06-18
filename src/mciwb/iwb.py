@@ -1,4 +1,3 @@
-import importlib
 from typing import Dict, Optional
 
 from mcipc.rcon.item import Item
@@ -35,9 +34,6 @@ class Iwb:
 
         return c
 
-    def reload_code(self, module):
-        module = importlib.reload(module)
-
     def add_player(self, name: str, me=True):
         player = Player(self._client, name)
         self.players[name] = player
@@ -66,8 +62,7 @@ class Iwb:
         result = self._client.setblock(int_pos, block_str)
 
         # 'Could not set the block' is not an error - it means it was already set
-        #
         if not any(
             x in result for x in ["Changed the block", "Could not set the block"]
         ):
-            print(result)
+            print("ERROR:", result)
