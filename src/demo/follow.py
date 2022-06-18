@@ -1,9 +1,7 @@
 import time
 
-from mciwb import Direction, Item, Position
-from mciwb.main import cmd
-
-from .shapes import pyramid
+from demo.shapes import pyramid
+from mciwb import Direction, Item, Position, world
 
 
 def follow(pyramid_centre):
@@ -13,5 +11,5 @@ def follow(pyramid_centre):
 
     for i in range(200000):
         time.sleep(0.5)
-        direction = Direction.facing(Position(5, 0, -5), cmd.player.pos())
+        direction = Direction.facing(Position(5, 0, -5), world.player.pos())
         pyramid(corner, size, Item.CARVED_PUMPKIN, facing=direction)

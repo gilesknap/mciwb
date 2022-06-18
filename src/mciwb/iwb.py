@@ -7,6 +7,8 @@ from mcwb import Direction, Vec3
 from mciwb.copyblock import Copy
 from mciwb.player import Player
 
+world: "Iwb" = None  # type: ignore
+
 
 class Iwb:
     """

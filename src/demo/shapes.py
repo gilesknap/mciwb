@@ -1,5 +1,4 @@
-from mciwb import Direction, Item, Position
-from mciwb.main import cmd
+from mciwb import Direction, Item, Position, world
 
 print("loading cool stuff")
 
@@ -19,14 +18,14 @@ def box(start: Position, size: int, item=Item.ACACIA_FENCE):
         # make a rows for each of the four walls
         for east in range(size):
             block_pos = start + Direction.EAST * east + Direction.UP * up
-            cmd.set_block(block_pos, item)
+            world.set_block(block_pos, item)
             block_pos = opposite - Direction.EAST * east + Direction.UP * up
-            cmd.set_block(block_pos, item)
+            world.set_block(block_pos, item)
         for north in range(size):
             block_pos = start + Direction.NORTH * north + Direction.UP * up
-            cmd.set_block(block_pos, item)
+            world.set_block(block_pos, item)
             block_pos = opposite - Direction.NORTH * north + Direction.UP * up
-            cmd.set_block(block_pos, item)
+            world.set_block(block_pos, item)
 
     for up in [0, size - 1]:
         for east in range(size):
@@ -37,7 +36,7 @@ def box(start: Position, size: int, item=Item.ACACIA_FENCE):
                     + Direction.EAST * east
                     + Direction.UP * up
                 )
-                cmd.set_block(block_pos, item)
+                world.set_block(block_pos, item)
 
 
 def pyramid(start: Position, size: int, item=Item.CARVED_PUMPKIN, **kwargs):
@@ -49,14 +48,14 @@ def pyramid(start: Position, size: int, item=Item.CARVED_PUMPKIN, **kwargs):
         # make a rows for each of the four walls
         for east in range(row_size):
             block_pos = row_start + Direction.EAST * east + Direction.UP * up
-            cmd.set_block(block_pos, item, **kwargs)
+            world.set_block(block_pos, item, **kwargs)
             block_pos = opposite - Direction.EAST * east + Direction.UP * up
-            cmd.set_block(block_pos, item, **kwargs)
+            world.set_block(block_pos, item, **kwargs)
         for north in range(row_size):
             block_pos = row_start + Direction.NORTH * north + Direction.UP * up
-            cmd.set_block(block_pos, item, **kwargs)
+            world.set_block(block_pos, item, **kwargs)
             block_pos = opposite - Direction.NORTH * north + Direction.UP * up
-            cmd.set_block(block_pos, item, **kwargs)
+            world.set_block(block_pos, item, **kwargs)
 
         row_start += Direction.EAST + Direction.NORTH
         row_size -= 2

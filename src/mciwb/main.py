@@ -3,12 +3,9 @@ from typing import Optional
 
 import typer
 from IPython.terminal.embed import InteractiveShellEmbed
-from mcipc.rcon.je import Client
 
-from mciwb import __version__, iwb
-
-cmd: iwb.Iwb
-c: Client
+import mciwb
+from mciwb import Iwb, __version__
 
 
 def version_callback(value: bool):
@@ -34,11 +31,10 @@ def main(
         help="Print the version of ibek and exit",
     ),
 ):
-    global cmd, c
-    cmd = iwb.Iwb(server, port, passwd)
-    c = cmd._client
+    mciwb.world = Iwb(server, port, passwd)
+
     if player:
-        cmd.add_player(player)
+        mciwb.world.add_player(player)
     print("\n-- Starting Interactive Session --\n")
 
     # Prepare IPython shell with auto-reload so user code edits work immediately
@@ -47,11 +43,11 @@ def main(
     shell.magic(r"%autoreload 2")
     # Also suppress traceback to avoid intimidating novice programmers
     ipython = shell.get_ipython()
-    ipython._showtraceback = exception_handler
+    ipython._showtraceback = exception_handler  # type: ignore
     # enter iPython shell until users exits
     shell(colors="neutral")
     # Terminate all threads after interactive session exits
-    cmd.stop()
+    mciwb.world.stop()
 
 
 def cli():

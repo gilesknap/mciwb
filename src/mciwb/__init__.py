@@ -6,6 +6,7 @@ from mcwb import Vec3 as Position
 from mcwb.types import Direction, Planes3d
 
 from mciwb.copyblock import Copy
+from mciwb.iwb import Iwb, world
 from mciwb.player import Player
 
 try:
@@ -26,6 +27,7 @@ else:
 __all__ = [
     "__version__",
     "Item",
+    "Iwb",
     "Client",
     "Corner",
     "Blocks",
@@ -35,4 +37,5 @@ __all__ = [
     "Planes3d",
     "Copy",
     "Player",
+    "world",
 ]
