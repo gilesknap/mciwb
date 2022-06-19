@@ -14,14 +14,11 @@ from time import sleep
 from typing import Optional
 
 from mcipc.rcon.enumerations import CloneMode, Item, MaskMode
-from mcipc.rcon.je import Client, client
+from mcipc.rcon.je import Client
 from mcwb.types import Number, Vec3
 
 from mciwb.backup import Backup
 from mciwb.player import Player
-
-sign_text = re.compile(r"""Text1: '{"text":"([^"]*)"}'""")
-zero = Vec3(0, 0, 0)
 
 
 class Commands(Enum):
@@ -94,14 +91,6 @@ class Copy:
         )
         for command in Commands:
             self.client.give(self.player_name, entity.format(command.name))
-
-    def _calc_pos(self, x, y, z, player_relative):
-        offset = Vec3(x, y, z)
-        if player_relative:
-            pos = self.player.pos()
-            return pos.with_ints() + offset
-        else:
-            return offset
 
     def set_start(
         self, x: Number = 0, y: Number = 0, z: Number = 0, player_relative=False
@@ -226,52 +215,6 @@ class Copy:
 
     dump = Vec3(0, 0, 0)
     extract_item = re.compile(r".*minecraft\:(?:blocks\/)?(.+)$")
-
-    def get_target_block(self, pos: Vec3, dir: Vec3):
-        """
-        determine the target block that the sign at pos indicates
-        """
-        # use 'execute if' with a benign command like seed
-        result = self.client.execute.if_.block(pos, "minecraft:oak_wall_sign").run(
-            "seed"
-        )
-
-        if "Seed" in result:
-            # wall signs target the block behind them
-            pos += dir
-        else:
-            # standing signs target the block below them
-            pos += Vec3(0, -1, 0)
-
-        return pos
-
-    def _poller(self):
-        """
-        continually check if a sign has been placed in front of the player
-        one to three blocks away and take action based on sign text
-        """
-        while self.polling:
-            try:
-                dir = self.player.dir(self.poll_client)
-                for height in range(-1, 3):
-                    for distance in range(1, 4):
-                        pos = self.player.current_pos + dir * distance
-                        block_pos = pos.with_ints() + Vec3(0, height, 0)
-                        data = self.poll_client.data.get(block=block_pos)
-                        match = sign_text.search(data)
-                        if match:
-                            text = match.group(1)
-                            target = self.get_target_block(block_pos, dir)
-                            client.setblock(
-                                self.poll_client,
-                                block_pos,
-                                Item.AIR,  # type: ignore
-                            )
-                            self._function(text, target)
-            except BrokenPipeError:
-                print("Connection to Minecraft Server lost, polling terminated")
-                self.polling = False
-            sleep(0.5)
 
     def _function(self, func: str, pos: Vec3):
         """

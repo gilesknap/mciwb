@@ -1,3 +1,7 @@
+"""
+Represent a player in the world and provide functions for monitoring their
+state
+"""
 import math
 import re
 from typing import Match, Optional, Pattern
@@ -18,7 +22,7 @@ class Player:
         self.name = name
         self.current_pos = Vec3(0, 0, 0)
         self.current_dir = Direction.NORTH
-        self.dir()
+        self.facing()
 
     def _get_entity_data(
         self, client: Client, path: str, regex: Pattern[str]
@@ -44,7 +48,7 @@ class Player:
         )
         return self.current_pos
 
-    def dir(self, client: Optional[Client] = None) -> Vec3:
+    def facing(self, client: Optional[Client] = None) -> Vec3:
         # if called in a thread then use the thread's client object
         client = client or self.client
         self.pos(client)

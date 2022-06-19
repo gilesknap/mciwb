@@ -1,4 +1,4 @@
-from typing import Dict, Optional
+from typing import Callable, Dict, Optional
 
 from mcipc.rcon.item import Item
 from mcipc.rcon.je import Client
@@ -8,6 +8,10 @@ from mciwb.copyblock import Copy
 from mciwb.player import Player
 
 world: "Iwb" = None  # type: ignore
+
+zero = Vec3(0, 0, 0)
+
+CallbackFunction = Callable[[Client], bool]
 
 
 class Iwb:
@@ -28,6 +32,16 @@ class Iwb:
         self.copiers: Dict[str, Copy] = {}
 
     def connect(self):
+        """
+        Makes a connection to the Minecraft Server. Can be called again
+        if the connection is lost e.g. due to server reboot.
+
+        Advanced NOTE:
+        This class is intended to be a singleton and will be called from the
+        Ipython interactive thread. As such it maintains its own
+        mcipc.rcon.je.Client for making server calls on this main thread
+        """
+
         c = Client(self._server, int(self._port), passwd=self._passwd)
         c.connect(True)
         print(f"Connected to {self._server} on {self._port}")
@@ -50,10 +64,17 @@ class Iwb:
         print("Stopped monitoring all players for sign commands")
 
     @property
-    def select_pos(self) -> Vec3:
+    def selected_position(self) -> Vec3:
+        """
+        Get the most recent block position on which the player placed a
+        'select' sign
+        """
         return self.copiers[self.player.name].start_b
 
     def set_block(self, pos: Vec3, block: Item, facing: Optional[Vec3] = None):
+        """
+        Sets a block in the world
+        """
         int_pos = pos.with_ints()
         nbt = []
 
