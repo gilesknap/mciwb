@@ -5,7 +5,7 @@ from mcwb import Blocks, Cuboid
 from mcwb import Vec3 as Position
 from mcwb.types import Direction, Planes3d
 
-from mciwb.copyblock import Copy
+from mciwb.copy_paste import CopyPaste
 from mciwb.iwb import Iwb, world
 from mciwb.player import Player
 
@@ -35,7 +35,7 @@ __all__ = [
     "Position",
     "Direction",
     "Planes3d",
-    "Copy",
+    "CopyPaste",
     "Player",
     "world",
 ]

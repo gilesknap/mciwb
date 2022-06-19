@@ -1,17 +1,15 @@
-from typing import Callable, Dict, Optional
+from typing import Dict, Optional
 
 from mcipc.rcon.item import Item
 from mcipc.rcon.je import Client
 from mcwb import Direction, Vec3
 
-from mciwb.copyblock import Copy
+from mciwb.copy_paste import CopyPaste
+from mciwb.monitor import Monitor
 from mciwb.player import Player
+from mciwb.signs import Signs
 
 world: "Iwb" = None  # type: ignore
-
-zero = Vec3(0, 0, 0)
-
-CallbackFunction = Callable[[Client], bool]
 
 
 class Iwb:
@@ -29,7 +27,7 @@ class Iwb:
 
         self.players: Dict[str, Player] = {}
         self.player: Player
-        self.copiers: Dict[str, Copy] = {}
+        self.copiers: Dict[str, CopyPaste] = {}
 
     def connect(self):
         """
@@ -55,13 +53,15 @@ class Iwb:
         self.players[name] = player
         if me:
             self.player = player
-        self.copiers[name] = Copy(self._client, player)
+
+        monitor = Monitor(self._client)
+        sign = Signs(player, monitor.poll_client)
+        monitor.add_poller_func(sign.poll)
+
         print(f"Monitoring player {name} enabled for sign commands")
 
     def stop(self):
-        for copier in self.copiers.values():
-            copier.stop()
-        print("Stopped monitoring all players for sign commands")
+        Monitor.stop_all()
 
     @property
     def selected_position(self) -> Vec3:
@@ -89,3 +89,15 @@ class Iwb:
             x in result for x in ["Changed the block", "Could not set the block"]
         ):
             print("ERROR:", result)
+
+    # TODO FIX THIS
+    def __repr__(self) -> str:
+        report = (
+            "Minecraft copy tool status:\n"
+            "  player: {o.player_name} at {o.player.current_pos}\n"
+            "  copy buffer start: {o.start_b}\n"
+            "  copy buffer stop: {o.stop_b}\n"
+            "  copy buffer size: {o.size}\n"
+            "  paste point: {o.paste_b}\n"
+        )
+        return report.format(o=self)
