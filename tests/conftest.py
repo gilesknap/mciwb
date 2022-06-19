@@ -2,7 +2,7 @@ import os
 import shutil
 from datetime import datetime
 from pathlib import Path
-from tempfile import mkdtemp
+from tempfile import gettempdir
 from time import sleep
 from typing import cast
 
@@ -22,7 +22,8 @@ RCON_P = "pass"
 ENTITY_NAME = "george"
 
 # the locally mapped temporary folder for minecraft data
-data_folder = Path(mkdtemp())
+
+data_folder = Path(gettempdir()) / "test_mc_server"
 container_name = "mciwb_server"
 
 
@@ -137,6 +138,9 @@ def client_connect():
             break
     else:
         raise TimeoutError("cannot connect to Minecraft Server")
+
+    client.timeout = 3.0
+
     return client
 
 

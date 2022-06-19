@@ -59,7 +59,7 @@ def test_copy_anchors(mciwb_world: Iwb, minecraft_client: Client):
             mciwb_world.copier.select(Vec3(*stop))
             mciwb_world.copier.select(Vec3(*start))
 
-            mciwb_world.copier.paste(Vec3(*dest))
+            mciwb_world.copier.paste_safe(Vec3(*dest))
 
             try:
                 assert t.test(dest, anchor)
