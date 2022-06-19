@@ -9,6 +9,7 @@
         "copyblock",
         "fname",
         "gamerule",
+        "itemlists",
         "minecraft",
         "setblock",
         "setworldspawn",

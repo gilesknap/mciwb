@@ -32,14 +32,16 @@ def wait_server(cont: Container, start_time: datetime = datetime.now()):
     """
 
     timeout = 100
-    while b"RCON running" not in cont.logs():
-        cont.reload()
-        if cont.status != "running":
-            logs = "\n".join(str(cont.logs()).split(r"\n"))
-            raise RuntimeError(f"minecraft server failed to start\n\n{logs}")
-        sleep(1)
-        timeout -= 1
-        if timeout <= 0:
+    cont.reload()
+    if cont.status != "running":
+        logs = "\n".join(str(cont.logs()).split(r"\n"))
+        raise RuntimeError(f"minecraft server failed to start\n\n{logs}")
+
+    for block in cont.logs(stream=True):
+        if b"RCON running" in block:
+            break
+        elapsed = datetime.now() - start_time
+        if elapsed.total_seconds() > timeout:
             raise RuntimeError("Timeout Starting minecraft")
 
 
@@ -47,6 +49,10 @@ def wait_server(cont: Container, start_time: datetime = datetime.now()):
 def minecraft_container(request: pytest.FixtureRequest):
     """
     Spin up a test minecraft server and return a container object
+
+    This fixture is run once per session, meaning that it does not need
+    to be executed twice for two runs of the tests. This requires
+    caution as the world must be reset to a known state.
     """
 
     def close_minecraft():
@@ -59,6 +65,7 @@ def minecraft_container(request: pytest.FixtureRequest):
 
     request.addfinalizer(close_minecraft)
 
+    # create and launch minecraft container once per session
     docker_client = docker.from_env()
 
     for container in docker_client.containers.list(all=True):

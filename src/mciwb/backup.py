@@ -47,7 +47,7 @@ class Backup:
         self.client.save_on()
         self.client.say("Backup Complete.")
 
-    def restore(self, fname: Path = None, yes=False):
+    def restore(self, fname: Optional[Path] = None, yes=False, restart=True):
         """
         restore world from backup. Note this function may be called in an instance
         of Backup that has client = None. That is so it can be run while the
@@ -82,7 +82,8 @@ class Backup:
             zip.extractall(path=self.world_folder)
 
         # stop the server - it will pick up the restore on restart
-        if self.client is not None:
-            self.client.stop()
+        if restart:
+            if self.client is not None:
+                self.client.stop()
 
         print(f"\n\nRestored from {fname}")
