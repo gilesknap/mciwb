@@ -27,7 +27,7 @@ class CopyPaste:
             "select": self.select,
             "paste": self.paste,
             "expand": self.expand_to,
-            "clear": self.fill,
+            "clear": self.clear,
         }
 
     def select(self, pos: Vec3, client=None):
@@ -82,6 +82,12 @@ class CopyPaste:
         end = self.paste_b + self.size + offset
         result = client.fill(self.paste_b + offset, end, str(item))
         print(result)
+
+    def clear(self, _: Vec3, client=None):
+        """
+        Clear the current paste buffer
+        """
+        self.fill(zero)
 
     def expand_to(self, pos: Vec3, client=None):
         """
