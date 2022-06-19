@@ -45,8 +45,8 @@ class Player:
         match = self._get_entity_data(client, "Pos", regex_coord)
         self.current_pos = Vec3(
             float(match.group(1)), float(match.group(2)), float(match.group(3))
-        )
-        return self.current_pos.with_ints()
+        ).with_ints()
+        return self.current_pos
 
     def facing(self, client: Optional[Client] = None) -> Vec3:
         # if called in a thread then use the thread's client object

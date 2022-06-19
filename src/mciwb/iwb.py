@@ -80,6 +80,7 @@ class Iwb:
         """
         Sets a block in the world
         """
+        pos = Vec3(*pos)
         int_pos = pos.with_ints()
         nbt = []
 

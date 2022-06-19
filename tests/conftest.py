@@ -13,7 +13,7 @@ from mcipc.rcon.enumerations import Item
 from mcipc.rcon.je import Client
 from mcwb.types import Vec3
 
-from mciwb.copyblock import Copy
+from mciwb.iwb import Iwb
 from mciwb.player import Player
 
 SERVER_PORT = 20400
@@ -61,7 +61,7 @@ def minecraft_container(request: pytest.FixtureRequest):
 
     docker_client = docker.from_env()
 
-    for container in docker_client.containers.list(all):
+    for container in docker_client.containers.list(all=True):
         cont = cast(Container, container)
         if cont.name == container_name:
             if cont.status == "running":
@@ -176,12 +176,15 @@ def minecraft_player(minecraft_client):
 
 
 @pytest.fixture()
-def minecraft_copy(request, minecraft_client: Client, minecraft_player: Player):
+def mciwb_world(
+    request, minecraft_container, minecraft_client: Client, minecraft_player: Player
+):
     def stop_thread():
-        copy.polling = False
-        copy.poll_thread.join()
+        world.stop()
 
     request.addfinalizer(stop_thread)
 
-    copy = Copy(minecraft_client, minecraft_player)
-    return copy
+    world = Iwb("localhost", RCON_PORT, passwd=RCON_P)
+    world.add_player(ENTITY_NAME)
+
+    return world

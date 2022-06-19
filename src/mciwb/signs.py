@@ -7,7 +7,7 @@ from typing import Dict
 from mcipc.rcon.je import Client
 from mcwb.types import Item, Vec3
 
-from mciwb.copy_paste import CopyPaste
+from mciwb.copier import CopyPaste
 from mciwb.monitor import CallbackPosFunction
 from mciwb.player import Player
 

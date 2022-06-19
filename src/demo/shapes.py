@@ -40,6 +40,9 @@ def box(start: Position, size: int, item=Item.ACACIA_FENCE):
 
 
 def pyramid(start: Position, size: int, item=Item.CARVED_PUMPKIN, **kwargs):
+    """
+    Build a pyramid with South West Corner at 'start'
+    """
     # make rows of walls
     row_size = size
     row_start = start

@@ -5,29 +5,29 @@ System tests for the Copy class
 from mcipc.rcon.je import Client
 from mcwb.types import Anchor3, Vec3
 
-from mciwb.copyblock import Copy
+from mciwb.iwb import Iwb
 from mciwb.player import Player
 from tests.conftest import ENTITY_NAME
 from tests.cube import SampleCube
 
 
-def test_session_fixtures(minecraft_copy: Copy, minecraft_player: Player):
+def test_session_fixtures(mciwb_world: Iwb, minecraft_player: Player):
     """
     verify that the global session fixtures that create a minecraft server,
     RCON client and mciwb.Player are working
     """
-    assert minecraft_copy.player.pos() == minecraft_player.pos()
+    assert mciwb_world.player.pos() == minecraft_player.pos()
 
 
-def test_copy_reporting(minecraft_copy: Copy):
+def test_copy_reporting(mciwb_world: Iwb):
     """
     verify printing of the Copy object
     """
 
-    assert f"player: {ENTITY_NAME} at Vec3(x=0.5" in minecraft_copy.__repr__()
+    assert f"player: {ENTITY_NAME} at Vec3(x=0" in mciwb_world.__repr__()
 
 
-def test_copy_anchors(minecraft_copy: Copy, minecraft_client: Client):
+def test_copy_anchors(mciwb_world: Iwb, minecraft_client: Client):
     """
     Test copy and paste of the same cube using all possible opposite corners
     for a total of 8 pairs of opposite corner pairs (with ordering significant)
@@ -35,10 +35,6 @@ def test_copy_anchors(minecraft_copy: Copy, minecraft_client: Client):
     Because the start corner is the anchor for the paste, every paste will
     place the cube offset in a different direction
     """
-
-    # When running under github actions the poller and main thread seem to
-    # mix up each others responses so turn off polling for this test.
-    minecraft_copy.polling = False
 
     t = SampleCube(minecraft_client)
     source = Vec3(2, 5, 2)
@@ -60,11 +56,10 @@ def test_copy_anchors(minecraft_copy: Copy, minecraft_client: Client):
     try:
         for start, stop, anchor in corner_pairs:
             print(start, stop)
-            minecraft_copy.set_start(*start)
-            minecraft_copy.set_stop(*stop)
+            mciwb_world.copier.select(Vec3(*stop))
+            mciwb_world.copier.select(Vec3(*start))
 
-            minecraft_copy.set_paste(*dest)
-            minecraft_copy.paste()
+            mciwb_world.copier.paste(Vec3(*dest))
 
             try:
                 assert t.test(dest, anchor)
