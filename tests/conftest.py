@@ -139,8 +139,6 @@ def client_connect():
     else:
         raise TimeoutError("cannot connect to Minecraft Server")
 
-    client.timeout = 3.0
-
     return client
 
 

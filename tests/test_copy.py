@@ -5,7 +5,7 @@ System tests for the Copy class
 from mcipc.rcon.je import Client
 from mcwb.types import Anchor3, Vec3
 
-from mciwb.iwb import Iwb
+from mciwb.iwb import Iwb, Monitor
 from mciwb.player import Player
 from tests.conftest import ENTITY_NAME
 from tests.cube import SampleCube
@@ -36,7 +36,7 @@ def test_copy_anchors(mciwb_world: Iwb, minecraft_client: Client):
     place the cube offset in a different direction
     """
 
-    t = SampleCube(minecraft_client)
+    t = SampleCube(mciwb_world.sign_monitor.poll_client)
     source = Vec3(2, 5, 2)
     t.create(source)
 
@@ -59,7 +59,14 @@ def test_copy_anchors(mciwb_world: Iwb, minecraft_client: Client):
             mciwb_world.copier.select(Vec3(*stop))
             mciwb_world.copier.select(Vec3(*start))
 
-            mciwb_world.copier.paste_safe(Vec3(*dest))
+            # stop polling to avoid the issue below
+            Monitor.stop_all()
+            # use the Monitor poller thread to avoid race conditions with
+            # the sign polling - this does not work and sometimes the
+            # call to the server never returns
+            mciwb_world.copier.paste_safe(
+                Vec3(*dest), mciwb_world.sign_monitor.poll_client
+            )
 
             try:
                 assert t.test(dest, anchor)

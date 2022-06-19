@@ -39,7 +39,6 @@ class Monitor:
 
         global monitors
         self.monitors.append(self)
-        self.poll_client.timeout = 3.0
 
     def _poller(self):
         """

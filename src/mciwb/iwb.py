@@ -45,7 +45,7 @@ class Iwb:
 
         c = Client(self._server, int(self._port), passwd=self._passwd)
         c.connect(True)
-        c.timeout = 3.0
+
         print(f"Connected to {self._server} on {self._port}")
         # don't announce every rcon command
         c.gamerule("sendCommandFeedback", False)
