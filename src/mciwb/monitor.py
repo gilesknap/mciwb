@@ -6,9 +6,8 @@ from threading import Thread
 from time import sleep
 from typing import Callable, List
 
+from mcipc.rcon.je import Client
 from mcwb import Vec3
-
-from mciwb import Client
 
 CallbackFunction = Callable[[Client], None]
 CallbackPosFunction = Callable[[Vec3, Client], None]

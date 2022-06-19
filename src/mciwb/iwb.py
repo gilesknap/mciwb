@@ -4,7 +4,7 @@ from mcipc.rcon.item import Item
 from mcipc.rcon.je import Client
 from mcwb import Direction, Vec3
 
-from mciwb.copy_paste import CopyPaste
+from mciwb.copier import CopyPaste
 from mciwb.monitor import Monitor
 from mciwb.player import Player
 from mciwb.signs import Signs

@@ -5,7 +5,7 @@ from mcwb import Blocks, Cuboid
 from mcwb import Vec3 as Position
 from mcwb.types import Direction, Planes3d
 
-from mciwb.copy_paste import CopyPaste
+from mciwb.copier import CopyPaste
 from mciwb.iwb import Iwb, world
 from mciwb.player import Player
 

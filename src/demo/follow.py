@@ -5,6 +5,10 @@ from mciwb import Direction, Item, Position, world
 
 
 def follow(pyramid_centre):
+    """
+    Spooky Pyramid function: draws a pyramid centred at pyramid_centre, made
+    of carved pumpkins that always turn to face the player
+    """
     size = 11
     half = int(size / 2)
     corner = pyramid_centre + Direction.SOUTH * half + Direction.WEST * half
