@@ -53,7 +53,9 @@ class Monitor:
         except BrokenPipeError:
             print("Connection to Minecraft Server lost, polling terminated")
             self._polling = False
-        self.monitors.remove(self)
+
+        if self in self.monitors:
+            self.monitors.remove(self)
 
     def add_poller_func(self, func: CallbackFunction):
         self.pollers.append(func)

@@ -28,6 +28,9 @@ class Iwb:
         self.players: Dict[str, Player] = {}
         self.player: Player
         self.copiers: Dict[str, CopyPaste] = {}
+        self.copier: CopyPaste
+
+        self.sign_monitor = Monitor(self._client)
 
     def connect(self):
         """
@@ -51,12 +54,14 @@ class Iwb:
     def add_player(self, name: str, me=True):
         player = Player(self._client, name)
         self.players[name] = player
+
+        sign = Signs(player, self.sign_monitor.poll_client)
+        self.sign_monitor.add_poller_func(sign.poll)
+        self.copiers[name] = sign.copy
+
         if me:
             self.player = player
-
-        monitor = Monitor(self._client)
-        sign = Signs(player, monitor.poll_client)
-        monitor.add_poller_func(sign.poll)
+            self.copier = sign.copy
 
         print(f"Monitoring player {name} enabled for sign commands")
 
@@ -93,11 +98,11 @@ class Iwb:
     # TODO FIX THIS
     def __repr__(self) -> str:
         report = (
-            "Minecraft copy tool status:\n"
-            "  player: {o.player_name} at {o.player.current_pos}\n"
-            "  copy buffer start: {o.start_b}\n"
-            "  copy buffer stop: {o.stop_b}\n"
-            "  copy buffer size: {o.size}\n"
-            "  paste point: {o.paste_b}\n"
+            "Minecraft Interactive World Builder status:\n"
+            "  player: {o.player.name} at {o.player.current_pos}\n"
+            "  copy buffer start: {o.copier.start_b}\n"
+            "  copy buffer stop: {o.copier.stop_b}\n"
+            "  copy buffer size: {o.copier.size}\n"
+            "  paste point: {o.copier.paste_b}\n"
         )
         return report.format(o=self)

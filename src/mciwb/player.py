@@ -46,7 +46,7 @@ class Player:
         self.current_pos = Vec3(
             float(match.group(1)), float(match.group(2)), float(match.group(3))
         )
-        return self.current_pos
+        return self.current_pos.with_ints()
 
     def facing(self, client: Optional[Client] = None) -> Vec3:
         # if called in a thread then use the thread's client object

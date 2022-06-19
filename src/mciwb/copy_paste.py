@@ -16,7 +16,7 @@ class CopyPaste:
     def __init__(self, player: Player, client: Client):
         self.player = player
         self.client = client
-        self.start_b: Vec3 = self.player.pos(client=client)
+        self.start_b: Vec3 = self.player.pos(client=client).with_ints()
         self.stop_b: Vec3 = self.start_b
         self.paste_b: Vec3 = self.start_b
         self.clone_dest = zero
@@ -37,7 +37,7 @@ class CopyPaste:
         (i.e. opposite corner of the paste buffer)
         """
         self.stop_b = self.start_b
-        self.start_b = pos
+        self.start_b = pos.with_ints()
         self.size = self.stop_b - self.start_b
         self._set_paste(Vec3(self.start_b.x, self.start_b.y, self.start_b.z))
 

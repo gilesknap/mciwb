@@ -33,8 +33,11 @@ def main(
 ):
     mciwb.world = Iwb(server, port, passwd)
 
+    # for quick access in the shell without qualifying the namespace
+    world = mciwb.world
+
     if player:
-        mciwb.world.add_player(player)
+        world.add_player(player)
     print("\n-- Starting Interactive Session --\n")
 
     # Prepare IPython shell with auto-reload so user code edits work immediately
@@ -47,7 +50,7 @@ def main(
     # enter iPython shell until users exits
     shell(colors="neutral")
     # Terminate all threads after interactive session exits
-    mciwb.world.stop()
+    world.stop()
 
 
 def cli():
