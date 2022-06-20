@@ -34,7 +34,6 @@ class Backup:
         fname = datetime.strftime(datetime.now(), f"%y-%m-%d.%H.%M.%S-{self.name}.zip")
 
         self.client.say(f"Preparing to backup to {fname}")
-        self.client.save_all()  # ensure very recent changes get written ?
         self.client.save_off()
         self.client.save_all()
         self.client.say("Backing up ...")
@@ -69,6 +68,11 @@ class Backup:
                     self.client.say("Restore Cancelled.")
                 return
 
+        # stop the server - it will pick up the restore on restart
+        if restart:
+            if self.client is not None:
+                self.client.stop()
+
         old_world = Path(str(self.world_folder) + "-old")
         if old_world.exists():
             shutil.rmtree(old_world)
@@ -81,10 +85,5 @@ class Backup:
         # restore zipped up backup to world folder
         with ZipFile(fname, "r") as zip:
             zip.extractall(path=self.world_folder)
-
-        # stop the server - it will pick up the restore on restart
-        if restart:
-            if self.client is not None:
-                self.client.stop()
 
         print(f"\n\nRestored from {fname}")
