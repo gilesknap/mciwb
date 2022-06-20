@@ -34,6 +34,7 @@ class Backup:
         fname = datetime.strftime(datetime.now(), f"%y-%m-%d.%H.%M.%S-{self.name}.zip")
 
         self.client.say(f"Preparing to backup to {fname}")
+        self.client.save_all()  # ensure very recent changes get written ?
         self.client.save_off()
         self.client.save_all()
         self.client.say("Backing up ...")
