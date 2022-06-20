@@ -167,7 +167,7 @@ def minecraft_player(minecraft_client):
 
     # summon a fixed position, named entity as a substitute for a player
     res = minecraft_client.summon(
-        "armor_stand", Vec3(0, 4, 0), {"CustomName": f'"{ENTITY_NAME}"'}
+        "armor_stand", Vec3(0, 3, 0), {"CustomName": f'"{ENTITY_NAME}"'}
     )
     print(res)
 
