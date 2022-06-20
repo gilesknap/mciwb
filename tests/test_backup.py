@@ -1,4 +1,5 @@
 from pathlib import Path
+from time import sleep
 
 from docker.models.containers import Container
 from mcipc.rcon.item import Item
@@ -22,6 +23,7 @@ def test_backup_restore(
     backup = Backup("test_world", str(data), str(backup_folder), minecraft_client)
 
     minecraft_client.setblock(test_block, Item.RED_CONCRETE.value)
+    sleep(5)  # meh - seem to sometimes not save the above change
     backup.backup()
     minecraft_client.setblock(test_block, Item.YELLOW_CONCRETE.value)
 
