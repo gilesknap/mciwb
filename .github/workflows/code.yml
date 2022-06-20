@@ -131,6 +131,8 @@ jobs:
             -Dsonar.organization=mctools
             -Dsonar.python.version=3
             -Dsonar.python.coverage.reportPaths=cov.xml
+            -Dsonar.sources=src/mciwb
+            -Dsonar.tests=tests
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
