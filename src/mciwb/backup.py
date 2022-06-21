@@ -93,4 +93,4 @@ class Backup:
         with ZipFile(fname, "r") as zip:
             zip.extractall(path=self.world_folder)
 
-        logging.info(f"\n\nRestored from {fname}")
+        logging.info(f"Restored from {fname}")

@@ -27,6 +27,11 @@ ENTITY_NAME = "george"
 data_folder = Path(gettempdir()) / "test_mc_server"
 container_name = "mciwb_server"
 
+logging.basicConfig(
+    level=logging.DEBUG,
+    format="%(levelname)s: %(pathname)s:%(lineno)d %(funcName)s " "\n\t%(message)s",
+)
+
 
 def wait_server(cont: Container, start_time: datetime = datetime.now()):
     """

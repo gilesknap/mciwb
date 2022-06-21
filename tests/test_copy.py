@@ -57,7 +57,7 @@ def test_copy_anchors(mciwb_world: Iwb, minecraft_client: Client):
     )
     try:
         for start, stop, anchor in corner_pairs:
-            logging.info(start, stop)
+            logging.info("copy anchors test: %s, %s, %s", start, stop, anchor)
             mciwb_world.copier.select(Vec3(*stop))
             mciwb_world.copier.select(Vec3(*start))
 
