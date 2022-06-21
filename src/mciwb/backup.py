@@ -1,3 +1,4 @@
+import logging
 import os
 import shutil
 from datetime import datetime
@@ -28,14 +29,17 @@ class Backup:
 
     def backup(self):
         if self.name == "" or self.client is None:
-            print("No backup details available.")
+            logging.error("No backup details available.")
             return
 
         fname = datetime.strftime(datetime.now(), f"%y-%m-%d.%H.%M.%S-{self.name}.zip")
 
         self.client.say(f"Preparing to backup to {fname}")
-        self.client.save_off()
-        self.client.save_all()
+        result = self.client.save_off()
+        logging.debug("save_off: " + result)
+
+        result = self.client.save_all()
+        logging.debug("save_all: " + result)
         self.client.say("Backing up ...")
 
         file = self.backup_folder / fname
@@ -43,8 +47,10 @@ class Backup:
         with ZipFile(file, "w", compression=ZIP_DEFLATED) as zip:
             for wf in world_files:
                 zip.write(wf, arcname=wf.relative_to(self.world_folder))
+        logging.debug("ZipFile complete")
 
-        self.client.save_on()
+        result = self.client.save_on()
+        logging.debug("save_on: " + result)
         self.client.say("Backup Complete.")
 
     def restore(self, fname: Optional[Path] = None, yes=False, restart=True):
@@ -71,7 +77,8 @@ class Backup:
         # stop the server - it will pick up the restore on restart
         if restart:
             if self.client is not None:
-                self.client.stop()
+                result = self.client.stop()
+                logging.debug("stop: " + result)
 
         old_world = Path(str(self.world_folder) + "-old")
         if old_world.exists():
@@ -86,4 +93,4 @@ class Backup:
         with ZipFile(fname, "r") as zip:
             zip.extractall(path=self.world_folder)
 
-        print(f"\n\nRestored from {fname}")
+        logging.info(f"\n\nRestored from {fname}")

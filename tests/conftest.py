@@ -1,3 +1,4 @@
+import logging
 import os
 import shutil
 from datetime import datetime
@@ -60,7 +61,7 @@ def minecraft_container(request: pytest.FixtureRequest):
         # set env var MCIWB_KEEP_SERVER to keep server alive for faster
         # repeated tests and viewing the world with a minecraft client
         if cont and ("MCIWB_KEEP_SERVER" not in os.environ):
-            print("\nClosing the Minecraft Server ...")
+            logging.info("\nClosing the Minecraft Server ...")
             cont.stop()
             cont.remove()
 
@@ -73,7 +74,7 @@ def minecraft_container(request: pytest.FixtureRequest):
         cont = cast(Container, container)
         if cont.name == container_name:
             if cont.status == "running":
-                print("test minecraft server already running")
+                logging.info("test minecraft server already running")
                 return cont
             else:
                 cont.remove()
@@ -169,7 +170,7 @@ def minecraft_player(minecraft_client):
     res = minecraft_client.summon(
         "armor_stand", Vec3(0, 3, 0), {"CustomName": f'"{ENTITY_NAME}"'}
     )
-    print(res)
+    logging.info(res)
 
     for retry in range(10):
         try:

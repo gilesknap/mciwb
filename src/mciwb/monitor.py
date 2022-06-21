@@ -2,6 +2,7 @@
 Thread functions for monitoring state of the world
 """
 
+import logging
 from threading import Thread
 from time import sleep
 from typing import Callable, List
@@ -50,7 +51,7 @@ class Monitor:
                     func(self.poll_client)
                 sleep(self.poll_rate)
         except BrokenPipeError:
-            print("Connection to Minecraft Server lost, polling terminated")
+            logging.error("Connection to Minecraft Server lost, polling terminated")
             self._polling = False
 
         if self in self.monitors:
@@ -62,7 +63,7 @@ class Monitor:
     def remove_poller_func(self, func: CallbackFunction):
         idx = self.pollers.index(func)
         if idx < 0:
-            print("ERROR: removing unknown poller function")
+            logging.error("removing unknown poller function")
         else:
             self.pollers.remove(func)
 
@@ -74,7 +75,7 @@ class Monitor:
         for monitor in cls.monitors:
             monitor.stop()
         cls.monitors.clear()
-        print("Stopped all monitoring threads")
+        logging.info("Stopped all monitoring threads")
 
     def __del__(self):
         self.stop()

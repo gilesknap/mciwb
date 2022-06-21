@@ -2,6 +2,8 @@
 System tests for the Copy class
 """
 
+import logging
+
 from mcipc.rcon.je import Client
 from mcwb.types import Anchor3, Vec3
 
@@ -55,7 +57,7 @@ def test_copy_anchors(mciwb_world: Iwb, minecraft_client: Client):
     )
     try:
         for start, stop, anchor in corner_pairs:
-            print(start, stop)
+            logging.info(start, stop)
             mciwb_world.copier.select(Vec3(*stop))
             mciwb_world.copier.select(Vec3(*start))
 

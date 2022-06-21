@@ -1,6 +1,8 @@
+import logging
+
 from mciwb import Direction, Item, Position, world
 
-print("loading cool stuff")
+logging.info("loading cool stuff")
 
 
 def box(start: Position, size: int, item=Item.ACACIA_FENCE):

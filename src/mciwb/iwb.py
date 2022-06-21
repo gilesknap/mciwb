@@ -1,3 +1,4 @@
+import logging
 from typing import Dict, Optional
 
 from mcipc.rcon.item import Item
@@ -46,7 +47,7 @@ class Iwb:
         c = Client(self._server, int(self._port), passwd=self._passwd)
         c.connect(True)
 
-        print(f"Connected to {self._server} on {self._port}")
+        logging.info(f"Connected to {self._server} on {self._port}")
         # don't announce every rcon command
         c.gamerule("sendCommandFeedback", False)
 
@@ -64,7 +65,7 @@ class Iwb:
             self.player = player
             self.copier = sign.copy
 
-        print(f"Monitoring player {name} enabled for sign commands")
+        logging.info(f"Monitoring player {name} enabled for sign commands")
 
     def stop(self):
         Monitor.stop_all()
@@ -90,12 +91,13 @@ class Iwb:
         block_str = f"""{block}[{",".join(nbt)}]"""
 
         result = self._client.setblock(int_pos, block_str)
+        logging.debug("setblock: " + result)
 
         # 'Could not set the block' is not an error - it means it was already set
         if not any(
             x in result for x in ["Changed the block", "Could not set the block"]
         ):
-            print("ERROR:", result)
+            logging.error(result)
 
     # TODO FIX THIS
     def __repr__(self) -> str:

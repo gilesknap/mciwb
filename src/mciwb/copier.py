@@ -1,3 +1,5 @@
+import logging
+
 from mcipc.rcon.enumerations import CloneMode, Item, MaskMode
 from mcipc.rcon.je import Client
 from mcwb.types import Vec3
@@ -67,7 +69,7 @@ class CopyPaste:
             mask_mode=MaskMode.REPLACE,
             clone_mode=mode,
         )
-        print(result)
+        logging.info(result)
 
     def paste_safe(self, pos: Vec3, client=None):
         self.paste(pos, client=client, force=False)
@@ -81,7 +83,7 @@ class CopyPaste:
         offset = pos
         end = self.paste_b + self.size + offset
         result = client.fill(self.paste_b + offset, end, str(item))
-        print(result)
+        logging.info(result)
 
     def clear(self, _: Vec3, client=None):
         """

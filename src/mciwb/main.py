@@ -1,4 +1,4 @@
-import sys
+import logging
 from typing import Optional
 
 import typer
@@ -15,7 +15,9 @@ def version_callback(value: bool):
 
 
 def exception_handler(exception_type, exception, traceback):
-    print("%s: %s" % (exception_type.__name__, exception), file=sys.stderr)
+    if logging.root.level > logging.DEBUG:
+        logging.error("%s: %s", exception_type.__name__, exception)
+    logging.debug("", exc_info=True)
 
 
 def main(
@@ -23,6 +25,7 @@ def main(
     port: int = typer.Option(..., prompt=True),
     passwd: str = typer.Option(..., prompt=True, hide_input=True),
     player: str = "",
+    debug: bool = False,
     version: Optional[bool] = typer.Option(
         None,
         "--version",
@@ -31,14 +34,31 @@ def main(
         help="Print the version of ibek and exit",
     ),
 ):
-    mciwb.world = Iwb(server, port, passwd)
+    if debug:
+        logging.basicConfig(
+            format="%(levelname)s: %(pathname)s:%(lineno)d %(funcName)s "
+            "\n\t%(message)s",
+            level=logging.DEBUG,
+        )
+    else:
+        logging.basicConfig(
+            format="%(levelname)s:\t%(message)s",
+            level=logging.INFO,
+        )
+
+    try:
+        mciwb.world = Iwb(server, port, passwd)
+
+        if player:
+            mciwb.world.add_player(player)
+    except BaseException:
+        mciwb.world.stop()
+        raise
 
     # for quick access in the shell without qualifying the namespace
     world = mciwb.world
 
-    if player:
-        world.add_player(player)
-    print("\n-- Starting Interactive Session --\n")
+    logging.info("######### Starting Interactive Session ##########\n")
 
     # Prepare IPython shell with auto-reload so user code edits work immediately
     shell = InteractiveShellEmbed()
@@ -47,6 +67,7 @@ def main(
     # Also suppress traceback to avoid intimidating novice programmers
     ipython = shell.get_ipython()
     ipython._showtraceback = exception_handler  # type: ignore
+
     # enter iPython shell until users exits
     shell(colors="neutral")
     # Terminate all threads after interactive session exits
