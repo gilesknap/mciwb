@@ -33,12 +33,14 @@ logging.basicConfig(
 )
 
 
-def wait_server(cont: Container, start_time: datetime = datetime.now()):
+def wait_server(cont: Container):
     """
     Wait until the server is ready to accept rcon connections
     """
 
+    start_time: datetime = datetime.now()
     timeout = 100
+
     cont.reload()
     if cont.status != "running":
         logs = "\n".join(str(cont.logs()).split(r"\n"))
@@ -109,7 +111,6 @@ def minecraft_container(request: pytest.FixtureRequest):
         shutil.rmtree(data_folder)
         data_folder.mkdir()
 
-    start_time = datetime.now()
     cont = cast(
         Container,
         docker_client.containers.run(
@@ -124,8 +125,7 @@ def minecraft_container(request: pytest.FixtureRequest):
         ),
     )
 
-    wait_server(cont, start_time)
-
+    wait_server(cont)
     return cont
 
 
