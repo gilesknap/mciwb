@@ -27,20 +27,22 @@ class Backup:
         if not (self.world_folder / "level.dat"):
             raise ValueError(f"{world_folder} does not look like a minecraft world")
 
-    def backup(self):
-        if self.name == "" or self.client is None:
+    def backup(self, client=None, running=True):
+        client = client or self.client
+
+        if self.name == "" or client is None:
             logging.error("No backup details available.")
             return
 
         fname = datetime.strftime(datetime.now(), f"%y-%m-%d.%H.%M.%S-{self.name}.zip")
 
-        self.client.say(f"Preparing to backup to {fname}")
-        result = self.client.save_off()
+        client.say(f"Preparing to backup to {fname}")
+        result = client.save_off()
         logging.debug("save_off: " + result)
 
-        result = self.client.save_all()
+        result = client.save_all()
         logging.debug("save_all: " + result)
-        self.client.say("Backing up ...")
+        client.say("Backing up ...")
 
         file = self.backup_folder / fname
         world_files = self.world_folder.glob("**/*")
@@ -49,16 +51,21 @@ class Backup:
                 zip.write(wf, arcname=wf.relative_to(self.world_folder))
         logging.debug("ZipFile complete")
 
-        result = self.client.save_on()
+        result = client.save_on()
         logging.debug("save_on: " + result)
-        self.client.say("Backup Complete.")
+        client.say("Backup Complete.")
 
-    def restore(self, fname: Optional[Path] = None, yes=False, restart=True):
+    def restore(
+        self, fname: Optional[Path] = None, yes=False, restart=True, client=None
+    ):
+
         """
         restore world from backup. Note this function may be called in an instance
         of Backup that has client = None. That is so it can be run while the
         server is down.
         """
+        client = client or self.client
+
         if not fname:
             backups = self.backup_folder.glob("*.zip")
             ordered = sorted(backups, key=os.path.getctime, reverse=True)
@@ -67,17 +74,17 @@ class Backup:
             raise ValueError("{file} not found")
 
         if not yes:
-            if self.client is not None:
-                self.client.say("SERVER GOING DOWN FOR RESTORE FROM BACKUP")
+            if client is not None:
+                client.say("SERVER GOING DOWN FOR RESTORE FROM BACKUP")
             if input(f"Overwrite world with with {fname} (y/n)? : ") != "y":
-                if self.client is not None:
-                    self.client.say("Restore Cancelled.")
+                if client is not None:
+                    client.say("Restore Cancelled.")
                 return
 
         # stop the server - it will pick up the restore on restart
         if restart:
-            if self.client is not None:
-                result = self.client.stop()
+            if client is not None:
+                result = client.stop()
                 logging.debug("stop: " + result)
 
         old_world = Path(str(self.world_folder) + "-old")

@@ -17,6 +17,7 @@ from mcwb.types import Vec3
 from mciwb.iwb import Iwb
 from mciwb.player import Player
 
+HOST = "localhost"
 SERVER_PORT = 20400
 RCON_PORT = 20401
 RCON_P = "pass"
@@ -33,9 +34,16 @@ logging.basicConfig(
 )
 
 
-def wait_server(cont: Container):
+def wait_server(cont: Container, count=1):
     """
     Wait until the server is ready to accept rcon connections
+
+    Multiple calls to this with container restarts require passing a count.
+    This is how many times the wait code looks for the server to come online
+    in the logs.
+
+    This is required because the --since argument to the docker logs command
+    fails to return any logs at all.
     """
 
     start_time: datetime = datetime.now()
@@ -46,12 +54,18 @@ def wait_server(cont: Container):
         logs = "\n".join(str(cont.logs()).split(r"\n"))
         raise RuntimeError(f"minecraft server failed to start\n\n{logs}")
 
+    logging.debug("waiting for mc server to come online")
+    counter = 0
     for block in cont.logs(stream=True):
+        print(block.decode("utf-8"))
         if b"RCON running" in block:
-            break
+            counter += 1
+            if counter >= count:
+                break
         elapsed = datetime.now() - start_time
         if elapsed.total_seconds() > timeout:
             raise RuntimeError("Timeout Starting minecraft")
+    logging.debug("mc server is online")
 
 
 @pytest.fixture(scope="session")
@@ -133,9 +147,9 @@ def client_connect():
     """
     Make an rcon connection, waiting for the server to come online
     """
-    client = Client("localhost", RCON_PORT, passwd=RCON_P)
+    client = Client(HOST, RCON_PORT, passwd=RCON_P)
 
-    for _ in range(40):
+    for _ in range(10):
         try:
             client.connect(True)
         except ConnectionRefusedError:
@@ -199,7 +213,7 @@ def mciwb_world(
 
     request.addfinalizer(stop_thread)
 
-    world = Iwb("localhost", RCON_PORT, passwd=RCON_P)
+    world = Iwb(HOST, RCON_PORT, passwd=RCON_P)
     world.add_player(ENTITY_NAME)
 
     return world
