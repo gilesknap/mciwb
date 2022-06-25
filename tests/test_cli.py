@@ -1,6 +1,6 @@
-import subprocess
 import sys
 from pathlib import Path
+from subprocess import check_output
 
 from docker.models.containers import Container
 from typer.testing import CliRunner
@@ -22,7 +22,7 @@ def run_cli(*args):
 
 def test_cli_version():
     cmd = [sys.executable, "-m", "mciwb", "--version"]
-    assert subprocess.check_output(cmd).decode().strip() == __version__
+    assert check_output(cmd).decode().strip() == __version__
 
 
 def test_repr(tmp_path: Path, minecraft_container: Container, minecraft_player: Player):
