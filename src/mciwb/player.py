@@ -4,33 +4,32 @@ state
 """
 import math
 import re
-from typing import Match, Optional, Pattern
+from typing import Match, Pattern
 
-from mcipc.rcon.je import Client
 from mcwb.types import Direction, Vec3
 from mcwb.volume import Volume
+
+from mciwb.threads import get_client
 
 regex_coord = re.compile(r"\[(-?\d+.?\d*)d, *(-?\d+.?\d*)d, *(-?\d+.?\d*)d\]")
 regex_angle = re.compile(r"-?\ *[0-9]+\.?[0-9]*(?:[Ee]\ *-?\ *[0-9]+)?")
 
 
 class Player:
-    def __init__(self, client: Client, name: str) -> None:
+    def __init__(self, name: str) -> None:
         # todo might make a player with threaded monitoring if needed ?
-        self.client = client
         self.running = False
         self.name = name
         self.current_pos = Vec3(0, 0, 0)
         self.current_dir = Direction.NORTH
         self._facing()
 
-    def _get_entity_data(
-        self, client: Client, path: str, regex: Pattern[str]
-    ) -> Match[str]:
+    def _get_entity_data(self, path: str, regex: Pattern[str]) -> Match[str]:
         """
         Get entity data with retries - the remote function sometimes fails to find
         an entity that does exist
         """
+        client = get_client()
         for retry in range(5):
             data = client.data.get(entity=f"@e[name={self.name},limit=1]", path=path)
             match = regex.search(data)
@@ -39,10 +38,9 @@ class Player:
 
         raise ValueError(f"player {self.name} not in the world")
 
-    def _pos(self, client: Optional[Client] = None) -> Vec3:
+    def _pos(self) -> Vec3:
         # if called in a thread then use the thread's client object
-        client = client or self.client
-        match = self._get_entity_data(client, "Pos", regex_coord)
+        match = self._get_entity_data("Pos", regex_coord)
         self.current_pos = Vec3(
             float(match.group(1)), float(match.group(2)), float(match.group(3))
         ).with_ints()
@@ -52,11 +50,9 @@ class Player:
     def pos(self) -> Vec3:
         return self._pos()
 
-    def _facing(self, client: Optional[Client] = None) -> Vec3:
+    def _facing(self) -> Vec3:
         # if called in a thread then use the thread's client object
-        client = client or self.client
-        self._pos(client)
-        match = self._get_entity_data(client, "Rotation", regex_angle)
+        match = self._get_entity_data("Rotation", regex_angle)
         angle = float(match.group(0))
 
         index = int(((math.floor(angle) + 45) % 360) / 90)
@@ -67,14 +63,16 @@ class Player:
         return self._facing()
 
     @classmethod
-    def players_in(cls, client: Client, volume: Volume):
+    def players_in(cls, volume: Volume):
         """return a list of player names whose position is inside the volume"""
+
+        client = get_client()
         players = []
 
         names = [p.name for p in client.players.players]
         for name in names:
             try:
-                pos = Player(client, name)._pos()
+                pos = Player(name)._pos()
                 if volume.inside(pos, 2):
                     players.append(name)
             except ValueError:

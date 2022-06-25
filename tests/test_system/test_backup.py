@@ -9,6 +9,7 @@ from mcwb.volume import Volume
 
 from mciwb import Client
 from mciwb.backup import Backup
+from mciwb.threads import set_client
 from tests.conftest import HOST, RCON_P, RCON_PORT, data_folder, wait_server
 
 
@@ -25,6 +26,7 @@ def test_backup_restore(
 
     (TODO: need to look at why client.close does not work, as contexts were
     the only way to get this working)
+    TODO tidy up the need for set_client all the time?
     """
 
     backup_folder = Path(tmp_path) / "backup"
@@ -36,6 +38,7 @@ def test_backup_restore(
 
     # make a change to the world which is to be backed up
     with Client(HOST, RCON_PORT, passwd=RCON_P) as client:
+        set_client(client)
         result = client.setblock(test_block, Item.RED_CONCRETE.value)
         logging.debug("setblock %s", result)
 
@@ -45,20 +48,23 @@ def test_backup_restore(
     wait_server(minecraft_container, count=2)
 
     with Client(HOST, RCON_PORT, passwd=RCON_P) as client:
+        set_client(client)
         # backup the world
-        backup.backup(client)
+        backup.backup()
         # overwrite the backed up change in the world
         result = client.setblock(test_block, Item.YELLOW_CONCRETE.value)
         logging.debug("setblock %s", result)
 
     with Client(HOST, RCON_PORT, passwd=RCON_P) as client:
+        set_client(client)
         # restore the backed up change
-        backup.restore(yes=True, client=client)
+        backup.restore(yes=True)
 
     minecraft_container.restart()
     wait_server(minecraft_container, count=3)
 
     with Client(HOST, RCON_PORT, passwd=RCON_P) as client:
+        set_client(client)
         # TODO mcwb should break out a getblock function from grab
         grab_volume = Volume.from_corners(test_block, test_block)
         restored_blocks = grab(client, grab_volume)

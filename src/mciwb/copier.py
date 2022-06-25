@@ -1,10 +1,10 @@
 import logging
 
 from mcipc.rcon.enumerations import CloneMode, Item, MaskMode
-from mcipc.rcon.je import Client
 from mcwb.types import Vec3
 
 from mciwb.player import Player
+from mciwb.threads import get_client
 
 zero = Vec3(0, 0, 0)
 
@@ -15,10 +15,9 @@ class CopyPaste:
     Minecraft world.
     """
 
-    def __init__(self, player: Player, client: Client):
+    def __init__(self, player: Player):
         self.player = player
-        self.client = client
-        self.start_b: Vec3 = self.player._pos(client=client).with_ints()
+        self.start_b: Vec3 = self.player._pos().with_ints()
         self.stop_b: Vec3 = self.start_b
         self.paste_b: Vec3 = self.start_b
         self.clone_dest = zero
@@ -32,7 +31,7 @@ class CopyPaste:
             "clear": self.clear,
         }
 
-    def select(self, pos: Vec3, client=None):
+    def select(self, pos: Vec3):
         """
         Select a new copy buffer start point in the world.
         The previous start point becomes the stop point
@@ -55,11 +54,11 @@ class CopyPaste:
         z_off = self.size.z if self.size.z < 0 else 0
         self.clone_dest += Vec3(x_off, y_off, z_off)
 
-    def paste(self, pos: Vec3, force=True, client=None):
+    def paste(self, pos: Vec3, force=True):
         """
         Copy the contents of past buffer to position x y z
         """
-        client = client or self.client
+        client = get_client()
         self._set_paste(pos)
         mode = CloneMode.FORCE if force else CloneMode.NORMAL
         result = client.clone(
@@ -71,27 +70,27 @@ class CopyPaste:
         )
         logging.info(result)
 
-    def paste_safe(self, pos: Vec3, client=None):
-        self.paste(pos, client=client, force=False)
+    def paste_safe(self, pos: Vec3):
+        self.paste(pos, force=False)
 
-    def fill(self, pos: Vec3, client=None, item: Item = Item.AIR):
+    def fill(self, pos: Vec3, item: Item = Item.AIR):
         """
         fill the paste buffer offset by x y z with Air or a specified block
         """
-        client = client or self.client
+        client = get_client()
         item = item or Item.AIR
         offset = pos
         end = self.paste_b + self.size + offset
         result = client.fill(self.paste_b + offset, end, str(item))
         logging.info(result)
 
-    def clear(self, _: Vec3, client=None):
+    def clear(self, _: Vec3):
         """
         Clear the current paste buffer
         """
         self.fill(zero)
 
-    def expand_to(self, pos: Vec3, client=None):
+    def expand_to(self, pos: Vec3):
         """
         expand one or more of the dimensions of the copy buffer by moving
         the faces outwards to the specified point

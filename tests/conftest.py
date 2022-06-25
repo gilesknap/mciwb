@@ -16,6 +16,7 @@ from mcwb.types import Vec3
 
 from mciwb.iwb import Iwb
 from mciwb.player import Player
+from mciwb.threads import set_client
 
 HOST = "localhost"
 SERVER_PORT = 20400
@@ -152,6 +153,7 @@ def client_connect():
     for _ in range(10):
         try:
             client.connect(True)
+            set_client(client)
         except ConnectionRefusedError:
             sleep(1)
         else:

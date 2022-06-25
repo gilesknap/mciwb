@@ -6,7 +6,7 @@ from pathlib import Path
 from typing import Optional
 from zipfile import ZIP_DEFLATED, ZipFile
 
-from mcipc.rcon.je import Client
+from mciwb.threads import get_client
 
 
 class Backup:
@@ -15,20 +15,18 @@ class Backup:
         world_name: str,
         world_folder: str,
         backup_folder: str,
-        client: Optional[Client] = None,
     ):
         self.name = world_name
         self.world_folder = Path(world_folder)
         self.backup_folder = Path(backup_folder)
-        self.client = client
 
         if not self.backup_folder.exists():
             raise ValueError("backup folder must exist")
         if not (self.world_folder / "level.dat"):
             raise ValueError(f"{world_folder} does not look like a minecraft world")
 
-    def backup(self, client=None, running=True):
-        client = client or self.client
+    def backup(self, running=True):
+        client = get_client()
 
         if self.name == "" or client is None:
             logging.error("No backup details available.")
@@ -55,16 +53,14 @@ class Backup:
         logging.debug("save_on: " + result)
         client.say("Backup Complete.")
 
-    def restore(
-        self, fname: Optional[Path] = None, yes=False, restart=True, client=None
-    ):
+    def restore(self, fname: Optional[Path] = None, yes=False, restart=True):
 
         """
         restore world from backup. Note this function may be called in an instance
         of Backup that has client = None. That is so it can be run while the
         server is down.
         """
-        client = client or self.client
+        client = get_client()
 
         if not fname:
             backups = self.backup_folder.glob("*.zip")

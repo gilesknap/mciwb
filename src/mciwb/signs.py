@@ -10,6 +10,7 @@ from mcwb.types import Item, Vec3
 from mciwb.copier import CopyPaste
 from mciwb.monitor import CallbackPosFunction
 from mciwb.player import Player
+from mciwb.threads import get_client
 
 sign_text = re.compile(r"""Text1: '{"text":"([^"]*)"}'""")
 
@@ -24,9 +25,9 @@ class Signs:
     functions
     """
 
-    def __init__(self, player: Player, client: Client):
+    def __init__(self, player: Player):
         self.player = player
-        self.client: Client = client
+        client = get_client()
         self.copy = CopyPaste(self.player, client)
         self.signs: Dict[str, CallbackPosFunction] = self.copy.get_commands()
 
