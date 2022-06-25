@@ -37,8 +37,6 @@ class Monitor:
         self.poll_client.connect(True)
         self.poll_thread = Thread(target=self._poller)
         self.poll_thread.start()
-
-        global monitors
         self.monitors.append(self)
 
     def _poller(self):

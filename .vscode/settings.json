@@ -14,6 +14,7 @@
     },
     "cSpell.words": [
         "addfinalizer",
+        "arcname",
         "copyblock",
         "fname",
         "gamerule",
@@ -21,6 +22,7 @@
         "minecraft",
         "setblock",
         "setworldspawn",
-        "tracebacklimit"
-    ],
+        "tracebacklimit",
+        "typecheck"
+    ]
 }

@@ -22,7 +22,7 @@ class Player:
         self.name = name
         self.current_pos = Vec3(0, 0, 0)
         self.current_dir = Direction.NORTH
-        self.facing()
+        self._facing()
 
     def _get_entity_data(
         self, client: Client, path: str, regex: Pattern[str]
@@ -39,7 +39,7 @@ class Player:
 
         raise ValueError(f"player {self.name} not in the world")
 
-    def pos(self, client: Optional[Client] = None) -> Vec3:
+    def _pos(self, client: Optional[Client] = None) -> Vec3:
         # if called in a thread then use the thread's client object
         client = client or self.client
         match = self._get_entity_data(client, "Pos", regex_coord)
@@ -48,15 +48,23 @@ class Player:
         ).with_ints()
         return self.current_pos
 
-    def facing(self, client: Optional[Client] = None) -> Vec3:
+    @property
+    def pos(self) -> Vec3:
+        return self._pos()
+
+    def _facing(self, client: Optional[Client] = None) -> Vec3:
         # if called in a thread then use the thread's client object
         client = client or self.client
-        self.pos(client)
+        self._pos(client)
         match = self._get_entity_data(client, "Rotation", regex_angle)
         angle = float(match.group(0))
 
         index = int(((math.floor(angle) + 45) % 360) / 90)
         return Direction.cardinals[index]
+
+    @property
+    def facing(self) -> Vec3:
+        return self._facing()
 
     @classmethod
     def players_in(cls, client: Client, volume: Volume):
@@ -66,7 +74,7 @@ class Player:
         names = [p.name for p in client.players.players]
         for name in names:
             try:
-                pos = Player(client, name).pos()
+                pos = Player(client, name)._pos()
                 if volume.inside(pos, 2):
                     players.append(name)
             except ValueError:

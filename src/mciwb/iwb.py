@@ -27,9 +27,9 @@ class Iwb:
         self._client = self.connect()
 
         self.players: Dict[str, Player] = {}
-        self.player: Player
+        self.player: Optional[Player] = None
         self.copiers: Dict[str, CopyPaste] = {}
-        self.copier: CopyPaste
+        self.copier: Optional[CopyPaste] = None
 
         self.sign_monitor = Monitor(self._client)
 
@@ -76,6 +76,8 @@ class Iwb:
         Get the most recent block position on which the player placed a
         'select' sign
         """
+        if self.player is None:
+            raise RuntimeError("No player selected")
         return self.copiers[self.player.name].start_b
 
     def set_block(self, pos: Vec3, block: Item, facing: Optional[Vec3] = None):
@@ -99,14 +101,22 @@ class Iwb:
         ):
             logging.error(result)
 
-    # TODO FIX THIS
     def __repr__(self) -> str:
-        report = (
-            "Minecraft Interactive World Builder status:\n"
-            "  player: {o.player.name} at {o.player.current_pos}\n"
-            "  copy buffer start: {o.copier.start_b}\n"
-            "  copy buffer stop: {o.copier.stop_b}\n"
-            "  copy buffer size: {o.copier.size}\n"
-            "  paste point: {o.copier.paste_b}\n"
-        )
+        report = "Minecraft Interactive World Builder status:\n"
+        if self.copier is not None:
+            report += (
+                "  copy buffer start: {o.copier.start_b}\n"
+                "  copy buffer stop: {o.copier.stop_b}\n"
+                "  copy buffer size: {o.copier.size}\n"
+                "  paste point: {o.copier.paste_b}\n"
+            )
+        if self.player is not None:
+            report += (
+                "  player: {o.player.name}\n"
+                "  player position: {o.player.pos}\n"
+                "  player facing: {o.player.facing}\n"
+            )
+        else:
+            report += "  no player selected\n"
+
         return report.format(o=self)

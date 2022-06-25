@@ -46,9 +46,9 @@ class Backup:
 
         file = self.backup_folder / fname
         world_files = self.world_folder.glob("**/*")
-        with ZipFile(file, "w", compression=ZIP_DEFLATED) as zip:
+        with ZipFile(file, "w", compression=ZIP_DEFLATED) as zip_file:
             for wf in world_files:
-                zip.write(wf, arcname=wf.relative_to(self.world_folder))
+                zip_file.write(wf, arcname=wf.relative_to(self.world_folder))
         logging.debug("ZipFile complete")
 
         result = client.save_on()
@@ -97,7 +97,7 @@ class Backup:
         shutil.move(str(self.world_folder), str(old_world))
 
         # restore zipped up backup to world folder
-        with ZipFile(fname, "r") as zip:
-            zip.extractall(path=self.world_folder)
+        with ZipFile(fname, "r") as zip_file:
+            zip_file.extractall(path=self.world_folder)
 
         logging.info(f"Restored from {fname}")
