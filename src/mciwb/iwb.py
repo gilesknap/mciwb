@@ -77,7 +77,7 @@ class Iwb:
         'select' sign
         """
         if self.player is None:
-            raise Exception("No player selected")
+            raise RuntimeError("No player selected")
         return self.copiers[self.player.name].start_b
 
     def set_block(self, pos: Vec3, block: Item, facing: Optional[Vec3] = None):
