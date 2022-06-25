@@ -17,7 +17,7 @@ def follow(pyramid_centre):
     old_direction = 0
     for i in range(200000):
         time.sleep(0.5)
-        direction = Direction.facing(Position(5, 0, -5), world.player._pos())
+        direction = Direction.facing(Position(5, 0, -5), world.player.pos())
         if direction != old_direction:
             old_direction = direction
             pyramid(corner, size, Item.CARVED_PUMPKIN, facing=direction)

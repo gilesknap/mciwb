@@ -19,7 +19,7 @@
                 // Cannot have coverage and debugging at the same time.
                 // https://github.com/microsoft/vscode-python/issues/693
                 "PYTEST_ADDOPTS": "--no-cov"
-            },
+            }
         }
     ]
 }
