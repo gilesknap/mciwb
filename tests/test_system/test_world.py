@@ -23,7 +23,7 @@ def test_session_fixtures(mciwb_world: Iwb, minecraft_player: Player):
     assert mciwb_world.player.pos == minecraft_player._pos()
 
 
-def test_copy_reporting(mciwb_world: Iwb):
+def test_world_reporting(mciwb_world: Iwb):
     """
     verify printing of the world object
     """

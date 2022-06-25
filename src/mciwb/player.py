@@ -7,8 +7,8 @@ import re
 from typing import Match, Optional, Pattern
 
 from mcipc.rcon.je import Client
-from mcwb import Vec3, Volume
-from mcwb.types import Direction
+from mcwb.types import Direction, Vec3
+from mcwb.volume import Volume
 
 regex_coord = re.compile(r"\[(-?\d+.?\d*)d, *(-?\d+.?\d*)d, *(-?\d+.?\d*)d\]")
 regex_angle = re.compile(r"-?\ *[0-9]+\.?[0-9]*(?:[Ee]\ *-?\ *[0-9]+)?")

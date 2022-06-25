@@ -20,6 +20,8 @@
         "gamerule",
         "itemlists",
         "minecraft",
+        "mockclient",
+        "mockplayer",
         "setblock",
         "setworldspawn",
         "tracebacklimit",

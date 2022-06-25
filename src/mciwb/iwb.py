@@ -19,12 +19,16 @@ class Iwb:
     interactive functions for use in an IPython shell.
     """
 
-    def __init__(self, server: str, port: int, passwd: str) -> None:
+    def __init__(self, server: str, port: int, passwd: str, client=None) -> None:
         self._server = server
         self._port = port
         self._passwd = passwd
 
-        self._client = self.connect()
+        if client is not None:
+            # client already provided (primarily for mocking tests)
+            self._client = client
+        else:
+            self._client = self.connect()
 
         self.players: Dict[str, Player] = {}
         self.player: Optional[Player] = None

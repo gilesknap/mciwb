@@ -1,11 +1,9 @@
-import sys
 from pathlib import Path
-from subprocess import check_output
 
 from docker.models.containers import Container
 from typer.testing import CliRunner
 
-from mciwb import Player, __version__
+from mciwb import Player
 from mciwb.__main__ import cli
 from tests.conftest import HOST, RCON_P, RCON_PORT
 
@@ -18,11 +16,6 @@ def run_cli(*args):
         raise result.exception
     assert result.exit_code == 0, result
     return result
-
-
-def test_cli_version():
-    cmd = [sys.executable, "-m", "mciwb", "--version"]
-    assert check_output(cmd).decode().strip() == __version__
 
 
 def test_repr(tmp_path: Path, minecraft_container: Container, minecraft_player: Player):
