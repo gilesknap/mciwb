@@ -21,6 +21,7 @@
         "minecraft",
         "setblock",
         "setworldspawn",
-        "tracebacklimit"
+        "tracebacklimit",
+        "typecheck"
     ],
 }

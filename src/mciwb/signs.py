@@ -55,7 +55,7 @@ class Signs:
         """
         self.client = client
 
-        facing = self.player.facing(client=client)
+        facing = self.player._facing(client=client)
         for height in range(-1, 3):
             for distance in range(1, 4):
                 pos = self.player.current_pos + facing * distance

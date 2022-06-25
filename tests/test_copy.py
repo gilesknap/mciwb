@@ -7,6 +7,7 @@ import logging
 from mcipc.rcon.je import Client
 from mcwb.types import Anchor3, Vec3
 
+from mciwb.copier import CopyPaste
 from mciwb.iwb import Iwb, Monitor
 from mciwb.player import Player
 from tests.conftest import ENTITY_NAME
@@ -18,15 +19,16 @@ def test_session_fixtures(mciwb_world: Iwb, minecraft_player: Player):
     verify that the global session fixtures that create a minecraft server,
     RCON client and mciwb.Player are working
     """
-    assert mciwb_world.player.pos() == minecraft_player.pos()
+    assert isinstance(mciwb_world.player, Player)
+    assert mciwb_world.player.pos == minecraft_player._pos()
 
 
 def test_copy_reporting(mciwb_world: Iwb):
     """
-    verify printing of the Copy object
+    verify printing of the world object
     """
 
-    assert f"player: {ENTITY_NAME} at Vec3(x=0" in mciwb_world.__repr__()
+    assert f"player: {ENTITY_NAME}" in mciwb_world.__repr__()
 
 
 def test_copy_anchors(mciwb_world: Iwb, minecraft_client: Client):
@@ -37,6 +39,7 @@ def test_copy_anchors(mciwb_world: Iwb, minecraft_client: Client):
     Because the start corner is the anchor for the paste, every paste will
     place the cube offset in a different direction
     """
+    assert isinstance(mciwb_world.copier, CopyPaste)
 
     t = SampleCube(mciwb_world.sign_monitor.poll_client)
     source = Vec3(2, 5, 2)
@@ -56,6 +59,7 @@ def test_copy_anchors(mciwb_world: Iwb, minecraft_client: Client):
         ((4, 7, 4), (2, 5, 2), Anchor3.TOP_SE),
     )
     try:
+
         for start, stop, anchor in corner_pairs:
             logging.info("copy anchors test: %s, %s, %s", start, stop, anchor)
             mciwb_world.copier.select(Vec3(*stop))
