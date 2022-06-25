@@ -53,8 +53,7 @@ class Iwb:
         return client
 
     def add_player(self, name: str, me=True):
-        client = get_client()
-        player = Player(client, name)
+        player = Player(name)
         self.players[name] = player
 
         sign = Signs(player)
@@ -64,6 +63,8 @@ class Iwb:
         if me:
             self.player = player
             self.copier = sign.copy
+
+        sign.give_signs()
 
         logging.info(f"Monitoring player {name} enabled for sign commands")
 

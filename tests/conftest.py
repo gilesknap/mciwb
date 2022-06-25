@@ -195,7 +195,7 @@ def minecraft_player(minecraft_client):
 
     for retry in range(10):
         try:
-            player = Player(minecraft_client, ENTITY_NAME)
+            player = Player(ENTITY_NAME)
         except ValueError:
             sleep(1)
         else:

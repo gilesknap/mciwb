@@ -1,6 +1,7 @@
 """
 Add an interactive capability through the placing of signs in the world
 """
+import logging
 import re
 from typing import Dict
 
@@ -27,8 +28,7 @@ class Signs:
 
     def __init__(self, player: Player):
         self.player = player
-        client = get_client()
-        self.copy = CopyPaste(self.player, client)
+        self.copy = CopyPaste(self.player)
         self.signs: Dict[str, CallbackPosFunction] = self.copy.get_commands()
 
     def get_target_block(self, pos: Vec3, facing: Vec3) -> Vec3:
@@ -56,15 +56,17 @@ class Signs:
         """
         self.client = client
 
-        facing = self.player._facing(client=client)
+        facing = self.player.facing
+        player_pos = self.player.pos
         for height in range(-1, 3):
             for distance in range(1, 4):
-                pos = self.player.current_pos + facing * distance
+                pos = player_pos + facing * distance
                 block_pos = pos.with_ints() + Vec3(0, height, 0)
                 data = client.data.get(block=block_pos)
                 match = sign_text.search(data)
                 if match:
                     text = match.group(1)
+                    logging.debug(f"Sign at {pos} has text {text}")
                     target = self.get_target_block(block_pos, facing)
                     client.setblock(
                         block_pos,
@@ -75,7 +77,7 @@ class Signs:
     def do_action(self, command: str, target: Vec3):
         # if the command is not found then this is just an ordinary sign (I assume!)
         if command in self.signs:
-            self.signs[command](target, self.client)
+            self.signs[command](target)
 
     def add_sign(self, name: str, function: CallbackPosFunction):
         self.signs[name] = function
@@ -92,4 +94,4 @@ class Signs:
             """display:{{Name:'{{"text":"{0}"}}'}}}}"""
         )
         for command in self.signs.keys():
-            self.client.give(self.player.name, entity.format(command))
+            get_client().give(self.player.name, entity.format(command))

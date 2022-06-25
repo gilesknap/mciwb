@@ -11,8 +11,8 @@ from mcwb import Vec3
 
 from mciwb.threads import get_client, new_thread
 
-CallbackFunction = Callable[[Client], None]
-CallbackPosFunction = Callable[[Vec3, Client], None]
+CallbackFunction = Callable[[], None]
+CallbackPosFunction = Callable[[Vec3], None]
 
 
 class Monitor:

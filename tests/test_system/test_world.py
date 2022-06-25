@@ -4,7 +4,6 @@ System tests for the Copy class
 
 import logging
 
-from mcipc.rcon.je import Client
 from mcwb.types import Anchor3, Vec3
 
 from mciwb.copier import CopyPaste
@@ -31,7 +30,7 @@ def test_world_reporting(mciwb_world: Iwb):
     assert f"player: {ENTITY_NAME}" in mciwb_world.__repr__()
 
 
-def test_copy_anchors(mciwb_world: Iwb, minecraft_client: Client):
+def test_copy_anchors(mciwb_world: Iwb):
     """
     Test copy and paste of the same cube using all possible opposite corners
     for a total of 8 pairs of opposite corner pairs (with ordering significant)
@@ -41,7 +40,7 @@ def test_copy_anchors(mciwb_world: Iwb, minecraft_client: Client):
     """
     assert isinstance(mciwb_world.copier, CopyPaste)
 
-    t = SampleCube(mciwb_world.sign_monitor.poll_client)
+    t = SampleCube()
     source = Vec3(2, 5, 2)
     t.create(source)
 
@@ -70,9 +69,7 @@ def test_copy_anchors(mciwb_world: Iwb, minecraft_client: Client):
             # use the Monitor poller thread to avoid race conditions with
             # the sign polling - this does not work and sometimes the
             # call to the server never returns
-            mciwb_world.copier.paste_safe(
-                Vec3(*dest), mciwb_world.sign_monitor.poll_client
-            )
+            mciwb_world.copier.paste_safe(Vec3(*dest))
 
             try:
                 assert t.test(dest, anchor)
