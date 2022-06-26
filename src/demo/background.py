@@ -29,4 +29,6 @@ def follow_thread():
     # Use two threads for two pyramids
     p1 = Follower((0, 5, 0))
     p2 = Follower((20, 5, 0))
-    Monitor([p1.follow, p2.follow])
+    p3 = Follower((0, 5, 20))
+    p4 = Follower((20, 5, 20))
+    Monitor([p1.follow, p2.follow, p3.follow, p4.follow])

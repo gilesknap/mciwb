@@ -44,11 +44,19 @@ class Monitor:
             name = f"Monitor{Monitor.monitor_num}"
             Monitor.monitor_num += 1
 
-        self._polling = True
+        self.name = name
         self.once = once
         self.poll_rate = poll_rate
-        self.poll_thread = new_thread(get_client(), self._poller, name)
-        self.monitors.append(self)
+        self.poll_thread = None
+
+        self._start_poller()
+
+    def _start_poller(self):
+        if self.poll_thread is None:
+            logging.debug(f"starting polling thread {self.name}")
+            self.poll_thread = new_thread(get_client(), self._poller, self.name)
+            self.monitors.append(self)
+            self._polling = True
 
     def _poller(self):
         """
@@ -76,9 +84,12 @@ class Monitor:
 
         if self in self.monitors:
             self.monitors.remove(self)
+        self.poll_thread = None
+        self.pollers = []
 
     def add_poller_func(self, func: CallbackFunction):
         self.pollers.append(func)
+        self._start_poller()
 
     def remove_poller_func(self, func: CallbackFunction):
         idx = self.pollers.index(func)
@@ -99,3 +110,8 @@ class Monitor:
 
     def __del__(self):
         self.stop()
+
+    def __repr__(self):
+        # TODO work out how to shoe the class of the bound method
+        func_list = [f.__name__ for f in self.pollers]
+        return f"{self.name} polling {func_list} at {self.poll_rate})"
