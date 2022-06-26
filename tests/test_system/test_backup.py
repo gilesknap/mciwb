@@ -1,6 +1,7 @@
 import logging
 from pathlib import Path
 
+import pytest
 from docker.models.containers import Container
 from mcipc.rcon.item import Item
 from mcwb.itemlists import grab
@@ -10,9 +11,17 @@ from mcwb.volume import Volume
 from mciwb import Client
 from mciwb.backup import Backup
 from mciwb.threads import set_client
-from tests.conftest import HOST, RCON_P, RCON_PORT, data_folder, wait_server
+from tests.conftest import (
+    HOST,
+    KEEP_SERVER,
+    RCON_P,
+    RCON_PORT,
+    data_folder,
+    wait_server,
+)
 
 
+@pytest.mark.skipif(KEEP_SERVER, reason="KEEP_SERVER incompatible with backup")
 def test_backup_restore(
     minecraft_container: Container, minecraft_client: Client, tmp_path: Path
 ):

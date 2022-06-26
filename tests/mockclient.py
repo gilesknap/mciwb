@@ -17,7 +17,8 @@ class MockClient:
     def __init__(self, host, port, passwd=None):
         # create an empty mock world full of air
         self.world = np.full((100, 100, 100), Item.AIR, dtype=Item)
-        self.offset = Vec3(50, 50, 50)
+        # note that numpy will wrap around indexes so this world has
+        # ability to index from -50 to 50 in each dimension
         self.host = host
         self.port = port
         self.passwd = passwd
@@ -31,15 +32,13 @@ class MockClient:
     def connect(self, retry=True):
         self.connected = True
 
-    def setblock(self, position: Vec3, block: Item):
+    def setblock(self, pos: Vec3, block: Item):
         """set the block at position in the world"""
-        pos = position + self.offset
         self.world[pos.x, pos.y, pos.z] = block
 
     def fill(self, start: Vec3, end: Vec3, block: Item):
         block = Item(block)  # ensure enum
-        start += self.offset
-        end += self.offset - 1
+        end -= 1
         self.world[
             floor(start.x) : floor(end.x),
             floor(start.y) : floor(end.y),
@@ -71,9 +70,6 @@ class MockClient:
 
         start = Vec3(*begin)
         stop = Vec3(*end)
-        start += self.offset
-        stop += self.offset
-        dest += self.offset
         d_stop = dest + stop - start
         self.world[
             dest.x : d_stop.x, dest.y : d_stop.y, dest.z : d_stop.z
@@ -109,15 +105,13 @@ class MockClient:
     # the following are additional functions for use in tests #################
     ###########################################################################
 
-    def getblock(self, position: Vec3) -> Item:
+    def getblock(self, pos: Vec3) -> Item:
         """return the block at position in the world"""
-        pos = position + self.offset
         return self.world[int(pos.x), int(pos.y), int(pos.z)]
 
-    def compare(self, position: Vec3, cube: Items):
+    def compare(self, pos: Vec3, cube: Items):
         """verify that the contents of the world at pos matches cube"""
         n_cube = np.array(cube)
-        pos = position + self.offset
         upper = pos + Vec3(*(n_cube.shape))
         world_slice = self.world[pos.x : upper.x, pos.y : upper.y, pos.z : upper.z]
 
