@@ -4,6 +4,7 @@ System tests for the Copy class
 
 import logging
 
+from mcipc.rcon.item import Item
 from mcwb.types import Anchor3, Vec3
 
 from mciwb.copier import CopyPaste
@@ -69,3 +70,48 @@ def copy_anchors():
                 t.clear(dest, anchor)
     finally:
         t.clear(source)
+
+
+def test_expand():
+    client = MockClient("localhost", 20400, "pass")
+    set_client(client)  # type: ignore
+
+    copier = CopyPaste()
+
+    start = Vec3(0, 0, 0)
+    stop = Vec3(5, 5, 5)
+    copier.select(stop)
+    copier.select(start)
+
+    copier.expand(x=1, z=2)
+    assert copier.start_b == Vec3(0, 0, 0)
+    assert copier.stop_b == Vec3(6, 5, 7)
+
+    copier.expand(x=-1, y=-2)
+    assert copier.start_b == Vec3(-1, -2, 0)
+    assert copier.stop_b == Vec3(6, 5, 7)
+
+    exp = Vec3(0, 20, 20)
+    copier.expand_to(exp)
+    assert copier.start_b == Vec3(-1, -2, 0)
+    assert copier.stop_b == Vec3(6, 20, 20)
+
+    exp = Vec3(-20, -20, -20)
+    copier.expand_to(exp)
+    assert copier.start_b == Vec3(-20, -20, -20)
+    assert copier.stop_b == Vec3(6, 20, 20)
+
+
+def test_clear():
+    client = MockClient("localhost", 20400, "pass")
+    set_client(client)  # type: ignore
+
+    copier = CopyPaste()
+
+    client.setblock(Vec3(0, 0, 0), Item.STONE)
+    copier.select(Vec3(1, 1, 1))
+    copier.select(Vec3(0, 0, 0))
+
+    copier.clear()
+
+    assert client.getblock(Vec3(0, 0, 0)) == Item.AIR

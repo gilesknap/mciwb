@@ -60,6 +60,7 @@ class Signs:
         player_pos = self.player.pos
         for height in range(-1, 3):
             for distance in range(1, 4):
+                sleep(0)  # don't hog the connection
                 pos = player_pos + facing * distance
                 block_pos = pos.with_ints() + Vec3(0, height, 0)
                 data = client.data.get(block=block_pos)
@@ -96,5 +97,4 @@ class Signs:
 
         client = get_client()
         for command in self.signs.keys():
-            sleep(0.1)  # getting timeouts without this - TODO investigate
             client.give(self.player.name, entity.format(command))

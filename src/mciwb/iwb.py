@@ -5,6 +5,7 @@ from mcipc.rcon.exceptions import NoPlayerFound
 from mcipc.rcon.item import Item
 from mcipc.rcon.je import Client
 from mcwb import Direction, Vec3
+from rcon.exceptions import SessionTimeout
 
 from mciwb.copier import CopyPaste
 from mciwb.monitor import Monitor
@@ -29,11 +30,11 @@ class Iwb:
         client = client or self.connect()
 
         self.players: Dict[str, Player] = {}
-        self.player: Optional[Player] = None
+        self.player: Player = None  # type: ignore
         self.copiers: Dict[str, CopyPaste] = {}
-        self.copier: Optional[CopyPaste] = None
+        self.copier: CopyPaste = None  # type: ignore
 
-        self.sign_monitor = Monitor(client)
+        self.sign_monitor = Monitor()
 
     def connect(self) -> Client:
         """
@@ -67,9 +68,9 @@ class Iwb:
 
         try:
             sign.give_signs()
-        except NoPlayerFound as e:
+        except (NoPlayerFound, SessionTimeout) as e:
             # during tests this will fail as there is no real player
-            logging.warning(e)
+            logging.warning("failed to give signs to player, %s", e)
 
         logging.info(f"Monitoring player {name} enabled for sign commands")
 
@@ -105,7 +106,7 @@ class Iwb:
 
         # 'Could not set the block' is not an error - it means it was already set
         if not any(
-            x in result for x in ["Changed the block", "Could not set the block"]
+            x in result for x in ["Changed the block", "Could not set the block", ""]
         ):
             logging.error(result)
 

@@ -7,6 +7,7 @@ from mcwb.types import Direction, Planes3d
 
 from mciwb.copier import CopyPaste
 from mciwb.iwb import Iwb, world
+from mciwb.monitor import Monitor
 from mciwb.player import Player
 
 try:
@@ -36,6 +37,7 @@ __all__ = [
     "Direction",
     "Planes3d",
     "CopyPaste",
+    "Monitor",
     "Player",
     "world",
 ]

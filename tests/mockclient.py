@@ -38,7 +38,6 @@ class MockClient:
 
     def fill(self, start: Vec3, end: Vec3, block: Item):
         block = Item(block)  # ensure enum
-        end -= 1
         self.world[
             floor(start.x) : floor(end.x),
             floor(start.y) : floor(end.y),

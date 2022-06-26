@@ -4,12 +4,12 @@ Thread functions for monitoring state of the world
 
 import logging
 from time import sleep
-from typing import Callable, List
+from typing import Callable, List, Union
 
-from mcipc.rcon.je import Client
 from mcwb import Vec3
+from rcon.exceptions import SessionTimeout
 
-from mciwb.threads import new_thread
+from mciwb.threads import get_client, get_thread_name, new_thread
 
 CallbackFunction = Callable[[], None]
 CallbackPosFunction = Callable[[Vec3], None]
@@ -22,18 +22,32 @@ class Monitor:
     execution of Minecraft server functions.
     """
 
+    monitor_num = 0
     monitors: List["Monitor"] = []
 
-    def __init__(self, client: Client, poll_rate=0.5) -> None:
+    def __init__(
+        self,
+        func: Union[None, CallbackFunction, List[CallbackFunction]] = None,
+        once=False,
+        name=None,
+        poll_rate=0.2,
+    ) -> None:
         # Each tick on the monitor will call each of the functions in this
-        # pollers list. The poller function should take a client object and
-        # use that for any MC Server calls. The function can be bound to an
-        # object and this is how to maintain state for a given poller.
-        self.pollers: List[CallbackFunction] = []
+        # pollers list. The function can be bound to an object and this
+        # is how to maintain state for a given poller.
+
+        self.pollers: List[CallbackFunction] = (
+            [] if func is None else func if isinstance(func, list) else [func]
+        )
+
+        if name is None:
+            name = f"Monitor{Monitor.monitor_num}"
+            Monitor.monitor_num += 1
 
         self._polling = True
+        self.once = once
         self.poll_rate = poll_rate
-        self.poll_thread = new_thread(client, self._poller)
+        self.poll_thread = new_thread(get_client(), self._poller, name)
         self.monitors.append(self)
 
     def _poller(self):
@@ -41,14 +55,24 @@ class Monitor:
         the polling function will run until the monitor is stopped
         """
 
-        try:
-            while self._polling:
+        while self._polling:
+            try:
                 for func in self.pollers:
                     func()
                 sleep(self.poll_rate)
-        except BrokenPipeError:
-            logging.error("Connection to Minecraft Server lost, polling terminated")
-            self._polling = False
+            except BrokenPipeError:
+                logging.error(
+                    f"Connection to Minecraft Server lost, "
+                    f"polling terminated in {get_thread_name()}"
+                )
+                self._polling = False
+            except SessionTimeout:
+                logging.warning(f"Connection timeout in {get_thread_name()}")
+            except BaseException:
+                logging.error(f"Error in {get_thread_name()}", exc_info=True)
+
+            if self.once:
+                self._polling = False
 
         if self in self.monitors:
             self.monitors.remove(self)

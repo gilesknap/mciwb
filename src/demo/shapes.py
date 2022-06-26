@@ -41,7 +41,7 @@ def box(start: Position, size: int, item=Item.ACACIA_FENCE):
                 world.set_block(block_pos, item)
 
 
-def pyramid(start: Position, size: int, item=Item.CARVED_PUMPKIN, **kwargs):
+def pyramid(start: Position, size: int, item=Item.COBBLESTONE, **kwargs):
     """
     Build a pyramid with South West Corner at 'start'
     """

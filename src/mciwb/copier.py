@@ -71,22 +71,22 @@ class CopyPaste:
     def paste_safe(self, pos: Vec3):
         self.paste(pos, force=False)
 
-    def fill(self, pos: Vec3, item: Item = Item.AIR):
+    def fill(self, pos: Vec3 = zero, item: Item = Item.AIR):
         """
         fill the paste buffer offset by x y z with Air or a specified block
         """
         client = get_client()
-        item = item or Item.AIR
+
         offset = pos
         end = self.paste_b + self.size + offset
-        result = client.fill(self.paste_b + offset, end, str(item))
+        result = client.fill(self.paste_b + offset, end, item.value)
         logging.info(result)
 
-    def clear(self, _: Vec3):
+    def clear(self, _: Vec3 = zero):
         """
         Clear the current paste buffer
         """
-        self.fill(zero)
+        self.fill()
 
     def expand_to(self, pos: Vec3):
         """
@@ -109,8 +109,8 @@ class CopyPaste:
                 elif pos[dim] > start[dim]:
                     start[dim] = pos[dim]
 
-        self.select(**stop)
-        self.select(**start)
+        self.select(Vec3(**stop))
+        self.select(Vec3(**start))
 
     def expand(self, x=0, y=0, z=0):
         """
@@ -134,5 +134,5 @@ class CopyPaste:
                 else:
                     stop[dim] += expander[dim]
 
-        self.select(**stop)
-        self.select(**start)
+        self.select(Vec3(**stop))
+        self.select(Vec3(**start))

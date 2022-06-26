@@ -4,6 +4,7 @@ state
 """
 import math
 import re
+from time import sleep
 from typing import Match, Pattern
 
 from mcwb.types import Direction, Vec3
@@ -35,6 +36,7 @@ class Player:
             match = regex.search(data)
             if match:
                 return match
+            sleep(0.1)
 
         raise ValueError(f"player {self.name} not in the world")
 
