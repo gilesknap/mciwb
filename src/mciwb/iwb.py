@@ -1,6 +1,7 @@
 import logging
 from typing import Dict, Optional
 
+from mcipc.rcon.exceptions import NoPlayerFound
 from mcipc.rcon.item import Item
 from mcipc.rcon.je import Client
 from mcwb import Direction, Vec3
@@ -9,6 +10,7 @@ from mciwb.copier import CopyPaste
 from mciwb.monitor import Monitor
 from mciwb.player import Player
 from mciwb.signs import Signs
+from mciwb.threads import get_client, set_client
 
 world: "Iwb" = None  # type: ignore
 
@@ -19,51 +21,55 @@ class Iwb:
     interactive functions for use in an IPython shell.
     """
 
-    def __init__(self, server: str, port: int, passwd: str) -> None:
+    def __init__(self, server: str, port: int, passwd: str, client=None) -> None:
         self._server = server
         self._port = port
         self._passwd = passwd
 
-        self._client = self.connect()
+        client = client or self.connect()
 
         self.players: Dict[str, Player] = {}
         self.player: Optional[Player] = None
         self.copiers: Dict[str, CopyPaste] = {}
         self.copier: Optional[CopyPaste] = None
 
-        self.sign_monitor = Monitor(self._client)
+        self.sign_monitor = Monitor(client)
 
-    def connect(self):
+    def connect(self) -> Client:
         """
         Makes a connection to the Minecraft Server. Can be called again
         if the connection is lost e.g. due to server reboot.
-
-        Advanced NOTE:
-        This class is intended to be a singleton and will be called from the
-        Ipython interactive thread. As such it maintains its own
-        mcipc.rcon.je.Client for making server calls on this main thread
         """
 
-        c = Client(self._server, int(self._port), passwd=self._passwd)
-        c.connect(True)
+        client = Client(self._server, int(self._port), passwd=self._passwd)
+        client.connect(True)
+
+        # store the client for the main thread
+        set_client(client)
 
         logging.info(f"Connected to {self._server} on {self._port}")
         # don't announce every rcon command
-        c.gamerule("sendCommandFeedback", False)
+        client.gamerule("sendCommandFeedback", False)
 
-        return c
+        return client
 
     def add_player(self, name: str, me=True):
-        player = Player(self._client, name)
+        player = Player(name)
         self.players[name] = player
 
-        sign = Signs(player, self.sign_monitor.poll_client)
+        sign = Signs(player)
         self.sign_monitor.add_poller_func(sign.poll)
         self.copiers[name] = sign.copy
 
         if me:
             self.player = player
             self.copier = sign.copy
+
+        try:
+            sign.give_signs()
+        except NoPlayerFound as e:
+            # during tests this will fail as there is no real player
+            logging.warning(e)
 
         logging.info(f"Monitoring player {name} enabled for sign commands")
 
@@ -84,6 +90,8 @@ class Iwb:
         """
         Sets a block in the world
         """
+        client = get_client()
+
         pos = Vec3(*pos)
         int_pos = pos.with_ints()
         nbt = []
@@ -92,7 +100,7 @@ class Iwb:
             nbt.append(f"""facing={Direction.name(facing)}""")
         block_str = f"""{block}[{",".join(nbt)}]"""
 
-        result = self._client.setblock(int_pos, block_str)
+        result = client.setblock(int_pos, block_str)
         logging.debug("setblock: " + result)
 
         # 'Could not set the block' is not an error - it means it was already set

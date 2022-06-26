@@ -3,15 +3,16 @@ Thread functions for monitoring state of the world
 """
 
 import logging
-from threading import Thread
 from time import sleep
 from typing import Callable, List
 
 from mcipc.rcon.je import Client
 from mcwb import Vec3
 
-CallbackFunction = Callable[[Client], None]
-CallbackPosFunction = Callable[[Vec3, Client], None]
+from mciwb.threads import new_thread
+
+CallbackFunction = Callable[[], None]
+CallbackPosFunction = Callable[[Vec3], None]
 
 
 class Monitor:
@@ -30,23 +31,20 @@ class Monitor:
         # object and this is how to maintain state for a given poller.
         self.pollers: List[CallbackFunction] = []
 
-        # create our own client for the new thread
         self._polling = True
         self.poll_rate = poll_rate
-        self.poll_client = Client(client.host, client.port, passwd=client.passwd)
-        self.poll_client.connect(True)
-        self.poll_thread = Thread(target=self._poller)
-        self.poll_thread.start()
+        self.poll_thread = new_thread(client, self._poller)
         self.monitors.append(self)
 
     def _poller(self):
         """
-        the polling function will run until
+        the polling function will run until the monitor is stopped
         """
+
         try:
             while self._polling:
                 for func in self.pollers:
-                    func(self.poll_client)
+                    func()
                 sleep(self.poll_rate)
         except BrokenPipeError:
             logging.error("Connection to Minecraft Server lost, polling terminated")
@@ -65,15 +63,15 @@ class Monitor:
         else:
             self.pollers.remove(func)
 
-    def stop(self):
-        self._polling = False
-
     @classmethod
     def stop_all(cls):
         for monitor in cls.monitors:
             monitor.stop()
         cls.monitors.clear()
         logging.info("Stopped all monitoring threads")
+
+    def stop(self):
+        self._polling = False
 
     def __del__(self):
         self.stop()
