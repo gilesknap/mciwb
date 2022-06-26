@@ -3,9 +3,9 @@ Add an interactive capability through the placing of signs in the world
 """
 import logging
 import re
+from time import sleep
 from typing import Dict
 
-from mcipc.rcon.je import Client
 from mcwb.types import Item, Vec3
 
 from mciwb.copier import CopyPaste
@@ -28,7 +28,7 @@ class Signs:
 
     def __init__(self, player: Player):
         self.player = player
-        self.copy = CopyPaste(self.player)
+        self.copy = CopyPaste()
         self.signs: Dict[str, CallbackPosFunction] = self.copy.get_commands()
 
     def get_target_block(self, pos: Vec3, facing: Vec3) -> Vec3:
@@ -36,8 +36,8 @@ class Signs:
         determine the target block that the sign at pos indicates
         """
         # use 'execute if' with a benign command like seed
-        result = self.client.execute.if_.block(pos, "minecraft:oak_wall_sign").run(
-            "seed"
+        result = (
+            get_client().execute.if_.block(pos, "minecraft:oak_wall_sign").run("seed")
         )
 
         if "Seed" in result:
@@ -49,12 +49,12 @@ class Signs:
 
         return pos
 
-    def poll(self, client: Client):
+    def poll(self):
         """
         check if a sign has been placed in front of the player
         1 to 4 blocks away and take action based on sign text
         """
-        self.client = client
+        client = get_client()
 
         facing = self.player.facing
         player_pos = self.player.pos
@@ -93,5 +93,8 @@ class Signs:
             """minecraft:oak_sign{{BlockEntityTag:{{Text1:'{{"text":"{0}"}}'}},"""
             """display:{{Name:'{{"text":"{0}"}}'}}}}"""
         )
+
+        client = get_client()
         for command in self.signs.keys():
-            get_client().give(self.player.name, entity.format(command))
+            sleep(0.1)  # getting timeouts without this - TODO investigate
+            client.give(self.player.name, entity.format(command))

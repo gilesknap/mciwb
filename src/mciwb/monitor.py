@@ -9,7 +9,7 @@ from typing import Callable, List
 from mcipc.rcon.je import Client
 from mcwb import Vec3
 
-from mciwb.threads import get_client, new_thread
+from mciwb.threads import new_thread
 
 CallbackFunction = Callable[[], None]
 CallbackPosFunction = Callable[[Vec3], None]
@@ -40,12 +40,11 @@ class Monitor:
         """
         the polling function will run until the monitor is stopped
         """
-        client = get_client()
 
         try:
             while self._polling:
                 for func in self.pollers:
-                    func(client)
+                    func()
                 sleep(self.poll_rate)
         except BrokenPipeError:
             logging.error("Connection to Minecraft Server lost, polling terminated")

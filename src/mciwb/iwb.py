@@ -1,6 +1,7 @@
 import logging
 from typing import Dict, Optional
 
+from mcipc.rcon.exceptions import NoPlayerFound
 from mcipc.rcon.item import Item
 from mcipc.rcon.je import Client
 from mcwb import Direction, Vec3
@@ -64,7 +65,11 @@ class Iwb:
             self.player = player
             self.copier = sign.copy
 
-        sign.give_signs()
+        try:
+            sign.give_signs()
+        except NoPlayerFound as e:
+            # during tests this will fail as there is no real player
+            logging.warning(e)
 
         logging.info(f"Monitoring player {name} enabled for sign commands")
 

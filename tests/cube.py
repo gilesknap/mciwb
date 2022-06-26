@@ -34,7 +34,7 @@ class SampleCube:
         dest_vol = Volume.from_anchor(pos, self.volume_size, anchor)
         dest_cuboid = grab(get_client(), dest_vol)
 
-        return dest_cuboid == self.cube
+        assert dest_cuboid == self.cube
 
     def clear(self, pos: Vec3, anchor: Anchor3 = Anchor3.BOTTOM_NW):
         """

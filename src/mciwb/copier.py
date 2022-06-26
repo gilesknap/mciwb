@@ -3,7 +3,6 @@ import logging
 from mcipc.rcon.enumerations import CloneMode, Item, MaskMode
 from mcwb.types import Vec3
 
-from mciwb.player import Player
 from mciwb.threads import get_client
 
 zero = Vec3(0, 0, 0)
@@ -15,9 +14,8 @@ class CopyPaste:
     Minecraft world.
     """
 
-    def __init__(self, player: Player):
-        self.player = player
-        self.start_b: Vec3 = self.player._pos().with_ints()
+    def __init__(self):
+        self.start_b: Vec3 = zero
         self.stop_b: Vec3 = self.start_b
         self.paste_b: Vec3 = self.start_b
         self.clone_dest = zero

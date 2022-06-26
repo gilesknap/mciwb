@@ -34,6 +34,8 @@ logging.basicConfig(
     format="%(levelname)s: %(pathname)s:%(lineno)d %(funcName)s " "\n\t%(message)s",
 )
 
+KEEP_SERVER = "MCIWB_KEEP_SERVER" in os.environ
+
 
 def wait_server(cont: Container, count=1):
     """
@@ -82,7 +84,7 @@ def minecraft_container(request: pytest.FixtureRequest):
     def close_minecraft():
         # set env var MCIWB_KEEP_SERVER to keep server alive for faster
         # repeated tests and viewing the world with a minecraft client
-        if cont and ("MCIWB_KEEP_SERVER" not in os.environ):
+        if cont and not KEEP_SERVER:
             logging.info("\nClosing the Minecraft Server ...")
             cont.stop()
             cont.remove()
@@ -104,6 +106,7 @@ def minecraft_container(request: pytest.FixtureRequest):
 
     env = {
         "EULA": "TRUE",
+        # "VERSION": "1.17.1",
         "SERVER_PORT": SERVER_PORT,
         "RCON_PORT": RCON_PORT,
         "ENABLE_RCON": "true",
@@ -115,10 +118,14 @@ def minecraft_container(request: pytest.FixtureRequest):
         "VIEW_DISTANCE": " 5",
         "SEED": 0,
         "LEVEL_TYPE": "FLAT",
-        "ONLINE_MODE": "FALSE",
         "OPS": "TransformerScorn",
         "MODE": "creative",
+        "SPAWN_PROTECTION": "FALSE",
     }
+    # offline mode disables OPS so dont use it if we are keeping the server
+    # for testing. But normally for running CI we want this option.
+    if not KEEP_SERVER:
+        env["ONLINE_MODE"] = "FALSE"
 
     if not data_folder.exists():
         data_folder.mkdir()
@@ -153,7 +160,6 @@ def client_connect():
     for _ in range(10):
         try:
             client.connect(True)
-            set_client(client)
         except ConnectionRefusedError:
             sleep(1)
         else:
@@ -170,6 +176,9 @@ def minecraft_client(minecraft_container: Container):
     return an rcon connection to the test server
     """
     client = client_connect()
+
+    # attach the new client to the current thread
+    set_client(client)
 
     # ensure that the chunks near 0,0,0 are loaded
     client.setworldspawn(Vec3(1, 4, 0))
