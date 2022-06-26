@@ -5,6 +5,7 @@ from mcipc.rcon.exceptions import NoPlayerFound
 from mcipc.rcon.item import Item
 from mcipc.rcon.je import Client
 from mcwb import Direction, Vec3
+from rcon.exceptions import SessionTimeout
 
 from mciwb.copier import CopyPaste
 from mciwb.monitor import Monitor
@@ -67,7 +68,7 @@ class Iwb:
 
         try:
             sign.give_signs()
-        except NoPlayerFound as e:
+        except (NoPlayerFound, SessionTimeout) as e:
             # during tests this will fail as there is no real player
             logging.warning(e)
 

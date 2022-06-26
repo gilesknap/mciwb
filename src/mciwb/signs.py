@@ -3,7 +3,6 @@ Add an interactive capability through the placing of signs in the world
 """
 import logging
 import re
-from time import sleep
 from typing import Dict
 
 from mcwb.types import Item, Vec3
@@ -96,5 +95,4 @@ class Signs:
 
         client = get_client()
         for command in self.signs.keys():
-            sleep(0.1)  # getting timeouts without this - TODO investigate
             client.give(self.player.name, entity.format(command))
