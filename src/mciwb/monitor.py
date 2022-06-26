@@ -4,7 +4,7 @@ Thread functions for monitoring state of the world
 
 import logging
 from time import sleep
-from typing import Callable, List
+from typing import Callable, List, Union
 
 from mcwb import Vec3
 from rcon.exceptions import SessionTimeout
@@ -25,18 +25,27 @@ class Monitor:
     monitor_num = 0
     monitors: List["Monitor"] = []
 
-    def __init__(self, name=None, poll_rate=0.2) -> None:
+    def __init__(
+        self,
+        func: Union[None, CallbackFunction, List[CallbackFunction]] = None,
+        once=False,
+        name=None,
+        poll_rate=0.2,
+    ) -> None:
         # Each tick on the monitor will call each of the functions in this
-        # pollers list. The poller function should take a client object and
-        # use that for any MC Server calls. The function can be bound to an
-        # object and this is how to maintain state for a given poller.
-        self.pollers: List[CallbackFunction] = []
+        # pollers list. The function can be bound to an object and this
+        # is how to maintain state for a given poller.
+
+        self.pollers: List[CallbackFunction] = (
+            [] if func is None else func if isinstance(func, list) else [func]
+        )
 
         if name is None:
             name = f"Monitor{Monitor.monitor_num}"
             Monitor.monitor_num += 1
 
         self._polling = True
+        self.once = once
         self.poll_rate = poll_rate
         self.poll_thread = new_thread(get_client(), self._poller, name)
         self.monitors.append(self)
@@ -61,6 +70,9 @@ class Monitor:
                 logging.warning(f"Connection timeout in {get_thread_name()}")
             except BaseException:
                 logging.error(f"Error in {get_thread_name()}", exc_info=True)
+
+            if self.once:
+                self._polling = False
 
         if self in self.monitors:
             self.monitors.remove(self)

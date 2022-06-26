@@ -29,7 +29,4 @@ def follow_thread():
     # Use two threads for two pyramids
     p1 = Follower((0, 5, 0))
     p2 = Follower((20, 5, 0))
-    my_monitor = Monitor()
-    my_monitor.add_poller_func(p1.follow)
-    my_monitor2 = Monitor()
-    my_monitor2.add_poller_func(p2.follow)
+    Monitor([p1.follow, p2.follow])
