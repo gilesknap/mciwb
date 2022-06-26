@@ -16,6 +16,10 @@ regex_coord = re.compile(r"\[(-?\d+.?\d*)d, *(-?\d+.?\d*)d, *(-?\d+.?\d*)d\]")
 regex_angle = re.compile(r"-?\ *[0-9]+\.?[0-9]*(?:[Ee]\ *-?\ *[0-9]+)?")
 
 
+class PlayerNotInWorld(Exception):
+    pass
+
+
 class Player:
     def __init__(self, name: str) -> None:
         # todo might make a player with threaded monitoring if needed ?
@@ -38,7 +42,7 @@ class Player:
                 return match
             sleep(0.1)
 
-        raise ValueError(f"player {self.name} not in the world")
+        raise PlayerNotInWorld(f"player {self.name} left")
 
     def _pos(self) -> Vec3:
         # if called in a thread then use the thread's client object

@@ -33,8 +33,7 @@ class Iwb:
         self.player: Player = None  # type: ignore
         self.copiers: Dict[str, CopyPaste] = {}
         self.copier: CopyPaste = None  # type: ignore
-
-        self.sign_monitor = Monitor()
+        self.sign_monitor: Monitor = None  # type: ignore
 
     def connect(self) -> Client:
         """
@@ -59,7 +58,7 @@ class Iwb:
         self.players[name] = player
 
         sign = Signs(player)
-        self.sign_monitor.add_poller_func(sign.poll)
+        self.sign_monitor = Monitor(sign.poll, name=name)
         self.copiers[name] = sign.copy
 
         if me:

@@ -9,6 +9,7 @@ from typing import Callable, List, Union
 from mcwb import Vec3
 from rcon.exceptions import SessionTimeout
 
+from mciwb.player import PlayerNotInWorld
 from mciwb.threads import get_client, get_thread_name, new_thread
 
 CallbackFunction = Callable[[], None]
@@ -32,17 +33,14 @@ class Monitor:
         name=None,
         poll_rate=0.2,
     ) -> None:
-        # Each tick on the monitor will call each of the functions in this
-        # pollers list. The function can be bound to an object and this
-        # is how to maintain state for a given poller.
-
-        self.pollers: List[CallbackFunction] = (
-            [] if func is None else func if isinstance(func, list) else [func]
-        )
 
         if name is None:
             name = f"Monitor{Monitor.monitor_num}"
             Monitor.monitor_num += 1
+
+        self.pollers: List[CallbackFunction] = (
+            [] if func is None else func if isinstance(func, list) else [func]
+        )
 
         self.name = name
         self.once = once
@@ -76,6 +74,9 @@ class Monitor:
                 self._polling = False
             except SessionTimeout:
                 logging.warning(f"Connection timeout in {get_thread_name()}")
+            except PlayerNotInWorld as e:
+                logging.warning(e)
+                self._polling = False
             except BaseException:
                 logging.error(f"Error in {get_thread_name()}", exc_info=True)
 
@@ -86,6 +87,7 @@ class Monitor:
             self.monitors.remove(self)
         self.poll_thread = None
         self.pollers = []
+        logging.warning(f"Monitor {self.name} stopped")
 
     def add_poller_func(self, func: CallbackFunction):
         self.pollers.append(func)
