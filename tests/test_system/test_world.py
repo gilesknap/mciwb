@@ -14,8 +14,7 @@ def test_session_fixtures(mciwb_world: Iwb, minecraft_player: Player):
     verify that the global session fixtures that create a minecraft server,
     RCON client and mciwb.Player are working
     """
-    assert isinstance(mciwb_world.player, Player)
-    assert mciwb_world.player.pos == minecraft_player._pos()
+    assert mciwb_world.player.pos == minecraft_player.pos
 
 
 def test_world_reporting(mciwb_world: Iwb):

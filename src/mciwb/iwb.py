@@ -30,9 +30,9 @@ class Iwb:
         client = client or self.connect()
 
         self.players: Dict[str, Player] = {}
-        self.player: Optional[Player] = None
+        self.player: Player = None  # type: ignore
         self.copiers: Dict[str, CopyPaste] = {}
-        self.copier: Optional[CopyPaste] = None
+        self.copier: CopyPaste = None  # type: ignore
 
         self.sign_monitor = Monitor(client)
 
@@ -70,7 +70,7 @@ class Iwb:
             sign.give_signs()
         except (NoPlayerFound, SessionTimeout) as e:
             # during tests this will fail as there is no real player
-            logging.warning(e)
+            logging.warning("failed to give signs to player, %s", e)
 
         logging.info(f"Monitoring player {name} enabled for sign commands")
 

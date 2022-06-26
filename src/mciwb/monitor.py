@@ -8,6 +8,7 @@ from typing import Callable, List
 
 from mcipc.rcon.je import Client
 from mcwb import Vec3
+from rcon.exceptions import SessionTimeout
 
 from mciwb.threads import new_thread
 
@@ -49,6 +50,8 @@ class Monitor:
         except BrokenPipeError:
             logging.error("Connection to Minecraft Server lost, polling terminated")
             self._polling = False
+        except SessionTimeout:
+            logging.warning("Connection timeout")
 
         if self in self.monitors:
             self.monitors.remove(self)
