@@ -8,9 +8,7 @@ from mcipc.rcon.item import Item
 from mcwb.types import Anchor3, Vec3
 
 from mciwb.copier import CopyPaste
-from mciwb.threads import set_client
 from tests.cube import SampleCube
-from tests.mockclient import MockClient
 
 # TODO unit test version of this
 # def test_world_reporting(mciwb_world: Iwb):
@@ -21,9 +19,7 @@ from tests.mockclient import MockClient
 #     assert f"player: {ENTITY_NAME}" in mciwb_world.__repr__()
 
 
-def test_copy_anchors():
-    client = MockClient("localhost", 20400, "pass")
-    set_client(client)  # type: ignore
+def test_copy_anchors(mock_client):
     copy_anchors()
 
 
@@ -72,10 +68,7 @@ def copy_anchors():
         t.clear(source)
 
 
-def test_expand():
-    client = MockClient("localhost", 20400, "pass")
-    set_client(client)  # type: ignore
-
+def test_expand(mock_client):
     copier = CopyPaste()
 
     start = Vec3(0, 0, 0)
@@ -102,16 +95,13 @@ def test_expand():
     assert copier.stop_b == Vec3(6, 20, 20)
 
 
-def test_clear():
-    client = MockClient("localhost", 20400, "pass")
-    set_client(client)  # type: ignore
-
+def test_clear(mock_client):
     copier = CopyPaste()
 
-    client.setblock(Vec3(0, 0, 0), Item.STONE)
+    mock_client.setblock(Vec3(0, 0, 0), Item.STONE)
     copier.select(Vec3(1, 1, 1))
     copier.select(Vec3(0, 0, 0))
 
     copier.clear()
 
-    assert client.getblock(Vec3(0, 0, 0)) == Item.AIR
+    assert mock_client.getblock(Vec3(0, 0, 0)) == Item.AIR
