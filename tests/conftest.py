@@ -17,6 +17,7 @@ from mcwb.types import Vec3
 from mciwb.iwb import Iwb
 from mciwb.player import Player
 from mciwb.threads import set_client
+from tests.mockclient import MockClient
 
 HOST = "localhost"
 SERVER_PORT = 20400
@@ -228,3 +229,10 @@ def mciwb_world(
     world.add_player(ENTITY_NAME)
 
     return world
+
+
+@pytest.fixture()
+def mock_client():
+    client = MockClient("localhost", 20400, "pass")
+    set_client(client)  # type: ignore
+    return client
