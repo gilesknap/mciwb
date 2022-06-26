@@ -109,8 +109,8 @@ class CopyPaste:
                 elif pos[dim] > start[dim]:
                     start[dim] = pos[dim]
 
-        self.select(**stop)
-        self.select(**start)
+        self.select(Vec3(**stop))
+        self.select(Vec3(**start))
 
     def expand(self, x=0, y=0, z=0):
         """
