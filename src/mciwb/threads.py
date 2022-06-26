@@ -20,7 +20,7 @@ def new_thread(client: Client, target, name: str) -> threading.Thread:
 
     def _enter_thread(client, target, name):
         # make new client connection for this thread
-        new_client = Client(client.host, client.port, passwd=client.passwd)
+        new_client = type(client)(client.host, client.port, passwd=client.passwd)
         new_client.connect(True)
 
         # save our new client in the thread local storage
