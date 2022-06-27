@@ -87,7 +87,7 @@ class Monitor:
             self.monitors.remove(self)
         self.poll_thread = None
         self.pollers = []
-        logging.warning(f"Monitor {self.name} stopped")
+        logging.info(f"Monitor {self.name} stopped")
 
     def add_poller_func(self, func: CallbackFunction):
         self.pollers.append(func)

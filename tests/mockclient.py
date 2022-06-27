@@ -7,6 +7,7 @@ from math import floor
 import numpy as np
 from mcipc.rcon.enumerations import CloneMode, Item, MaskMode
 from mcwb.types import Items, Vec3
+from mcwb.volume import Volume
 
 
 class MockClient:
@@ -53,31 +54,22 @@ class MockClient:
         clone_mode: CloneMode,
     ):
         """clone the contents of the world from a range to another position"""
-        begin = []
-        end = []
 
-        # using slicing for the clone requires that all the start coords are
-        # less than the stop coords (and stop coords are +1
-        # (iteration may have been easier but expensive for large clones)
-        for start_dim, stop_dim in zip(start_corner, stop_corner):
-            if start_dim <= stop_dim:
-                begin.append(start_dim)
-                end.append(stop_dim + 1)
-            else:
-                begin.append(stop_dim)
-                end.append(start_dim + 1)
+        # use Volume to normalize the corners for use in slicing
+        vol = Volume.from_corners(start_corner, stop_corner)
 
-        start = Vec3(*begin)
-        stop = Vec3(*end)
-        d_stop = dest + stop - start
+        v_start = vol.start
+        v_stop = v_start + vol.size
+        d_stop = dest + vol.size
+
         self.world[
             dest.x : d_stop.x, dest.y : d_stop.y, dest.z : d_stop.z
         ] = self.world[
-            start.x : stop.x,
-            start.y : stop.y,
-            start.z : stop.z,
+            v_start.x : v_stop.x,
+            v_start.y : v_stop.y,
+            v_start.z : v_stop.z,
         ]
-        return f"cloned {start} : {stop} to {dest}"
+        return f"cloned {v_start} : {v_stop} to {dest}"
 
     @property
     def loot(self):

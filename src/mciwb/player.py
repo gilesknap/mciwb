@@ -22,11 +22,7 @@ class PlayerNotInWorld(Exception):
 
 class Player:
     def __init__(self, name: str) -> None:
-        # todo might make a player with threaded monitoring if needed ?
-        self.running = False
         self.name = name
-        self.current_pos = Vec3(0, 0, 0)
-        self.current_dir = Direction.NORTH
         self._facing()
 
     def _get_entity_data(self, path: str, regex: Pattern[str]) -> Match[str]:
