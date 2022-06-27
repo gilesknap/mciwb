@@ -4,7 +4,8 @@ from typing import Dict, Optional
 from mcipc.rcon.exceptions import NoPlayerFound
 from mcipc.rcon.item import Item
 from mcipc.rcon.je import Client
-from mcwb import Direction, Vec3
+from mcwb import Direction, Vec3, Volume
+from mcwb.itemlists import grab
 from rcon.exceptions import SessionTimeout
 
 from mciwb.copier import CopyPaste
@@ -98,6 +99,19 @@ class Iwb:
             x in result for x in ["Changed the block", "Could not set the block", ""]
         ):
             logging.error(result)
+
+    def get_block(self, pos: Vec3) -> Item:
+        """
+        Gets a block in the world
+        """
+        client = get_client()
+
+        int_pos = Vec3(*pos).with_ints()
+
+        grab_volume = Volume.from_corners(int_pos, int_pos)
+        blocks = grab(client, grab_volume)
+
+        return blocks[0][0][0]
 
     def __repr__(self) -> str:
         report = "Minecraft Interactive World Builder status:\n"
