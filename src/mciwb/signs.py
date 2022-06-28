@@ -13,12 +13,6 @@ from mciwb.monitor import CallbackPosFunction
 from mciwb.player import Player
 from mciwb.threads import get_client
 
-sign_text = re.compile(r"""Text1: '{"text":"([^"]*)"}'""")
-sign_entity = (
-    """minecraft:oak_sign{{BlockEntityTag:{{Text1:'{{"text":"{0}"}}'}},"""
-    """display:{{Name:'{{"text":"{0}"}}'}}}}"""
-)
-
 
 class Signs:
     """
@@ -30,6 +24,14 @@ class Signs:
     functions
     """
 
+    re_sign_text = re.compile(r"""Text1: '{"text":"([^"]*)"}'""")
+    re_sign_entity = (
+        """minecraft:oak_sign{{BlockEntityTag:{{Text1:'{{"text":"{0}"}}'}},"""
+        """display:{{Name:'{{"text":"{0}"}}'}}}}"""
+    )
+
+    wall_sign = "minecraft:oak_wall_sign"
+
     def __init__(self, player: Player):
         self.player = player
         self.copy = CopyPaste()
@@ -40,9 +42,7 @@ class Signs:
         determine the target block that the sign at pos indicates
         """
         # use 'execute if' with a benign command like seed
-        result = (
-            get_client().execute.if_.block(pos, "minecraft:oak_wall_sign").run("seed")
-        )
+        result = get_client().execute.if_.block(pos, self.wall_sign).run("seed")
 
         if "Seed" in result:
             # wall signs target the block behind them
@@ -68,7 +68,7 @@ class Signs:
                 pos = player_pos + facing * distance
                 block_pos = pos.with_ints() + Vec3(0, height, 0)
                 data = client.data.get(block=block_pos)
-                match = sign_text.search(data)
+                match = self.re_sign_text.search(data)
                 if match:
                     text = match.group(1)
                     logging.debug(f"Sign at {pos} has text {text}")
@@ -96,5 +96,5 @@ class Signs:
         Give player one of each command sign in our commands list
         """
         client = get_client()
-        for command in self.signs.keys():
-            client.give(self.player.name, sign_entity.format(command))
+        for command in self.signs:
+            client.give(self.player.name, self.re_sign_entity.format(command))

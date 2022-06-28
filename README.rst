@@ -1,5 +1,4 @@
-|continuous integration| |Quality Gate Status| |codecov| |PyPI version|
-|Codacy Badge| 
+|continuous integration| |PyPI version| |Codacy Badge| 
 
 # mciwb Minecraft Interactive world builder
 
@@ -111,12 +110,6 @@ Todo iPython Commands
 .. |continuous integration|
         image:: https://github.com/gilesknap/mciwb/actions/workflows/code.yml/badge.svg
         :target: https://github.com/gilesknap/mciwb/actions/workflows/code.yml
-.. |Quality Gate Status| 
-        image:: https://sonarcloud.io/api/project_badges/measure?project=mctools_mciwb&metric=alert_status
-        :target: https://sonarcloud.io/summary/new_code?id=mctools_mciwb
-.. |codecov| 
-        image:: https://codecov.io/gh/gilesknap/mciwb/branch/main/graph/badge.svg?token=f2IoKUiNZF
-        :target: https://codecov.io/gh/gilesknap/mciwb
 .. |PyPI version| 
         image:: https://badge.fury.io/py/mciwb.svg
         :target: https://badge.fury.io/py/mciwb
