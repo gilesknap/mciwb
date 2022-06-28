@@ -54,7 +54,6 @@ jobs:
           path: dist
 
   test:
-    needs: docker
     strategy:
       fail-fast: false
       matrix:
