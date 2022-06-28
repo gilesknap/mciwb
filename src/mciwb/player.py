@@ -5,7 +5,7 @@ state
 import math
 import re
 from time import sleep
-from typing import Match, Pattern
+from typing import List, Match, Pattern
 
 from mcwb.types import Direction, Vec3
 from mcwb.volume import Volume
@@ -16,13 +16,13 @@ regex_coord = re.compile(r"\[(-?\d+.?\d*)d, *(-?\d+.?\d*)d, *(-?\d+.?\d*)d\]")
 regex_angle = re.compile(r"-?\ *[0-9]+\.?[0-9]*(?:[Ee]\ *-?\ *[0-9]+)?")
 
 
+class PlayerNotInWorld(Exception):
+    pass
+
+
 class Player:
     def __init__(self, name: str) -> None:
-        # todo might make a player with threaded monitoring if needed ?
-        self.running = False
         self.name = name
-        self.current_pos = Vec3(0, 0, 0)
-        self.current_dir = Direction.NORTH
         self._facing()
 
     def _get_entity_data(self, path: str, regex: Pattern[str]) -> Match[str]:
@@ -38,22 +38,20 @@ class Player:
                 return match
             sleep(0.1)
 
-        raise ValueError(f"player {self.name} not in the world")
+        raise PlayerNotInWorld(f"player {self.name} left")
 
     def _pos(self) -> Vec3:
-        # if called in a thread then use the thread's client object
         match = self._get_entity_data("Pos", regex_coord)
-        self.current_pos = Vec3(
+        pos = Vec3(
             float(match.group(1)), float(match.group(2)), float(match.group(3))
         ).with_ints()
-        return self.current_pos
+        return pos
 
     @property
     def pos(self) -> Vec3:
         return self._pos()
 
     def _facing(self) -> Vec3:
-        # if called in a thread then use the thread's client object
         match = self._get_entity_data("Rotation", regex_angle)
         angle = float(match.group(0))
 
@@ -64,9 +62,17 @@ class Player:
     def facing(self) -> Vec3:
         return self._facing()
 
+    def player_in(self, volume: Volume) -> bool:
+        """
+        Check if the player is in the volume
+        """
+        return volume.inside(self.pos)
+
     @classmethod
-    def players_in(cls, volume: Volume):
-        """return a list of player names whose position is inside the volume"""
+    def players_in(cls, volume: Volume) -> List["Player"]:
+        """
+        return a list of player names whose position is inside the volume
+        """
 
         client = get_client()
         players = []
@@ -74,7 +80,7 @@ class Player:
         names = [p.name for p in client.players.players]
         for name in names:
             try:
-                pos = Player(name)._pos()
+                pos = Player(name).pos
                 if volume.inside(pos, 2):
                     players.append(name)
             except ValueError:

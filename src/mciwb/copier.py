@@ -15,10 +15,10 @@ class CopyPaste:
     """
 
     def __init__(self):
-        self.start_b: Vec3 = zero
-        self.stop_b: Vec3 = self.start_b
-        self.paste_b: Vec3 = self.start_b
-        self.clone_dest = zero
+        self.start_pos: Vec3 = zero
+        self.stop_pos: Vec3 = self.start_pos
+        self.paste_pos: Vec3 = self.start_pos
+        self._clone_dest = zero
         self.size = zero
 
     def get_commands(self):
@@ -35,22 +35,22 @@ class CopyPaste:
         The previous start point becomes the stop point
         (i.e. opposite corner of the paste buffer)
         """
-        self.stop_b = self.start_b
-        self.start_b = pos.with_ints()
-        self.size = self.stop_b - self.start_b
-        self._set_paste(Vec3(self.start_b.x, self.start_b.y, self.start_b.z))
+        self.stop_pos = self.start_pos
+        self.start_pos = pos.with_ints()
+        self.size = self.stop_pos - self.start_pos
+        self._set_paste(Vec3(self.start_pos.x, self.start_pos.y, self.start_pos.z))
 
     def _set_paste(self, pos: Vec3):
         """
         Set the paste point relative to the current player position
         """
-        self.paste_b = pos
+        self.paste_pos = pos
         # adjust clone dest so the paste corner matches the start paste buffer
-        self.clone_dest = self.paste_b
+        self._clone_dest = self.paste_pos
         x_off = self.size.x if self.size.x < 0 else 0
         y_off = self.size.y if self.size.y < 0 else 0
         z_off = self.size.z if self.size.z < 0 else 0
-        self.clone_dest += Vec3(x_off, y_off, z_off)
+        self._clone_dest += Vec3(x_off, y_off, z_off)
 
     def paste(self, pos: Vec3, force=True):
         """
@@ -60,9 +60,9 @@ class CopyPaste:
         self._set_paste(pos)
         mode = CloneMode.FORCE if force else CloneMode.NORMAL
         result = client.clone(
-            self.start_b,
-            self.stop_b,
-            self.clone_dest,
+            self.start_pos,
+            self.stop_pos,
+            self._clone_dest,
             mask_mode=MaskMode.REPLACE,
             clone_mode=mode,
         )
@@ -78,8 +78,8 @@ class CopyPaste:
         client = get_client()
 
         offset = pos
-        end = self.paste_b + self.size + offset
-        result = client.fill(self.paste_b + offset, end, item.value)
+        end = self.paste_pos + self.size + offset
+        result = client.fill(self.paste_pos + offset, end, item.value)
         logging.info(result)
 
     def clear(self, _: Vec3 = zero):
@@ -94,8 +94,8 @@ class CopyPaste:
         the faces outwards to the specified point
         """
         # use mutable start and stop here to make the code more readable
-        start = self.start_b._asdict()
-        stop = self.stop_b._asdict()
+        start = self.start_pos._asdict()
+        stop = self.stop_pos._asdict()
 
         for dim in ["x", "y", "z"]:
             if start[dim] <= stop[dim]:
@@ -119,8 +119,8 @@ class CopyPaste:
         """
         expander = Vec3(x, y, z)
         # use mutable start and stop here to make the code more readable
-        start = self.start_b._asdict()
-        stop = self.stop_b._asdict()
+        start = self.start_pos._asdict()
+        stop = self.stop_pos._asdict()
 
         for dim in ["x", "y", "z"]:
             if expander[dim] > 0:

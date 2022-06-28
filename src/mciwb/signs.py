@@ -14,6 +14,10 @@ from mciwb.player import Player
 from mciwb.threads import get_client
 
 sign_text = re.compile(r"""Text1: '{"text":"([^"]*)"}'""")
+sign_entity = (
+    """minecraft:oak_sign{{BlockEntityTag:{{Text1:'{{"text":"{0}"}}'}},"""
+    """display:{{Name:'{{"text":"{0}"}}'}}}}"""
+)
 
 
 class Signs:
@@ -78,6 +82,7 @@ class Signs:
     def do_action(self, command: str, target: Vec3):
         # if the command is not found then this is just an ordinary sign (I assume!)
         if command in self.signs:
+            logging.debug(f"Calling action for {command}")
             self.signs[command](target)
 
     def add_sign(self, name: str, function: CallbackPosFunction):
@@ -90,11 +95,6 @@ class Signs:
         """
         Give player one of each command sign in our commands list
         """
-        entity = (
-            """minecraft:oak_sign{{BlockEntityTag:{{Text1:'{{"text":"{0}"}}'}},"""
-            """display:{{Name:'{{"text":"{0}"}}'}}}}"""
-        )
-
         client = get_client()
         for command in self.signs.keys():
-            client.give(self.player.name, entity.format(command))
+            client.give(self.player.name, sign_entity.format(command))

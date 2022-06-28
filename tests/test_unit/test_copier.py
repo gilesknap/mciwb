@@ -77,22 +77,22 @@ def test_expand(mock_client):
     copier.select(start)
 
     copier.expand(x=1, z=2)
-    assert copier.start_b == Vec3(0, 0, 0)
-    assert copier.stop_b == Vec3(6, 5, 7)
+    assert copier.start_pos == Vec3(0, 0, 0)
+    assert copier.stop_pos == Vec3(6, 5, 7)
 
     copier.expand(x=-1, y=-2)
-    assert copier.start_b == Vec3(-1, -2, 0)
-    assert copier.stop_b == Vec3(6, 5, 7)
+    assert copier.start_pos == Vec3(-1, -2, 0)
+    assert copier.stop_pos == Vec3(6, 5, 7)
 
     exp = Vec3(0, 20, 20)
     copier.expand_to(exp)
-    assert copier.start_b == Vec3(-1, -2, 0)
-    assert copier.stop_b == Vec3(6, 20, 20)
+    assert copier.start_pos == Vec3(-1, -2, 0)
+    assert copier.stop_pos == Vec3(6, 20, 20)
 
     exp = Vec3(-20, -20, -20)
     copier.expand_to(exp)
-    assert copier.start_b == Vec3(-20, -20, -20)
-    assert copier.stop_b == Vec3(6, 20, 20)
+    assert copier.start_pos == Vec3(-20, -20, -20)
+    assert copier.stop_pos == Vec3(6, 20, 20)
 
 
 def test_clear(mock_client):

@@ -16,7 +16,7 @@ from mcwb.types import Vec3
 
 from mciwb.iwb import Iwb
 from mciwb.player import Player
-from mciwb.threads import set_client
+from mciwb.threads import get_client, set_client
 from tests.mockclient import MockClient
 
 HOST = "localhost"
@@ -24,6 +24,7 @@ SERVER_PORT = 20400
 RCON_PORT = 20401
 RCON_P = "pass"
 ENTITY_NAME = "george"
+ENTITY_POS = Vec3(0, -60, 0)
 
 # the locally mapped temporary folder for minecraft data
 
@@ -182,25 +183,25 @@ def minecraft_client(minecraft_container: Container):
     set_client(client)
 
     # ensure that the chunks near 0,0,0 are loaded
-    client.setworldspawn(Vec3(1, 4, 0))
+    client.setworldspawn(ENTITY_POS)
     # don't announce every rcon command
     client.gamerule("sendCommandFeedback", False)
 
     # make sure that the grab function entities that are created as a side
     # effect will drop into the void
     # TODO this needs to go in mcwb since this is where grab function is
+    # TODO in 1.19 the bottom of the world is at -64 so need a fix for that!
     client.setblock((0, 0, 0), Item.AIR.value)
 
     return client
 
 
 @pytest.fixture()
-def minecraft_player(minecraft_client):
+def minecraft_player():
+    client = get_client()
 
     # summon a fixed position, named entity as a substitute for a player
-    res = minecraft_client.summon(
-        "armor_stand", Vec3(0, -60, 0), {"CustomName": f'"{ENTITY_NAME}"'}
-    )
+    res = client.summon("armor_stand", ENTITY_POS, {"CustomName": f'"{ENTITY_NAME}"'})
     logging.info(res)
 
     for retry in range(10):

@@ -4,12 +4,13 @@ from typing import Dict, Optional
 from mcipc.rcon.exceptions import NoPlayerFound
 from mcipc.rcon.item import Item
 from mcipc.rcon.je import Client
-from mcwb import Direction, Vec3
+from mcwb import Direction, Vec3, Volume
+from mcwb.itemlists import grab
 from rcon.exceptions import SessionTimeout
 
 from mciwb.copier import CopyPaste
 from mciwb.monitor import Monitor
-from mciwb.player import Player
+from mciwb.player import Player, PlayerNotInWorld
 from mciwb.signs import Signs
 from mciwb.threads import get_client, set_client
 
@@ -29,12 +30,11 @@ class Iwb:
 
         client = client or self.connect()
 
-        self.players: Dict[str, Player] = {}
         self.player: Player = None  # type: ignore
-        self.copiers: Dict[str, CopyPaste] = {}
         self.copier: CopyPaste = None  # type: ignore
 
-        self.sign_monitor = Monitor()
+        self._players: Dict[str, Player] = {}
+        self._copiers: Dict[str, CopyPaste] = {}
 
     def connect(self) -> Client:
         """
@@ -55,20 +55,20 @@ class Iwb:
         return client
 
     def add_player(self, name: str, me=True):
-        player = Player(name)
-        self.players[name] = player
-
-        sign = Signs(player)
-        self.sign_monitor.add_poller_func(sign.poll)
-        self.copiers[name] = sign.copy
-
-        if me:
-            self.player = player
-            self.copier = sign.copy
-
         try:
+            player = Player(name)
+            self._players[name] = player
+
+            sign = Signs(player)
+            Monitor(sign.poll, name=name)
+            self._copiers[name] = sign.copy
+
+            if me:
+                self.player = player
+                self.copier = sign.copy
+
             sign.give_signs()
-        except (NoPlayerFound, SessionTimeout) as e:
+        except (PlayerNotInWorld, SessionTimeout, NoPlayerFound) as e:
             # during tests this will fail as there is no real player
             logging.warning("failed to give signs to player, %s", e)
 
@@ -76,16 +76,6 @@ class Iwb:
 
     def stop(self):
         Monitor.stop_all()
-
-    @property
-    def selected_position(self) -> Vec3:
-        """
-        Get the most recent block position on which the player placed a
-        'select' sign
-        """
-        if self.player is None:
-            raise RuntimeError("No player selected")
-        return self.copiers[self.player.name].start_b
 
     def set_block(self, pos: Vec3, block: Item, facing: Optional[Vec3] = None):
         """
@@ -110,14 +100,27 @@ class Iwb:
         ):
             logging.error(result)
 
+    def get_block(self, pos: Vec3) -> Item:
+        """
+        Gets a block in the world
+        """
+        client = get_client()
+
+        int_pos = Vec3(*pos).with_ints()
+
+        grab_volume = Volume.from_corners(int_pos, int_pos)
+        blocks = grab(client, grab_volume)
+
+        return blocks[0][0][0]
+
     def __repr__(self) -> str:
         report = "Minecraft Interactive World Builder status:\n"
         if self.copier is not None:
             report += (
-                "  copy buffer start: {o.copier.start_b}\n"
-                "  copy buffer stop: {o.copier.stop_b}\n"
+                "  copy buffer start: {o.copier.start_pos}\n"
+                "  copy buffer stop: {o.copier.stop_pos}\n"
                 "  copy buffer size: {o.copier.size}\n"
-                "  paste point: {o.copier.paste_b}\n"
+                "  paste point: {o.copier.paste_pos}\n"
             )
         if self.player is not None:
             report += (

@@ -131,3 +131,6 @@ dmypy.json
 cov.xml
 .coverage
 
+# These are generated at build time
+# to commit them remove this line
+requirements*

@@ -109,12 +109,6 @@ jobs:
         run: |
           pip freeze --exclude-editable > requirements_dev.txt
 
-      - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v2
-        with:
-          name: ${{ matrix.python }}/${{ matrix.os }}/${{ matrix.lock }}
-          files: cov.xml
-
       - name: Upload lockfiles
         if: matrix.lock
         uses: actions/upload-artifact@v2
@@ -124,18 +118,11 @@ jobs:
             requirements.txt
             requirements_dev.txt
 
-      - name: SonarCloud Scan
-        uses: sonarsource/sonarcloud-github-action@master
+      - name: Run codacy-coverage-reporter
+        uses: codacy/codacy-coverage-reporter-action@v1
         with:
-          args: >
-            -Dsonar.organization=mctools
-            -Dsonar.python.version=3
-            -Dsonar.python.coverage.reportPaths=cov.xml
-            -Dsonar.sources=src/mciwb
-            -Dsonar.tests=tests
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          api-token: ${{ secrets.CODACY_GK }}
+          coverage-reports: cov.xml
 
   release:
     needs: [lint, wheel, test]
