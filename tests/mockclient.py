@@ -98,7 +98,6 @@ class MockClient:
         """
         summon an entity at position with properties
         """
-        pass
         # for simplicity, assume 'george' was summoned at 0,-16,-60, rotation=0
         # the data property below will deliver these values
 
