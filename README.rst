@@ -1,121 +1,57 @@
-|continuous integration| |PyPI version| |Codacy Badge| 
+|code_ci| |docs_ci| |coverage| |pypi_version| |license|
 
-# mciwb Minecraft Interactive world builder
 
-Additional functions on top of the mcwb world builder library to allow
-interactive world building using ipython and a minecraft client in
-tandem.
+Minecraft Interactive World Builder
+===================================
 
-Intro
-=====
+.. warning::
+    
+    UNDER DEVELOPMENT: not all features are yet available and the tutorials 
+    are not yet complete.
+    
+This project is intended as a fun way to learn the Python Programming Language.
+It has the following features:
 
-The interaction is achieved by dropping command signs into the world.
-You can also switch back to the iPython console and execute commands.
+ - Use Python to create anything inside of Minecraft worlds. 
+ - Call Python code when events occur inside the world.
+ - Use an iPython prompt to interact with the world by typing Python commands
+ - Have your player inside the world execute Python code by placing command 
+   signs or activating switches/levers with Python actions.
 
-To initiate an interacive session create a Copy object and pass the
-player’s name. See demo.py for example usage.
+All instructions on how to set up a Minecraft Server and the Python developer
+environment are included. There will be a step by step tutorial to
+introduce Python Programming.
 
-The player will be given one of each of the command signs currently
-available. The player can then invoke these commands and indicate a
-block location by placing one of these signs in game.
 
-See the following video for a quick sample of the capabilities:
+See `intro` to begin.
 
-https://user-images.githubusercontent.com/964827/139144276-8c14ddc4-350f-4e7f-b393-2ec4187c5870.mp4
+============== ==============================================================
+PyPI           ``pip install mciwb``
+Source code    https://github.com/gilesknap/mciwb
+Documentation  https://gilesknap.github.io/mciwb
+Releases       https://github.com/gilesknap/mciwb/releases
+============== ==============================================================
 
-Interactive Commands
-====================
 
-So far we have the following signs to drop. See demo.py for example
-usage. (video shows start and stop signs which are now combined into
-‘select’)
+.. |code_ci| image:: https://github.com/gilesknap/mciwb/workflows/Code%20CI/badge.svg?branch=main
+    :target: https://github.com/gilesknap/mciwb/actions?query=workflow%3A%22Code+CI%22
+    :alt: Code CI
 
-When you drop a sign you must be facing it. It will disappear when the
-sign has been detected by the poller and the function has executed.
+.. |docs_ci| image:: https://github.com/gilesknap/mciwb/workflows/Docs%20CI/badge.svg?branch=main
+    :target: https://github.com/gilesknap/mciwb/actions?query=workflow%3A%22Docs+CI%22
+    :alt: Docs CI
 
-Note that the sign’s target coordinates are the block **behind** it and
-a free standing sign targets the block below it.
+.. |coverage| image:: https://codecov.io/gh/gilesknap/mciwb/branch/main/graph/badge.svg
+    :target: https://codecov.io/gh/gilesknap/mciwb
+    :alt: Test Coverage
 
--  **select**: set the start and stop point for the copy buffer, the
-   last two uses of this command determine the bounding box of the copy
-   buffer. The last use determines the anchor point for the next paste
--  **expand**: expand the closest face of the copy buffer to the
-   indicated point (can do all 6 faces)
--  **paste**: clone the contents of copy buffer to the current indicated
-   location (anchored at the start point)
--  **clear**: clear the contents of the paste buffer
--  **backup** create a zipped and dated backup of the world
+.. |pypi_version| image:: https://img.shields.io/pypi/v/mciwb.svg
+    :target: https://pypi.org/project/mciwb
+    :alt: Latest PyPI version
 
-Todo Interactive Commands
-=========================
-
--  **shift**: shift the copy buffer until the closest face is at the
-   indicated point
-
-Useful iPython Commands
-=======================
-
-Using iPython you can also interact with the same Copy object your
-player is using in the game.
-
-The following useful commands are available on the Copy class:
-
--  **shift**: shift the copy buffer in any dimension
--  **expand**: expand the copy buffer by moving one of its faces
-   outwards
--  **paste**: paste at the paste location with offset. Can be used in a
-   loop to make repeating structures.
--  **restore**: restore the world to a previous backup
-
-Demo 
-====
-
-To try out the demo functions 
-
-- create a server with flat world and connect your client to it
-- clone the repo
-  - git clone git@github.com:gilesknap/mciwb.git
-  - cd mciwb
-- create a venv and install mciwb
-  - virtualenv .venv
-  - source .venv/bin/activate
-  - pip install -e .[dev]
-- launch with your server and player details
-  - mciwb --server nuc1 --port 31001 --player TransformerScorn
-- Move your player to observe 0,4,0
-- type these commands into iPython
-  - import demo.shapes as cool
-  - pos = pos = mc.Position(0,4,0)
-  - cool.pyramid( pos, 11)
-
-an 11 x 11 pyramid will be created
-
-Todo iPython Commands
-=====================
-
--  **save**: save the copy buffer to a named file
-
--  **load**: load a file into the world at the copy buffer start point.
-   Set the copy buffer to enclose the loaded structure
-
--  **rotate**: perform transforms on the copy buffer
-
--  Additional support in mcwb required (profile generators)
-
-   -  **rectangle**: make a rectangle described by copy buffer corners
-      (expects one of the copy dimensions to be size 1)
-   -  **elipse**: make a elipse described by copy buffer corners
-      (expects one of the copy dimensions to be size 1)
-
-.. |continuous integration|
-        image:: https://github.com/gilesknap/mciwb/actions/workflows/code.yml/badge.svg
-        :target: https://github.com/gilesknap/mciwb/actions/workflows/code.yml
-.. |PyPI version| 
-        image:: https://badge.fury.io/py/mciwb.svg
-        :target: https://badge.fury.io/py/mciwb
-.. |Codacy Badge| 
-        image:: https://app.codacy.com/project/badge/Grade/4c514b64299e4ccd8c569d3e787245c7
-        :target: https://www.codacy.com/gh/gilesknap/mciwb/dashboard?utm_source=github.com&utm_medium=referral&utm_content=gilesknap/mciwb&utm_campaign=Badge_Grade
+.. |license| image:: https://img.shields.io/badge/License-Apache%202.0-blue.svg
+    :target: https://opensource.org/licenses/Apache-2.0
+    :alt: Apache License
 
 ..
     Anything below this line is used when viewing README.rst and will be replaced
