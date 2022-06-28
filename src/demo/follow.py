@@ -15,7 +15,7 @@ def follow(pyramid_centre):
     corner = pyramid_centre + Direction.SOUTH * half + Direction.WEST * half
 
     old_direction = 0
-    for i in range(200000):
+    while True:
         time.sleep(0.5)
         direction = Direction.facing(Position(5, 0, -5), world.player.pos)
         if direction != old_direction:

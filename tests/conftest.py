@@ -204,7 +204,7 @@ def minecraft_player():
     res = client.summon("armor_stand", ENTITY_POS, {"CustomName": f'"{ENTITY_NAME}"'})
     logging.info(res)
 
-    for retry in range(10):
+    for _ in range(10):
         try:
             player = Player(ENTITY_NAME)
         except ValueError:

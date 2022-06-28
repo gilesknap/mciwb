@@ -31,7 +31,7 @@ class Player:
         an entity that does exist
         """
         client = get_client()
-        for retry in range(5):
+        for _ in range(5):
             data = client.data.get(entity=f"@e[name={self.name},limit=1]", path=path)
             match = regex.search(data)
             if match:
