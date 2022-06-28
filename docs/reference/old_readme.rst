@@ -5,14 +5,14 @@ This file is the old readme.txt file. It is kept here for reference.
 I will be moving elements out of here into the new docs structure.
 
 mciwb Minecraft Interactive world builder
-=========================================
+-----------------------------------------
 
 Additional functions on top of the mcwb world builder library to allow
 interactive world building using ipython and a minecraft client in
 tandem.
 
 Intro
-=====
+-----
 
 The interaction is achieved by dropping command signs into the world.
 You can also switch back to the iPython console and execute commands.
@@ -29,7 +29,7 @@ See the following video for a quick sample of the capabilities:
 https://user-images.githubusercontent.com/964827/139144276-8c14ddc4-350f-4e7f-b393-2ec4187c5870.mp4
 
 Interactive Commands
-====================
+--------------------
 
 So far we have the following signs to drop. See demo.py for example
 usage. (video shows start and stop signs which are now combined into
@@ -52,13 +52,13 @@ a free standing sign targets the block below it.
 -  **backup** create a zipped and dated backup of the world
 
 Todo Interactive Commands
-=========================
+-------------------------
 
 -  **shift**: shift the copy buffer until the closest face is at the
    indicated point
 
 Useful iPython Commands
-=======================
+-----------------------
 
 Using iPython you can also interact with the same Copy object your
 player is using in the game.
@@ -73,7 +73,7 @@ The following useful commands are available on the Copy class:
 -  **restore**: restore the world to a previous backup
 
 Demo 
-====
+----
 
 To try out the demo functions 
 
@@ -96,7 +96,7 @@ To try out the demo functions
 an 11 x 11 pyramid will be created
 
 Todo iPython Commands
-=====================
+---------------------
 
 -  **save**: save the copy buffer to a named file
 
