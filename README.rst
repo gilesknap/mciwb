@@ -1,4 +1,4 @@
-|continuous integration| |PyPI version| |Codacy Badge| 
+|code_ci| |docs_ci| |coverage| |pypi_version| |license|
 
 # mciwb Minecraft Interactive world builder
 
@@ -107,15 +107,26 @@ Todo iPython Commands
    -  **elipse**: make a elipse described by copy buffer corners
       (expects one of the copy dimensions to be size 1)
 
-.. |continuous integration|
-        image:: https://github.com/gilesknap/mciwb/actions/workflows/code.yml/badge.svg
-        :target: https://github.com/gilesknap/mciwb/actions/workflows/code.yml
-.. |PyPI version| 
-        image:: https://badge.fury.io/py/mciwb.svg
-        :target: https://badge.fury.io/py/mciwb
-.. |Codacy Badge| 
-        image:: https://app.codacy.com/project/badge/Grade/4c514b64299e4ccd8c569d3e787245c7
-        :target: https://www.codacy.com/gh/gilesknap/mciwb/dashboard?utm_source=github.com&utm_medium=referral&utm_content=gilesknap/mciwb&utm_campaign=Badge_Grade
+
+.. |code_ci| image:: https://github.com/gilesknap/mciwb/workflows/Code%20CI/badge.svg?branch=main
+    :target: https://github.com/gilesknap/mciwb/actions?query=workflow%3A%22Code+CI%22
+    :alt: Code CI
+
+.. |docs_ci| image:: https://github.com/gilesknap/mciwb/workflows/Docs%20CI/badge.svg?branch=main
+    :target: https://github.com/gilesknap/mciwb/actions?query=workflow%3A%22Docs+CI%22
+    :alt: Docs CI
+
+.. |coverage| image:: https://codecov.io/gh/gilesknap/mciwb/branch/main/graph/badge.svg
+    :target: https://codecov.io/gh/gilesknap/mciwb
+    :alt: Test Coverage
+
+.. |pypi_version| image:: https://img.shields.io/pypi/v/mciwb.svg
+    :target: https://pypi.org/project/mciwb
+    :alt: Latest PyPI version
+
+.. |license| image:: https://img.shields.io/badge/License-Apache%202.0-blue.svg
+    :target: https://opensource.org/licenses/Apache-2.0
+    :alt: Apache License
 
 ..
     Anything below this line is used when viewing README.rst and will be replaced
