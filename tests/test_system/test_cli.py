@@ -1,9 +1,7 @@
 from pathlib import Path
 
-from docker.models.containers import Container
 from typer.testing import CliRunner
 
-from mciwb import Player
 from mciwb.__main__ import cli
 from tests.conftest import HOST, RCON_P, RCON_PORT
 
@@ -18,7 +16,7 @@ def run_cli(*args):
     return result
 
 
-def test_repr(tmp_path: Path, minecraft_container: Container, minecraft_player: Player):
+def test_repr(tmp_path: Path, minecraft_container, minecraft_client, minecraft_player):
     """launch the cli in test mode and connect to the test server"""
     result = run_cli(
         "--test", "--server", HOST, "--port", RCON_PORT, "--passwd", RCON_P

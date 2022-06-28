@@ -9,6 +9,8 @@ from mcipc.rcon.enumerations import CloneMode, Item, MaskMode
 from mcwb.types import Items, Vec3
 from mcwb.volume import Volume
 
+from mciwb import Player
+
 
 class MockClient:
     """
@@ -91,6 +93,36 @@ class MockClient:
                 return mine_cls()
 
         return spawn_cls()
+
+    def summon(self, entity_type, pos: Vec3, properties):
+        """
+        summon an entity at position with properties
+        """
+        pass
+        # for simplicity, assume 'george' was summoned at 0,-16,-60, rotation=0
+        # the data property below will deliver these values
+
+    @property
+    def players(self):
+        class players_cls:
+            @property
+            def players(self):
+                return [Player("george")]
+
+        return players_cls()
+
+    @property
+    def data(self):
+        class get_cls:
+            def get(self, entity: str, path: str):
+                if path == "Pos":
+                    return "[0.0d, -60.0d, 0.0d]"
+                elif path == "Rotation":
+                    return "0"
+                else:
+                    return ""
+
+        return get_cls()
 
     ###########################################################################
     # the following are additional functions for use in tests #################
