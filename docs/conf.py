@@ -64,8 +64,8 @@ default_role = "any"
 # The suffix of source filenames.
 source_suffix = ".rst"
 
-# The main toctree document.
-main_doc = "index"
+# The master toctree document.
+master_doc = "index"
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
@@ -82,11 +82,6 @@ intersphinx_mapping = dict(python=("https://docs.python.org/3/", None))
 # A dictionary of graphviz graph attributes for inheritance diagrams.
 inheritance_graph_attrs = dict(rankdir="TB")
 
-# Common links that should be available on every page
-rst_epilog = """
-.. _Diamond Light Source:
-    http://www.diamond.ac.uk
-"""
 
 # Ignore localhost links for period check that links in docs are valid
 linkcheck_ignore = [r"http://localhost:\d+/"]
