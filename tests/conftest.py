@@ -145,7 +145,6 @@ def minecraft_container(request: pytest.FixtureRequest):
             restart_policy={"Name": "always"},
             volumes={str(data_folder): {"bind": "/data", "mode": "rw"}},
             name=container_name,
-            user=os.getuid(),
         ),
     )
 
