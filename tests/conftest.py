@@ -186,6 +186,8 @@ def minecraft_client(minecraft_container: Container):
     # don't announce every rcon command
     client.gamerule("sendCommandFeedback", False)
 
+    # make sure the local chunk is loaded even if we don't summon a player
+    client.forceload.add((0, 0))
     # make sure that the grab function entities that are created as a side
     # effect will drop into the void
     # TODO this needs to go in mcwb since this is where grab function is

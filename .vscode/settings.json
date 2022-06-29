@@ -17,6 +17,7 @@
         "arcname",
         "copyblock",
         "fname",
+        "forceload",
         "gamerule",
         "itemlists",
         "minecraft",
