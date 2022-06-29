@@ -62,7 +62,7 @@ def wait_server(cont: Container, count=1):
     logging.debug("waiting for mc server to come online")
     counter = 0
     for block in cont.logs(stream=True):
-        print(block.decode("utf-8"))
+        logging.debug(block.decode("utf-8").strip())
         if b"RCON running" in block:
             counter += 1
             if counter >= count:
@@ -171,7 +171,7 @@ def client_connect():
     return client
 
 
-@pytest.fixture()
+@pytest.fixture(scope="session")
 def minecraft_client(minecraft_container: Container):
     """
     return an rcon connection to the test server
@@ -186,11 +186,8 @@ def minecraft_client(minecraft_container: Container):
     # don't announce every rcon command
     client.gamerule("sendCommandFeedback", False)
 
-    # make sure the local chunk is loaded even if we don't summon a player
-    client.forceload.add((0, 0))
     # make sure that the grab function entities that are created as a side
     # effect will drop into the void
-    # TODO this needs to go in mcwb since this is where grab function is
     # TODO in 1.19 the bottom of the world is at -64 so need a fix for that!
     client.setblock((0, 0, 0), Item.AIR.value)
 

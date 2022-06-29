@@ -22,9 +22,7 @@ from tests.conftest import (
 
 
 @pytest.mark.skipif(KEEP_SERVER, reason="KEEP_SERVER incompatible with backup")
-def test_backup_restore(
-    minecraft_container: Container, minecraft_client: Client, tmp_path: Path
-):
+def test_backup_restore(minecraft_container: Container, tmp_path: Path):
     """
     Test the backup and restore functionality.
 
@@ -35,7 +33,6 @@ def test_backup_restore(
 
     (TODO: need to look at why client.close does not work, as contexts were
     the only way to get this working)
-    TODO tidy up the need for set_client all the time?
     """
 
     backup_folder = Path(tmp_path) / "backup"
@@ -51,8 +48,6 @@ def test_backup_restore(
         result = client.setblock(test_block, Item.RED_CONCRETE.value)
         logging.debug("setblock %s", result)
 
-    # ensure world file changes get written out
-    minecraft_client.close()
     minecraft_container.restart()
     wait_server(minecraft_container, count=2)
 
@@ -64,12 +59,11 @@ def test_backup_restore(
         result = client.setblock(test_block, Item.YELLOW_CONCRETE.value)
         logging.debug("setblock %s", result)
 
-    with Client(HOST, RCON_PORT, passwd=RCON_P) as client:
-        set_client(client)
-        # restore the backed up change
-        backup.restore(yes=True)
+    minecraft_container.stop()
 
-    minecraft_container.restart()
+    backup.restore()
+
+    minecraft_container.start()
     wait_server(minecraft_container, count=3)
 
     with Client(HOST, RCON_PORT, passwd=RCON_P) as client:
