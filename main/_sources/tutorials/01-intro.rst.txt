@@ -40,12 +40,9 @@ the computer where you will be trying out Minecraft Interactive World Builder
     
         https://www.minecraft.net/en-us/download
 
-For Windows an Mac users, the links for you are on the above page under 
-the heading "NEED A DIFFERENT FLAVOR?".
-
-Microsoft has now bundled the Java and Bedrock editions together. We are 
-using the Java edition because that lets you easily set up your own 
-Minecraft Server so multiple players can join the same world.
+Microsoft has now bundled the Java and Bedrock editions together. 
+We are using the Java edition here but this project could be adapted to
+work fir either.
 
 Visual Studio Code
 ------------------
