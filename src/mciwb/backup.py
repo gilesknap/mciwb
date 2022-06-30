@@ -44,8 +44,10 @@ class Backup:
 
         file = self.backup_folder / fname
         world_files = self.world_folder.glob("**/*")
+        world_files = [f for f in world_files if not f.suffix == ".lock"]
         with ZipFile(file, "w", compression=ZIP_DEFLATED) as zip_file:
             for wf in world_files:
+
                 zip_file.write(wf, arcname=wf.relative_to(self.world_folder))
         logging.debug("ZipFile complete")
 
