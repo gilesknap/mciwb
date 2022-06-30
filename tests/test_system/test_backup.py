@@ -1,5 +1,6 @@
 import logging
 from pathlib import Path
+from time import sleep
 
 import pytest
 from docker.models.containers import Container
@@ -61,7 +62,12 @@ def test_backup_restore(minecraft_container: Container, tmp_path: Path):
 
     minecraft_container.stop()
     minecraft_container.wait()
-
+    # this should not be required. But tests on Github are failing
+    for _ in range(200):
+        minecraft_container.update()
+        if minecraft_container.status == "exited":
+            break
+        sleep(0.1)
     backup.restore()
 
     minecraft_container.start()

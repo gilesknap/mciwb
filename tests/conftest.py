@@ -142,7 +142,7 @@ def minecraft_container(request: pytest.FixtureRequest):
             detach=True,
             environment=env,
             network_mode="host",
-            restart_policy={"Name": "always"},
+            # restart_policy={"Name": "always"},
             volumes={str(data_folder): {"bind": "/data", "mode": "rw"}},
             name=container_name,
         ),
