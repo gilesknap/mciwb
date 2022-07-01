@@ -1,6 +1,5 @@
 import logging
 from pathlib import Path
-from time import sleep
 
 import pytest
 from docker.models.containers import Container
@@ -60,23 +59,24 @@ def test_backup_restore(minecraft_container: Container, tmp_path: Path):
         result = client.setblock(test_block, Item.YELLOW_CONCRETE.value)
         logging.debug("setblock %s", result)
 
+    logging.debug("stopping MC server to restore backup")
     minecraft_container.stop()
+    logging.debug("stop returned")
     minecraft_container.wait()
-    # this should not be required. But tests on Github are failing
-    for _ in range(200):
-        minecraft_container.update()
-        if minecraft_container.status == "exited":
-            break
-        sleep(0.1)
+    logging.debug("wait returned, restoring ...")
     backup.restore()
 
+    logging.debug("restore done, starting ...")
     minecraft_container.start()
+    logging.debug("waiting for start ...")
     wait_server(minecraft_container, count=3)
 
+    logging.debug("started, getting block ...")
     with Client(HOST, RCON_PORT, passwd=RCON_P) as client:
         set_client(client)
         # TODO mcwb should break out a getblock function from grab
         grab_volume = Volume.from_corners(test_block, test_block)
         restored_blocks = grab(client, grab_volume)
+    logging.debug("got block, checking ...")
 
     assert restored_blocks[0][0][0] == Item.RED_CONCRETE
