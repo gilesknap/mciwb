@@ -16,8 +16,7 @@ from tests.server import (
     HOST,
     RCON_P,
     RCON_PORT,
-    minecraft_create,
-    minecraft_remove,
+    MinecraftServer,
 )
 
 logging.basicConfig(
@@ -35,13 +34,9 @@ def minecraft_container(request: pytest.FixtureRequest):
     to be executed twice for two runs of the tests. This requires
     caution as the world must be reset to a known state.
     """
+    mc = MinecraftServer(name="mciwb_server", rcon=RCON_PORT)
 
-    def close_minecraft():
-        minecraft_remove(container)
-
-    container = minecraft_create()
-
-    request.addfinalizer(close_minecraft)
+    request.addfinalizer(mc.minecraft_remove)
 
 
 def client_connect():
