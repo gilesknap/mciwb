@@ -1,5 +1,6 @@
 import logging
 from pathlib import Path
+from time import sleep
 
 import pytest
 from docker.models.containers import Container
@@ -49,7 +50,7 @@ def test_backup_restore(minecraft_container: Container, tmp_path: Path):
         logging.debug("setblock %s", result)
         client.stop()
 
-    # restart the server flush the data
+    # restart the server to flush the data
     minecraft_container.wait()
     minecraft_container.start()
     wait_server(minecraft_container, count=2)
@@ -64,8 +65,9 @@ def test_backup_restore(minecraft_container: Container, tmp_path: Path):
         client.stop()
 
     minecraft_container.wait()
+    sleep(2)
     logging.debug("wait returned, restoring ...")
-    backup.restore(backup=True)
+    backup.restore()
 
     logging.debug("restore done, starting ...")
     minecraft_container.start()
