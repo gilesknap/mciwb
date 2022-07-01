@@ -12,14 +12,8 @@ from mcwb.volume import Volume
 from mciwb import Client
 from mciwb.backup import Backup
 from mciwb.threads import set_client
-from tests.conftest import (
-    HOST,
-    KEEP_SERVER,
-    RCON_P,
-    RCON_PORT,
-    data_folder,
-    wait_server,
-)
+from tests.conftest import HOST, RCON_P, RCON_PORT
+from tests.server import KEEP_SERVER, data_folder, wait_server
 
 
 @pytest.mark.skipif(KEEP_SERVER, reason="KEEP_SERVER incompatible with backup")
