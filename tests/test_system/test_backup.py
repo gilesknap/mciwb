@@ -1,5 +1,6 @@
 import logging
 from pathlib import Path
+from subprocess import check_output
 
 import pytest
 from docker.models.containers import Container
@@ -65,6 +66,8 @@ def test_backup_restore(minecraft_container: Container, tmp_path: Path):
     logging.debug("stop returned")
     wait_server_down(minecraft_container, count=2)
     logging.debug("wait returned, restoring ...")
+    logging.debug(check_output(["ls", "-l", str(backup.world_folder)]))
+    check_output(["sudo", "chmod -R a+rw " + str(backup.world_folder)])
     backup.restore(backup=True)
 
     logging.debug("restore done, starting ...")
