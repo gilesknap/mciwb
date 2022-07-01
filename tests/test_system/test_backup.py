@@ -64,7 +64,7 @@ def test_backup_restore(minecraft_container: Container, tmp_path: Path):
         logging.debug("setblock %s", result)
         client.stop()
 
-    minecraft_container.wait()
+    minecraft_container.remove()
     sleep(2)
     logging.debug("wait returned, restoring ...")
     backup.restore()
