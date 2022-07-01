@@ -18,6 +18,7 @@ from tests.conftest import (
     RCON_PORT,
     data_folder,
     wait_server,
+    wait_server_down,
 )
 
 
@@ -62,7 +63,7 @@ def test_backup_restore(minecraft_container: Container, tmp_path: Path):
     logging.debug("stopping MC server to restore backup")
     minecraft_container.stop()
     logging.debug("stop returned")
-    minecraft_container.wait()
+    wait_server_down(minecraft_container, count=2)
     logging.debug("wait returned, restoring ...")
     backup.restore()
 
