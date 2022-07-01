@@ -1,6 +1,5 @@
 import logging
 from pathlib import Path
-from subprocess import check_output
 
 import pytest
 from docker.models.containers import Container
@@ -19,7 +18,6 @@ from tests.conftest import (
     RCON_PORT,
     data_folder,
     wait_server,
-    wait_server_down,
 )
 
 
@@ -49,8 +47,11 @@ def test_backup_restore(minecraft_container: Container, tmp_path: Path):
         set_client(client)
         result = client.setblock(test_block, Item.RED_CONCRETE.value)
         logging.debug("setblock %s", result)
+        client.stop()
 
-    minecraft_container.restart()
+    # restart the server flush the data
+    minecraft_container.wait()
+    minecraft_container.start()
     wait_server(minecraft_container, count=2)
 
     with Client(HOST, RCON_PORT, passwd=RCON_P) as client:
@@ -60,18 +61,15 @@ def test_backup_restore(minecraft_container: Container, tmp_path: Path):
         # overwrite the backed up change in the world
         result = client.setblock(test_block, Item.YELLOW_CONCRETE.value)
         logging.debug("setblock %s", result)
+        client.stop()
 
-    logging.debug("stopping MC server to restore backup")
-    minecraft_container.stop()
-    logging.debug("stop returned")
-    wait_server_down(minecraft_container, count=2)
+    minecraft_container.wait()
     logging.debug("wait returned, restoring ...")
-    logging.debug(check_output(["ls", "-l", str(backup.world_folder)]))
-    check_output(["sudo", "chmod -R a+rw " + str(backup.world_folder)])
     backup.restore(backup=True)
 
     logging.debug("restore done, starting ...")
     minecraft_container.start()
+
     logging.debug("waiting for start ...")
     wait_server(minecraft_container, count=3)
 
@@ -81,6 +79,5 @@ def test_backup_restore(minecraft_container: Container, tmp_path: Path):
         # TODO mcwb should break out a getblock function from grab
         grab_volume = Volume.from_corners(test_block, test_block)
         restored_blocks = grab(client, grab_volume)
-    logging.debug("got block, checking ...")
 
     assert restored_blocks[0][0][0] == Item.RED_CONCRETE

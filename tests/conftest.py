@@ -73,29 +73,6 @@ def wait_server(cont: Container, count=1):
     logging.debug("mc server is online")
 
 
-def wait_server_down(cont: Container, count=1):
-    """
-    Wait until the server has stopped
-    """
-
-    start_time: datetime = datetime.now()
-    timeout = 100
-
-    cont.reload()
-    logging.debug("waiting for mc server to go down")
-    counter = 0
-    for block in cont.logs(stream=True):
-        logging.debug(block.decode("utf-8").strip())
-        if b"mc-server-runner	Done" in block:
-            counter += 1
-            if counter >= count:
-                break
-        elapsed = datetime.now() - start_time
-        if elapsed.total_seconds() > timeout:
-            raise RuntimeError("Timeout Starting minecraft")
-    logging.debug("mc server is down")
-
-
 @pytest.fixture(scope="session")
 def minecraft_container(request: pytest.FixtureRequest):
     """
