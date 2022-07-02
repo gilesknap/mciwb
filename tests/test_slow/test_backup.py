@@ -2,7 +2,7 @@ import logging
 import os
 from pathlib import Path
 
-import pytest
+# import pytest
 from mcipc.rcon.item import Item
 from mcwb.itemlists import grab
 from mcwb.types import Vec3
@@ -17,9 +17,9 @@ from tests.server import MinecraftServer
 GITHUB_ACTIONS = "GITHUB_ACTIONS" in os.environ
 
 
-@pytest.mark.skipif(
-    GITHUB_ACTIONS, reason="file permissions problems on github - skipping"
-)
+# @pytest.mark.skipif(
+#     GITHUB_ACTIONS, reason="file permissions problems on github - skipping"
+# )
 def test_backup_restore(tmp_path: Path):
     """
     Test the backup and restore functionality.

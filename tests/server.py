@@ -69,13 +69,12 @@ class MinecraftServer:
 
         # wait until a connection is available
         for _ in range(10):
-            sleep(2)
             try:
                 with Client(HOST, self.rcon, passwd=RCON_P):
                     pass
                 break
             except ConnectionRefusedError:
-                pass
+                sleep(2)
         else:
             raise RuntimeError("Timeout Starting minecraft")
         logging.info("mc server is online")
@@ -88,6 +87,17 @@ class MinecraftServer:
         logging.info("Stopping Minecraft Server {self.name} ...")
         self.cont.stop()
         self.cont.wait()
+
+        # wait until file locks are released
+        lockfile = Path(self.world) / "session.lock"
+        for _ in range(20):
+            try:
+                lockfile.unlink()
+            except PermissionError:
+                sleep(1)
+            break
+        else:
+            raise RuntimeError("Timeout Stopping minecraft")
         logging.info("Stopped Minecraft Server {self.name} ...")
 
     def start(self):
