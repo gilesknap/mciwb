@@ -20,7 +20,7 @@ from tests.server import (
 )
 
 logging.basicConfig(
-    level=logging.INFO,
+    level=logging.DEBUG,
     format="%(levelname)s: %(funcName)s - %(message)s (%(pathname)s:%(lineno)d)",
 )
 

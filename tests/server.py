@@ -89,7 +89,7 @@ class MinecraftServer:
         self.cont.wait()
 
         # wait until file locks are released
-        lockfile = Path(self.world) / "level.dat"
+        lockfile = Path(self.world) / "session.lock"
         for _ in range(20):
             try:
                 lockfile.unlink(missing_ok=False)
