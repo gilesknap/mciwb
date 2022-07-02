@@ -89,12 +89,13 @@ class MinecraftServer:
         self.cont.wait()
 
         # wait until file locks are released
-        lockfile = Path(self.world) / "session.lock"
+        lockfile = Path(self.world) / "level.dat"
         for _ in range(20):
             try:
                 lockfile.unlink()
             except PermissionError:
                 sleep(1)
+            logging.info("removed level.dat")
             break
         else:
             raise RuntimeError("Timeout Stopping minecraft")
