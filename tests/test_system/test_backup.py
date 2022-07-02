@@ -3,6 +3,8 @@ import os
 import shutil
 from pathlib import Path
 
+import pytest
+
 # import pytest
 from mcipc.rcon.item import Item
 from mcwb.itemlists import grab
@@ -13,11 +15,12 @@ from mciwb import Client
 from mciwb.backup import Backup
 from mciwb.threads import set_client
 from tests.conftest import HOST, RCON_P
-from tests.server import MinecraftServer, data_folder
+from tests.server import KEEP_SERVER, MinecraftServer, data_folder
 
 GITHUB_ACTIONS = "GITHUB_ACTIONS" in os.environ
 
 
+@pytest.mark.skipif(KEEP_SERVER, reason="incompatible with keep server")
 def test_backup_restore(tmp_path: Path):
     """
     Test the backup and restore functionality.
