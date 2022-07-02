@@ -88,17 +88,6 @@ class MinecraftServer:
         self.cont.stop()
         self.cont.wait()
 
-        # wait until file locks are released
-        lockfile = Path(self.world) / "session.lock"
-        for _ in range(20):
-            try:
-                lockfile.unlink(missing_ok=False)
-            except PermissionError:
-                sleep(1)
-            logging.info("removed level.dat")
-            break
-        else:
-            raise RuntimeError("Timeout Stopping minecraft")
         logging.info("Stopped Minecraft Server {self.name} ...")
 
     def start(self):
