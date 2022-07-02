@@ -18,7 +18,6 @@ from tests.conftest import HOST, RCON_P
 from tests.server import KEEP_SERVER, MinecraftServer, data_folder
 
 GITHUB_ACTIONS = "GITHUB_ACTIONS" in os.environ
-KEEP_SERVER = "MCIWB_KEEP_SERVER" in os.environ
 
 
 @pytest.mark.skipif(KEEP_SERVER, reason="incompatible with keep server")
