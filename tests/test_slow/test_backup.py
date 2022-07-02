@@ -17,9 +17,6 @@ from tests.server import MinecraftServer
 GITHUB_ACTIONS = "GITHUB_ACTIONS" in os.environ
 
 
-# @pytest.mark.skipif(
-#     GITHUB_ACTIONS, reason="file permissions problems on github - skipping"
-# )
 def test_backup_restore(tmp_path: Path):
     """
     Test the backup and restore functionality.
@@ -55,12 +52,17 @@ def test_backup_restore(tmp_path: Path):
     RESTORE_RCON = 20500
     # create a new world to restore into
     mc_restore = MinecraftServer(name="mciwb_restore", rcon=RESTORE_RCON)
-    mc_restore.minecraft_create(world=backup.get_latest_zip())
-    # mc_restore.stop()
-    # restore = Backup("restore_world", str(mc_restore.world), str(backup_folder))
-    # # restore the world and the start the server
-    # restore.restore()
-    # mc_restore.start()
+    if GITHUB_ACTIONS:
+        # GHA has issues with file locks on the stopped container
+        # use mc docker's feature of creating from zip instead
+        mc_restore.minecraft_create(world=backup.get_latest_zip())
+    else:
+        mc_restore.minecraft_create()
+        mc_restore.stop()
+        restore = Backup("restore_world", str(mc_restore.world), str(backup_folder))
+        # restore the world and the start the server
+        restore.restore()
+        mc_restore.start()
 
     with Client(HOST, RESTORE_RCON, passwd=RCON_P) as client:
         set_client(client)

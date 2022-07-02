@@ -186,7 +186,10 @@ class MinecraftServer:
             environment=env,
             network_mode="host",
             # restart_policy={"Name": "always"},
-            volumes={str(self.folder): {"bind": "/data", "mode": "rw"}},
+            volumes={
+                str(self.folder): {"bind": "/data", "mode": "rw"},
+                "/tmp": {"bind": "/tmp", "mode": "rw"},
+            },
             name=self.name,
         )
 
