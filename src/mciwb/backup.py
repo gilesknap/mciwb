@@ -55,6 +55,11 @@ class Backup:
         logging.debug("save_on: " + result)
         client.say("Backup Complete.")
 
+    def get_latest_zip(self) -> Path:
+        backups = self.backup_folder.glob("*.zip")
+        ordered = sorted(backups, key=os.path.getctime, reverse=True)
+        return ordered[0]
+
     def restore(self, fname: Optional[Path] = None, backup=False):
 
         """
@@ -62,9 +67,7 @@ class Backup:
         """
 
         if not fname:
-            backups = self.backup_folder.glob("*.zip")
-            ordered = sorted(backups, key=os.path.getctime, reverse=True)
-            fname = ordered[0]
+            fname = self.get_latest_zip()
         if not fname.exists():
             raise ValueError("{file} not found")
 

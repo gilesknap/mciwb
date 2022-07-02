@@ -92,7 +92,7 @@ class MinecraftServer:
         lockfile = Path(self.world) / "level.dat"
         for _ in range(20):
             try:
-                lockfile.unlink()
+                lockfile.unlink(missing_ok=False)
             except PermissionError:
                 sleep(1)
             logging.info("removed level.dat")
@@ -122,7 +122,7 @@ class MinecraftServer:
             self.stop()
             self.cont.remove()
 
-    def minecraft_create(self) -> None:
+    def minecraft_create(self, world=None) -> None:
         """
         Spin up a test minecraft server and return a container object
 
@@ -171,6 +171,8 @@ class MinecraftServer:
         # for local testing. But normally for running CI we want this option.
         if not KEEP_SERVER:
             env["ONLINE_MODE"] = "FALSE"
+        if world:
+            env["WORLD"] = str(world)
 
         if not self.folder.exists():
             self.folder.mkdir(parents=True)
