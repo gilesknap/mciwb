@@ -81,4 +81,9 @@ class Backup:
         with ZipFile(fname, "r") as zip_file:
             zip_file.extractall(path=self.world_folder)
 
-        logging.info(f"Restored from {fname}")
+        # remove lockfile if it exists
+        for file in self.world_folder.glob("*.lock"):
+            logging.debug(f"removing {file}")
+            file.unlink()
+
+        logging.info(f"Restored {self.world_folder} from {fname}")

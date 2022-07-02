@@ -20,8 +20,8 @@ from tests.server import (
 )
 
 logging.basicConfig(
-    level=logging.DEBUG,
-    format="%(levelname)s: %(pathname)s:%(lineno)d %(funcName)s " "\n\t%(message)s",
+    level=logging.INFO,
+    format="%(levelname)s: %(funcName)s - %(message)s (%(pathname)s:%(lineno)d)",
 )
 
 
@@ -35,8 +35,10 @@ def minecraft_container(request: pytest.FixtureRequest):
     caution as the world must be reset to a known state.
     """
     mc = MinecraftServer(name="mciwb_server", rcon=RCON_PORT)
+    mc.minecraft_create()
 
     request.addfinalizer(mc.minecraft_remove)
+    return mc
 
 
 def client_connect():
