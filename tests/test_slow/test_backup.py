@@ -35,7 +35,7 @@ def test_backup_restore(tmp_path: Path):
     backup_folder = data_folder / "backup"
     if backup_folder.exists():
         shutil.rmtree(backup_folder)
-    backup_folder.mkdir()
+    backup_folder.mkdir(parents=True)
 
     test_block = Vec3(100, 100, 100)
 
