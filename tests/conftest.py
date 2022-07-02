@@ -1,23 +1,25 @@
 import logging
+import os
 from time import sleep
 
 import pytest
 from docker.models.containers import Container
 from mcipc.rcon.enumerations import Item
 from mcipc.rcon.je import Client
+from mcwb.types import Vec3
 
 from mciwb.iwb import Iwb
 from mciwb.player import Player
 from mciwb.threads import get_client, set_client
 from tests.mockclient import MockClient
-from tests.server import (
-    ENTITY_NAME,
-    ENTITY_POS,
-    HOST,
-    RCON_P,
-    RCON_PORT,
-    MinecraftServer,
-)
+from tests.server import HOST, MinecraftServer
+
+KEEP_SERVER = "MCIWB_KEEP_SERVER" in os.environ
+
+RCON_PORT = 20401
+RCON_P = "pass"
+ENTITY_NAME = "george"
+ENTITY_POS = Vec3(0, -60, 0)
 
 logging.basicConfig(
     level=logging.DEBUG,

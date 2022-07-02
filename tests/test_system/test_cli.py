@@ -19,12 +19,13 @@ def run_cli(*args):
 def test_repr(tmp_path: Path, minecraft_container, minecraft_client, minecraft_player):
     """launch the cli in test mode and connect to the test server"""
     result = run_cli(
-        "--test", "--server", HOST, "--port", RCON_PORT, "--passwd", RCON_P
+        "shell", "--test", "--server", HOST, "--port", RCON_PORT, "--passwd", RCON_P
     )
 
     assert "no player selected" in result.stdout
 
     result = run_cli(
+        "shell",
         "--test",
         "--server",
         HOST,
