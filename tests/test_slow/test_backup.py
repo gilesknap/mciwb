@@ -1,5 +1,6 @@
 import logging
 import os
+import shutil
 from pathlib import Path
 
 # import pytest
@@ -12,7 +13,7 @@ from mciwb import Client
 from mciwb.backup import Backup
 from mciwb.threads import set_client
 from tests.conftest import HOST, RCON_P
-from tests.server import MinecraftServer
+from tests.server import MinecraftServer, data_folder
 
 GITHUB_ACTIONS = "GITHUB_ACTIONS" in os.environ
 
@@ -31,7 +32,9 @@ def test_backup_restore(tmp_path: Path):
     """
 
     BACKUP_RCON = 20600
-    backup_folder = Path(tmp_path) / "backup"
+    backup_folder = data_folder / "backup"
+    if backup_folder.exists():
+        shutil.rmtree(backup_folder)
     backup_folder.mkdir()
 
     test_block = Vec3(100, 100, 100)

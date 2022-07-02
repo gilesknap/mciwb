@@ -185,10 +185,10 @@ class MinecraftServer:
             detach=True,
             environment=env,
             network_mode="host",
-            # restart_policy={"Name": "always"},
+            restart_policy={"Name": "no"},
             volumes={
                 str(self.folder): {"bind": "/data", "mode": "rw"},
-                "/tmp": {"bind": "/tmp", "mode": "rw"},
+                str(data_folder): {"bind": str(data_folder), "mode": "rw"},
             },
             name=self.name,
         )
