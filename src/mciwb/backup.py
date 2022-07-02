@@ -44,8 +44,10 @@ class Backup:
 
         file = self.backup_folder / fname
         world_files = self.world_folder.glob("**/*")
+        world_files = [f for f in world_files if not f.suffix == ".lock"]
         with ZipFile(file, "w", compression=ZIP_DEFLATED) as zip_file:
             for wf in world_files:
+
                 zip_file.write(wf, arcname=wf.relative_to(self.world_folder))
         logging.debug("ZipFile complete")
 
@@ -53,47 +55,38 @@ class Backup:
         logging.debug("save_on: " + result)
         client.say("Backup Complete.")
 
-    def restore(self, fname: Optional[Path] = None, yes=False, restart=True):
+    def get_latest_zip(self) -> Path:
+        backups = self.backup_folder.glob("*.zip")
+        ordered = sorted(backups, key=os.path.getctime, reverse=True)
+        return ordered[0]
+
+    def restore(self, fname: Optional[Path] = None, backup=False):
 
         """
-        restore world from backup. Note this function may be called in an instance
-        of Backup that has client = None. That is so it can be run while the
-        server is down.
+        restore world from backup. This must be called with the server stopped.
         """
-        client = get_client()
 
         if not fname:
-            backups = self.backup_folder.glob("*.zip")
-            ordered = sorted(backups, key=os.path.getctime, reverse=True)
-            fname = ordered[0]
+            fname = self.get_latest_zip()
         if not fname.exists():
             raise ValueError("{file} not found")
-
-        if not yes:
-            if client is not None:
-                client.say("SERVER GOING DOWN FOR RESTORE FROM BACKUP")
-            if input(f"Overwrite world with with {fname} (y/n)? : ") != "y":
-                if client is not None:
-                    client.say("Restore Cancelled.")
-                return
-
-        # stop the server - it will pick up the restore on restart
-        if restart:
-            if client is not None:
-                result = client.stop()
-                logging.debug("stop: " + result)
-
-        old_world = Path(str(self.world_folder) + "-old")
-        if old_world.exists():
-            shutil.rmtree(old_world)
 
         # backup for recovery from accidental recovery ! Note that on some filesystems
         # it is OK to do this while the server is running. On other filesystems the
         # server will need to be stopped before calling this function
-        shutil.move(str(self.world_folder), str(old_world))
+        if backup:
+            old_world = Path(str(self.world_folder) + "-old")
+            if old_world.exists():
+                shutil.rmtree(old_world)
+            shutil.move(str(self.world_folder), str(old_world))
 
         # restore zipped up backup to world folder
         with ZipFile(fname, "r") as zip_file:
             zip_file.extractall(path=self.world_folder)
 
-        logging.info(f"Restored from {fname}")
+        # remove lockfile if it exists
+        for file in self.world_folder.glob("*.lock"):
+            logging.debug(f"removing {file}")
+            file.unlink()
+
+        logging.info(f"Restored {self.world_folder} from {fname}")
