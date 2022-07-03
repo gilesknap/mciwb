@@ -14,7 +14,7 @@ from mciwb import Client
 
 HOST = "localhost"
 
-# the locally mapped backup folder for minecraft data
+# the default locally mapped backup folder for minecraft data
 backup_folder = Path.home() / "mciwb_backups"
 
 
@@ -102,18 +102,18 @@ class MinecraftServer:
         self.wait_server()
         logging.info(f"Started Minecraft Server {self.name} ...")
 
-    def minecraft_remove(self):
+    def remove(self, force=False):
         """
         Remove a minecraft server container
         """
         # set env var MCIWB_KEEP_SERVER to keep server alive for faster
         # repeated tests and viewing the world with a minecraft client
-        if self.container and not self.keep:
+        if self.container and (not self.keep or force):
             logging.info(f"Removing Minecraft Server {self.name} ...")
             self.stop()
             self.container.remove()
 
-    def create(self, world=None, test=False) -> None:
+    def create(self, world_zip=None, test=False, force=False) -> None:
         """
         Spin up a test minecraft server in a container
 
@@ -126,8 +126,10 @@ class MinecraftServer:
         for container in docker_client.containers.list(all=True):
             assert isinstance(container, Container)
             if container.name == self.name:
-                logging.info(f"Creating Minecraft Server '{self.name}' ...")
                 self.container = container
+                if force:
+                    self.remove(force=True)
+                    break
                 if container.status == "running":
                     logging.info(
                         f"Minecraft Server '{self.name}' "
@@ -139,6 +141,8 @@ class MinecraftServer:
                     container.start()
                     self.wait_server()
                     return
+
+        logging.info(f"Creating Minecraft Server '{self.name}' ...")
 
         env = {
             "EULA": "TRUE",
@@ -161,8 +165,8 @@ class MinecraftServer:
                     "SPAWN_MONSTERS": "false",
                     "SPAWN_NPCS": "false",
                     "VIEW_DISTANCE": " 5",
-                    "SEED": 0,
                     "LEVEL_TYPE": "FLAT",
+                    "FORCE_WORLD_COPY": "TRUE",
                 }
             )
 
@@ -171,8 +175,8 @@ class MinecraftServer:
             if not self.keep:
                 env["ONLINE_MODE"] = "FALSE"
 
-        if world:
-            env["WORLD"] = str(world)
+        if world_zip:
+            env["WORLD"] = str(world_zip)
 
         if not self.server_folder.exists():
             self.server_folder.mkdir(parents=True)

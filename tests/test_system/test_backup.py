@@ -1,11 +1,7 @@
 import logging
 import os
-import shutil
 from pathlib import Path
 
-import pytest
-
-# import pytest
 from mcipc.rcon.item import Item
 from mcwb.itemlists import grab
 from mcwb.types import Vec3
@@ -13,14 +9,15 @@ from mcwb.volume import Volume
 
 from mciwb import Client
 from mciwb.backup import Backup
+from mciwb.server import HOST, MinecraftServer, backup_folder
 from mciwb.threads import set_client
-from tests.conftest import HOST, RCON_P
-from tests.server import KEEP_SERVER, MinecraftServer, data_folder
+from tests.conftest import HOST, KEEP_SERVER, RCON_P, servers_folder
 
 GITHUB_ACTIONS = "GITHUB_ACTIONS" in os.environ
+backup_server_name = "mciwb_backup_server"
+restore_server_name = "mciwb_restore_server"
 
 
-@pytest.mark.skipif(KEEP_SERVER, reason="incompatible with keep server")
 def test_backup_restore(tmp_path: Path):
     """
     Test the backup and restore functionality.
@@ -33,19 +30,21 @@ def test_backup_restore(tmp_path: Path):
     (TODO: need to look at why client.close does not work, as contexts were
     the only way to get this working)
     """
-
     BACKUP_RCON = 20600
-    backup_folder = data_folder / "backup"
-    if backup_folder.exists():
-        shutil.rmtree(backup_folder)
-    backup_folder.mkdir(parents=True)
 
     test_block = Vec3(100, 100, 100)
 
     # create a new world to backup from
-    mc_backup = MinecraftServer(name="mciwb_backup", rcon=BACKUP_RCON)
+    mc_backup = MinecraftServer(
+        name=backup_server_name,
+        rcon=BACKUP_RCON,
+        password=RCON_P,
+        server_folder=servers_folder / backup_server_name,
+        world_type="flat",
+        keep=KEEP_SERVER,
+    )
     backup = Backup("backup_world", str(mc_backup.world), str(backup_folder))
-    mc_backup.minecraft_create()
+    mc_backup.create(test=True)
 
     # make a change to the world which is to be backed up
     with Client(HOST, BACKUP_RCON, passwd=RCON_P) as client:
@@ -57,13 +56,21 @@ def test_backup_restore(tmp_path: Path):
 
     RESTORE_RCON = 20500
     # create a new world to restore into
-    mc_restore = MinecraftServer(name="mciwb_restore", rcon=RESTORE_RCON)
+    mc_restore = MinecraftServer(
+        name=restore_server_name,
+        rcon=RESTORE_RCON,
+        password=RCON_P,
+        server_folder=servers_folder / restore_server_name,
+        world_type="flat",
+        keep=KEEP_SERVER,
+    )
+
     if GITHUB_ACTIONS:
         # GHA has issues with file locks on the stopped container
         # use mc docker's feature of creating from zip instead
-        mc_restore.minecraft_create(world=backup.get_latest_zip())
+        mc_restore.create(world_zip=backup.get_latest_zip(), test=True, force=True)
     else:
-        mc_restore.minecraft_create()
+        mc_restore.create(test=True, force=True)
         mc_restore.stop()
         restore = Backup("restore_world", str(mc_restore.world), str(backup_folder))
         # restore the world and the start the server
@@ -77,7 +84,7 @@ def test_backup_restore(tmp_path: Path):
         restored_blocks = grab(client, grab_volume)
 
     # shut down the servers
-    mc_restore.minecraft_remove()
-    mc_backup.minecraft_remove()
+    mc_restore.remove()
+    mc_backup.remove()
 
     assert restored_blocks[0][0][0] == Item.RED_CONCRETE
