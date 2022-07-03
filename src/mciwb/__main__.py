@@ -7,12 +7,15 @@ from IPython.terminal.embed import InteractiveShellEmbed
 
 import mciwb
 from mciwb import Iwb, __version__
-from mciwb.server import MinecraftServer
+from mciwb.server import HOST, MinecraftServer
 
 cli = typer.Typer(add_completion=False)
 
 server_name = "mciwb_server"
 default_server_folder = Path.home() / server_name
+def_pass = "default_pass"
+def_port = 20100
+def_world_type = "normal"
 
 
 def version_callback(value: bool):
@@ -57,9 +60,9 @@ def init_logging(debug: bool):
 
 @cli.command()
 def shell(
-    server: str = typer.Option(..., prompt=True),
-    port: int = typer.Option(..., prompt=True),
-    passwd: str = typer.Option(..., prompt=True, hide_input=True),
+    server: str = HOST,
+    port: int = def_port,
+    passwd: str = def_pass,
     player: str = "",
     debug: bool = False,
     test: bool = False,
@@ -105,10 +108,10 @@ def shell(
 
 @cli.command()
 def start(
-    password: str = typer.Option(..., prompt=True, hide_input=True),
-    port: int = typer.Option(default=20100),
+    password: str = def_pass,
+    port: int = def_port,
     folder: Path = default_server_folder,
-    world_type: str = "normal",
+    world_type: str = def_world_type,
     debug: bool = False,
 ):
     """
@@ -116,6 +119,22 @@ def start(
     work with `mciwb shell`
     """
     init_logging(debug)
+
+    if folder.exists():
+        if not folder.is_dir():
+            logging.error(f"{folder} is not a directory")
+            raise typer.Exit(1)
+        else:
+            if password != def_pass or port != def_port or world_type != def_world_type:
+                logging.error(
+                    f"server in {folder} already exists. "
+                    "Cannot change settings on an existing server."
+                )
+                raise typer.Exit(1)
+            else:
+                logging.info(f"Launching existing Minecraft server in {folder}")
+    else:
+        logging.info(f"Creating new Minecraft server in {folder}")
 
     server = MinecraftServer(server_name, port, password, folder, world_type)
     server.create()

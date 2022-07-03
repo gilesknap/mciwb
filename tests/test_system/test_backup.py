@@ -11,7 +11,7 @@ from mciwb import Client
 from mciwb.backup import Backup
 from mciwb.server import HOST, MinecraftServer, backup_folder
 from mciwb.threads import set_client
-from tests.conftest import HOST, KEEP_SERVER, RCON_P, servers_folder
+from tests.conftest import KEEP_SERVER, RCON_P, servers_folder
 
 GITHUB_ACTIONS = "GITHUB_ACTIONS" in os.environ
 backup_server_name = "mciwb_backup_server"

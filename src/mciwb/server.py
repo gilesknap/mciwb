@@ -97,7 +97,7 @@ class MinecraftServer:
         Start the minecraft server
         """
         assert isinstance(self.container, Container)
-        logging.info(f"Starting Minecraft Server {self.name} ...")
+        logging.info(f"Starting Minecraft Server {self.name} on port {self.port}...")
         self.container.start()
         self.wait_server()
         logging.info(f"Started Minecraft Server {self.name} ...")
@@ -137,12 +137,12 @@ class MinecraftServer:
                     )
                     return
                 else:
-                    logging.info(f"Minecraft Server '{self.name}' exists. restarting")
-                    container.start()
-                    self.wait_server()
+                    self.start()
                     return
 
-        logging.info(f"Creating Minecraft Server '{self.name}' ...")
+        logging.info(
+            f"Launching Minecraft Server '{self.name}' on port {self.port} ..."
+        )
 
         env = {
             "EULA": "TRUE",
