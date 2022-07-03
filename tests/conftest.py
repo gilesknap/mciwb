@@ -1,23 +1,30 @@
 import logging
+import os
+from pathlib import Path
+from tempfile import gettempdir
 from time import sleep
 
 import pytest
 from docker.models.containers import Container
 from mcipc.rcon.enumerations import Item
 from mcipc.rcon.je import Client
+from mcwb.types import Vec3
 
 from mciwb.iwb import Iwb
 from mciwb.player import Player
+from mciwb.server import HOST, MinecraftServer
 from mciwb.threads import get_client, set_client
 from tests.mockclient import MockClient
-from tests.server import (
-    ENTITY_NAME,
-    ENTITY_POS,
-    HOST,
-    RCON_P,
-    RCON_PORT,
-    MinecraftServer,
-)
+
+KEEP_SERVER = "MCIWB_KEEP_SERVER" in os.environ
+
+RCON_PORT = 20401
+RCON_P = "pass"
+ENTITY_NAME = "george"
+ENTITY_POS = Vec3(0, -60, 0)
+
+server_name = "mciwb_test_server"
+servers_folder = Path(gettempdir()) / "test_mc_servers"
 
 logging.basicConfig(
     level=logging.DEBUG,
@@ -34,10 +41,17 @@ def minecraft_container(request: pytest.FixtureRequest):
     to be executed twice for two runs of the tests. This requires
     caution as the world must be reset to a known state.
     """
-    mc = MinecraftServer(name="mciwb_server", rcon=RCON_PORT)
-    mc.minecraft_create()
+    mc = MinecraftServer(
+        name=server_name,
+        rcon=RCON_PORT,
+        password=RCON_P,
+        keep=KEEP_SERVER,
+        world_type="flat",
+        server_folder=servers_folder / server_name,
+    )
+    mc.create(test=True)
 
-    request.addfinalizer(mc.minecraft_remove)
+    request.addfinalizer(mc.remove)
     return mc
 
 

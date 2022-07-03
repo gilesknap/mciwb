@@ -20,8 +20,7 @@ class Backup:
         self.world_folder = Path(world_folder)
         self.backup_folder = Path(backup_folder)
 
-        if not self.backup_folder.exists():
-            raise ValueError("backup folder must exist")
+        self.backup_folder.mkdir(parents=True, exist_ok=True)
         if not (self.world_folder / "level.dat"):
             raise ValueError(f"{world_folder} does not look like a minecraft world")
 
