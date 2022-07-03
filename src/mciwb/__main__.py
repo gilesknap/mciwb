@@ -125,7 +125,7 @@ def start(
             logging.error(f"{folder} is not a directory")
             raise typer.Exit(1)
         else:
-            if password != def_pass or port != def_port or world_type != def_world_type:
+            if port != def_port or world_type != def_world_type:
                 logging.error(
                     f"server in {folder} already exists. "
                     "Cannot change settings on an existing server."
