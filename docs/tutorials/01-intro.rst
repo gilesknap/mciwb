@@ -1,19 +1,19 @@
 .. _intro:
 
-Getting Started
-===============
+01 Setup
+========
 
-To make use of this project you will need a desktop Computer or Laptop. 
-Linux, Windows and MacOS are all supported.
+To use Minecraft Interactive World Builder (MCIWB) you will need a desktop 
+Computer or Laptop. Linux, Windows and MacOS are all supported.
 
-To get going you will need to install the following software on your 
+To get going you first need to install the following software on your 
 Computer:
 
 - The Minecraft Java Client (with Minecraft account purchase)
 - Visual Studio Code
 - Python
 - Docker
-- Minecraft Interactive World Builder library
+- Minecraft Interactive World Builder Python package
 
 .. note::
     The tutorials for this project are intended to be accessible for
@@ -21,18 +21,20 @@ Computer:
     software installed requires a little bit of knowledge of the basics of
     your operating system. 
 
-    For this first step, I recommend that novices get a little help from 
+    For Tutorial 01, I recommend that novices get a little help from 
     someone with computer experience.
 
 
 The Minecraft Java Client
 -------------------------
 
+If you already have the Minecraft Java Client installed proceed to `vscode`.
+
 You will need to purchase a license for Minecraft from Microsoft.
 
 Go to this site to buy your copy, if you do not already have one:
 
-    https://www.minecraft.net/en-us/store/minecraft-java-bedrock-edition-pc
+    https://www.minecraft.net/en-us/store/minecraft-java-bedrock-edition-pc  
 
 Once you have a license, download the Java client to
 the computer where you will be trying out Minecraft Interactive World Builder
@@ -42,7 +44,23 @@ the computer where you will be trying out Minecraft Interactive World Builder
 
 Microsoft has now bundled the Java and Bedrock editions together. 
 We are using the Java edition here but this project could be adapted to
-work fir either.
+work for either.
+
+When you start Minecraft you will be asked to login with your Microsoft details,
+note that the 'Mojang Login' option is only for legacy users who have not
+yet migrated.
+
+When you have successfully launched the Minecraft Launcher, you will see a
+a screen like the following. Leave this screen open and move on to the rest
+of the tutorial. We will come back here and connect to a Minecraft server in a
+later step.
+
+    .. image:: ../images/launcher.png
+        :alt: Minecraft Launcher
+        :width: 600px
+        :align: left
+
+.. _vscode:
 
 Visual Studio Code
 ------------------
@@ -68,30 +86,22 @@ This is essential for working with MCIWB. On Linux you will likely already
 have it installed. Note that this project has been tested with
 Python 3.9 and 3.10 but other versions may also be OK.
 
-Windows
-~~~~~~~
+Use the following links to Download and install Python:
 
-Download the Windows Installer (64-bit) for the latest version from this link:
+Windows:
+    Use the Microsoft store link here
+    https://apps.microsoft.com/store/detail/python-310/9PJPW5LDXLZ5
 
-    https://www.python.org/downloads/Windows
+Mac:
+    Download the macOS 64-bit universal2 installer for the latest version 
+    from this link: https://www.python.org/downloads/macos
 
-Mac
-~~~
-
-Download the macOS 64-bit universal2 installer for the latest version 
-from this link:
-
-    https://www.python.org/downloads/macos
-
-Linux
-~~~~~
-
-See these instructions if you do not already have a Python installation:
-    
-    https://docs.python-guide.org/starting/install3/linux/
-
-Note the the above discuss an older version of Python. You should install
-Python3.10 if it is available for your system. Python 3.9 is also OK.
+Linux:
+    See these instructions if you do not already have a Python installation:
+    https://docs.python-guide.org/starting/install3/linux/.
+    (These instruction discuss an older version of Python. You 
+    should install Python3.10 if it is available for your system. 
+    Python 3.9 is also OK.)
 
 
 Docker
@@ -106,10 +116,48 @@ use docker on your behalf.
 The easiest way to install Docker is to use Docker Desktop which is free to
 use for individuals.
 
-Instructions for installation are here:
+Windows:
+    Docker Desktop requires WSL2 and a linux distribution to go with it.
+    So you should first install Ubuntu 22.04 LTS from here 
+    https://apps.microsoft.com/store/detail/ubuntu-2204-lts/9PN20MSR04DW
+
+Instructions for Docker Desktop installation are here:
 
     https://docs.docker.com/get-docker/
 
+
+
+Command Line
+------------
+
+From now on we are going to start using the command line. You are free to use
+whatever approach you like, however I recommend that you use the integrated
+terminal in Visual Studio Code.
+
+Here we will set up our initial VSCode work folder and get a command line
+prompt.
+
+First create yourself a work folder in your Documents. The procedure is 
+similar for all operating systems.
+
+- Hit the command or Windows Key and type ``documents``
+- This should show your Documents folder
+- Right click in the Documents folder and select ``New Folder``
+- Type a new name for your folder ``mciwb_work``
+- Launch VSCode 
+  - Menu bar -> File -> Open Folder
+  - Select the folder you created in the previous step
+  - Click ``Yes, I trust the authors`` (because you will be the author)
+  - Menu bar -> Terminal -> New terminal
+
+You should now have a VSCode Window open with a command prompt 
+(also know as a terminal) at the bottom
+like the following (image from Windows OS):
+
+    .. image:: ../images/vscode_hello.png
+        :alt: VSCode Startup
+        :width: 600px
+        :align: left
 
 Minecraft Interactive World Builder library
 -------------------------------------------
@@ -120,9 +168,7 @@ Python installation we already made above.
 The Package Installer for Python (Pip) is used to get MCIWB from the package 
 registry called Pypi.
 
-To perform these steps you will need to open a command line 
-console on your computer and 
-type the commands listed below.
+Using the command prompt type in the following commands: 
 
 First get pip:
 
@@ -131,7 +177,18 @@ First get pip:
 
 Now use pip to get MCIWB:
 
-    pip install mciwb
+    pip install --user mciwb
+
+Windows:
+    This is really annoying, but Windows has an appallingly complicated way
+    of setting up paths. You will need to take a look at this tutorial
+    to get the next step to work.  
+    TODO TODO TODO    
+    WARNING: The script mciwb.exe is installed in 'C:\Users\giles\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.10_qbz5n2kfra8p0\LocalCache\local-packages\Python310\Scripts' which is not on PATH.
+    wsl --install -d Ubuntu
+
+
+
 
 TODO: verify this works on WINDOWS!
 TODO: how to make sure python is on the path??? 

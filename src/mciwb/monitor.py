@@ -102,10 +102,11 @@ class Monitor:
 
     @classmethod
     def stop_all(cls):
-        for monitor in cls.monitors:
-            monitor.stop()
-        cls.monitors.clear()
-        logging.info("Stopped all monitoring threads")
+        if cls.monitors is not None:
+            for monitor in cls.monitors:
+                monitor.stop()
+            cls.monitors.clear()
+            logging.info("Stopped all monitoring threads")
 
     def stop(self):
         self._polling = False

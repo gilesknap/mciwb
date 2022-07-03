@@ -78,9 +78,12 @@ def shell(
 
         if player:
             mciwb.world.add_player(player)
-    except BaseException:
-        mciwb.world.stop()
-        raise
+    except ConnectionRefusedError:
+        logging.error("Could not connect to server")
+        exit(1)
+    finally:
+        if mciwb.world is not None:
+            mciwb.world.stop()
 
     # for quick access in the shell without qualifying the namespace
     world = mciwb.world
@@ -123,14 +126,14 @@ def start(
     if folder.exists():
         if not folder.is_dir():
             logging.error(f"{folder} is not a directory")
-            raise typer.Exit(1)
+            exit(1)
         else:
             if port != def_port or world_type != def_world_type:
                 logging.error(
                     f"server in {folder} already exists. "
                     "Cannot change settings on an existing server."
                 )
-                raise typer.Exit(1)
+                exit(1)
             else:
                 logging.info(f"Launching existing Minecraft server in {folder}")
     else:
