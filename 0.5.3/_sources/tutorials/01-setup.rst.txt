@@ -153,6 +153,14 @@ Now we want to reopen VSCode with the new folder set as its work area.
 From the menu bar choose ``File -> Open Folder``. You will see a list of 
 folders, select ``my_world`` and click OK.
 
+You will be asked if you trust the authors of files in this folder. 
+You do trust them because they are you! So click 
+``Yes I trust the authors``.
+
+.. image:: ../images/trust.png
+    :alt: VSCode Startup
+    :width: 400px
+
 Now you should see a you VSCode window that looks something like this:
 
 .. image:: ../images/vscode_hello.excalidraw.png

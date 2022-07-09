@@ -48,8 +48,29 @@
               <p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="01-setup.html">01 Setup</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">02 Orientation</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">02 Orientation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#get-a-minecraft-server-running">Get a Minecraft Server Running</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#connect-your-client-to-the-server">Connect your Client to the Server</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#connect-mciwb-to-the-server">Connect MCIWB to the Server</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#try-out-some-action-signs">Try out Some Action Signs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#learn-about-coordinates-and-cardinals">Learn about Coordinates and Cardinals</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#cardinals">Cardinals</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#coordinates">Coordinates</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#using-coordinates-in-python">Using Coordinates in Python</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#command-completion-in-interactive-python">Command Completion in Interactive Python</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#exiting-the-python-prompt">Exiting the Python prompt</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="wsl2.html">Windows Subsystem for Linux</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">How-to Guides</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../how-to/server-config.html">Configuring MCIWB’s Minecraft Server</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../how-to/troubleshooting.html">Minecraft Server wont start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../how-to/troubleshooting.html#problems-with-player-connection">Problems with Player Connection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../how-to/troubleshooting.html#minecraft-server-logs">Minecraft Server Logs</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Reference</span></p>
 <ul>
@@ -85,6 +106,193 @@
              
   <section id="orientation">
 <h1>02 Orientation<a class="headerlink" href="#orientation" title="Permalink to this heading"></a></h1>
+<p>In this tutorial We will just learn some of the background concepts needed to
+write code to do things in Minecraft. We will then use a couple
+of Python commands to get warmed up.</p>
+<section id="get-a-minecraft-server-running">
+<h2>Get a Minecraft Server Running<a class="headerlink" href="#get-a-minecraft-server-running" title="Permalink to this heading"></a></h2>
+<p>Make sure we are in the right folder and have the Environment activated:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>cd $HOME/my_world
+source .venv/bin/activate
+</pre></div>
+</div>
+<p>To start the default server, run the following command:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">mciwb</span> <span class="n">start</span>
+</pre></div>
+</div>
+<p>You should see the following output:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">INFO</span><span class="p">:</span>   <span class="n">Launching</span> <span class="n">existing</span> <span class="n">Minecraft</span> <span class="n">server</span> <span class="ow">in</span> <span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">giles</span><span class="o">/</span><span class="n">mciwb_server</span>
+<span class="n">INFO</span><span class="p">:</span>   <span class="n">Launching</span> <span class="n">Minecraft</span> <span class="n">Server</span> <span class="s1">&#39;mciwb_server&#39;</span> <span class="n">on</span> <span class="n">port</span> <span class="mi">20101</span> <span class="o">...</span>
+<span class="n">INFO</span><span class="p">:</span>   <span class="n">waiting</span> <span class="k">for</span> <span class="n">server</span> <span class="n">to</span> <span class="n">come</span> <span class="n">online</span> <span class="o">...</span>
+<span class="n">INFO</span><span class="p">:</span>   <span class="n">Server</span> <span class="n">mciwb_server</span> <span class="ow">is</span> <span class="n">online</span> <span class="n">on</span> <span class="n">port</span> <span class="mi">20101</span>
+</pre></div>
+</div>
+<p>If this does not work take a look in <a class="reference internal" href="../how-to/troubleshooting.html#troubleshooting"><span class="std std-ref">Minecraft Server wont start</span></a>.</p>
+</section>
+<section id="connect-your-client-to-the-server">
+<h2>Connect your Client to the Server<a class="headerlink" href="#connect-your-client-to-the-server" title="Permalink to this heading"></a></h2>
+<p>Now you are ready to connect your client to the server. Go back to the
+Minecraft client that we started in Tutorial 01 or relaunch
+“Minecraft Launcher” it from the start menu.</p>
+<p>Make sure “Minecraft Java Edition” is selected on the left and click
+“Play”.</p>
+<p>Now choose the “Multiplayer” option and click “Add Server”. You will
+see a screen like this:</p>
+<a class="reference internal image-reference" href="../_images/server_address.png"><img alt="Server Address" src="../_images/server_address.png" style="width: 400px;" /></a>
+<p>You can make the Server Name whatever you like. The Server Address must be:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">localhost</span><span class="p">:</span><span class="mi">20101</span>
+</pre></div>
+</div>
+<p>Click “Done”, select your new Server and click “Join Server”.</p>
+<p>Your player should appear in the new world on a desert next to an ocean
+filled with beautiful corals. I chose this starting location as it is
+relatively flat and a good place to try some programming ideas, yet has
+quite nice scenery.</p>
+<p>If you have not played Minecraft before then take some time to familiarize
+yourself with the controls and game play. You may find
+<a class="reference external" href="https://minecraft.fandom.com/wiki/Tutorials/Beginner%27s_guide">this wiki</a>
+useful if you are a beginner. When you are really to move on type the
+command <code class="docutils literal notranslate"><span class="pre">/kill</span></code> to return to the spawn point.</p>
+</section>
+<section id="connect-mciwb-to-the-server">
+<h2>Connect MCIWB to the Server<a class="headerlink" href="#connect-mciwb-to-the-server" title="Permalink to this heading"></a></h2>
+<p>Now you are ready to connect MCIWB to the same server that your player is
+inside. It is probably best at this point to arrange the windows on your screen
+so that you can see both Minecraft and VSCode.</p>
+<p>Simply type this command at the terminal prompt in VSCode, replace
+&lt;player_name&gt; with your player’s name:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">mciwb</span> <span class="n">shell</span> <span class="o">--</span><span class="n">player</span> <span class="o">&lt;</span><span class="n">player_name</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<p>You should see output like this:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">INFO</span><span class="p">:</span>   <span class="n">Connected</span> <span class="n">to</span> <span class="n">localhost</span> <span class="n">on</span> <span class="mi">20100</span>
+<span class="n">INFO</span><span class="p">:</span>   <span class="n">Monitoring</span> <span class="n">player</span> <span class="n">TransformerScorn</span> <span class="n">enabled</span> <span class="k">for</span> <span class="n">sign</span> <span class="n">commands</span>
+<span class="n">INFO</span><span class="p">:</span>   <span class="c1">######### Starting Interactive Session ##########</span>
+
+<span class="n">Python</span> <span class="mf">3.9.5</span> <span class="p">(</span><span class="n">default</span><span class="p">,</span> <span class="n">Nov</span> <span class="mi">23</span> <span class="mi">2021</span><span class="p">,</span> <span class="mi">15</span><span class="p">:</span><span class="mi">27</span><span class="p">:</span><span class="mi">38</span><span class="p">)</span>
+<span class="n">Type</span> <span class="s1">&#39;copyright&#39;</span><span class="p">,</span> <span class="s1">&#39;credits&#39;</span> <span class="ow">or</span> <span class="s1">&#39;license&#39;</span> <span class="k">for</span> <span class="n">more</span> <span class="n">information</span>
+<span class="n">IPython</span> <span class="mf">8.4.0</span> <span class="o">--</span> <span class="n">An</span> <span class="n">enhanced</span> <span class="n">Interactive</span> <span class="n">Python</span><span class="o">.</span> <span class="n">Type</span> <span class="s1">&#39;?&#39;</span> <span class="k">for</span> <span class="n">help</span><span class="o">.</span>
+
+<span class="n">In</span> <span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+</pre></div>
+</div>
+<p>The prompt at the end is the Python Interactive Shell. In a moment we will
+start to type some Python commands at this prompt.</p>
+<p>You should see only the INFO: outputs shown above. If you see
+ERROR: or WARNING: then take a look at <a class="reference internal" href="../how-to/troubleshooting.html#troubleshooting"><span class="std std-ref">Minecraft Server wont start</span></a>. If that does not
+help then please create a new issue at <a class="reference external" href="https://github.com/gilesknap/mciwb/issues">https://github.com/gilesknap/mciwb/issues</a>
+and someone will get back to you.</p>
+</section>
+<section id="try-out-some-action-signs">
+<h2>Try out Some Action Signs<a class="headerlink" href="#try-out-some-action-signs" title="Permalink to this heading"></a></h2>
+<p>One feature of MCIWB is that it allows you to set up action signs. These
+are signs that your player can place in the world and they will call
+some Python code and tell the code which block they are attached to.</p>
+<p>MCIWB comes pre-configured with some action signs that let you cut and paste
+volumes of blocks. When you told MCIWB to interact with your player it
+automatically gives one of each of the currently configure action signs.</p>
+<p>You can also create your own action signs and we will do
+this in a later tutorial.</p>
+<p>For now we shall try out the copy and paste signs to have a go at flattening
+an area around the spawn point, ready for us to do some building with
+Python code.</p>
+<p>To use the signs:</p>
+<ul class="simple">
+<li><p>Place a <code class="docutils literal notranslate"><span class="pre">select</span></code> sign at two opposite corners of a volume of blocks. This
+selects the volume for copying.</p></li>
+<li><p>Place a <code class="docutils literal notranslate"><span class="pre">paste</span></code> sign at the point you would like to paste a copy of the
+volume</p></li>
+<li><p>Note that the last select is the ‘anchor’, it is corner of your volume that
+will be placed at the paste point</p></li>
+<li><p>Place a <code class="docutils literal notranslate"><span class="pre">clear</span></code> sign anywhere to clear out the current selected volume</p></li>
+</ul>
+<iframe width="700" height="400" src="https://www.youtube.com/embed/5iEFYKrCGKM?start=6" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe><p>The above video is a demo of flattening out the area around the spawn point using
+copy, paste and clear.</p>
+</section>
+<section id="learn-about-coordinates-and-cardinals">
+<h2>Learn about Coordinates and Cardinals<a class="headerlink" href="#learn-about-coordinates-and-cardinals" title="Permalink to this heading"></a></h2>
+<p>To get into programming blocks in the Minecraft world you will need to
+understand how to refer to a particular block in the world.</p>
+<p>For help in understanding this lets turn on some diagnostic information in
+the Minecraft client by hitting the F3 key. You will see panels of text on
+the left an right.</p>
+<p>In the picture below we have picked out the information regarding player’s
+position and which direction they are facing, plus the target block position.</p>
+<a class="reference internal image-reference" href="../_images/coords.excalidraw.png"><img alt="Coordinate System Diagnostics" src="../_images/coords.excalidraw.png" style="width: 700px;" /></a>
+<section id="cardinals">
+<h3>Cardinals<a class="headerlink" href="#cardinals" title="Permalink to this heading"></a></h3>
+<p>The cardinal directions are North East South and West. They are used on maps
+in the real world where North is the direction that a magnetic compass points.</p>
+<p>Minecraft uses the same cardinal directions, you can see in the picture above
+that the player is facing North. In the MCIWB world North is facing along the
+shore with the sea to your right. Its useful to keep in mind the arrangement
+of the cardinals which is as follows:</p>
+<a class="reference internal image-reference" href="../_images/compass.png"><img alt="Compass" src="../_images/compass.png" style="width: 250px;" /></a>
+<p>From the above you can see that facing North means that:</p>
+<ul class="simple">
+<li><p>moving to the right is traveling East</p></li>
+<li><p>moving to the left is traveling West</p></li>
+<li><p>moving forward is traveling North</p></li>
+<li><p>moving backward is traveling South</p></li>
+</ul>
+<p>Generally, when describing things we will usually face North because it is
+easy to relate the directions back to the above picture.</p>
+</section>
+<section id="coordinates">
+<h3>Coordinates<a class="headerlink" href="#coordinates" title="Permalink to this heading"></a></h3>
+<p>Coordinates are a set of 3 numbers named: X, Y, Z that represent a
+position in the world. In Minecraft they represent the position of a block
+(even if that block contains air!).</p>
+<p>The previous Minecraft Diagnostics picture shows the player’s position As
+653 72 -1640. This is shorthand for X=653, Y=72, Z=-1640. Strictly speaking
+it is the position of the player’s feet as a player is 2 blocks tall.</p>
+<p>There is a direct relationship between the Cardinals and the coordinate system
+as follows:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Moving East increases your X coordinate, so West decreases X</p></li>
+<li><p>Moving Up increases your Y coordinate, so Down decreases Y</p></li>
+<li><p>Moving South increases your Z coordinate, so North decreases Z</p></li>
+</ul>
+</div></blockquote>
+<p>The minecraft Wiki has a useful diagram of the coordinate system, see
+<a class="reference external" href="https://minecraft.fandom.com/wiki/Coordinates">https://minecraft.fandom.com/wiki/Coordinates</a>.</p>
+<p>If you consider the coordinate X=0, Y=0, Z=0 to be the centre of the world
+then our player’s position is 653 blocks to the East of the centre, 72 blocks
+above the centre and 1640 blocks North the centre. Note that the Z
+coordinate is negative because it is North of the centre and moving North
+decreases the Z coordinate.</p>
+<p>Also note the coordinates of the target block are 653 74 -1643. The target
+block is the block that the player is looking at and is highlighted with
+a black outline (it is the block you will hit if you click left button).</p>
+<p>If we subtract the player’s position from the target block’s position we get
+X=0, Y=2, Z=-3. This tells us that the target block is 2 blocks above the
+player and 3 blocks to the North of the player. <strong>Don’t worry!</strong>, we won’t have
+to do any math like that because Python will do it all for us.</p>
+</section>
+</section>
+<section id="using-coordinates-in-python">
+<h2>Using Coordinates in Python<a class="headerlink" href="#using-coordinates-in-python" title="Permalink to this heading"></a></h2>
+<p>In Python we have a class called Vec3 to represent a set of Coordinates.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>A class is just a type of thing that Python can understand. We will
+go into detail on the meaning of class in a later tutorial.</p>
+</div>
+<p>You can create a Vec3 by typing at the Python prompt for example this is
+the Vec3 representing my Player’s position:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Vec3</span><span class="p">(</span><span class="mi">653</span><span class="p">,</span> <span class="mi">72</span><span class="p">,</span> <span class="o">-</span><span class="mi">1640</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>TODO: show get_block and player.pos</p>
+</section>
+<section id="command-completion-in-interactive-python">
+<h2>Command Completion in Interactive Python<a class="headerlink" href="#command-completion-in-interactive-python" title="Permalink to this heading"></a></h2>
+<p>TODO show set_block and Item and Direction.Down (to get block beneath the player)</p>
+</section>
+<section id="exiting-the-python-prompt">
+<h2>Exiting the Python prompt<a class="headerlink" href="#exiting-the-python-prompt" title="Permalink to this heading"></a></h2>
+</section>
 </section>
 
 

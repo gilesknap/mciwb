@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Windows Subsystem for Linux &mdash; mciwb 0.5.3 documentation</title>
+  <title>Minecraft Server wont start &mdash; mciwb 0.5.3 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
@@ -22,8 +22,8 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Configuring MCIWB’s Minecraft Server" href="../how-to/server-config.html" />
-    <link rel="prev" title="02 Orientation" href="02-orientation.html" /> 
+    <link rel="next" title="LEGACY README" href="../reference/old_readme.html" />
+    <link rel="prev" title="Configuring MCIWB’s Minecraft Server" href="server-config.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -46,22 +46,17 @@
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
-<ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="01-setup.html">01 Setup</a></li>
-<li class="toctree-l1"><a class="reference internal" href="02-orientation.html">02 Orientation</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Windows Subsystem for Linux</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#adding-the-wsl2-extension">Adding the WSL2 extension</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#connecting-to-wsl2">Connecting to WSL2</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#continue-with-tutorial">Continue with tutorial</a></li>
-</ul>
-</li>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/01-setup.html">01 Setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/02-orientation.html">02 Orientation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/wsl2.html">Windows Subsystem for Linux</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">How-to Guides</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../how-to/server-config.html">Configuring MCIWB’s Minecraft Server</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../how-to/troubleshooting.html">Minecraft Server wont start</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../how-to/troubleshooting.html#problems-with-player-connection">Problems with Player Connection</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../how-to/troubleshooting.html#minecraft-server-logs">Minecraft Server Logs</a></li>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="server-config.html">Configuring MCIWB’s Minecraft Server</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Minecraft Server wont start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#problems-with-player-connection">Problems with Player Connection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#minecraft-server-logs">Minecraft Server Logs</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Reference</span></p>
 <ul>
@@ -85,9 +80,9 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
-      <li>Windows Subsystem for Linux</li>
+      <li>Minecraft Server wont start</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="../_sources/tutorials/wsl2.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../_sources/how-to/troubleshooting.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -95,51 +90,40 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="windows-subsystem-for-linux">
-<h1>Windows Subsystem for Linux<a class="headerlink" href="#windows-subsystem-for-linux" title="Permalink to this heading"></a></h1>
-<p>Windows Subsystem for Linux 2 (or WSL2) was already installed as a prerequisite
-of Docker Desktop in a previous step.</p>
-<p>WSL2 is a Linux distribution that runs inside of Windows. It makes the
-rest of the tutorial exactly the same for Windows and Linux and MacOS.
-The linux command line in Ubuntu Linux that we installed is called <code class="docutils literal notranslate"><span class="pre">bash</span></code> and
-is easier to use than Windows equivalents.</p>
-<section id="adding-the-wsl2-extension">
-<h2>Adding the WSL2 extension<a class="headerlink" href="#adding-the-wsl2-extension" title="Permalink to this heading"></a></h2>
-<p>First we need the WSL2 extension for VSCode. Go to
-<a class="reference external" href="https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-wsl">https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-wsl</a>
-and click the ‘Install’ button.</p>
-<p>You will be prompted with a dialog, click on the button that reads
-<code class="docutils literal notranslate"><span class="pre">Open</span> <span class="pre">Visual</span> <span class="pre">Studio</span> <span class="pre">Code</span></code>.</p>
-<p>VSCode will launch and you will see information on the extension that looks
-like this:</p>
-<a class="reference internal image-reference" href="../_images/remote_wsl2.excalidraw.png"><img alt="VSCode WSL2" src="../_images/remote_wsl2.excalidraw.png" style="width: 600px;" /></a>
-<p>Click the install button and you now have the extension installed.</p>
+  <section id="minecraft-server-wont-start">
+<span id="troubleshooting"></span><h1>Minecraft Server wont start<a class="headerlink" href="#minecraft-server-wont-start" title="Permalink to this heading"></a></h1>
+<p>If you see this error:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">docker</span><span class="o">.</span><span class="n">errors</span><span class="o">.</span><span class="n">DockerException</span><span class="p">:</span> <span class="n">Error</span> <span class="k">while</span> <span class="n">fetching</span> <span class="n">server</span> <span class="n">API</span> <span class="n">version</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;Connection aborted.&#39;</span><span class="p">,</span> <span class="ne">FileNotFoundError</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;No such file or directory&#39;</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>This implies that the docker engine is not running. Use the start
+menu to launch Docker Desktop and retry once it is running.</p>
 </section>
-<section id="connecting-to-wsl2">
-<h2>Connecting to WSL2<a class="headerlink" href="#connecting-to-wsl2" title="Permalink to this heading"></a></h2>
-<p>On the left bar of VSCode there is a remote connections Icon.</p>
-<ol class="arabic simple">
-<li><p>Click the the remote connection Icon</p></li>
-<li><p>If there is a dropdown then choose ‘WSL Targets’ (you wont see this
-if WSL is the only remote target installed)</p></li>
-<li><p>Right click on your Ubuntu installation and choose ‘Connect to WSL’</p></li>
-</ol>
-<a class="reference internal image-reference" href="../_images/remote_ubuntu.excalidraw.png"><img alt="VSCode WSL2" src="../_images/remote_ubuntu.excalidraw.png" style="width: 600px;" /></a>
+<section id="problems-with-player-connection">
+<h1>Problems with Player Connection<a class="headerlink" href="#problems-with-player-connection" title="Permalink to this heading"></a></h1>
+<p>If you see a message like this:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">WARNING</span><span class="p">:</span>        <span class="n">failed</span> <span class="n">to</span> <span class="n">give</span> <span class="n">signs</span> <span class="n">to</span> <span class="n">player</span><span class="p">,</span> <span class="n">player</span> <span class="o">&lt;</span><span class="n">player</span><span class="o">&gt;</span> <span class="n">left</span>
+</pre></div>
+</div>
+<p>This means MCIWB could not find your player. It is worth checking that you
+have your player name correct.</p>
+<p>TODO good way to look for your name.</p>
 </section>
-<section id="continue-with-tutorial">
-<h2>Continue with tutorial<a class="headerlink" href="#continue-with-tutorial" title="Permalink to this heading"></a></h2>
-<p>You can now continue with the main tutorial. If you do everything through
-vscode then the tutorials will work exactly the same for Windows as for a
-linux computer.</p>
-</section>
+<section id="minecraft-server-logs">
+<h1>Minecraft Server Logs<a class="headerlink" href="#minecraft-server-logs" title="Permalink to this heading"></a></h1>
+<p>You can also get the logs from the attempted start of the server with this
+command on the Terminal:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">docker</span> <span class="n">logs</span> <span class="n">mciwb_server</span>
+</pre></div>
+</div>
 </section>
 
 
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="02-orientation.html" class="btn btn-neutral float-left" title="02 Orientation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="../how-to/server-config.html" class="btn btn-neutral float-right" title="Configuring MCIWB’s Minecraft Server" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="server-config.html" class="btn btn-neutral float-left" title="Configuring MCIWB’s Minecraft Server" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../reference/old_readme.html" class="btn btn-neutral float-right" title="LEGACY README" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
