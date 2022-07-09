@@ -188,7 +188,7 @@ class MinecraftServer:
             "itzg/minecraft-server",
             detach=True,
             environment=env,
-            network_mode="host",
+            ports={f"{self.rcon}/tcp": self.rcon, f"{self.port}": self.port},
             restart_policy={"Name": "always" if self.keep else "no"},
             volumes={
                 str(self.server_folder): {"bind": "/data", "mode": "rw"},

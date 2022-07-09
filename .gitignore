@@ -134,3 +134,5 @@ cov.xml
 # These are generated at build time
 # to commit them remove this line
 requirements*
+
+src/mciwb/_version.py

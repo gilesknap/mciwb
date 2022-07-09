@@ -16,6 +16,7 @@
         "addfinalizer",
         "arcname",
         "copyblock",
+        "excalidraw",
         "fname",
         "forceload",
         "gamerule",
@@ -29,5 +30,6 @@
         "setworldspawn",
         "tracebacklimit",
         "typecheck"
-    ]
+    ],
+    "esbonio.sphinx.confDir": "${workspaceFolder}/docs"
 }
