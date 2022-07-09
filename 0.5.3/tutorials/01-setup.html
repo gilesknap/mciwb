@@ -22,7 +22,7 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Windows Subsystem for Linux" href="wsl2.html" />
+    <link rel="next" title="02 Orientation" href="02-orientation.html" />
     <link rel="prev" title="Minecraft Interactive World Builder" href="../index.html" /> 
 </head>
 
@@ -53,10 +53,10 @@
 <li class="toctree-l2"><a class="reference internal" href="#visual-studio-code">Visual Studio Code</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#command-line">Command Line</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#python">Python</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#mciwb">mciwb</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#minecraft-interactive-world-builder-library">Minecraft Interactive World Builder library</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="02-orientation.html">02 Orientation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="wsl2.html">Windows Subsystem for Linux</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Reference</span></p>
@@ -131,23 +131,21 @@ the computer where you will be trying out Minecraft Interactive World Builder
 </div></blockquote>
 <p>Microsoft has now bundled the Java and Bedrock editions together.
 We are using the Java edition here but this project could be adapted to
-work for either.</p>
+work for either in future.</p>
 <p>When you start Minecraft you will be asked to login with your Microsoft details,
 note that the ‘Mojang Login’ option is only for legacy users who have not
 yet migrated.</p>
 <p>When you have successfully launched the Minecraft Launcher, you will see a
 a screen like the following. Leave this screen open and move on to the rest
 of the tutorial. We will come back here and connect to a Minecraft server in a
-later step.</p>
-<blockquote>
-<div><a class="reference internal image-reference" href="../_images/launcher.png"><img alt="Minecraft Launcher" class="align-left" src="../_images/launcher.png" style="width: 600px;" /></a>
-</div></blockquote>
+later tutorial.</p>
+<a class="reference internal image-reference" href="../_images/launcher.png"><img alt="Minecraft Launcher" src="../_images/launcher.png" style="width: 700px;" /></a>
 </section>
 <section id="docker-desktop">
 <span id="vscode"></span><h2>Docker Desktop<a class="headerlink" href="#docker-desktop" title="Permalink to this heading"></a></h2>
 <p>Docker is a tool that allows you to run your Minecraft Server in a container.
-This makes it easy to run and avoids having to manually install the server
-code.
+This makes it easy to run and avoids having to manually install and
+maintain the server code.
 You do not need to understand too much about this since MCIWB will automatically
 use docker on your behalf.</p>
 <p>The easiest way to install Docker is to use Docker Desktop which is free to
@@ -187,6 +185,7 @@ whatever terminal program you like, however I recommend that you use the
 integrated terminal inside of Visual Studio Code.</p>
 <p>Here we will set up our initial VSCode work folder and get a command line
 prompt.</p>
+<p>First open VSCode from the start menu.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p><strong>Windows Users: Important</strong></p>
@@ -194,7 +193,36 @@ prompt.</p>
 Go here first to get VSCode connected to WSL2:
 <a class="reference internal" href="wsl2.html"><span class="doc">Windows Subsystem for Linux</span></a></p>
 </div>
-<p>To get set up we are going to launch VSCode</p>
+<p>Let’s create a work folder for use in further tutorials and tell VSCode To
+open the folder. We’ll call it  <code class="docutils literal notranslate"><span class="pre">my_world</span></code> but you are free to use your
+own name.</p>
+<p>First start a terminal by selecting from the menu bar
+<code class="docutils literal notranslate"><span class="pre">Terminal</span> <span class="pre">-&gt;</span> <span class="pre">New</span> <span class="pre">Terminal</span></code>.</p>
+<p>The bottom half of your VSCode window will display a terminal prompt like
+this:</p>
+<a class="reference internal image-reference" href="../_images/prompt.excalidraw.png"><img alt="VSCode Startup" src="../_images/prompt.excalidraw.png" style="width: 400px;" /></a>
+<p>Type the following to make sure you are in in your home directory and then
+create a new folder called <code class="docutils literal notranslate"><span class="pre">my_world</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span>
+<span class="n">mkdir</span> <span class="n">my_world</span>
+</pre></div>
+</div>
+<p>Now we want to reopen VSCode with the new folder set as its work area.
+From the menu bar choose <code class="docutils literal notranslate"><span class="pre">File</span> <span class="pre">-&gt;</span> <span class="pre">Open</span> <span class="pre">Folder</span></code>. You will see a list of
+folders, select <code class="docutils literal notranslate"><span class="pre">my_world</span></code> and click OK.</p>
+<p>Now you should see a you VSCode window that looks something like this:</p>
+<a class="reference internal image-reference" href="../_images/vscode_hello.excalidraw.png"><img alt="VSCode Startup" class="align-left" src="../_images/vscode_hello.excalidraw.png" style="width: 700px;" /></a>
+<p>From this point on all commands typed in the console and chosen from VSCode
+menus should be the same for Windows, Linux and MacOS. This is because you
+now have a bash (or zsh) shell for typing commands.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>There is one caveat here. When directed to install a software package with
+<code class="docutils literal notranslate"><span class="pre">sudo</span> <span class="pre">apt</span></code>, this will only apply if you are using a Debian derived
+OS such as Ubuntu (this also covers Windows WSL2 users).
+Mac, CentOs, Arch based users - I’m hoping you will know the equivalent
+commands. I will supply an appendix for other OSes in future.</p>
+</div>
 </section>
 <section id="python">
 <h2>Python<a class="headerlink" href="#python" title="Permalink to this heading"></a></h2>
@@ -202,72 +230,56 @@ Go here first to get VSCode connected to WSL2:
 <p>This is essential for working with MCIWB. On Linux you will likely already
 have it installed. Note that this project has been tested with
 Python 3.9 and 3.10 but other versions may also be OK.</p>
-<p>Use the following links to Download and install Python:</p>
-<dl class="simple">
-<dt>Windows:</dt><dd><p>Use the Microsoft store link here
-<a class="reference external" href="https://apps.microsoft.com/store/detail/python-310/9PJPW5LDXLZ5">https://apps.microsoft.com/store/detail/python-310/9PJPW5LDXLZ5</a></p>
-</dd>
-<dt>Mac:</dt><dd><p>Download the macOS 64-bit universal2 installer for the latest version
-from this link: <a class="reference external" href="https://www.python.org/downloads/macos">https://www.python.org/downloads/macos</a></p>
-</dd>
-<dt>Linux:</dt><dd><p>See these instructions if you do not already have a Python installation:
-<a class="reference external" href="https://docs.python-guide.org/starting/install3/linux/">https://docs.python-guide.org/starting/install3/linux/</a>.
-(These instruction discuss an older version of Python. You
-should install Python3.10 if it is available for your system.
-Python 3.9 is also OK.)</p>
-</dd>
-</dl>
-</section>
-<section id="mciwb">
-<h2>mciwb<a class="headerlink" href="#mciwb" title="Permalink to this heading"></a></h2>
-<p>First create yourself a work folder in your Documents. The procedure is
-similar for all operating systems.</p>
-<ul class="simple">
-<li><p>Hit the command or Windows Key and type <code class="docutils literal notranslate"><span class="pre">documents</span></code></p></li>
-<li><p>This should show your Documents folder</p></li>
-<li><p>Right click in the Documents folder and select <code class="docutils literal notranslate"><span class="pre">New</span> <span class="pre">Folder</span></code></p></li>
-<li><p>Type a new name for your folder <code class="docutils literal notranslate"><span class="pre">mciwb_work</span></code></p></li>
-<li><p>Launch VSCode
-- Menu bar -&gt; File -&gt; Open Folder
-- Select the folder you created in the previous step
-- Click <code class="docutils literal notranslate"><span class="pre">Yes,</span> <span class="pre">I</span> <span class="pre">trust</span> <span class="pre">the</span> <span class="pre">authors</span></code> (because you will be the author)
-- Menu bar -&gt; Terminal -&gt; New terminal</p></li>
-</ul>
-<p>You should now have a VSCode Window open with a command prompt
-(also know as a terminal) at the bottom
-like the following (image from Windows OS):</p>
-<blockquote>
-<div><a class="reference internal image-reference" href="../_images/vscode_hello.png"><img alt="VSCode Startup" class="align-left" src="../_images/vscode_hello.png" style="width: 600px;" /></a>
-</div></blockquote>
+<p>These commands will install the necessary packages to make Python 3.9
+available on your system:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">apt</span> <span class="n">update</span>
+<span class="n">sudo</span> <span class="n">apt</span> <span class="n">install</span> <span class="o">-</span><span class="n">y</span> <span class="n">python3</span><span class="mf">.9</span>
+<span class="n">sudo</span> <span class="n">apt</span> <span class="n">install</span> <span class="o">-</span><span class="n">y</span> <span class="n">python3</span><span class="mf">.9</span><span class="o">-</span><span class="n">venv</span>
+<span class="n">sudo</span> <span class="n">apt</span> <span class="n">install</span> <span class="o">-</span><span class="n">y</span> <span class="n">python3</span><span class="o">-</span><span class="n">pip</span>
+</pre></div>
+</div>
+<p>We are going to create a <strong>Virtual Environment</strong> for our Python packages to
+install in. This is a way to keep the packages you install (like mciwb)
+separate from the packages you install for other projects.</p>
+<p>First create the Virtual Environment by typing:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python3</span><span class="mf">.9</span> <span class="o">-</span><span class="n">m</span> <span class="n">venv</span> <span class="o">.</span><span class="n">venv</span>
+</pre></div>
+</div>
+<p>Then activate it by typing the following. This command will need to be
+repeated each time you restart your terminal or open a new terminal:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">source</span> <span class="o">.</span><span class="n">venv</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">activate</span>
+</pre></div>
+</div>
+<p>Note you can tell you have an active Virtual Environment because your terminal
+prompt will change to have a leading (.venv) like this:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(.venv) giles@gkwin:~/mciwb$
+</pre></div>
+</div>
 </section>
 <section id="minecraft-interactive-world-builder-library">
 <h2>Minecraft Interactive World Builder library<a class="headerlink" href="#minecraft-interactive-world-builder-library" title="Permalink to this heading"></a></h2>
-<p>The final component is this project itself. This needs to be added to the
-Python installation we already made above. Again, this is free open open-source
+<p>The final component is MCIWB itself. This needs to be added to the
+Python environment we already made above. Again, this is free open open-source
 software.</p>
-<p>The Package Installer for Python (Pip) is used to get MCIWB from the package
-registry called Pypi.</p>
-<p>Using the command prompt type in the following commands:</p>
-<p>First get pip:</p>
-<blockquote>
-<div><p>curl <a class="reference external" href="https://bootstrap.pypa.io/get-pip.py">https://bootstrap.pypa.io/get-pip.py</a> -o get-pip.py
-python get-pip.py</p>
-</div></blockquote>
-<p>Now use pip to get MCIWB:</p>
-<blockquote>
-<div><p>pip install –user mciwb</p>
-</div></blockquote>
-<dl class="simple">
-<dt>Windows:</dt><dd><p>This is really annoying, but Windows has an appallingly complicated way
-of setting up paths. You will need to take a look at this tutorial
-to get the next step to work.
-TODO TODO TODO
-WARNING: The script mciwb.exe is installed in ‘C:UsersgilesAppDataLocalPackagesPythonSoftwareFoundation.Python.3.10_qbz5n2kfra8p0LocalCachelocal-packagesPython310Scripts’ which is not on PATH.
-wsl –install -d Ubuntu</p>
-</dd>
-</dl>
-<p>TODO: verify this works on WINDOWS!
-TODO: how to make sure python is on the path???</p>
+<p>Before the next step, let’s make sure that we are in the right folder and
+that we have the Virtual Environment activated:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>cd $HOME/my_world
+source .venv/bin/activate
+</pre></div>
+</div>
+<p>Everything is all set up ready so the following simple command will get
+mciwb from the Python Package Index (PyPi) and install it into the
+Virtual Environment:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="n">mciwb</span>
+</pre></div>
+</div>
+<p>Assuming all is well you should be able to verify everything is working
+by typing the following:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">mciwb</span> <span class="o">--</span><span class="n">help</span>
+</pre></div>
+</div>
+<p>That’s all the hard bits done and they only need to be done once.
+You can now proceed to the next tutorial.</p>
 </section>
 </section>
 
@@ -276,7 +288,7 @@ TODO: how to make sure python is on the path???</p>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="../index.html" class="btn btn-neutral float-left" title="Minecraft Interactive World Builder" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="wsl2.html" class="btn btn-neutral float-right" title="Windows Subsystem for Linux" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="02-orientation.html" class="btn btn-neutral float-right" title="02 Orientation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

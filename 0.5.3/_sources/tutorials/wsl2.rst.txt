@@ -1,12 +1,12 @@
 Windows Subsystem for Linux
 ===========================
 
-Windows Subsystem for Linux 2' or WSL2 was already installed as a prerequisite 
+Windows Subsystem for Linux 2 (or WSL2) was already installed as a prerequisite 
 of Docker Desktop in a previous step. 
 
 WSL2 is a Linux distribution that runs inside of Windows. It makes the 
 rest of the tutorial exactly the same for Windows and Linux and MacOS. 
-The linux command line in Ubuntu Linux that we installed is called 'bash' and 
+The linux command line in Ubuntu Linux that we installed is called ``bash`` and 
 is easier to use than Windows equivalents.
 
 Adding the WSL2 extension
@@ -17,7 +17,7 @@ https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-wsl
 and click the 'Install' button.
 
 You will be prompted with a dialog, click on the button that reads
-```Open Visual Studio Code``.
+``Open Visual Studio Code``.
 
 VSCode will launch and you will see information on the extension that looks 
 like this:
@@ -48,5 +48,5 @@ Continue with tutorial
 ----------------------
 
 You can now continue with the main tutorial. If you do everything through
-vscode then the tutorials will work exactly the same for Windows as for
+vscode then the tutorials will work exactly the same for Windows as for a
 linux computer.

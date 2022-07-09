@@ -46,7 +46,7 @@ the computer where you will be trying out Minecraft Interactive World Builder
 
 Microsoft has now bundled the Java and Bedrock editions together. 
 We are using the Java edition here but this project could be adapted to
-work for either.
+work for either in future.
 
 When you start Minecraft you will be asked to login with your Microsoft details,
 note that the 'Mojang Login' option is only for legacy users who have not
@@ -55,12 +55,11 @@ yet migrated.
 When you have successfully launched the Minecraft Launcher, you will see a
 a screen like the following. Leave this screen open and move on to the rest
 of the tutorial. We will come back here and connect to a Minecraft server in a
-later step.
+later tutorial.
 
-    .. image:: ../images/launcher.png
-        :alt: Minecraft Launcher
-        :width: 600px
-        :align: left
+.. image:: ../images/launcher.png
+    :alt: Minecraft Launcher
+    :width: 700px
 
 .. _vscode:
 
@@ -68,8 +67,8 @@ Docker Desktop
 --------------
 
 Docker is a tool that allows you to run your Minecraft Server in a container.
-This makes it easy to run and avoids having to manually install the server
-code.
+This makes it easy to run and avoids having to manually install and
+maintain the server code.
 You do not need to understand too much about this since MCIWB will automatically
 use docker on your behalf.
 
@@ -119,6 +118,8 @@ integrated terminal inside of Visual Studio Code.
 Here we will set up our initial VSCode work folder and get a command line
 prompt.
 
+First open VSCode from the start menu.
+
 .. note::
 
     **Windows Users: Important**
@@ -127,7 +128,48 @@ prompt.
     Go here first to get VSCode connected to WSL2: 
     `wsl2`
 
-To get set up we are going to launch VSCode
+
+Let's create a work folder for use in further tutorials and tell VSCode To
+open the folder. We'll call it  ``my_world`` but you are free to use your 
+own name.
+
+First start a terminal by selecting from the menu bar 
+``Terminal -> New Terminal``.
+
+The bottom half of your VSCode window will display a terminal prompt like 
+this:
+
+.. image:: ../images/prompt.excalidraw.png
+    :alt: VSCode Startup
+    :width: 400px
+
+Type the following to make sure you are in in your home directory and then
+create a new folder called ``my_world``::
+
+    cd
+    mkdir my_world
+
+Now we want to reopen VSCode with the new folder set as its work area.
+From the menu bar choose ``File -> Open Folder``. You will see a list of 
+folders, select ``my_world`` and click OK.
+
+Now you should see a you VSCode window that looks something like this:
+
+.. image:: ../images/vscode_hello.excalidraw.png
+    :alt: VSCode Startup
+    :width: 700px
+    :align: left
+
+From this point on all commands typed in the console and chosen from VSCode
+menus should be the same for Windows, Linux and MacOS. This is because you
+now have a bash (or zsh) shell for typing commands.
+
+.. warning::
+    There is one caveat here. When directed to install a software package with 
+    ``sudo apt``, this will only apply if you are using a Debian derived
+    OS such as Ubuntu (this also covers Windows WSL2 users). 
+    Mac, CentOs, Arch based users - I'm hoping you will know the equivalent 
+    commands. I will supply an appendix for other OSes in future.
 
 Python
 ------
@@ -138,80 +180,57 @@ This is essential for working with MCIWB. On Linux you will likely already
 have it installed. Note that this project has been tested with
 Python 3.9 and 3.10 but other versions may also be OK.
 
-Use the following links to Download and install Python:
+These commands will install the necessary packages to make Python 3.9
+available on your system::
 
-Windows:
-    Use the Microsoft store link here
-    https://apps.microsoft.com/store/detail/python-310/9PJPW5LDXLZ5
+    sudo apt update
+    sudo apt install -y python3.9
+    sudo apt install -y python3.9-venv
+    sudo apt install -y python3-pip
 
-Mac:
-    Download the macOS 64-bit universal2 installer for the latest version 
-    from this link: https://www.python.org/downloads/macos
+We are going to create a **Virtual Environment** for our Python packages to
+install in. This is a way to keep the packages you install (like mciwb)
+separate from the packages you install for other projects.
 
-Linux:
-    See these instructions if you do not already have a Python installation:
-    https://docs.python-guide.org/starting/install3/linux/.
-    (These instruction discuss an older version of Python. You 
-    should install Python3.10 if it is available for your system. 
-    Python 3.9 is also OK.)
+First create the Virtual Environment by typing::
 
+    python3.9 -m venv .venv
 
-mciwb
------
+Then activate it by typing the following. This command will need to be 
+repeated each time you restart your terminal or open a new terminal::
 
-First create yourself a work folder in your Documents. The procedure is 
-similar for all operating systems.
+    source .venv/bin/activate
 
-- Hit the command or Windows Key and type ``documents``
-- This should show your Documents folder
-- Right click in the Documents folder and select ``New Folder``
-- Type a new name for your folder ``mciwb_work``
-- Launch VSCode 
-  - Menu bar -> File -> Open Folder
-  - Select the folder you created in the previous step
-  - Click ``Yes, I trust the authors`` (because you will be the author)
-  - Menu bar -> Terminal -> New terminal
+Note you can tell you have an active Virtual Environment because your terminal
+prompt will change to have a leading (.venv) like this::
 
-You should now have a VSCode Window open with a command prompt 
-(also know as a terminal) at the bottom
-like the following (image from Windows OS):
+    (.venv) giles@gkwin:~/mciwb$ 
 
-    .. image:: ../images/vscode_hello.png
-        :alt: VSCode Startup
-        :width: 600px
-        :align: left
 
 Minecraft Interactive World Builder library
 -------------------------------------------
 
-The final component is this project itself. This needs to be added to the 
-Python installation we already made above. Again, this is free open open-source
+The final component is MCIWB itself. This needs to be added to the 
+Python environment we already made above. Again, this is free open open-source
 software.
 
-The Package Installer for Python (Pip) is used to get MCIWB from the package 
-registry called Pypi.
+Before the next step, let's make sure that we are in the right folder and
+that we have the Virtual Environment activated::
 
-Using the command prompt type in the following commands: 
+    cd $HOME/my_world
+    source .venv/bin/activate
 
-First get pip:
+Everything is all set up ready so the following simple command will get
+mciwb from the Python Package Index (PyPi) and install it into the
+Virtual Environment::
 
-    curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
-    python get-pip.py
+    pip install mciwb
 
-Now use pip to get MCIWB:
+Assuming all is well you should be able to verify everything is working 
+by typing the following::
 
-    pip install --user mciwb
+    mciwb --help
 
-Windows:
-    This is really annoying, but Windows has an appallingly complicated way
-    of setting up paths. You will need to take a look at this tutorial
-    to get the next step to work.  
-    TODO TODO TODO    
-    WARNING: The script mciwb.exe is installed in 'C:\Users\giles\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.10_qbz5n2kfra8p0\LocalCache\local-packages\Python310\Scripts' which is not on PATH.
-    wsl --install -d Ubuntu
+That's all the hard bits done and they only need to be done once. 
+You can now proceed to the next tutorial.
 
-
-
-
-TODO: verify this works on WINDOWS!
-TODO: how to make sure python is on the path??? 
