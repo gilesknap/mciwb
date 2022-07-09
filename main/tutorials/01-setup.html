@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>01 Setup &mdash; mciwb 0.5.3 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
+    <link rel="shortcut icon" href="../_static/logo.png"/>
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="02 Orientation" href="02-orientation.html" />
+    <link rel="prev" title="Minecraft Interactive World Builder" href="../index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: rgb(7, 43, 93)" >
+            <a href="../index.html" class="icon icon-home"> mciwb
+            <img src="../_static/logo.png" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                0.5.3
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">01 Setup</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#the-minecraft-java-client">The Minecraft Java Client</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#docker-desktop">Docker Desktop</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#visual-studio-code">Visual Studio Code</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#command-line">Command Line</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#python">Python</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#minecraft-interactive-world-builder-library">Minecraft Interactive World Builder library</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="02-orientation.html">02 Orientation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="wsl2.html">Windows Subsystem for Linux</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../reference/old_readme.html">LEGACY README</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/gilesknap/mciwb/releases">Releases</a></li>
+<li class="toctree-l1"><a class="reference external" href="genindex.html#http://">Index</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: rgb(7, 43, 93)" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">mciwb</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>01 Setup</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/tutorials/01-setup.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="setup">
+<span id="intro"></span><h1>01 Setup<a class="headerlink" href="#setup" title="Permalink to this heading"></a></h1>
+<p>To use Minecraft Interactive World Builder (MCIWB) you will need a desktop
+Computer or Laptop. Linux, Windows and MacOS are all supported.</p>
+<p>To get going you first need to install the following software on your
+Computer:</p>
+<ul class="simple">
+<li><p>The Minecraft Java Client (with Minecraft account purchase)</p></li>
+<li><p>Docker Desktop</p></li>
+<li><p>Visual Studio Code</p></li>
+<li><p>Python</p></li>
+<li><p>Minecraft Interactive World Builder Python package</p></li>
+</ul>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>The tutorials for this project are intended to be accessible for
+complete beginners. However, this first step of getting all of the
+software installed may need a little bit of knowledge of the basics of
+your operating system.</p>
+<p>For Tutorial 01, I recommend that novices get a little help from
+someone with computer experience. This setup tutorial need only
+be done once (per computer) and the remaining tutorials should not
+require prior knowledge.</p>
+</div>
+<section id="the-minecraft-java-client">
+<h2>The Minecraft Java Client<a class="headerlink" href="#the-minecraft-java-client" title="Permalink to this heading"></a></h2>
+<p>If you already have the Minecraft Java Client installed proceed to <a class="reference internal" href="#vscode"><span class="std std-ref">Docker Desktop</span></a>.</p>
+<p>You will need to purchase a license for Minecraft from Microsoft.</p>
+<p>Go to this site to buy your copy, if you do not already have one:</p>
+<blockquote>
+<div><p><a class="reference external" href="https://www.minecraft.net/en-us/store/minecraft-java-bedrock-edition-pc">https://www.minecraft.net/en-us/store/minecraft-java-bedrock-edition-pc</a></p>
+</div></blockquote>
+<p>Once you have a license, download the Java client to
+the computer where you will be trying out Minecraft Interactive World Builder
+(MCIWB). This is the download link for the Java client:</p>
+<blockquote>
+<div><p><a class="reference external" href="https://www.minecraft.net/en-us/download">https://www.minecraft.net/en-us/download</a></p>
+</div></blockquote>
+<p>Microsoft has now bundled the Java and Bedrock editions together.
+We are using the Java edition here but this project could be adapted to
+work for either in future.</p>
+<p>When you start Minecraft you will be asked to login with your Microsoft details,
+note that the ‘Mojang Login’ option is only for legacy users who have not
+yet migrated.</p>
+<p>When you have successfully launched the Minecraft Launcher, you will see a
+a screen like the following. Leave this screen open and move on to the rest
+of the tutorial. We will come back here and connect to a Minecraft server in a
+later tutorial.</p>
+<a class="reference internal image-reference" href="../_images/launcher.png"><img alt="Minecraft Launcher" src="../_images/launcher.png" style="width: 700px;" /></a>
+</section>
+<section id="docker-desktop">
+<span id="vscode"></span><h2>Docker Desktop<a class="headerlink" href="#docker-desktop" title="Permalink to this heading"></a></h2>
+<p>Docker is a tool that allows you to run your Minecraft Server in a container.
+This makes it easy to run and avoids having to manually install and
+maintain the server code.
+You do not need to understand too much about this since MCIWB will automatically
+use docker on your behalf.</p>
+<p>The easiest way to install Docker is to use Docker Desktop which is free to
+use for individuals.</p>
+<dl class="simple">
+<dt>Windows:</dt><dd><p>Docker Desktop requires WSL2 and a linux distribution to go with it.
+So you should first install Ubuntu 22.04 LTS from here
+- <a class="reference external" href="https://apps.microsoft.com/store/detail/ubuntu-2204-lts/9PN20MSR04DW">https://apps.microsoft.com/store/detail/ubuntu-2204-lts/9PN20MSR04DW</a></p>
+</dd>
+<dt>All Platforms:</dt><dd><p>Instructions for Docker Desktop installation for all platforms are here:
+- <a class="reference external" href="https://docs.docker.com/get-docker/">https://docs.docker.com/get-docker/</a></p>
+</dd>
+</dl>
+<p>For mciwb to work you will need Docker Desktop to be running before you
+start Visual Studio Code. So start it from the start menu before moving to
+the next step.</p>
+<p>To make things easier next time you could go into settings (accessed
+via the cog icon in the title bar) and tick the option
+<code class="docutils literal notranslate"><span class="pre">Start</span> <span class="pre">Docker</span> <span class="pre">Desktop</span> <span class="pre">when</span> <span class="pre">you</span> <span class="pre">log</span> <span class="pre">in</span></code>.</p>
+</section>
+<section id="visual-studio-code">
+<h2>Visual Studio Code<a class="headerlink" href="#visual-studio-code" title="Permalink to this heading"></a></h2>
+<p>This is the tool we will use to edit our Python code. If you are already
+a developer then you can use your preferred IDE instead. The tutorials
+will use Visual Studio Code, so if you are new to programming this is
+a recommended install.</p>
+<p>VSCode is free, open-source software.</p>
+<p>This link provides downloads for all flavours of VSCode:</p>
+<blockquote>
+<div><p><a class="reference external" href="https://code.visualstudio.com/download">https://code.visualstudio.com/download</a></p>
+</div></blockquote>
+</section>
+<section id="command-line">
+<h2>Command Line<a class="headerlink" href="#command-line" title="Permalink to this heading"></a></h2>
+<p>From now on we are going to start using the command line. You are free to use
+whatever terminal program you like, however I recommend that you use the
+integrated terminal inside of Visual Studio Code.</p>
+<p>Here we will set up our initial VSCode work folder and get a command line
+prompt.</p>
+<p>First open VSCode from the start menu.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><strong>Windows Users: Important</strong></p>
+<p>We are going to use ‘Windows Subsystem for Linux 2’ or WSL2.
+Go here first to get VSCode connected to WSL2:
+<a class="reference internal" href="wsl2.html"><span class="doc">Windows Subsystem for Linux</span></a></p>
+</div>
+<p>Let’s create a work folder for use in further tutorials and tell VSCode To
+open the folder. We’ll call it  <code class="docutils literal notranslate"><span class="pre">my_world</span></code> but you are free to use your
+own name.</p>
+<p>First start a terminal by selecting from the menu bar
+<code class="docutils literal notranslate"><span class="pre">Terminal</span> <span class="pre">-&gt;</span> <span class="pre">New</span> <span class="pre">Terminal</span></code>.</p>
+<p>The bottom half of your VSCode window will display a terminal prompt like
+this:</p>
+<a class="reference internal image-reference" href="../_images/prompt.excalidraw.png"><img alt="VSCode Startup" src="../_images/prompt.excalidraw.png" style="width: 400px;" /></a>
+<p>Type the following to make sure you are in in your home directory and then
+create a new folder called <code class="docutils literal notranslate"><span class="pre">my_world</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span>
+<span class="n">mkdir</span> <span class="n">my_world</span>
+</pre></div>
+</div>
+<p>Now we want to reopen VSCode with the new folder set as its work area.
+From the menu bar choose <code class="docutils literal notranslate"><span class="pre">File</span> <span class="pre">-&gt;</span> <span class="pre">Open</span> <span class="pre">Folder</span></code>. You will see a list of
+folders, select <code class="docutils literal notranslate"><span class="pre">my_world</span></code> and click OK.</p>
+<p>Now you should see a you VSCode window that looks something like this:</p>
+<a class="reference internal image-reference" href="../_images/vscode_hello.excalidraw.png"><img alt="VSCode Startup" class="align-left" src="../_images/vscode_hello.excalidraw.png" style="width: 700px;" /></a>
+<p>From this point on all commands typed in the console and chosen from VSCode
+menus should be the same for Windows, Linux and MacOS. This is because you
+now have a bash (or zsh) shell for typing commands.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>There is one caveat here. When directed to install a software package with
+<code class="docutils literal notranslate"><span class="pre">sudo</span> <span class="pre">apt</span></code>, this will only apply if you are using a Debian derived
+OS such as Ubuntu (this also covers Windows WSL2 users).
+Mac, CentOs, Arch based users - I’m hoping you will know the equivalent
+commands. I will supply an appendix for other OSes in future.</p>
+</div>
+</section>
+<section id="python">
+<h2>Python<a class="headerlink" href="#python" title="Permalink to this heading"></a></h2>
+<p>The Python Programming Language is also free an open-source.</p>
+<p>This is essential for working with MCIWB. On Linux you will likely already
+have it installed. Note that this project has been tested with
+Python 3.9 and 3.10 but other versions may also be OK.</p>
+<p>These commands will install the necessary packages to make Python 3.9
+available on your system:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">apt</span> <span class="n">update</span>
+<span class="n">sudo</span> <span class="n">apt</span> <span class="n">install</span> <span class="o">-</span><span class="n">y</span> <span class="n">python3</span><span class="mf">.9</span>
+<span class="n">sudo</span> <span class="n">apt</span> <span class="n">install</span> <span class="o">-</span><span class="n">y</span> <span class="n">python3</span><span class="mf">.9</span><span class="o">-</span><span class="n">venv</span>
+<span class="n">sudo</span> <span class="n">apt</span> <span class="n">install</span> <span class="o">-</span><span class="n">y</span> <span class="n">python3</span><span class="o">-</span><span class="n">pip</span>
+</pre></div>
+</div>
+<p>We are going to create a <strong>Virtual Environment</strong> for our Python packages to
+install in. This is a way to keep the packages you install (like mciwb)
+separate from the packages you install for other projects.</p>
+<p>First create the Virtual Environment by typing:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python3</span><span class="mf">.9</span> <span class="o">-</span><span class="n">m</span> <span class="n">venv</span> <span class="o">.</span><span class="n">venv</span>
+</pre></div>
+</div>
+<p>Then activate it by typing the following. This command will need to be
+repeated each time you restart your terminal or open a new terminal:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">source</span> <span class="o">.</span><span class="n">venv</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">activate</span>
+</pre></div>
+</div>
+<p>Note you can tell you have an active Virtual Environment because your terminal
+prompt will change to have a leading (.venv) like this:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(.venv) giles@gkwin:~/mciwb$
+</pre></div>
+</div>
+</section>
+<section id="minecraft-interactive-world-builder-library">
+<h2>Minecraft Interactive World Builder library<a class="headerlink" href="#minecraft-interactive-world-builder-library" title="Permalink to this heading"></a></h2>
+<p>The final component is MCIWB itself. This needs to be added to the
+Python environment we already made above. Again, this is free open open-source
+software.</p>
+<p>Before the next step, let’s make sure that we are in the right folder and
+that we have the Virtual Environment activated:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>cd $HOME/my_world
+source .venv/bin/activate
+</pre></div>
+</div>
+<p>Everything is all set up ready so the following simple command will get
+mciwb from the Python Package Index (PyPi) and install it into the
+Virtual Environment:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="n">mciwb</span>
+</pre></div>
+</div>
+<p>Assuming all is well you should be able to verify everything is working
+by typing the following:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">mciwb</span> <span class="o">--</span><span class="n">help</span>
+</pre></div>
+</div>
+<p>That’s all the hard bits done and they only need to be done once.
+You can now proceed to the next tutorial.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../index.html" class="btn btn-neutral float-left" title="Minecraft Interactive World Builder" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="02-orientation.html" class="btn btn-neutral float-right" title="02 Orientation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p></p>
+  </div>
+
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+   
+  <div id="other-versions-div" class="rst-versions" data-toggle="rst-versions" role="note" aria-label="Versions" style="visibility: hidden">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      <span class="fa fa-book"> Other Versions</span>
+      0.5.3
+      <span class="fa fa-caret-down"></span>
+    </span>
+    <div class="rst-other-versions">
+      <dl id="other-versions-dl"/>
+    </div>
+  </div>
+  <script>
+    function addVersion(name) {
+      var dd = document.createElement("dd");
+      var a = document.createElement("a");
+      a.href = "../../" + name;
+      a.innerText = name;
+      dd.appendChild(a);
+      document.getElementById('other-versions-dl').appendChild(dd);
+    }
+    // Get versions.txt and add a version for each line
+    fetch("../../versions.txt").then(response => {
+      if (response.ok) {
+        document.getElementById('other-versions-div').style.visibility = "visible";
+        return response.text().then(text => text.split(/\r?\n/).forEach(addVersion))
+      }
+    });
+  </script>
+
+
+</body>
+</html>
