@@ -29,5 +29,6 @@
         "setworldspawn",
         "tracebacklimit",
         "typecheck"
-    ]
+    ],
+    "esbonio.sphinx.confDir": "${workspaceFolder}/docs"
 }
