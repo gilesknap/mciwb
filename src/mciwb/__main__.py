@@ -4,12 +4,16 @@ from typing import Optional
 
 import typer
 from IPython.terminal.embed import InteractiveShellEmbed
+from mcwb import Direction, Vec3, Volume
 
 import mciwb
 from mciwb import Iwb, __version__
 from mciwb.server import HOST, MinecraftServer
 
 cli = typer.Typer(add_completion=False)
+
+# these are imported for use in iPython without needing import
+useful = [Direction, Vec3, Volume]
 
 server_name = "mciwb_server"
 default_server_folder = Path.home() / server_name
@@ -81,9 +85,12 @@ def shell(
     except ConnectionRefusedError:
         logging.error("Could not connect to server")
         exit(1)
-    finally:
+    except Exception:
         if mciwb.world is not None:
             mciwb.world.stop()
+        logging.error("Failed to start world")
+        logging.debug("", exc_info=True)
+        exit(1)
 
     # for quick access in the shell without qualifying the namespace
     world = mciwb.world
