@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>01 Setup &mdash; mciwb 0.5.4.dev1+ga577f2b documentation</title>
+  <title>Set Up &mdash; mciwb 0.5.4.dev7+g019e40a documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
@@ -22,7 +22,7 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="02 Orientation" href="02-orientation.html" />
+    <link rel="next" title="Orientation" href="02-orientation.html" />
     <link rel="prev" title="Minecraft Interactive World Builder" href="../index.html" /> 
 </head>
 
@@ -47,7 +47,7 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
 <ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">01 Setup</a><ul>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Set Up</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#the-minecraft-java-client">The Minecraft Java Client</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#docker-desktop">Docker Desktop</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#visual-studio-code">Visual Studio Code</a></li>
@@ -56,12 +56,30 @@
 <li class="toctree-l2"><a class="reference internal" href="#minecraft-interactive-world-builder-library">Minecraft Interactive World Builder library</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="02-orientation.html">02 Orientation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="wsl2.html">Windows Subsystem for Linux</a></li>
+<li class="toctree-l1"><a class="reference internal" href="02-orientation.html">Orientation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="03-variables.html">Python Variables</a></li>
+<li class="toctree-l1"><a class="reference internal" href="04-loops.html">Loops</a></li>
+<li class="toctree-l1"><a class="reference internal" href="05-if-then.html">If Then Else</a></li>
+<li class="toctree-l1"><a class="reference internal" href="06-functions.html">Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="07-lists.html">Lists</a></li>
+<li class="toctree-l1"><a class="reference internal" href="08-dictionaries.html">Dictionaries</a></li>
+<li class="toctree-l1"><a class="reference internal" href="09-classes.html">Classes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">How-to Guides</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../how-to/startup.html">Setup for each Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../how-to/troubleshooting.html">Troubleshooting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../how-to/server-config.html">Minecraft Server Config</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../how-to/backup.html">Backup and Restore</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../how-to/wsl2.html">Windows Subsystem for Linux</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Explanations</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../explain/completion.html">Command Completion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../explain/coordinates.html">Minecraft’s Coordinate System</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../reference/old_readme.html">LEGACY README</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../reference/contributing.html">Contributing</a></li>
 <li class="toctree-l1"><a class="reference external" href="https://github.com/gilesknap/mciwb/releases">Releases</a></li>
 <li class="toctree-l1"><a class="reference external" href="genindex.html#http://">Index</a></li>
@@ -81,7 +99,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
-      <li>01 Setup</li>
+      <li>Set Up</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/tutorials/01-setup.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -91,8 +109,8 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="setup">
-<span id="intro"></span><h1>01 Setup<a class="headerlink" href="#setup" title="Permalink to this heading"></a></h1>
+  <section id="set-up">
+<span id="intro"></span><h1>Set Up<a class="headerlink" href="#set-up" title="Permalink to this heading"></a></h1>
 <p>To use Minecraft Interactive World Builder (MCIWB) you will need a desktop
 Computer or Laptop. Linux, Windows and MacOS are all supported.</p>
 <p>To get going you first need to install the following software on your
@@ -110,14 +128,14 @@ Computer:</p>
 complete beginners. However, this first step of getting all of the
 software installed may need a little bit of knowledge of the basics of
 your operating system.</p>
-<p>For Tutorial 01, I recommend that novices get a little help from
+<p>For this Setup Tutorial, I recommend that novices get a little help from
 someone with computer experience. This setup tutorial need only
 be done once (per computer) and the remaining tutorials should not
 require prior knowledge.</p>
 </div>
 <section id="the-minecraft-java-client">
 <h2>The Minecraft Java Client<a class="headerlink" href="#the-minecraft-java-client" title="Permalink to this heading"></a></h2>
-<p>If you already have the Minecraft Java Client installed proceed to <a class="reference internal" href="#vscode"><span class="std std-ref">Docker Desktop</span></a>.</p>
+<p>If you already have the Minecraft Java Client installed proceed to <a class="reference internal" href="#vscode"><span class="std std-ref">Visual Studio Code</span></a>.</p>
 <p>You will need to purchase a license for Minecraft from Microsoft.</p>
 <p>Go to this site to buy your copy, if you do not already have one:</p>
 <blockquote>
@@ -142,7 +160,7 @@ later tutorial.</p>
 <a class="reference internal image-reference" href="../_images/launcher.png"><img alt="Minecraft Launcher" src="../_images/launcher.png" style="width: 700px;" /></a>
 </section>
 <section id="docker-desktop">
-<span id="vscode"></span><h2>Docker Desktop<a class="headerlink" href="#docker-desktop" title="Permalink to this heading"></a></h2>
+<span id="docker"></span><h2>Docker Desktop<a class="headerlink" href="#docker-desktop" title="Permalink to this heading"></a></h2>
 <p>Docker is a tool that allows you to run your Minecraft Server in a container.
 This makes it easy to run and avoids having to manually install and
 maintain the server code.
@@ -167,7 +185,7 @@ via the cog icon in the title bar) and tick the option
 <code class="docutils literal notranslate"><span class="pre">Start</span> <span class="pre">Docker</span> <span class="pre">Desktop</span> <span class="pre">when</span> <span class="pre">you</span> <span class="pre">log</span> <span class="pre">in</span></code>.</p>
 </section>
 <section id="visual-studio-code">
-<h2>Visual Studio Code<a class="headerlink" href="#visual-studio-code" title="Permalink to this heading"></a></h2>
+<span id="vscode"></span><h2>Visual Studio Code<a class="headerlink" href="#visual-studio-code" title="Permalink to this heading"></a></h2>
 <p>This is the tool we will use to edit our Python code. If you are already
 a developer then you can use your preferred IDE instead. The tutorials
 will use Visual Studio Code, so if you are new to programming this is
@@ -191,7 +209,7 @@ prompt.</p>
 <p><strong>Windows Users: Important</strong></p>
 <p>We are going to use ‘Windows Subsystem for Linux 2’ or WSL2.
 Go here first to get VSCode connected to WSL2:
-<a class="reference internal" href="wsl2.html"><span class="doc">Windows Subsystem for Linux</span></a></p>
+<a class="reference internal" href="../how-to/wsl2.html#wsl2"><span class="std std-ref">Windows Subsystem for Linux</span></a></p>
 </div>
 <p>Let’s create a work folder for use in further tutorials and tell VSCode To
 open the folder. We’ll call it  <code class="docutils literal notranslate"><span class="pre">my_world</span></code> but you are free to use your
@@ -210,6 +228,10 @@ create a new folder called <code class="docutils literal notranslate"><span clas
 <p>Now we want to reopen VSCode with the new folder set as its work area.
 From the menu bar choose <code class="docutils literal notranslate"><span class="pre">File</span> <span class="pre">-&gt;</span> <span class="pre">Open</span> <span class="pre">Folder</span></code>. You will see a list of
 folders, select <code class="docutils literal notranslate"><span class="pre">my_world</span></code> and click OK.</p>
+<p>You will be asked if you trust the authors of files in this folder.
+You do trust them because they are you! So click
+<code class="docutils literal notranslate"><span class="pre">Yes</span> <span class="pre">I</span> <span class="pre">trust</span> <span class="pre">the</span> <span class="pre">authors</span></code>.</p>
+<a class="reference internal image-reference" href="../_images/trust.png"><img alt="VSCode Startup" src="../_images/trust.png" style="width: 400px;" /></a>
 <p>Now you should see a you VSCode window that looks something like this:</p>
 <a class="reference internal image-reference" href="../_images/vscode_hello.excalidraw.png"><img alt="VSCode Startup" class="align-left" src="../_images/vscode_hello.excalidraw.png" style="width: 700px;" /></a>
 <p>From this point on all commands typed in the console and chosen from VSCode
@@ -288,7 +310,7 @@ You can now proceed to the next tutorial.</p>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="../index.html" class="btn btn-neutral float-left" title="Minecraft Interactive World Builder" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="02-orientation.html" class="btn btn-neutral float-right" title="02 Orientation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="02-orientation.html" class="btn btn-neutral float-right" title="Orientation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

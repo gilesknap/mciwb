@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Minecraft Interactive World Builder &mdash; mciwb 0.5.4.dev1+ga577f2b documentation</title>
+  <title>Minecraft Interactive World Builder &mdash; mciwb 0.5.4.dev7+g019e40a documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="_static/graphviz.css" type="text/css" />
@@ -22,7 +22,7 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="01 Setup" href="tutorials/01-setup.html" /> 
+    <link rel="next" title="Set Up" href="tutorials/01-setup.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -46,13 +46,31 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="tutorials/01-setup.html">01 Setup</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tutorials/02-orientation.html">02 Orientation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tutorials/wsl2.html">Windows Subsystem for Linux</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/01-setup.html">Set Up</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/02-orientation.html">Orientation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/03-variables.html">Python Variables</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/04-loops.html">Loops</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/05-if-then.html">If Then Else</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/06-functions.html">Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/07-lists.html">Lists</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/08-dictionaries.html">Dictionaries</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/09-classes.html">Classes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">How-to Guides</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="how-to/startup.html">Setup for each Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="how-to/troubleshooting.html">Troubleshooting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="how-to/server-config.html">Minecraft Server Config</a></li>
+<li class="toctree-l1"><a class="reference internal" href="how-to/backup.html">Backup and Restore</a></li>
+<li class="toctree-l1"><a class="reference internal" href="how-to/wsl2.html">Windows Subsystem for Linux</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Explanations</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="explain/completion.html">Command Completion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="explain/coordinates.html">Minecraft’s Coordinate System</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="reference/old_readme.html">LEGACY README</a></li>
 <li class="toctree-l1"><a class="reference internal" href="reference/contributing.html">Contributing</a></li>
 <li class="toctree-l1"><a class="reference external" href="https://github.com/gilesknap/mciwb/releases">Releases</a></li>
 <li class="toctree-l1"><a class="reference external" href="genindex.html#http://">Index</a></li>
@@ -104,7 +122,7 @@ signs or activating switches/levers with Python actions.</p></li>
 <p>All instructions on how to set up a Minecraft Server and the Python developer
 environment are included. There will be a step by step tutorial to
 introduce Python Programming.</p>
-<p>See <a class="reference internal" href="tutorials/01-setup.html#intro"><span class="std std-ref">01 Setup</span></a> to begin.</p>
+<p>See <a class="reference internal" href="tutorials/01-setup.html#intro"><span class="std std-ref">Set Up</span></a> to begin.</p>
 <table class="docutils align-default">
 <colgroup>
 <col style="width: 18%" />
@@ -135,7 +153,7 @@ side-bar.</p>
 <div class="toctree-wrapper compound">
 <p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="tutorials/01-setup.html">01 Setup</a><ul>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/01-setup.html">Set Up</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="tutorials/01-setup.html#the-minecraft-java-client">The Minecraft Java Client</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tutorials/01-setup.html#docker-desktop">Docker Desktop</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tutorials/01-setup.html#visual-studio-code">Visual Studio Code</a></li>
@@ -144,20 +162,27 @@ side-bar.</p>
 <li class="toctree-l2"><a class="reference internal" href="tutorials/01-setup.html#minecraft-interactive-world-builder-library">Minecraft Interactive World Builder library</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="tutorials/02-orientation.html">02 Orientation</a><ul>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/02-orientation.html">Orientation</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="tutorials/02-orientation.html#get-a-minecraft-server-running">Get a Minecraft Server Running</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tutorials/02-orientation.html#connect-your-client-to-the-server">Connect your Client to the Server</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tutorials/02-orientation.html#connect-mciwb-to-the-server">Connect MCIWB to the Server</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tutorials/02-orientation.html#try-out-some-action-signs">Try out Some Action Signs</a></li>
-<li class="toctree-l2"><a class="reference internal" href="tutorials/02-orientation.html#learn-about-coordinates-and-cardinals">Learn about Coordinates and Cardinals</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/02-orientation.html#experimenting-with-python">Experimenting with Python</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/02-orientation.html#exiting-the-python-prompt">Exiting the Python prompt</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="tutorials/wsl2.html">Windows Subsystem for Linux</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="tutorials/wsl2.html#adding-the-wsl2-extension">Adding the WSL2 extension</a></li>
-<li class="toctree-l2"><a class="reference internal" href="tutorials/wsl2.html#connecting-to-wsl2">Connecting to WSL2</a></li>
-<li class="toctree-l2"><a class="reference internal" href="tutorials/wsl2.html#continue-with-tutorial">Continue with tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/03-variables.html">Python Variables</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/03-variables.html#introduction">Introduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/03-variables.html#variables-types-and-operators">Variables, Types and Operators</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/03-variables.html#variables-in-minecraft">Variables in Minecraft</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/04-loops.html">Loops</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/05-if-then.html">If Then Else</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/06-functions.html">Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/07-lists.html">Lists</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/08-dictionaries.html">Dictionaries</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/09-classes.html">Classes</a></li>
 </ul>
 </div>
 </section>
@@ -165,12 +190,45 @@ side-bar.</p>
 <h3><a class="reference internal" href="how-to.html"><span class="doc">How-to Guides</span></a><a class="headerlink" href="#how-to" title="Permalink to this heading"></a></h3>
 <p>Practical step-by-step guides for the more experienced user.</p>
 <div class="toctree-wrapper compound">
+<p class="caption" role="heading"><span class="caption-text">How-to Guides</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="how-to/startup.html">Setup for each Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="how-to/troubleshooting.html">Troubleshooting</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="how-to/troubleshooting.html#minecraft-server-wont-start">Minecraft Server wont start</a></li>
+<li class="toctree-l2"><a class="reference internal" href="how-to/troubleshooting.html#problems-with-player-connection">Problems with Player Connection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="how-to/troubleshooting.html#minecraft-server-logs">Minecraft Server Logs</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="how-to/server-config.html">Minecraft Server Config</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="how-to/server-config.html#configuration-of-the-default-server">Configuration of the default server</a></li>
+<li class="toctree-l2"><a class="reference internal" href="how-to/server-config.html#running-your-own-server">Running your own Server</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="how-to/backup.html">Backup and Restore</a></li>
+<li class="toctree-l1"><a class="reference internal" href="how-to/wsl2.html">Windows Subsystem for Linux</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="how-to/wsl2.html#adding-the-wsl2-extension">Adding the WSL2 extension</a></li>
+<li class="toctree-l2"><a class="reference internal" href="how-to/wsl2.html#connecting-to-wsl2">Connecting to WSL2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="how-to/wsl2.html#continue-with-tutorial">Continue with tutorial</a></li>
+</ul>
+</li>
+</ul>
 </div>
 </section>
 <section class="columns" id="explanations">
 <h3><a class="reference internal" href="explanations.html"><span class="doc">Explanations</span></a><a class="headerlink" href="#explanations" title="Permalink to this heading"></a></h3>
 <p>Explanation of how the library works and why it works that way.</p>
 <div class="toctree-wrapper compound">
+<p class="caption" role="heading"><span class="caption-text">Explanations</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="explain/completion.html">Command Completion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="explain/coordinates.html">Minecraft’s Coordinate System</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="explain/coordinates.html#cardinals">Cardinals</a></li>
+<li class="toctree-l2"><a class="reference internal" href="explain/coordinates.html#id1">Coordinates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="explain/coordinates.html#vector-math">Vector Math</a></li>
+<li class="toctree-l2"><a class="reference internal" href="explain/coordinates.html#using-coordinates-vectors-in-python">Using Coordinates (Vectors) in Python</a></li>
+</ul>
+</li>
+</ul>
 </div>
 </section>
 <section class="columns" id="reference">
@@ -179,16 +237,6 @@ side-bar.</p>
 <div class="toctree-wrapper compound">
 <p class="caption" role="heading"><span class="caption-text">Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="reference/old_readme.html">LEGACY README</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="reference/old_readme.html#mciwb-minecraft-interactive-world-builder">mciwb Minecraft Interactive world builder</a></li>
-<li class="toctree-l2"><a class="reference internal" href="reference/old_readme.html#intro">Intro</a></li>
-<li class="toctree-l2"><a class="reference internal" href="reference/old_readme.html#interactive-commands">Interactive Commands</a></li>
-<li class="toctree-l2"><a class="reference internal" href="reference/old_readme.html#todo-interactive-commands">Todo Interactive Commands</a></li>
-<li class="toctree-l2"><a class="reference internal" href="reference/old_readme.html#useful-ipython-commands">Useful iPython Commands</a></li>
-<li class="toctree-l2"><a class="reference internal" href="reference/old_readme.html#demo">Demo</a></li>
-<li class="toctree-l2"><a class="reference internal" href="reference/old_readme.html#todo-ipython-commands">Todo iPython Commands</a></li>
-</ul>
-</li>
 <li class="toctree-l1"><a class="reference internal" href="reference/contributing.html">Contributing</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="reference/contributing.html#running-the-tests">Running the tests</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="reference/contributing.html#to-run-in-a-container">To run in a container</a></li>
@@ -218,7 +266,7 @@ side-bar.</p>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="tutorials/01-setup.html" class="btn btn-neutral float-right" title="01 Setup" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="tutorials/01-setup.html" class="btn btn-neutral float-right" title="Set Up" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
