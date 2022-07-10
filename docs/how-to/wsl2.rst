@@ -1,12 +1,18 @@
+.. _wsl2:
+
 Windows Subsystem for Linux
 ===========================
 
-Windows Subsystem for Linux 2 (or WSL2) was already installed as a prerequisite 
-of Docker Desktop in a previous step. 
+Instructions for Windows users to connect VSCode to the Windows Subsystem for 
+Linux.
 
-WSL2 is a Linux distribution that runs inside of Windows. It makes the 
-rest of the tutorial exactly the same for Windows and Linux and MacOS. 
-The linux command line in Ubuntu Linux that we installed is called ``bash`` and 
+Windows Subsystem for Linux 2 (or WSL2) should already have been 
+installed as part
+of the Docker Desktop install that was done in `docker`. 
+
+WSL2 is a Linux distribution that runs inside of Windows. It allows us to make
+the tutorials look exactly the same for Windows, Linux and MacOS. 
+The linux command line in Ubuntu Linux inside WSL2 is called ``bash`` and 
 is easier to use than Windows equivalents.
 
 Adding the WSL2 extension

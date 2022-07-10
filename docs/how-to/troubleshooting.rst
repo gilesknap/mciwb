@@ -1,7 +1,7 @@
 .. _troubleshooting:
 
-Trouble Shooting
-================
+Troubleshooting
+===============
 
 Minecraft Server wont start
 ---------------------------

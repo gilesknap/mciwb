@@ -1,7 +1,7 @@
 .. _intro:
 
-01 Setup
-========
+Set Up
+======
 
 To use Minecraft Interactive World Builder (MCIWB) you will need a desktop 
 Computer or Laptop. Linux, Windows and MacOS are all supported.
@@ -61,7 +61,7 @@ later tutorial.
     :alt: Minecraft Launcher
     :width: 700px
 
-.. _vscode:
+.. _docker:
 
 Docker Desktop
 --------------
@@ -92,6 +92,8 @@ To make things easier next time you could go into settings (accessed
 via the cog icon in the title bar) and tick the option 
 ``Start Docker Desktop when you log in``.
 
+
+.. _vscode:
 
 Visual Studio Code
 ------------------
