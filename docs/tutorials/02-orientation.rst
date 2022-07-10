@@ -123,10 +123,11 @@ To use the signs:
 
 .. raw:: html
 
-    <iframe width="700" height="400" src="https://www.youtube.com/embed/5iEFYKrCGKM?start=6" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+    <iframe width="700" height="600" src="https://www.youtube.com/embed/5LYezCAHJts?start=1" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
-The above video is a demo of flattening out the area around the spawn point using
-copy, paste and clear.
+The above video is a demo of flattening out the area around the spawn point 
+using copy and paste. First I select a large area of sandy floor and then I
+keep pasting it until I have a nice flat area to start working with.
 
 Experimenting with Python
 -------------------------
