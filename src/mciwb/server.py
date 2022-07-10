@@ -9,6 +9,7 @@ from time import sleep
 
 from docker import from_env
 from docker.models.containers import Container
+from mcwb import Vec3
 
 from mciwb import Client
 
@@ -200,6 +201,16 @@ class MinecraftServer:
         self.container = container
 
         self.wait_server()
+
+        self.settings()
+
+    def settings(self):
+        """
+        Some default settings for the server that this class creates
+        """
+
+        with Client(HOST, self.rcon, passwd=self.password) as client:
+            client.setworldspawn(Vec3(632, 73, -1658))
 
     @classmethod
     def stop_named(cls, name: str):

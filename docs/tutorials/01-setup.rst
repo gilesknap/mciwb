@@ -1,7 +1,7 @@
 .. _intro:
 
-01 Setup
-========
+Set Up
+======
 
 To use Minecraft Interactive World Builder (MCIWB) you will need a desktop 
 Computer or Laptop. Linux, Windows and MacOS are all supported.
@@ -21,7 +21,7 @@ Computer:
     software installed may need a little bit of knowledge of the basics of
     your operating system. 
 
-    For Tutorial 01, I recommend that novices get a little help from 
+    For this Setup Tutorial, I recommend that novices get a little help from 
     someone with computer experience. This setup tutorial need only 
     be done once (per computer) and the remaining tutorials should not
     require prior knowledge.
@@ -61,7 +61,7 @@ later tutorial.
     :alt: Minecraft Launcher
     :width: 700px
 
-.. _vscode:
+.. _docker:
 
 Docker Desktop
 --------------
@@ -92,6 +92,8 @@ To make things easier next time you could go into settings (accessed
 via the cog icon in the title bar) and tick the option 
 ``Start Docker Desktop when you log in``.
 
+
+.. _vscode:
 
 Visual Studio Code
 ------------------
@@ -152,6 +154,14 @@ create a new folder called ``my_world``::
 Now we want to reopen VSCode with the new folder set as its work area.
 From the menu bar choose ``File -> Open Folder``. You will see a list of 
 folders, select ``my_world`` and click OK.
+
+You will be asked if you trust the authors of files in this folder. 
+You do trust them because they are you! So click 
+``Yes I trust the authors``.
+
+.. image:: ../images/trust.png
+    :alt: VSCode Startup
+    :width: 400px
 
 Now you should see a you VSCode window that looks something like this:
 
