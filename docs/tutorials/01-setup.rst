@@ -21,7 +21,7 @@ Computer:
     software installed may need a little bit of knowledge of the basics of
     your operating system. 
 
-    For Tutorial 01, I recommend that novices get a little help from 
+    For this Setup Tutorial, I recommend that novices get a little help from 
     someone with computer experience. This setup tutorial need only 
     be done once (per computer) and the remaining tutorials should not
     require prior knowledge.
