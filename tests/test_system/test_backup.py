@@ -79,6 +79,8 @@ def test_backup_restore(tmp_path: Path):
 
     with Client(HOST, RESTORE_RCON, passwd=RCON_P) as client:
         set_client(client)
+        # make sure the local chunk is loaded (for grab function)
+        client.forceload.add((0, 0), (0, 0))
         # TODO mcwb should break out a getblock function from grab
         grab_volume = Volume.from_corners(test_block, test_block)
         restored_blocks = grab(client, grab_volume)
