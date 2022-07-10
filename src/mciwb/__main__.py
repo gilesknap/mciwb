@@ -4,16 +4,43 @@ from typing import Optional
 
 import typer
 from IPython.terminal.embed import InteractiveShellEmbed
-from mcwb import Direction, Vec3, Volume
 
-import mciwb
-from mciwb import Iwb, __version__
+from mciwb import (
+    Blocks,
+    Client,
+    CopyPaste,
+    Corner,
+    Cuboid,
+    Direction,
+    Item,
+    Iwb,
+    Monitor,
+    Planes3d,
+    Player,
+    Position,
+    __version__,
+    world,
+)
 from mciwb.server import HOST, MinecraftServer
 
 cli = typer.Typer(add_completion=False)
 
-# these are imported for use in iPython without needing import
-useful = [Direction, Vec3, Volume]
+# these are imported for use in iPython without needing a manual import
+useful = [
+    Blocks,
+    Client,
+    CopyPaste,
+    Corner,
+    Cuboid,
+    Direction,
+    Item,
+    Iwb,
+    Monitor,
+    Planes3d,
+    Player,
+    Position,
+    world,
+]
 
 server_name = "mciwb_server"
 default_server_folder = Path.home() / server_name
@@ -77,23 +104,25 @@ def shell(
     """
     init_logging(debug)
 
+    world = None
+
     try:
-        mciwb.world = Iwb(server, port, passwd)
+        world = Iwb(server, port, passwd)
 
         if player:
-            mciwb.world.add_player(player)
+            world.add_player(player)
     except ConnectionRefusedError:
         logging.error("Could not connect to server")
         exit(1)
     except Exception:
-        if mciwb.world is not None:
-            mciwb.world.stop()
+        if world:
+            world.stop()
         logging.error("Failed to start world")
         logging.debug("", exc_info=True)
         exit(1)
 
     # for quick access in the shell without qualifying the namespace
-    world = mciwb.world
+    world = world
 
     logging.info("######### Starting Interactive Session ##########\n")
 
@@ -107,7 +136,7 @@ def shell(
 
     if test:
         # for testing just report the world object state
-        print(mciwb.world)
+        print(world)
     else:
         # enter iPython shell until users exits
         shell(colors="neutral")

@@ -1,5 +1,5 @@
-Configuring MCIWB's Minecraft Server
-====================================
+Minecraft Server Config
+=======================
 
 If you have experience of Minecraft Servers and want to make changes to
 the defaults used by MCIWB then read on.

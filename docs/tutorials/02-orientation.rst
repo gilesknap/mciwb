@@ -128,108 +128,41 @@ To use the signs:
 The above video is a demo of flattening out the area around the spawn point using
 copy, paste and clear.
 
-Learn about Coordinates and Cardinals
--------------------------------------
+Experimenting with Python
+-------------------------
 
-To get into programming blocks in the Minecraft world you will need to
-understand how to refer to a particular block in the world.
+Let's try out a couple of commands on the Python prompt. You don't need 
+to understand the detail of this yet, we'll introduced the programming 
+concepts used here gradually over the next few tutorials.
 
-For help in understanding this lets turn on some diagnostic information in
-the Minecraft client by hitting the F3 key. You will see panels of text on
-the left an right.
+The starting point for most Python interactions is ``world``
 
-In the picture below we have picked out the information regarding player's
-position and which direction they are facing, plus the target block position.
+For example you can find out your player's position in the world with::
+        
+    In [3]: world.player.pos
+    Out[5]: Vec3(x=622, y=73, z=-1652)
 
+Notice that interactive Python prefixes each line with In or Out depending on
+wether it is input that you provided or output that is the result of executing
+your input. My player is shown at the world spawn point x=622, y=73, z=-1652.
 
-.. image:: ../images/coords.excalidraw.png
-    :alt: Coordinate System Diagnostics
-    :width: 700px
+The ``setblock`` command will place a block in the world and ``Item`` provides
+all the known block types. So::
 
+    world.set_block(world.player.pos, Item.BEDROCK)
+    
+will cause your player to get moved by a lump of bedrock appearing at their
+feet. You can also try this command which tells you what type of block your
+player is standing on.::
+    
+    In [5]: world.get_block(world.player.pos + Direction.DOWN)
+    Out[5]: <Item.SAND: 'sand'>
 
-Cardinals
-~~~~~~~~~
-
-The cardinal directions are North East South and West. They are used on maps
-in the real world where North is the direction that a magnetic compass points.
-
-Minecraft uses the same cardinal directions, you can see in the picture above
-that the player is facing North. In the MCIWB world North is facing along the 
-shore with the sea to your right. Its useful to keep in mind the arrangement
-of the cardinals which is as follows:
-
-
-.. image:: ../images/compass.png
-    :alt: Compass
-    :width: 250px
-
-From the above you can see that facing North means that:
-
-- moving to the right is traveling East
-- moving to the left is traveling West
-- moving forward is traveling North
-- moving backward is traveling South
-
-Generally, when describing things we will usually face North because it is 
-easy to relate the directions back to the above picture.
-
-Coordinates
-~~~~~~~~~~~
-
-Coordinates are a set of 3 numbers named: X, Y, Z that represent a 
-position in the world. In Minecraft they represent the position of a block
-(even if that block contains air!).
-
-The previous Minecraft Diagnostics picture shows the player's position As
-653 72 -1640. This is shorthand for X=653, Y=72, Z=-1640. Strictly speaking
-it is the position of the player's feet as a player is 2 blocks tall. 
-
-There is a direct relationship between the Cardinals and the coordinate system
-as follows:
-
-    - Moving East increases your X coordinate, so West decreases X
-    - Moving Up increases your Y coordinate, so Down decreases Y
-    - Moving South increases your Z coordinate, so North decreases Z
-
-The minecraft Wiki has a useful diagram of the coordinate system, see
-https://minecraft.fandom.com/wiki/Coordinates.
-
-If you consider the coordinate X=0, Y=0, Z=0 to be the centre of the world
-then our player's position is 653 blocks to the East of the centre, 72 blocks
-above the centre and 1640 blocks North the centre. Note that the Z
-coordinate is negative because it is North of the centre and moving North 
-decreases the Z coordinate.
-
-Also note the coordinates of the target block are 653 74 -1643. The target 
-block is the block that the player is looking at and is highlighted with 
-a black outline (it is the block you will hit if you click left button).
-
-If we subtract the player's position from the target block's position we get
-X=0, Y=2, Z=-3. This tells us that the target block is 2 blocks above the
-player and 3 blocks to the North of the player. **Don't worry!**, we won't have 
-to do any math like that because Python will do it all for us.
-
-
-Using Coordinates in Python
----------------------------
-
-In Python we have a class called Vec3 to represent a set of Coordinates.
-
-.. note::
-    A class is just a type of thing that Python can understand. We will
-    go into detail on the meaning of class in a later tutorial.
-
-You can create a Vec3 by typing at the Python prompt for example this is
-the Vec3 representing my Player's position::
-
-    Vec3(653, 72, -1640)
-
-TODO: show get_block and player.pos 
-
-Command Completion in Interactive Python
-----------------------------------------
-
-TODO show set_block and Item and Direction.Down (to get block beneath the player)
 
 Exiting the Python prompt
 -------------------------
+
+To exit the Python prompt type ``<ctrl> D```
+
+This will exit Interactive Python and return you to your bash (or zsh)
+terminal.
