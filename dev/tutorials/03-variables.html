@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Python Variables &mdash; mciwb 0.5.4.dev8+g567739c documentation</title>
+  <title>Python Variables &mdash; mciwb 0.5.4.dev9+gf7a9109 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
@@ -275,10 +275,11 @@ if you don’t know about making iron golems)</p>
 in the world. We use the variables <code class="docutils literal notranslate"><span class="pre">pos</span></code> (which we set earlier) and <code class="docutils literal notranslate"><span class="pre">arms</span></code>
 to control where those blocks are placed.</p>
 <p><code class="docutils literal notranslate"><span class="pre">Direction</span></code> provides values that will move a position by one block in a
-particular direction when added/subtracted to/from that position.</p>
+particular direction when added/subtracted to/from that position. Note that we
+are using the operator <code class="docutils literal notranslate"><span class="pre">+</span></code> and that it can add more than just numbers.</p>
 <p>So, first we place the golem’s feet at <code class="docutils literal notranslate"><span class="pre">pos</span></code>.
 Then we move Up one block from the position <code class="docutils literal notranslate"><span class="pre">pos</span></code> to the arm level of
-the golem and save  that position in <code class="docutils literal notranslate"><span class="pre">arms</span></code>. Now we can move east
+the golem and save  that position in <code class="docutils literal notranslate"><span class="pre">arms</span></code>. Now we can step east
 and west from <code class="docutils literal notranslate"><span class="pre">arms</span></code> to make the arms and Up to make the head.</p>
 </section>
 </section>
