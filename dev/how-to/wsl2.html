@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Windows Subsystem for Linux &mdash; mciwb 0.5.4.dev8+g567739c documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
+    <link rel="shortcut icon" href="../_static/logo.png"/>
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Command Completion" href="../explain/completion.html" />
+    <link rel="prev" title="Backup and Restore" href="backup.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: rgb(7, 43, 93)" >
+            <a href="../index.html" class="icon icon-home"> mciwb
+            <img src="../_static/logo.png" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                main
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/00-prereq.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/01-setup.html">Set Up</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/02-orientation.html">Orientation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/03-variables.html">Python Variables</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/04-functions.html">Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/05-loops.html">Loops</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/06-if-then.html">If Then Else</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/07-lists.html">Lists</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/08-dictionaries.html">Dictionaries</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/09-classes.html">Classes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">How-to Guides</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="startup.html">Setup for each Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="troubleshooting.html">Troubleshooting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="server-config.html">Minecraft Server Config</a></li>
+<li class="toctree-l1"><a class="reference internal" href="backup.html">Backup and Restore</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Windows Subsystem for Linux</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#adding-the-wsl2-extension">Adding the WSL2 extension</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#connecting-to-wsl2">Connecting to WSL2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#continue-with-tutorial">Continue with tutorial</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Explanations</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../explain/completion.html">Command Completion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../explain/coordinates.html">Minecraft’s Coordinate System</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../reference/contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/gilesknap/mciwb/releases">Releases</a></li>
+<li class="toctree-l1"><a class="reference external" href="genindex.html#http://">Index</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: rgb(7, 43, 93)" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">mciwb</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>Windows Subsystem for Linux</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/how-to/wsl2.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="windows-subsystem-for-linux">
+<span id="wsl2"></span><h1>Windows Subsystem for Linux<a class="headerlink" href="#windows-subsystem-for-linux" title="Permalink to this heading"></a></h1>
+<p>Instructions for Windows users to connect VSCode to the Windows Subsystem for
+Linux.</p>
+<p>Windows Subsystem for Linux 2 (or WSL2) should already have been
+installed as part
+of the Docker Desktop install that was done in <a class="reference internal" href="../tutorials/01-setup.html#docker"><span class="std std-ref">Docker Desktop</span></a>.</p>
+<p>WSL2 is a Linux distribution that runs inside of Windows. It allows us to make
+the tutorials look exactly the same for Windows, Linux and MacOS.
+The linux command line in Ubuntu Linux inside WSL2 is called <code class="docutils literal notranslate"><span class="pre">bash</span></code> and
+is easier to use than Windows equivalents.</p>
+<section id="adding-the-wsl2-extension">
+<h2>Adding the WSL2 extension<a class="headerlink" href="#adding-the-wsl2-extension" title="Permalink to this heading"></a></h2>
+<p>First we need the WSL2 extension for VSCode. Go to
+<a class="reference external" href="https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-wsl">https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-wsl</a>
+and click the ‘Install’ button.</p>
+<p>You will be prompted with a dialog, click on the button that reads
+<code class="docutils literal notranslate"><span class="pre">Open</span> <span class="pre">Visual</span> <span class="pre">Studio</span> <span class="pre">Code</span></code>.</p>
+<p>VSCode will launch and you will see information on the extension that looks
+like this:</p>
+<a class="reference internal image-reference" href="../_images/remote_wsl2.excalidraw.png"><img alt="VSCode WSL2" src="../_images/remote_wsl2.excalidraw.png" style="width: 600px;" /></a>
+<p>Click the install button and you now have the extension installed.</p>
+</section>
+<section id="connecting-to-wsl2">
+<h2>Connecting to WSL2<a class="headerlink" href="#connecting-to-wsl2" title="Permalink to this heading"></a></h2>
+<p>On the left bar of VSCode there is a remote connections Icon.</p>
+<ol class="arabic simple">
+<li><p>Click the the remote connection Icon</p></li>
+<li><p>If there is a dropdown then choose ‘WSL Targets’ (you wont see this
+if WSL is the only remote target installed)</p></li>
+<li><p>Right click on your Ubuntu installation and choose ‘Connect to WSL’</p></li>
+</ol>
+<a class="reference internal image-reference" href="../_images/remote_ubuntu.excalidraw.png"><img alt="VSCode WSL2" src="../_images/remote_ubuntu.excalidraw.png" style="width: 600px;" /></a>
+</section>
+<section id="continue-with-tutorial">
+<h2>Continue with tutorial<a class="headerlink" href="#continue-with-tutorial" title="Permalink to this heading"></a></h2>
+<p>You can now continue with the main tutorial. If you do everything through
+vscode then the tutorials will work exactly the same for Windows as for a
+linux computer.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="backup.html" class="btn btn-neutral float-left" title="Backup and Restore" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../explain/completion.html" class="btn btn-neutral float-right" title="Command Completion" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p></p>
+  </div>
+
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+   
+  <div id="other-versions-div" class="rst-versions" data-toggle="rst-versions" role="note" aria-label="Versions" style="visibility: hidden">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      <span class="fa fa-book"> Other Versions</span>
+      main
+      <span class="fa fa-caret-down"></span>
+    </span>
+    <div class="rst-other-versions">
+      <dl id="other-versions-dl"/>
+    </div>
+  </div>
+  <script>
+    function addVersion(name) {
+      var dd = document.createElement("dd");
+      var a = document.createElement("a");
+      a.href = "../../" + name;
+      a.innerText = name;
+      dd.appendChild(a);
+      document.getElementById('other-versions-dl').appendChild(dd);
+    }
+    // Get versions.txt and add a version for each line
+    fetch("../../versions.txt").then(response => {
+      if (response.ok) {
+        document.getElementById('other-versions-div').style.visibility = "visible";
+        return response.text().then(text => text.split(/\r?\n/).forEach(addVersion))
+      }
+    });
+  </script>
+
+
+</body>
+</html>
