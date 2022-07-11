@@ -38,7 +38,7 @@ computer program. They have the following properties:
 
 Operators are used to make changes to variables. For example the ``=`` operator
 assigns a value to a variable. In Python we can quickly create a variable
-using assignment. This table below shows some python assignment commands using 
+using assignment. This table below shows some Python assignment commands using 
 the ``=`` operator. Note that Python can automatically work out what type of 
 variable you are creating.
 
@@ -67,8 +67,8 @@ Trying out Variables
 --------------------
 
 Try out the commands below by typing them into the Python prompt in your 
-VSCode window. The last command uses the ``print`` function to see the value 
-of the variables::
+VSCode window. Note that input [4] asks Interactive Python to show the values
+of the 3 variables you created::
 
     In [1]: birth_year = 1964
 
@@ -76,8 +76,9 @@ of the variables::
 
     In [3]: my_name = "giles"
 
-    In [4]: print(birth_year, my_height, my_name)
-    1964 1.94 giles
+    In [4]: birth_year, my_height, my_name
+    Out[4]: (1964, 1.94, 'giles')
+
 
 Let's try another operator ``-`` or minus. This operator subtracts the value of
 one variable from another. It behaves just like ``-`` in basic arithmetic.
@@ -89,8 +90,7 @@ Try out the commands below::
     Out[7]: 58
 
 This makes a calculation from the value 2022 and the value of the variable
-``birth_year`` and assigned it to variable ``age``. Note that I did not
-use ``print`` to see the value, I simply typed the variable name ``age``,
+``birth_year`` and assigned it to variable ``age``.
 Interactive Python will always print the value returned by the last
 input command.
 
