@@ -17,6 +17,12 @@ HOST = "localhost"
 
 # the default locally mapped backup folder for minecraft data
 backup_folder = Path.home() / "mciwb_backups"
+server_name = "mciwb_server"
+default_server_folder = Path.home() / server_name
+
+def_pass = "default_pass"
+def_port = 20100
+def_world_type = "normal"
 
 
 class MinecraftServer:

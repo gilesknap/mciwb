@@ -1,37 +1,35 @@
 import logging
 import os
+import re
 import shutil
 from datetime import datetime
 from pathlib import Path
-from typing import Optional
 from zipfile import ZIP_DEFLATED, ZipFile
 
+from mciwb.server import backup_folder, default_server_folder
 from mciwb.threads import get_client
 
 
 class Backup:
+    re_valid_filename = re.compile(r"^[a-zA-Z0-9_\-]+$")
+
     def __init__(
         self,
-        world_name: str,
-        world_folder: str,
-        backup_folder: str,
+        world_folder: Path = default_server_folder / "world",
+        backup_folder: Path = backup_folder,
     ):
-        self.name = world_name
         self.world_folder = Path(world_folder)
         self.backup_folder = Path(backup_folder)
 
         self.backup_folder.mkdir(parents=True, exist_ok=True)
-        if not (self.world_folder / "level.dat"):
+        if not (self.world_folder / "level.dat").exists():
             raise ValueError(f"{world_folder} does not look like a minecraft world")
 
-    def backup(self, running=True):
+    def backup(self, running=True, name=None):
         client = get_client()
 
-        if self.name == "" or client is None:
-            logging.error("No backup details available.")
-            return
-
-        fname = datetime.strftime(datetime.now(), f"%y-%m-%d.%H.%M.%S-{self.name}.zip")
+        fname = name or datetime.strftime(datetime.now(), "%y-%m-%d.%H.%M.%S.zip")
+        fname = self.re_valid_filename.sub("_", fname)
 
         client.say(f"Preparing to backup to {fname}")
         result = client.save_off()
@@ -54,20 +52,22 @@ class Backup:
         logging.debug("save_on: " + result)
         client.say("Backup Complete.")
 
-    def get_latest_zip(self) -> Path:
+    def _get_latest_zip(self) -> Path:
         backups = self.backup_folder.glob("*.zip")
         ordered = sorted(backups, key=os.path.getctime, reverse=True)
         return ordered[0]
 
-    def restore(self, fname: Optional[Path] = None, backup=False):
+    def restore(self, name=None, backup=False):
 
         """
         restore world from backup. This must be called with the server stopped.
         """
 
-        if not fname:
-            fname = self.get_latest_zip()
-        if not fname.exists():
+        if not name:
+            rfile = self._get_latest_zip()
+        else:
+            rfile = Path(self.re_valid_filename.sub("_", name))
+        if not rfile.exists():
             raise ValueError("{file} not found")
 
         # backup for recovery from accidental recovery ! Note that on some filesystems
@@ -80,7 +80,7 @@ class Backup:
             shutil.move(str(self.world_folder), str(old_world))
 
         # restore zipped up backup to world folder
-        with ZipFile(fname, "r") as zip_file:
+        with ZipFile(rfile, "r") as zip_file:
             zip_file.extractall(path=self.world_folder)
 
         # remove lockfile if it exists
@@ -88,4 +88,4 @@ class Backup:
             logging.debug(f"removing {file}")
             file.unlink()
 
-        logging.info(f"Restored {self.world_folder} from {fname}")
+        logging.info(f"Restored {self.world_folder} from {rfile}")

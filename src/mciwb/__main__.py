@@ -21,7 +21,16 @@ from mciwb import (
     __version__,
     world,
 )
-from mciwb.server import HOST, MinecraftServer
+from mciwb.backup import Backup
+from mciwb.server import (
+    HOST,
+    MinecraftServer,
+    def_pass,
+    def_port,
+    def_world_type,
+    default_server_folder,
+    server_name,
+)
 
 cli = typer.Typer(add_completion=False)
 
@@ -41,12 +50,6 @@ useful = [
     Position,
     world,
 ]
-
-server_name = "mciwb_server"
-default_server_folder = Path.home() / server_name
-def_pass = "default_pass"
-def_port = 20100
-def_world_type = "normal"
 
 
 def version_callback(value: bool):
@@ -190,6 +193,22 @@ def stop(
     init_logging(debug)
 
     MinecraftServer.stop_named(server_name)
+
+
+@cli.command()
+def restore(
+    debug: bool = False,
+    backup_name: str = "",
+):
+    """
+    Stop the minecraft server. Restore from backup and restart.
+    """
+    init_logging(debug)
+
+    stop()
+    backup = Backup()
+    backup.restore(name=backup_name)
+    start()
 
 
 if __name__ == "__main__":

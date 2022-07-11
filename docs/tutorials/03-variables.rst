@@ -175,10 +175,11 @@ in the world. We use the variables ``pos`` (which we set earlier) and ``arms``
 to control where those blocks are placed.
 
 ``Direction`` provides values that will move a position by one block in a 
-particular direction when added/subtracted to/from that position. 
+particular direction when added/subtracted to/from that position. Note that we
+are using the operator ``+`` and that it can add more than just numbers.
 
 So, first we place the golem's feet at ``pos``.
 Then we move Up one block from the position ``pos`` to the arm level of 
-the golem and save  that position in ``arms``. Now we can move east
+the golem and save  that position in ``arms``. Now we can step east
 and west from ``arms`` to make the arms and Up to make the head.
 

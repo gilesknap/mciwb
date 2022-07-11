@@ -45,7 +45,7 @@ def test_backup_restore(tmp_path: Path):
         world_type="flat",
         keep=KEEP_SERVER,
     )
-    backup = Backup("backup_world", str(mc_backup.world), str(backup_folder))
+    backup = Backup(mc_backup.world, backup_folder)
     mc_backup.create(test=True)
 
     # make a change to the world which is to be backed up
@@ -70,11 +70,11 @@ def test_backup_restore(tmp_path: Path):
     if GITHUB_ACTIONS:
         # GHA has issues with file locks on the stopped container
         # use mc docker's feature of creating from zip instead
-        mc_restore.create(world_zip=backup.get_latest_zip(), test=True, force=True)
+        mc_restore.create(world_zip=backup._get_latest_zip(), test=True, force=True)
     else:
         mc_restore.create(test=True, force=True)
         mc_restore.stop()
-        restore = Backup("restore_world", str(mc_restore.world), str(backup_folder))
+        restore = Backup(mc_restore.world, backup_folder)
         # restore the world and the start the server
         restore.restore()
         mc_restore.start()
