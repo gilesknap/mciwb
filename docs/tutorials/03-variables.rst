@@ -16,9 +16,10 @@ We now have everything ready to start learning some Python!
     My tutorials are going to focus on quickly getting into interacting with the
     world of Minecraft. We won't be going into programming theory 
     to any great degree. Therefore, a tutorial like python.land will 
-    be needed to fill in the background if you want to get serious with Python.
+    be needed to fill in the background if you want a deeper understanding
+    of the language.
 
-Follow along with these tutorials by having both you Minecraft client and 
+Follow along with these tutorials by having both your Minecraft client and 
 your VSCode windows visible on your screen. You should try out the Python
 commands shown here and feel free to experiment.
 
@@ -37,7 +38,9 @@ computer program. They have the following properties:
 
 Operators are used to make changes to variables. For example the ``=`` operator
 assigns a value to a variable. In Python we can quickly create a variable
-using assignment. Try out the commands below:
+using assignment. This table below shows some python assignment commands using 
+the ``=`` operator. Note that Python can automatically work out what type of 
+variable you are creating.
 
 .. list-table:: Create some variables
    :widths: 50 25 20 60
@@ -60,7 +63,12 @@ using assignment. Try out the commands below:
      - "giles"
      - str (a string of characters)
 
-Now you can use the ``print`` function to see the value of the variables::
+Trying out Variables
+--------------------
+
+Try out the commands below by typing them into the Python prompt in your 
+VSCode window. The last command uses the ``print`` function to see the value 
+of the variables::
 
     In [1]: birth_year = 1964
 
@@ -93,19 +101,20 @@ MCIWB provides some built in variables that you can use. The most important
 is called ``world`` and it is your entry point into most of the functions
 provided by the library.
 
-World is a special variable called an ``object`` which can have many values
+``world`` is a special variable called an ``object`` which can have many values
 stored in its ``properties``. Objects can also have ``methods`` which 
-execute code.
+execute code. 
 
 One property of ``world`` is ``player`` and a property of ``player`` is ``pos``
 which holds the player's current position.
 
-Thus you can access the player's location like this::
+You can access the player's location like this::
     
     In [10]: world.player.pos
     Out[10]: Vec3(x=633, y=73, z=-1665)
 
-Try moving your player around and see how the position changes. 
+Try moving your player around and see how the position changes by repeating 
+the above command.
 
 .. note::
 
@@ -119,16 +128,28 @@ Try moving your player around and see how the position changes.
     few tutorials and come back to that level of detail later on.
 
 An example of a ``method`` on ``world`` is ``set_block`` which will place
-a block in a particular position. Make sure your player is standing
-on the flat area of sand and try this::
+a block in a particular position. 
+
+Make sure your player is standing
+on the flat area of sand and execute the set_block method like this::
     
+    pos = world.player.pos
     world.set_block(pos, Item.IRON_BLOCK)
 
 Your player should have been bumped out of their position and if you turn
-around you will see an iron block.
+around you will see an iron block. 
 
-(I'm no longer showing the In[] prompt in the examples so you can use
-copy and paste to easily try these examples)
+What you did here was assign your 
+players position to the variable ``pos`` and then called the ``set_block``
+method on ``world``. You told ``set_block`` to use pos for the position and 
+IRON_BLOCK for the block to place.
+
+Item is another provided variable that you can use. It is a list of all the 
+types of blocks in Minecraft. See `completion` for a great way to discover 
+all of the block types.
+
+Iron Golem
+----------
 
 OK, let's make an iron golem! Copy and paste these commands into the 
 Python terminal::

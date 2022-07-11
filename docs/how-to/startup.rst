@@ -3,10 +3,30 @@
 Setup for each Tutorial
 =======================
 
+Quick Start
+-----------
+
 Once you have completed `../tutorials/01-setup` you have everything on
 your computer required to run the remaining tutorials.
 
-At the start of each session you would need to prepare as follows:
+Each time you come back to your computer you need to set up your environment
+again. The short description of what you need to do is:
+
+- Start VSCode
+- Start Minecraft client and connect to mciwb_server
+- in the VSCode Terminal
+
+  - ``source .venv/bin/activate``
+  - ``mciwb shell --player <your player name>`` 
+
+
+Full Startup Description
+------------------------
+
+The short version assumes that Minecraft Server and Docker Desktop have 
+automatically started and that VSCode reopens the previous session.
+
+Here is the long version in case any of the above are not true:
 
 - turn on your computer and log in
 - start Docker Desktop from the start menu
