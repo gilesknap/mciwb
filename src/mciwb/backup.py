@@ -11,7 +11,7 @@ from mciwb.threads import get_client
 
 
 class Backup:
-    re_valid_filename = re.compile(r"^[a-zA-Z0-9_\-]+$")
+    re_valid_filename = re.compile(r"[^-a-zA-Z0-9_.]+")
 
     def __init__(
         self,

@@ -58,7 +58,7 @@ class MinecraftServer:
         """
 
         start_time: datetime = datetime.now()
-        timeout = 100
+        timeout = 200
 
         assert isinstance(self.container, Container)
 

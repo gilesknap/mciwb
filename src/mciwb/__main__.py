@@ -25,6 +25,7 @@ from mciwb.backup import Backup
 from mciwb.server import (
     HOST,
     MinecraftServer,
+    backup_folder,
     def_pass,
     def_port,
     def_world_type,
@@ -194,6 +195,7 @@ def stop(
 def backup(
     folder: Path = default_server_folder,
     backup_name: str = "",
+    backup_folder: Path = backup_folder,
     debug: bool = False,
 ):
     """
@@ -201,7 +203,7 @@ def backup(
     """
     init_logging(debug)
 
-    backup = Backup(world_folder=folder / "world")
+    backup = Backup(world_folder=folder / "world", backup_folder=backup_folder)
     backup.backup(running=False, name=backup_name)
 
 
@@ -209,6 +211,7 @@ def backup(
 def restore(
     debug: bool = False,
     folder: Path = default_server_folder,
+    backup_folder: Path = backup_folder,
     backup_name: str = "",
     server_name: str = server_name,
     port: int = def_port,
@@ -219,7 +222,7 @@ def restore(
     init_logging(debug)
 
     stop()
-    backup = Backup(world_folder=folder / "world")
+    backup = Backup(world_folder=folder / "world", backup_folder=backup_folder)
     backup.restore(name=backup_name)
     start(folder=folder, port=port, server_name=server_name)
 
