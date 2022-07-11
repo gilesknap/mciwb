@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Setup for each Tutorial &mdash; mciwb 0.5.4.dev7+g019e40a documentation</title>
+  <title>Setup for each Tutorial &mdash; mciwb 0.6.1.dev6+g4813f79 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
@@ -47,19 +47,24 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/00-prereq.html">Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../tutorials/01-setup.html">Set Up</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../tutorials/02-orientation.html">Orientation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../tutorials/03-variables.html">Python Variables</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/04-loops.html">Loops</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/05-if-then.html">If Then Else</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/06-functions.html">Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/04-functions.html">Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/05-loops.html">Loops</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/06-if-then.html">If Then Else</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../tutorials/07-lists.html">Lists</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../tutorials/08-dictionaries.html">Dictionaries</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../tutorials/09-classes.html">Classes</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">How-to Guides</span></p>
 <ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Setup for each Tutorial</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Setup for each Tutorial</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#quick-start">Quick Start</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#full-startup-description">Full Startup Description</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="troubleshooting.html">Troubleshooting</a></li>
 <li class="toctree-l1"><a class="reference internal" href="server-config.html">Minecraft Server Config</a></li>
 <li class="toctree-l1"><a class="reference internal" href="backup.html">Backup and Restore</a></li>
@@ -103,9 +108,28 @@
              
   <section id="setup-for-each-tutorial">
 <span id="startup"></span><h1>Setup for each Tutorial<a class="headerlink" href="#setup-for-each-tutorial" title="Permalink to this heading"></a></h1>
+<section id="quick-start">
+<h2>Quick Start<a class="headerlink" href="#quick-start" title="Permalink to this heading"></a></h2>
 <p>Once you have completed <a class="reference internal" href="../tutorials/01-setup.html"><span class="doc">Set Up</span></a> you have everything on
 your computer required to run the remaining tutorials.</p>
-<p>At the start of each session you would need to prepare as follows:</p>
+<p>Each time you come back to your computer you need to set up your environment
+again. The short description of what you need to do is:</p>
+<ul class="simple">
+<li><p>Start VSCode</p></li>
+<li><p>Start Minecraft client and connect to mciwb_server</p></li>
+<li><p>in the VSCode Terminal</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">source</span> <span class="pre">.venv/bin/activate</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">mciwb</span> <span class="pre">shell</span> <span class="pre">--player</span> <span class="pre">&lt;your</span> <span class="pre">player</span> <span class="pre">name&gt;</span></code></p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="full-startup-description">
+<h2>Full Startup Description<a class="headerlink" href="#full-startup-description" title="Permalink to this heading"></a></h2>
+<p>The short version assumes that Minecraft Server and Docker Desktop have
+automatically started and that VSCode reopens the previous session.</p>
+<p>Here is the long version in case any of the above are not true:</p>
 <ul class="simple">
 <li><p>turn on your computer and log in</p></li>
 <li><p>start Docker Desktop from the start menu</p>
@@ -145,6 +169,7 @@ your computer required to run the remaining tutorials.</p>
 <li><p>Arrange your windows so you can see both VSCode and Minecraft client</p></li>
 </ul>
 <p>You now have everything you need to work through the tutorials.</p>
+</section>
 </section>
 
 

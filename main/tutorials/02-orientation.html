@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Orientation &mdash; mciwb 0.5.4.dev7+g019e40a documentation</title>
+  <title>Orientation &mdash; mciwb 0.6.1.dev6+g4813f79 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
@@ -47,6 +47,7 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
 <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="00-prereq.html">Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="01-setup.html">Set Up</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Orientation</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#get-a-minecraft-server-running">Get a Minecraft Server Running</a></li>
@@ -58,9 +59,9 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="03-variables.html">Python Variables</a></li>
-<li class="toctree-l1"><a class="reference internal" href="04-loops.html">Loops</a></li>
-<li class="toctree-l1"><a class="reference internal" href="05-if-then.html">If Then Else</a></li>
-<li class="toctree-l1"><a class="reference internal" href="06-functions.html">Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="04-functions.html">Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="05-loops.html">Loops</a></li>
+<li class="toctree-l1"><a class="reference internal" href="06-if-then.html">If Then Else</a></li>
 <li class="toctree-l1"><a class="reference internal" href="07-lists.html">Lists</a></li>
 <li class="toctree-l1"><a class="reference internal" href="08-dictionaries.html">Dictionaries</a></li>
 <li class="toctree-l1"><a class="reference internal" href="09-classes.html">Classes</a></li>
@@ -138,7 +139,7 @@ source .venv/bin/activate
 <h2>Connect your Client to the Server<a class="headerlink" href="#connect-your-client-to-the-server" title="Permalink to this heading"></a></h2>
 <p>Now you are ready to connect your client to the server. Go back to the
 Minecraft client that we started in Tutorial 01 or relaunch
-“Minecraft Launcher” it from the start menu.</p>
+“Minecraft Launcher” from the start menu.</p>
 <p>Make sure “Minecraft Java Edition” is selected on the left and click
 “Play”.</p>
 <p>Now choose the “Multiplayer” option and click “Add Server”. You will
@@ -211,6 +212,8 @@ volume</p></li>
 will be placed at the paste point</p></li>
 <li><p>Place a <code class="docutils literal notranslate"><span class="pre">clear</span></code> sign anywhere to clear out the current selected volume</p></li>
 </ul>
+<p>Note that the sign must be directly in front of your player to get activated,
+you can tell it is activated when it disappears.</p>
 <iframe width="700" height="600" src="https://www.youtube.com/embed/5LYezCAHJts?start=1" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe><p>The above video is a demo of flattening out the area around the spawn point
 using copy and paste. First I select a large area of sandy floor and then I
 keep pasting it until I have a nice flat area to start working with.</p>
@@ -227,7 +230,7 @@ concepts used here gradually over the next few tutorials.</p>
 </pre></div>
 </div>
 <p>Notice that interactive Python prefixes each line with In or Out depending on
-wether it is input that you provided or output that is the result of executing
+whether it is input that you provided or output that is the result of executing
 your input. My player is shown at the world spawn point x=622, y=73, z=-1652.</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">setblock</span></code> command will place a block in the world and <code class="docutils literal notranslate"><span class="pre">Item</span></code> provides
 all the known block types. So:</p>

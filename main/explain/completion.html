@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Command Completion &mdash; mciwb 0.5.4.dev7+g019e40a documentation</title>
+  <title>Command Completion &mdash; mciwb 0.6.1.dev6+g4813f79 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
@@ -47,12 +47,13 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/00-prereq.html">Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../tutorials/01-setup.html">Set Up</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../tutorials/02-orientation.html">Orientation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../tutorials/03-variables.html">Python Variables</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/04-loops.html">Loops</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/05-if-then.html">If Then Else</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/06-functions.html">Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/04-functions.html">Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/05-loops.html">Loops</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/06-if-then.html">If Then Else</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../tutorials/07-lists.html">Lists</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../tutorials/08-dictionaries.html">Dictionaries</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../tutorials/09-classes.html">Classes</a></li>
@@ -67,7 +68,12 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Explanations</span></p>
 <ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Command Completion</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Command Completion</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#arrows">Arrows</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#tab">Tab</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#demo">Demo</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="coordinates.html">Minecraft’s Coordinate System</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Reference</span></p>
@@ -102,10 +108,33 @@
            <div itemprop="articleBody">
              
   <section id="command-completion">
-<h1>Command Completion<a class="headerlink" href="#command-completion" title="Permalink to this heading"></a></h1>
+<span id="completion"></span><h1>Command Completion<a class="headerlink" href="#command-completion" title="Permalink to this heading"></a></h1>
 <p>The Interactive Python Shell provides automatic command completion that
 saves you typing and helps you discover what commands are available.</p>
-<p>TODO - add detail here.</p>
+<section id="arrows">
+<h2>Arrows<a class="headerlink" href="#arrows" title="Permalink to this heading"></a></h2>
+<p>Arrow keys are used to navigate the history of commands and edit the
+current command. You can insert code anywhere in the current command
+by typing and you can use the delete or backspace key to remove code.</p>
+<p>When you are typing, Interactive Python may also provide suggestions
+to the right of your cursor in greyed out text. Pressing right arrow
+will accept these suggestions.</p>
+</section>
+<section id="tab">
+<h2>Tab<a class="headerlink" href="#tab" title="Permalink to this heading"></a></h2>
+<p>Pressing Tab will attempt to complete the current command. When you have
+typed the name of an object followed by a <code class="docutils literal notranslate"><span class="pre">.</span></code> Tab will show you all
+the properties ahd methods of that object.</p>
+<p>This feature is particularly useful with the MCIWB built in object <code class="docutils literal notranslate"><span class="pre">Items</span></code> as
+it means you don’t need to remember the names of all of types of blocks and
+items in Minecraft.</p>
+</section>
+<section id="demo">
+<h2>Demo<a class="headerlink" href="#demo" title="Permalink to this heading"></a></h2>
+<p>To understand how this feature works it is best to just try using the
+arrows and tab keys while you are typing Python commands. Below is a video
+of some of the things you can do with command completion in MCIWB.</p>
+<iframe width="700" height="300" src="https://www.youtube.com/embed/6AnjnmMo2iY?start=1" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></section>
 </section>
 
 

@@ -1,10 +1,5 @@
-.. _intro:
-
 Set Up
 ======
-
-To use Minecraft Interactive World Builder (MCIWB) you will need a desktop 
-Computer or Laptop. Linux, Windows and MacOS are all supported.
 
 To get going you first need to install the following software on your 
 Computer:
@@ -30,7 +25,7 @@ Computer:
 The Minecraft Java Client
 -------------------------
 
-If you already have the Minecraft Java Client installed proceed to `vscode`.
+If you already have the Minecraft Java Client installed proceed to `docker`.
 
 You will need to purchase a license for Minecraft from Microsoft.
 
@@ -39,8 +34,8 @@ Go to this site to buy your copy, if you do not already have one:
     https://www.minecraft.net/en-us/store/minecraft-java-bedrock-edition-pc  
 
 Once you have a license, download the Java client to
-the computer where you will be trying out Minecraft Interactive World Builder
-(MCIWB). This is the download link for the Java client:
+the computer where you will be trying out MCIWB. 
+This is the download link for the Java client:
     
         https://www.minecraft.net/en-us/download
 
@@ -184,7 +179,7 @@ now have a bash (or zsh) shell for typing commands.
 Python
 ------
 
-The Python Programming Language is also free an open-source.
+The Python Programming Language is also free and open-source.
 
 This is essential for working with MCIWB. On Linux you will likely already 
 have it installed. Note that this project has been tested with

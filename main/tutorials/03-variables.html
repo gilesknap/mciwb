@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Python Variables &mdash; mciwb 0.5.4.dev7+g019e40a documentation</title>
+  <title>Python Variables &mdash; mciwb 0.6.1.dev6+g4813f79 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
@@ -22,7 +22,7 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Loops" href="04-loops.html" />
+    <link rel="next" title="Functions" href="04-functions.html" />
     <link rel="prev" title="Orientation" href="02-orientation.html" /> 
 </head>
 
@@ -47,17 +47,20 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
 <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="00-prereq.html">Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="01-setup.html">Set Up</a></li>
 <li class="toctree-l1"><a class="reference internal" href="02-orientation.html">Orientation</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Python Variables</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#introduction">Introduction</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#variables-types-and-operators">Variables, Types and Operators</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#trying-out-variables">Trying out Variables</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#variables-in-minecraft">Variables in Minecraft</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#iron-golem">Iron Golem</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="04-loops.html">Loops</a></li>
-<li class="toctree-l1"><a class="reference internal" href="05-if-then.html">If Then Else</a></li>
-<li class="toctree-l1"><a class="reference internal" href="06-functions.html">Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="04-functions.html">Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="05-loops.html">Loops</a></li>
+<li class="toctree-l1"><a class="reference internal" href="06-if-then.html">If Then Else</a></li>
 <li class="toctree-l1"><a class="reference internal" href="07-lists.html">Lists</a></li>
 <li class="toctree-l1"><a class="reference internal" href="08-dictionaries.html">Dictionaries</a></li>
 <li class="toctree-l1"><a class="reference internal" href="09-classes.html">Classes</a></li>
@@ -122,9 +125,10 @@ such as:</p>
 <p>My tutorials are going to focus on quickly getting into interacting with the
 world of Minecraft. We won’t be going into programming theory
 to any great degree. Therefore, a tutorial like python.land will
-be needed to fill in the background if you want to get serious with Python.</p>
+be needed to fill in the background if you want a deeper understanding
+of the language.</p>
 </div>
-<p>Follow along with these tutorials by having both you Minecraft client and
+<p>Follow along with these tutorials by having both your Minecraft client and
 your VSCode windows visible on your screen. You should try out the Python
 commands shown here and feel free to experiment.</p>
 <p>Each time you come back to work on these tutorials you can get yourself
@@ -141,7 +145,9 @@ computer program. They have the following properties:</p>
 </ul>
 <p>Operators are used to make changes to variables. For example the <code class="docutils literal notranslate"><span class="pre">=</span></code> operator
 assigns a value to a variable. In Python we can quickly create a variable
-using assignment. Try out the commands below:</p>
+using assignment. This table below shows some Python assignment commands using
+the <code class="docutils literal notranslate"><span class="pre">=</span></code> operator. Note that Python can automatically work out what type of
+variable you are creating.</p>
 <table class="colwidths-given docutils align-default" id="id1">
 <caption><span class="caption-text">Create some variables</span><a class="headerlink" href="#id1" title="Permalink to this table"></a></caption>
 <colgroup>
@@ -175,15 +181,20 @@ using assignment. Try out the commands below:</p>
 </tr>
 </tbody>
 </table>
-<p>Now you can use the <code class="docutils literal notranslate"><span class="pre">print</span></code> function to see the value of the variables:</p>
+</section>
+<section id="trying-out-variables">
+<h2>Trying out Variables<a class="headerlink" href="#trying-out-variables" title="Permalink to this heading"></a></h2>
+<p>Try out the commands below by typing them into the Python prompt in your
+VSCode window. Note that input [4] asks Interactive Python to show the values
+of the 3 variables you created:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">In</span> <span class="p">[</span><span class="mi">1</span><span class="p">]:</span> <span class="n">birth_year</span> <span class="o">=</span> <span class="mi">1964</span>
 
 <span class="n">In</span> <span class="p">[</span><span class="mi">2</span><span class="p">]:</span> <span class="n">my_height</span> <span class="o">=</span> <span class="mf">1.94</span>
 
 <span class="n">In</span> <span class="p">[</span><span class="mi">3</span><span class="p">]:</span> <span class="n">my_name</span> <span class="o">=</span> <span class="s2">&quot;giles&quot;</span>
 
-<span class="n">In</span> <span class="p">[</span><span class="mi">4</span><span class="p">]:</span> <span class="nb">print</span><span class="p">(</span><span class="n">birth_year</span><span class="p">,</span> <span class="n">my_height</span><span class="p">,</span> <span class="n">my_name</span><span class="p">)</span>
-<span class="mi">1964</span> <span class="mf">1.94</span> <span class="n">giles</span>
+<span class="n">In</span> <span class="p">[</span><span class="mi">4</span><span class="p">]:</span> <span class="n">birth_year</span><span class="p">,</span> <span class="n">my_height</span><span class="p">,</span> <span class="n">my_name</span>
+<span class="n">Out</span><span class="p">[</span><span class="mi">4</span><span class="p">]:</span> <span class="p">(</span><span class="mi">1964</span><span class="p">,</span> <span class="mf">1.94</span><span class="p">,</span> <span class="s1">&#39;giles&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Let’s try another operator <code class="docutils literal notranslate"><span class="pre">-</span></code> or minus. This operator subtracts the value of
@@ -196,8 +207,7 @@ Try out the commands below:</p>
 </pre></div>
 </div>
 <p>This makes a calculation from the value 2022 and the value of the variable
-<code class="docutils literal notranslate"><span class="pre">birth_year</span></code> and assigned it to variable <code class="docutils literal notranslate"><span class="pre">age</span></code>. Note that I did not
-use <code class="docutils literal notranslate"><span class="pre">print</span></code> to see the value, I simply typed the variable name <code class="docutils literal notranslate"><span class="pre">age</span></code>,
+<code class="docutils literal notranslate"><span class="pre">birth_year</span></code> and assigned it to variable <code class="docutils literal notranslate"><span class="pre">age</span></code>.
 Interactive Python will always print the value returned by the last
 input command.</p>
 </section>
@@ -206,17 +216,18 @@ input command.</p>
 <p>MCIWB provides some built in variables that you can use. The most important
 is called <code class="docutils literal notranslate"><span class="pre">world</span></code> and it is your entry point into most of the functions
 provided by the library.</p>
-<p>World is a special variable called an <code class="docutils literal notranslate"><span class="pre">object</span></code> which can have many values
+<p><code class="docutils literal notranslate"><span class="pre">world</span></code> is a special variable called an <code class="docutils literal notranslate"><span class="pre">object</span></code> which can have many values
 stored in its <code class="docutils literal notranslate"><span class="pre">properties</span></code>. Objects can also have <code class="docutils literal notranslate"><span class="pre">methods</span></code> which
 execute code.</p>
 <p>One property of <code class="docutils literal notranslate"><span class="pre">world</span></code> is <code class="docutils literal notranslate"><span class="pre">player</span></code> and a property of <code class="docutils literal notranslate"><span class="pre">player</span></code> is <code class="docutils literal notranslate"><span class="pre">pos</span></code>
 which holds the player’s current position.</p>
-<p>Thus you can access the player’s location like this:</p>
+<p>You can access the player’s location like this:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">In</span> <span class="p">[</span><span class="mi">10</span><span class="p">]:</span> <span class="n">world</span><span class="o">.</span><span class="n">player</span><span class="o">.</span><span class="n">pos</span>
 <span class="n">Out</span><span class="p">[</span><span class="mi">10</span><span class="p">]:</span> <span class="n">Vec3</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="mi">633</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mi">73</span><span class="p">,</span> <span class="n">z</span><span class="o">=-</span><span class="mi">1665</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Try moving your player around and see how the position changes.</p>
+<p>Try moving your player around and see how the position changes by repeating
+the above command.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>You will notice that the position is reported as a type of variable
@@ -227,15 +238,25 @@ familiar with if you have used e.g. the teleport command.</p>
 few tutorials and come back to that level of detail later on.</p>
 </div>
 <p>An example of a <code class="docutils literal notranslate"><span class="pre">method</span></code> on <code class="docutils literal notranslate"><span class="pre">world</span></code> is <code class="docutils literal notranslate"><span class="pre">set_block</span></code> which will place
-a block in a particular position. Make sure your player is standing
-on the flat area of sand and try this:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">world</span><span class="o">.</span><span class="n">set_block</span><span class="p">(</span><span class="n">pos</span><span class="p">,</span> <span class="n">Item</span><span class="o">.</span><span class="n">IRON_BLOCK</span><span class="p">)</span>
+a block in a particular position.</p>
+<p>Make sure your player is standing
+on the flat area of sand and execute the set_block method like this:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pos</span> <span class="o">=</span> <span class="n">world</span><span class="o">.</span><span class="n">player</span><span class="o">.</span><span class="n">pos</span>
+<span class="n">world</span><span class="o">.</span><span class="n">set_block</span><span class="p">(</span><span class="n">pos</span><span class="p">,</span> <span class="n">Item</span><span class="o">.</span><span class="n">IRON_BLOCK</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Your player should have been bumped out of their position and if you turn
 around you will see an iron block.</p>
-<p>(I’m no longer showing the In[] prompt in the examples so you can use
-copy and paste to easily try these examples)</p>
+<p>What you did here was assign your
+players position to the variable <code class="docutils literal notranslate"><span class="pre">pos</span></code> and then called the <code class="docutils literal notranslate"><span class="pre">set_block</span></code>
+method on <code class="docutils literal notranslate"><span class="pre">world</span></code>. You told <code class="docutils literal notranslate"><span class="pre">set_block</span></code> to use pos for the position and
+IRON_BLOCK for the block to place.</p>
+<p>Item is another provided variable that you can use. It is a list of all the
+types of blocks in Minecraft. See <a class="reference internal" href="../explain/completion.html#completion"><span class="std std-ref">Command Completion</span></a> for a great way to discover
+all of the block types.</p>
+</section>
+<section id="iron-golem">
+<h2>Iron Golem<a class="headerlink" href="#iron-golem" title="Permalink to this heading"></a></h2>
 <p>OK, let’s make an iron golem! Copy and paste these commands into the
 Python terminal:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">world</span><span class="o">.</span><span class="n">set_block</span><span class="p">(</span><span class="n">pos</span><span class="p">,</span> <span class="n">Item</span><span class="o">.</span><span class="n">IRON_BLOCK</span><span class="p">)</span>
@@ -254,10 +275,11 @@ if you don’t know about making iron golems)</p>
 in the world. We use the variables <code class="docutils literal notranslate"><span class="pre">pos</span></code> (which we set earlier) and <code class="docutils literal notranslate"><span class="pre">arms</span></code>
 to control where those blocks are placed.</p>
 <p><code class="docutils literal notranslate"><span class="pre">Direction</span></code> provides values that will move a position by one block in a
-particular direction when added/subtracted to/from that position.</p>
+particular direction when added/subtracted to/from that position. Note that we
+are using the operator <code class="docutils literal notranslate"><span class="pre">+</span></code> and that it can add more than just numbers.</p>
 <p>So, first we place the golem’s feet at <code class="docutils literal notranslate"><span class="pre">pos</span></code>.
 Then we move Up one block from the position <code class="docutils literal notranslate"><span class="pre">pos</span></code> to the arm level of
-the golem and save  that position in <code class="docutils literal notranslate"><span class="pre">arms</span></code>. Now we can move east
+the golem and save  that position in <code class="docutils literal notranslate"><span class="pre">arms</span></code>. Now we can step east
 and west from <code class="docutils literal notranslate"><span class="pre">arms</span></code> to make the arms and Up to make the head.</p>
 </section>
 </section>
@@ -267,7 +289,7 @@ and west from <code class="docutils literal notranslate"><span class="pre">arms<
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="02-orientation.html" class="btn btn-neutral float-left" title="Orientation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="04-loops.html" class="btn btn-neutral float-right" title="Loops" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="04-functions.html" class="btn btn-neutral float-right" title="Functions" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
