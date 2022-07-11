@@ -3,8 +3,6 @@ name: Docs CI
 on:
   push:
     branches:
-      # Add more branches here to publish docs from other branches
-      - master
       - main
     tags:
       - "*"

@@ -31,7 +31,7 @@ Connect your Client to the Server
 
 Now you are ready to connect your client to the server. Go back to the 
 Minecraft client that we started in Tutorial 01 or relaunch
-"Minecraft Launcher" it from the start menu.
+"Minecraft Launcher" from the start menu.
 
 Make sure "Minecraft Java Edition" is selected on the left and click
 "Play". 
@@ -121,6 +121,9 @@ To use the signs:
   will be placed at the paste point
 - Place a ``clear`` sign anywhere to clear out the current selected volume
 
+Note that the sign must be directly in front of your player to get activated,
+you can tell it is activated when it disappears.
+
 .. raw:: html
 
     <iframe width="700" height="600" src="https://www.youtube.com/embed/5LYezCAHJts?start=1" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
@@ -144,7 +147,7 @@ For example you can find out your player's position in the world with::
     Out[5]: Vec3(x=622, y=73, z=-1652)
 
 Notice that interactive Python prefixes each line with In or Out depending on
-wether it is input that you provided or output that is the result of executing
+whether it is input that you provided or output that is the result of executing
 your input. My player is shown at the world spawn point x=622, y=73, z=-1652.
 
 The ``setblock`` command will place a block in the world and ``Item`` provides

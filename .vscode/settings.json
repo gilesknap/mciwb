@@ -26,6 +26,7 @@
         "mockclient",
         "mockplayer",
         "NPCS",
+        "prereq",
         "setblock",
         "setworldspawn",
         "tracebacklimit",

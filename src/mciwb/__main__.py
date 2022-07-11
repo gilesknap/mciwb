@@ -21,7 +21,17 @@ from mciwb import (
     __version__,
     world,
 )
-from mciwb.server import HOST, MinecraftServer
+from mciwb.backup import Backup
+from mciwb.server import (
+    HOST,
+    MinecraftServer,
+    backup_folder,
+    def_pass,
+    def_port,
+    def_world_type,
+    default_server_folder,
+    server_name,
+)
 
 cli = typer.Typer(add_completion=False)
 
@@ -41,12 +51,6 @@ useful = [
     Position,
     world,
 ]
-
-server_name = "mciwb_server"
-default_server_folder = Path.home() / server_name
-def_pass = "default_pass"
-def_port = 20100
-def_world_type = "normal"
 
 
 def version_callback(value: bool):
@@ -148,9 +152,10 @@ def shell(
 @cli.command()
 def start(
     password: str = def_pass,
-    port: int = def_port,
-    folder: Path = default_server_folder,
     world_type: str = def_world_type,
+    server_name: str = server_name,
+    folder: Path = default_server_folder,
+    port: int = def_port,
     debug: bool = False,
 ):
     """
@@ -164,14 +169,7 @@ def start(
             logging.error(f"{folder} is not a directory")
             exit(1)
         else:
-            if port != def_port or world_type != def_world_type:
-                logging.error(
-                    f"server in {folder} already exists. "
-                    "Cannot change settings on an existing server."
-                )
-                exit(1)
-            else:
-                logging.info(f"Launching existing Minecraft server in {folder}")
+            logging.info(f"Launching existing Minecraft server in {folder}")
     else:
         logging.info(f"Creating new Minecraft server in {folder}")
 
@@ -181,6 +179,7 @@ def start(
 
 @cli.command()
 def stop(
+    server_name: str = server_name,
     debug: bool = False,
 ):
     """
@@ -190,6 +189,42 @@ def stop(
     init_logging(debug)
 
     MinecraftServer.stop_named(server_name)
+
+
+@cli.command()
+def backup(
+    folder: Path = default_server_folder,
+    backup_name: str = "",
+    backup_folder: Path = backup_folder,
+    debug: bool = False,
+):
+    """
+    Backup the current state of the world.
+    """
+    init_logging(debug)
+
+    backup = Backup(world_folder=folder / "world", backup_folder=backup_folder)
+    backup.backup(running=False, name=backup_name)
+
+
+@cli.command()
+def restore(
+    debug: bool = False,
+    folder: Path = default_server_folder,
+    backup_folder: Path = backup_folder,
+    backup_name: str = "",
+    server_name: str = server_name,
+    port: int = def_port,
+):
+    """
+    Stop the minecraft server. Restore from backup and restart.
+    """
+    init_logging(debug)
+
+    stop()
+    backup = Backup(world_folder=folder / "world", backup_folder=backup_folder)
+    backup.restore(name=backup_name)
+    start(folder=folder, port=port, server_name=server_name)
 
 
 if __name__ == "__main__":

@@ -1,4 +1,6 @@
+import tempfile
 from pathlib import Path
+from shutil import copytree
 
 from typer.testing import CliRunner
 
@@ -38,3 +40,48 @@ def test_repr(tmp_path: Path, minecraft_container, minecraft_client, minecraft_p
     )
 
     assert "player: george" in result.stdout
+
+
+def test_backup(tmp_path):
+    checks = ["ERROR", "WARNING"]
+
+    server_folder = Path(tempfile.gettempdir()) / "test_backup_server"
+    server_folder2 = Path(tempfile.gettempdir()) / "test_backup_server2"
+    backup_folder = Path(tempfile.gettempdir()) / "test_backup_backup"
+
+    result = run_cli(
+        "start",
+        "--folder",
+        server_folder,
+        "--server-name",
+        "test",
+        "--port",
+        "20200",
+    )
+    assert not any(err in result.stdout for err in checks)
+
+    result = run_cli(
+        "backup",
+        "--folder",
+        server_folder,
+        "--backup-folder",
+        backup_folder,
+    )
+    assert not any(err in result.stdout for err in checks)
+
+    copytree(server_folder, server_folder2, dirs_exist_ok=True)
+    result = run_cli(
+        "restore",
+        "--folder",
+        server_folder2,
+        "--server-name",
+        "test",
+        "--port",
+        "20200",
+        "--backup-folder",
+        backup_folder,
+    )
+    assert not any(err in result.stdout for err in checks)
+
+    result = run_cli("stop", "--server-name", "test")
+    assert not any(err in result.stdout for err in checks)

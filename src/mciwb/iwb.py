@@ -8,9 +8,11 @@ from mcwb import Direction, Vec3, Volume
 from mcwb.itemlists import grab
 from rcon.exceptions import SessionTimeout
 
+from mciwb.backup import Backup
 from mciwb.copier import CopyPaste
 from mciwb.monitor import Monitor
 from mciwb.player import Player, PlayerNotInWorld
+from mciwb.server import HOST, def_port
 from mciwb.signs import Signs
 from mciwb.threads import get_client, set_client
 
@@ -35,6 +37,19 @@ class Iwb:
 
         self._players: Dict[str, Player] = {}
         self._copiers: Dict[str, CopyPaste] = {}
+
+        # if we are using the default server created by mciwb then we know
+        # where the folders are for doing backups
+        if server == HOST and port == def_port:
+            self._backup: Optional[Backup] = Backup()
+        else:
+            self._backup = None
+
+    def backup(self) -> None:
+        if self._backup is None:
+            logging.warning("no backup available")
+        else:
+            self._backup.backup()
 
     def connect(self) -> Client:
         """
