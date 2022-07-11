@@ -26,18 +26,19 @@ class Backup:
             raise ValueError(f"{world_folder} does not look like a minecraft world")
 
     def backup(self, running=True, name=None):
-        client = get_client()
 
         fname = name or datetime.strftime(datetime.now(), "%y-%m-%d.%H.%M.%S.zip")
         fname = self.re_valid_filename.sub("_", fname)
 
-        client.say(f"Preparing to backup to {fname}")
-        result = client.save_off()
-        logging.debug("save_off: " + result)
+        if running:
+            client = get_client()
+            client.say(f"Preparing to backup to {fname}")
+            result = client.save_off()
+            logging.debug("save_off: " + result)
 
-        result = client.save_all()
-        logging.debug("save_all: " + result)
-        client.say("Backing up ...")
+            result = client.save_all()
+            logging.debug("save_all: " + result)
+            client.say("Backing up ...")
 
         file = self.backup_folder / fname
         world_files = self.world_folder.glob("**/*")
@@ -48,9 +49,11 @@ class Backup:
                 zip_file.write(wf, arcname=wf.relative_to(self.world_folder))
         logging.debug("ZipFile complete")
 
-        result = client.save_on()
-        logging.debug("save_on: " + result)
-        client.say("Backup Complete.")
+        if running:
+            client = get_client()
+            result = client.save_on()
+            logging.debug("save_on: " + result)
+            client.say("Backup Complete.")
 
     def _get_latest_zip(self) -> Path:
         backups = self.backup_folder.glob("*.zip")
