@@ -10,6 +10,7 @@ from mciwb.copier import CopyPaste
 from mciwb.iwb import Iwb, world
 from mciwb.monitor import Monitor
 from mciwb.player import Player
+from mciwb.threads import get_client
 
 try:
     # Use live version from git
@@ -28,6 +29,7 @@ else:
 # for ease of use for novice programmers
 __all__ = [
     "__version__",
+    "get_client",
     "Item",
     "Iwb",
     "Client",

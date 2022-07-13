@@ -19,6 +19,7 @@ from mciwb import (
     Player,
     Position,
     __version__,
+    get_client,
     world,
 )
 from mciwb.backup import Backup
@@ -49,6 +50,8 @@ useful = [
     Planes3d,
     Player,
     Position,
+    __version__,
+    get_client,
     world,
 ]
 

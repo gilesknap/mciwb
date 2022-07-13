@@ -177,7 +177,7 @@ into the Python terminal:
 Yay! You can paste again to create another one.
 
 .. image:: ../images/golem.png
-    :alt: Server Address
+    :alt: golem
     :width: 500px
 
 (See "Creation" in this article https://minecraft.fandom.com/wiki/Iron_Golem
