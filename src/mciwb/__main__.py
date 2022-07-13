@@ -209,10 +209,10 @@ def backup(
 
 @cli.command()
 def restore(
+    backup_name: str = typer.Argument(""),
     debug: bool = False,
     folder: Path = default_server_folder,
     backup_folder: Path = backup_folder,
-    backup_name: str = "",
     server_name: str = server_name,
     port: int = def_port,
 ):

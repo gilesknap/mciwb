@@ -19,10 +19,10 @@ To start the default server, run the following command::
 
 You should see the following output::
     
-    INFO:   Launching existing Minecraft server in /home/giles/mciwb_server
-    INFO:   Launching Minecraft Server 'mciwb_server' on port 20101 ...
+    INFO:   Launching existing Minecraft server in /home/giles/mciwb-server
+    INFO:   Launching Minecraft Server 'mciwb-server' on port 20101 ...
     INFO:   waiting for server to come online ...
-    INFO:   Server mciwb_server is online on port 20101
+    INFO:   Server mciwb-server is online on port 20101
 
 If this does not work take a look in `troubleshooting`.
 

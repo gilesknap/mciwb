@@ -131,8 +131,10 @@ An example of a ``method`` on ``world`` is ``set_block`` which will place
 a block in a particular position. 
 
 Make sure your player is standing
-on the flat area of sand and execute the set_block method like this::
+on the flat area of sand and execute the set_block method like this:
     
+.. code-block:: python
+
     pos = world.player.pos
     world.set_block(pos, Item.IRON_BLOCK)
 
@@ -151,8 +153,19 @@ all of the block types.
 Iron Golem
 ----------
 
-OK, let's make an iron golem! Copy and paste these commands into the 
-Python terminal::
+OK, let's make an iron golem! Copy and paste the following Python code commands 
+into the Python terminal:
+
+.. note ::
+
+    To copy and paste code from this page to your terminal:
+
+    - Drag the mouse to highlight the test you want to Copy
+    - type ``ctrl C`` to copy the code to the clipboard
+    - click in your Python Terminal pane to activate it
+    - type ``ctrl shift V`` to paste into a terminal
+
+.. code-block:: python
 
     world.set_block(pos, Item.IRON_BLOCK)
     arms = pos + Direction.UP

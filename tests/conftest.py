@@ -23,8 +23,8 @@ RCON_P = "pass"
 ENTITY_NAME = "george"
 ENTITY_POS = Vec3(0, -60, 0)
 
-server_name = "mciwb_test_server"
-servers_folder = Path(gettempdir()) / "test_mc_servers"
+server_name = "mciwb-test-server"
+servers_folder = Path(gettempdir()) / "test-mc-servers"
 
 logging.basicConfig(
     level=logging.DEBUG,

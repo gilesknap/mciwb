@@ -6,11 +6,10 @@ Introduction
 Welcome to Minecraft Interactive World Builder (MCIWB).
 
 This series of tutorials will teach you some of the basics of programming
-in Python, through writing code that interacts with a Minecraft world.
+in Python by writing code that interacts with a Minecraft world.
 
-We are going to work through many of the fundamental concepts of Python, and
-as we do so, gradually build own Minecraft Village with some very 
-unusual features!
+As we work through many of the fundamental concepts of Python, we will
+gradually build our own Minecraft Village with some very unusual features!
 
 There are a few things you will need before you start:
 
