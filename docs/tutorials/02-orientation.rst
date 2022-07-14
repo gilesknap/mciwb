@@ -1,6 +1,9 @@
 Orientation
 ===========
 
+Introduction
+------------
+
 In this tutorial We will just learn some of the background concepts needed to
 write code to do things in Minecraft. We will then use a couple
 of Python commands to get warmed up.

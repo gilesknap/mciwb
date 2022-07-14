@@ -1,9 +1,7 @@
 from mcipc.rcon.item import Item
 from mcipc.rcon.je import Client
 from mcwb import Anchor3 as Corner
-from mcwb import Blocks, Cuboid
-from mcwb import Vec3 as Position
-from mcwb import Volume
+from mcwb import Blocks, Cuboid, Vec3, Volume
 from mcwb.types import Direction, Planes3d
 
 from mciwb.copier import CopyPaste
@@ -36,12 +34,12 @@ __all__ = [
     "Corner",
     "Blocks",
     "Cuboid",
-    "Position",
     "Direction",
     "Planes3d",
     "CopyPaste",
     "Monitor",
     "Player",
     "world",
+    "Vec3",
     "Volume",
 ]
