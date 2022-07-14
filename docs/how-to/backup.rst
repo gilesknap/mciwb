@@ -57,10 +57,12 @@ name it will restore the most recent backup.
 When the server restarts you can reconnect your client. You should see that
 the hole you dug has disappeared.
 
+Note that the bash terminal has a history of commands. So to reconnect to
+your client you just need to hit up arrow a couple of times until you see the
+command that you typed earlier::
 
-.. _my_server_backups:
+    mciwb shell --player <player_name>
 
-Backups of your own custom server
----------------------------------
+and then hit enter. This saves some typing. You'll find that most command line
+tools have recall and editing of previous commands, including the iPython.
 
-TODO

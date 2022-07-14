@@ -8,7 +8,7 @@ For this tutorial we are going to write code that will create a Nether
 Portal. If you don't know about Nether Portals, you can read about them
 here: https://minecraft.fandom.com/wiki/Nether_portal.
 
-A Nether Portal requiresa minimum of 14 blocks. Now we could use a similar
+A Nether Portal requires a minimum of 14 blocks. Now we could use a similar
 approach as that for the iron golem in the previous tutorial. But that would
 be a lot of typing. So instead we'll take a look at Python ``for loops``.
 
@@ -23,8 +23,8 @@ this tutorial.
 For Loops
 ---------
 
-For loop provide the mechanism to repeat a block of code a number of times.
-Try the following code in your Python Terminal, note that the second line
+For loops provide the mechanism to repeat a block of code a number of times.
+Try the following code in iPython, note that the second line
 is indented by 4 spaces, you can use the tab key to do this indent.
 
 .. code-block:: python
@@ -34,14 +34,18 @@ is indented by 4 spaces, you can use the tab key to do this indent.
         print(i)
 
 The ``range`` function creates a list of numbers from 0 to 9 (i.e. it starts
-at 0 and does 10 numbers). Then the ``for`` loops through those numbers for 
-each of them it sets the variable i equal to the current number in the list and
-then executes its code block.
+at 0 and does 10 numbers). Then the ``for`` loops through those numbers. For 
+each of them it sets the variable i equal to the current number in the range 
+and then executes the code block.
 
-An important concept in Python a block of code is declared by indenting it 
-by 4 spaces. So the two print functions are inside of the block controlled
+An important concept in Python is that a block of code is declared by 
+indenting it (usually by 4 spaces). 
+
+Thus the two print functions above are inside of the block controlled
 by the for loop. This is why both of those print functions get called 10
-times each.
+times each. 
+
+The ``print()`` function simply outputs values to the terminal.
 
 .. note::
 
@@ -66,18 +70,23 @@ following:
             print("    j times i is ", j * i)
 
 This is two loops inside of each other, each loops 3 times and so the total
-number of times the code block is executed is 3 time 3 = 9. See if you can
+number of times the code block is executed is 3 times 3 = 9. See if you can
 work out why the output looks like it does.
 
 .. note::
     
     We used a new operator here. The ``*`` operator is used to multiply two
     numbers together. It is just the same as multiplication in basic 
-    arithmetic. Most computer languages use the star symbol to signify
+    arithmetic. 
+    
+    Most computer languages use the star symbol to signify
     multiplication. This is because there is no multiply symbol on 
     computer keyboards since they evolved from typewriter keyboards!
 
     Similarly the symbol ``/`` is used to represent divide by.
+
+
+.. _portal:
 
 Nether Portal
 -------------
@@ -104,7 +113,7 @@ Try the following code in your Python Terminal:
         world.set_block(pos + Direction.UP * y + Direction.EAST * 3 , Item.OBSIDIAN)
 
     c = get_client()
-    c.give("TransformerScorn", Item.FLINT_AND_STEEL)
+    c.give("@a", Item.FLINT_AND_STEEL)
 
 .. image:: ../images/portal.png
     :alt: nether portal
@@ -139,40 +148,27 @@ See if you can experiment with creating different sizes of nether portals.
 Maybe you can create other shapes? If you used a nested loop you could make 
 steps for example?
 
+.. _comments:
+
+Comments
+--------
+
+Some of the lines in the above code example are comments. In Python we
+precede comments with ``#``. This instructs Python to ignore the rest of 
+the line.
+
+Comments do not change the behaviour of the code, rather they help you
+understand what the code is supposed to do. Good programmers always 
+comment their code, especially when they are doing something that may
+not be immediately easy to understand.
 
 Flint and Steel
 ---------------
 
-Did you notice the ``c.give()`` at the end of the code snippet? This handed
-a Flint and Steel to the player. You can equip this in your hand and ignite
+Did you notice the ``get_client`` and ``c.give()`` at the end of the code 
+snippet? This handed a Flint and Steel to every player in the world. 
+You can equip this in your hand and ignite
 your portal by left clicking in the interior of the portal. It should then
 look like my picture above and you can jump through to see the Nether.
 
-MCIPC Client object
--------------------
-
-.. note::
-
-    This is an advanced feature and if you are new to Python then don't
-    worry about it for the moment. You can come back to this at a later
-    date.
-
-The function ``get_client()`` gets hold of an mcipc client object. mcipc is 
-the underlying Python project that we use to communicate with the Minecraft.
-
-Minecraft provides a remote control mechanism called RCON that gives you
-exactly the same set of admin commands that you may be familiar with if you 
-have player a lot of Minecraft. Those commands are documented here
-https://minecraft.fandom.com/wiki/Commands and let you do pretty much
-anything in the world.
-
-Note that due to tab completion in Interactive Python it is quite easy to
-use the client object to discover what commands you can call.
-
-For MCIWB I have deliberately provided a simplified interface to make 
-learning Python easier. But with ``mcipc`` you can do anything that RCON
-allows.
-
-The documentation for the underlying mcipc library is here
-https://mcipc.readthedocs.io/en/latest/
-
+For some in depth description of the use of ``get_client()`` see `mcipc`
