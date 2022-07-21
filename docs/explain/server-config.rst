@@ -7,7 +7,7 @@ the defaults used by MCIWB then read on.
 Configuration of the default server
 -----------------------------------
 
-Your server installation is created in ``$HOME/mciwb_server`` if you want to 
+Your server installation is created in ``$HOME/mciwb-server`` if you want to 
 change the world settings then you can go into that folder and alter the
 ``server.properties``.
 
@@ -18,5 +18,13 @@ Perform the following to pick up the changes::
 
 Running your own Server
 -----------------------
+
+TODO
+
+
+.. _my_server_backups:
+
+Backups of your own custom server
+---------------------------------
 
 TODO

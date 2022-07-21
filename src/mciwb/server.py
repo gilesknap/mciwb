@@ -16,8 +16,8 @@ from mciwb import Client
 HOST = "localhost"
 
 # the default locally mapped backup folder for minecraft data
-backup_folder = Path.home() / "mciwb_backups"
-server_name = "mciwb_server"
+backup_folder = Path.home() / "mciwb-backups"
+server_name = "mciwb-server"
 default_server_folder = Path.home() / server_name
 
 def_pass = "default_pass"
@@ -187,6 +187,8 @@ class MinecraftServer:
 
         if not self.server_folder.exists():
             self.server_folder.mkdir(parents=True)
+        if not backup_folder.exists():
+            backup_folder.mkdir(parents=True)
         elif test:
             shutil.rmtree(self.server_folder)
             self.server_folder.mkdir(parents=True)

@@ -45,9 +45,9 @@ def test_repr(tmp_path: Path, minecraft_container, minecraft_client, minecraft_p
 def test_backup(tmp_path):
     checks = ["ERROR", "WARNING"]
 
-    server_folder = Path(tempfile.gettempdir()) / "test_backup_server"
-    server_folder2 = Path(tempfile.gettempdir()) / "test_backup_server2"
-    backup_folder = Path(tempfile.gettempdir()) / "test_backup_backup"
+    server_folder = Path(tempfile.gettempdir()) / "test-backup-server"
+    server_folder2 = Path(tempfile.gettempdir()) / "test-backup-server2"
+    backup_folder = Path(tempfile.gettempdir()) / "test-backup-backup"
 
     result = run_cli(
         "start",

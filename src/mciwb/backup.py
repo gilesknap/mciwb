@@ -25,10 +25,12 @@ class Backup:
         if not (self.world_folder / "level.dat").exists():
             raise ValueError(f"{world_folder} does not look like a minecraft world")
 
-    def backup(self, running=True, name=None):
+    def backup(self, name=None, running=True):
 
         fname = name or datetime.strftime(datetime.now(), "%y-%m-%d.%H.%M.%S.zip")
         fname = self.re_valid_filename.sub("_", fname)
+        if not fname.endswith(".zip"):
+            fname += ".zip"
 
         if running:
             client = get_client()
@@ -69,9 +71,11 @@ class Backup:
         if not name:
             rfile = self._get_latest_zip()
         else:
-            rfile = Path(self.re_valid_filename.sub("_", name))
+            if not name.endswith(".zip"):
+                name += ".zip"
+            rfile = backup_folder / self.re_valid_filename.sub("_", name)
         if not rfile.exists():
-            raise ValueError("{file} not found")
+            raise ValueError(f"{rfile} not found")
 
         # backup for recovery from accidental recovery ! Note that on some filesystems
         # it is OK to do this while the server is running. On other filesystems the

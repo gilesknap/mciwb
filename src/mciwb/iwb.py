@@ -45,11 +45,11 @@ class Iwb:
         else:
             self._backup = None
 
-    def backup(self) -> None:
+    def backup(self, name=None) -> None:
         if self._backup is None:
             logging.warning("no backup available")
         else:
-            self._backup.backup()
+            self._backup.backup(name=name)
 
     def connect(self) -> Client:
         """
@@ -85,7 +85,7 @@ class Iwb:
             sign.give_signs()
         except (PlayerNotInWorld, SessionTimeout, NoPlayerFound) as e:
             # during tests this will fail as there is no real player
-            logging.warning("failed to give signs to player, %s", e)
+            logging.error("failed to give signs to player, %s", e)
 
         logging.info(f"Monitoring player {name} enabled for sign commands")
 

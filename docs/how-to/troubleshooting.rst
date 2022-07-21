@@ -18,7 +18,7 @@ Problems with Player Connection
 
 If you see a message like this::
 
-    WARNING:        failed to give signs to player, player <player> left
+    ERROR:        failed to give signs to player, player <player> left
 
 This means MCIWB could not find your player. It is worth checking that you 
 have your player name correct. 
@@ -31,4 +31,4 @@ Minecraft Server Logs
 You can also get the logs from the attempted start of the server with this 
 command on the Terminal::
 
-    docker logs mciwb_server
+    docker logs mciwb-server

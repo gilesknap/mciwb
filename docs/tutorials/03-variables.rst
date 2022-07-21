@@ -4,7 +4,7 @@ Python Variables
 Introduction
 ------------
 
-We now have everything ready to start learning some Python!
+We now have everything set up ready to start learning some Python!
 
 .. note:: 
     There are many other
@@ -15,7 +15,7 @@ We now have everything ready to start learning some Python!
 
     My tutorials are going to focus on quickly getting into interacting with the
     world of Minecraft. We won't be going into programming theory 
-    to any great degree. Therefore, a tutorial like python.land will 
+    in detail. Therefore, a tutorial like python.land will 
     be needed to fill in the background if you want a deeper understanding
     of the language.
 
@@ -37,12 +37,14 @@ computer program. They have the following properties:
 - Type: the type of data that the variable holds.
 
 Operators are used to make changes to variables. For example the ``=`` operator
-assigns a value to a variable. In Python we can quickly create a variable
-using assignment. This table below shows some Python assignment commands using 
-the ``=`` operator. Note that Python can automatically work out what type of 
-variable you are creating.
+assigns a value to a variable, and the ``+`` operator adds two variables
+together.
 
-.. list-table:: Create some variables
+In Python we can easily create a variable
+using assignment. This table below shows some Python assignment commands using 
+the ``=`` operator. 
+
+.. list-table:: examples of creating variables in Python
    :widths: 50 25 20 60
    :header-rows: 1    
    
@@ -62,12 +64,16 @@ variable you are creating.
      - my_name
      - "giles"
      - str (a string of characters)
+  
+Note that Python can automatically work out what type of variable you are
+creating. e.g. it recognizes that using quotes means I want a string of 
+characters.
 
 Trying out Variables
 --------------------
 
-Try out the commands below by typing them into the Python prompt in your 
-VSCode window. Note that input [4] asks Interactive Python to show the values
+Try out the commands below by typing them into the iPython prompt in your 
+VSCode window. Note that input [4] just asks iPython to show the values
 of the 3 variables you created::
 
     In [1]: birth_year = 1964
@@ -92,18 +98,20 @@ Try out the commands below::
 This makes a calculation from the value 2022 and the value of the variable
 ``birth_year`` and assigned it to variable ``age``.
 Interactive Python will always print the value returned by the last
-input command.
+command you input, so in Out[7] ``age`` evaluates to 58.
+
+.. _mc_variables:
 
 Variables in Minecraft
 ----------------------
 
 MCIWB provides some built in variables that you can use. The most important
-is called ``world`` and it is your entry point into most of the functions
+is called ``world`` and it is your entry point into many of the functions
 provided by the library.
 
-``world`` is a special variable called an ``object`` which can have many values
-stored in its ``properties``. Objects can also have ``methods`` which 
-execute code. 
+``world`` is a special type of variable called an ``object`` which can 
+have many values stored in its ``properties``. 
+Objects can also have ``methods`` which execute code. 
 
 One property of ``world`` is ``player`` and a property of ``player`` is ``pos``
 which holds the player's current position.
@@ -113,6 +121,8 @@ You can access the player's location like this::
     In [10]: world.player.pos
     Out[10]: Vec3(x=633, y=73, z=-1665)
 
+``out[10]`` shows the player's current position is x=633, y=73, z=-1665.
+
 Try moving your player around and see how the position changes by repeating 
 the above command.
 
@@ -121,18 +131,23 @@ the above command.
     You will notice that the position is reported as a type of variable 
     called Vec3. This holds the Minecraft coordinates that you may be 
     familiar with if you have used e.g. the teleport command.
-
+    
     For lots of detail on what this all means see `coordinates`.
 
-    However, for the moment you may prefer to just work through the first 
-    few tutorials and come back to that level of detail later on.
+    For the moment I recommend just work through the first 
+    few tutorials and look at the details in `../explanations`
+    once you are more experienced.
+
+    
 
 An example of a ``method`` on ``world`` is ``set_block`` which will place
 a block in a particular position. 
 
 Make sure your player is standing
-on the flat area of sand and execute the set_block method like this::
+on the flat area of sand and execute the set_block method like this:
     
+.. code-block:: python
+
     pos = world.player.pos
     world.set_block(pos, Item.IRON_BLOCK)
 
@@ -144,15 +159,29 @@ players position to the variable ``pos`` and then called the ``set_block``
 method on ``world``. You told ``set_block`` to use pos for the position and 
 IRON_BLOCK for the block to place.
 
-Item is another provided variable that you can use. It is a list of all the 
-types of blocks in Minecraft. See `completion` for a great way to discover 
-all of the block types.
+``Item`` is another built-in variable that you can use. It is a list of all the 
+types of blocks in Minecraft. If you type ``Item.IR`` in iPython and then
+hit ``Tab`` you will see a list of all the items in Minecraft that begin with 
+**IR**. See `completion` for more details.
+
+.. _golem:
 
 Iron Golem
 ----------
 
-OK, let's make an iron golem! Copy and paste these commands into the 
-Python terminal::
+OK, let's make an iron golem! Copy and paste the following Python code commands 
+into the Python terminal:
+
+.. note ::
+
+    To copy and paste code from this page to your terminal:
+
+    - Drag the mouse to highlight the text you want to Copy
+    - type ``ctrl C`` to copy the code to the clipboard
+    - click in your Python Terminal pane to activate it
+    - type ``ctrl shift V`` to paste into a terminal
+
+.. code-block:: python
 
     world.set_block(pos, Item.IRON_BLOCK)
     arms = pos + Direction.UP
@@ -164,7 +193,7 @@ Python terminal::
 Yay! You can paste again to create another one.
 
 .. image:: ../images/golem.png
-    :alt: Server Address
+    :alt: golem
     :width: 500px
 
 (See "Creation" in this article https://minecraft.fandom.com/wiki/Iron_Golem
@@ -179,7 +208,7 @@ particular direction when added/subtracted to/from that position. Note that we
 are using the operator ``+`` and that it can add more than just numbers.
 
 So, first we place the golem's feet at ``pos``.
-Then we move Up one block from the position ``pos`` to the arm level of 
-the golem and save  that position in ``arms``. Now we can step east
-and west from ``arms`` to make the arms and Up to make the head.
+Then we move UP one block from the position ``pos`` to the arm level of 
+the golem and save  that position in ``arms``. Now we can step EAST
+and WEST from ``arms`` to make the arms. Finally we step UP to make the head.
 
