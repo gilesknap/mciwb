@@ -4,7 +4,16 @@ Functions
 Introduction
 ------------
 
-In this tutorial we are going to create a few houses for our village. 
+In this tutorial we are going to start to create a few buildings for our village.
+We will expand on the types of buildings in later tutorials as we learn new 
+features of python.
+
+.. warning::
+
+    Before starting it is worth making a backup of your world. We will be 
+    creating lost of test buildings and it would be good to be able to 
+    reset back to the original state. See `backups`.
+
 
 To do this we will learn to use functions to packaged up our code into
 reusable chunks. We will also learn to save our code in Python modules
@@ -69,20 +78,41 @@ in the variable name. Typically variable names are lowercase with words separate
 by underscores. It is also legal to use uppercase letters and numbers in variable
 names (but a number must not be the first character).
 
-Tower Function
---------------
+Pagoda Function
+---------------
 
-Lets create a function that will create a tower. We are going to use the 
-following function. Don't type it in yet, we are going to create a file for it.
-Also do not worry too much about the details of this function
-yet but notice that it has the following parameters that the caller can supply:
+Lets create a function that will create a pagoda. This function will have 
+the following parameters that the caller can supply:
 
-- ``height`` - the height of the tower
-- ``width`` - the width of the tower
-- ``world`` - a world object that we can use to create blocks in the world
-- ``pos`` - the position of the tower
+- ``pos`` - the position of center of the base of the pagoda
+- ``width`` - the width of the pagoda's base (defaults to 9)
+- ``floor_height`` - the height of each floor (defaults to 4) 
+- ``item`` - what blocks to use (defaults to gold block)
 
-.. literalinclude :: ../../src/demo/tower.py
+Try copying and pasting this function into your Python console.
+
+.. literalinclude :: ../../src/demo/pagoda.py
    :language: python
 
-TODO continue
+Now type in the following code to call your pagoda function:
+
+.. code-block:: python
+
+    from pagoda import build_pagoda
+    pagoda_pos=Vec3(585,71,-1728)
+    pagoda(pagoda_pos, width=30)
+
+If your player then looks to the North from our spawn point you should 
+see this:
+
+.. image:: ../images/pagoda.png
+    :alt: pagoda
+    :width: 800px
+
+Let's take a look at the things that are new in the above code.
+
+.. code-block:: python
+
+    from mciwb import Direction, Item, get_client
+
+The import function makes code from another module available to your code.
