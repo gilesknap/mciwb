@@ -1,6 +1,9 @@
 Orientation
 ===========
 
+Introduction
+------------
+
 In this tutorial We will just learn some of the background concepts needed to
 write code to do things in Minecraft. We will then use a couple
 of Python commands to get warmed up.
@@ -19,10 +22,10 @@ To start the default server, run the following command::
 
 You should see the following output::
     
-    INFO:   Launching existing Minecraft server in /home/giles/mciwb_server
-    INFO:   Launching Minecraft Server 'mciwb_server' on port 20101 ...
+    INFO:   Launching existing Minecraft server in /home/giles/mciwb-server
+    INFO:   Launching Minecraft Server 'mciwb-server' on port 20101 ...
     INFO:   waiting for server to come online ...
-    INFO:   Server mciwb_server is online on port 20101
+    INFO:   Server mciwb-server is online on port 20101
 
 If this does not work take a look in `troubleshooting`.
 
@@ -93,6 +96,8 @@ ERROR: or WARNING: then take a look at `troubleshooting`. If that does not
 help then please create a new issue at https://github.com/gilesknap/mciwb/issues
 and someone will get back to you.
 
+.. _signs_try:
+
 Try out Some Action Signs
 -------------------------
 
@@ -132,41 +137,55 @@ The above video is a demo of flattening out the area around the spawn point
 using copy and paste. First I select a large area of sandy floor and then I
 keep pasting it until I have a nice flat area to start working with.
 
-Experimenting with Python
--------------------------
+.. _experiment:
 
-Let's try out a couple of commands on the Python prompt. You don't need 
+Experimenting with iPython
+--------------------------
+
+iPython stands for Interactive Python. We already saw that we 
+can connect to a Minecraft server and get an Interactive Python shell prompt
+by typing the following command in the VSCode terminal::
+
+    mciwb shell --player <player_name>
+
+Let's try out a couple of commands on the iPython prompt. You don't need 
 to understand the detail of this yet, we'll introduced the programming 
 concepts used here gradually over the next few tutorials.
 
-The starting point for most Python interactions is ``world``
+The starting point for most iPython interactions is ``world``
 
 For example you can find out your player's position in the world with::
         
     In [3]: world.player.pos
-    Out[5]: Vec3(x=622, y=73, z=-1652)
+    Out[3]: Vec3(x=622, y=73, z=-1652)
 
 Notice that interactive Python prefixes each line with In or Out depending on
-whether it is input that you provided or output that is the result of executing
-your input. My player is shown at the world spawn point x=622, y=73, z=-1652.
+whether it is input that you provide or output that is the result of executing
+your input.
 
-The ``setblock`` command will place a block in the world and ``Item`` provides
-all the known block types. So::
+The above example output labelled ``Out[3]`` shows that my player is at the 
+world spawn point x=622, y=73, z=-1652.
+
+The world ``setblock`` function will place a block in the world. 
+The item ``Item`` type provides a list of all the known block types. 
+You can use these as follows to place a block::
 
     world.set_block(world.player.pos, Item.BEDROCK)
     
-will cause your player to get moved by a lump of bedrock appearing at their
+This causes your player to get moved by a lump of bedrock appearing at their
 feet. You can also try this command which tells you what type of block your
 player is standing on.::
     
     In [5]: world.get_block(world.player.pos + Direction.DOWN)
     Out[5]: <Item.SAND: 'sand'>
 
+Here we also used ``Direction`` which provides a list of all the possible
+directions.
+
 
 Exiting the Python prompt
 -------------------------
 
-To exit the Python prompt type ``<ctrl> D```
+To exit the iPython prompt type ``<ctrl> D```
 
-This will exit Interactive Python and return you to your bash (or zsh)
-terminal.
+This will exit iPython and return you to your bash (or zsh) terminal prompt.

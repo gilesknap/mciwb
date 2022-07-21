@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Tutorials &mdash; mciwb 0.6.1.dev6+g4813f79 documentation</title>
+  <title>Tutorials &mdash; mciwb 0.6.1.dev11+g3d9058d documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="_static/graphviz.css" type="text/css" />
@@ -46,11 +46,11 @@
               <p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="tutorials/00-prereq.html">Introduction</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tutorials/01-setup.html">Set Up</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/01-setup.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tutorials/02-orientation.html">Orientation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tutorials/03-variables.html">Python Variables</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tutorials/04-functions.html">Functions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tutorials/05-loops.html">Loops</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/04-loops.html">Loops</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/05-functions.html">Functions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tutorials/06-if-then.html">If Then Else</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tutorials/07-lists.html">Lists</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tutorials/08-dictionaries.html">Dictionaries</a></li>
@@ -59,18 +59,20 @@
 <p class="caption" role="heading"><span class="caption-text">How-to Guides</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="how-to/startup.html">Setup for each Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="how-to/completion.html">Command Completion</a></li>
 <li class="toctree-l1"><a class="reference internal" href="how-to/troubleshooting.html">Troubleshooting</a></li>
-<li class="toctree-l1"><a class="reference internal" href="how-to/server-config.html">Minecraft Server Config</a></li>
 <li class="toctree-l1"><a class="reference internal" href="how-to/backup.html">Backup and Restore</a></li>
 <li class="toctree-l1"><a class="reference internal" href="how-to/wsl2.html">Windows Subsystem for Linux</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Explanations</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="explain/completion.html">Command Completion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="explain/server-config.html">Minecraft Server Config</a></li>
 <li class="toctree-l1"><a class="reference internal" href="explain/coordinates.html">Minecraft’s Coordinate System</a></li>
+<li class="toctree-l1"><a class="reference internal" href="explain/mcipc.html">MCIPC Client object</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Reference</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="reference/index.html">Finding Things</a></li>
 <li class="toctree-l1"><a class="reference internal" href="reference/contributing.html">Contributing</a></li>
 <li class="toctree-l1"><a class="reference external" href="https://github.com/gilesknap/mciwb/releases">Releases</a></li>
 <li class="toctree-l1"><a class="reference external" href="genindex.html#http://">Index</a></li>
@@ -107,7 +109,8 @@
 <p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="tutorials/00-prereq.html">Introduction</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tutorials/01-setup.html">Set Up</a><ul>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/01-setup.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/01-setup.html#introduction">Introduction</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tutorials/01-setup.html#the-minecraft-java-client">The Minecraft Java Client</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tutorials/01-setup.html#docker-desktop">Docker Desktop</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tutorials/01-setup.html#visual-studio-code">Visual Studio Code</a></li>
@@ -117,11 +120,12 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="tutorials/02-orientation.html">Orientation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/02-orientation.html#introduction">Introduction</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tutorials/02-orientation.html#get-a-minecraft-server-running">Get a Minecraft Server Running</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tutorials/02-orientation.html#connect-your-client-to-the-server">Connect your Client to the Server</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tutorials/02-orientation.html#connect-mciwb-to-the-server">Connect MCIWB to the Server</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tutorials/02-orientation.html#try-out-some-action-signs">Try out Some Action Signs</a></li>
-<li class="toctree-l2"><a class="reference internal" href="tutorials/02-orientation.html#experimenting-with-python">Experimenting with Python</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/02-orientation.html#experimenting-with-ipython">Experimenting with iPython</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tutorials/02-orientation.html#exiting-the-python-prompt">Exiting the Python prompt</a></li>
 </ul>
 </li>
@@ -133,8 +137,23 @@
 <li class="toctree-l2"><a class="reference internal" href="tutorials/03-variables.html#iron-golem">Iron Golem</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="tutorials/04-functions.html">Functions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tutorials/05-loops.html">Loops</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/04-loops.html">Loops</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/04-loops.html#introduction">Introduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/04-loops.html#backups">Backups</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/04-loops.html#for-loops">For Loops</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/04-loops.html#nested-loops">Nested Loops</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/04-loops.html#nether-portal">Nether Portal</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/04-loops.html#comments">Comments</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/04-loops.html#flint-and-steel">Flint and Steel</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/05-functions.html">Functions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/05-functions.html#introduction">Introduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/05-functions.html#simple-function">Simple Function</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/05-functions.html#variable-naming">Variable Naming</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/05-functions.html#tower-function">Tower Function</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="tutorials/06-if-then.html">If Then Else</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tutorials/07-lists.html">Lists</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tutorials/08-dictionaries.html">Dictionaries</a></li>

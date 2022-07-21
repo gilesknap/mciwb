@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Orientation &mdash; mciwb 0.6.1.dev6+g4813f79 documentation</title>
+  <title>Orientation &mdash; mciwb 0.6.1.dev11+g3d9058d documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
@@ -23,7 +23,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Python Variables" href="03-variables.html" />
-    <link rel="prev" title="Set Up" href="01-setup.html" /> 
+    <link rel="prev" title="Installation" href="01-setup.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -48,19 +48,20 @@
               <p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="00-prereq.html">Introduction</a></li>
-<li class="toctree-l1"><a class="reference internal" href="01-setup.html">Set Up</a></li>
+<li class="toctree-l1"><a class="reference internal" href="01-setup.html">Installation</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Orientation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#introduction">Introduction</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#get-a-minecraft-server-running">Get a Minecraft Server Running</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#connect-your-client-to-the-server">Connect your Client to the Server</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#connect-mciwb-to-the-server">Connect MCIWB to the Server</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#try-out-some-action-signs">Try out Some Action Signs</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#experimenting-with-python">Experimenting with Python</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#experimenting-with-ipython">Experimenting with iPython</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#exiting-the-python-prompt">Exiting the Python prompt</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="03-variables.html">Python Variables</a></li>
-<li class="toctree-l1"><a class="reference internal" href="04-functions.html">Functions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="05-loops.html">Loops</a></li>
+<li class="toctree-l1"><a class="reference internal" href="04-loops.html">Loops</a></li>
+<li class="toctree-l1"><a class="reference internal" href="05-functions.html">Functions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="06-if-then.html">If Then Else</a></li>
 <li class="toctree-l1"><a class="reference internal" href="07-lists.html">Lists</a></li>
 <li class="toctree-l1"><a class="reference internal" href="08-dictionaries.html">Dictionaries</a></li>
@@ -69,18 +70,20 @@
 <p class="caption" role="heading"><span class="caption-text">How-to Guides</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../how-to/startup.html">Setup for each Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../how-to/completion.html">Command Completion</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../how-to/troubleshooting.html">Troubleshooting</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../how-to/server-config.html">Minecraft Server Config</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../how-to/backup.html">Backup and Restore</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../how-to/wsl2.html">Windows Subsystem for Linux</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Explanations</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../explain/completion.html">Command Completion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../explain/server-config.html">Minecraft Server Config</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../explain/coordinates.html">Minecraft’s Coordinate System</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../explain/mcipc.html">MCIPC Client object</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Reference</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../reference/index.html">Finding Things</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../reference/contributing.html">Contributing</a></li>
 <li class="toctree-l1"><a class="reference external" href="https://github.com/gilesknap/mciwb/releases">Releases</a></li>
 <li class="toctree-l1"><a class="reference external" href="genindex.html#http://">Index</a></li>
@@ -112,9 +115,12 @@
              
   <section id="orientation">
 <h1>Orientation<a class="headerlink" href="#orientation" title="Permalink to this heading"></a></h1>
+<section id="introduction">
+<h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this heading"></a></h2>
 <p>In this tutorial We will just learn some of the background concepts needed to
 write code to do things in Minecraft. We will then use a couple
 of Python commands to get warmed up.</p>
+</section>
 <section id="get-a-minecraft-server-running">
 <h2>Get a Minecraft Server Running<a class="headerlink" href="#get-a-minecraft-server-running" title="Permalink to this heading"></a></h2>
 <p>Make sure we are in the right folder and have the Environment activated:</p>
@@ -127,10 +133,10 @@ source .venv/bin/activate
 </pre></div>
 </div>
 <p>You should see the following output:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">INFO</span><span class="p">:</span>   <span class="n">Launching</span> <span class="n">existing</span> <span class="n">Minecraft</span> <span class="n">server</span> <span class="ow">in</span> <span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">giles</span><span class="o">/</span><span class="n">mciwb_server</span>
-<span class="n">INFO</span><span class="p">:</span>   <span class="n">Launching</span> <span class="n">Minecraft</span> <span class="n">Server</span> <span class="s1">&#39;mciwb_server&#39;</span> <span class="n">on</span> <span class="n">port</span> <span class="mi">20101</span> <span class="o">...</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">INFO</span><span class="p">:</span>   <span class="n">Launching</span> <span class="n">existing</span> <span class="n">Minecraft</span> <span class="n">server</span> <span class="ow">in</span> <span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">giles</span><span class="o">/</span><span class="n">mciwb</span><span class="o">-</span><span class="n">server</span>
+<span class="n">INFO</span><span class="p">:</span>   <span class="n">Launching</span> <span class="n">Minecraft</span> <span class="n">Server</span> <span class="s1">&#39;mciwb-server&#39;</span> <span class="n">on</span> <span class="n">port</span> <span class="mi">20101</span> <span class="o">...</span>
 <span class="n">INFO</span><span class="p">:</span>   <span class="n">waiting</span> <span class="k">for</span> <span class="n">server</span> <span class="n">to</span> <span class="n">come</span> <span class="n">online</span> <span class="o">...</span>
-<span class="n">INFO</span><span class="p">:</span>   <span class="n">Server</span> <span class="n">mciwb_server</span> <span class="ow">is</span> <span class="n">online</span> <span class="n">on</span> <span class="n">port</span> <span class="mi">20101</span>
+<span class="n">INFO</span><span class="p">:</span>   <span class="n">Server</span> <span class="n">mciwb</span><span class="o">-</span><span class="n">server</span> <span class="ow">is</span> <span class="n">online</span> <span class="n">on</span> <span class="n">port</span> <span class="mi">20101</span>
 </pre></div>
 </div>
 <p>If this does not work take a look in <a class="reference internal" href="../how-to/troubleshooting.html#troubleshooting"><span class="std std-ref">Troubleshooting</span></a>.</p>
@@ -190,7 +196,7 @@ help then please create a new issue at <a class="reference external" href="https
 and someone will get back to you.</p>
 </section>
 <section id="try-out-some-action-signs">
-<h2>Try out Some Action Signs<a class="headerlink" href="#try-out-some-action-signs" title="Permalink to this heading"></a></h2>
+<span id="signs-try"></span><h2>Try out Some Action Signs<a class="headerlink" href="#try-out-some-action-signs" title="Permalink to this heading"></a></h2>
 <p>One feature of MCIWB is that it allows you to set up action signs. These
 are signs that your player can place in the world and they will call
 some Python code and tell the code which block they are attached to.</p>
@@ -218,38 +224,48 @@ you can tell it is activated when it disappears.</p>
 using copy and paste. First I select a large area of sandy floor and then I
 keep pasting it until I have a nice flat area to start working with.</p>
 </section>
-<section id="experimenting-with-python">
-<h2>Experimenting with Python<a class="headerlink" href="#experimenting-with-python" title="Permalink to this heading"></a></h2>
-<p>Let’s try out a couple of commands on the Python prompt. You don’t need
+<section id="experimenting-with-ipython">
+<span id="experiment"></span><h2>Experimenting with iPython<a class="headerlink" href="#experimenting-with-ipython" title="Permalink to this heading"></a></h2>
+<p>iPython stands for Interactive Python. We already saw that we
+can connect to a Minecraft server and get an Interactive Python shell prompt
+by typing the following command in the VSCode terminal:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">mciwb</span> <span class="n">shell</span> <span class="o">--</span><span class="n">player</span> <span class="o">&lt;</span><span class="n">player_name</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<p>Let’s try out a couple of commands on the iPython prompt. You don’t need
 to understand the detail of this yet, we’ll introduced the programming
 concepts used here gradually over the next few tutorials.</p>
-<p>The starting point for most Python interactions is <code class="docutils literal notranslate"><span class="pre">world</span></code></p>
+<p>The starting point for most iPython interactions is <code class="docutils literal notranslate"><span class="pre">world</span></code></p>
 <p>For example you can find out your player’s position in the world with:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">In</span> <span class="p">[</span><span class="mi">3</span><span class="p">]:</span> <span class="n">world</span><span class="o">.</span><span class="n">player</span><span class="o">.</span><span class="n">pos</span>
-<span class="n">Out</span><span class="p">[</span><span class="mi">5</span><span class="p">]:</span> <span class="n">Vec3</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="mi">622</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mi">73</span><span class="p">,</span> <span class="n">z</span><span class="o">=-</span><span class="mi">1652</span><span class="p">)</span>
+<span class="n">Out</span><span class="p">[</span><span class="mi">3</span><span class="p">]:</span> <span class="n">Vec3</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="mi">622</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mi">73</span><span class="p">,</span> <span class="n">z</span><span class="o">=-</span><span class="mi">1652</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Notice that interactive Python prefixes each line with In or Out depending on
-whether it is input that you provided or output that is the result of executing
-your input. My player is shown at the world spawn point x=622, y=73, z=-1652.</p>
-<p>The <code class="docutils literal notranslate"><span class="pre">setblock</span></code> command will place a block in the world and <code class="docutils literal notranslate"><span class="pre">Item</span></code> provides
-all the known block types. So:</p>
+whether it is input that you provide or output that is the result of executing
+your input.</p>
+<p>The above example output labelled <code class="docutils literal notranslate"><span class="pre">Out[3]</span></code> shows that my player is at the
+world spawn point x=622, y=73, z=-1652.</p>
+<p>The world <code class="docutils literal notranslate"><span class="pre">setblock</span></code> function will place a block in the world.
+The item <code class="docutils literal notranslate"><span class="pre">Item</span></code> type provides a list of all the known block types.
+You can use these as follows to place a block:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">world</span><span class="o">.</span><span class="n">set_block</span><span class="p">(</span><span class="n">world</span><span class="o">.</span><span class="n">player</span><span class="o">.</span><span class="n">pos</span><span class="p">,</span> <span class="n">Item</span><span class="o">.</span><span class="n">BEDROCK</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>will cause your player to get moved by a lump of bedrock appearing at their
+<p>This causes your player to get moved by a lump of bedrock appearing at their
 feet. You can also try this command which tells you what type of block your
 player is standing on.:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">In</span> <span class="p">[</span><span class="mi">5</span><span class="p">]:</span> <span class="n">world</span><span class="o">.</span><span class="n">get_block</span><span class="p">(</span><span class="n">world</span><span class="o">.</span><span class="n">player</span><span class="o">.</span><span class="n">pos</span> <span class="o">+</span> <span class="n">Direction</span><span class="o">.</span><span class="n">DOWN</span><span class="p">)</span>
 <span class="n">Out</span><span class="p">[</span><span class="mi">5</span><span class="p">]:</span> <span class="o">&lt;</span><span class="n">Item</span><span class="o">.</span><span class="n">SAND</span><span class="p">:</span> <span class="s1">&#39;sand&#39;</span><span class="o">&gt;</span>
 </pre></div>
 </div>
+<p>Here we also used <code class="docutils literal notranslate"><span class="pre">Direction</span></code> which provides a list of all the possible
+directions.</p>
 </section>
 <section id="exiting-the-python-prompt">
 <h2>Exiting the Python prompt<a class="headerlink" href="#exiting-the-python-prompt" title="Permalink to this heading"></a></h2>
-<p>To exit the Python prompt type <code class="docutils literal notranslate"><span class="pre">&lt;ctrl&gt;</span> <span class="pre">D`</span></code></p>
-<p>This will exit Interactive Python and return you to your bash (or zsh)
-terminal.</p>
+<p>To exit the iPython prompt type <code class="docutils literal notranslate"><span class="pre">&lt;ctrl&gt;</span> <span class="pre">D`</span></code></p>
+<p>This will exit iPython and return you to your bash (or zsh) terminal prompt.</p>
 </section>
 </section>
 
@@ -257,7 +273,7 @@ terminal.</p>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="01-setup.html" class="btn btn-neutral float-left" title="Set Up" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="01-setup.html" class="btn btn-neutral float-left" title="Installation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="03-variables.html" class="btn btn-neutral float-right" title="Python Variables" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 

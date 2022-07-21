@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Set Up &mdash; mciwb 0.6.1.dev6+g4813f79 documentation</title>
+  <title>Installation &mdash; mciwb 0.6.1.dev11+g3d9058d documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
@@ -48,7 +48,8 @@
               <p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="00-prereq.html">Introduction</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Set Up</a><ul>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#introduction">Introduction</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#the-minecraft-java-client">The Minecraft Java Client</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#docker-desktop">Docker Desktop</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#visual-studio-code">Visual Studio Code</a></li>
@@ -59,8 +60,8 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="02-orientation.html">Orientation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="03-variables.html">Python Variables</a></li>
-<li class="toctree-l1"><a class="reference internal" href="04-functions.html">Functions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="05-loops.html">Loops</a></li>
+<li class="toctree-l1"><a class="reference internal" href="04-loops.html">Loops</a></li>
+<li class="toctree-l1"><a class="reference internal" href="05-functions.html">Functions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="06-if-then.html">If Then Else</a></li>
 <li class="toctree-l1"><a class="reference internal" href="07-lists.html">Lists</a></li>
 <li class="toctree-l1"><a class="reference internal" href="08-dictionaries.html">Dictionaries</a></li>
@@ -69,18 +70,20 @@
 <p class="caption" role="heading"><span class="caption-text">How-to Guides</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../how-to/startup.html">Setup for each Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../how-to/completion.html">Command Completion</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../how-to/troubleshooting.html">Troubleshooting</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../how-to/server-config.html">Minecraft Server Config</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../how-to/backup.html">Backup and Restore</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../how-to/wsl2.html">Windows Subsystem for Linux</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Explanations</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../explain/completion.html">Command Completion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../explain/server-config.html">Minecraft Server Config</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../explain/coordinates.html">Minecraft’s Coordinate System</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../explain/mcipc.html">MCIPC Client object</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Reference</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../reference/index.html">Finding Things</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../reference/contributing.html">Contributing</a></li>
 <li class="toctree-l1"><a class="reference external" href="https://github.com/gilesknap/mciwb/releases">Releases</a></li>
 <li class="toctree-l1"><a class="reference external" href="genindex.html#http://">Index</a></li>
@@ -100,7 +103,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
-      <li>Set Up</li>
+      <li>Installation</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/tutorials/01-setup.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -110,10 +113,12 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="set-up">
-<h1>Set Up<a class="headerlink" href="#set-up" title="Permalink to this heading"></a></h1>
-<p>To get going you first need to install the following software on your
-Computer:</p>
+  <section id="installation">
+<h1>Installation<a class="headerlink" href="#installation" title="Permalink to this heading"></a></h1>
+<section id="introduction">
+<h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this heading"></a></h2>
+<p>For the first tutorial we are going to prepare your computer for the rest
+of the tutorials. To do so we need to install the following software:</p>
 <ul class="simple">
 <li><p>The Minecraft Java Client (with Minecraft account purchase)</p></li>
 <li><p>Docker Desktop</p></li>
@@ -132,6 +137,7 @@ someone with computer experience. This setup tutorial need only
 be done once (per computer) and the remaining tutorials should not
 require prior knowledge.</p>
 </div>
+</section>
 <section id="the-minecraft-java-client">
 <h2>The Minecraft Java Client<a class="headerlink" href="#the-minecraft-java-client" title="Permalink to this heading"></a></h2>
 <p>If you already have the Minecraft Java Client installed proceed to <a class="reference internal" href="#docker"><span class="std std-ref">Docker Desktop</span></a>.</p>

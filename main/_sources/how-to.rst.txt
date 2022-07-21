@@ -10,8 +10,8 @@ Practical step-by-step guides for the more experienced user.
 
 
     how-to/startup
+    how-to/completion
     how-to/troubleshooting
-    how-to/server-config
     how-to/backup
     how-to/wsl2
 

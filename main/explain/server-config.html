@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Dictionaries &mdash; mciwb 0.6.1.dev11+g3d9058d documentation</title>
+  <title>Minecraft Server Config &mdash; mciwb 0.6.1.dev11+g3d9058d documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
@@ -22,8 +22,8 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Classes" href="09-classes.html" />
-    <link rel="prev" title="Lists" href="07-lists.html" /> 
+    <link rel="next" title="Minecraft’s Coordinate System" href="coordinates.html" />
+    <link rel="prev" title="Windows Subsystem for Linux" href="../how-to/wsl2.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -46,17 +46,17 @@
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
-<ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="00-prereq.html">Introduction</a></li>
-<li class="toctree-l1"><a class="reference internal" href="01-setup.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="02-orientation.html">Orientation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="03-variables.html">Python Variables</a></li>
-<li class="toctree-l1"><a class="reference internal" href="04-loops.html">Loops</a></li>
-<li class="toctree-l1"><a class="reference internal" href="05-functions.html">Functions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="06-if-then.html">If Then Else</a></li>
-<li class="toctree-l1"><a class="reference internal" href="07-lists.html">Lists</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Dictionaries</a></li>
-<li class="toctree-l1"><a class="reference internal" href="09-classes.html">Classes</a></li>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/00-prereq.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/01-setup.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/02-orientation.html">Orientation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/03-variables.html">Python Variables</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/04-loops.html">Loops</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/05-functions.html">Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/06-if-then.html">If Then Else</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/07-lists.html">Lists</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/08-dictionaries.html">Dictionaries</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/09-classes.html">Classes</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">How-to Guides</span></p>
 <ul>
@@ -67,10 +67,15 @@
 <li class="toctree-l1"><a class="reference internal" href="../how-to/wsl2.html">Windows Subsystem for Linux</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Explanations</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../explain/server-config.html">Minecraft Server Config</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../explain/coordinates.html">Minecraft’s Coordinate System</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../explain/mcipc.html">MCIPC Client object</a></li>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Minecraft Server Config</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#configuration-of-the-default-server">Configuration of the default server</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#running-your-own-server">Running your own Server</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#backups-of-your-own-custom-server">Backups of your own custom server</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="coordinates.html">Minecraft’s Coordinate System</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mcipc.html">MCIPC Client object</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Reference</span></p>
 <ul>
@@ -94,9 +99,9 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
-      <li>Dictionaries</li>
+      <li>Minecraft Server Config</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="../_sources/tutorials/08-dictionaries.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../_sources/explain/server-config.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -104,16 +109,37 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="dictionaries">
-<h1>Dictionaries<a class="headerlink" href="#dictionaries" title="Permalink to this heading"></a></h1>
+  <section id="minecraft-server-config">
+<h1>Minecraft Server Config<a class="headerlink" href="#minecraft-server-config" title="Permalink to this heading"></a></h1>
+<p>If you have experience of Minecraft Servers and want to make changes to
+the defaults used by MCIWB then read on.</p>
+<section id="configuration-of-the-default-server">
+<h2>Configuration of the default server<a class="headerlink" href="#configuration-of-the-default-server" title="Permalink to this heading"></a></h2>
+<p>Your server installation is created in <code class="docutils literal notranslate"><span class="pre">$HOME/mciwb-server</span></code> if you want to
+change the world settings then you can go into that folder and alter the
+<code class="docutils literal notranslate"><span class="pre">server.properties</span></code>.</p>
+<p>Perform the following to pick up the changes:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">mciwb</span> <span class="n">stop</span>
+<span class="n">mciwb</span> <span class="n">start</span>
+</pre></div>
+</div>
+</section>
+<section id="running-your-own-server">
+<h2>Running your own Server<a class="headerlink" href="#running-your-own-server" title="Permalink to this heading"></a></h2>
+<p>TODO</p>
+</section>
+<section id="backups-of-your-own-custom-server">
+<span id="my-server-backups"></span><h2>Backups of your own custom server<a class="headerlink" href="#backups-of-your-own-custom-server" title="Permalink to this heading"></a></h2>
+<p>TODO</p>
+</section>
 </section>
 
 
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="07-lists.html" class="btn btn-neutral float-left" title="Lists" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="09-classes.html" class="btn btn-neutral float-right" title="Classes" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="../how-to/wsl2.html" class="btn btn-neutral float-left" title="Windows Subsystem for Linux" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="coordinates.html" class="btn btn-neutral float-right" title="Minecraft’s Coordinate System" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

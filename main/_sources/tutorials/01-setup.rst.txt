@@ -1,8 +1,11 @@
-Set Up
-======
+Installation
+============
 
-To get going you first need to install the following software on your 
-Computer:
+Introduction
+------------
+
+For the first tutorial we are going to prepare your computer for the rest
+of the tutorials. To do so we need to install the following software:
 
 - The Minecraft Java Client (with Minecraft account purchase)
 - Docker Desktop
@@ -11,6 +14,7 @@ Computer:
 - Minecraft Interactive World Builder Python package
 
 .. warning::
+    
     The tutorials for this project are intended to be accessible for
     complete beginners. However, this first step of getting all of the 
     software installed may need a little bit of knowledge of the basics of
