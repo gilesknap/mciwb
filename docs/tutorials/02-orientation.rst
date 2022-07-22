@@ -45,6 +45,7 @@ see a screen like this:
 .. image:: ../images/server_address.png
     :alt: Server Address
     :width: 400px
+    :align: center
 
 You can make the Server Name whatever you like. The Server Address must be::
 

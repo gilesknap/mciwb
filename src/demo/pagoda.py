@@ -1,12 +1,9 @@
-from mcwb.api import polygon
-
-from mciwb import Direction, Item, get_client
-
-
-def build_pagoda(pos, width=9, floor_height=4, item: Item = Item.GOLD_BLOCK):
+def pagoda(pos, width=4, floor_height=4, item: Item = Item.GOLD_BLOCK):
     """
     Create a pagoda out of blocks at the given position.
     """
+
+    from mcwb.api import polygon
 
     c = get_client()
 
