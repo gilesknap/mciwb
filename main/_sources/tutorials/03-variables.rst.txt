@@ -194,7 +194,7 @@ Yay! You can paste again to create another one.
 
 .. image:: ../images/golem.png
     :alt: golem
-    :width: 500px
+    :width: 800px
 
 (See "Creation" in this article https://minecraft.fandom.com/wiki/Iron_Golem
 if you don't know about making iron golems)

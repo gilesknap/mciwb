@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Functions &mdash; mciwb 0.6.1.dev11+g3d9058d documentation</title>
+  <title>Functions &mdash; mciwb 0.6.2.dev3+g79716b9 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
@@ -56,7 +56,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#introduction">Introduction</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#simple-function">Simple Function</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#variable-naming">Variable Naming</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#tower-function">Tower Function</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#pagoda-function">Pagoda Function</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="06-if-then.html">If Then Else</a></li>
@@ -114,7 +114,15 @@
 <h1>Functions<a class="headerlink" href="#functions" title="Permalink to this heading"></a></h1>
 <section id="introduction">
 <h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this heading"></a></h2>
-<p>In this tutorial we are going to create a few houses for our village.</p>
+<p>In this tutorial we are going to start to create a few buildings for our village.
+We will expand on the types of buildings in later tutorials as we learn new
+features of python.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Before starting it is worth making a backup of your world. We will be
+creating lost of test buildings and it would be good to be able to
+reset back to the original state. See <a class="reference internal" href="../how-to/backup.html#backups"><span class="std std-ref">Backups of mciwb-server</span></a>.</p>
+</div>
 <p>To do this we will learn to use functions to packaged up our code into
 reusable chunks. We will also learn to save our code in Python modules
 so that we don’t need to typing or pasting code all of the time.</p>
@@ -164,56 +172,55 @@ in the variable name. Typically variable names are lowercase with words separate
 by underscores. It is also legal to use uppercase letters and numbers in variable
 names (but a number must not be the first character).</p>
 </section>
-<section id="tower-function">
-<h2>Tower Function<a class="headerlink" href="#tower-function" title="Permalink to this heading"></a></h2>
-<p>Lets create a function that will create a tower. We are going to use the
-following function. Don’t type it in yet, we are going to create a file for it.
-Also do not worry too much about the details of this function
-yet but notice that it has the following parameters that the caller can supply:</p>
+<section id="pagoda-function">
+<h2>Pagoda Function<a class="headerlink" href="#pagoda-function" title="Permalink to this heading"></a></h2>
+<p>Lets create a function that will create a pagoda. This function will have
+the following parameters that the caller can supply:</p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">height</span></code> - the height of the tower</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">width</span></code> - the width of the tower</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">world</span></code> - a world object that we can use to create blocks in the world</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">pos</span></code> - the position of the tower</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pos</span></code> - the position of center of the base of the pagoda</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">width</span></code> - the width of the pagoda’s base (defaults to 9)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">floor_height</span></code> - the height of each floor (defaults to 4)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">item</span></code> - what blocks to use (defaults to gold block)</p></li>
 </ul>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">mciwb</span> <span class="kn">import</span> <span class="n">Direction</span><span class="p">,</span> <span class="n">Item</span><span class="p">,</span> <span class="n">Vec3</span>
+<p>Try copying and pasting this function into your Python console.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">mcwb.api</span> <span class="kn">import</span> <span class="n">polygon</span>
+
+<span class="kn">from</span> <span class="nn">mciwb</span> <span class="kn">import</span> <span class="n">Direction</span><span class="p">,</span> <span class="n">Item</span><span class="p">,</span> <span class="n">get_client</span>
 
 
-<span class="k">def</span> <span class="nf">tower</span><span class="p">(</span><span class="n">world</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">8</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">build_pagoda</span><span class="p">(</span><span class="n">pos</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">9</span><span class="p">,</span> <span class="n">floor_height</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">item</span><span class="p">:</span> <span class="n">Item</span> <span class="o">=</span> <span class="n">Item</span><span class="o">.</span><span class="n">GOLD_BLOCK</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Create a tower of blocks at a given position.</span>
+<span class="sd">    Create a pagoda out of blocks at the given position.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="c1"># make sure the caller passed a variable of type Vec3 for pos</span>
-    <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">pos</span><span class="p">,</span> <span class="n">Vec3</span><span class="p">)</span>
+    <span class="n">c</span> <span class="o">=</span> <span class="n">get_client</span><span class="p">()</span>
 
-    <span class="c1"># each tower&#39;s wall is one less that width steps away from its opposite</span>
-    <span class="n">opposite</span> <span class="o">=</span> <span class="n">width</span> <span class="o">-</span> <span class="mi">1</span>
+    <span class="n">level</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">floor_width</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">width</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">):</span>
 
-    <span class="c1"># outer loop does the layers of the tower</span>
-    <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">height</span><span class="p">):</span>
+        <span class="n">base</span> <span class="o">=</span> <span class="n">pos</span> <span class="o">+</span> <span class="n">Direction</span><span class="o">.</span><span class="n">UP</span> <span class="o">*</span> <span class="n">level</span> <span class="o">*</span> <span class="n">floor_height</span>
+        <span class="n">balcony</span> <span class="o">=</span> <span class="n">base</span> <span class="o">+</span> <span class="n">Direction</span><span class="o">.</span><span class="n">UP</span> <span class="o">*</span> <span class="p">(</span><span class="n">floor_height</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
 
-        <span class="n">y_offset</span> <span class="o">=</span> <span class="n">Direction</span><span class="o">.</span><span class="n">UP</span> <span class="o">*</span> <span class="n">layer</span>
+        <span class="n">polygon</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">balcony</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">floor_width</span> <span class="o">+</span> <span class="mi">2</span><span class="p">,</span> <span class="n">sides</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">item</span><span class="o">=</span><span class="n">item</span><span class="p">)</span>
+        <span class="n">polygon</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">base</span><span class="p">,</span> <span class="n">floor_height</span><span class="p">,</span> <span class="n">floor_width</span><span class="p">,</span> <span class="n">sides</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">item</span><span class="o">=</span><span class="n">item</span><span class="p">)</span>
 
-        <span class="c1"># inner loop does the blocks in each of 4 walls</span>
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">width</span><span class="p">):</span>
-
-            <span class="c1"># calculate the position i steps to the east of pos</span>
-            <span class="n">eastward</span> <span class="o">=</span> <span class="n">pos</span> <span class="o">+</span> <span class="n">Direction</span><span class="o">.</span><span class="n">EAST</span> <span class="o">*</span> <span class="n">i</span> <span class="o">+</span> <span class="n">y_offset</span>
-            <span class="c1"># front wall of tower</span>
-            <span class="n">world</span><span class="o">.</span><span class="n">set_block</span><span class="p">(</span><span class="n">eastward</span><span class="p">,</span> <span class="n">Item</span><span class="o">.</span><span class="n">COBBLESTONE</span><span class="p">)</span>
-            <span class="c1"># back wall of tower</span>
-            <span class="n">world</span><span class="o">.</span><span class="n">set_block</span><span class="p">(</span><span class="n">eastward</span> <span class="o">+</span> <span class="n">Direction</span><span class="o">.</span><span class="n">NORTH</span> <span class="o">*</span> <span class="n">opposite</span><span class="p">,</span> <span class="n">Item</span><span class="o">.</span><span class="n">COBBLESTONE</span><span class="p">)</span>
-
-            <span class="c1"># calculate the position i steps to the north of pos</span>
-            <span class="n">northward</span> <span class="o">=</span> <span class="n">pos</span> <span class="o">+</span> <span class="n">Direction</span><span class="o">.</span><span class="n">NORTH</span> <span class="o">*</span> <span class="n">i</span> <span class="o">+</span> <span class="n">y_offset</span>
-            <span class="c1"># left wall of tower</span>
-            <span class="n">world</span><span class="o">.</span><span class="n">set_block</span><span class="p">(</span><span class="n">northward</span><span class="p">,</span> <span class="n">Item</span><span class="o">.</span><span class="n">COBBLESTONE</span><span class="p">)</span>
-            <span class="c1"># right wall of tower</span>
-            <span class="n">world</span><span class="o">.</span><span class="n">set_block</span><span class="p">(</span><span class="n">northward</span> <span class="o">+</span> <span class="n">Direction</span><span class="o">.</span><span class="n">EAST</span> <span class="o">*</span> <span class="n">opposite</span><span class="p">,</span> <span class="n">Item</span><span class="o">.</span><span class="n">COBBLESTONE</span><span class="p">)</span>
+        <span class="n">level</span> <span class="o">+=</span> <span class="mi">1</span>
 </pre></div>
 </div>
-<p>TODO continue</p>
+<p>Now type in the following code to call your pagoda function:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pagoda</span> <span class="kn">import</span> <span class="n">build_pagoda</span>
+<span class="n">pagoda_pos</span><span class="o">=</span><span class="n">Vec3</span><span class="p">(</span><span class="mi">585</span><span class="p">,</span><span class="mi">71</span><span class="p">,</span><span class="o">-</span><span class="mi">1728</span><span class="p">)</span>
+<span class="n">pagoda</span><span class="p">(</span><span class="n">pagoda_pos</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">30</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>If your player then looks to the North from our spawn point you should
+see this:</p>
+<a class="reference internal image-reference" href="../_images/pagoda.png"><img alt="pagoda" src="../_images/pagoda.png" style="width: 800px;" /></a>
+<p>Let’s take a look at the things that are new in the above code.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">mciwb</span> <span class="kn">import</span> <span class="n">Direction</span><span class="p">,</span> <span class="n">Item</span><span class="p">,</span> <span class="n">get_client</span>
+</pre></div>
+</div>
+<p>The import function makes code from another module available to your code.</p>
 </section>
 </section>
 
