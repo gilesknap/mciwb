@@ -1,5 +1,5 @@
 from demo.shapes import pyramid
-from mciwb import Direction, Item, Monitor, Position, world
+from mciwb import Direction, Item, Monitor, Vec3, world
 
 
 class Follower:
@@ -7,7 +7,7 @@ class Follower:
         self.center = center
         self.old_facing = None
         self.size = size
-        self.pyramid_centre = Position(*center)
+        self.pyramid_centre = Vec3(*center)
         half = int(size / 2)
         self.corner = (
             self.pyramid_centre + Direction.SOUTH * half + Direction.WEST * half
