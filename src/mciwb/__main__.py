@@ -1,4 +1,5 @@
 import logging
+import sys
 from pathlib import Path
 from typing import Optional
 
@@ -110,6 +111,8 @@ def shell(
     connected to your Minecraft server.
     """
     init_logging(debug)
+
+    sys.path.append(".")
 
     world = None
 
