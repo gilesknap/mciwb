@@ -1,18 +1,18 @@
 import logging
 
-from mciwb import Direction, Item, Position, world
+from mciwb import Direction, Item, Vec3, world
 
 logging.info("loading cool stuff")
 
 
-def box(start: Position, size: int, item=Item.ACACIA_FENCE):
+def box(start: Vec3, size: int, item=Item.ACACIA_FENCE):
     """
     makes a cube of blocks with SW bottom corner at start
 
     Factored for easy understanding
     """
 
-    # calculate the position of the NW bottom corner
+    # calculate the Vec3 of the NW bottom corner
     opposite = start + (Direction.EAST + Direction.NORTH) * (size - 1)
 
     # make rows of walls
@@ -41,7 +41,7 @@ def box(start: Position, size: int, item=Item.ACACIA_FENCE):
                 world.set_block(block_pos, item)
 
 
-def pyramid(start: Position, size: int, item=Item.COBBLESTONE, **kwargs):
+def pyramid(start: Vec3, size: int, item=Item.COBBLESTONE, **kwargs):
     """
     Build a pyramid with South West Corner at 'start'
     """
