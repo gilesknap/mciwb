@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Minecraft’s Coordinate System &mdash; mciwb 0.6.3 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
+    <link rel="shortcut icon" href="../_static/logo.png"/>
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="MCIPC Client object" href="mcipc.html" />
+    <link rel="prev" title="Minecraft Server Config" href="server-config.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: rgb(7, 43, 93)" >
+            <a href="../index.html" class="icon icon-home"> mciwb
+            <img src="../_static/logo.png" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                0.6.3
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/00-prereq.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/01-setup.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/02-orientation.html">Orientation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/03-variables.html">Python Variables</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/04-loops.html">Loops</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/05-functions.html">Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/05a-modules.html">Modules and Packages</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/06-if-then.html">If Then Else</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/07-lists.html">Lists</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/08-dictionaries.html">Dictionaries</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/09-classes.html">Classes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">How-to Guides</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../how-to/startup.html">Setup for each Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../how-to/completion.html">Command Completion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../how-to/troubleshooting.html">Troubleshooting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../how-to/backup.html">Backup and Restore</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../how-to/wsl2.html">Windows Subsystem for Linux</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../how-to/coordinates.html">Discovering the Coordinates of a Block</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Explanations</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="server-config.html">Minecraft Server Config</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Minecraft’s Coordinate System</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#cardinals">Cardinals</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id1">Coordinates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#vector-math">Vector Math</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#using-coordinates-vectors-in-python">Using Coordinates (Vectors) in Python</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="mcipc.html">MCIPC Client object</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../reference/index.html">Finding Things</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/gilesknap/mciwb/releases">Releases</a></li>
+<li class="toctree-l1"><a class="reference external" href="genindex.html#http://">Index</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: rgb(7, 43, 93)" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">mciwb</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>Minecraft’s Coordinate System</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/explain/coordinates.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="minecraft-s-coordinate-system">
+<span id="coordinates"></span><h1>Minecraft’s Coordinate System<a class="headerlink" href="#minecraft-s-coordinate-system" title="Permalink to this heading"></a></h1>
+<p>To get into programming blocks in the Minecraft world you will need to
+understand how to refer to a particular block in the world.</p>
+<p>For help in understanding this lets turn on some diagnostic information in
+the Minecraft client by hitting the F3 key. You will see panels of text on
+the left and right. Use F3 again to hide the diagnostic information.</p>
+<p>In the picture below we have picked out the information regarding player’s
+position and which direction they are facing, plus the target block position.</p>
+<a class="reference internal image-reference" href="../_images/coords.excalidraw.png"><img alt="Coordinate System Diagnostics" class="align-center" src="../_images/coords.excalidraw.png" style="width: 700px;" /></a>
+<section id="cardinals">
+<h2>Cardinals<a class="headerlink" href="#cardinals" title="Permalink to this heading"></a></h2>
+<p>The cardinal directions are North East South and West. They are used on maps
+in the real world where North is the direction that a magnetic compass points.</p>
+<p>Minecraft uses the same cardinal directions, you can see in the picture above
+that the player is facing North. In the MCIWB world North is facing along the
+shore with the sea to your right. Its useful to keep in mind the arrangement
+of the cardinals which is as follows:</p>
+<a class="reference internal image-reference" href="../_images/compass.png"><img alt="Compass" class="align-center" src="../_images/compass.png" style="width: 250px;" /></a>
+<p>From the above you can see that facing North means that:</p>
+<ul class="simple">
+<li><p>moving to the right is traveling East</p></li>
+<li><p>moving to the left is traveling West</p></li>
+<li><p>moving forward is traveling North</p></li>
+<li><p>moving backward is traveling South</p></li>
+</ul>
+<p>Generally, when describing things we will usually face North because it is
+easy to relate the directions back to the above picture.</p>
+</section>
+<section id="id1">
+<h2>Coordinates<a class="headerlink" href="#id1" title="Permalink to this heading"></a></h2>
+<p>A <strong>coordinate</strong> is a set of 3 numbers named X, Y, Z that represent a
+position in the world. In Minecraft they represent the position of a block
+(even if that block contains air!).</p>
+<p>The previous screenshot shows the player’s position As
+653 72 -1640. This is shorthand for X=653, Y=72, Z=-1640. Strictly speaking
+it is the position of the player’s feet as a player is 2 blocks tall.</p>
+<p>There is a direct relationship between the Cardinals and the coordinate system
+as follows:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Moving East increases your X coordinate, so West decreases X</p></li>
+<li><p>Moving Up increases your Y coordinate, so Down decreases Y</p></li>
+<li><p>Moving South increases your Z coordinate, so North decreases Z</p></li>
+</ul>
+</div></blockquote>
+<p>The minecraft Wiki has a useful diagram of the coordinate system, see
+<a class="reference external" href="https://minecraft.fandom.com/wiki/Coordinates">https://minecraft.fandom.com/wiki/Coordinates</a>.</p>
+<p>If you consider the coordinate X=0, Y=0, Z=0 to be the centre of the world
+then our player’s position is 653 blocks to the East of the centre, 72 blocks
+above the centre and 1640 blocks North the centre. Note that the Z
+coordinate is negative because it is North of the centre and moving North
+decreases the Z coordinate.</p>
+</section>
+<section id="vector-math">
+<h2>Vector Math<a class="headerlink" href="#vector-math" title="Permalink to this heading"></a></h2>
+<p>It is more useful to think of a coordinate as a vector. A 3D vector is a
+set of 3 numbers that represents a direction and distance in 3d space.
+The coordinates we discussed above can be thought of as a vector from the
+0, 0, 0 centre point of the world.</p>
+<p>The reason vectors are useful is that you can use addition and subtraction
+(and other operations) to do useful things with them, we will show one
+example here.</p>
+<p>Note the coordinates of the target block in the screenshot above are
+653 74 -1643. The target
+block is the block that the player is looking at and is highlighted with
+a black outline (it is the block you will hit if you click left button).</p>
+<p>You can subtraction of coordinates to work out distances between them.
+If we subtract the player’s position from the target block’s position we get:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">X</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">Y</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">Z</span><span class="o">=-</span><span class="mf">3.</span>
+</pre></div>
+</div>
+<p>So this is the difference between the player’s position and
+the target block’s position. The difference between to positions is how frameborder
+apart they are so this tells us that the target block is 2 blocks above the
+player and 3 blocks to the North of the player. <strong>Don’t worry!</strong>, we won’t have
+to do any math like that because Python will do it all for us.</p>
+</section>
+<section id="using-coordinates-vectors-in-python">
+<h2>Using Coordinates (Vectors) in Python<a class="headerlink" href="#using-coordinates-vectors-in-python" title="Permalink to this heading"></a></h2>
+<p>In MCIWB Python we have a class called Vec3 to represent a set of Coordinates.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>A class is just a type of thing that Python can understand. We will
+go into detail on the meaning of class in an advanced tutorial.</p>
+</div>
+<p>You can create a Vec3 by typing at the Python prompt for example this is
+the Vec3 representing my Player’s position in the screenshot above:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Vec3</span><span class="p">(</span><span class="mi">653</span><span class="p">,</span> <span class="mi">72</span><span class="p">,</span> <span class="o">-</span><span class="mi">1640</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Note that like the shortcuts before, we did not specify X, Y, Z but you can
+see if you type the above that it is creating a Vec3 and puts the values
+in to X , Y, Z in that order:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">In</span> <span class="p">[</span><span class="mi">2</span><span class="p">]:</span> <span class="n">Vec3</span><span class="p">(</span><span class="mi">653</span><span class="p">,</span> <span class="mi">72</span><span class="p">,</span> <span class="o">-</span><span class="mi">1640</span><span class="p">)</span>
+<span class="n">Out</span><span class="p">[</span><span class="mi">2</span><span class="p">]:</span> <span class="n">Vec3</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="mi">653</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mi">72</span><span class="p">,</span> <span class="n">z</span><span class="o">=-</span><span class="mi">1640</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>You can use a Vec3 to ask for information about a block in the world e.g.:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">In</span> <span class="p">[</span><span class="mi">3</span><span class="p">]:</span> <span class="n">world</span><span class="o">.</span><span class="n">get_block</span><span class="p">(</span><span class="n">Vec3</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="mi">646</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mi">72</span><span class="p">,</span> <span class="n">z</span><span class="o">=-</span><span class="mi">1638</span><span class="p">))</span>
+<span class="n">Out</span><span class="p">[</span><span class="mi">3</span><span class="p">]:</span> <span class="o">&lt;</span><span class="n">Item</span><span class="o">.</span><span class="n">CACTUS</span><span class="p">:</span> <span class="s1">&#39;cactus&#39;</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<p>Also you can get the location of things, like the player:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">In</span> <span class="p">[</span><span class="mi">1</span><span class="p">]:</span> <span class="n">world</span><span class="o">.</span><span class="n">player</span><span class="o">.</span><span class="n">pos</span>
+<span class="n">Out</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span> <span class="n">Vec3</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="mi">646</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mi">72</span><span class="p">,</span> <span class="n">z</span><span class="o">=-</span><span class="mi">1640</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>You can combine the above two commands and find out what type of block the
+player is standing on:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">In</span> <span class="p">[</span><span class="mi">5</span><span class="p">]:</span> <span class="n">world</span><span class="o">.</span><span class="n">get_block</span><span class="p">(</span><span class="n">world</span><span class="o">.</span><span class="n">player</span><span class="o">.</span><span class="n">pos</span> <span class="o">+</span> <span class="n">Direction</span><span class="o">.</span><span class="n">DOWN</span><span class="p">)</span>
+<span class="n">Out</span><span class="p">[</span><span class="mi">5</span><span class="p">]:</span> <span class="o">&lt;</span><span class="n">Item</span><span class="o">.</span><span class="n">SAND</span><span class="p">:</span> <span class="s1">&#39;sand&#39;</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<p>Note the use of addition of the Direction.DOWN to get the block below the
+player’s feet.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="server-config.html" class="btn btn-neutral float-left" title="Minecraft Server Config" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="mcipc.html" class="btn btn-neutral float-right" title="MCIPC Client object" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p></p>
+  </div>
+
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+   
+  <div id="other-versions-div" class="rst-versions" data-toggle="rst-versions" role="note" aria-label="Versions" style="visibility: hidden">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      <span class="fa fa-book"> Other Versions</span>
+      0.6.3
+      <span class="fa fa-caret-down"></span>
+    </span>
+    <div class="rst-other-versions">
+      <dl id="other-versions-dl"/>
+    </div>
+  </div>
+  <script>
+    function addVersion(name) {
+      var dd = document.createElement("dd");
+      var a = document.createElement("a");
+      a.href = "../../" + name;
+      a.innerText = name;
+      dd.appendChild(a);
+      document.getElementById('other-versions-dl').appendChild(dd);
+    }
+    // Get versions.txt and add a version for each line
+    fetch("../../versions.txt").then(response => {
+      if (response.ok) {
+        document.getElementById('other-versions-div').style.visibility = "visible";
+        return response.text().then(text => text.split(/\r?\n/).forEach(addVersion))
+      }
+    });
+  </script>
+
+
+</body>
+</html>
