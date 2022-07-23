@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Modules and Packages &mdash; mciwb 0.6.3.dev9+ga02eb59 documentation</title>
+  <title>Modules and Packages &mdash; mciwb 0.6.4.dev2+gdae689d documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
@@ -84,6 +84,7 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Explanations</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../explain/scope.html">Variable Scope</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../explain/server-config.html">Minecraft Server Config</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../explain/coordinates.html">Minecraft’s Coordinate System</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../explain/mcipc.html">MCIPC Client object</a></li>
@@ -138,6 +139,10 @@ the two Microsoft extensions listed.</p>
 <p><span class="caption-text">Adding Extensions</span><a class="headerlink" href="#id1" title="Permalink to this image"></a></p>
 </figcaption>
 </figure>
+<p>These extensions add syntax based colouring to your Python files and also
+will verify your code. If you see a red squiggly line under some of your
+code then it means that your code is not valid. If you hover your mouse
+over the squiggly line you will see a message saying what is wrong.</p>
 </section>
 <section id="getting-a-bash-prompt">
 <h2>Getting a Bash Prompt<a class="headerlink" href="#getting-a-bash-prompt" title="Permalink to this heading"></a></h2>
@@ -181,6 +186,7 @@ code pagoda.py
 <ul class="simple">
 <li><p>Change working directory to <code class="docutils literal notranslate"><span class="pre">$HOME/my_world</span></code> which is our VSCode work folder.</p></li>
 <li><p>Make a new directory called <code class="docutils literal notranslate"><span class="pre">buildings</span></code>, this is our new package</p></li>
+<li><p>Change working directory to <code class="docutils literal notranslate"><span class="pre">buildings</span></code></p></li>
 <li><p>Create an empty file called <code class="docutils literal notranslate"><span class="pre">__init__.py</span></code> in the <code class="docutils literal notranslate"><span class="pre">buildings</span></code> directory.
 This is a special file name that tells Python that this directory is a
 Python package.</p></li>
@@ -205,10 +211,19 @@ Use this slightly modified version of the pagoda function:</p>
     <span class="n">level</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="k">for</span> <span class="n">floor_width</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">width</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">):</span>
 
+        <span class="c1"># calculate the base position of the walls for this level</span>
         <span class="n">base</span> <span class="o">=</span> <span class="n">pos</span> <span class="o">+</span> <span class="n">Direction</span><span class="o">.</span><span class="n">UP</span> <span class="o">*</span> <span class="n">level</span> <span class="o">*</span> <span class="n">floor_height</span>
+
+        <span class="c1"># calculate the position of the balcony for this level</span>
+        <span class="c1"># it should appear around the top layer of the walls for this level</span>
         <span class="n">balcony</span> <span class="o">=</span> <span class="n">base</span> <span class="o">+</span> <span class="n">Direction</span><span class="o">.</span><span class="n">UP</span> <span class="o">*</span> <span class="p">(</span><span class="n">floor_height</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
 
+        <span class="c1"># use a 4 sided polygon (square) to create the balcony for this level</span>
         <span class="n">polygon</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">balcony</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">floor_width</span> <span class="o">+</span> <span class="mi">2</span><span class="p">,</span> <span class="n">sides</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">item</span><span class="o">=</span><span class="n">item</span><span class="p">)</span>
+
+        <span class="c1"># create the walls for this level by stacking squares</span>
+        <span class="c1"># on top of each other to make a cube of size</span>
+        <span class="c1"># floor_width x floor_width x floor_height</span>
         <span class="n">polygon</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">base</span><span class="p">,</span> <span class="n">floor_height</span><span class="p">,</span> <span class="n">floor_width</span><span class="p">,</span> <span class="n">sides</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">item</span><span class="o">=</span><span class="n">item</span><span class="p">)</span>
 
         <span class="n">level</span> <span class="o">+=</span> <span class="mi">1</span>
@@ -221,7 +236,7 @@ iPython prompt:</p>
 </pre></div>
 </div>
 <p>That should build a little pagoda around your player. You can break some
-blocks to make a door for you to exit the pagoda.</p>
+blocks to make a door for you to exit the pagoda!</p>
 </section>
 <section id="how-it-works">
 <h2>How it Works<a class="headerlink" href="#how-it-works" title="Permalink to this heading"></a></h2>
@@ -232,31 +247,34 @@ function.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">mcwb.api</span> <span class="kn">import</span> <span class="n">polygon</span>
 </pre></div>
 </div>
-<p>import allows us to access code from other modules. The polygon function is
-implemented in a module called <code class="docutils literal notranslate"><span class="pre">api</span></code> in a package called <code class="docutils literal notranslate"><span class="pre">mcwb</span></code>.
+<p><code class="docutils literal notranslate"><span class="pre">import</span></code> allows us to access code from other modules. The <code class="docutils literal notranslate"><span class="pre">polygon</span></code>
+function is implemented in a module called
+<code class="docutils literal notranslate"><span class="pre">api</span></code> in a package called <code class="docutils literal notranslate"><span class="pre">mcwb</span></code>.
 We will frequently use code from two packages called <code class="docutils literal notranslate"><span class="pre">mcwb</span></code> (Minecraft world
 builder) and <code class="docutils literal notranslate"><span class="pre">mcipc</span></code> (Minecraft inter-process communication). These are two
-packages that <code class="docutils literal notranslate"><span class="pre">mciwb</span></code> is built on top of.</p>
+packages that Minecraft Interactive World Builder is built on top of.</p>
 <p>One of the greatest features of Python is its extensive library of built in
 modules. For example the maths module contains functions for doing math.
 e.g.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">sqrt</span><span class="p">,</span> <span class="n">cos</span><span class="p">,</span> <span class="n">sin</span>
 </pre></div>
 </div>
-<p>The polygon function itself is implemented using some of these math functions.
+<p>The <code class="docutils literal notranslate"><span class="pre">polygon</span></code> function itself is implemented using some of these math functions.
 Luckily, you don’t need to know anything about the mathematics of polygon
-construction because the polygon function has done all that for you!</p>
+construction because the <code class="docutils literal notranslate"><span class="pre">polygon</span></code> function has done all that for you!</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">mciwb</span> <span class="kn">import</span> <span class="n">Direction</span><span class="p">,</span> <span class="n">Item</span><span class="p">,</span> <span class="n">get_client</span>
 </pre></div>
 </div>
 <p>The 2nd import function is importing things from <code class="docutils literal notranslate"><span class="pre">mciwb</span></code>. <code class="docutils literal notranslate"><span class="pre">mciwb</span></code> is
-the package that contains the Minecraft world builder. We have already
+the package that contains the Minecraft Interactive World Builder itself.
+We have already
 been using functions and variables defined in this package.</p>
-<p>So, Direction and
-Item are already familiar, we have previously used them in iPython without
-needing to import them.
+<p>So, <code class="docutils literal notranslate"><span class="pre">Direction</span></code> and
+<code class="docutils literal notranslate"><span class="pre">Item</span></code> are already familiar, we have previously used them in
+<strong>iPython</strong> without needing to import them.
 But we need to import them here because we are
-writing a new module called <code class="docutils literal notranslate"><span class="pre">pagoda</span></code>. import is the command to share
+writing a new module called <code class="docutils literal notranslate"><span class="pre">pagoda</span></code> (in the file pagoda.py).
+<code class="docutils literal notranslate"><span class="pre">import</span></code> is the command to share
 code between modules and is therefore required in our new <code class="docutils literal notranslate"><span class="pre">pagoda</span></code> module.</p>
 <p>Once you become familiar with Python you will eventually be comfortable
 looking at online documentation to discover packages and modules you want to
@@ -267,16 +285,16 @@ easiest just to copy the import statements from examples like <code class="docut
 <h3>get_client<a class="headerlink" href="#get-client" title="Permalink to this heading"></a></h3>
 <p>Whenever we call any functions in the <code class="docutils literal notranslate"><span class="pre">mciwb</span></code> or <code class="docutils literal notranslate"><span class="pre">mcipc</span></code> packages we need
 a client object. This represents a connection to our Minecraft server.</p>
-<p>The get_client function obtains a client object for you to use. Here we
-assign it into the variable <code class="docutils literal notranslate"><span class="pre">c</span></code> and pass <code class="docutils literal notranslate"><span class="pre">c</span></code> to the polygon function.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">get_client</span></code> function obtains a client object for you to use. Here we
+assign it into the variable <code class="docutils literal notranslate"><span class="pre">c</span></code> and pass <code class="docutils literal notranslate"><span class="pre">c</span></code> to the <code class="docutils literal notranslate"><span class="pre">polygon</span></code> function.</p>
 <p>Advanced programmers may want to read up on how this is a thread-safe
-client object, see (<a class="reference internal" href="../explain/mcipc.html#mcipc"><span class="std std-ref">MCIPC Client object</span></a>).</p>
+client object! see (<a class="reference internal" href="../explain/mcipc.html#mcipc"><span class="std std-ref">MCIPC Client object</span></a>).</p>
 </section>
 <section id="comments">
 <h3>comments<a class="headerlink" href="#comments" title="Permalink to this heading"></a></h3>
-<p>At the beginning of <code class="docutils literal notranslate"><span class="pre">build_pagoda</span></code> we have a block comment. It uses the
-triple quotes <code class="docutils literal notranslate"><span class="pre">&quot;&quot;&quot;</span></code> which allow you to write a block of text that is not
-interpreted as Python code.</p>
+<p>At the beginning of <code class="docutils literal notranslate"><span class="pre">build_pagoda</span></code> we have a block comment. It uses
+triple quotes <code class="docutils literal notranslate"><span class="pre">&quot;&quot;&quot;</span></code> which allow you to write a block of text
+including line breaks that is not interpreted as Python code.</p>
 <p>Good programmers will usually add a comment block at the top of their
 functions and using triple quotes is the standard way to do this.</p>
 </section>
@@ -298,7 +316,7 @@ these values of floor_width:</p>
 </section>
 <section id="mcwb-polygon">
 <h3>mcwb.polygon<a class="headerlink" href="#mcwb-polygon" title="Permalink to this heading"></a></h3>
-<p>polygon is a function implemented in the mcwb package. It is capable of
+<p><code class="docutils literal notranslate"><span class="pre">polygon</span></code> is a function implemented in the mcwb package. It is capable of
 making any regular polygon and using that shape to build a tower (or a tunnel!).
 If you want to make a circular tower then you can just pass a large number
 like 400 as the number of sides.</p>
@@ -311,7 +329,8 @@ These <code class="docutils literal notranslate"><span class="pre">floor_widths<
 and step down in size by 2 blocks until we reach 2 blocks.</p>
 <p>For each iteration of the <code class="docutils literal notranslate"><span class="pre">for</span> <span class="pre">loop</span></code> we build some walls and a balcony.</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">base</span></code> of the walls is calculated as <code class="docutils literal notranslate"><span class="pre">level</span></code> * <code class="docutils literal notranslate"><span class="pre">floor_height</span></code> blocks
-above the starting <code class="docutils literal notranslate"><span class="pre">pos</span></code>. As <code class="docutils literal notranslate"><span class="pre">floor_height</span></code> is 4 by default, the first
+above the starting <code class="docutils literal notranslate"><span class="pre">pos</span></code>. <code class="docutils literal notranslate"><span class="pre">floor_height</span></code> is the default value 4 by default.
+Thus, the first
 floor <code class="docutils literal notranslate"><span class="pre">base</span></code> is 0 blocks above the starting <code class="docutils literal notranslate"><span class="pre">pos</span></code> and each successive
 <code class="docutils literal notranslate"><span class="pre">level</span></code> is 4 blocks above the previous <code class="docutils literal notranslate"><span class="pre">level</span></code>.</p>
 <p>We start by setting <code class="docutils literal notranslate"><span class="pre">level</span></code> to zero and the following statement:</p>
@@ -320,14 +339,21 @@ floor <code class="docutils literal notranslate"><span class="pre">base</span></
 </div>
 <p>causes level to have one added to itself. So it gets one bigger, each time
 through the <code class="docutils literal notranslate"><span class="pre">for</span> <span class="pre">loop</span></code>.</p>
-<p>To create the walls we call polygon with these parameters:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">c</span><span class="p">:</span> <span class="n">the</span> <span class="n">client</span> <span class="nb">object</span> <span class="n">needed</span> <span class="n">to</span> <span class="n">talk</span> <span class="n">to</span> <span class="n">the</span> <span class="n">Minecraft</span> <span class="n">server</span>
-<span class="n">base</span><span class="p">:</span> <span class="n">the</span> <span class="n">calculate</span> <span class="n">starting</span> <span class="n">point</span> <span class="k">for</span> <span class="n">the</span> <span class="n">polygon</span>
-<span class="n">floor_height</span><span class="p">:</span> <span class="n">the</span> <span class="n">height</span> <span class="n">of</span> <span class="n">the</span> <span class="n">polygon</span> <span class="p">(</span><span class="n">defaults</span> <span class="n">to</span> <span class="mi">4</span><span class="p">)</span>
-<span class="n">sides</span><span class="p">:</span> <span class="n">the</span> <span class="n">number</span> <span class="n">of</span> <span class="n">sides</span> <span class="n">of</span> <span class="n">the</span> <span class="n">polygon</span><span class="p">,</span> <span class="n">we</span> <span class="n">use</span> <span class="mi">4</span><span class="p">,</span> <span class="n">making</span> <span class="n">a</span> <span class="n">square</span>
-<span class="n">item</span><span class="p">:</span> <span class="n">the</span> <span class="n">blocks</span> <span class="n">to</span> <span class="n">use</span> <span class="k">for</span> <span class="n">the</span> <span class="n">polygon</span><span class="p">,</span> <span class="n">defaulted</span> <span class="n">to</span> <span class="n">GOLD_BLOCK</span>
-</pre></div>
-</div>
+<dl class="simple">
+<dt>To create the walls we call polygon with these parameters:</dt><dd><dl class="simple">
+<dt>c:</dt><dd><p>the client object needed to talk to the Minecraft server</p>
+</dd>
+<dt>base:</dt><dd><p>the calculated starting point for the polygon</p>
+</dd>
+<dt>floor_height:</dt><dd><p>the height of the polygon (defaults to 4)</p>
+</dd>
+<dt>sides:</dt><dd><p>the number of sides of the polygon, we use 4, making a square</p>
+</dd>
+<dt>item:</dt><dd><p>the blocks to use for the polygon, defaulted to GOLD_BLOCK</p>
+</dd>
+</dl>
+</dd>
+</dl>
 <p>As we loop around the <code class="docutils literal notranslate"><span class="pre">for</span> <span class="pre">loop</span></code> we create a new polygon at each level,
 but the width of it is shrinking by two blocks at each level. Eventually
 we get to a narrow level of 2 blocks at the top and the loop completes.</p>

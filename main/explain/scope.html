@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>MCIPC Client object &mdash; mciwb 0.6.4.dev2+gdae689d documentation</title>
+  <title>Variable Scope &mdash; mciwb 0.6.4.dev2+gdae689d documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
@@ -22,8 +22,8 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Finding Things" href="../reference/index.html" />
-    <link rel="prev" title="Minecraft’s Coordinate System" href="coordinates.html" /> 
+    <link rel="next" title="Minecraft Server Config" href="server-config.html" />
+    <link rel="prev" title="Discovering the Coordinates of a Block" href="../how-to/coordinates.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -70,14 +70,10 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Explanations</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="scope.html">Variable Scope</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Variable Scope</a></li>
 <li class="toctree-l1"><a class="reference internal" href="server-config.html">Minecraft Server Config</a></li>
 <li class="toctree-l1"><a class="reference internal" href="coordinates.html">Minecraft’s Coordinate System</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">MCIPC Client object</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#get-client">get_client</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#thread-safe">Thread Safe</a></li>
-</ul>
-</li>
+<li class="toctree-l1"><a class="reference internal" href="mcipc.html">MCIPC Client object</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Reference</span></p>
 <ul>
@@ -101,9 +97,9 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
-      <li>MCIPC Client object</li>
+      <li>Variable Scope</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="../_sources/explain/mcipc.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../_sources/explain/scope.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -111,51 +107,31 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="mcipc-client-object">
-<span id="mcipc"></span><h1>MCIPC Client object<a class="headerlink" href="#mcipc-client-object" title="Permalink to this heading"></a></h1>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Advanced topic!</p>
+  <section id="variable-scope">
+<h1>Variable Scope<a class="headerlink" href="#variable-scope" title="Permalink to this heading"></a></h1>
+<p>A variable is usually only available in the scope in which it is defined.</p>
+<p>For example the following code will fail:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="k">def</span> <span class="nf">scope_test</span><span class="p">():</span>
+<span class="linenos">2</span>    <span class="c1"># this variable has is in the scope of function scope_test()</span>
+<span class="linenos">3</span>    <span class="n">my_value</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="linenos">4</span>    <span class="nb">print</span><span class="p">(</span><span class="n">my_value</span><span class="p">)</span>
+<span class="linenos">5</span>
+<span class="linenos">6</span><span class="n">scope_test</span><span class="p">()</span>
+<span class="linenos">7</span><span class="nb">print</span><span class="p">(</span><span class="n">my_value</span><span class="p">)</span> <span class="c1"># this will fail</span>
+</pre></div>
 </div>
-<section id="get-client">
-<h2>get_client<a class="headerlink" href="#get-client" title="Permalink to this heading"></a></h2>
-<p>The function <code class="docutils literal notranslate"><span class="pre">get_client()</span></code> gets hold of an mcipc client object. mcipc is
-the underlying Python project that we use to communicate with the Minecraft.</p>
-<p>Minecraft provides a remote control mechanism called RCON that gives you
-exactly the same set of admin commands that you may be familiar with if you
-have player a lot of Minecraft. Those commands are documented here
-<a class="reference external" href="https://minecraft.fandom.com/wiki/Commands">https://minecraft.fandom.com/wiki/Commands</a> and let you do pretty much
-anything in the world.</p>
-<p>Note that due to tab completion in Interactive Python it is quite easy to
-use the client object to discover what commands you can call.</p>
-<p>For Interactive World Builder I have deliberately provided a simplified
-interface to make
-learning Python easier. But with <code class="docutils literal notranslate"><span class="pre">mcipc</span></code> you can do anything that RCON
-allows.</p>
-<p>The documentation for the underlying mcipc library is here
-<a class="reference external" href="https://mcipc.readthedocs.io/en/latest/">https://mcipc.readthedocs.io/en/latest/</a></p>
-</section>
-<section id="thread-safe">
-<h2>Thread Safe<a class="headerlink" href="#thread-safe" title="Permalink to this heading"></a></h2>
-<p>Interactive World Builder often performs background tasks. For example,
-it is always monitoring the world for action signs even while the user
-is executing other code from the Python console. To make a single program
-execute more than one thing at once we need to use threads.</p>
-<p>You can get help from Interactive World Builder in using threads by using
-the Monitor class. TODO reference.</p>
-<p>The important thing about <code class="docutils literal notranslate"><span class="pre">get_client()</span></code> is it will always deliver you a
-separate client object per thread of execution. If it did not do so then
-the communication to RCON would get tangled up between threads and fail to
-work.</p>
-</section>
+<p>See here for a more detailed explanation:</p>
+<blockquote>
+<div><p><a class="reference external" href="https://www.w3schools.com/python/python_scope.asp">https://www.w3schools.com/python/python_scope.asp</a></p>
+</div></blockquote>
 </section>
 
 
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="coordinates.html" class="btn btn-neutral float-left" title="Minecraft’s Coordinate System" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="../reference/index.html" class="btn btn-neutral float-right" title="Finding Things" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="../how-to/coordinates.html" class="btn btn-neutral float-left" title="Discovering the Coordinates of a Block" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="server-config.html" class="btn btn-neutral float-right" title="Minecraft Server Config" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

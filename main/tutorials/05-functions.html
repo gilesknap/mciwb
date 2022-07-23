@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Functions &mdash; mciwb 0.6.3.dev9+ga02eb59 documentation</title>
+  <title>Functions &mdash; mciwb 0.6.4.dev2+gdae689d documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
@@ -76,6 +76,7 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Explanations</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../explain/scope.html">Variable Scope</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../explain/server-config.html">Minecraft Server Config</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../explain/coordinates.html">Minecraft’s Coordinate System</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../explain/mcipc.html">MCIPC Client object</a></li>
@@ -118,7 +119,7 @@
 <h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this heading"></a></h2>
 <p>In this tutorial we are going to start to create a few buildings for our village.
 We will expand on the types of buildings in later tutorials as we learn new
-features of python.</p>
+features of Python.</p>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <p>Before starting it is worth making a backup of your world. We will be
@@ -126,8 +127,9 @@ creating lost of test buildings and it would be good to be able to
 reset back to the original state. See <a class="reference internal" href="../how-to/backup.html#backups"><span class="std std-ref">Backups of mciwb-server</span></a>.</p>
 </div>
 <p>To do this we will learn to use functions to packaged up our code into
-reusable chunks. We will also learn to save our code in Python modules
-so that we don’t need to typing or pasting code all of the time.</p>
+reusable chunks. In the next tutorial will also learn to save our code in
+Python modules so that we don’t need to do typing or pasting code all
+of the time.</p>
 </section>
 <section id="simple-function">
 <h2>Simple Function<a class="headerlink" href="#simple-function" title="Permalink to this heading"></a></h2>
@@ -199,16 +201,25 @@ tutorial we will look into the detail of how this function works.</p>
     <span class="n">level</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="k">for</span> <span class="n">floor_width</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">width</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">):</span>
 
+        <span class="c1"># calculate the base position of the walls for this level</span>
         <span class="n">base</span> <span class="o">=</span> <span class="n">pos</span> <span class="o">+</span> <span class="n">Direction</span><span class="o">.</span><span class="n">UP</span> <span class="o">*</span> <span class="n">level</span> <span class="o">*</span> <span class="n">floor_height</span>
+
+        <span class="c1"># calculate the position of the balcony for this level</span>
+        <span class="c1"># it should appear around the top layer of the walls for this level</span>
         <span class="n">balcony</span> <span class="o">=</span> <span class="n">base</span> <span class="o">+</span> <span class="n">Direction</span><span class="o">.</span><span class="n">UP</span> <span class="o">*</span> <span class="p">(</span><span class="n">floor_height</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
 
+        <span class="c1"># use a 4 sided polygon (square) to create the balcony for this level</span>
         <span class="n">polygon</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">balcony</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">floor_width</span> <span class="o">+</span> <span class="mi">2</span><span class="p">,</span> <span class="n">sides</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">item</span><span class="o">=</span><span class="n">item</span><span class="p">)</span>
+
+        <span class="c1"># create the walls for this level by stacking squares</span>
+        <span class="c1"># on top of each other to make a cube of size</span>
+        <span class="c1"># floor_width x floor_width x floor_height</span>
         <span class="n">polygon</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">base</span><span class="p">,</span> <span class="n">floor_height</span><span class="p">,</span> <span class="n">floor_width</span><span class="p">,</span> <span class="n">sides</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">item</span><span class="o">=</span><span class="n">item</span><span class="p">)</span>
 
         <span class="n">level</span> <span class="o">+=</span> <span class="mi">1</span>
 </pre></div>
 </div>
-<p>Now type in the following code to call your pagoda function:</p>
+<p>Now type in the following code in <strong>iPython</strong> to call your pagoda function:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">pagoda_pos</span><span class="o">=</span><span class="n">Vec3</span><span class="p">(</span><span class="mi">585</span><span class="p">,</span><span class="mi">71</span><span class="p">,</span><span class="o">-</span><span class="mi">1728</span><span class="p">)</span>
 <span class="n">pagoda</span><span class="p">(</span><span class="n">pagoda_pos</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">30</span><span class="p">)</span>
 </pre></div>
@@ -216,13 +227,17 @@ tutorial we will look into the detail of how this function works.</p>
 <p>If your player then looks to the North from our spawn point you should
 see this:</p>
 <a class="reference internal image-reference" href="../_images/pagoda.png"><img alt="pagoda" src="../_images/pagoda.png" style="width: 800px;" /></a>
-<p>The pagoda_pos I chose is deliberately a little outside of our main village
+<p>The <code class="docutils literal notranslate"><span class="pre">pagoda_pos</span></code> I chose is deliberately a little outside of our main village
 area. This is so that the massive building does not overshadow the village too
 much!</p>
-<p>You could now do a backup of the world and experiment with building pagodas
+<dl class="simple">
+<dt>exercise:</dt><dd><p>You could now do a backup of the world and experiment with building pagodas
 of different sizes and materials. Then restore your world after you are
 done experimenting.</p>
-<p>For the position you can always use <code class="docutils literal notranslate"><span class="pre">world.player.pos</span></code> in which case the
+</dd>
+</dl>
+<p>For the position of your pagodas you can always use <code class="docutils literal notranslate"><span class="pre">world.player.pos</span></code>
+in which case the
 pagoda will build around your player. But now might also be a good time to
 learn about discovering coordinates in the world. See <a class="reference internal" href="../how-to/coordinates.html"><span class="doc">Discovering the Coordinates of a Block</span></a></p>
 </section>

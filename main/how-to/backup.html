@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Backup and Restore &mdash; mciwb 0.6.3.dev9+ga02eb59 documentation</title>
+  <title>Backup and Restore &mdash; mciwb 0.6.4.dev2+gdae689d documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
@@ -73,6 +73,7 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Explanations</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../explain/scope.html">Variable Scope</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../explain/server-config.html">Minecraft Server Config</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../explain/coordinates.html">Minecraft’s Coordinate System</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../explain/mcipc.html">MCIPC Client object</a></li>
@@ -113,9 +114,9 @@
 <h1>Backup and Restore<a class="headerlink" href="#backup-and-restore" title="Permalink to this heading"></a></h1>
 <p>The default MCIWB Minecraft server provides a backup and restore facility
 described below.</p>
-<p>If you are running your own server it is useful to add backup and restore
-capability and MCIWB supports this with a little configuration. Jump to
-<a class="reference internal" href="../explain/server-config.html#my-server-backups"><span class="std std-ref">Backups of your own custom server</span></a> to see how to do this.</p>
+<p>If you are and advanced Minecraft user running your own server instead of the
+default provided by MCIWB then you will need some extra config to make backups
+work. Jump to <a class="reference internal" href="../explain/server-config.html#my-server-backups"><span class="std std-ref">Backups of your own custom server</span></a> to see how to do this.</p>
 <section id="backups-of-mciwb-server">
 <span id="backups"></span><h2>Backups of mciwb-server<a class="headerlink" href="#backups-of-mciwb-server" title="Permalink to this heading"></a></h2>
 <p>Backups provide a way to save our world to a file when we are happy with it.
@@ -134,13 +135,21 @@ can also specify a name if you want. Let’s do that now:</p>
 <p>It is better not to use spaces in backup names so I used dash to separate
 the words.</p>
 <p>Now lets do a restore. You can first have your player dig a hole in our
-flat area then exit the Python Prompt using ‘Ctrl+D’. Now we are back
-at the terminal prompt and we can look in the backups folder to see our
+flat area, this is to make a change that we don’t want to keep.
+Then exit the Python Prompt using ‘Ctrl+D’. Now we are back
+at the <code class="docutils literal notranslate"><span class="pre">bash</span></code> prompt and we can look in the backups folder to see our
 list of backups e.g:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(.venv) [giles@ws1 mciwb]$ ls $HOME/mciwb-backups
 22-07-13.06.26.01.zip  22-07-13.06.34.06.zip  flat-area-backup.zip
-
-(.venv) [giles@ws1 mciwb]$ mciwb restore flat-area-backup
+</pre></div>
+</div>
+<p>You backups are stored in a folder called $HOME/mciwb-backups and <code class="docutils literal notranslate"><span class="pre">ls</span></code> is
+a terminal command that lists the contents of that folder.</p>
+<p>Note
+that the backup files all end in <code class="docutils literal notranslate"><span class="pre">.zip</span></code>. Some of them are dated but you also
+see the <code class="docutils literal notranslate"><span class="pre">flat-area-backup.zip</span></code> file that we named explicitly.</p>
+<p>Now you can restore from backup with the following command:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(.venv) [giles@ws1 mciwb]$ mciwb restore flat-area-backup
 INFO:   Stopping Minecraft Server mciwb-server ...
 INFO:   Restored /home/giles/mciwb-server/world from /home/giles/mciwb-backups/flat-area-backup.zip
 INFO:   Launching existing Minecraft server in /home/giles/mciwb-server
@@ -151,8 +160,7 @@ INFO:   Server mciwb-server is online on port 20101
 (.venv) [giles@ws1 mciwb]$
 </pre></div>
 </div>
-<p>You backups are stored in a folder called $HOME/mciwb-backups and <code class="docutils literal notranslate"><span class="pre">ls</span></code> is
-a terminal command that lists the contents of that folder. The <code class="docutils literal notranslate"><span class="pre">mciwb</span> <span class="pre">restore</span></code>
+<p>The <code class="docutils literal notranslate"><span class="pre">mciwb</span> <span class="pre">restore</span></code>
 command can be given the name of the backup to restore or if you specify no
 name it will restore the most recent backup.</p>
 <p>When the server restarts you can reconnect your client. You should see that
@@ -164,7 +172,8 @@ command that you typed earlier:</p>
 </pre></div>
 </div>
 <p>and then hit enter. This saves some typing. You’ll find that most command line
-tools have recall and editing of previous commands, including the iPython.</p>
+tools have recall and editing of previous commands, including <strong>iPython</strong>.
+This is one of the reasons that a command line interface is a good thing!</p>
 </section>
 </section>
 

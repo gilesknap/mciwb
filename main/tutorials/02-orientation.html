@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Orientation &mdash; mciwb 0.6.3.dev9+ga02eb59 documentation</title>
+  <title>Orientation &mdash; mciwb 0.6.4.dev2+gdae689d documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
@@ -53,9 +53,9 @@
 <li class="toctree-l2"><a class="reference internal" href="#introduction">Introduction</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#get-a-minecraft-server-running">Get a Minecraft Server Running</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#connect-your-client-to-the-server">Connect your Client to the Server</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#connect-mciwb-to-the-server">Connect MCIWB to the Server</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#connect-mciwb-to-your-minecraft-server">Connect MCIWB to your Minecraft Server</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#try-out-some-action-signs">Try out Some Action Signs</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#experimenting-with-ipython">Experimenting with iPython</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#experimenting-with-ipython">Experimenting with <strong>iPython</strong></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#exiting-the-python-prompt">Exiting the Python prompt</a></li>
 </ul>
 </li>
@@ -79,6 +79,7 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Explanations</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../explain/scope.html">Variable Scope</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../explain/server-config.html">Minecraft Server Config</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../explain/coordinates.html">Minecraft’s Coordinate System</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../explain/mcipc.html">MCIPC Client object</a></li>
@@ -152,8 +153,14 @@ Minecraft client that we started in Tutorial 01 or relaunch
 “Play”.</p>
 <p>Now choose the “Multiplayer” option and click “Add Server”. You will
 see a screen like this:</p>
-<a class="reference internal image-reference" href="../_images/server_address.png"><img alt="Server Address" class="align-center" src="../_images/server_address.png" style="width: 400px;" /></a>
-<p>You can make the Server Name whatever you like. The Server Address must be:</p>
+<figure class="align-center" id="id1">
+<a class="reference internal image-reference" href="../_images/server_address.png"><img alt="Server Address" src="../_images/server_address.png" style="width: 400px;" /></a>
+<figcaption>
+<p><span class="caption-text">Set Up the Minecraft Server Connection</span><a class="headerlink" href="#id1" title="Permalink to this image"></a></p>
+</figcaption>
+</figure>
+<p>Input a server name and the server address.
+You can make the Server Name whatever you like. The Server Address must be:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">localhost</span><span class="p">:</span><span class="mi">20101</span>
 </pre></div>
 </div>
@@ -168,12 +175,12 @@ yourself with the controls and game play. You may find
 useful if you are a beginner. When you are really to move on type the
 command <code class="docutils literal notranslate"><span class="pre">/kill</span></code> to return to the spawn point.</p>
 </section>
-<section id="connect-mciwb-to-the-server">
-<h2>Connect MCIWB to the Server<a class="headerlink" href="#connect-mciwb-to-the-server" title="Permalink to this heading"></a></h2>
+<section id="connect-mciwb-to-your-minecraft-server">
+<h2>Connect MCIWB to your Minecraft Server<a class="headerlink" href="#connect-mciwb-to-your-minecraft-server" title="Permalink to this heading"></a></h2>
 <p>Now you are ready to connect MCIWB to the same server that your player is
 inside. It is probably best at this point to arrange the windows on your screen
 so that you can see both Minecraft and VSCode.</p>
-<p>Simply type this command at the terminal prompt in VSCode, replace
+<p>Simply type this command at the <code class="docutils literal notranslate"><span class="pre">bash</span></code> prompt in VSCode, replace
 &lt;player_name&gt; with your player’s name:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">mciwb</span> <span class="n">shell</span> <span class="o">--</span><span class="n">player</span> <span class="o">&lt;</span><span class="n">player_name</span><span class="o">&gt;</span>
 </pre></div>
@@ -190,21 +197,22 @@ so that you can see both Minecraft and VSCode.</p>
 <span class="n">In</span> <span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
 </pre></div>
 </div>
-<p>The prompt at the end is the Python Interactive Shell. In a moment we will
+<p>The prompt at the end is the Python Interactive Shell known as <strong>iPython</strong>.
+In a moment we will
 start to type some Python commands at this prompt.</p>
 <p>You should see only the INFO: outputs shown above. If you see
 ERROR: or WARNING: then take a look at <a class="reference internal" href="../how-to/troubleshooting.html#troubleshooting"><span class="std std-ref">Troubleshooting</span></a>. If that does not
 help then please create a new issue at <a class="reference external" href="https://github.com/gilesknap/mciwb/issues">https://github.com/gilesknap/mciwb/issues</a>
-and someone will get back to you.</p>
+and I will help you.</p>
 </section>
 <section id="try-out-some-action-signs">
 <span id="signs-try"></span><h2>Try out Some Action Signs<a class="headerlink" href="#try-out-some-action-signs" title="Permalink to this heading"></a></h2>
 <p>One feature of MCIWB is that it allows you to set up action signs. These
 are signs that your player can place in the world and they will call
-some Python code and tell the code which block they are attached to.</p>
+some Python code and tell the code which block they were placed on.</p>
 <p>MCIWB comes pre-configured with some action signs that let you cut and paste
 volumes of blocks. When you told MCIWB to interact with your player it
-automatically gives one of each of the currently configure action signs.</p>
+automatically gives you one of each of the currently configure action signs.</p>
 <p>You can also create your own action signs and we will do
 this in a later tutorial.</p>
 <p>For now we shall try out the copy and paste signs to have a go at flattening
@@ -222,33 +230,35 @@ will be placed at the paste point</p></li>
 </ul>
 <p>Note that the sign must be directly in front of your player to get activated,
 you can tell it is activated when it disappears.</p>
-<iframe width="700" height="600" src="https://www.youtube.com/embed/5LYezCAHJts?start=1" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe><p>The above video is a demo of flattening out the area around the spawn point
+<iframe width="700" height="600" src="https://www.youtube.com/embed/5LYezCAHJts?start=1" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe><p class="centered">
+<strong><em>Cut and Paste Signs Demo</em></strong></p><p>The above video is a demo of flattening out the area around the spawn point
 using copy and paste. First I select a large area of sandy floor and then I
 keep pasting it until I have a nice flat area to start working with.</p>
 </section>
 <section id="experimenting-with-ipython">
-<span id="experiment"></span><h2>Experimenting with iPython<a class="headerlink" href="#experimenting-with-ipython" title="Permalink to this heading"></a></h2>
-<p>iPython stands for Interactive Python. We already saw that we
+<span id="experiment"></span><h2>Experimenting with <strong>iPython</strong><a class="headerlink" href="#experimenting-with-ipython" title="Permalink to this heading"></a></h2>
+<p><strong>iPython</strong> stands for Interactive Python. We already saw that we
 can connect to a Minecraft server and get an Interactive Python shell prompt
 by typing the following command in the VSCode terminal:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">mciwb</span> <span class="n">shell</span> <span class="o">--</span><span class="n">player</span> <span class="o">&lt;</span><span class="n">player_name</span><span class="o">&gt;</span>
 </pre></div>
 </div>
-<p>Let’s try out a couple of commands on the iPython prompt. You don’t need
+<p>Let’s try out a couple of commands on the <strong>iPython</strong> prompt. You don’t need
 to understand the detail of this yet, we’ll introduced the programming
 concepts used here gradually over the next few tutorials.</p>
-<p>The starting point for most iPython interactions is <code class="docutils literal notranslate"><span class="pre">world</span></code></p>
+<p>The starting point for many MCIWB <strong>iPython</strong> interactions is <code class="docutils literal notranslate"><span class="pre">world</span></code>.</p>
 <p>For example you can find out your player’s position in the world with:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">In</span> <span class="p">[</span><span class="mi">3</span><span class="p">]:</span> <span class="n">world</span><span class="o">.</span><span class="n">player</span><span class="o">.</span><span class="n">pos</span>
 <span class="n">Out</span><span class="p">[</span><span class="mi">3</span><span class="p">]:</span> <span class="n">Vec3</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="mi">622</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mi">73</span><span class="p">,</span> <span class="n">z</span><span class="o">=-</span><span class="mi">1652</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Notice that interactive Python prefixes each line with In or Out depending on
+<p>Notice that interactive Python prefixes each line with <strong>In</strong> or <strong>Out</strong>
+depending on
 whether it is input that you provide or output that is the result of executing
 your input.</p>
 <p>The above example output labelled <code class="docutils literal notranslate"><span class="pre">Out[3]</span></code> shows that my player is at the
 world spawn point x=622, y=73, z=-1652.</p>
-<p>The world <code class="docutils literal notranslate"><span class="pre">setblock</span></code> function will place a block in the world.
+<p>The world <code class="docutils literal notranslate"><span class="pre">set_block</span></code> function will place a block in the world.
 The item <code class="docutils literal notranslate"><span class="pre">Item</span></code> type provides a list of all the known block types.
 You can use these as follows to place a block:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">world</span><span class="o">.</span><span class="n">set_block</span><span class="p">(</span><span class="n">world</span><span class="o">.</span><span class="n">player</span><span class="o">.</span><span class="n">pos</span><span class="p">,</span> <span class="n">Item</span><span class="o">.</span><span class="n">BEDROCK</span><span class="p">)</span>
@@ -262,12 +272,14 @@ player is standing on.:</p>
 </pre></div>
 </div>
 <p>Here we also used <code class="docutils literal notranslate"><span class="pre">Direction</span></code> which provides a list of all the possible
-directions.</p>
+directions. By adding <code class="docutils literal notranslate"><span class="pre">Direction.DOWN</span></code> to our player’s position we get
+the block directly below our player.</p>
 </section>
 <section id="exiting-the-python-prompt">
 <h2>Exiting the Python prompt<a class="headerlink" href="#exiting-the-python-prompt" title="Permalink to this heading"></a></h2>
-<p>To exit the iPython prompt type <code class="docutils literal notranslate"><span class="pre">&lt;ctrl&gt;</span> <span class="pre">D`</span></code></p>
-<p>This will exit iPython and return you to your bash (or zsh) terminal prompt.</p>
+<p>To exit the <strong>iPython</strong> prompt type <code class="docutils literal notranslate"><span class="pre">&lt;ctrl&gt;</span> <span class="pre">D`</span></code></p>
+<p>This will exit <strong>iPython</strong> and return you to your <code class="docutils literal notranslate"><span class="pre">bash</span></code> (or zsh)
+terminal prompt.</p>
 </section>
 </section>
 
