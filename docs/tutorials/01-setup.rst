@@ -77,7 +77,7 @@ use for individuals.
 
 Windows:
     Docker Desktop requires WSL2 and a linux distribution to go with it.
-    So you should first install Ubuntu 22.04 LTS from here 
+    So you should first install WSL2 and Ubuntu 22.04 LTS from here 
     - https://apps.microsoft.com/store/detail/ubuntu-2204-lts/9PN20MSR04DW
 
 All Platforms:
@@ -89,7 +89,8 @@ start Visual Studio Code. So start it from the start menu before moving to
 the next step.
 
 To make things easier next time you could go into settings (accessed
-via the cog icon in the title bar) and tick the option 
+via the cog icon in the title bar of the Docker Desktop main window) 
+and tick the option 
 ``Start Docker Desktop when you log in``.
 
 
@@ -117,8 +118,13 @@ From now on we are going to start using the command line. You are free to use
 whatever terminal program you like, however I recommend that you use the 
 integrated terminal inside of Visual Studio Code.
 
-Here we will set up our initial VSCode work folder and get a command line
-prompt.
+Here we will set up our initial VSCode work folder and get a ``bash`` 
+command line prompt. ``bash`` is the most popular ``shell`` for Linux, 
+it provides a command line interface to all the utilities and services 
+on a Linux computer. On Windows we will be using the Linux Subsystem so will 
+also use ``bash``. On Mac we will be using ``zsh`` but this is pretty similar 
+to ``bash``.
+
 
 First open VSCode from the start menu.
 
@@ -138,8 +144,8 @@ own name.
 First start a terminal by selecting from the menu bar 
 ``Terminal -> New Terminal``.
 
-The bottom half of your VSCode window will display a terminal prompt like 
-this:
+The bottom half of your VSCode window will display a ``bash`` (or ``zsh``)
+prompt like this:
 
 .. image:: ../images/prompt.excalidraw.png
     :alt: VSCode Startup
@@ -162,7 +168,7 @@ You do trust them because they are you! So click
 
 .. image:: ../images/trust.png
     :alt: VSCode Startup
-    :width: 400px
+    :width: 500px
     :align: center
 
 Now you should see a you VSCode window that looks something like this:
@@ -204,7 +210,8 @@ We are going to create a **Virtual Environment** for our Python packages to
 install in. This is a way to keep the packages you install (like mciwb)
 separate from the packages you install for other projects.
 
-First create the Virtual Environment by typing::
+First create the Virtual Environment by typing (note the leading "."
+in the folder name ".venv")::
 
     python3.9 -m venv .venv
 
@@ -213,11 +220,10 @@ repeated each time you restart your terminal or open a new terminal::
 
     source .venv/bin/activate
 
-Note you can tell you have an active Virtual Environment because your terminal
-prompt will change to have a leading (.venv) like this::
+Note you can tell you have an active **Virtual Environment** because 
+your terminal prompt will change to have a leading (.venv) like this::
 
-    (.venv) giles@gkwin:~/mciwb$ 
-
+    (.venv) giles@gkwin:~/my_world$
 
 Minecraft Interactive World Builder library
 -------------------------------------------
@@ -227,19 +233,21 @@ Python environment we already made above. Again, this is free open open-source
 software.
 
 Before the next step, let's make sure that we are in the right folder and
-that we have the Virtual Environment activated::
+that we have the **Virtual Environment** activated::
 
     cd $HOME/my_world
     source .venv/bin/activate
 
 The cd command stands for ``Change Directory``. This is a command that sets
 the current working folder (or directory). This is the default folder
-that your commands will work with from now. $HOME is your default HOME
-folder, the folder in which your user keeps their personal files. 
+that your commands will work with from now. ``$HOME`` is your default HOME
+folder, the folder in which your user keeps their personal files. We already
+created the folder ``$HOME/my_world`` earlier and this is where we will store
+all of the work we do with MCIWB.
 
 Everything is all set up ready so the following simple command will get
 mciwb from the Python Package Index (PyPi) and install it into the
-Virtual Environment::
+**Virtual Environment**::
 
     pip install mciwb
 

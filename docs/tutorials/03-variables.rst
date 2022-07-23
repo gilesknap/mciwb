@@ -11,11 +11,14 @@ We now have everything set up ready to start learning some Python!
     excellent Python beginner's tutorials available for free on the internet,
     such as:
 
-        https://python.land/python-tutorial
+        - https://www.w3schools.com/python/default.asp
+        - https://python.land/python-tutorial
 
     My tutorials are going to focus on quickly getting into interacting with the
     world of Minecraft. We won't be going into programming theory 
-    in detail. Therefore, a tutorial like python.land will 
+    in detail. 
+    
+    Therefore, a tutorial like w3schools will 
     be needed to fill in the background if you want a deeper understanding
     of the language.
 
@@ -35,6 +38,15 @@ computer program. They have the following properties:
 - Name: a name that is used to identify the variable.
 - Value: the data that the variable holds.
 - Type: the type of data that the variable holds.
+- Scope: in which parts of the code this variable is available.
+
+.. note:: 
+    **Scope** is a moderately advanced concept which you 
+    can ignore for the moment. Advanced topics like this will be covered
+    in the `../explanations` section. I suggest skipping anything in the 
+    explanations section on your first read through the tutorials and 
+    then come back later when you have a better understanding of the
+    fundamentals.
 
 Operators are used to make changes to variables. For example the ``=`` operator
 assigns a value to a variable, and the ``+`` operator adds two variables
@@ -72,9 +84,9 @@ characters.
 Trying out Variables
 --------------------
 
-Try out the commands below by typing them into the iPython prompt in your 
-VSCode window. Note that input [4] just asks iPython to show the values
-of the 3 variables you created::
+Try out the commands below by typing them into the **iPython** prompt in your 
+VSCode terminal window. Note that input [4] just asks **iPython** to show 
+the values of the 3 variables you created::
 
     In [1]: birth_year = 1964
 
@@ -113,8 +125,8 @@ provided by the library.
 have many values stored in its ``properties``. 
 Objects can also have ``methods`` which execute code. 
 
-One property of ``world`` is ``player`` and a property of ``player`` is ``pos``
-which holds the player's current position.
+One property of ``world`` is ``player``. ``player`` is also an object and it 
+has a property called ``pos`` which holds the player's current position.
 
 You can access the player's location like this::
     
@@ -129,16 +141,13 @@ the above command.
 .. note::
 
     You will notice that the position is reported as a type of variable 
-    called Vec3. This holds the Minecraft coordinates that you may be 
+    called Vec3. 
+
+    Vec3  holds the Minecraft coordinates that you may be 
     familiar with if you have used e.g. the teleport command.
     
-    For lots of detail on what this all means see `coordinates`.
+    For advanced detail on what this all means see `coordinates`.
 
-    For the moment I recommend just work through the first 
-    few tutorials and look at the details in `../explanations`
-    once you are more experienced.
-
-    
 
 An example of a ``method`` on ``world`` is ``set_block`` which will place
 a block in a particular position. 
@@ -155,12 +164,12 @@ Your player should have been bumped out of their position and if you turn
 around you will see an iron block. 
 
 What you did here was assign your 
-players position to the variable ``pos`` and then called the ``set_block``
+player's position to the variable ``pos`` and then called the ``set_block``
 method on ``world``. You told ``set_block`` to use pos for the position and 
 IRON_BLOCK for the block to place.
 
 ``Item`` is another built-in variable that you can use. It is a list of all the 
-types of blocks in Minecraft. If you type ``Item.IR`` in iPython and then
+types of blocks in Minecraft. If you type ``Item.IR`` in **iPython** and then
 hit ``Tab`` you will see a list of all the items in Minecraft that begin with 
 **IR**. See `completion` for more details.
 
@@ -176,10 +185,10 @@ into the Python terminal:
 
     To copy and paste code from this page to your terminal:
 
-    - Drag the mouse to highlight the text you want to Copy
-    - type ``ctrl C`` to copy the code to the clipboard
-    - click in your Python Terminal pane to activate it
-    - type ``ctrl shift V`` to paste into a terminal
+    - Drag the mouse to highlight the code you want to Copy
+    - right click the highlight and click ``Copy`` to copy the 
+      code to the clipboard
+    - right click in your Python Terminal and choose ``Paste``
 
 .. code-block:: python
 
@@ -192,11 +201,13 @@ into the Python terminal:
 
 Yay! You can paste again to create another one.
 
-.. image:: ../images/golem.png
+.. figure:: ../images/golem.png
     :alt: golem
     :width: 800px
     :align: center
 
+    Say hello to the Iron Golem, your first Python creation!
+    
 (See "Creation" in this article https://minecraft.fandom.com/wiki/Iron_Golem
 if you don't know about making iron golems)
 

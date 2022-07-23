@@ -25,7 +25,7 @@ For Loops
 
 For loops provide the mechanism to repeat a block of code a number of times.
 Try the following code in iPython, note that the second line
-is indented by 4 spaces, you can use the tab key to do this indent.
+is indented by 4 spaces, you can use the ``tab`` key to do this indent.
 
 .. code-block:: python
 
@@ -34,8 +34,10 @@ is indented by 4 spaces, you can use the tab key to do this indent.
         print(i)
 
 The ``range`` function creates a list of numbers from 0 to 9 (i.e. it starts
-at 0 and does 10 numbers). Then the ``for`` loops through those numbers. For 
-each of them it sets the variable i equal to the current number in the range 
+at 0 and does 10 numbers). 
+
+Then ``for`` loops through those numbers. For 
+each of them it sets the variable ``i`` equal to the current number in the range 
 and then executes the code block.
 
 An important concept in Python is that a block of code is declared by 
@@ -70,8 +72,11 @@ following:
             print("    j times i is ", j * i)
 
 This is two loops inside of each other, each loops 3 times and so the total
-number of times the code block is executed is 3 times 3 = 9. See if you can
-work out why the output looks like it does.
+number of times the code block is executed is 3 times 3 = 9. 
+
+exercise:
+    Try executing the above nested loop in **iPython** and see if you can
+    work out why the output looks like it does.
 
 .. note::
     
@@ -83,7 +88,7 @@ work out why the output looks like it does.
     multiplication. This is because there is no multiply symbol on 
     computer keyboards since they evolved from typewriter keyboards!
 
-    Similarly the symbol ``/`` is used to represent divide by.
+    Similarly the symbol ``/`` is used to represent "divide by".
 
 
 .. _portal:
@@ -129,9 +134,9 @@ that:
     # bottom row
     world.set_block(pos + Direction.EAST * x, Item.OBSIDIAN)
 
-places an obsidian block at the position offset from pos in an Easterly 
-direction. How much it is offset is determined by the value of x. We know 
-that the for loop is looping over values of x from 0 to 3. So we have::
+places an obsidian block at the position offset from ``pos`` in an Easterly 
+direction. How much it is offset is determined by the value of ``x``. We know 
+that the for loop is looping over values of ``x`` from 0 to 3. So we have::
 
     Loop 1 with x = 0
         set block at pos
@@ -143,11 +148,12 @@ that the for loop is looping over values of x from 0 to 3. So we have::
         set block at 3 steps EAST from pos
 
 For the top row we do the same thing but also add 4 steps upwards. The 
-loop over y does a similar thing for the two sides of the portal.
+loop over ``y`` does a similar thing for the two sides of the portal.
 
-See if you can experiment with creating different sizes of nether portals.
-Maybe you can create other shapes? If you used a nested loop you could make 
-steps for example?
+exercise:
+    See if you can experiment with creating different sizes of nether portals.
+    Maybe you can create other shapes? If you used a nested loop you could make 
+    steps for example?
 
 .. _comments:
 
@@ -172,4 +178,4 @@ You can equip this in your hand and ignite
 your portal by left clicking in the interior of the portal. It should then
 look like my picture above and you can jump through to see the Nether.
 
-For some in depth description of the use of ``get_client()`` see `mcipc`
+For an advanced, in-depth description of the use of ``get_client()`` see `mcipc`
