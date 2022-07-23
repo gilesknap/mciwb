@@ -42,11 +42,14 @@ Make sure "Minecraft Java Edition" is selected on the left and click
 Now choose the "Multiplayer" option and click "Add Server". You will
 see a screen like this:
 
-.. image:: ../images/server_address.png
+.. figure:: ../images/server_address.png
     :alt: Server Address
     :width: 400px
     :align: center
 
+    Set Up the Minecraft Server Connection
+
+Input a server name and the server address.
 You can make the Server Name whatever you like. The Server Address must be::
 
     localhost:20101
@@ -65,14 +68,14 @@ useful if you are a beginner. When you are really to move on type the
 command ``/kill`` to return to the spawn point.
 
 
-Connect MCIWB to the Server
----------------------------
+Connect MCIWB to your Minecraft Server
+--------------------------------------
 
 Now you are ready to connect MCIWB to the same server that your player is
 inside. It is probably best at this point to arrange the windows on your screen
 so that you can see both Minecraft and VSCode.
 
-Simply type this command at the terminal prompt in VSCode, replace 
+Simply type this command at the ``bash`` prompt in VSCode, replace 
 <player_name> with your player's name::
 
     mciwb shell --player <player_name>
@@ -89,13 +92,14 @@ You should see output like this::
 
     In [1]: 
 
-The prompt at the end is the Python Interactive Shell. In a moment we will
+The prompt at the end is the Python Interactive Shell known as **iPython**. 
+In a moment we will
 start to type some Python commands at this prompt.
 
 You should see only the INFO: outputs shown above. If you see 
 ERROR: or WARNING: then take a look at `troubleshooting`. If that does not 
 help then please create a new issue at https://github.com/gilesknap/mciwb/issues
-and someone will get back to you.
+and I will help you.
 
 .. _signs_try:
 
@@ -104,11 +108,11 @@ Try out Some Action Signs
 
 One feature of MCIWB is that it allows you to set up action signs. These
 are signs that your player can place in the world and they will call 
-some Python code and tell the code which block they are attached to.
+some Python code and tell the code which block they were placed on.
 
 MCIWB comes pre-configured with some action signs that let you cut and paste 
 volumes of blocks. When you told MCIWB to interact with your player it 
-automatically gives one of each of the currently configure action signs.
+automatically gives you one of each of the currently configure action signs.
 
 You can also create your own action signs and we will do
 this in a later tutorial.
@@ -134,40 +138,43 @@ you can tell it is activated when it disappears.
 
     <iframe width="700" height="600" src="https://www.youtube.com/embed/5LYezCAHJts?start=1" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
+.. centered:: *Cut and Paste Signs Demo*
+
 The above video is a demo of flattening out the area around the spawn point 
 using copy and paste. First I select a large area of sandy floor and then I
 keep pasting it until I have a nice flat area to start working with.
 
 .. _experiment:
 
-Experimenting with iPython
---------------------------
+Experimenting with **iPython**
+------------------------------
 
-iPython stands for Interactive Python. We already saw that we 
+**iPython** stands for Interactive Python. We already saw that we 
 can connect to a Minecraft server and get an Interactive Python shell prompt
 by typing the following command in the VSCode terminal::
 
     mciwb shell --player <player_name>
 
-Let's try out a couple of commands on the iPython prompt. You don't need 
+Let's try out a couple of commands on the **iPython** prompt. You don't need 
 to understand the detail of this yet, we'll introduced the programming 
 concepts used here gradually over the next few tutorials.
 
-The starting point for most iPython interactions is ``world``
+The starting point for many MCIWB **iPython** interactions is ``world``.
 
 For example you can find out your player's position in the world with::
         
     In [3]: world.player.pos
     Out[3]: Vec3(x=622, y=73, z=-1652)
 
-Notice that interactive Python prefixes each line with In or Out depending on
+Notice that interactive Python prefixes each line with **In** or **Out** 
+depending on
 whether it is input that you provide or output that is the result of executing
 your input.
 
 The above example output labelled ``Out[3]`` shows that my player is at the 
 world spawn point x=622, y=73, z=-1652.
 
-The world ``setblock`` function will place a block in the world. 
+The world ``set_block`` function will place a block in the world. 
 The item ``Item`` type provides a list of all the known block types. 
 You can use these as follows to place a block::
 
@@ -181,12 +188,14 @@ player is standing on.::
     Out[5]: <Item.SAND: 'sand'>
 
 Here we also used ``Direction`` which provides a list of all the possible
-directions.
+directions. By adding ``Direction.DOWN`` to our player's position we get
+the block directly below our player.
 
 
 Exiting the Python prompt
 -------------------------
 
-To exit the iPython prompt type ``<ctrl> D```
+To exit the **iPython** prompt type ``<ctrl> D```
 
-This will exit iPython and return you to your bash (or zsh) terminal prompt.
+This will exit **iPython** and return you to your ``bash`` (or zsh) 
+terminal prompt.

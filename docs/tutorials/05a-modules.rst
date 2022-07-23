@@ -22,6 +22,11 @@ the two Microsoft extensions listed.
 
    Adding Extensions
 
+These extensions add syntax based colouring to your Python files and also
+will verify your code. If you see a red squiggly line under some of your 
+code then it means that your code is not valid. If you hover your mouse 
+over the squiggly line you will see a message saying what is wrong.
+
 Getting a Bash Prompt
 ---------------------
 
@@ -72,6 +77,7 @@ The steps above were:
 
 - Change working directory to ``$HOME/my_world`` which is our VSCode work folder.
 - Make a new directory called ``buildings``, this is our new package
+- Change working directory to ``buildings``
 - Create an empty file called ``__init__.py`` in the ``buildings`` directory. 
   This is a special file name that tells Python that this directory is a 
   Python package.
@@ -93,7 +99,7 @@ iPython prompt:
     build_pagoda(world.player.pos)
 
 That should build a little pagoda around your player. You can break some 
-blocks to make a door for you to exit the pagoda.
+blocks to make a door for you to exit the pagoda!
 
 
 How it Works
@@ -109,11 +115,12 @@ import
    
    from mcwb.api import polygon
 
-import allows us to access code from other modules. The polygon function is
-implemented in a module called ``api`` in a package called ``mcwb``. 
+``import`` allows us to access code from other modules. The ``polygon`` 
+function is implemented in a module called 
+``api`` in a package called ``mcwb``. 
 We will frequently use code from two packages called ``mcwb`` (Minecraft world
 builder) and ``mcipc`` (Minecraft inter-process communication). These are two
-packages that ``mciwb`` is built on top of.
+packages that Minecraft Interactive World Builder is built on top of.
 
 One of the greatest features of Python is its extensive library of built in
 modules. For example the maths module contains functions for doing math.
@@ -123,23 +130,25 @@ e.g.
 
     from math import sqrt, cos, sin
 
-The polygon function itself is implemented using some of these math functions.
+The ``polygon`` function itself is implemented using some of these math functions.
 Luckily, you don't need to know anything about the mathematics of polygon
-construction because the polygon function has done all that for you!
+construction because the ``polygon`` function has done all that for you!
 
 .. code-block:: python
    
    from mciwb import Direction, Item, get_client
 
 The 2nd import function is importing things from ``mciwb``. ``mciwb`` is 
-the package that contains the Minecraft world builder. We have already 
+the package that contains the Minecraft Interactive World Builder itself. 
+We have already 
 been using functions and variables defined in this package.
 
-So, Direction and
-Item are already familiar, we have previously used them in iPython without
-needing to import them.
+So, ``Direction`` and
+``Item`` are already familiar, we have previously used them in 
+**iPython** without needing to import them.
 But we need to import them here because we are 
-writing a new module called ``pagoda``. import is the command to share 
+writing a new module called ``pagoda`` (in the file pagoda.py). 
+``import`` is the command to share 
 code between modules and is therefore required in our new ``pagoda`` module.
 
 Once you become familiar with Python you will eventually be comfortable 
@@ -153,18 +162,18 @@ get_client
 Whenever we call any functions in the ``mciwb`` or ``mcipc`` packages we need
 a client object. This represents a connection to our Minecraft server. 
 
-The get_client function obtains a client object for you to use. Here we 
-assign it into the variable ``c`` and pass ``c`` to the polygon function.
+The ``get_client`` function obtains a client object for you to use. Here we 
+assign it into the variable ``c`` and pass ``c`` to the ``polygon`` function.
 
 Advanced programmers may want to read up on how this is a thread-safe
-client object, see (`mcipc`).
+client object! see (`mcipc`).
 
 comments
 ~~~~~~~~
 
-At the beginning of ``build_pagoda`` we have a block comment. It uses the 
-triple quotes ``"""`` which allow you to write a block of text that is not
-interpreted as Python code.
+At the beginning of ``build_pagoda`` we have a block comment. It uses 
+triple quotes ``"""`` which allow you to write a block of text
+including line breaks that is not interpreted as Python code.
 
 Good programmers will usually add a comment block at the top of their
 functions and using triple quotes is the standard way to do this.
@@ -191,7 +200,7 @@ these values of floor_width:
 mcwb.polygon
 ~~~~~~~~~~~~
 
-polygon is a function implemented in the mcwb package. It is capable of 
+``polygon`` is a function implemented in the mcwb package. It is capable of 
 making any regular polygon and using that shape to build a tower (or a tunnel!).
 If you want to make a circular tower then you can just pass a large number 
 like 400 as the number of sides.
@@ -208,7 +217,8 @@ and step down in size by 2 blocks until we reach 2 blocks.
 For each iteration of the ``for loop`` we build some walls and a balcony.
 
 The ``base`` of the walls is calculated as ``level`` * ``floor_height`` blocks 
-above the starting ``pos``. As ``floor_height`` is 4 by default, the first 
+above the starting ``pos``. ``floor_height`` is the default value 4 by default.
+Thus, the first 
 floor ``base`` is 0 blocks above the starting ``pos`` and each successive 
 ``level`` is 4 blocks above the previous ``level``. 
 
@@ -221,13 +231,17 @@ We start by setting ``level`` to zero and the following statement:
 causes level to have one added to itself. So it gets one bigger, each time 
 through the ``for loop``.
 
-To create the walls we call polygon with these parameters::
-
-    c: the client object needed to talk to the Minecraft server
-    base: the calculate starting point for the polygon
-    floor_height: the height of the polygon (defaults to 4)
-    sides: the number of sides of the polygon, we use 4, making a square
-    item: the blocks to use for the polygon, defaulted to GOLD_BLOCK
+To create the walls we call polygon with these parameters:
+    c: 
+        the client object needed to talk to the Minecraft server
+    base: 
+        the calculated starting point for the polygon
+    floor_height: 
+        the height of the polygon (defaults to 4)
+    sides: 
+        the number of sides of the polygon, we use 4, making a square
+    item: 
+        the blocks to use for the polygon, defaulted to GOLD_BLOCK
 
 As we loop around the ``for loop`` we create a new polygon at each level,
 but the width of it is shrinking by two blocks at each level. Eventually

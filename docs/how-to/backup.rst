@@ -4,9 +4,9 @@ Backup and Restore
 The default MCIWB Minecraft server provides a backup and restore facility
 described below.
 
-If you are running your own server it is useful to add backup and restore 
-capability and MCIWB supports this with a little configuration. Jump to
-`my_server_backups` to see how to do this.
+If you are and advanced Minecraft user running your own server instead of the
+default provided by MCIWB then you will need some extra config to make backups
+work. Jump to `my_server_backups` to see how to do this.
 
 .. _backups:
 
@@ -31,13 +31,23 @@ It is better not to use spaces in backup names so I used dash to separate
 the words.
 
 Now lets do a restore. You can first have your player dig a hole in our
-flat area then exit the Python Prompt using 'Ctrl+D'. Now we are back
-at the terminal prompt and we can look in the backups folder to see our
+flat area, this is to make a change that we don't want to keep.
+Then exit the Python Prompt using 'Ctrl+D'. Now we are back
+at the ``bash`` prompt and we can look in the backups folder to see our
 list of backups e.g::
 
     
     (.venv) [giles@ws1 mciwb]$ ls $HOME/mciwb-backups
     22-07-13.06.26.01.zip  22-07-13.06.34.06.zip  flat-area-backup.zip
+
+You backups are stored in a folder called $HOME/mciwb-backups and ``ls`` is
+a terminal command that lists the contents of that folder.
+
+Note
+that the backup files all end in ``.zip``. Some of them are dated but you also
+see the ``flat-area-backup.zip`` file that we named explicitly.
+
+Now you can restore from backup with the following command::
 
     (.venv) [giles@ws1 mciwb]$ mciwb restore flat-area-backup
     INFO:   Stopping Minecraft Server mciwb-server ...
@@ -49,8 +59,7 @@ list of backups e.g::
 
     (.venv) [giles@ws1 mciwb]$ 
     
-You backups are stored in a folder called $HOME/mciwb-backups and ``ls`` is
-a terminal command that lists the contents of that folder. The ``mciwb restore``
+The ``mciwb restore``
 command can be given the name of the backup to restore or if you specify no
 name it will restore the most recent backup.
 
@@ -64,5 +73,6 @@ command that you typed earlier::
     mciwb shell --player <player_name>
 
 and then hit enter. This saves some typing. You'll find that most command line
-tools have recall and editing of previous commands, including the iPython.
+tools have recall and editing of previous commands, including **iPython**.
+This is one of the reasons that a command line interface is a good thing!
 

@@ -6,7 +6,7 @@ Introduction
 
 In this tutorial we are going to start to create a few buildings for our village.
 We will expand on the types of buildings in later tutorials as we learn new 
-features of python.
+features of Python.
 
 .. warning::
 
@@ -16,8 +16,9 @@ features of python.
 
 
 To do this we will learn to use functions to packaged up our code into
-reusable chunks. We will also learn to save our code in Python modules
-so that we don't need to typing or pasting code all of the time.
+reusable chunks. In the next tutorial will also learn to save our code in 
+Python modules so that we don't need to do typing or pasting code all 
+of the time.
 
 Simple Function
 ---------------
@@ -99,7 +100,7 @@ Try copying and pasting this function into your Python console.
 .. literalinclude :: /code/pagoda.py
    :language: python
 
-Now type in the following code to call your pagoda function:
+Now type in the following code in **iPython** to call your pagoda function:
 
 .. code-block:: python
 
@@ -113,15 +114,17 @@ see this:
     :alt: pagoda
     :width: 800px
 
-The pagoda_pos I chose is deliberately a little outside of our main village
+The ``pagoda_pos`` I chose is deliberately a little outside of our main village
 area. This is so that the massive building does not overshadow the village too
 much!
 
-You could now do a backup of the world and experiment with building pagodas
-of different sizes and materials. Then restore your world after you are 
-done experimenting.
+exercise:
+    You could now do a backup of the world and experiment with building pagodas
+    of different sizes and materials. Then restore your world after you are 
+    done experimenting.
 
-For the position you can always use ``world.player.pos`` in which case the 
+For the position of your pagodas you can always use ``world.player.pos`` 
+in which case the 
 pagoda will build around your player. But now might also be a good time to
 learn about discovering coordinates in the world. See `../how-to/coordinates`
 
