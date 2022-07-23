@@ -78,6 +78,8 @@ in the variable name. Typically variable names are lowercase with words separate
 by underscores. It is also legal to use uppercase letters and numbers in variable
 names (but a number must not be the first character).
 
+.. _pagoda:
+
 Pagoda Function
 ---------------
 
@@ -85,20 +87,22 @@ Lets create a function that will create a pagoda. This function will have
 the following parameters that the caller can supply:
 
 - ``pos`` - the position of center of the base of the pagoda
-- ``width`` - the width of the pagoda's base (defaults to 9)
+- ``width`` - the width of the pagoda's base (defaults to 4)
 - ``floor_height`` - the height of each floor (defaults to 4) 
 - ``item`` - what blocks to use (defaults to gold block)
 
+For now we are just going to have some fun making pagodas. In the next
+tutorial we will look into the detail of how this function works.
+
 Try copying and pasting this function into your Python console.
 
-.. literalinclude :: ../../src/demo/pagoda.py
+.. literalinclude :: /code/pagoda.py
    :language: python
 
 Now type in the following code to call your pagoda function:
 
 .. code-block:: python
 
-    from pagoda import build_pagoda
     pagoda_pos=Vec3(585,71,-1728)
     pagoda(pagoda_pos, width=30)
 
@@ -109,10 +113,15 @@ see this:
     :alt: pagoda
     :width: 800px
 
-Let's take a look at the things that are new in the above code.
+The pagoda_pos I chose is deliberately a little outside of our main village
+area. This is so that the massive building does not overshadow the village too
+much!
 
-.. code-block:: python
+You could now do a backup of the world and experiment with building pagodas
+of different sizes and materials. Then restore your world after you are 
+done experimenting.
 
-    from mciwb import Direction, Item, get_client
+For the position you can always use ``world.player.pos`` in which case the 
+pagoda will build around your player. But now might also be a good time to
+learn about discovering coordinates in the world. See `../how-to/coordinates`
 
-The import function makes code from another module available to your code.

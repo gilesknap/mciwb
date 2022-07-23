@@ -59,6 +59,7 @@ later tutorial.
 .. image:: ../images/launcher.png
     :alt: Minecraft Launcher
     :width: 700px
+    :align: center
 
 .. _docker:
 
@@ -143,6 +144,7 @@ this:
 .. image:: ../images/prompt.excalidraw.png
     :alt: VSCode Startup
     :width: 400px
+    :align: center
 
 Type the following to make sure you are in in your home directory and then
 create a new folder called ``my_world``::
@@ -161,6 +163,7 @@ You do trust them because they are you! So click
 .. image:: ../images/trust.png
     :alt: VSCode Startup
     :width: 400px
+    :align: center
 
 Now you should see a you VSCode window that looks something like this:
 
@@ -228,6 +231,11 @@ that we have the Virtual Environment activated::
 
     cd $HOME/my_world
     source .venv/bin/activate
+
+The cd command stands for ``Change Directory``. This is a command that sets
+the current working folder (or directory). This is the default folder
+that your commands will work with from now. $HOME is your default HOME
+folder, the folder in which your user keeps their personal files. 
 
 Everything is all set up ready so the following simple command will get
 mciwb from the Python Package Index (PyPi) and install it into the

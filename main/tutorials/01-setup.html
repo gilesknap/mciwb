@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Installation &mdash; mciwb 0.6.2.dev3+g79716b9 documentation</title>
+  <title>Installation &mdash; mciwb 0.6.3.dev9+ga02eb59 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
@@ -62,6 +62,7 @@
 <li class="toctree-l1"><a class="reference internal" href="03-variables.html">Python Variables</a></li>
 <li class="toctree-l1"><a class="reference internal" href="04-loops.html">Loops</a></li>
 <li class="toctree-l1"><a class="reference internal" href="05-functions.html">Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="05a-modules.html">Modules and Packages</a></li>
 <li class="toctree-l1"><a class="reference internal" href="06-if-then.html">If Then Else</a></li>
 <li class="toctree-l1"><a class="reference internal" href="07-lists.html">Lists</a></li>
 <li class="toctree-l1"><a class="reference internal" href="08-dictionaries.html">Dictionaries</a></li>
@@ -74,6 +75,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../how-to/troubleshooting.html">Troubleshooting</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../how-to/backup.html">Backup and Restore</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../how-to/wsl2.html">Windows Subsystem for Linux</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../how-to/coordinates.html">Discovering the Coordinates of a Block</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Explanations</span></p>
 <ul>
@@ -162,7 +164,7 @@ yet migrated.</p>
 a screen like the following. Leave this screen open and move on to the rest
 of the tutorial. We will come back here and connect to a Minecraft server in a
 later tutorial.</p>
-<a class="reference internal image-reference" href="../_images/launcher.png"><img alt="Minecraft Launcher" src="../_images/launcher.png" style="width: 700px;" /></a>
+<a class="reference internal image-reference" href="../_images/launcher.png"><img alt="Minecraft Launcher" class="align-center" src="../_images/launcher.png" style="width: 700px;" /></a>
 </section>
 <section id="docker-desktop">
 <span id="docker"></span><h2>Docker Desktop<a class="headerlink" href="#docker-desktop" title="Permalink to this heading"></a></h2>
@@ -223,7 +225,7 @@ own name.</p>
 <code class="docutils literal notranslate"><span class="pre">Terminal</span> <span class="pre">-&gt;</span> <span class="pre">New</span> <span class="pre">Terminal</span></code>.</p>
 <p>The bottom half of your VSCode window will display a terminal prompt like
 this:</p>
-<a class="reference internal image-reference" href="../_images/prompt.excalidraw.png"><img alt="VSCode Startup" src="../_images/prompt.excalidraw.png" style="width: 400px;" /></a>
+<a class="reference internal image-reference" href="../_images/prompt.excalidraw.png"><img alt="VSCode Startup" class="align-center" src="../_images/prompt.excalidraw.png" style="width: 400px;" /></a>
 <p>Type the following to make sure you are in in your home directory and then
 create a new folder called <code class="docutils literal notranslate"><span class="pre">my_world</span></code>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span>
@@ -236,7 +238,7 @@ folders, select <code class="docutils literal notranslate"><span class="pre">my_
 <p>You will be asked if you trust the authors of files in this folder.
 You do trust them because they are you! So click
 <code class="docutils literal notranslate"><span class="pre">Yes</span> <span class="pre">I</span> <span class="pre">trust</span> <span class="pre">the</span> <span class="pre">authors</span></code>.</p>
-<a class="reference internal image-reference" href="../_images/trust.png"><img alt="VSCode Startup" src="../_images/trust.png" style="width: 400px;" /></a>
+<a class="reference internal image-reference" href="../_images/trust.png"><img alt="VSCode Startup" class="align-center" src="../_images/trust.png" style="width: 400px;" /></a>
 <p>Now you should see a you VSCode window that looks something like this:</p>
 <a class="reference internal image-reference" href="../_images/vscode_hello.excalidraw.png"><img alt="VSCode Startup" class="align-left" src="../_images/vscode_hello.excalidraw.png" style="width: 700px;" /></a>
 <p>From this point on all commands typed in the console and chosen from VSCode
@@ -294,6 +296,10 @@ that we have the Virtual Environment activated:</p>
 source .venv/bin/activate
 </pre></div>
 </div>
+<p>The cd command stands for <code class="docutils literal notranslate"><span class="pre">Change</span> <span class="pre">Directory</span></code>. This is a command that sets
+the current working folder (or directory). This is the default folder
+that your commands will work with from now. $HOME is your default HOME
+folder, the folder in which your user keeps their personal files.</p>
 <p>Everything is all set up ready so the following simple command will get
 mciwb from the Python Package Index (PyPi) and install it into the
 Virtual Environment:</p>

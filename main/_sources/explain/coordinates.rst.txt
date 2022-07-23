@@ -17,6 +17,7 @@ position and which direction they are facing, plus the target block position.
 .. image:: ../images/coords.excalidraw.png
     :alt: Coordinate System Diagnostics
     :width: 700px
+    :align: center
 
 
 Cardinals
@@ -34,6 +35,7 @@ of the cardinals which is as follows:
 .. image:: ../images/compass.png
     :alt: Compass
     :width: 250px
+    :align: center
 
 From the above you can see that facing North means that:
 
