@@ -116,7 +116,7 @@ builder) and ``mcipc`` (Minecraft inter-process communication). These are two
 packages that ``mciwb`` is built on top of.
 
 One of the greatest features of Python is its extensive library of built in
-packages. For example the maths package contains functions for doing math.
+modules. For example the maths module contains functions for doing math.
 e.g.
 
 .. code-block:: python
@@ -131,11 +131,21 @@ construction because the polygon function has done all that for you!
    
    from mciwb import Direction, Item, get_client
 
-The 2nd import function is importing things from ``mciwb``. Direction and
-Item are already familiar, we need to import them here because we are 
-writing a new module called ``pagoda``. When working on the iPython
-prompt we are already in the ``mciwb`` so we can see Direction and Item
-already.
+The 2nd import function is importing things from ``mciwb``. ``mciwb`` is 
+the package that contains the Minecraft world builder. We have already 
+been using functions and variables defined in this package.
+
+So, Direction and
+Item are already familiar, we have previously used them in iPython without
+needing to import them.
+But we need to import them here because we are 
+writing a new module called ``pagoda``. import is the command to share 
+code between modules and is therefore required in our new ``pagoda`` module.
+
+Once you become familiar with Python you will eventually be comfortable 
+looking at online documentation to discover packages and modules you want to
+use and discovering the imports you need to use them. But for now it is 
+easiest just to copy the import statements from examples like ``pagoda.py``.
 
 get_client
 ~~~~~~~~~~
@@ -147,7 +157,7 @@ The get_client function obtains a client object for you to use. Here we
 assign it into the variable ``c`` and pass ``c`` to the polygon function.
 
 Advanced programmers may want to read up on how this is a thread-safe
-client object (`mcipc`).
+client object, see (`mcipc`).
 
 comments
 ~~~~~~~~
@@ -157,7 +167,77 @@ triple quotes ``"""`` which allow you to write a block of text that is not
 interpreted as Python code.
 
 Good programmers will usually add a comment block at the top of their
-functions.
+functions and using triple quotes is the standard way to do this.
 
 extra parameters to ``range``
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+We already learned that for example ``range(10)`` is a list of numbers from
+0 to 9. But here we have:
+
+.. code-block:: python
+   
+    for floor_width in range(width, 2, -2)
+
+When you provide these 3 parameters to range they are interpreted as 
+start, stop and step. So here we start at the width of the pagoda base as
+provided by the caller and then we go down to 2 in steps of -2.
+
+i.e. if we pass width=30 then the for loop will execute once for each of 
+these values of floor_width:
+
+    30, 28, 26, 24, 22, 20, 18, 16, 14, 12, 10, 8, 6, 4, 2
+    
+mcwb.polygon
+~~~~~~~~~~~~
+
+polygon is a function implemented in the mcwb package. It is capable of 
+making any regular polygon and using that shape to build a tower (or a tunnel!).
+If you want to make a circular tower then you can just pass a large number 
+like 400 as the number of sides.
+
+Making a Pagoda
+~~~~~~~~~~~~~~~
+
+So how does the overall function work?
+
+We see that we have a for loop that iterates over the range of ``floor_widths``.
+These ``floor_widths`` start at the ``width`` you passed (30 in the example I gave)
+and step down in size by 2 blocks until we reach 2 blocks.
+
+For each iteration of the ``for loop`` we build some walls and a balcony.
+
+The ``base`` of the walls is calculated as ``level`` * ``floor_height`` blocks 
+above the starting ``pos``. As ``floor_height`` is 4 by default, the first 
+floor ``base`` is 0 blocks above the starting ``pos`` and each successive 
+``level`` is 4 blocks above the previous ``level``. 
+
+We start by setting ``level`` to zero and the following statement:
+
+.. code-block:: python
+   
+    level += 1
+
+causes level to have one added to itself. So it gets one bigger, each time 
+through the ``for loop``.
+
+To create the walls we call polygon with these parameters::
+
+    c: the client object needed to talk to the Minecraft server
+    base: the calculate starting point for the polygon
+    floor_height: the height of the polygon (defaults to 4)
+    sides: the number of sides of the polygon, we use 4, making a square
+    item: the blocks to use for the polygon, defaulted to GOLD_BLOCK
+
+As we loop around the ``for loop`` we create a new polygon at each level,
+but the width of it is shrinking by two blocks at each level. Eventually
+we get to a narrow level of 2 blocks at the top and the loop completes.
+
+exercise:
+    can you work out how the balcony is being drawn on each level? look
+    at the math used to calculate ``balcony`` and the ``polygon`` function
+    parameters used to draw the balcony and see if you can figure out how
+    it works.
+
+
+
