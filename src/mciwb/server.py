@@ -219,9 +219,14 @@ class MinecraftServer:
         """
         Some default settings for the server that this class creates
         """
-        if not self.test:
-            # a nice starting point for the tutorials in seed 0 world
-            with Client(HOST, self.rcon, passwd=self.password) as client:
+        with Client(HOST, self.rcon, passwd=self.password) as client:
+
+            # make sure the local chunk around world centre is loaded
+            # this is because the getblock trick needs 0,0,0 in the world
+            client.forceload.add((0, 0), (0, 0))
+
+            if not self.test:
+                # a nice starting point for the tutorials in seed 0 world
                 client.setworldspawn(Vec3(632, 73, -1658))
 
     @classmethod
