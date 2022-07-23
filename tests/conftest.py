@@ -48,8 +48,9 @@ def minecraft_container(request: pytest.FixtureRequest):
         keep=KEEP_SERVER,
         world_type="flat",
         server_folder=servers_folder / server_name,
+        test=True,
     )
-    mc.create(test=True)
+    mc.create()
 
     request.addfinalizer(mc.remove)
     return mc
