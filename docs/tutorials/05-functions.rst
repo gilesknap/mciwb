@@ -96,7 +96,7 @@ tutorial we will look into the detail of how this function works.
 
 Try copying and pasting this function into your Python console.
 
-.. literalinclude :: ../../src/demo/pagoda.py
+.. literalinclude :: /code/pagoda.py
    :language: python
 
 Now type in the following code to call your pagoda function:
