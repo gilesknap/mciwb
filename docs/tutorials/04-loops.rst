@@ -118,6 +118,7 @@ Try the following code in your Python Terminal:
 .. image:: ../images/portal.png
     :alt: nether portal
     :width: 500px
+    :align: center
 
 The most important thing to note here is that I used multiplication on the 
 Direction values to add them multiple times to a starting position. This means

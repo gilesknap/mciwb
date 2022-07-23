@@ -29,8 +29,9 @@ VSCode will launch and you will see information on the extension that looks
 like this:
 
 .. image:: ../images/remote_wsl2.excalidraw.png
-        :alt: VSCode WSL2
-        :width: 600px
+    :alt: VSCode WSL2
+    :width: 600px
+    :align: center
 
 Click the install button and you now have the extension installed.
 
@@ -47,8 +48,9 @@ On the left bar of VSCode there is a remote connections Icon.
 
 
 .. image:: ../images/remote_ubuntu.excalidraw.png
-        :alt: VSCode WSL2
-        :width: 600px
+    :alt: VSCode WSL2
+    :width: 600px
+    :align: center
 
 Continue with tutorial
 ----------------------

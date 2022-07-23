@@ -34,6 +34,7 @@ class MinecraftServer:
         server_folder: Path,
         world_type: str,
         keep: bool = True,
+        test=False,
     ) -> None:
         self.rcon = rcon
         self.port = rcon + 1
@@ -44,6 +45,7 @@ class MinecraftServer:
         self.world_type = world_type
         self.container = None
         self.keep = keep
+        self.test = test
 
     def wait_server(self):
         """
@@ -120,7 +122,7 @@ class MinecraftServer:
             self.stop()
             self.container.remove()
 
-    def create(self, world_zip=None, test=False, force=False) -> None:
+    def create(self, world_zip=None, force=False) -> None:
         """
         Spin up a test minecraft server in a container
 
@@ -164,7 +166,7 @@ class MinecraftServer:
             "SPAWN_PROTECTION": "FALSE",
         }
 
-        if test:
+        if self.test:
             env.update(
                 {
                     "GENERATE_STRUCTURES": "false",
@@ -187,11 +189,12 @@ class MinecraftServer:
 
         if not self.server_folder.exists():
             self.server_folder.mkdir(parents=True)
-        if not backup_folder.exists():
-            backup_folder.mkdir(parents=True)
-        elif test:
+        elif self.test:
             shutil.rmtree(self.server_folder)
             self.server_folder.mkdir(parents=True)
+
+        if not backup_folder.exists():
+            backup_folder.mkdir(parents=True)
 
         container = docker_client.containers.run(
             "itzg/minecraft-server",
@@ -216,9 +219,15 @@ class MinecraftServer:
         """
         Some default settings for the server that this class creates
         """
-
         with Client(HOST, self.rcon, passwd=self.password) as client:
-            client.setworldspawn(Vec3(632, 73, -1658))
+
+            # make sure the local chunk around world centre is loaded
+            # this is because the getblock trick needs 0,0,0 in the world
+            client.forceload.add((0, 0), (0, 0))
+
+            if not self.test:
+                # a nice starting point for the tutorials in seed 0 world
+                client.setworldspawn(Vec3(632, 73, -1658))
 
     @classmethod
     def stop_named(cls, name: str):

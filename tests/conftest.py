@@ -23,7 +23,7 @@ RCON_P = "pass"
 ENTITY_NAME = "george"
 ENTITY_POS = Vec3(0, -60, 0)
 
-server_name = "mciwb-test-server"
+test_server_name = "mciwb-test-server"
 servers_folder = Path(gettempdir()) / "test-mc-servers"
 
 logging.basicConfig(
@@ -42,14 +42,15 @@ def minecraft_container(request: pytest.FixtureRequest):
     caution as the world must be reset to a known state.
     """
     mc = MinecraftServer(
-        name=server_name,
+        name=test_server_name,
         rcon=RCON_PORT,
         password=RCON_P,
         keep=KEEP_SERVER,
         world_type="flat",
-        server_folder=servers_folder / server_name,
+        server_folder=servers_folder / test_server_name,
+        test=True,
     )
-    mc.create(test=True)
+    mc.create()
 
     request.addfinalizer(mc.remove)
     return mc
@@ -89,8 +90,6 @@ def minecraft_client(minecraft_container: Container):
     # don't announce every rcon command
     client.gamerule("sendCommandFeedback", False)
 
-    # make sure the local chunk is loaded even if we don't summon a player
-    client.forceload.add((0, 0), (0, 0))
     # make sure that the grab function entities that are created as a side
     # effect will drop into the void
     # TODO in 1.19 the bottom of the world is at -64 so need a fix for that!

@@ -1,4 +1,5 @@
 import logging
+import sys
 from pathlib import Path
 from typing import Optional
 
@@ -110,6 +111,8 @@ def shell(
     connected to your Minecraft server.
     """
     init_logging(debug)
+
+    sys.path.append(".")
 
     world = None
 
@@ -224,7 +227,7 @@ def restore(
     """
     init_logging(debug)
 
-    stop()
+    stop(server_name=server_name)
     backup = Backup(world_folder=folder / "world", backup_folder=backup_folder)
     backup.restore(name=backup_name)
     start(folder=folder, port=port, server_name=server_name)
