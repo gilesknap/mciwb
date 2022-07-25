@@ -90,6 +90,15 @@ exercise:
 
     Similarly the symbol ``/`` is used to represent "divide by".
 
+    The picture below is the advanced IBM 'Selectric' typewriter that came 
+    out in 1961. At this point IBM did not think that people needed 
+    mathematical symbols on their keyboards. As computers took over in the 
+    next couple of decades they just copied the same layout.
+
+    .. image:: ../images/typewriter.jpg
+        :alt: nether portal
+        :width: 500px
+        :align: center
 
 .. _portal:
 
