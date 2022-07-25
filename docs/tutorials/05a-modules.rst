@@ -248,10 +248,15 @@ but the width of it is shrinking by two blocks at each level. Eventually
 we get to a narrow level of 2 blocks at the top and the loop completes.
 
 exercise:
-    can you work out how the balcony is being drawn on each level? look
+    Can you work out how the balcony is being drawn on each level? look
     at the math used to calculate ``balcony`` and the ``polygon`` function
     parameters used to draw the balcony and see if you can figure out how
     it works.
 
+exercise 2:
+    I found pesky pillagers patrolling on my pagoda. A friend pointed out that
+    you can avoid this by placing torches on top of every surface of the 
+    pagoda and that it is possible to do this with just two 
+    calls to the existing pagoda function. Can you work out how to do this?
 
 
