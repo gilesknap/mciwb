@@ -1,6 +1,4 @@
-from mcwb.api import polygon
-
-from mciwb import Direction, Item, get_client
+from mciwb import Direction, Item, get_client, polygon
 
 
 def build_pagoda(pos, width=4, floor_height=4, item: Item = Item.GOLD_BLOCK):

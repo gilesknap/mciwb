@@ -1,4 +1,4 @@
-|code_ci| |docs_ci| |coverage| |pypi_version| |license|
+|code_ci| |docs_ci| |coverage| |quality| |pypi_version| |license|
 
 
 Minecraft Interactive World Builder
@@ -41,8 +41,12 @@ Releases       https://github.com/gilesknap/mciwb/releases
     :target: https://github.com/gilesknap/mciwb/actions?query=workflow%3A%22Docs+CI%22
     :alt: Docs CI
 
-.. |coverage| image:: https://codecov.io/gh/gilesknap/mciwb/branch/main/graph/badge.svg
-    :target: https://codecov.io/gh/gilesknap/mciwb
+.. |quality| image:: https://app.codacy.com/project/badge/Grade/4c514b64299e4ccd8c569d3e787245c7    
+    :target: https://www.codacy.com/gh/gilesknap/mciwb/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=gilesknap/mciwb&amp;utm_campaign=Badge_Grade
+    :alt: Code Quality
+
+.. |coverage| image:: https://app.codacy.com/project/badge/Coverage/4c514b64299e4ccd8c569d3e787245c7    
+    :target: https://www.codacy.com/gh/gilesknap/mciwb/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=gilesknap/mciwb&amp;utm_campaign=Badge_Coverage
     :alt: Test Coverage
 
 .. |pypi_version| image:: https://img.shields.io/pypi/v/mciwb.svg

@@ -19,8 +19,12 @@ from mciwb import (
     Planes3d,
     Player,
     Vec3,
+    Volume,
     __version__,
     get_client,
+    grab,
+    make_tunnel,
+    polygon,
     world,
 )
 from mciwb.backup import Backup
@@ -51,8 +55,12 @@ useful = [
     Planes3d,
     Player,
     Vec3,
+    Volume,
     __version__,
     get_client,
+    grab,
+    make_tunnel,
+    polygon,
     world,
 ]
 
