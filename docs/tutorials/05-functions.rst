@@ -40,13 +40,13 @@ to happen. But you have created a function which you can now call like this:
 
 .. code-block:: python
 
-    my_age = age(1965)
+    my_age = age(1964)
     print(my_age)
 
 If you substitute your  own birth_year value this function will print your 
 age at the end of the year 2022.
 
-``age(1965)`` calls the function defined above and passes 1965 for the 
+``age(1964)`` calls the function defined above and passes 1964 for the 
 value of ``birth_year``. It does not pass a value for the parameter 
 ``current_year``. The default value for ``current_year`` was set to 2022.
 
@@ -65,8 +65,8 @@ out how old you were when the first Apple Mac was released:
 
 .. code-block:: python
 
-    print(age(1965, current_year=1984))
-    19
+    print(age(1964, current_year=1984))
+    20
 
 Obviously if unlike me, you were born after 1984 you would get a negative 
 result.

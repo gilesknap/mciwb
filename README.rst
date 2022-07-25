@@ -32,6 +32,13 @@ Documentation  https://gilesknap.github.io/mciwb
 Releases       https://github.com/gilesknap/mciwb/releases
 ============== ==============================================================
 
+Credits
+-------
+
+This project would not be possible without `mcipc <https://github.com/conqp/mcipc/>`_,
+which provides the client library for Minecraft RCON.
+
+
 
 .. |code_ci| image:: https://github.com/gilesknap/mciwb/workflows/Code%20CI/badge.svg?branch=main
     :target: https://github.com/gilesknap/mciwb/actions?query=workflow%3A%22Code+CI%22
