@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Modules and Packages &mdash; mciwb 0.6.4.dev2+gdae689d documentation</title>
+  <title>Modules and Packages &mdash; mciwb 0.6.4.dev5+g0249e84 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
@@ -195,9 +195,7 @@ Python package.</p></li>
 <p>Now we can paste our pagoda function into the editor window and save it with
 Menu -&gt; File -&gt; Save (or Ctrl+S is a shortcut to save the current file).
 Use this slightly modified version of the pagoda function:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">mcwb.api</span> <span class="kn">import</span> <span class="n">polygon</span>
-
-<span class="kn">from</span> <span class="nn">mciwb</span> <span class="kn">import</span> <span class="n">Direction</span><span class="p">,</span> <span class="n">Item</span><span class="p">,</span> <span class="n">get_client</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">mciwb</span> <span class="kn">import</span> <span class="n">Direction</span><span class="p">,</span> <span class="n">Item</span><span class="p">,</span> <span class="n">get_client</span><span class="p">,</span> <span class="n">polygon</span>
 
 
 <span class="k">def</span> <span class="nf">build_pagoda</span><span class="p">(</span><span class="n">pos</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">floor_height</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">item</span><span class="p">:</span> <span class="n">Item</span> <span class="o">=</span> <span class="n">Item</span><span class="o">.</span><span class="n">GOLD_BLOCK</span><span class="p">):</span>
