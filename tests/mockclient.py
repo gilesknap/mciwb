@@ -79,8 +79,6 @@ class MockClient:
         Support the 'grab' command which looks like this:
         == client.loot.spawn(dump).mine(vol.start + Vec3(*idx)) ==
         It is the convoluted way to find what block is at a coordinate.
-
-        TODO: review this weird way to provide sub commands!
         """
         parent = self
 

@@ -2,6 +2,8 @@ from mcipc.rcon.item import Item
 from mcipc.rcon.je import Client
 from mcwb import Anchor3 as Corner
 from mcwb import Blocks, Cuboid, Vec3, Volume
+from mcwb.api import get_block, make_tunnel, polygon
+from mcwb.itemlists import grab, load_items, save_items
 from mcwb.types import Direction, Planes3d
 
 from mciwb.copier import CopyPaste
@@ -28,6 +30,9 @@ else:
 __all__ = [
     "__version__",
     "get_client",
+    "load_items",
+    "save_items",
+    "grab",
     "Item",
     "Iwb",
     "Client",
@@ -42,4 +47,7 @@ __all__ = [
     "world",
     "Vec3",
     "Volume",
+    "make_tunnel",
+    "polygon",
+    "get_block",
 ]
