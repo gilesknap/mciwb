@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Functions &mdash; mciwb 0.6.4.dev10+g3bce2a2 documentation</title>
+  <title>Functions &mdash; mciwb 0.6.4.dev14+g3762ae2 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
@@ -144,13 +144,13 @@ The return value is passed back to the calling code.</p>
 </div>
 <p>When you hit enter after typing the function definition above nothing appears
 to happen. But you have created a function which you can now call like this:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">my_age</span> <span class="o">=</span> <span class="n">age</span><span class="p">(</span><span class="mi">1965</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">my_age</span> <span class="o">=</span> <span class="n">age</span><span class="p">(</span><span class="mi">1964</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">my_age</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>If you substitute your  own birth_year value this function will print your
 age at the end of the year 2022.</p>
-<p><code class="docutils literal notranslate"><span class="pre">age(1965)</span></code> calls the function defined above and passes 1965 for the
+<p><code class="docutils literal notranslate"><span class="pre">age(1964)</span></code> calls the function defined above and passes 1964 for the
 value of <code class="docutils literal notranslate"><span class="pre">birth_year</span></code>. It does not pass a value for the parameter
 <code class="docutils literal notranslate"><span class="pre">current_year</span></code>. The default value for <code class="docutils literal notranslate"><span class="pre">current_year</span></code> was set to 2022.</p>
 <p>The function performs a <code class="docutils literal notranslate"><span class="pre">-</span></code> subtraction operation, taking the value of
@@ -162,8 +162,8 @@ the caller. Our caller assigns the returned value to a variable called
 <p>Now if you don’t want to use the default of 2022 (when this tutorial was
 written) you can pass your own value for <code class="docutils literal notranslate"><span class="pre">current_year</span></code>. e.g. to find
 out how old you were when the first Apple Mac was released:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">age</span><span class="p">(</span><span class="mi">1965</span><span class="p">,</span> <span class="n">current_year</span><span class="o">=</span><span class="mi">1984</span><span class="p">))</span>
-<span class="mi">19</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">age</span><span class="p">(</span><span class="mi">1964</span><span class="p">,</span> <span class="n">current_year</span><span class="o">=</span><span class="mi">1984</span><span class="p">))</span>
+<span class="mi">20</span>
 </pre></div>
 </div>
 <p>Obviously if unlike me, you were born after 1984 you would get a negative
