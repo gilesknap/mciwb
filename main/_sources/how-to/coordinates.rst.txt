@@ -16,7 +16,7 @@ this:
 
 .. code-block:: python
 
-   pagoda(player.world.position)
+   build_pagoda(player.world.position)
 
 It might also be good to use a variable to store your player's position. Then
 you can walk away from it and turn around the see pagoda build.
@@ -25,7 +25,7 @@ you can walk away from it and turn around the see pagoda build.
 
     pos = player.world.pos
     # now walk away and turn around
-    pagoda(pos)
+    build_pagoda(pos)
 
 Minecraft Diagnostic Info
 -------------------------
@@ -43,7 +43,7 @@ follows:
 
     # assumes you read X=200 Y=-10 Z=54
     pos = Vec3(200,-10,54)
-    pagoda(pos)
+    build_pagoda(pos)
 
 The Selection Sign
 ------------------
@@ -72,6 +72,6 @@ this:
 .. code-block:: python
 
     pos = Vec3(x=620, y=71, z=-1623)
-    pagoda(pos)
+    build_pagoda(pos)
 
 This is the easiest and most versatile way to discover a block's coordinates.

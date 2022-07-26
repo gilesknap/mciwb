@@ -97,15 +97,17 @@ tutorial we will look into the detail of how this function works.
 
 Try copying and pasting this function into your Python console.
 
-.. literalinclude :: /code/pagoda.py
+.. literalinclude :: ../../src/demo/pagoda.py
    :language: python
+   :lines: 4-
 
-Now type in the following code in **iPython** to call your pagoda function:
+Now type in the following code in **iPython** to call your ``build_pagoda`` 
+function:
 
 .. code-block:: python
 
     pagoda_pos=Vec3(585,71,-1728)
-    pagoda(pagoda_pos, width=30)
+    build_pagoda(pagoda_pos, width=30)
 
 If your player then looks to the North from our spawn point you should 
 see this:
@@ -118,7 +120,7 @@ The ``pagoda_pos`` I chose is deliberately a little outside of our main village
 area. This is so that the massive building does not overshadow the village too
 much!
 
-exercise:
+Exercise:
     You could now do a backup of the world and experiment with building pagodas
     of different sizes and materials. Then restore your world after you are 
     done experimenting.

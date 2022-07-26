@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Discovering the Coordinates of a Block &mdash; mciwb 0.6.4.dev14+g3762ae2 documentation</title>
+  <title>Discovering the Coordinates of a Block &mdash; mciwb 0.6.4.dev16+g85a73fe documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
@@ -63,6 +63,7 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="startup.html">Setup for each Tutorial</a></li>
 <li class="toctree-l1"><a class="reference internal" href="completion.html">Command Completion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="extensions.html">VSCode Extensions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="troubleshooting.html">Troubleshooting</a></li>
 <li class="toctree-l1"><a class="reference internal" href="backup.html">Backup and Restore</a></li>
 <li class="toctree-l1"><a class="reference internal" href="wsl2.html">Windows Subsystem for Linux</a></li>
@@ -123,14 +124,14 @@ creation.</p>
 <p>You can always use your player’s position to build from. e.g. assuming you
 have defined the <a class="reference internal" href="../tutorials/05-functions.html#pagoda"><span class="std std-ref">Pagoda Function</span></a>. You could build a pagoda around your player like
 this:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">pagoda</span><span class="p">(</span><span class="n">player</span><span class="o">.</span><span class="n">world</span><span class="o">.</span><span class="n">position</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">build_pagoda</span><span class="p">(</span><span class="n">player</span><span class="o">.</span><span class="n">world</span><span class="o">.</span><span class="n">position</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>It might also be good to use a variable to store your player’s position. Then
 you can walk away from it and turn around the see pagoda build.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">pos</span> <span class="o">=</span> <span class="n">player</span><span class="o">.</span><span class="n">world</span><span class="o">.</span><span class="n">pos</span>
 <span class="c1"># now walk away and turn around</span>
-<span class="n">pagoda</span><span class="p">(</span><span class="n">pos</span><span class="p">)</span>
+<span class="n">build_pagoda</span><span class="p">(</span><span class="n">pos</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -145,7 +146,7 @@ the screen. Hit F3 again to turn off the diagnostic information.</p>
 follows:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># assumes you read X=200 Y=-10 Z=54</span>
 <span class="n">pos</span> <span class="o">=</span> <span class="n">Vec3</span><span class="p">(</span><span class="mi">200</span><span class="p">,</span><span class="o">-</span><span class="mi">10</span><span class="p">,</span><span class="mi">54</span><span class="p">)</span>
-<span class="n">pagoda</span><span class="p">(</span><span class="n">pos</span><span class="p">)</span>
+<span class="n">build_pagoda</span><span class="p">(</span><span class="n">pos</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -172,7 +173,7 @@ copy buffer start and end is by tying <code class="docutils literal notranslate"
 <p>You can then copy and paste the start value and assign it to a variable like
 this:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">pos</span> <span class="o">=</span> <span class="n">Vec3</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="mi">620</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mi">71</span><span class="p">,</span> <span class="n">z</span><span class="o">=-</span><span class="mi">1623</span><span class="p">)</span>
-<span class="n">pagoda</span><span class="p">(</span><span class="n">pos</span><span class="p">)</span>
+<span class="n">build_pagoda</span><span class="p">(</span><span class="n">pos</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>This is the easiest and most versatile way to discover a block’s coordinates.</p>
