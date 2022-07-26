@@ -4,33 +4,15 @@ Modules and Packages
 In this tutorial we will start to use vscode to develop a Python package 
 for making buildings in the game. We will be starting with 
 the pagoda building from the previous tutorial and here we will also 
-go into the detail of how the pagoda function works.
+go into the detail of how the ``build_pagoda`` function works.
 
-Preparing VSCode
-----------------
-
-VSCode has some great extensions for working with Python files. Let's make sure 
-those are installed now. 
-
-Click on the extensions Icon and type ``pylance``. Click on ``install`` for 
-the two Microsoft extensions listed.
-
-.. figure:: ../images/pylance.png
-   :alt: pylance
-   :align: center
-   :width: 600px
-
-   Adding Extensions
-
-These extensions add syntax based colouring to your Python files and also
-will verify your code. If you see a red squiggly line under some of your 
-code then it means that your code is not valid. If you hover your mouse 
-over the squiggly line you will see a message saying what is wrong.
+You may like to install Python extensions for vscode at this point, 
+see `../how-to/extensions`
 
 Getting a Bash Prompt
 ---------------------
 
-We are going to use some bash (zsh) commands here so lets open a second terminal
+We are going to use some bash commands here so lets open a second terminal
 in VSCode so that we can have a bash prompt but also keep our Python shell
 prompt open.
 
@@ -64,7 +46,7 @@ code.
 A package is simply a folder (directory) that contains python modules.
 
 We are going to create a package called ``buildings`` with a single module
-to start with called ``pagoda``. Type the following commands at the
+to start with called ``build_pagoda``. Type the following commands at the
 bash prompt::
 
     cd $HOME/my_world
@@ -87,7 +69,7 @@ Now we can paste our pagoda function into the editor window and save it with
 Menu -> File -> Save (or Ctrl+S is a shortcut to save the current file).
 Use this slightly modified version of the pagoda function:
 
-.. literalinclude :: ../../src/demo/pagoda2.py
+.. literalinclude :: ../../src/demo/pagoda.py
    :language: python
 
 To try using this function you can now type the following command in the
@@ -108,19 +90,14 @@ How it Works
 Let's take a look at all of the new things that we used in our ``build_pagoda``
 function.
 
-import
+Import
 ~~~~~~
 
 .. code-block:: python
    
-   from mcwb.api import polygon
+   from mciwb import Direction, Item, get_client, polygon
 
-``import`` allows us to access code from other modules. The ``polygon`` 
-function is implemented in a module called 
-``api`` in a package called ``mcwb``. 
-We will frequently use code from two packages called ``mcwb`` (Minecraft world
-builder) and ``mcipc`` (Minecraft inter-process communication). These are two
-packages that Minecraft Interactive World Builder is built on top of.
+``import`` allows us to access code from other modules. 
 
 One of the greatest features of Python is its extensive library of built in
 modules. For example the maths module contains functions for doing math.
@@ -130,19 +107,11 @@ e.g.
 
     from math import sqrt, cos, sin
 
-The ``polygon`` function itself is implemented using some of these math functions.
+The ``polygon`` function that we used to make the pagoda is implemented using 
+some of these math functions.
 Luckily, you don't need to know anything about the mathematics of polygon
 construction because the ``polygon`` function has done all that for you!
-
-.. code-block:: python
    
-   from mciwb import Direction, Item, get_client
-
-The 2nd import function is importing things from ``mciwb``. ``mciwb`` is 
-the package that contains the Minecraft Interactive World Builder itself. 
-We have already 
-been using functions and variables defined in this package.
-
 So, ``Direction`` and
 ``Item`` are already familiar, we have previously used them in 
 **iPython** without needing to import them.
@@ -156,11 +125,13 @@ looking at online documentation to discover packages and modules you want to
 use and discovering the imports you need to use them. But for now it is 
 easiest just to copy the import statements from examples like ``pagoda.py``.
 
-get_client
+Get_client
 ~~~~~~~~~~
 
-Whenever we call any functions in the ``mciwb`` or ``mcipc`` packages we need
-a client object. This represents a connection to our Minecraft server. 
+Whenever we call any functions that make changes to Minecraft we need a client
+object. This represents a connection to our Minecraft server. (An exception to
+this is functions in the ``world`` object since ``world`` holds a client 
+connection for us to save on typing)
 
 The ``get_client`` function obtains a client object for you to use. Here we 
 assign it into the variable ``c`` and pass ``c`` to the ``polygon`` function.
@@ -168,7 +139,7 @@ assign it into the variable ``c`` and pass ``c`` to the ``polygon`` function.
 Advanced programmers may want to read up on how this is a thread-safe
 client object! see (`mcipc`).
 
-comments
+Comments
 ~~~~~~~~
 
 At the beginning of ``build_pagoda`` we have a block comment. It uses 
@@ -178,85 +149,83 @@ including line breaks that is not interpreted as Python code.
 Good programmers will usually add a comment block at the top of their
 functions and using triple quotes is the standard way to do this.
 
-extra parameters to ``range``
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-We already learned that for example ``range(10)`` is a list of numbers from
-0 to 9. But here we have:
-
-.. code-block:: python
-   
-    for floor_width in range(width, 2, -2)
-
-When you provide these 3 parameters to range they are interpreted as 
-start, stop and step. So here we start at the width of the pagoda base as
-provided by the caller and then we go down to 2 in steps of -2.
-
-i.e. if we pass width=30 then the for loop will execute once for each of 
-these values of floor_width:
-
-    30, 28, 26, 24, 22, 20, 18, 16, 14, 12, 10, 8, 6, 4, 2
     
-mcwb.polygon
-~~~~~~~~~~~~
+Polygon
+~~~~~~~
 
-``polygon`` is a function implemented in the mcwb package. It is capable of 
-making any regular polygon and using that shape to build a tower (or a tunnel!).
+``polygon`` is a function that draws the outline of a polygon using blocks. 
+It is capable of 
+making any regular polygon and using that shape to build a tower. The 
+parameter ``height`` tells it how many levels of the same polygon to stack
+on top of each other.
 If you want to make a circular tower then you can just pass a large number 
-like 400 as the number of sides.
+like 400 as the number of sides. In pagoda we use 4 sides to make a square 
+pagoda.
 
 Making a Pagoda
 ~~~~~~~~~~~~~~~
 
 So how does the overall function work?
 
-We see that we have a for loop that iterates over the range of ``floor_widths``.
-These ``floor_widths`` start at the ``width`` you passed (30 in the example I gave)
-and step down in size by 2 blocks until we reach 2 blocks.
+The caller has specified the width of the bottom of the pagoda. We use this 
+to calculate how many levels we can make. Each level is 2 blocks narrower
+than the one below and so width divided by 2 should be the number of levels.
+We use ``integer division`` to round down to the nearest integer as we
+don't want to try to make half a level ``//`` is the integer division 
+operator.
+
+Next we  see that we loop over the range of levels.
+For our width 30 pagoda we have 15 levels and therefore ``level`` will
+range from 0 to 14. 
 
 For each iteration of the ``for loop`` we build some walls and a balcony.
 
 The ``base`` of the walls is calculated as ``level`` * ``floor_height`` blocks 
-above the starting ``pos``. ``floor_height`` is the default value 4 by default.
+above the starting ``pos``. ``floor_height`` is the default value of 4.
 Thus, the first 
-floor ``base`` is 0 blocks above the starting ``pos`` and each successive 
-``level`` is 4 blocks above the previous ``level``. 
+floor ``base`` is 0 blocks above the starting ``pos`` (0 times 4) and 
+each successive ``level`` is 4 blocks above the previous ``level``. 
 
-We start by setting ``level`` to zero and the following statement:
 
 .. code-block:: python
-   
-    level += 1
 
-causes level to have one added to itself. So it gets one bigger, each time 
-through the ``for loop``.
+    polygon(
+        client=c,
+        center=base,
+        height=floor_height,
+        diameter=floor_width,
+        sides=4,
+        item=item,
+    )
 
 To create the walls we call polygon with these parameters:
-    c: 
+    client is set to c: 
         the client object needed to talk to the Minecraft server
-    base: 
+    centre is set to base: 
         the calculated starting point for the polygon
-    floor_height: 
-        the height of the polygon (defaults to 4)
-    sides: 
+    height is set to floor_height: 
+        the height of the polygon (defaulted to 4)
+    diameter is set to floor_width:
+        the diameter of the polygon (starting at 30 for the bottom level)
+    sides set to 4: 
         the number of sides of the polygon, we use 4, making a square
-    item: 
+    item is set to item(which was passed to ``build_pagoda``): 
         the blocks to use for the polygon, defaulted to GOLD_BLOCK
 
 As we loop around the ``for loop`` we create a new polygon at each level,
 but the width of it is shrinking by two blocks at each level. Eventually
-we get to a narrow level of 2 blocks at the top and the loop completes.
+we get to a narrow level at the top and the loop completes.
 
-exercise:
+Exercise:
     Can you work out how the balcony is being drawn on each level? look
     at the math used to calculate ``balcony`` and the ``polygon`` function
     parameters used to draw the balcony and see if you can figure out how
     it works.
 
-exercise 2:
+Exercise 2:
     I found pesky pillagers patrolling on my pagoda. A friend pointed out that
     you can avoid this by placing torches on top of every surface of the 
-    pagoda and that it is possible to do this with just two 
-    calls to the existing pagoda function. Can you work out how to do this?
-
+    pagoda. Mobs (mobile entities) won't walk on a block that has a torch on it.
+    You can make a pagoda with torches on its surfaces with just two calls to
+    the pagoda function. Can you work out how?
 

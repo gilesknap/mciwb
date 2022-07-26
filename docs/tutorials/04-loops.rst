@@ -74,7 +74,7 @@ following:
 This is two loops inside of each other, each loops 3 times and so the total
 number of times the code block is executed is 3 times 3 = 9. 
 
-exercise:
+Exercise:
     Try executing the above nested loop in **iPython** and see if you can
     work out why the output looks like it does.
 
@@ -93,12 +93,17 @@ exercise:
     The picture below is the advanced IBM 'Selectric' typewriter that came 
     out in 1961. At this point IBM did not think that people needed 
     mathematical symbols on their keyboards. As computers took over in the 
-    next couple of decades they just copied the same layout.
+    next few decades they just copied the same layout.
 
-    .. image:: ../images/typewriter.jpg
+    .. figure:: ../images/typewriter.jpg
         :alt: nether portal
         :width: 500px
         :align: center
+
+        IBM Selectric typewriter 1961
+
+    In case you don't know, typewriters printed what you typed directly to 
+    paper and did not save it! Imagine that!
 
 .. _portal:
 
@@ -159,7 +164,7 @@ that the for loop is looping over values of ``x`` from 0 to 3. So we have::
 For the top row we do the same thing but also add 4 steps upwards. The 
 loop over ``y`` does a similar thing for the two sides of the portal.
 
-exercise:
+Exercise:
     See if you can experiment with creating different sizes of nether portals.
     Maybe you can create other shapes? If you used a nested loop you could make 
     steps for example?
