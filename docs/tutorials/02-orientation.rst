@@ -197,5 +197,5 @@ Exiting the Python prompt
 
 To exit the **iPython** prompt type ``<ctrl> D```
 
-This will exit **iPython** and return you to your ``bash`` (or zsh) 
+This will exit **iPython** and return you to your ``bash``
 terminal prompt.

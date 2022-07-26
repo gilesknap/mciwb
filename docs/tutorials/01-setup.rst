@@ -144,7 +144,7 @@ own name.
 First start a terminal by selecting from the menu bar 
 ``Terminal -> New Terminal``.
 
-The bottom half of your VSCode window will display a ``bash`` (or ``zsh``)
+The bottom half of your VSCode window will display a ``bash``
 prompt like this:
 
 .. image:: ../images/prompt.excalidraw.png
@@ -180,7 +180,7 @@ Now you should see a you VSCode window that looks something like this:
 
 From this point on all commands typed in the console and chosen from VSCode
 menus should be the same for Windows, Linux and MacOS. This is because you
-now have a bash (or zsh) shell for typing commands.
+now have a bash shell for typing commands.
 
 .. warning::
     There is one caveat here. When directed to install a software package with 

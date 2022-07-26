@@ -1,3 +1,4 @@
+from mcipc.rcon.enumerations import FillMode, Item
 from mcipc.rcon.item import Item
 from mcipc.rcon.je import Client
 from mcwb import Anchor3 as Corner
@@ -40,6 +41,7 @@ __all__ = [
     "Blocks",
     "Cuboid",
     "Direction",
+    "FillMode",
     "Planes3d",
     "CopyPaste",
     "Monitor",

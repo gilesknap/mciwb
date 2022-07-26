@@ -22,6 +22,7 @@
         "gamerule",
         "IMPORTMISMATCH",
         "itemlists",
+        "linenos",
         "minecraft",
         "mockclient",
         "mockplayer",
