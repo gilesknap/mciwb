@@ -120,10 +120,23 @@ writing a new module called ``pagoda`` (in the file pagoda.py).
 ``import`` is the command to share 
 code between modules and is therefore required in our new ``pagoda`` module.
 
+import is usually used at the beginning of a module and code that is 
+imported is available to all of the code within the module.
+
 Once you become familiar with Python you will eventually be comfortable 
 looking at online documentation to discover packages and modules you want to
 use and discovering the imports you need to use them. But for now it is 
 easiest just to copy the import statements from examples like ``pagoda.py``.
+
+Comments
+~~~~~~~~
+
+At the beginning of ``build_pagoda`` we have a block comment. It uses 
+triple quotes ``"""`` which allow you to write a block of text
+including line breaks that is not interpreted as Python code.
+
+Good programmers will usually add a comment block at the top of their
+functions and using triple quotes is the standard way to do this.
 
 Get_client
 ~~~~~~~~~~
@@ -138,16 +151,6 @@ assign it into the variable ``c`` and pass ``c`` to the ``polygon`` function.
 
 Advanced programmers may want to read up on how this is a thread-safe
 client object! see (`mcipc`).
-
-Comments
-~~~~~~~~
-
-At the beginning of ``build_pagoda`` we have a block comment. It uses 
-triple quotes ``"""`` which allow you to write a block of text
-including line breaks that is not interpreted as Python code.
-
-Good programmers will usually add a comment block at the top of their
-functions and using triple quotes is the standard way to do this.
 
     
 Polygon
