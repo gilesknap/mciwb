@@ -1,5 +1,5 @@
 from demo.shapes import pyramid
-from mciwb import Direction, Item, Monitor, Vec3, world
+from mciwb.imports import Direction, Item, Monitor, Vec3, world
 
 
 class Follower:

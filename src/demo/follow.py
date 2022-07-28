@@ -1,7 +1,7 @@
 import time
 
 from demo.shapes import pyramid
-from mciwb import Direction, Item, Vec3, world
+from mciwb.imports import Direction, Item, Vec3, world
 
 
 def follow(pyramid_centre):

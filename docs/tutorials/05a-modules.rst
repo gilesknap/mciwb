@@ -95,7 +95,7 @@ Import
 
 .. code-block:: python
    
-   from mciwb import Direction, Item, get_client, polygon
+   from mciwb.imports import Direction, Item, get_client, polygon
 
 ``import`` allows us to access code from other modules. 
 

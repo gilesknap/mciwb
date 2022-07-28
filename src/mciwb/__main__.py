@@ -5,21 +5,33 @@ from typing import Optional
 
 import typer
 from IPython.terminal.embed import InteractiveShellEmbed
-from mcipc.rcon.enumerations import FillMode, Item
-from mcipc.rcon.item import Item
-from mcipc.rcon.je import Client
-from mcwb import Anchor3 as Corner
-from mcwb import Blocks, Cuboid, Vec3, Volume
-from mcwb.api import make_tunnel, polygon
-from mcwb.itemlists import grab, load_items, save_items
-from mcwb.types import Direction, Planes3d
 
 from mciwb import __version__
 from mciwb.backup import Backup
-from mciwb.copier import CopyPaste
-from mciwb.iwb import Iwb, world
-from mciwb.monitor import Monitor
-from mciwb.player import Player
+from mciwb.imports import (
+    Blocks,
+    Client,
+    CopyPaste,
+    Corner,
+    Cuboid,
+    Direction,
+    FillMode,
+    Item,
+    Iwb,
+    Monitor,
+    Planes3d,
+    Player,
+    Switch,
+    Vec3,
+    Volume,
+    get_client,
+    grab,
+    load_items,
+    make_tunnel,
+    polygon,
+    save_items,
+    world,
+)
 from mciwb.server import (
     HOST,
     MinecraftServer,
@@ -30,13 +42,11 @@ from mciwb.server import (
     default_server_folder,
     server_name,
 )
-from mciwb.switch import Switch
-from mciwb.threads import get_client
 
 cli = typer.Typer(add_completion=False)
 
 # these are imported for use in iPython without needing a manual import
-useful = [
+for_ipython = [
     Blocks,
     Client,
     CopyPaste,
@@ -44,20 +54,20 @@ useful = [
     Cuboid,
     Direction,
     FillMode,
-    get_client,
-    grab,
     Item,
     Iwb,
-    load_items,
-    make_tunnel,
     Monitor,
     Planes3d,
     Player,
-    polygon,
-    save_items,
     Switch,
     Vec3,
     Volume,
+    get_client,
+    grab,
+    load_items,
+    make_tunnel,
+    polygon,
+    save_items,
     world,
 ]
 

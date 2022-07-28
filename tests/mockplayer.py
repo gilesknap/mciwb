@@ -1,8 +1,6 @@
 from typing import List
 
-from mcwb.types import Direction, Vec3
-from mcwb.volume import Volume
-
+from mciwb.imports import Direction, Vec3, Volume
 from tests.conftest import ENTITY_NAME
 from tests.mockclient import MockClient
 

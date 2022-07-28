@@ -5,12 +5,7 @@ System tests for the Copy class
 
 from time import sleep
 
-from mcipc.rcon.item import Item
-from mcwb.types import Direction
-
-from mciwb.iwb import Iwb
-from mciwb.player import Player
-from mciwb.threads import get_client
+from mciwb.imports import Direction, Item, Iwb, Player, get_client
 from tests.conftest import ENTITY_NAME
 
 
