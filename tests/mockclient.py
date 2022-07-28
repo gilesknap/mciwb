@@ -9,7 +9,7 @@ from mcipc.rcon.enumerations import CloneMode, Item, MaskMode
 from mcwb.types import Items, Vec3
 from mcwb.volume import Volume
 
-from mciwb import Player
+from mciwb.player import Player
 
 
 class MockClient:

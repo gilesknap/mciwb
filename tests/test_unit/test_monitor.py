@@ -1,6 +1,6 @@
 from time import sleep
 
-from mciwb import Monitor
+from mciwb.monitor import Monitor
 
 
 def test_single_use(mock_client):
