@@ -78,6 +78,7 @@ class Monitor:
                 logging.warning(e)
                 self._polling = False
             except BaseException:
+                # report any other exception and continue polling
                 logging.error(f"Error in {get_thread_name()}", exc_info=True)
 
             if self.once:
@@ -115,6 +116,6 @@ class Monitor:
         self.stop()
 
     def __repr__(self):
-        # TODO work out how to shoe the class of the bound method
+        # TODO work out how to show the class of the bound method
         func_list = [f.__name__ for f in self.pollers]
         return f"{self.name} polling {func_list} at {self.poll_rate})"

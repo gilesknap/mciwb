@@ -9,9 +9,8 @@ from time import sleep
 
 from docker import from_env
 from docker.models.containers import Container
+from mcipc.rcon.je.client import Client
 from mcwb import Vec3
-
-from mciwb import Client
 
 HOST = "localhost"
 

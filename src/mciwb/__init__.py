@@ -1,18 +1,3 @@
-from mcipc.rcon.enumerations import FillMode, Item
-from mcipc.rcon.item import Item
-from mcipc.rcon.je import Client
-from mcwb import Anchor3 as Corner
-from mcwb import Blocks, Cuboid, Vec3, Volume
-from mcwb.api import get_block, make_tunnel, polygon
-from mcwb.itemlists import grab, load_items, save_items
-from mcwb.types import Direction, Planes3d
-
-from mciwb.copier import CopyPaste
-from mciwb.iwb import Iwb, world
-from mciwb.monitor import Monitor
-from mciwb.player import Player
-from mciwb.threads import get_client
-
 try:
     # Use live version from git
     from setuptools_scm import get_version
@@ -28,28 +13,4 @@ else:
 
 # imports here are used to bring commonly used classes into a single namespace
 # for ease of use for novice programmers
-__all__ = [
-    "__version__",
-    "get_client",
-    "load_items",
-    "save_items",
-    "grab",
-    "Item",
-    "Iwb",
-    "Client",
-    "Corner",
-    "Blocks",
-    "Cuboid",
-    "Direction",
-    "FillMode",
-    "Planes3d",
-    "CopyPaste",
-    "Monitor",
-    "Player",
-    "world",
-    "Vec3",
-    "Volume",
-    "make_tunnel",
-    "polygon",
-    "get_block",
-]
+__all__ = ["__version__"]
