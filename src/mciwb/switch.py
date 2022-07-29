@@ -1,5 +1,5 @@
 """
-Defines a class for representing a switch, button or any other activator
+Defines a class for representing a lever, button or any other activator
 in the world. Implements monitoring of the switch's state with callbacks.
 """
 
@@ -27,7 +27,6 @@ class Switch:
     switches: List["Switch"] = []
 
     next_id: int = 0
-    data_values = "[face={}, facing={}, powered={}]"
 
     def __init__(
         self,

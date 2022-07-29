@@ -1,4 +1,4 @@
-from mciwb.imports import Direction, Item, get_client, polygon
+from mciwb.imports import Direction, FillMode, Item, get_client, polygon
 
 
 def build_pagoda(pos, width=4, floor_height=4, item: Item = Item.GOLD_BLOCK):
@@ -35,6 +35,7 @@ def build_pagoda(pos, width=4, floor_height=4, item: Item = Item.GOLD_BLOCK):
             diameter=floor_width + 2,
             sides=4,
             item=item,
+            mode=FillMode.REPLACE,
         )
 
         # create the walls for this level
@@ -45,4 +46,5 @@ def build_pagoda(pos, width=4, floor_height=4, item: Item = Item.GOLD_BLOCK):
             diameter=floor_width,
             sides=4,
             item=item,
+            mode=FillMode.REPLACE,
         )

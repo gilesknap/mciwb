@@ -214,6 +214,10 @@ To create the walls we call polygon with these parameters:
         the number of sides of the polygon, we use 4, making a square
     item is set to item(which was passed to ``build_pagoda``): 
         the blocks to use for the polygon, defaulted to GOLD_BLOCK
+    mode is set to FIllMode.REPLACE
+        this means that all pagoda blocks replace existing blocks. You
+        could also use FillMode.KEEP which only places blocks if the current
+        block is Item.AIR.
 
 As we loop around the ``for loop`` we create a new polygon at each level,
 but the width of it is shrinking by two blocks at each level. Eventually
@@ -227,8 +231,9 @@ Exercise:
 
 Exercise 2:
     I found pesky pillagers patrolling on my pagoda. A friend pointed out that
-    you can avoid this by placing torches on top of every surface of the 
-    pagoda. Mobs (mobile entities) won't walk on a block that has a torch on it.
-    You can make a pagoda with torches on its surfaces with just two calls to
+    you can avoid this by placing slabs on top of every surface of the 
+    pagoda. Mobs (mobile entities) won't spawn on a slab. Also you can make
+    the slab a different material for an interesting look.
+    You can make a pagoda with slabs on its surfaces with just two calls to
     the pagoda function. Can you work out how?
 
