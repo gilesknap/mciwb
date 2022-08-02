@@ -136,3 +136,5 @@ cov.xml
 requirements*
 
 src/mciwb/_version.py
+.venv*
+

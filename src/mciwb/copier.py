@@ -1,7 +1,8 @@
 import logging
 
-from mcipc.rcon.enumerations import CloneMode, Item, MaskMode
-from mcwb.types import Vec3
+from mcipc.rcon.enumerations import CloneMode, MaskMode
+from mcipc.rcon.item import Item
+from mcwb import Vec3
 
 from mciwb.threads import get_client
 

@@ -95,7 +95,7 @@ Import
 
 .. code-block:: python
    
-   from mciwb import Direction, Item, get_client, polygon
+   from mciwb.imports import Direction, Item, get_client, polygon
 
 ``import`` allows us to access code from other modules. 
 
@@ -120,10 +120,23 @@ writing a new module called ``pagoda`` (in the file pagoda.py).
 ``import`` is the command to share 
 code between modules and is therefore required in our new ``pagoda`` module.
 
+import is usually used at the beginning of a module and code that is 
+imported is available to all of the code within the module.
+
 Once you become familiar with Python you will eventually be comfortable 
 looking at online documentation to discover packages and modules you want to
 use and discovering the imports you need to use them. But for now it is 
 easiest just to copy the import statements from examples like ``pagoda.py``.
+
+Comments
+~~~~~~~~
+
+At the beginning of ``build_pagoda`` we have a block comment. It uses 
+triple quotes ``"""`` which allow you to write a block of text
+including line breaks that is not interpreted as Python code.
+
+Good programmers will usually add a comment block at the top of their
+functions and using triple quotes is the standard way to do this.
 
 Get_client
 ~~~~~~~~~~
@@ -138,16 +151,6 @@ assign it into the variable ``c`` and pass ``c`` to the ``polygon`` function.
 
 Advanced programmers may want to read up on how this is a thread-safe
 client object! see (`mcipc`).
-
-Comments
-~~~~~~~~
-
-At the beginning of ``build_pagoda`` we have a block comment. It uses 
-triple quotes ``"""`` which allow you to write a block of text
-including line breaks that is not interpreted as Python code.
-
-Good programmers will usually add a comment block at the top of their
-functions and using triple quotes is the standard way to do this.
 
     
 Polygon
@@ -211,6 +214,10 @@ To create the walls we call polygon with these parameters:
         the number of sides of the polygon, we use 4, making a square
     item is set to item(which was passed to ``build_pagoda``): 
         the blocks to use for the polygon, defaulted to GOLD_BLOCK
+    mode is set to FIllMode.REPLACE
+        this means that all pagoda blocks replace existing blocks. You
+        could also use FillMode.KEEP which only places blocks if the current
+        block is Item.AIR.
 
 As we loop around the ``for loop`` we create a new polygon at each level,
 but the width of it is shrinking by two blocks at each level. Eventually
@@ -224,8 +231,9 @@ Exercise:
 
 Exercise 2:
     I found pesky pillagers patrolling on my pagoda. A friend pointed out that
-    you can avoid this by placing torches on top of every surface of the 
-    pagoda. Mobs (mobile entities) won't walk on a block that has a torch on it.
-    You can make a pagoda with torches on its surfaces with just two calls to
+    you can avoid this by placing slabs on top of every surface of the 
+    pagoda. Mobs (mobile entities) won't spawn on a slab. Also you can make
+    the slab a different material for an interesting look.
+    You can make a pagoda with slabs on its surfaces with just two calls to
     the pagoda function. Can you work out how?
 

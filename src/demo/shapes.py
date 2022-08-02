@@ -1,6 +1,6 @@
 import logging
 
-from mciwb import Direction, Item, Vec3, world
+from mciwb.imports import Direction, Item, Vec3, world
 
 logging.info("loading cool stuff")
 

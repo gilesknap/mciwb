@@ -5,11 +5,10 @@ This mocks a world of 100 blocks square with origin in the middle.
 from math import floor
 
 import numpy as np
-from mcipc.rcon.enumerations import CloneMode, Item, MaskMode
-from mcwb.types import Items, Vec3
-from mcwb.volume import Volume
+from mcipc.rcon.enumerations import CloneMode, MaskMode
+from mcwb.types import Items
 
-from mciwb import Player
+from mciwb.imports import Item, Player, Vec3, Volume
 
 
 class MockClient:
