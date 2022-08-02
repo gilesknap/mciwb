@@ -11,7 +11,8 @@ from rcon.exceptions import SessionTimeout
 from mciwb.player import PlayerNotInWorld
 from mciwb.threads import get_client, get_thread_name, new_thread
 
-CallbackFunction = Callable[[], None]
+# supports any function arguments
+CallbackFunction = Callable
 
 
 class Monitor:
@@ -89,11 +90,11 @@ class Monitor:
             self.monitors.remove(self)
         self.poll_thread = None
         self.pollers = []
-        logging.info(f"Monitor {self.name} stopped")
+        if not self.once:
+            logging.info(f"Monitor {self.name} stopped")
 
     def add_poller_func(self, func: CallbackFunction, params: Tuple[Any, ...] = ()):
         self.pollers.append((func, params))
-        self._start_poller()
 
     # TODO: consider using a dict or indexing pollers in some fashion
     # currently this does not support 2 calls to same function

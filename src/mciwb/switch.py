@@ -16,8 +16,8 @@ SwitchCallback = Callable[["Switch"], None]
 
 # supported switch types and the properties to set on them
 item_types = {
-    "BUTTON": "[face=floor, facing=north, powered=off]",
-    "LEVER": "[face=floor, facing=north, powered=off]",
+    "BUTTON": "[face=floor, facing=north]",
+    "LEVER": "[face=floor, facing=north]",
     "TRIPWIRE_HOOK": "[]",
     "PRESSURE_PLATE": "[]",
 }
