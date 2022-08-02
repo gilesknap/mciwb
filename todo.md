@@ -19,3 +19,11 @@ village
 -   a drawbridge / portcullis that open and close
 -   a rotating object using blocks (with a face on)
 -   or even better a patrolling tower / robot ? 
+
+Finale
+------
+
+Have a button that destroys the village and flattens the land
+
+and a button that re-creates everything from scratch.
+

@@ -30,12 +30,12 @@ class Switch:
 
     def __init__(
         self,
-        location: Vec3,
+        position: Vec3,
         item: Item,
         callback: SwitchCallback,
         name: str = "",
     ) -> None:
-        self.location = location
+        self.pos = position
         self.callback = callback
         Switch.next_id += 1
         self.id = Switch.next_id
@@ -55,10 +55,10 @@ class Switch:
 
         # TODO pass properties for orientation to the constructor
         full_item = str(item) + properties
-        res = get_client().setblock(location, full_item, mode=SetblockMode.REPLACE)
+        res = get_client().setblock(position, full_item, mode=SetblockMode.REPLACE)
         if "Changed the block" not in res:
             logging.warning(res)
-        logging.info(f"Created switch {self.name}, id {self.id} at {location}")
+        logging.info(f"Created switch {self.name}, id {self.id} at {position}")
 
         self.monitor = Monitor(self.poll, name=self.name)
 
@@ -69,15 +69,15 @@ class Switch:
         if self in self.switches:
             self.switches.remove(self)
         self.monitor.stop()
-        get_client().setblock(self.location, str(Item.AIR), mode=SetblockMode.REPLACE)
-        logging.info(f"Deleted switch {self.id} at {self.location}")
+        get_client().setblock(self.pos, str(Item.AIR), mode=SetblockMode.REPLACE)
+        logging.info(f"Deleted switch {self.id} at {self.pos}")
 
     @classmethod
     def stop(cls):
         cls.monitoring = False
 
     def check_state(self, state: str) -> bool:
-        res = get_client().execute.if_.block(self.location, state).run("seed")
+        res = get_client().execute.if_.block(self.pos, state).run("seed")
         if "Seed" in res:
             result = True
         else:
