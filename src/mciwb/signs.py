@@ -89,7 +89,7 @@ class Signs:
     def add_sign(self, name: str, function: CallbackPosFunction):
         self.signs[name] = function
 
-    def remove_sign(self, name: str, function: CallbackPosFunction):
+    def remove_sign(self, name: str):
         del self.signs[name]
 
     def give_signs(self):

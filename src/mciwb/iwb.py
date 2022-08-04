@@ -46,6 +46,7 @@ class Iwb:
 
         self.player: Player = None  # type: ignore
         self.copier: CopyPaste = None  # type: ignore
+        self.signs: Signs = None  # type: ignore
 
         self._players: Dict[str, Player] = {}
         self._copiers: Dict[str, CopyPaste] = {}
@@ -86,15 +87,15 @@ class Iwb:
             player = Player(name)
             self._players[name] = player
 
-            sign = Signs(player)
-            Monitor(sign.poll, name=name)
-            self._copiers[name] = sign.copy
+            self.signs = Signs(player)
+            Monitor(self.signs.poll, name=name)
+            self._copiers[name] = self.signs.copy
 
             if me:
                 self.player = player
-                self.copier = sign.copy
+                self.copier = self.signs.copy
 
-            sign.give_signs()
+            self.signs.give_signs()
         except (PlayerNotInWorld, SessionTimeout, NoPlayerFound) as e:
             # during tests this will fail as there is no real player
             logging.error("failed to give signs to player, %s", e)
