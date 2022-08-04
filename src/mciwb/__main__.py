@@ -30,7 +30,6 @@ from mciwb.imports import (
     make_tunnel,
     polygon,
     save_items,
-    world,
 )
 from mciwb.server import (
     HOST,
@@ -68,7 +67,6 @@ for_ipython = [
     make_tunnel,
     polygon,
     save_items,
-    world,
 ]
 
 
@@ -145,9 +143,6 @@ def shell(
         logging.error("Failed to start world")
         logging.debug("", exc_info=True)
         exit(1)
-
-    # for quick access in the shell without qualifying the namespace
-    world = world
 
     logging.info("######### Starting Interactive Session ##########\n")
 

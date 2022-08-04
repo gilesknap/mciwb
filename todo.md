@@ -11,6 +11,7 @@ mciwb
 -   add switches and levers
 -   save and load of selected blocks
 -   tutorial on creating signs
+-   add a consistent way to discover and delete signs, switches, monitors
 
 village
 -------

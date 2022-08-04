@@ -19,7 +19,7 @@ from mcwb.itemlists import grab, load_items, save_items
 from mcwb.types import Direction, Planes3d
 
 from mciwb.copier import CopyPaste
-from mciwb.iwb import Iwb, world
+from mciwb.iwb import Iwb, get_world
 from mciwb.monitor import Monitor
 from mciwb.player import Player
 from mciwb.switch import Switch
@@ -42,10 +42,10 @@ imported = [
     Vec3,
     Volume,
     get_client,
+    get_world,
     grab,
     load_items,
     make_tunnel,
     polygon,
     save_items,
-    world,
 ]
