@@ -8,11 +8,7 @@ from mciwb.iwb import get_world
 
 
 def wall(start: Vec3, stop: Vec3, height=5, item=Item.STONE):
-    def section(wall_dir: Vec3, step_dir: Vec3):
-        nonlocal begin, end
-        end = begin + wall_dir
-        c.fill(begin.with_ints(), end.with_ints() + Direction.UP * height, str(item))
-        begin = end + step_dir
+    logging.debug(f"drawing a wall v2 from {start} to {stop}")
 
     c = get_client()
     dx = int(stop.x - start.x)
@@ -23,13 +19,16 @@ def wall(start: Vec3, stop: Vec3, height=5, item=Item.STONE):
     if abs(dx) > abs(dz):
         count = abs(dz) + 1
         wall_dir = Direction.EAST * dx / count
-        for step in range(count):
-            section(wall_dir, Direction.SOUTH * np.sign(dz))
+        step_dir = Direction.SOUTH * np.sign(dz)
     else:
         count = abs(dx) + 1
         wall_dir = Direction.SOUTH * dz / count
-        for step in range(count):
-            section(wall_dir, Direction.EAST * np.sign(dx))
+        step_dir = Direction.EAST * np.sign(dx)
+
+    for step in range(count):
+        end = begin + wall_dir
+        c.fill(begin.with_ints(), end.with_ints() + Direction.UP * height, str(item))
+        begin = end + step_dir
 
 
 class WallMaker:
@@ -37,6 +36,8 @@ class WallMaker:
         self.start = Vec3(0, 0, 0)
         self.end = self.start
         signs = get_world().signs
+        signs.remove_sign("start_wall")
+        signs.remove_sign("end_wall")
         signs.add_sign("start_wall", self.start_wall)
         signs.add_sign("end_wall", self.end_wall)
         signs.give_signs()
@@ -46,6 +47,5 @@ class WallMaker:
 
     def end_wall(self, pos: Vec3):
         self.end = pos
-        logging.info(self.start, self.end)
         wall(self.start, self.end)
         self.start = pos

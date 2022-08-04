@@ -90,7 +90,8 @@ class Signs:
         self.signs[name] = function
 
     def remove_sign(self, name: str):
-        del self.signs[name]
+        if name in self.signs:
+            del self.signs[name]
 
     def give_signs(self):
         """

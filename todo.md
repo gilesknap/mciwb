@@ -11,6 +11,7 @@ mciwb
 -   tutorial on creating signs
 -   add a consistent way to discover and delete signs, switches, monitors
 -   add ability to switch on/off deug logging from ipython
+-   make logger only debug mciwb - other loggers are too noisy
 
 village
 -------
