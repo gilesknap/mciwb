@@ -1,7 +1,7 @@
 import time
 
 from demo.shapes import pyramid
-from mciwb import Direction, Item, Vec3, world
+from mciwb.imports import Direction, Item, Vec3, get_world
 
 
 def follow(pyramid_centre):
@@ -9,6 +9,8 @@ def follow(pyramid_centre):
     Spooky Pyramid function: draws a pyramid centred at pyramid_centre, made
     of carved pumpkins that always turn to face the player
     """
+    world = get_world()
+
     pyramid_centre = Vec3(*pyramid_centre)
     size = 11
     half = int(size / 2)

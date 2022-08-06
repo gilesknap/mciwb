@@ -8,7 +8,7 @@ passed to new_thread.
 
 import threading
 
-from mciwb import Client
+from mcipc.rcon.je.client import Client
 
 thread_local = threading.local()
 

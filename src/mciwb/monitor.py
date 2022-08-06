@@ -4,16 +4,15 @@ Thread functions for monitoring state of the world
 
 import logging
 from time import sleep
-from typing import Callable, List, Union
+from typing import Any, Callable, List, Tuple, Union
 
-from mcwb import Vec3
 from rcon.exceptions import SessionTimeout
 
 from mciwb.player import PlayerNotInWorld
 from mciwb.threads import get_client, get_thread_name, new_thread
 
-CallbackFunction = Callable[[], None]
-CallbackPosFunction = Callable[[Vec3], None]
+# supports any function arguments
+CallbackFunction = Callable
 
 
 class Monitor:
@@ -28,28 +27,34 @@ class Monitor:
 
     def __init__(
         self,
-        func: Union[None, CallbackFunction, List[CallbackFunction]] = None,
+        func: Union[None, CallbackFunction] = None,
+        params: Tuple[Any, ...] = (),
         once=False,
         name=None,
         poll_rate=0.2,
+        start=True,
     ) -> None:
 
         if name is None:
             name = f"Monitor{Monitor.monitor_num}"
             Monitor.monitor_num += 1
 
-        self.pollers: List[CallbackFunction] = (
-            [] if func is None else func if isinstance(func, list) else [func]
+        # pollers is a list of functions, param tuples. It may be initialized
+        # with a single function passed in func, params
+        self.pollers: List[Tuple[CallbackFunction, Tuple[Any, ...]]] = (
+            [] if func is None else [(func, params)]
         )
 
         self.name = name
         self.once = once
         self.poll_rate = poll_rate
         self.poll_thread = None
+        self._polling = False
 
-        self._start_poller()
+        if start:
+            self.start_poller()
 
-    def _start_poller(self):
+    def start_poller(self):
         if self.poll_thread is None:
             logging.debug(f"starting polling thread {self.name}")
             self.poll_thread = new_thread(get_client(), self._poller, self.name)
@@ -63,8 +68,8 @@ class Monitor:
 
         while self._polling:
             try:
-                for func in self.pollers:
-                    func()
+                for func, params in self.pollers:
+                    func(*params)
                 sleep(self.poll_rate)
             except BrokenPipeError:
                 logging.error(
@@ -78,6 +83,7 @@ class Monitor:
                 logging.warning(e)
                 self._polling = False
             except BaseException:
+                # report any other exception and continue polling
                 logging.error(f"Error in {get_thread_name()}", exc_info=True)
 
             if self.once:
@@ -87,18 +93,22 @@ class Monitor:
             self.monitors.remove(self)
         self.poll_thread = None
         self.pollers = []
-        logging.info(f"Monitor {self.name} stopped")
+        if not self.once:
+            logging.info(f"Monitor {self.name} stopped")
 
-    def add_poller_func(self, func: CallbackFunction):
-        self.pollers.append(func)
-        self._start_poller()
+    def add_poller_func(self, func: CallbackFunction, params: Tuple[Any, ...] = ()):
+        self.pollers.append((func, params))
 
+    # TODO: consider using a dict or indexing pollers in some fashion
+    # currently this does not support 2 calls to same function
     def remove_poller_func(self, func: CallbackFunction):
-        idx = self.pollers.index(func)
-        if idx < 0:
-            logging.error("removing unknown poller function")
+        for i, t in enumerate(self.pollers):
+            f, params = t
+            if f == func:
+                self.pollers.remove(t)
+                break
         else:
-            self.pollers.remove(func)
+            logging.error("removing unknown poller function")
 
     @classmethod
     def stop_all(cls):
@@ -115,6 +125,6 @@ class Monitor:
         self.stop()
 
     def __repr__(self):
-        # TODO work out how to shoe the class of the bound method
-        func_list = [f.__name__ for f in self.pollers]
+        # TODO work out how to show the class of the bound method
+        func_list = [f.__name__ for f, p in self.pollers]
         return f"{self.name} polling {func_list} at {self.poll_rate})"

@@ -1,11 +1,12 @@
 import logging
+from pathlib import Path
 from typing import Dict, Optional
 
 from mcipc.rcon.exceptions import NoPlayerFound
 from mcipc.rcon.item import Item
 from mcipc.rcon.je import Client
-from mcwb import Direction, Vec3, Volume
-from mcwb.itemlists import grab
+from mcwb import Anchor3, Blocks, Direction, Vec3, Volume
+from mcwb.itemlists import grab, load_items, save_items
 from rcon.exceptions import SessionTimeout
 
 from mciwb.backup import Backup
@@ -19,21 +20,30 @@ from mciwb.threads import get_client, set_client
 world: "Iwb" = None  # type: ignore
 
 
+def get_world():
+    return Iwb.the_world
+
+
 class Iwb:
     """
     Interactive World Builder class. Provides a very simple interface for
     interactive functions for use in an IPython shell.
     """
 
+    the_world: "Iwb" = None  # type: ignore
+
     def __init__(self, server: str, port: int, passwd: str, client=None) -> None:
-        self._server = server
-        self._port = port
-        self._passwd = passwd
+        Iwb.the_world = self
+
+        self._server: str = server
+        self._port: int = port
+        self._passwd: str = passwd
 
         client = client or self.connect()
 
         self.player: Player = None  # type: ignore
         self.copier: CopyPaste = None  # type: ignore
+        self.signs: Signs = None  # type: ignore
 
         self._players: Dict[str, Player] = {}
         self._copiers: Dict[str, CopyPaste] = {}
@@ -74,15 +84,15 @@ class Iwb:
             player = Player(name)
             self._players[name] = player
 
-            sign = Signs(player)
-            Monitor(sign.poll, name=name)
-            self._copiers[name] = sign.copy
+            self.signs = Signs(player)
+            Monitor(self.signs.poll, name=name)
+            self._copiers[name] = self.signs.copy
 
             if me:
                 self.player = player
-                self.copier = sign.copy
+                self.copier = self.signs.copy
 
-            sign.give_signs()
+            self.signs.give_signs()
         except (PlayerNotInWorld, SessionTimeout, NoPlayerFound) as e:
             # during tests this will fail as there is no real player
             logging.error("failed to give signs to player, %s", e)
@@ -147,3 +157,35 @@ class Iwb:
             report += "  no player selected\n"
 
         return report.format(o=self)
+
+    def save(self, filename: str, vol: Optional[Volume] = None):
+        """
+        Save the Volume of blocks represented by the copy buffer or provided
+        volumne to a file
+        """
+        if not vol:
+            vol = self.copier.to_volume()
+
+        blocks = grab(get_client(), vol)
+        save_items(blocks, Path(filename))
+
+    def load(
+        self,
+        filename: str,
+        position: Optional[Vec3] = None,
+        anchor: Anchor3 = Anchor3.BOTTOM_SW,
+    ):
+        """
+        Load a saved set of blocks into a location indicated by copy buffer or
+        passed as an argument
+        """
+        if not position:
+            position = self.copier.start_pos
+
+        # load a 3d array of Item from the file
+        items = load_items(Path(filename), dimensions=3)
+        # convert the items into a Blocks object which renders them in the world
+        blocks = Blocks(get_client(), position, items, anchor=Anchor3.BOTTOM_SW)
+
+        if self.copier:
+            self.copier.apply_volume(blocks.volume)

@@ -1,6 +1,6 @@
 import logging
 
-from mciwb import Direction, Item, Vec3, world
+from mciwb.imports import Direction, Item, Vec3, get_world
 
 logging.info("loading cool stuff")
 
@@ -11,6 +11,8 @@ def box(start: Vec3, size: int, item=Item.ACACIA_FENCE):
 
     Factored for easy understanding
     """
+
+    world = get_world()
 
     # calculate the Vec3 of the NW bottom corner
     opposite = start + (Direction.EAST + Direction.NORTH) * (size - 1)
@@ -45,6 +47,8 @@ def pyramid(start: Vec3, size: int, item=Item.COBBLESTONE, **kwargs):
     """
     Build a pyramid with South West Corner at 'start'
     """
+    world = get_world()
+
     # make rows of walls
     row_size = size
     row_start = start

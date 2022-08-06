@@ -1,7 +1,8 @@
 import logging
 
-from mcipc.rcon.enumerations import CloneMode, Item, MaskMode
-from mcwb.types import Vec3
+from mcipc.rcon.enumerations import CloneMode, MaskMode
+from mcipc.rcon.item import Item
+from mcwb import Vec3, Volume
 
 from mciwb.threads import get_client
 
@@ -20,6 +21,15 @@ class CopyPaste:
         self.paste_pos: Vec3 = self.start_pos
         self._clone_dest = zero
         self.size = zero
+
+    def to_volume(self) -> Volume:
+        v = Volume.from_corners(self.start_pos, self.stop_pos)
+        return v
+
+    def apply_volume(self, vol: Volume):
+        self._set_paste(vol.end)
+        self._set_paste(vol.start)
+        self.paste_pos = vol.start
 
     def get_commands(self):
         return {

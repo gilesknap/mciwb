@@ -6,7 +6,9 @@ from typing import Optional
 import typer
 from IPython.terminal.embed import InteractiveShellEmbed
 
-from mciwb import (
+from mciwb import __version__
+from mciwb.backup import Backup
+from mciwb.imports import (
     Blocks,
     Client,
     CopyPaste,
@@ -19,16 +21,16 @@ from mciwb import (
     Monitor,
     Planes3d,
     Player,
+    Switch,
     Vec3,
     Volume,
-    __version__,
     get_client,
     grab,
+    load_items,
     make_tunnel,
     polygon,
-    world,
+    save_items,
 )
-from mciwb.backup import Backup
 from mciwb.server import (
     HOST,
     MinecraftServer,
@@ -43,7 +45,7 @@ from mciwb.server import (
 cli = typer.Typer(add_completion=False)
 
 # these are imported for use in iPython without needing a manual import
-useful = [
+for_ipython = [
     Blocks,
     Client,
     CopyPaste,
@@ -56,14 +58,15 @@ useful = [
     Monitor,
     Planes3d,
     Player,
+    Switch,
     Vec3,
     Volume,
-    __version__,
     get_client,
     grab,
+    load_items,
     make_tunnel,
     polygon,
-    world,
+    save_items,
 ]
 
 
@@ -140,9 +143,6 @@ def shell(
         logging.error("Failed to start world")
         logging.debug("", exc_info=True)
         exit(1)
-
-    # for quick access in the shell without qualifying the namespace
-    world = world
 
     logging.info("######### Starting Interactive Session ##########\n")
 

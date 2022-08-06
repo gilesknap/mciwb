@@ -1,4 +1,4 @@
-from mciwb import Direction, Item, get_client, polygon
+from mciwb.imports import Direction, FillMode, Item, get_client, polygon
 
 
 def build_pagoda(pos, width=4, floor_height=4, item: Item = Item.GOLD_BLOCK):
@@ -7,16 +7,14 @@ def build_pagoda(pos, width=4, floor_height=4, item: Item = Item.GOLD_BLOCK):
 
     Each successive floor is narrower and each has a balcony at the top.
 
-    The first floors width is `width` and each floor height is `floor_height`.
+    The first floor's width is `width` and each floor height is `floor_height`.
     """
     c = get_client()
 
     # calculate how many levels we can make if we reduce width by 2 each level
     levels = width // 2
 
-    print(levels)
     for level in range(levels):
-        print(level)
         # calculate the width of the pagoda for this level
         floor_width = width - 2 * level
 
@@ -35,6 +33,7 @@ def build_pagoda(pos, width=4, floor_height=4, item: Item = Item.GOLD_BLOCK):
             diameter=floor_width + 2,
             sides=4,
             item=item,
+            mode=FillMode.REPLACE,
         )
 
         # create the walls for this level
@@ -45,4 +44,5 @@ def build_pagoda(pos, width=4, floor_height=4, item: Item = Item.GOLD_BLOCK):
             diameter=floor_width,
             sides=4,
             item=item,
+            mode=FillMode.REPLACE,
         )

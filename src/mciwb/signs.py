@@ -4,14 +4,15 @@ Add an interactive capability through the placing of signs in the world
 import logging
 import re
 from time import sleep
-from typing import Dict
+from typing import Callable, Dict
 
 from mcwb.types import Item, Vec3
 
 from mciwb.copier import CopyPaste
-from mciwb.monitor import CallbackPosFunction
 from mciwb.player import Player
 from mciwb.threads import get_client
+
+CallbackPosFunction = Callable[[Vec3], None]
 
 
 class Signs:
@@ -88,8 +89,9 @@ class Signs:
     def add_sign(self, name: str, function: CallbackPosFunction):
         self.signs[name] = function
 
-    def remove_sign(self, name: str, function: CallbackPosFunction):
-        del self.signs[name]
+    def remove_sign(self, name: str):
+        if name in self.signs:
+            del self.signs[name]
 
     def give_signs(self):
         """
