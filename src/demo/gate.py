@@ -14,10 +14,11 @@ def portcullis(position, close, width=4, height=6):
         steps = range(1, height)
         item = Item.AIR
 
+    c = get_client()
     for step in steps:
         start = position + Direction.UP * (step - 1)
         stop = start + Direction.EAST * width
-        get_client().fill(start, stop, item, mode=FillMode.REPLACE)
+        c.fill(start, stop, item, mode=FillMode.REPLACE)
         sleep(0.5)
 
 

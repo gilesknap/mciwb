@@ -37,6 +37,8 @@ this:
 
    Python prompt and Bash prompt
 
+.. _package:
+
 Create a Package and a Module
 -----------------------------
 
