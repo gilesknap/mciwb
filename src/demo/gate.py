@@ -26,5 +26,5 @@ def make_gate(position=Vec3(x=623, y=73, z=-1660)):
         portcullis(position, switch.powered)
 
     gate_pos = position + Direction.SOUTH + Direction.WEST * 2
-    get_world().load("demo/gate.json", gate_pos)
+    get_world().load("blocks/gate.json", gate_pos)
     Switch(gate_pos, Item.LEVER, open_close)
