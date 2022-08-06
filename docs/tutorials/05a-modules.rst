@@ -238,4 +238,3 @@ Exercise 2:
     the slab a different material for an interesting look.
     You can make a pagoda with slabs on its surfaces with just two calls to
     the pagoda function. Can you work out how?
-

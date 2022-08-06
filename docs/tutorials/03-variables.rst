@@ -79,7 +79,9 @@ the ``=`` operator.
   
 Note that Python can automatically work out what type of variable you are
 creating. e.g. it recognizes that using quotes means I want a string of 
-characters.
+characters. This
+`w3schools variables page <https://www.w3schools.com/python/python_variables.asp>`_ 
+has further examples.
 
 Trying out Variables
 --------------------

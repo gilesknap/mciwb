@@ -115,7 +115,7 @@ following video is a demo of what we will make in this section:
 
 .. raw:: html
 
-    <iframe width="700" height="600" src="https://www.youtube.com/embed/6eFvjlkh6zQ" title="YouTube video player" frameborder="0" allowfullscreen></iframe>
+    <iframe width=700 height=650 src="https://www.youtube.com/embed/6eFvjlkh6zQ" title="YouTube video player" frameborder="0" allowfullscreen></iframe>
 
 .. centered:: *Gateway with Portcullis Demo*
 
@@ -163,4 +163,159 @@ To make the gate type this in iPython:
     
     from buildings.gate import make_gate
     make_gate()
+
+This should place the gate in the world. Try out the lever and watch the 
+portcullis open and close.
+
+How it Works
+------------
+
+Make_gate
++++++++++
+
+The first thing that the ``make_gate`` function does is define another function
+called ``open_close``. This function will be called when the lever is activated.
+
+By defining ``open_close`` *inside* of ``make_gate`` we are able to use
+the variable ``position`` which is needed when moving the 
+portcullis. (If you want to understand more about this see `../explain/scope`)
+
+This code always creates a gate facing north. ``position`` represents the
+bottom WEST corner of the portcullis. 
+
+Because we want the stone gate to
+surround the portcullis we define the position of the South West corner
+of the gate as a couple of steps to the WEST (left if you are looking North)
+and one step SOUTH (back if you are looking North).
+
+
+Next we load in the file we downloaded earlier. This uses the world function
+``load``. In order to get the world object inside of a module we use 
+the get_world(). Because we need world only once I did not bother to 
+assign it to a variable, see the equivalent approaches below.
+
+.. code-block:: python
+    
+    # using a variable to do world.load()
+    w = get_world()
+    w.load("gate.json")
+
+    # A shortcut to do the same thing
+    get_world().load("gate.json")
+
+When loading blocks into the world with ``world.load`` the position always
+specifies the bottom left SOUTH WEST corner of the blocks. Thus if you 
+face North and choose a block in front of you the loaded object will 
+extend away from you and to your right.
+
+The final step in ``make_gate`` is to create a Switch object, we pass it the 
+position and the Item type (we use a lever here). The final parameter is the 
+function to call when the lever is activated.
+
+Open_close
+++++++++++
+
+The ``open_close`` function is the callback function that the Switch object
+will call when it detects a change in the state of the lever. Switch 
+callback functions are always passed the Switch object that triggered them.
+
+The Switch object's most important property is ``powered`` which is a boolean
+that is **True** if the lever is currently on and **False** if it is off.
+
+Therefore this callback will always call the portcullis function and pass it
+the original ``position`` value that we gave to ``make_gate`` plus a boolean
+to say if the lever is on or off.
+
+Portcullis
+++++++++++
+
+The ``portcullis`` function is called when the lever is activated. It
+takes a ``position`` and a boolean to say if the lever is on or off.
+
+It also takes a width and height for the portcullis, but we use the default
+values for these as they match the size of our stone gate.
+
+The first thing we do is use ``if else`` to change the function's behavior
+based on the boolean called ``close``. When ``open_close`` calls ``portcullis``
+it passes the ``powered`` state of the lever in as the ``close`` parameter.
+
+Thus if the lever is powered then we close the portcullis and if the lever
+is not powered then we open the portcullis.
+
+How does the opening and closing get represented in the world? We have a ``for 
+loop`` that sets one row of blocks of the portcullis at each iteration, after 
+each iteration it pauses for half a second. The ``sleep`` function from the 
+built-in module called ``time`` is used to provide the pause, note the 
+import of this function at the top of the file.
+
+The ``if`` statement chooses some values for variables used by the ``for loop``
+as follows:
+
+- Closing: 
+
+  - we set the rows of blocks to
+    ``Item.ACACIA_FENCE`` starting at the top and working down.
+- Opening: 
+
+  - we set the rows of blocks to
+    ``Item.AIR`` starting at the bottom and working up.
+
+
+.. note::
+
+    The ``range`` function we have used so far always counts from zero
+    upwards. When closing the portcullis
+    we want to start at the top and work down.
+
+    To do this we add additional parameters to the ``range`` function.
+    See 
+    `this description <https://www.w3schools.com/python/ref_func_range.asp>`_ 
+    for details of the parameters for ``range``.
+
+    The code ``range(height, 0, -1)`` creates a range that starts at ``height`` 
+    and goes in steps of -1 until before it reaches zero.
+
+
+Saving Blocks to a File
+-----------------------
+
+The ``world`` object also has a save function and you can use it to save a 
+volume of blocks to a file. Then you can reload those blocks in a new
+location at a later date.
+
+To demonstrate this lets build something in Minecraft and save it to a file,
+then reload it in a new location.
+
+The steps are as follows:
+
+- Build something you would like to Save, my example in the video 
+  is giant a table.
+- use the selection sign to select the volume of blocks you want to save:
+  - first select one corner e.g. bottom south west
+  - then select the opposite corner e.g. top north east
+- in iPython type: ``world.save("blocks/table.json")``
+- Now select the block where you want to load a copy:
+  - select where you want the SOUTH WEST corner to be
+- in iPython type: ``world.load("blocks/table.json")``
+
+For a demo of this feature see the video below.
+
+.. raw:: html
+
+    <iframe width=700 height=650 src="https://www.youtube.com/embed/1ldhshwD6QQ" title="YouTube video player" frameborder="0" allowfullscreen></iframe>
+
+.. centered:: *Save and Load Blocks Volumes*
+
+By the way, files that you create with code can be inspected using the vscode 
+explorer. In the image below you can see the ``table.json`` file that we
+created in the above steps. To see this 
+you would need to click on the ``blocks`` folder to expand it.
+
+
+.. figure:: ../images/table_json.png
+   :alt: file explorer
+   :align: center
+   :width: 900px
+
+   Viewing files in the VSCode explorer
 
