@@ -19,7 +19,7 @@ this:
    build_pagoda(player.world.position)
 
 It might also be good to use a variable to store your player's position. Then
-you can walk away from it and turn around the see pagoda build.
+you can walk away from it and turn around to see the pagoda build.
 
 .. code-block:: python
 
@@ -73,5 +73,14 @@ this:
 
     pos = Vec3(x=620, y=71, z=-1623)
     build_pagoda(pos)
+
+Even easier you can use the ``world`` variable to get the current copy buffer
+start position like this:
+
+.. code-block:: python
+
+    pos = world.copier.start_pos
+    build_pagoda(pos)
+
 
 This is the easiest and most versatile way to discover a block's coordinates.
