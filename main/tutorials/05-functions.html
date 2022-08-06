@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Functions &mdash; mciwb 0.6.4.dev16+g85a73fe documentation</title>
+  <title>Functions &mdash; mciwb 0.6.4.dev31+gf9b2572 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
@@ -196,16 +196,14 @@ tutorial we will look into the detail of how this function works.</p>
 
 <span class="sd">    Each successive floor is narrower and each has a balcony at the top.</span>
 
-<span class="sd">    The first floors width is `width` and each floor height is `floor_height`.</span>
+<span class="sd">    The first floor&#39;s width is `width` and each floor height is `floor_height`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">c</span> <span class="o">=</span> <span class="n">get_client</span><span class="p">()</span>
 
     <span class="c1"># calculate how many levels we can make if we reduce width by 2 each level</span>
     <span class="n">levels</span> <span class="o">=</span> <span class="n">width</span> <span class="o">//</span> <span class="mi">2</span>
 
-    <span class="nb">print</span><span class="p">(</span><span class="n">levels</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">level</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">levels</span><span class="p">):</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">level</span><span class="p">)</span>
         <span class="c1"># calculate the width of the pagoda for this level</span>
         <span class="n">floor_width</span> <span class="o">=</span> <span class="n">width</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">level</span>
 
@@ -224,6 +222,7 @@ tutorial we will look into the detail of how this function works.</p>
             <span class="n">diameter</span><span class="o">=</span><span class="n">floor_width</span> <span class="o">+</span> <span class="mi">2</span><span class="p">,</span>
             <span class="n">sides</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
             <span class="n">item</span><span class="o">=</span><span class="n">item</span><span class="p">,</span>
+            <span class="n">mode</span><span class="o">=</span><span class="n">FillMode</span><span class="o">.</span><span class="n">REPLACE</span><span class="p">,</span>
         <span class="p">)</span>
 
         <span class="c1"># create the walls for this level</span>
@@ -234,6 +233,7 @@ tutorial we will look into the detail of how this function works.</p>
             <span class="n">diameter</span><span class="o">=</span><span class="n">floor_width</span><span class="p">,</span>
             <span class="n">sides</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
             <span class="n">item</span><span class="o">=</span><span class="n">item</span><span class="p">,</span>
+            <span class="n">mode</span><span class="o">=</span><span class="n">FillMode</span><span class="o">.</span><span class="n">REPLACE</span><span class="p">,</span>
         <span class="p">)</span>
 </pre></div>
 </div>
