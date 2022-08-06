@@ -1,5 +1,5 @@
 from demo.shapes import pyramid
-from mciwb.imports import Direction, Item, Monitor, Vec3, world
+from mciwb.imports import Direction, Item, Monitor, Vec3, get_world
 
 
 class Follower:
@@ -18,6 +18,7 @@ class Follower:
         Spooky Pyramid function: draws a pyramid centred at pyramid_centre, made
         of carved pumpkins that always turn to face the player
         """
+        world = get_world()
 
         facing = Direction.facing(self.pyramid_centre, world.player.pos)
         if facing != self.old_facing:
@@ -26,9 +27,10 @@ class Follower:
 
 
 def follow_thread():
-    # Use two threads for two pyramids
-    p1 = Follower((0, 5, 0))
-    p2 = Follower((20, 5, 0))
-    p3 = Follower((0, 5, 20))
-    p4 = Follower((20, 5, 20))
-    Monitor([p1.follow, p2.follow, p3.follow, p4.follow])
+    # Use 4 threads for 4 pyramids
+    m = Monitor(start=False)
+    m.add_poller_func(Follower((0, 5, 0)).follow)
+    m.add_poller_func(Follower((20, 5, 0)).follow)
+    m.add_poller_func(Follower((0, 5, 20)).follow)
+    m.add_poller_func(Follower((20, 5, 20)).follow)
+    m.start_poller()

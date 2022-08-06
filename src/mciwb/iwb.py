@@ -33,14 +33,11 @@ class Iwb:
     the_world: "Iwb" = None  # type: ignore
 
     def __init__(self, server: str, port: int, passwd: str, client=None) -> None:
-        if self.the_world is not None:
-            raise RuntimeError("only one world can be created")
-
         Iwb.the_world = self
 
-        self._server = server
-        self._port = port
-        self._passwd = passwd
+        self._server: str = server
+        self._port: int = port
+        self._passwd: str = passwd
 
         client = client or self.connect()
 

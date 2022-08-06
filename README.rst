@@ -23,7 +23,9 @@ environment are included. There will be a step by step tutorial to
 introduce Python Programming.
 
 
-See `intro` to begin.
+See 
+`Introduction <https://gilesknap.github.io/mciwb/main/tutorials/00-prereq.html>`_ 
+to begin.
 
 ============== ==============================================================
 PyPI           ``pip install mciwb``

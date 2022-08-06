@@ -32,13 +32,14 @@ class Monitor:
         once=False,
         name=None,
         poll_rate=0.2,
+        start=True,
     ) -> None:
 
         if name is None:
             name = f"Monitor{Monitor.monitor_num}"
             Monitor.monitor_num += 1
 
-        # pollers is a list of functions, param tuples. It may be initialised
+        # pollers is a list of functions, param tuples. It may be initialized
         # with a single function passed in func, params
         self.pollers: List[Tuple[CallbackFunction, Tuple[Any, ...]]] = (
             [] if func is None else [(func, params)]
@@ -48,10 +49,12 @@ class Monitor:
         self.once = once
         self.poll_rate = poll_rate
         self.poll_thread = None
+        self._polling = False
 
-        self._start_poller()
+        if start:
+            self.start_poller()
 
-    def _start_poller(self):
+    def start_poller(self):
         if self.poll_thread is None:
             logging.debug(f"starting polling thread {self.name}")
             self.poll_thread = new_thread(get_client(), self._poller, self.name)
