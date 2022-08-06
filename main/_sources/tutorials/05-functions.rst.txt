@@ -129,4 +129,3 @@ For the position of your pagodas you can always use ``world.player.pos``
 in which case the 
 pagoda will build around your player. But now might also be a good time to
 learn about discovering coordinates in the world. See `../how-to/coordinates`
-

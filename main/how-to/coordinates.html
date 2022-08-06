@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Discovering the Coordinates of a Block &mdash; mciwb 0.6.4.dev31+gf9b2572 documentation</title>
+  <title>Discovering the Coordinates of a Block &mdash; mciwb 0.6.4.dev35+gade7975 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
@@ -54,7 +54,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../tutorials/04-loops.html">Loops</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../tutorials/05-functions.html">Functions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../tutorials/05a-modules.html">Modules and Packages</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/06-if-then.html">If Then Else</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/06-if-then.html">If - Else</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../tutorials/07-lists.html">Lists</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../tutorials/08-dictionaries.html">Dictionaries</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../tutorials/09-classes.html">Classes</a></li>
@@ -128,7 +128,7 @@ this:</p>
 </pre></div>
 </div>
 <p>It might also be good to use a variable to store your player’s position. Then
-you can walk away from it and turn around the see pagoda build.</p>
+you can walk away from it and turn around to see the pagoda build.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">pos</span> <span class="o">=</span> <span class="n">player</span><span class="o">.</span><span class="n">world</span><span class="o">.</span><span class="n">pos</span>
 <span class="c1"># now walk away and turn around</span>
 <span class="n">build_pagoda</span><span class="p">(</span><span class="n">pos</span><span class="p">)</span>
@@ -173,6 +173,12 @@ copy buffer start and end is by tying <code class="docutils literal notranslate"
 <p>You can then copy and paste the start value and assign it to a variable like
 this:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">pos</span> <span class="o">=</span> <span class="n">Vec3</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="mi">620</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mi">71</span><span class="p">,</span> <span class="n">z</span><span class="o">=-</span><span class="mi">1623</span><span class="p">)</span>
+<span class="n">build_pagoda</span><span class="p">(</span><span class="n">pos</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Even easier you can use the <code class="docutils literal notranslate"><span class="pre">world</span></code> variable to get the current copy buffer
+start position like this:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">pos</span> <span class="o">=</span> <span class="n">world</span><span class="o">.</span><span class="n">copier</span><span class="o">.</span><span class="n">start_pos</span>
 <span class="n">build_pagoda</span><span class="p">(</span><span class="n">pos</span><span class="p">)</span>
 </pre></div>
 </div>

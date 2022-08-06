@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Variable Scope &mdash; mciwb 0.6.4.dev31+gf9b2572 documentation</title>
+  <title>Variable Scope &mdash; mciwb 0.6.4.dev35+gade7975 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
@@ -54,7 +54,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../tutorials/04-loops.html">Loops</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../tutorials/05-functions.html">Functions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../tutorials/05a-modules.html">Modules and Packages</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/06-if-then.html">If Then Else</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/06-if-then.html">If - Else</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../tutorials/07-lists.html">Lists</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../tutorials/08-dictionaries.html">Dictionaries</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../tutorials/09-classes.html">Classes</a></li>
@@ -111,16 +111,24 @@
   <section id="variable-scope">
 <h1>Variable Scope<a class="headerlink" href="#variable-scope" title="Permalink to this heading"></a></h1>
 <p>A variable is usually only available in the scope in which it is defined.</p>
-<p>For example the following code will fail:</p>
+<p>For example, consider the following code:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="k">def</span> <span class="nf">scope_test</span><span class="p">():</span>
 <span class="linenos">2</span>    <span class="c1"># this variable has is in the scope of function scope_test()</span>
 <span class="linenos">3</span>    <span class="n">my_value</span> <span class="o">=</span> <span class="mi">10</span>
 <span class="linenos">4</span>    <span class="nb">print</span><span class="p">(</span><span class="n">my_value</span><span class="p">)</span>
 <span class="linenos">5</span>
-<span class="linenos">6</span><span class="n">scope_test</span><span class="p">()</span>
-<span class="linenos">7</span><span class="nb">print</span><span class="p">(</span><span class="n">my_value</span><span class="p">)</span> <span class="c1"># this will fail</span>
+<span class="linenos">6</span><span class="n">my_value</span> <span class="o">=</span> <span class="mi">5</span>
+<span class="linenos">7</span><span class="n">scope_test</span><span class="p">()</span>
+<span class="linenos">8</span><span class="nb">print</span><span class="p">(</span><span class="n">my_value</span><span class="p">)</span>
 </pre></div>
 </div>
+<p>This code will print 10 (from inside scope_test) and then 5
+(from outside scope_test). This demonstrates that there are two
+instances of <code class="docutils literal notranslate"><span class="pre">my_value</span></code>. One is scoped inside scope_test and the other is
+scoped outside scope_test (the global scope).</p>
+<p>Scoping is very useful because it means we do not need to always choose
+unique names for variables. I can use the variable name <code class="docutils literal notranslate"><span class="pre">my_value</span></code> in
+multiple functions and they will not interfere with each other.</p>
 <p>See here for a more detailed explanation:</p>
 <blockquote>
 <div><p><a class="reference external" href="https://www.w3schools.com/python/python_scope.asp">https://www.w3schools.com/python/python_scope.asp</a></p>
