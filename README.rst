@@ -6,11 +6,19 @@ Minecraft Interactive World Builder
 
 .. warning::
     
-    UNDER DEVELOPMENT: not all features are yet available and the tutorials 
-    are not yet complete.
+    This is a work in progress. There are now enough tutorials to learn the
+    fundamentals of Python and enough functionality to have some fun
+    interacting with Minecraft from Python code.
+
+    I will continue to expand the tutorials and add more features to the
+    library.
     
 This project is intended as a fun way to learn the Python Programming Language.
-It has the following features:
+However, experienced Python programmers can also use this library to create 
+Minecraft worlds with interactive Python features 
+(TODO: API documentation is pending).
+
+Minecraft Interactive World Builder has the following features:
 
  - Use Python to create anything inside of Minecraft worlds. 
  - Call Python code when events occur inside the world.
@@ -19,8 +27,9 @@ It has the following features:
    signs or activating switches/levers with Python actions.
 
 All instructions on how to set up a Minecraft Server and the Python developer
-environment are included. There will be a step by step tutorial to
-introduce Python Programming.
+environment are included. There are step by step tutorials to
+introduce Python Programming and the features of Minecraft Interactive World
+Builder.
 
 
 See 
