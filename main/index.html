@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Minecraft Interactive World Builder &mdash; mciwb 0.6.4.dev35+gade7975 documentation</title>
+  <title>Minecraft Interactive World Builder &mdash; mciwb 0.7.1.dev3+ga08a88c documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="_static/graphviz.css" type="text/css" />
@@ -79,6 +79,8 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="reference/index.html">Finding Things</a></li>
 <li class="toctree-l1"><a class="reference internal" href="reference/contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference/api.html">MCIWB API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference/demo.html">Demo Code</a></li>
 <li class="toctree-l1"><a class="reference external" href="https://github.com/gilesknap/mciwb/releases">Releases</a></li>
 <li class="toctree-l1"><a class="reference external" href="genindex.html#http://">Index</a></li>
 </ul>
@@ -110,18 +112,9 @@
   <p><a class="reference external" href="https://github.com/gilesknap/mciwb/actions?query=workflow%3A%22Code+CI%22"><img alt="Code CI" src="https://github.com/gilesknap/mciwb/workflows/Code%20CI/badge.svg?branch=main" /></a> <a class="reference external" href="https://github.com/gilesknap/mciwb/actions?query=workflow%3A%22Docs+CI%22"><img alt="Docs CI" src="https://github.com/gilesknap/mciwb/workflows/Docs%20CI/badge.svg?branch=main" /></a> <a class="reference external" href="https://www.codacy.com/gh/gilesknap/mciwb/dashboard?utm_source=github.com&amp;amp;utm_medium=referral&amp;amp;utm_content=gilesknap/mciwb&amp;amp;utm_campaign=Badge_Coverage"><img alt="Test Coverage" src="https://app.codacy.com/project/badge/Coverage/4c514b64299e4ccd8c569d3e787245c7" /></a> <a class="reference external" href="https://www.codacy.com/gh/gilesknap/mciwb/dashboard?utm_source=github.com&amp;amp;utm_medium=referral&amp;amp;utm_content=gilesknap/mciwb&amp;amp;utm_campaign=Badge_Grade"><img alt="Code Quality" src="https://app.codacy.com/project/badge/Grade/4c514b64299e4ccd8c569d3e787245c7" /></a> <a class="reference external" href="https://pypi.org/project/mciwb"><img alt="Latest PyPI version" src="https://img.shields.io/pypi/v/mciwb.svg" /></a> <a class="reference external" href="https://opensource.org/licenses/Apache-2.0"><img alt="Apache License" src="https://img.shields.io/badge/License-Apache%202.0-blue.svg" /></a></p>
 <section id="minecraft-interactive-world-builder">
 <h1>Minecraft Interactive World Builder<a class="headerlink" href="#minecraft-interactive-world-builder" title="Permalink to this heading"></a></h1>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>This is a work in progress. There are now enough tutorials to learn the
-fundamentals of Python and enough functionality to have some fun
-interacting with Minecraft from Python code.</p>
-<p>I will continue to expand the tutorials and add more features to the
-library.</p>
-</div>
-<p>This project is intended as a fun way to learn the Python Programming Language.
-However, experienced Python programmers can also use this library to create
-Minecraft worlds with interactive Python features
-(TODO: API documentation is pending).</p>
+<p>This project is intended as a fun way to learn the Python Programming Language.</p>
+<p>Experienced Python programmers can also use this library to create
+Minecraft worlds with interactive Python features.</p>
 <p>Minecraft Interactive World Builder has the following features:</p>
 <blockquote>
 <div><ul class="simple">
@@ -136,9 +129,18 @@ signs or activating switches/levers with Python actions.</p></li>
 environment are included. There are step by step tutorials to
 introduce Python Programming and the features of Minecraft Interactive World
 Builder.</p>
-<p>See
-<a class="reference external" href="https://gilesknap.github.io/mciwb/main/tutorials/00-prereq.html">Introduction</a>
-to begin.</p>
+<p>To get started learning Python, see
+<a class="reference external" href="https://gilesknap.github.io/mciwb/main/tutorials/00-prereq.html">Introduction</a></p>
+<p>For existing Python developers, see
+<a class="reference external" href="https://gilesknap.github.io/mciwb/main/reference/api.html">API documentation</a></p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>This is a work in progress. There are now enough tutorials to learn the
+fundamentals of Python and enough functionality to have some fun
+interacting with Minecraft from Python code.</p>
+<p>I will continue to expand the tutorials and add more features to the
+library.</p>
+</div>
 <table class="docutils align-default">
 <colgroup>
 <col style="width: 18%" />
@@ -345,6 +347,32 @@ side-bar.</p>
 <li class="toctree-l2"><a class="reference internal" href="reference/contributing.html#release-process">Release Process</a></li>
 <li class="toctree-l2"><a class="reference internal" href="reference/contributing.html#checking-dependencies">Checking Dependencies</a></li>
 <li class="toctree-l2"><a class="reference internal" href="reference/contributing.html#updating-the-tools">Updating the tools</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="reference/api.html">MCIWB API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="reference/api.html#mciwb"><code class="docutils literal notranslate"><span class="pre">mciwb</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="reference/api.html#module-mciwb.iwb"><code class="docutils literal notranslate"><span class="pre">mciwb.iwb</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="reference/api.html#module-mciwb.player"><code class="docutils literal notranslate"><span class="pre">mciwb.player</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="reference/api.html#module-mciwb.server"><code class="docutils literal notranslate"><span class="pre">mciwb.server</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="reference/api.html#module-mciwb.monitor"><code class="docutils literal notranslate"><span class="pre">mciwb.monitor</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="reference/api.html#module-mciwb.backup"><code class="docutils literal notranslate"><span class="pre">mciwb.backup</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="reference/api.html#module-mciwb.signs"><code class="docutils literal notranslate"><span class="pre">mciwb.signs</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="reference/api.html#module-mciwb.copier"><code class="docutils literal notranslate"><span class="pre">mciwb.copier</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="reference/api.html#module-mciwb.switch"><code class="docutils literal notranslate"><span class="pre">mciwb.switch</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="reference/api.html#module-mciwb.threads"><code class="docutils literal notranslate"><span class="pre">mciwb.threads</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="reference/demo.html">Demo Code</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="reference/demo.html#demo"><code class="docutils literal notranslate"><span class="pre">demo</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="reference/demo.html#module-demo.gate"><code class="docutils literal notranslate"><span class="pre">demo.gate</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="reference/demo.html#module-demo.shapes"><code class="docutils literal notranslate"><span class="pre">demo.shapes</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="reference/demo.html#module-demo.pagoda"><code class="docutils literal notranslate"><span class="pre">demo.pagoda</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="reference/demo.html#module-demo.follow"><code class="docutils literal notranslate"><span class="pre">demo.follow</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="reference/demo.html#module-demo.background"><code class="docutils literal notranslate"><span class="pre">demo.background</span></code></a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference external" href="https://github.com/gilesknap/mciwb/releases">Releases</a></li>

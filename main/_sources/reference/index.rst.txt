@@ -36,6 +36,6 @@ List of Minecraft Activities
 - Make a `portal`
 - Make an `golem`
 - Make a `portal`
-- Build a Pagoda: `pagoda`
+- Build a Pagoda: :std:ref:`pagoda`
 
 etc. TODO - fill this out

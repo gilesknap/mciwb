@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>If - Else &mdash; mciwb 0.6.4.dev35+gade7975 documentation</title>
+  <title>If - Else &mdash; mciwb 0.7.1.dev3+ga08a88c documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
@@ -92,6 +92,8 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../reference/index.html">Finding Things</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../reference/contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/api.html">MCIWB API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/demo.html">Demo Code</a></li>
 <li class="toctree-l1"><a class="reference external" href="https://github.com/gilesknap/mciwb/releases">Releases</a></li>
 <li class="toctree-l1"><a class="reference external" href="genindex.html#http://">Index</a></li>
 </ul>
@@ -252,6 +254,9 @@ code buildings/gate.py
 
 
 <span class="k">def</span> <span class="nf">portcullis</span><span class="p">(</span><span class="n">position</span><span class="p">,</span> <span class="n">close</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">6</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Open and close a portcullis</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">close</span><span class="p">:</span>
         <span class="n">steps</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="n">height</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
         <span class="n">item</span> <span class="o">=</span> <span class="n">Item</span><span class="o">.</span><span class="n">ACACIA_FENCE</span>
@@ -268,6 +273,10 @@ code buildings/gate.py
 
 
 <span class="k">def</span> <span class="nf">make_gate</span><span class="p">(</span><span class="n">position</span><span class="o">=</span><span class="n">Vec3</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="mi">623</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mi">73</span><span class="p">,</span> <span class="n">z</span><span class="o">=-</span><span class="mi">1660</span><span class="p">)):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Create a castle gate with working portcullis</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="nf">open_close</span><span class="p">(</span><span class="n">switch</span><span class="p">):</span>
         <span class="n">portcullis</span><span class="p">(</span><span class="n">position</span><span class="p">,</span> <span class="n">switch</span><span class="o">.</span><span class="n">powered</span><span class="p">)</span>
 
