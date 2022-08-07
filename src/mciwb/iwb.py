@@ -69,6 +69,13 @@ class Iwb:
         else:
             self._backup = None
 
+    def debug(self, enable: bool = True):
+        """
+        Enable/disable debug logging. Enabling this will also enable
+        full Traceback logging.
+        """
+        logging.getLogger().setLevel(logging.DEBUG if enable else logging.INFO)
+
     def backup(self, name=None) -> None:
         """
         Backup the Minecraft world to a file. If no name is given then the

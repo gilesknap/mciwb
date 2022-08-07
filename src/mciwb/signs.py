@@ -81,23 +81,22 @@ class Signs:
                     text = match.group(1)
                     logging.debug(f"Sign at {pos} has text {text}")
                     target = self._get_target_block(block_pos, facing)
-                    client.setblock(
-                        block_pos,
-                        Item.AIR,  # type: ignore
-                    )
-                    self.do_action(text, target)
+                    self.do_action(text, target, block_pos)
 
-    def do_action(self, command: str, target: Vec3):
+    def do_action(self, command: str, target: Vec3, block_pos: Vec3):
         """
         Perform an action based on the text of the sign. The action is to
         call the callback function that is configured for this sign text.
 
         :param command: the text of the sign
         :param target: the target block that the sign indicates
+        :param block_pos: the position of the block that the sign is on - this is
+            cleared if the sign is used
         """
         # if the command is not found then this is just an ordinary sign (I assume!)
         if command in self.signs:
-            logging.debug(f"Calling action for {command}")
+            get_client().setblock(block_pos, str(Item.AIR))
+            logging.debug(f"Calling sign action for {command}")
             self.signs[command](target)
 
     def add_sign(self, name: str, function: CallbackPosFunction):

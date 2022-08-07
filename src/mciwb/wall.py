@@ -39,23 +39,27 @@ class Wall:
 
         if abs(dx) > abs(dz):
             count = abs(dz) + 1
-            wall_dir = Direction.EAST * dx / count
+            wall_section_len = abs(dx / count)
+            wall_dir = Direction.EAST * np.sign(dx)
             step_dir = Direction.SOUTH * np.sign(dz)
         else:
             count = abs(dx) + 1
-            wall_dir = Direction.SOUTH * dz / count
+            wall_section_len = abs(dz / count)
+            wall_dir = Direction.SOUTH * np.sign(dz)
             step_dir = Direction.EAST * np.sign(dx)
 
         for step in range(count):
-            end = begin + wall_dir
-            self.render_columns(begin, end)
+            end = begin + wall_dir * wall_section_len
+            self.render_columns(begin, wall_section_len, wall_dir)
             begin = end + step_dir
 
-    def render_columns(self, begin: Vec3, end: Vec3):
+    def render_columns(self, begin: Vec3, length: float, wall_dir: Vec3):
         c = get_client()
-        c.fill(
-            begin.with_ints(), end.with_ints() + Direction.UP * self.height, self.item
-        )
+        begin_i = begin.with_ints()
+
+        for step in range(int(length) + 1):
+            c.fill(begin_i, begin_i + Direction.UP * self.height, self.item)
+            begin_i = begin_i + wall_dir
 
 
 class WallMaker:
