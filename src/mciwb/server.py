@@ -25,6 +25,18 @@ def_world_type = "normal"
 
 
 class MinecraftServer:
+    """
+    Create an monitor Minecraft servers on the local machine using Docker
+
+    :param name: the name of the server
+    :param rcon: the rcon port for the server
+    :param password: the rcon password for the server
+    :param server_folder: the folder to store the server files in
+    :param world_type: the type of world to create
+    :param keep: keep the server running after tests
+    :param test: run the server in test mode
+    """
+
     def __init__(
         self,
         name: str,
@@ -35,6 +47,10 @@ class MinecraftServer:
         keep: bool = True,
         test=False,
     ) -> None:
+        """
+        Create a `MinecraftServer` object only. Use `create` to
+        spin up the container.
+        """
         self.rcon = rcon
         self.port = rcon + 1
         self.name = name
@@ -49,13 +65,6 @@ class MinecraftServer:
     def wait_server(self):
         """
         Wait until the server is ready to accept rcon connections
-
-        Multiple calls to this with container restarts require passing a count.
-        This is how many times the wait code looks for the server to come online
-        in the logs.
-
-        This is required because the --since argument to the docker logs command
-        fails to return any logs at all.
         """
 
         start_time: datetime = datetime.now()
@@ -113,6 +122,8 @@ class MinecraftServer:
     def remove(self, force=False):
         """
         Remove a minecraft server container
+
+        :param force: force the removal of the container
         """
         # set env var MCIWB_KEEP_SERVER to keep server alive for faster
         # repeated tests and viewing the world with a minecraft client
@@ -123,9 +134,11 @@ class MinecraftServer:
 
     def create(self, world_zip=None, force=False) -> None:
         """
-        Spin up a test minecraft server in a container
+        Spin up a minecraft server in a container
 
-        world: a zip file to use as the world data
+        :param world_zip: the zip file to use as the world data. If None is
+            provided, a new world will be created.
+        :param force: force the server to be removed if it already exists
         """
 
         # create and launch minecraft container once per session
@@ -212,9 +225,9 @@ class MinecraftServer:
 
         self.wait_server()
 
-        self.settings()
+        self._settings()
 
-    def settings(self):
+    def _settings(self):
         """
         Some default settings for the server that this class creates
         """
@@ -232,6 +245,8 @@ class MinecraftServer:
     def stop_named(cls, name: str):
         """
         Stop a minecraft server by name
+
+        :param name: the name of the server to stop
         """
         docker_client = from_env()
         for container in docker_client.containers.list(all=True):

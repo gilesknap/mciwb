@@ -7,6 +7,9 @@ from mciwb.imports import Direction, FillMode, Item, Switch, Vec3, get_client, g
 
 
 def portcullis(position, close, width=4, height=6):
+    """
+    Open and close a portcullis
+    """
     if close:
         steps = range(height, 0, -1)
         item = Item.ACACIA_FENCE
@@ -23,6 +26,10 @@ def portcullis(position, close, width=4, height=6):
 
 
 def make_gate(position=Vec3(x=623, y=73, z=-1660)):
+    """
+    Create a castle gate with working portcullis
+    """
+
     def open_close(switch):
         portcullis(position, switch.powered)
 

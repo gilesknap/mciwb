@@ -1,8 +1,3 @@
-"""
-Defines a class for representing a lever, button or any other activator
-in the world. Implements monitoring of the switch's state with callbacks.
-"""
-
 import logging
 from typing import Callable, List
 
@@ -14,16 +9,41 @@ from mciwb.threads import get_client
 
 SwitchCallback = Callable[["Switch"], None]
 
-# supported switch types and the properties to set on them
+
 item_types = {
     "BUTTON": "[face=floor, facing=north]",
     "LEVER": "[face=floor, facing=north]",
     "TRIPWIRE_HOOK": "[]",
     "PRESSURE_PLATE": "[]",
 }
+"""
+supported switch types and the properties to set on them
+"""
 
 
 class Switch:
+    """
+    Defines a class for representing a lever, button or any other activator
+    in the world. Implements monitoring of the switch's state with callbacks.
+
+    :param position: the position of the switch in the world
+    :param item: the item type of the switch (must be one of `item_types`)
+    :param callback: the callback to call when the switch's state changes
+    :param name: the name of the switch (defaults to "switch" + id)
+
+    :ivar id: the id of the switch
+    :ivar name: the name of the switch
+    :ivar pos: the position of the switch in the world
+    :ivar powered: the current state of the switch (True if powered)
+    :ivar callback: the callback to call when the switch's state changes
+    :ivar monitor: the `Monitor` object for the switch
+    :ivar switches: the list of all switches in the world
+    :ivar next_id: the next id to assign to a switch
+    :ivar on: the state to check for a powered switch
+    :ivar off: the state to check for an un-powered switch
+    :ivar monitor: the `Monitor` object for the switch
+    """
+
     switches: List["Switch"] = []
 
     next_id: int = 0
@@ -60,12 +80,15 @@ class Switch:
             logging.warning(res)
         logging.info(f"Created switch {self.name}, id {self.id} at {position}")
 
-        self.monitor = Monitor(self.poll, name=self.name)
+        self.monitor = Monitor(self._poll, name=self.name)
 
     def __del__(self):
         self.remove()
 
     def remove(self):
+        """
+        Remove the switch from the world. Clean up the monitor.
+        """
         if self in self.switches:
             self.switches.remove(self)
         self.monitor.stop()
@@ -74,9 +97,19 @@ class Switch:
 
     @classmethod
     def stop(cls):
+        """
+        Stop monitoring the state of all switches.
+        """
+        # TODO this does nothing currently?
         cls.monitoring = False
 
     def check_state(self, state: str) -> bool:
+        """
+        Test the state of one of the switch's properties.
+
+        :param state: the state to test for, should be one of
+            *self.on* or *self.off*
+        """
         res = get_client().execute.if_.block(self.pos, state).run("seed")
         if "Seed" in res:
             result = True
@@ -85,7 +118,7 @@ class Switch:
 
         return result
 
-    def poll(self):
+    def _poll(self):
         if self.powered:
             if self.check_state(self.off):
                 self.powered = False

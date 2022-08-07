@@ -21,6 +21,11 @@ class PlayerNotInWorld(Exception):
 
 
 class Player:
+    """
+    Represent a player in the world and provide functions for monitoring their
+    position and direction they are facing.
+    """
+
     def __init__(self, name: str) -> None:
         self.name = name
         self._facing()
@@ -49,6 +54,9 @@ class Player:
 
     @property
     def pos(self) -> Vec3:
+        """
+        Return the player's position
+        """
         return self._pos()
 
     def _facing(self) -> Vec3:
@@ -60,18 +68,29 @@ class Player:
 
     @property
     def facing(self) -> Vec3:
+        """
+        Return the player's facing direction
+
+        :return: a Vec3 representing the direction the player is facing
+            NORTH = Vec3(0, 0, -1)
+            SOUTH = Vec3(0, 0, 1)
+            EAST = Vec3(1, 0, 0)
+            WEST = Vec3(-1, 0, 0)
+        """
         return self._facing()
 
     def player_in(self, volume: Volume) -> bool:
         """
-        Check if the player is in the volume
+        Check if the player is inside the Volume
+
+        :param volume: the volume of blocks to check
         """
         return volume.inside(self.pos)
 
     @classmethod
     def players_in(cls, volume: Volume) -> List["Player"]:
         """
-        return a list of player names whose position is inside the volume
+        return a list of player names whose position is inside the Volume
         """
 
         client = get_client()

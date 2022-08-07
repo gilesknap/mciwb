@@ -37,14 +37,24 @@ def new_thread(client: Client, target, name: str) -> threading.Thread:
 
 
 def set_client(client: Client) -> None:
+    """
+    Set the client for this thread. Use this when the client object has been
+    created outside of `new_thread`.
+    """
     # save our new client in the thread local storage
     thread_local.client = client
 
 
 def get_client() -> Client:
-    # retrieve the client for this thread
+    """
+    retrieve the client for the current thread
+    """
     return thread_local.client
 
 
 def get_thread_name() -> str:
+    """
+    retrieve the name of the current thread. This is the name that was passed
+    to `new_thread`.
+    """
     return thread_local.name
