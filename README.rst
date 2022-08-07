@@ -9,7 +9,7 @@ This project is intended as a fun way to learn the Python Programming Language.
 Experienced Python programmers can also use this library to create 
 Minecraft worlds with interactive Python features.
 
-Minecraft Interactive World Builder has the following features:
+Minecraft Interactive World Builder's goals are:
 
  - Use Python to create anything inside of Minecraft worlds. 
  - Call Python code when events occur inside the world.
