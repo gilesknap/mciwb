@@ -11,7 +11,7 @@ Player Position
 ---------------
 
 You can always use your player's position to build from. e.g. assuming you
-have defined the `pagoda`. You could build a pagoda around your player like 
+have defined the :std:ref:`pagoda`. You could build a pagoda around your player like 
 this:
 
 .. code-block:: python

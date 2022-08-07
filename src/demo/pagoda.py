@@ -7,7 +7,10 @@ def build_pagoda(pos, width=4, floor_height=4, item: Item = Item.GOLD_BLOCK):
 
     Each successive floor is narrower and each has a balcony at the top.
 
-    The first floor's width is `width` and each floor height is `floor_height`.
+    :param pos: position of the base of the pagoda
+    :param width: width of the base of the pagoda
+    :param floor_height: height of each floor
+    :param item: block to use for the base of the pagoda
     """
     c = get_client()
 

@@ -1,5 +1,6 @@
 """
-Thread functions for monitoring state of the world
+Thread functions for running any background tasks. Primarily used for
+monitoring the state of objects in Minecraft.
 """
 
 import logging
@@ -18,8 +19,20 @@ CallbackFunction = Callable
 class Monitor:
     """ "
     A class to provide threads for monitoring. Each thread maintains a
-    list of functions to call and its own Client object for parallel
+    list of functions to call repeatedly.
+
+    Each thread has its own Client object for parallel
     execution of Minecraft server functions.
+
+    :param name: name of the thread
+    :param func: a function to call in the Monitor thread
+    :param params: parameters to pass to the above function. Note that
+        *func* and *params* can be None, () in which case you must use
+        `add_poller_func` to add functions to be called.
+    :param poll_rate: rate at which to poll the functions
+    :param once: if True, stop polling after first poll - use for a single
+                background operation
+    :param start: if True, start the thread immediately
     """
 
     monitor_num = 0
@@ -55,6 +68,9 @@ class Monitor:
             self.start_poller()
 
     def start_poller(self):
+        """
+        Begin polling the functions in the pollers list
+        """
         if self.poll_thread is None:
             logging.debug(f"starting polling thread {self.name}")
             self.poll_thread = new_thread(get_client(), self._poller, self.name)
@@ -97,11 +113,22 @@ class Monitor:
             logging.info(f"Monitor {self.name} stopped")
 
     def add_poller_func(self, func: CallbackFunction, params: Tuple[Any, ...] = ()):
+        """
+        Add a function to the pollers list
+
+        :param func: function to add
+        :param params: parameters to pass to the function
+        """
         self.pollers.append((func, params))
 
     # TODO: consider using a dict or indexing pollers in some fashion
     # currently this does not support 2 calls to same function
     def remove_poller_func(self, func: CallbackFunction):
+        """
+        Remove a function from the pollers list
+
+        :param func: function to remove
+        """
         for i, t in enumerate(self.pollers):
             f, params = t
             if f == func:
@@ -112,6 +139,11 @@ class Monitor:
 
     @classmethod
     def stop_all(cls):
+        """
+        Stop all instances of Monitor and tidy up. Call this before exiting
+        the program otherwise Python will wait on the background threads
+        indefinitely.
+        """
         if cls.monitors is not None:
             for monitor in cls.monitors:
                 monitor.stop()
@@ -119,6 +151,9 @@ class Monitor:
             logging.info("Stopped all monitoring threads")
 
     def stop(self):
+        """
+        Stop this instance of Monitor
+        """
         self._polling = False
 
     def __del__(self):

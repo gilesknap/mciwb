@@ -3,20 +3,11 @@
 
 Minecraft Interactive World Builder
 ===================================
-
-.. warning::
-    
-    This is a work in progress. There are now enough tutorials to learn the
-    fundamentals of Python and enough functionality to have some fun
-    interacting with Minecraft from Python code.
-
-    I will continue to expand the tutorials and add more features to the
-    library.
     
 This project is intended as a fun way to learn the Python Programming Language.
-However, experienced Python programmers can also use this library to create 
-Minecraft worlds with interactive Python features 
-(TODO: API documentation is pending).
+
+Experienced Python programmers can also use this library to create 
+Minecraft worlds with interactive Python features.
 
 Minecraft Interactive World Builder has the following features:
 
@@ -31,10 +22,20 @@ environment are included. There are step by step tutorials to
 introduce Python Programming and the features of Minecraft Interactive World
 Builder.
 
-
-See 
+To get started learning Python, see
 `Introduction <https://gilesknap.github.io/mciwb/main/tutorials/00-prereq.html>`_ 
-to begin.
+
+For existing Python developers, see
+`API documentation  <https://gilesknap.github.io/mciwb/main/reference/api.html>`_ 
+
+.. warning::
+    
+    This is a work in progress. There are now enough tutorials to learn the
+    fundamentals of Python and enough functionality to have some fun
+    interacting with Minecraft from Python code.
+
+    I will continue to expand the tutorials and add more features to the
+    library.
 
 ============== ==============================================================
 PyPI           ``pip install mciwb``

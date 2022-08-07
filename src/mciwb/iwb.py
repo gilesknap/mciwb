@@ -28,18 +28,32 @@ class Iwb:
     """
     Interactive World Builder class. Provides a very simple interface for
     interactive functions for use in an IPython shell.
+
+    :ivar player: The default `Player` object.
+    :ivar copier: `CopyPaste` object for the above player.
+    :ivar signs: The `Signs` object for the above player.
     """
 
     the_world: "Iwb" = None  # type: ignore
 
-    def __init__(self, server: str, port: int, passwd: str, client=None) -> None:
+    def __init__(self, server: str, port: int, passwd: str) -> None:
+        """
+        Initialise the world object.
+
+        :param server: the server address
+        :param port: the server port
+        :param passwd: the server password
+
+        :raises SessionTimeout: if the connection to the server fails
+
+        """
         Iwb.the_world = self
 
         self._server: str = server
         self._port: int = port
         self._passwd: str = passwd
 
-        client = client or self.connect()
+        self.connect()
 
         self.player: Player = None  # type: ignore
         self.copier: CopyPaste = None  # type: ignore
@@ -56,6 +70,10 @@ class Iwb:
             self._backup = None
 
     def backup(self, name=None) -> None:
+        """
+        Backup the Minecraft world to a file. If no name is given then the
+        backup will be named using the current date and time.
+        """
         if self._backup is None:
             logging.warning("no backup available")
         else:
@@ -80,12 +98,25 @@ class Iwb:
         return client
 
     def add_player(self, name: str, me=True):
+        """
+        Add a player to the world object. This provides monitoring of the
+        player's position and handles the player's placing of action signs.
+
+        If me is True then the player will be set as the current default
+        player. The default player is available using::
+
+            Iwb.the_world.player
+
+        All players are available using::
+
+            Iwb.the_world._players
+        """
         try:
             player = Player(name)
             self._players[name] = player
 
             self.signs = Signs(player)
-            Monitor(self.signs.poll, name=name)
+            Monitor(self.signs._poll, name=name)
             self._copiers[name] = self.signs.copy
 
             if me:
@@ -160,8 +191,8 @@ class Iwb:
 
     def save(self, filename: str, vol: Optional[Volume] = None):
         """
-        Save the Volume of blocks represented by the copy buffer or provided
-        volumne to a file
+        Save a Volume of blocks to a file. The volume can be specified in
+        the *vol* parameter or alternatively defaults to the current copy buffer.
         """
         if not vol:
             vol = self.copier.to_volume()
@@ -176,8 +207,9 @@ class Iwb:
         anchor: Anchor3 = Anchor3.BOTTOM_SW,
     ):
         """
-        Load a saved set of blocks into a location indicated by copy buffer or
-        passed as an argument
+        Load a saved set of blocks into a location. The location can be
+        specified in argument *position* or alternatively defaults
+        to the copy buffer start position.
         """
         if not position:
             position = self.copier.start_pos

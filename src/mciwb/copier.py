@@ -1,3 +1,7 @@
+"""
+Provide copy and paste actions on Volumes of blocks
+"""
+
 import logging
 
 from mcipc.rcon.enumerations import CloneMode, MaskMode
@@ -23,15 +27,26 @@ class CopyPaste:
         self.size = zero
 
     def to_volume(self) -> Volume:
+        """
+        Converts the copy buffer location and dimensions to a Volume
+        """
         v = Volume.from_corners(self.start_pos, self.stop_pos)
         return v
 
     def apply_volume(self, vol: Volume):
+        """
+        Use a Volume to set the copy buffer location and dimensions
+        """
         self._set_paste(vol.end)
         self._set_paste(vol.start)
         self.paste_pos = vol.start
 
     def get_commands(self):
+        """
+        return a list of command names and the callback functions they
+        represent. For use in setting up a `Signs` object that can be
+        used to interactively call the copy paste functions.
+        """
         return {
             "select": self.select,
             "paste": self.paste,
@@ -52,7 +67,7 @@ class CopyPaste:
 
     def _set_paste(self, pos: Vec3):
         """
-        Set the paste point relative to the current player position
+        Set the paste point to the specified position
         """
         self.paste_pos = pos
         # adjust clone dest so the paste corner matches the start paste buffer
@@ -64,7 +79,7 @@ class CopyPaste:
 
     def paste(self, pos: Vec3, force=True):
         """
-        Copy the contents of past buffer to position x y z
+        Copy the contents of past buffer to pos
         """
         client = get_client()
         self._set_paste(pos)
@@ -79,11 +94,18 @@ class CopyPaste:
         logging.info(result)
 
     def paste_safe(self, pos: Vec3):
+        """
+        Paste the contents of the paste buffer to pos, but only if the
+        paste buffer does not overlap with the target area
+        """
         self.paste(pos, force=False)
 
     def fill(self, pos: Vec3 = zero, item: Item = Item.AIR):
         """
-        fill the paste buffer offset by x y z with Air or a specified block
+        fill the paste buffer offset by pos with Air or a specified block
+
+        :param pos: offset from the paste buffer start point
+        :param item: block to fill with
         """
         client = get_client()
 
@@ -94,7 +116,7 @@ class CopyPaste:
 
     def clear(self, _: Vec3 = zero):
         """
-        Clear the current paste buffer
+        Clear the blocks in the current paste buffer
         """
         self.fill()
 

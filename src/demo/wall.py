@@ -36,8 +36,6 @@ class WallMaker:
         self.start = Vec3(0, 0, 0)
         self.end = self.start
         signs = get_world().signs
-        signs.remove_sign("start_wall")
-        signs.remove_sign("end_wall")
         signs.add_sign("start_wall", self.start_wall)
         signs.add_sign("end_wall", self.end_wall)
         signs.give_signs()

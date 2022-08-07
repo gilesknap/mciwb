@@ -1,3 +1,7 @@
+"""
+Functions to make some shapes in the world
+"""
+
 import logging
 
 from mciwb.imports import Direction, Item, Vec3, get_world
