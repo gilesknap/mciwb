@@ -224,7 +224,7 @@ class Iwb:
         # load a 3d array of Item from the file
         items = load_items(Path(filename), dimensions=3)
         # convert the items into a Blocks object which renders them in the world
-        blocks = Blocks(get_client(), position, items, anchor=Anchor3.BOTTOM_SW)
+        blocks = Blocks(get_client(), position, items, anchor=anchor)
 
         if self.copier:
             self.copier.apply_volume(blocks.volume)

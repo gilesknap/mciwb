@@ -149,7 +149,7 @@ Python project structure which provides a means to keep tools and
 techniques in sync between multiple Python projects. To update to the
 latest version of the skeleton, run::
 
-    $ git pull https://github.com/dls-controls/python3-pip-skeleton skeleton
+    $ git pull https://github.com/epics-containers/python3-pip-skeleton skeleton
 
 Any merge conflicts will indicate an area where something has changed that
 conflicts with the setup of the current module. Check the `closed pull requests

@@ -35,4 +35,8 @@ def make_gate(position=Vec3(x=623, y=73, z=-1660)):
 
     gate_pos = position + Direction.SOUTH + Direction.WEST * 2
     get_world().load("blocks/gate.json", gate_pos)
-    Switch(gate_pos, Item.LEVER, open_close)
+    Switch(gate_pos, Item.LEVER, open_close, name="portcullis")
+
+
+def disable_gate():
+    Switch.remove_named("portcullis")

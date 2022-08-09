@@ -33,15 +33,16 @@ def test_world_player_signs(mciwb_world: Iwb, minecraft_player: Player):
     client = get_client()
     # place some action signs in the world and verify they are actioned
     select = sp.format("select")
-    extend = sp.format("extend")
+    extend = sp.format("expand")
     paste = sp.format("paste")
 
+    sleep(1)
     p = minecraft_player.pos
     client.setblock(p + Direction.SOUTH * 3, select)
     sleep(0.5)
     client.setblock(p + Direction.SOUTH * 3, select)
     sleep(0.5)
-    client.setblock(p + Direction.SOUTH * 2 + Direction.UP, extend)
+    client.setblock(p + Direction.SOUTH, extend)
     sleep(0.5)
     client.setblock(p + Direction.SOUTH * 2 + Direction.UP, paste)
     sleep(0.5)

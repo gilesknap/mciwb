@@ -91,7 +91,7 @@ class Wall:
                 level_profile = [level_profile]
             for i, item in enumerate(level_profile):
                 pos = base.with_ints() + Direction.UP * level + direction * i
-                c.setblock(pos, level_profile[i], mode=SetblockMode.KEEP)
+                c.setblock(pos, level_profile[i], mode=SetblockMode.REPLACE)
 
     def _rot_left(self, direction: Vec3) -> Vec3:
         # TODO this function should be a member of Direction in mcwb

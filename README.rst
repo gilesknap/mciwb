@@ -9,6 +9,13 @@ This project is intended as a fun way to learn the Python Programming Language.
 Experienced Python programmers can also use this library to create 
 Minecraft worlds with interactive Python features.
 
+============== ==============================================================
+PyPI           ``pip install mciwb``
+Source code    https://github.com/gilesknap/mciwb
+Documentation  https://gilesknap.github.io/mciwb
+Releases       https://github.com/gilesknap/mciwb/releases
+============== ==============================================================
+
 Minecraft Interactive World Builder's goals are:
 
  - Use Python to create anything inside of Minecraft worlds. 
@@ -28,7 +35,7 @@ To get started learning Python, see
 For existing Python developers, see
 `API documentation  <https://gilesknap.github.io/mciwb/main/reference/api.html>`_ 
 
-.. warning::
+.. note::
     
     This is a work in progress. There are now enough tutorials to learn the
     fundamentals of Python and enough functionality to have some fun
@@ -37,19 +44,24 @@ For existing Python developers, see
     I will continue to expand the tutorials and add more features to the
     library.
 
-============== ==============================================================
-PyPI           ``pip install mciwb``
-Source code    https://github.com/gilesknap/mciwb
-Documentation  https://gilesknap.github.io/mciwb
-Releases       https://github.com/gilesknap/mciwb/releases
-============== ==============================================================
-
 Credits
 -------
 
 This project would not be possible without `mcipc <https://github.com/conqp/mcipc/>`_,
 which provides the client library for Minecraft RCON.
 
+Example Build
+-------------
+
+The pagoda and castle with working portcullis were all created programmatically 
+with Python and the current version of MCIWB.
+
+.. figure:: images/castle.png
+   :alt: pylance
+   :align: center
+   :width: 600px
+
+   Example Build
 
 
 .. |code_ci| image:: https://github.com/gilesknap/mciwb/workflows/Code%20CI/badge.svg?branch=main
@@ -76,6 +88,9 @@ which provides the client library for Minecraft RCON.
     :target: https://opensource.org/licenses/Apache-2.0
     :alt: Apache License
 
+
+
 ..
     Anything below this line is used when viewing README.rst and will be replaced
     when included in index.rst
+
