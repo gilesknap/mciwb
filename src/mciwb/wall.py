@@ -24,20 +24,20 @@ class Wall:
         self.profile_idx = 0
         self.profile_idx_limit = len(profile)
 
-    def draw(self, end: Optional[Vec3] = None):
-        self._end = end + Direction.UP if end else self._end
-        # start at the same height as the new end
-        self._start = Vec3(self._start.x, self._end.y, self._start.z)
-        self.render()
-        self._start = self._end
-
     def set_start(self, pos: Vec3):
         self._start = pos + Direction.UP
 
     def set_end(self, pos: Vec3):
         self._end = pos + Direction.UP
 
-    def render(self):
+    def draw(self, end: Optional[Vec3] = None):
+        self._end = end + Direction.UP if end else self._end
+        # start at the same height as the new end
+        self._start = Vec3(self._start.x, self._end.y, self._start.z)
+        self._render()
+        self._start = self._end
+
+    def _render(self):
         logging.debug(f"drawing a wall v2 from {self._start} to {self._end}")
 
         dx = int(self._end.x - self._start.x)
@@ -56,42 +56,41 @@ class Wall:
             wall_dir = Direction.SOUTH * np.sign(dz)
             step_dir = Direction.EAST * np.sign(dx)
 
-        logging.info(f"wall has {sections} sections of len {wall_section_len}")
-
-        for step in range(sections):
-
-            last_end = self.render_section(begin, wall_section_len, wall_dir)
-            begin = last_end + step_dir
-
-    def render_section(self, begin: Vec3, length: float, wall_dir: Vec3):
-        battlement_dir = self._rot_right(wall_dir)
-        c = get_client()
-        base = begin
-        end_base = begin + wall_dir * length
-        # TODO need an to_int for Vec3 in mcwb
-        end_base = Vec3(int(end_base.x), int(base.y), int(end_base.z))
-        logging.info(
-            f"render section len {length} from {begin}"
-            f" to {begin + wall_dir * length} ({end_base})"
+        logging.debug(
+            f"wall has {sections} sections of len {wall_section_len} "
+            "wall_dir {wall_dir} step_dir {step_dir}"
         )
 
-        while True:
-            logging.info(f"{base}")
+        for section in range(sections):
+            end = begin + wall_dir * wall_section_len
+            self._render_section(begin, wall_section_len, wall_dir)
+            begin = end + step_dir
+
+    def _render_section(self, begin: Vec3, length: float, wall_dir: Vec3):
+        col_dir = self._rot_right(wall_dir)
+        base = begin
+
+        logging.debug(
+            f"render section len {length} from {begin}"
+            f" to {begin + wall_dir * length}"
+        )
+
+        for column in range(int(length) + 1):
             profile = self.profile[self.profile_idx]
-
-            for level in range(len(profile)):
-                level_profile = profile[level]
-                if not isinstance(level_profile, List):
-                    level_profile = [level_profile]
-                for i, item in enumerate(level_profile):
-                    pos = base.with_ints() + Direction.UP * level + battlement_dir * i
-                    c.setblock(pos, level_profile[i], mode=SetblockMode.KEEP)
-
-            if base.with_ints() == end_base:
-                return end_base
+            self._render_column(base, profile, col_dir)
 
             base = base + wall_dir
             self.profile_idx = (self.profile_idx + 1) % self.profile_idx_limit
+
+    def _render_column(self, base: Vec3, profile: List[Any], direction: Vec3):
+        c = get_client()
+        for level in range(len(profile)):
+            level_profile = profile[level]
+            if not isinstance(level_profile, List):
+                level_profile = [level_profile]
+            for i, item in enumerate(level_profile):
+                pos = base.with_ints() + Direction.UP * level + direction * i
+                c.setblock(pos, level_profile[i], mode=SetblockMode.KEEP)
 
     def _rot_left(self, direction: Vec3) -> Vec3:
         # TODO this function should be a member of Direction in mcwb
