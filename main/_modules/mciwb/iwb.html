@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>mciwb.iwb &mdash; mciwb 0.7.1.dev5+gbaf2a4a documentation</title>
+  <title>mciwb.iwb &mdash; mciwb 0.7.1.dev13+g939f934 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
@@ -179,6 +179,13 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_backup</span> <span class="o">=</span> <span class="kc">None</span>
 
+<div class="viewcode-block" id="Iwb.debug"><a class="viewcode-back" href="../../reference/api.html#mciwb.iwb.Iwb.debug">[docs]</a>    <span class="k">def</span> <span class="nf">debug</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">enable</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Enable/disable debug logging. Enabling this will also enable</span>
+<span class="sd">        full Traceback logging.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">()</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span> <span class="k">if</span> <span class="n">enable</span> <span class="k">else</span> <span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">)</span></div>
+
 <div class="viewcode-block" id="Iwb.backup"><a class="viewcode-back" href="../../reference/api.html#mciwb.iwb.Iwb.backup">[docs]</a>    <span class="k">def</span> <span class="nf">backup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Backup the Minecraft world to a file. If no name is given then the</span>
@@ -327,7 +334,7 @@
         <span class="c1"># load a 3d array of Item from the file</span>
         <span class="n">items</span> <span class="o">=</span> <span class="n">load_items</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">filename</span><span class="p">),</span> <span class="n">dimensions</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
         <span class="c1"># convert the items into a Blocks object which renders them in the world</span>
-        <span class="n">blocks</span> <span class="o">=</span> <span class="n">Blocks</span><span class="p">(</span><span class="n">get_client</span><span class="p">(),</span> <span class="n">position</span><span class="p">,</span> <span class="n">items</span><span class="p">,</span> <span class="n">anchor</span><span class="o">=</span><span class="n">Anchor3</span><span class="o">.</span><span class="n">BOTTOM_SW</span><span class="p">)</span>
+        <span class="n">blocks</span> <span class="o">=</span> <span class="n">Blocks</span><span class="p">(</span><span class="n">get_client</span><span class="p">(),</span> <span class="n">position</span><span class="p">,</span> <span class="n">items</span><span class="p">,</span> <span class="n">anchor</span><span class="o">=</span><span class="n">anchor</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">copier</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">copier</span><span class="o">.</span><span class="n">apply_volume</span><span class="p">(</span><span class="n">blocks</span><span class="o">.</span><span class="n">volume</span><span class="p">)</span></div></div>

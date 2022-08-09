@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>mciwb.switch &mdash; mciwb 0.7.1.dev5+gbaf2a4a documentation</title>
+  <title>mciwb.switch &mdash; mciwb 0.7.1.dev13+g939f934 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
@@ -194,6 +194,16 @@
 
     <span class="k">def</span> <span class="fm">__del__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">remove</span><span class="p">()</span>
+
+<div class="viewcode-block" id="Switch.remove_named"><a class="viewcode-back" href="../../reference/api.html#mciwb.switch.Switch.remove_named">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">remove_named</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Remove a switch by name.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">switch</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="n">switches</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">switch</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="n">name</span><span class="p">:</span>
+                <span class="n">switch</span><span class="o">.</span><span class="n">remove</span><span class="p">()</span></div>
+        <span class="c1"># fail silently if the switch isn&#39;t found</span>
 
 <div class="viewcode-block" id="Switch.remove"><a class="viewcode-back" href="../../reference/api.html#mciwb.switch.Switch.remove">[docs]</a>    <span class="k">def</span> <span class="nf">remove</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>

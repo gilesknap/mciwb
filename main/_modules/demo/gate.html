@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>demo.gate &mdash; mciwb 0.7.1.dev5+gbaf2a4a documentation</title>
+  <title>demo.gate &mdash; mciwb 0.7.1.dev13+g939f934 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
@@ -145,7 +145,11 @@
 
     <span class="n">gate_pos</span> <span class="o">=</span> <span class="n">position</span> <span class="o">+</span> <span class="n">Direction</span><span class="o">.</span><span class="n">SOUTH</span> <span class="o">+</span> <span class="n">Direction</span><span class="o">.</span><span class="n">WEST</span> <span class="o">*</span> <span class="mi">2</span>
     <span class="n">get_world</span><span class="p">()</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;blocks/gate.json&quot;</span><span class="p">,</span> <span class="n">gate_pos</span><span class="p">)</span>
-    <span class="n">Switch</span><span class="p">(</span><span class="n">gate_pos</span><span class="p">,</span> <span class="n">Item</span><span class="o">.</span><span class="n">LEVER</span><span class="p">,</span> <span class="n">open_close</span><span class="p">)</span></div>
+    <span class="n">Switch</span><span class="p">(</span><span class="n">gate_pos</span><span class="p">,</span> <span class="n">Item</span><span class="o">.</span><span class="n">LEVER</span><span class="p">,</span> <span class="n">open_close</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;portcullis&quot;</span><span class="p">)</span></div>
+
+
+<span class="k">def</span> <span class="nf">disable_gate</span><span class="p">():</span>
+    <span class="n">Switch</span><span class="o">.</span><span class="n">remove_named</span><span class="p">(</span><span class="s2">&quot;portcullis&quot;</span><span class="p">)</span>
 </pre></div>
 
            </div>

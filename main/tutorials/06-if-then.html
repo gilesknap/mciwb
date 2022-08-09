@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>If - Else &mdash; mciwb 0.7.1.dev5+gbaf2a4a documentation</title>
+  <title>If - Else &mdash; mciwb 0.7.1.dev13+g939f934 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
@@ -224,7 +224,8 @@ second check for “if my_birth_year &gt; your_birth_year”.</p>
 following video is a demo of what we will make in this section:</p>
 <iframe width=700 height=650 src="https://www.youtube.com/embed/6eFvjlkh6zQ" title="YouTube video player" frameborder="0" allowfullscreen></iframe><p class="centered">
 <strong><em>Gateway with Portcullis Demo</em></strong></p><p>The shape of the gate itself is going to be loaded in from a file that I
-will provide. You will be free to edit gate to look how you would like it.</p>
+will provide. You will be free to edit the gate to look how you would like it
+and then save it back over the original file (see <a class="reference internal" href="#saving"><span class="std std-ref">Saving Blocks to a File</span></a>).</p>
 <p>The following commands need to be executed in a bash shell. They will
 create a folder called blocks and download my sample <code class="docutils literal notranslate"><span class="pre">gate.json</span></code> file
 into that folder</p>
@@ -282,7 +283,11 @@ code buildings/gate.py
 
     <span class="n">gate_pos</span> <span class="o">=</span> <span class="n">position</span> <span class="o">+</span> <span class="n">Direction</span><span class="o">.</span><span class="n">SOUTH</span> <span class="o">+</span> <span class="n">Direction</span><span class="o">.</span><span class="n">WEST</span> <span class="o">*</span> <span class="mi">2</span>
     <span class="n">get_world</span><span class="p">()</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;blocks/gate.json&quot;</span><span class="p">,</span> <span class="n">gate_pos</span><span class="p">)</span>
-    <span class="n">Switch</span><span class="p">(</span><span class="n">gate_pos</span><span class="p">,</span> <span class="n">Item</span><span class="o">.</span><span class="n">LEVER</span><span class="p">,</span> <span class="n">open_close</span><span class="p">)</span>
+    <span class="n">Switch</span><span class="p">(</span><span class="n">gate_pos</span><span class="p">,</span> <span class="n">Item</span><span class="o">.</span><span class="n">LEVER</span><span class="p">,</span> <span class="n">open_close</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;portcullis&quot;</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">disable_gate</span><span class="p">():</span>
+    <span class="n">Switch</span><span class="o">.</span><span class="n">remove_named</span><span class="p">(</span><span class="s2">&quot;portcullis&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Note that the <code class="docutils literal notranslate"><span class="pre">build_gate</span></code> function has a default value for position. I
@@ -391,7 +396,7 @@ and goes in steps of -1 until before it reaches zero.</p>
 </section>
 </section>
 <section id="saving-blocks-to-a-file">
-<h2>Saving Blocks to a File<a class="headerlink" href="#saving-blocks-to-a-file" title="Permalink to this heading"></a></h2>
+<span id="saving"></span><h2>Saving Blocks to a File<a class="headerlink" href="#saving-blocks-to-a-file" title="Permalink to this heading"></a></h2>
 <p>The <code class="docutils literal notranslate"><span class="pre">world</span></code> object also has a save function and you can use it to save a
 volume of blocks to a file. Then you can reload those blocks in a new
 location at a later date.</p>
