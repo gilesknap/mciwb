@@ -59,7 +59,7 @@ with Python and the current version of MCIWB.
 .. figure:: https://raw.githubusercontent.com/gilesknap/mciwb/main/docs/images/castle.png
    :alt: pylance
    :align: center
-   :width: 600px
+   :width: 800px
 
    Example Build
 
