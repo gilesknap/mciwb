@@ -96,7 +96,7 @@ class Signs:
         # if the command is not found then this is just an ordinary sign (I assume!)
         if command in self.signs:
             get_client().setblock(block_pos, str(Item.AIR))
-            logging.debug(f"Calling sign action for {command}")
+            logging.info(f"{command} at {target}")
             self.signs[command](target)
 
     def add_sign(self, name: str, function: CallbackPosFunction):
