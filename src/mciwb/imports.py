@@ -9,11 +9,9 @@ user modules (and modules in demo package) can import everything with
     from mciwb.imports import ... ...
 """
 
-from mcipc.rcon.enumerations import FillMode, Item
-from mcipc.rcon.item import Item
+from mcipc.rcon.enumerations import FillMode, Item, SetblockMode
 from mcipc.rcon.je import Client
-from mcwb import Anchor3 as Corner
-from mcwb import Blocks, Cuboid, Vec3, Volume
+from mcwb import Anchor3, Blocks, Cuboid, Vec3, Volume
 from mcwb.api import make_tunnel, polygon
 from mcwb.itemlists import grab, load_items, save_items
 from mcwb.types import Direction, Planes3d
@@ -24,12 +22,13 @@ from mciwb.monitor import Monitor
 from mciwb.player import Player
 from mciwb.switch import Switch
 from mciwb.threads import get_client
+from mciwb.wall import Wall, WallMaker
 
 imported = [
+    Anchor3,
     Blocks,
     Client,
     CopyPaste,
-    Corner,
     Cuboid,
     Direction,
     FillMode,
@@ -38,9 +37,12 @@ imported = [
     Monitor,
     Planes3d,
     Player,
+    SetblockMode,
     Switch,
     Vec3,
     Volume,
+    Wall,
+    WallMaker,
     get_client,
     get_world,
     grab,

@@ -120,7 +120,8 @@ following video is a demo of what we will make in this section:
 .. centered:: *Gateway with Portcullis Demo*
 
 The shape of the gate itself is going to be loaded in from a file that I 
-will provide. You will be free to edit gate to look how you would like it.
+will provide. You will be free to edit the gate to look how you would like it
+and then save it back over the original file (see `saving`).
 
 The following commands need to be executed in a bash shell. They will
 create a folder called blocks and download my sample ``gate.json`` file 
@@ -275,6 +276,7 @@ as follows:
     The code ``range(height, 0, -1)`` creates a range that starts at ``height`` 
     and goes in steps of -1 until before it reaches zero.
 
+.. _saving:
 
 Saving Blocks to a File
 -----------------------

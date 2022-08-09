@@ -8,29 +8,11 @@ from IPython.terminal.embed import InteractiveShellEmbed
 
 from mciwb import __version__
 from mciwb.backup import Backup
-from mciwb.imports import (
-    Blocks,
-    Client,
-    CopyPaste,
-    Corner,
-    Cuboid,
-    Direction,
-    FillMode,
-    Item,
-    Iwb,
-    Monitor,
-    Planes3d,
-    Player,
-    Switch,
-    Vec3,
-    Volume,
-    get_client,
-    grab,
-    load_items,
-    make_tunnel,
-    polygon,
-    save_items,
-)
+
+# these are imported only for use in iPython without needing a manual import
+# so I allow import * here to avoid repetition of imports.py
+from mciwb.imports import *  # noqa: F401, F403
+from mciwb.iwb import Iwb
 from mciwb.server import (
     HOST,
     MinecraftServer,
@@ -43,31 +25,6 @@ from mciwb.server import (
 )
 
 cli = typer.Typer(add_completion=False)
-
-# these are imported for use in iPython without needing a manual import
-for_ipython = [
-    Blocks,
-    Client,
-    CopyPaste,
-    Corner,
-    Cuboid,
-    Direction,
-    FillMode,
-    Item,
-    Iwb,
-    Monitor,
-    Planes3d,
-    Player,
-    Switch,
-    Vec3,
-    Volume,
-    get_client,
-    grab,
-    load_items,
-    make_tunnel,
-    polygon,
-    save_items,
-]
 
 
 def version_callback(value: bool):

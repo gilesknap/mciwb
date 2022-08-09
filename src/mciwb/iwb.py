@@ -69,6 +69,13 @@ class Iwb:
         else:
             self._backup = None
 
+    def debug(self, enable: bool = True):
+        """
+        Enable/disable debug logging. Enabling this will also enable
+        full Traceback logging.
+        """
+        logging.getLogger().setLevel(logging.DEBUG if enable else logging.INFO)
+
     def backup(self, name=None) -> None:
         """
         Backup the Minecraft world to a file. If no name is given then the
@@ -217,7 +224,7 @@ class Iwb:
         # load a 3d array of Item from the file
         items = load_items(Path(filename), dimensions=3)
         # convert the items into a Blocks object which renders them in the world
-        blocks = Blocks(get_client(), position, items, anchor=Anchor3.BOTTOM_SW)
+        blocks = Blocks(get_client(), position, items, anchor=anchor)
 
         if self.copier:
             self.copier.apply_volume(blocks.volume)

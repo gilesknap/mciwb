@@ -85,6 +85,16 @@ class Switch:
     def __del__(self):
         self.remove()
 
+    @classmethod
+    def remove_named(cls, name: str):
+        """
+        Remove a switch by name.
+        """
+        for switch in cls.switches:
+            if switch.name == name:
+                switch.remove()
+        # fail silently if the switch isn't found
+
     def remove(self):
         """
         Remove the switch from the world. Clean up the monitor.

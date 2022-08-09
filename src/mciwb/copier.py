@@ -20,9 +20,9 @@ class CopyPaste:
     """
 
     def __init__(self):
-        self.start_pos: Vec3 = zero
-        self.stop_pos: Vec3 = self.start_pos
-        self.paste_pos: Vec3 = self.start_pos
+        self.start_pos: Vec3 = None  # type: ignore
+        self.stop_pos: Vec3 = None  # type: ignore
+        self.paste_pos: Vec3 = None  # type: ignore
         self._clone_dest = zero
         self.size = zero
 
@@ -60,7 +60,7 @@ class CopyPaste:
         The previous start point becomes the stop point
         (i.e. opposite corner of the paste buffer)
         """
-        self.stop_pos = self.start_pos
+        self.stop_pos = self.start_pos or pos  # init both to the same for first time
         self.start_pos = pos.with_ints()
         self.size = self.stop_pos - self.start_pos
         self._set_paste(Vec3(self.start_pos.x, self.start_pos.y, self.start_pos.z))
