@@ -84,8 +84,9 @@ class Wall:
 
     def _render_column(self, base: Vec3, profile: List[Any], direction: Vec3):
         c = get_client()
-        for level in range(len(profile)):
-            level_profile = profile[level]
+        height = len(profile)
+        for level in range(height):
+            level_profile = profile[height - level - 1]
             if not isinstance(level_profile, List):
                 level_profile = [level_profile]
             for i, item in enumerate(level_profile):

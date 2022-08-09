@@ -2,17 +2,19 @@ from mciwb.imports import FillMode, Item, Vec3, Wall, get_client, polygon
 
 profile = [
     [
-        Item.GOLD_BLOCK,
         Item.STONE,
-        Item.GLASS,
+        Item.STONE,
         [Item.STONE, Item.STONE, Item.STONE],
         Item.STONE,
+        Item.PURPLE_CONCRETE,
+        Item.GOLD_BLOCK,
     ],
     [
-        Item.PURPLE_CONCRETE,
         Item.STONE,
-        Item.GLASS,
         [Item.STONE, Item.STONE, Item.STONE],
+        Item.STONE,
+        Item.GOLD_BLOCK,
+        Item.PURPLE_CONCRETE,
     ],
 ]
 
