@@ -20,9 +20,9 @@ class CopyPaste:
     """
 
     def __init__(self):
-        self.start_pos: Vec3 = zero
-        self.stop_pos: Vec3 = self.start_pos
-        self.paste_pos: Vec3 = self.start_pos
+        self.start_pos: Vec3 = None  # type: ignore
+        self.stop_pos: Vec3 = None  # type: ignore
+        self.paste_pos: Vec3 = None  # type: ignore
         self._clone_dest = zero
         self.size = zero
 
