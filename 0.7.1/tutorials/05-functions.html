@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Functions &mdash; mciwb 0.7.1 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
+    <link rel="shortcut icon" href="../_static/logo.png"/>
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Modules and Packages" href="05a-modules.html" />
+    <link rel="prev" title="Loops" href="04-loops.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: rgb(7, 43, 93)" >
+            <a href="../index.html" class="icon icon-home"> mciwb
+            <img src="../_static/logo.png" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                0.7.1
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="00-prereq.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="01-setup.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="02-orientation.html">Orientation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="03-variables.html">Python Variables</a></li>
+<li class="toctree-l1"><a class="reference internal" href="04-loops.html">Loops</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Functions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#introduction">Introduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#simple-function">Simple Function</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#variable-naming">Variable Naming</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#pagoda-function">Pagoda Function</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="05a-modules.html">Modules and Packages</a></li>
+<li class="toctree-l1"><a class="reference internal" href="06-if-then.html">If - Else</a></li>
+<li class="toctree-l1"><a class="reference internal" href="07-lists.html">Lists</a></li>
+<li class="toctree-l1"><a class="reference internal" href="08-dictionaries.html">Dictionaries</a></li>
+<li class="toctree-l1"><a class="reference internal" href="09-classes.html">Classes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">How-to Guides</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../how-to/startup.html">Setup for each Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../how-to/completion.html">Command Completion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../how-to/extensions.html">VSCode Extensions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../how-to/troubleshooting.html">Troubleshooting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../how-to/backup.html">Backup and Restore</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../how-to/wsl2.html">Windows Subsystem for Linux</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../how-to/coordinates.html">Discovering the Coordinates of a Block</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Explanations</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../explain/scope.html">Variable Scope</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../explain/server-config.html">Minecraft Server Config</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../explain/coordinates.html">Minecraft’s Coordinate System</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../explain/mcipc.html">MCIPC Client object</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../reference/index.html">Finding Things</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/api.html">MCIWB API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/demo.html">Demo Code</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/gilesknap/mciwb/releases">Releases</a></li>
+<li class="toctree-l1"><a class="reference external" href="genindex.html#http://">Index</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: rgb(7, 43, 93)" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">mciwb</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>Functions</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/tutorials/05-functions.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="functions">
+<h1>Functions<a class="headerlink" href="#functions" title="Permalink to this heading"></a></h1>
+<section id="introduction">
+<h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this heading"></a></h2>
+<p>In this tutorial we are going to start to create a few buildings for our village.
+We will expand on the types of buildings in later tutorials as we learn new
+features of Python.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Before starting it is worth making a backup of your world. We will be
+creating lost of test buildings and it would be good to be able to
+reset back to the original state. See <a class="reference internal" href="../how-to/backup.html#backups"><span class="std std-ref">Backups of mciwb-server</span></a>.</p>
+</div>
+<p>To do this we will learn to use functions to packaged up our code into
+reusable chunks. In the next tutorial will also learn to save our code in
+Python modules so that we don’t need to do typing or pasting code all
+of the time.</p>
+</section>
+<section id="simple-function">
+<h2>Simple Function<a class="headerlink" href="#simple-function" title="Permalink to this heading"></a></h2>
+<p>A function is a named block of code with some parameters and a return value.
+Parameters are variables that are set by the code that calls the function.
+The return value is passed back to the calling code.</p>
+<p>Try typing (or pasting) this very simple function</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">age</span><span class="p">(</span><span class="n">birth_year</span><span class="p">,</span> <span class="n">current_year</span><span class="o">=</span><span class="mi">2022</span><span class="p">):</span>
+    <span class="n">calculated_age</span> <span class="o">=</span> <span class="n">current_year</span> <span class="o">-</span> <span class="n">birth_year</span>
+    <span class="k">return</span> <span class="n">calculated_age</span>
+</pre></div>
+</div>
+<p>When you hit enter after typing the function definition above nothing appears
+to happen. But you have created a function which you can now call like this:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">my_age</span> <span class="o">=</span> <span class="n">age</span><span class="p">(</span><span class="mi">1964</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">my_age</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>If you substitute your  own birth_year value this function will print your
+age at the end of the year 2022.</p>
+<p><code class="docutils literal notranslate"><span class="pre">age(1964)</span></code> calls the function defined above and passes 1964 for the
+value of <code class="docutils literal notranslate"><span class="pre">birth_year</span></code>. It does not pass a value for the parameter
+<code class="docutils literal notranslate"><span class="pre">current_year</span></code>. The default value for <code class="docutils literal notranslate"><span class="pre">current_year</span></code> was set to 2022.</p>
+<p>The function performs a <code class="docutils literal notranslate"><span class="pre">-</span></code> subtraction operation, taking the value of
+<code class="docutils literal notranslate"><span class="pre">current_year</span></code> and subtracting the value of <code class="docutils literal notranslate"><span class="pre">birth_year</span></code>. The result
+is assigned into <code class="docutils literal notranslate"><span class="pre">calculated_age</span></code> with <code class="docutils literal notranslate"><span class="pre">=</span></code>.</p>
+<p>The function uses <code class="docutils literal notranslate"><span class="pre">return</span></code> to pass the value of <code class="docutils literal notranslate"><span class="pre">calculated_age</span></code> back to
+the caller. Our caller assigns the returned value to a variable called
+<code class="docutils literal notranslate"><span class="pre">my_age</span></code> and prints it out.</p>
+<p>Now if you don’t want to use the default of 2022 (when this tutorial was
+written) you can pass your own value for <code class="docutils literal notranslate"><span class="pre">current_year</span></code>. e.g. to find
+out how old you were when the first Apple Mac was released:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">age</span><span class="p">(</span><span class="mi">1964</span><span class="p">,</span> <span class="n">current_year</span><span class="o">=</span><span class="mi">1984</span><span class="p">))</span>
+<span class="mi">20</span>
+</pre></div>
+</div>
+<p>Obviously if unlike me, you were born after 1984 you would get a negative
+result.</p>
+</section>
+<section id="variable-naming">
+<h2>Variable Naming<a class="headerlink" href="#variable-naming" title="Permalink to this heading"></a></h2>
+<p>Notice the use of <code class="docutils literal notranslate"><span class="pre">_</span></code> in the variable names. This is used to separate words
+in the variable name. Typically variable names are lowercase with words separated
+by underscores. It is also legal to use uppercase letters and numbers in variable
+names (but a number must not be the first character).</p>
+</section>
+<section id="pagoda-function">
+<span id="pagoda"></span><h2>Pagoda Function<a class="headerlink" href="#pagoda-function" title="Permalink to this heading"></a></h2>
+<p>Lets create a function that will create a pagoda. This function will have
+the following parameters that the caller can supply:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">pos</span></code> - the position of center of the base of the pagoda</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">width</span></code> - the width of the pagoda’s base (defaults to 4)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">floor_height</span></code> - the height of each floor (defaults to 4)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">item</span></code> - what blocks to use (defaults to gold block)</p></li>
+</ul>
+<p>For now we are just going to have some fun making pagodas. In the next
+tutorial we will look into the detail of how this function works.</p>
+<p>Try copying and pasting this function into your Python console.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">build_pagoda</span><span class="p">(</span><span class="n">pos</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">floor_height</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">item</span><span class="p">:</span> <span class="n">Item</span> <span class="o">=</span> <span class="n">Item</span><span class="o">.</span><span class="n">GOLD_BLOCK</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Create a pagoda out of blocks at the given position.</span>
+
+<span class="sd">    Each successive floor is narrower and each has a balcony at the top.</span>
+
+<span class="sd">    :param pos: position of the base of the pagoda</span>
+<span class="sd">    :param width: width of the base of the pagoda</span>
+<span class="sd">    :param floor_height: height of each floor</span>
+<span class="sd">    :param item: block to use for the base of the pagoda</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">c</span> <span class="o">=</span> <span class="n">get_client</span><span class="p">()</span>
+
+    <span class="c1"># calculate how many levels we can make if we reduce width by 2 each level</span>
+    <span class="n">levels</span> <span class="o">=</span> <span class="n">width</span> <span class="o">//</span> <span class="mi">2</span>
+
+    <span class="k">for</span> <span class="n">level</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">levels</span><span class="p">):</span>
+        <span class="c1"># calculate the width of the pagoda for this level</span>
+        <span class="n">floor_width</span> <span class="o">=</span> <span class="n">width</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">level</span>
+
+        <span class="c1"># calculate the base position of the walls for this level</span>
+        <span class="n">base</span> <span class="o">=</span> <span class="n">pos</span> <span class="o">+</span> <span class="n">Direction</span><span class="o">.</span><span class="n">UP</span> <span class="o">*</span> <span class="n">level</span> <span class="o">*</span> <span class="n">floor_height</span>
+
+        <span class="c1"># calculate the position of the balcony for this level</span>
+        <span class="c1"># it should surround the top layer of the walls for this level</span>
+        <span class="n">balcony</span> <span class="o">=</span> <span class="n">base</span> <span class="o">+</span> <span class="n">Direction</span><span class="o">.</span><span class="n">UP</span> <span class="o">*</span> <span class="p">(</span><span class="n">floor_height</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+
+        <span class="c1"># create the balcony for this level</span>
+        <span class="n">polygon</span><span class="p">(</span>
+            <span class="n">client</span><span class="o">=</span><span class="n">c</span><span class="p">,</span>
+            <span class="n">center</span><span class="o">=</span><span class="n">balcony</span><span class="p">,</span>
+            <span class="n">height</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+            <span class="n">diameter</span><span class="o">=</span><span class="n">floor_width</span> <span class="o">+</span> <span class="mi">2</span><span class="p">,</span>
+            <span class="n">sides</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
+            <span class="n">item</span><span class="o">=</span><span class="n">item</span><span class="p">,</span>
+            <span class="n">mode</span><span class="o">=</span><span class="n">FillMode</span><span class="o">.</span><span class="n">REPLACE</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="c1"># create the walls for this level</span>
+        <span class="n">polygon</span><span class="p">(</span>
+            <span class="n">client</span><span class="o">=</span><span class="n">c</span><span class="p">,</span>
+            <span class="n">center</span><span class="o">=</span><span class="n">base</span><span class="p">,</span>
+            <span class="n">height</span><span class="o">=</span><span class="n">floor_height</span><span class="p">,</span>
+            <span class="n">diameter</span><span class="o">=</span><span class="n">floor_width</span><span class="p">,</span>
+            <span class="n">sides</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
+            <span class="n">item</span><span class="o">=</span><span class="n">item</span><span class="p">,</span>
+            <span class="n">mode</span><span class="o">=</span><span class="n">FillMode</span><span class="o">.</span><span class="n">REPLACE</span><span class="p">,</span>
+        <span class="p">)</span>
+</pre></div>
+</div>
+<p>Now type in the following code in <strong>iPython</strong> to call your <code class="docutils literal notranslate"><span class="pre">build_pagoda</span></code>
+function:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">pagoda_pos</span><span class="o">=</span><span class="n">Vec3</span><span class="p">(</span><span class="mi">585</span><span class="p">,</span><span class="mi">71</span><span class="p">,</span><span class="o">-</span><span class="mi">1728</span><span class="p">)</span>
+<span class="n">build_pagoda</span><span class="p">(</span><span class="n">pagoda_pos</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">30</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>If your player then looks to the North from our spawn point you should
+see this:</p>
+<a class="reference internal image-reference" href="../_images/pagoda.png"><img alt="pagoda" src="../_images/pagoda.png" style="width: 800px;" /></a>
+<p>The <code class="docutils literal notranslate"><span class="pre">pagoda_pos</span></code> I chose is deliberately a little outside of our main village
+area. This is so that the massive building does not overshadow the village too
+much!</p>
+<dl class="simple">
+<dt>Exercise:</dt><dd><p>You could now do a backup of the world and experiment with building pagodas
+of different sizes and materials. Then restore your world after you are
+done experimenting.</p>
+</dd>
+</dl>
+<p>For the position of your pagodas you can always use <code class="docutils literal notranslate"><span class="pre">world.player.pos</span></code>
+in which case the
+pagoda will build around your player. But now might also be a good time to
+learn about discovering coordinates in the world. See <a class="reference internal" href="../how-to/coordinates.html"><span class="doc">Discovering the Coordinates of a Block</span></a></p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="04-loops.html" class="btn btn-neutral float-left" title="Loops" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="05a-modules.html" class="btn btn-neutral float-right" title="Modules and Packages" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p></p>
+  </div>
+
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+   
+  <div id="other-versions-div" class="rst-versions" data-toggle="rst-versions" role="note" aria-label="Versions" style="visibility: hidden">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      <span class="fa fa-book"> Other Versions</span>
+      0.7.1
+      <span class="fa fa-caret-down"></span>
+    </span>
+    <div class="rst-other-versions">
+      <dl id="other-versions-dl"/>
+    </div>
+  </div>
+  <script>
+    function addVersion(name) {
+      var dd = document.createElement("dd");
+      var a = document.createElement("a");
+      a.href = "../../" + name;
+      a.innerText = name;
+      dd.appendChild(a);
+      document.getElementById('other-versions-dl').appendChild(dd);
+    }
+    // Get versions.txt and add a version for each line
+    fetch("../../versions.txt").then(response => {
+      if (response.ok) {
+        document.getElementById('other-versions-div').style.visibility = "visible";
+        return response.text().then(text => text.split(/\r?\n/).forEach(addVersion))
+      }
+    });
+  </script>
+
+
+</body>
+</html>
