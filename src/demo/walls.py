@@ -1,17 +1,7 @@
 from demo.gate import disable_gate, make_gate
-from demo.pagoda import build_pagoda
-from mciwb.imports import (
-    Anchor3,
-    FillMode,
-    Item,
-    Vec3,
-    Wall,
-    get_client,
-    get_world,
-    polygon,
-)
+from mciwb.imports import Item, Vec3, Wall
 
-profile = [
+battlements_profile = [
     [
         Item.STONE,
         Item.OAK_PLANKS,
@@ -21,7 +11,7 @@ profile = [
         Item.STONE,
     ],
     [
-        Item.OAK_PLANKS,
+        [Item.OAK_PLANKS, Item.AIR, Item.TORCH],
         [Item.STONE, Item.STONE, Item.STONE],
         Item.STONE,
         Item.IRON_BARS,
@@ -45,22 +35,9 @@ profile = [
 ]
 
 
-def make_castle():
-    # flatten the ground
-    get_world().load("blocks/ground.json", Vec3(610, 72, -1673), Anchor3.BOTTOM_NW)
+def make_walls():
 
-    # clear an area to build the castle
-    polygon(
-        get_client(),
-        Vec3(x=640, y=73, z=-1635),
-        sides=4,
-        height=200,
-        diameter=90,
-        item=Item.AIR,
-        mode=FillMode.REPLACE,
-    )
-
-    w = Wall(profile=profile)
+    w = Wall(profile=battlements_profile)
 
     # build the castle walls
     w.set_start(Vec3(x=630, y=72, z=-1660))
@@ -79,7 +56,3 @@ def make_castle():
     disable_gate()
     # build the gate
     make_gate()
-
-    # build the pagoda
-    pagoda_pos = Vec3(585, 71, -1728)
-    build_pagoda(pagoda_pos, width=30)

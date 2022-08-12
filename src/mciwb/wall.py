@@ -12,17 +12,23 @@ from mciwb.threads import get_client
 
 
 class Wall:
-    def __init__(self, height=5, item=Item.STONE, profile: Optional[List[Any]] = None):
+    def __init__(
+        self, height=None, item=Item.STONE, profile: Optional[List[Any]] = None
+    ):
         self._start: Vec3 = None  # type: ignore
         self._end: Vec3 = None  # type: ignore
-        self.height: int = height
-        self.item = str(item)
+        self.height: Optional[int] = height
+
         if profile is None:
             # default profile is just a single column of stone
-            profile = [self.item] * self.height
-        self.profile = profile
-        self.profile_idx = 0
-        self.profile_idx_limit = len(profile)
+            if height is None or item is None:
+                raise ValueError("height and item or a profile must be specified")
+            else:
+                profile = [item] * height
+        else:
+            self.profile = profile
+            self.profile_idx = 0
+            self.profile_idx_limit = len(profile)
 
     def set_start(self, pos: Vec3):
         self._start = pos + Direction.UP
@@ -84,9 +90,9 @@ class Wall:
 
     def _render_column(self, base: Vec3, profile: List[Any], direction: Vec3):
         c = get_client()
-        height = len(profile)
+        height = self.height or len(profile)
         for level in range(height):
-            level_profile = profile[height - level - 1]
+            level_profile = profile[(height - level - 1) % len(profile)]
             if not isinstance(level_profile, List):
                 level_profile = [level_profile]
             for i, item in enumerate(level_profile):
