@@ -82,9 +82,6 @@ class Switch:
 
         self.monitor = Monitor(self._poll, name=self.name)
 
-    def __del__(self):
-        self.remove()
-
     @classmethod
     def remove_named(cls, name: str):
         """
