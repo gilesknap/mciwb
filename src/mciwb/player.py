@@ -36,7 +36,8 @@ class Player:
         """
         client = get_client()
         for _ in range(5):
-            data = client.data.get(entity=self.name, path=path)
+            # entity=self.name would not work for the dummy stand used for testing
+            data = client.data.get(entity=f"@e[name={self.name},limit=1]", path=path)
             match = regex.search(data)
             if match:
                 return match
