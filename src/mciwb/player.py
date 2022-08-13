@@ -28,7 +28,6 @@ class Player:
 
     def __init__(self, name: str) -> None:
         self.name = name
-        self._facing()
 
     def _get_entity_data(self, path: str, regex: Pattern[str]) -> Match[str]:
         """
@@ -37,7 +36,7 @@ class Player:
         """
         client = get_client()
         for _ in range(5):
-            data = client.data.get(entity=f"@e[name={self.name},limit=1]", path=path)
+            data = client.data.get(entity=self.name, path=path)
             match = regex.search(data)
             if match:
                 return match
@@ -45,26 +44,25 @@ class Player:
 
         raise PlayerNotInWorld(f"player {self.name} left")
 
-    def _pos(self) -> Vec3:
-        match = self._get_entity_data("Pos", regex_coord)
-        pos = Vec3(
-            float(match.group(1)), float(match.group(2)), float(match.group(3))
-        ).with_ints()
-        return pos
+    @property
+    def inventory(self) -> List[str]:
+        """
+        Get the player's inventory
+        """
+        # TODO long term this should return a list of Item objects
+        # TODO and Item should be extended to allow properties
+        return get_client().data.get(entity=self.name, path="Inventory")
 
     @property
     def pos(self) -> Vec3:
         """
         Return the player's position
         """
-        return self._pos()
-
-    def _facing(self) -> Vec3:
-        match = self._get_entity_data("Rotation", regex_angle)
-        angle = float(match.group(0))
-
-        index = int(((math.floor(angle) + 45) % 360) / 90)
-        return Direction.cardinals[index]
+        match = self._get_entity_data("Pos", regex_coord)
+        pos = Vec3(
+            float(match.group(1)), float(match.group(2)), float(match.group(3))
+        ).with_ints()
+        return pos
 
     @property
     def facing(self) -> Vec3:
@@ -77,7 +75,11 @@ class Player:
             EAST = Vec3(1, 0, 0)
             WEST = Vec3(-1, 0, 0)
         """
-        return self._facing()
+        match = self._get_entity_data("Rotation", regex_angle)
+        angle = float(match.group(0))
+
+        index = int(((math.floor(angle) + 45) % 360) / 90)
+        return Direction.cardinals[index]
 
     def player_in(self, volume: Volume) -> bool:
         """
