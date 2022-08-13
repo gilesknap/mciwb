@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>mciwb.iwb &mdash; mciwb 0.7.2.dev4+gcf94a1b documentation</title>
+  <title>mciwb.iwb &mdash; mciwb 0.7.2.dev7+gd16df3f documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
@@ -53,8 +53,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../../tutorials/05a-modules.html">Modules and Packages</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../tutorials/06-if-then.html">If - Else</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../tutorials/07-lists.html">Lists</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../tutorials/08-dictionaries.html">Dictionaries</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../tutorials/09-classes.html">Classes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/08-classes.html">Classes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/09-dictionaries.html">Dictionaries</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">How-to Guides</span></p>
 <ul>
@@ -118,6 +118,7 @@
 <span class="kn">from</span> <span class="nn">mcwb</span> <span class="kn">import</span> <span class="n">Anchor3</span><span class="p">,</span> <span class="n">Blocks</span><span class="p">,</span> <span class="n">Direction</span><span class="p">,</span> <span class="n">Vec3</span><span class="p">,</span> <span class="n">Volume</span>
 <span class="kn">from</span> <span class="nn">mcwb.itemlists</span> <span class="kn">import</span> <span class="n">grab</span><span class="p">,</span> <span class="n">load_items</span><span class="p">,</span> <span class="n">save_items</span>
 <span class="kn">from</span> <span class="nn">rcon.exceptions</span> <span class="kn">import</span> <span class="n">SessionTimeout</span>
+<span class="kn">from</span> <span class="nn">rcon.source.proto</span> <span class="kn">import</span> <span class="n">Packet</span>
 
 <span class="kn">from</span> <span class="nn">mciwb.backup</span> <span class="kn">import</span> <span class="n">Backup</span>
 <span class="kn">from</span> <span class="nn">mciwb.copier</span> <span class="kn">import</span> <span class="n">CopyPaste</span>
@@ -337,7 +338,21 @@
         <span class="n">blocks</span> <span class="o">=</span> <span class="n">Blocks</span><span class="p">(</span><span class="n">get_client</span><span class="p">(),</span> <span class="n">position</span><span class="p">,</span> <span class="n">items</span><span class="p">,</span> <span class="n">anchor</span><span class="o">=</span><span class="n">anchor</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">copier</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">copier</span><span class="o">.</span><span class="n">apply_volume</span><span class="p">(</span><span class="n">blocks</span><span class="o">.</span><span class="n">volume</span><span class="p">)</span></div></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">copier</span><span class="o">.</span><span class="n">apply_volume</span><span class="p">(</span><span class="n">blocks</span><span class="o">.</span><span class="n">volume</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Iwb.cmd"><a class="viewcode-back" href="../../reference/api.html#mciwb.iwb.Iwb.cmd">[docs]</a>    <span class="k">def</span> <span class="nf">cmd</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cmd</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Run any arbitrary Minecraft console command on the server.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">encoding</span> <span class="o">=</span> <span class="s2">&quot;utf-8&quot;</span>
+        <span class="n">client</span> <span class="o">=</span> <span class="n">get_client</span><span class="p">()</span>
+        <span class="n">request</span> <span class="o">=</span> <span class="n">Packet</span><span class="o">.</span><span class="n">make_command</span><span class="p">(</span><span class="n">cmd</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="n">encoding</span><span class="p">)</span>
+
+        <span class="n">response</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">communicate</span><span class="p">(</span><span class="n">request</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">id</span> <span class="o">!=</span> <span class="n">request</span><span class="o">.</span><span class="n">id</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">SessionTimeout</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="n">response</span><span class="o">.</span><span class="n">payload</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">encoding</span><span class="p">)</span></div></div>
 </pre></div>
 
            </div>
