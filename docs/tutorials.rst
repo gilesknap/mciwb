@@ -17,6 +17,6 @@ Tutorials for installation, library and commandline usage. New users start here.
     tutorials/05a-modules
     tutorials/06-if-then
     tutorials/07-lists
-    tutorials/08-dictionaries
-    tutorials/09-classes
+    tutorials/08-classes
+    tutorials/09-dictionaries
     
