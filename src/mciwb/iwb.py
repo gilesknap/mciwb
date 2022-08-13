@@ -8,6 +8,7 @@ from mcipc.rcon.je import Client
 from mcwb import Anchor3, Blocks, Direction, Vec3, Volume
 from mcwb.itemlists import grab, load_items, save_items
 from rcon.exceptions import SessionTimeout
+from rcon.source.proto import Packet
 
 from mciwb.backup import Backup
 from mciwb.copier import CopyPaste
@@ -228,3 +229,17 @@ class Iwb:
 
         if self.copier:
             self.copier.apply_volume(blocks.volume)
+
+    def cmd(self, cmd: str) -> str:
+        """
+        Run any arbitrary Minecraft console command on the server.
+        """
+        encoding = "utf-8"
+        client = get_client()
+        request = Packet.make_command(cmd, encoding=encoding)
+
+        response = client.communicate(request)
+        if response.id != request.id:
+            raise SessionTimeout()
+
+        return response.payload.decode(encoding)
