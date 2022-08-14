@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>mciwb.signs &mdash; mciwb 0.7.2.dev7+gd16df3f documentation</title>
+  <title>mciwb.signs &mdash; mciwb 0.7.2.dev11+g5b1a542 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
@@ -229,13 +229,20 @@
         <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">signs</span><span class="p">:</span>
             <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">signs</span><span class="p">[</span><span class="n">name</span><span class="p">]</span></div>
 
+    <span class="n">_sign_match</span> <span class="o">=</span> <span class="s1">&#39;{{&quot;text&quot;:&quot;</span><span class="si">{}</span><span class="s1">&quot;}}&#39;</span>
+
 <div class="viewcode-block" id="Signs.give_signs"><a class="viewcode-back" href="../../reference/api.html#mciwb.signs.Signs.give_signs">[docs]</a>    <span class="k">def</span> <span class="nf">give_signs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Give player one of each command sign in our commands list</span>
+
+<span class="sd">        Check first if the player has the sign already</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">client</span> <span class="o">=</span> <span class="n">get_client</span><span class="p">()</span>
+        <span class="n">inventory</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">player</span><span class="o">.</span><span class="n">inventory</span>
         <span class="k">for</span> <span class="n">command</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">signs</span><span class="p">:</span>
-            <span class="n">client</span><span class="o">.</span><span class="n">give</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">player</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_re_sign_entity</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">command</span><span class="p">))</span></div></div>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sign_match</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">command</span><span class="p">)</span> <span class="ow">in</span> <span class="n">inventory</span><span class="p">:</span>
+                <span class="n">client</span><span class="o">.</span><span class="n">give</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">player</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_re_sign_entity</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">command</span><span class="p">))</span>
+                <span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sign_match</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">command</span><span class="p">),</span> <span class="n">inventory</span><span class="p">)</span></div></div>
 </pre></div>
 
            </div>

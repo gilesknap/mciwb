@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>mciwb.player &mdash; mciwb 0.7.2.dev7+gd16df3f documentation</title>
+  <title>mciwb.player &mdash; mciwb 0.7.2.dev11+g5b1a542 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
@@ -138,7 +138,6 @@
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_facing</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">_get_entity_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">regex</span><span class="p">:</span> <span class="n">Pattern</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Match</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -147,6 +146,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">client</span> <span class="o">=</span> <span class="n">get_client</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">):</span>
+            <span class="c1"># entity=self.name would not work for the dummy stand used for testing</span>
             <span class="n">data</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">entity</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;@e[name=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">,limit=1]&quot;</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="n">path</span><span class="p">)</span>
             <span class="n">match</span> <span class="o">=</span> <span class="n">regex</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">match</span><span class="p">:</span>
@@ -155,26 +155,25 @@
 
         <span class="k">raise</span> <span class="n">PlayerNotInWorld</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;player </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> left&quot;</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_pos</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Vec3</span><span class="p">:</span>
-        <span class="n">match</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_entity_data</span><span class="p">(</span><span class="s2">&quot;Pos&quot;</span><span class="p">,</span> <span class="n">regex_coord</span><span class="p">)</span>
-        <span class="n">pos</span> <span class="o">=</span> <span class="n">Vec3</span><span class="p">(</span>
-            <span class="nb">float</span><span class="p">(</span><span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)),</span> <span class="nb">float</span><span class="p">(</span><span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">2</span><span class="p">)),</span> <span class="nb">float</span><span class="p">(</span><span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span>
-        <span class="p">)</span><span class="o">.</span><span class="n">with_ints</span><span class="p">()</span>
-        <span class="k">return</span> <span class="n">pos</span>
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">inventory</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the player&#39;s inventory</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># TODO long term this should return a list of Item objects</span>
+        <span class="c1"># TODO and Item should be extended to allow properties</span>
+        <span class="k">return</span> <span class="n">get_client</span><span class="p">()</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">entity</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="s2">&quot;Inventory&quot;</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">pos</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Vec3</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return the player&#39;s position</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pos</span><span class="p">()</span>
-
-    <span class="k">def</span> <span class="nf">_facing</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Vec3</span><span class="p">:</span>
-        <span class="n">match</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_entity_data</span><span class="p">(</span><span class="s2">&quot;Rotation&quot;</span><span class="p">,</span> <span class="n">regex_angle</span><span class="p">)</span>
-        <span class="n">angle</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
-
-        <span class="n">index</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(((</span><span class="n">math</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">angle</span><span class="p">)</span> <span class="o">+</span> <span class="mi">45</span><span class="p">)</span> <span class="o">%</span> <span class="mi">360</span><span class="p">)</span> <span class="o">/</span> <span class="mi">90</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">Direction</span><span class="o">.</span><span class="n">cardinals</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
+        <span class="n">match</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_entity_data</span><span class="p">(</span><span class="s2">&quot;Pos&quot;</span><span class="p">,</span> <span class="n">regex_coord</span><span class="p">)</span>
+        <span class="n">pos</span> <span class="o">=</span> <span class="n">Vec3</span><span class="p">(</span>
+            <span class="nb">float</span><span class="p">(</span><span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)),</span> <span class="nb">float</span><span class="p">(</span><span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">2</span><span class="p">)),</span> <span class="nb">float</span><span class="p">(</span><span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">with_ints</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">pos</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">facing</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Vec3</span><span class="p">:</span>
@@ -187,7 +186,11 @@
 <span class="sd">            EAST = Vec3(1, 0, 0)</span>
 <span class="sd">            WEST = Vec3(-1, 0, 0)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_facing</span><span class="p">()</span>
+        <span class="n">match</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_entity_data</span><span class="p">(</span><span class="s2">&quot;Rotation&quot;</span><span class="p">,</span> <span class="n">regex_angle</span><span class="p">)</span>
+        <span class="n">angle</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
+
+        <span class="n">index</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(((</span><span class="n">math</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">angle</span><span class="p">)</span> <span class="o">+</span> <span class="mi">45</span><span class="p">)</span> <span class="o">%</span> <span class="mi">360</span><span class="p">)</span> <span class="o">/</span> <span class="mi">90</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">Direction</span><span class="o">.</span><span class="n">cardinals</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
 
 <div class="viewcode-block" id="Player.player_in"><a class="viewcode-back" href="../../reference/api.html#mciwb.player.Player.player_in">[docs]</a>    <span class="k">def</span> <span class="nf">player_in</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">volume</span><span class="p">:</span> <span class="n">Volume</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
