@@ -19,6 +19,7 @@ from mcwb.types import Direction, Planes3d
 from mciwb.copier import CopyPaste
 from mciwb.iwb import Iwb, get_world
 from mciwb.monitor import Monitor
+from mciwb.nbt import parse_nbt
 from mciwb.player import Player
 from mciwb.switch import Switch
 from mciwb.threads import get_client
@@ -48,6 +49,14 @@ imported = [
     grab,
     load_items,
     make_tunnel,
+    parse_nbt,
     polygon,
     save_items,
 ]
+
+# THESE FUNCTIONS TO BE MOVED TO LOWER LIBRARIES
+
+
+# TODO this should be implemented in Vec3 type in mcwb
+def vec2params(vec: Vec3) -> str:
+    return f"x={vec.x}, y={vec.y}, z={vec.z}"

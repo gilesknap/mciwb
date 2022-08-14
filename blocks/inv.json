@@ -1,0 +1,62 @@
+[
+    {Slot: 0b, id: "minecraft:oak_sign", Count: 1f, tag: {BlockEntityTag: {Text1: '{
+                    "text": "select"
+                }'
+            }, display: {Name: '{
+                    "text": "select"
+                }'
+            }
+        }
+    },
+    {Slot: 1b, id: "minecraft:oak_sign", Count: 1.2d, tag: {BlockEntityTag: {Text1: '{
+                    "text": "paste"
+                }'
+            }, display: {Name: '{
+                    "text": "paste"
+                }'
+            }
+        }
+    },
+    {Slot: 2b, id: "minecraft:iron_axe", Count: 1b, tag: {Damage: 0
+        }
+    },
+    {Slot: 3b, id: "minecraft:oak_sign", Count: 1b, tag: {BlockEntityTag: {Text1: '{
+                    "text": "clear"
+                }'
+            }, display: {Name: '{
+                    "text": "clear"
+                }'
+            }
+        }
+    },
+    {Slot: 4b, id: "minecraft:piston", Count: 1b
+    },
+    {Slot: 5b, id: "minecraft:birch_planks", Count: 1b
+    },
+    {Slot: 6b, id: "minecraft:birch_sign", Count: 1b
+    },
+    {Slot: 7b, id: "minecraft:hopper", Count: 1b
+    },
+    {Slot: 8b, id: "minecraft:quartz_stairs", Count: 1b
+    },
+    {Slot: 16b, id: "minecraft:oak_sign", Count: 1b, tag: {BlockEntityTag: {Text1: '{
+                    "text": "expand"
+                }'
+            }, display: {Name: '{
+                    "text": "expand"
+                }'
+            }
+        }
+    },
+    {Slot: 23b, id: "minecraft:polished_granite", Count: 1b
+    },
+    {Slot: 101b, id: "minecraft:netherite_leggings", Count: 1b, tag: {Damage: 0
+        }
+    },
+    {Slot: 102b, id: "minecraft:diamond_chestplate", Count: 1b, tag: {Damage: 0
+        }
+    },
+    {Slot: -106b, id: "minecraft:crossbow", Count: 1b, tag: {Damage: 0
+        }
+    }
+]

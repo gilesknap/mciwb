@@ -156,6 +156,17 @@ class Monitor:
         """
         self._polling = False
 
+    @classmethod
+    def stop_named(cls, name: str):
+        """
+        Stop a named instance of Monitor
+        """
+        for monitor in cls.monitors:
+            if monitor.name == name:
+                monitor.stop()
+                cls.monitors.remove(monitor)
+                break
+
     def __del__(self):
         self.stop()
 
