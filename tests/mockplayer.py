@@ -17,12 +17,6 @@ class MockPlayer:
     def facing(self) -> Vec3:
         return Direction.SOUTH
 
-    def _pos(self, client=None) -> Vec3:
-        return self._pos()
-
-    def _facing(self, client=None) -> Vec3:
-        return self._facing()
-
     def player_in(self, volume: Volume) -> bool:
         """
         Check if the player is in the volume

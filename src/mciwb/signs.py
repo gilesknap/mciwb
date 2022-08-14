@@ -119,10 +119,17 @@ class Signs:
         if name in self.signs:
             del self.signs[name]
 
+    _sign_match = '{{"text":"{}"}}'
+
     def give_signs(self):
         """
         Give player one of each command sign in our commands list
+
+        Check first if the player has the sign already
         """
         client = get_client()
+        inventory = self.player.inventory
         for command in self.signs:
-            client.give(self.player.name, self._re_sign_entity.format(command))
+            if not self._sign_match.format(command) in inventory:
+                client.give(self.player.name, self._re_sign_entity.format(command))
+                print(self._sign_match.format(command), inventory)
