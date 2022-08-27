@@ -1,911 +1,425 @@
 [
     [
         [
-            {
-                "__Item__":"air"
-            },
-            {
-                "__Item__":"stone"
-            },
-            {
-                "__Item__":"air"
-            }
+            "minecraft:air",
+            "minecraft:stone",
+            "minecraft:air"
         ],
         [
-            {
-                "__Item__":"air"
-            },
-            {
-                "__Item__":"stone"
-            },
-            {
-                "__Item__":"air"
-            }
+            "minecraft:air",
+            "minecraft:stone",
+            "minecraft:air"
         ],
         [
-            {
-                "__Item__":"air"
-            },
-            {
-                "__Item__":"stone"
-            },
-            {
-                "__Item__":"air"
-            }
+            "minecraft:air",
+            "minecraft:stone",
+            "minecraft:air"
         ],
         [
-            {
-                "__Item__":"air"
-            },
-            {
-                "__Item__":"stone"
-            },
-            {
-                "__Item__":"air"
-            }
+            "minecraft:air",
+            "minecraft:stone",
+            "minecraft:air"
         ],
         [
-            {
-                "__Item__":"air"
-            },
-            {
-                "__Item__":"stone"
-            },
-            {
-                "__Item__":"air"
-            }
+            "minecraft:air",
+            "minecraft:stone",
+            "minecraft:air"
         ],
         [
-            {
-                "__Item__":"air"
-            },
-            {
-                "__Item__":"stone"
-            },
-            {
-                "__Item__":"air"
-            }
+            "minecraft:air",
+            "minecraft:stone",
+            "minecraft:air"
         ],
         [
-            {
-                "__Item__":"air"
-            },
-            {
-                "__Item__":"stone"
-            },
-            {
-                "__Item__":"air"
-            }
+            "minecraft:air",
+            "minecraft:stone",
+            "minecraft:air"
         ],
         [
-            {
-                "__Item__":"stone"
-            },
-            {
-                "__Item__":"stone"
-            },
-            {
-                "__Item__":"stone"
-            }
+            "minecraft:stone",
+            "minecraft:stone",
+            "minecraft:stone"
         ],
         [
-            {
-                "__Item__":"stone"
-            },
-            {
-                "__Item__":"stone"
-            },
-            {
-                "__Item__":"stone"
-            }
+            "minecraft:stone",
+            "minecraft:stone",
+            "minecraft:stone"
         ]
     ],
     [
         [
-            {
-                "__Item__":"stone"
-            },
-            {
-                "__Item__":"stone"
-            },
-            {
-                "__Item__":"stone"
-            }
+            "minecraft:stone",
+            "minecraft:stone",
+            "minecraft:stone"
         ],
         [
-            {
-                "__Item__":"stone"
-            },
-            {
-                "__Item__":"stone"
-            },
-            {
-                "__Item__":"stone"
-            }
+            "minecraft:stone",
+            "minecraft:stone",
+            "minecraft:stone"
         ],
         [
-            {
-                "__Item__":"stone"
-            },
-            {
-                "__Item__":"stone"
-            },
-            {
-                "__Item__":"stone"
-            }
+            "minecraft:stone",
+            "minecraft:stone",
+            "minecraft:stone"
         ],
         [
-            {
-                "__Item__":"stone"
-            },
-            {
-                "__Item__":"stone"
-            },
-            {
-                "__Item__":"stone"
-            }
+            "minecraft:stone",
+            "minecraft:stone",
+            "minecraft:stone"
         ],
         [
-            {
-                "__Item__":"stone"
-            },
-            {
-                "__Item__":"stone"
-            },
-            {
-                "__Item__":"stone"
-            }
+            "minecraft:stone",
+            "minecraft:stone",
+            "minecraft:stone"
         ],
         [
-            {
-                "__Item__":"stone"
-            },
-            {
-                "__Item__":"stone"
-            },
-            {
-                "__Item__":"stone"
-            }
+            "minecraft:stone",
+            "minecraft:stone",
+            "minecraft:stone"
         ],
         [
-            {
-                "__Item__":"stone"
-            },
-            {
-                "__Item__":"stone"
-            },
-            {
-                "__Item__":"stone"
-            }
+            "minecraft:stone",
+            "minecraft:stone",
+            "minecraft:stone"
         ],
         [
-            {
-                "__Item__":"stone"
-            },
-            {
-                "__Item__":"stone"
-            },
-            {
-                "__Item__":"stone"
-            }
+            "minecraft:stone",
+            "minecraft:stone",
+            "minecraft:stone"
         ],
         [
-            {
-                "__Item__":"air"
-            },
-            {
-                "__Item__":"air"
-            },
-            {
-                "__Item__":"air"
-            }
+            "minecraft:air",
+            "minecraft:air",
+            "minecraft:air"
         ]
     ],
     [
         [
-            {
-                "__Item__":"air"
-            },
-            {
-                "__Item__":"air"
-            },
-            {
-                "__Item__":"air"
-            }
+            "minecraft:air",
+            "minecraft:air",
+            "minecraft:air"
         ],
         [
-            {
-                "__Item__":"air"
-            },
-            {
-                "__Item__":"air"
-            },
-            {
-                "__Item__":"air"
-            }
+            "minecraft:air",
+            "minecraft:air",
+            "minecraft:air"
         ],
         [
-            {
-                "__Item__":"air"
-            },
-            {
-                "__Item__":"air"
-            },
-            {
-                "__Item__":"air"
-            }
+            "minecraft:air",
+            "minecraft:air",
+            "minecraft:air"
         ],
         [
-            {
-                "__Item__":"air"
-            },
-            {
-                "__Item__":"air"
-            },
-            {
-                "__Item__":"air"
-            }
+            "minecraft:air",
+            "minecraft:air",
+            "minecraft:air"
         ],
         [
-            {
-                "__Item__":"air"
-            },
-            {
-                "__Item__":"air"
-            },
-            {
-                "__Item__":"air"
-            }
+            "minecraft:air",
+            "minecraft:air",
+            "minecraft:air"
         ],
         [
-            {
-                "__Item__":"air"
-            },
-            {
-                "__Item__":"acacia_fence"
-            },
-            {
-                "__Item__":"air"
-            }
+            "minecraft:air",
+            "minecraft:acacia_fence",
+            "minecraft:air"
         ],
         [
-            {
-                "__Item__":"stone"
-            },
-            {
-                "__Item__":"stone"
-            },
-            {
-                "__Item__":"stone"
-            }
+            "minecraft:stone",
+            "minecraft:stone",
+            "minecraft:stone"
         ],
         [
-            {
-                "__Item__":"stone"
-            },
-            {
-                "__Item__":"stone"
-            },
-            {
-                "__Item__":"stone"
-            }
+            "minecraft:stone",
+            "minecraft:stone",
+            "minecraft:stone"
         ],
         [
-            {
-                "__Item__":"stone"
-            },
-            {
-                "__Item__":"air"
-            },
-            {
-                "__Item__":"stone"
-            }
+            "minecraft:stone",
+            "minecraft:air",
+            "minecraft:stone"
         ]
     ],
     [
         [
-            {
-                "__Item__":"air"
-            },
-            {
-                "__Item__":"air"
-            },
-            {
-                "__Item__":"air"
-            }
+            "minecraft:air",
+            "minecraft:air",
+            "minecraft:air"
         ],
         [
-            {
-                "__Item__":"air"
-            },
-            {
-                "__Item__":"air"
-            },
-            {
-                "__Item__":"air"
-            }
+            "minecraft:air",
+            "minecraft:air",
+            "minecraft:air"
         ],
         [
-            {
-                "__Item__":"air"
-            },
-            {
-                "__Item__":"air"
-            },
-            {
-                "__Item__":"air"
-            }
+            "minecraft:air",
+            "minecraft:air",
+            "minecraft:air"
         ],
         [
-            {
-                "__Item__":"air"
-            },
-            {
-                "__Item__":"air"
-            },
-            {
-                "__Item__":"air"
-            }
+            "minecraft:air",
+            "minecraft:air",
+            "minecraft:air"
         ],
         [
-            {
-                "__Item__":"air"
-            },
-            {
-                "__Item__":"air"
-            },
-            {
-                "__Item__":"air"
-            }
+            "minecraft:air",
+            "minecraft:air",
+            "minecraft:air"
         ],
         [
-            {
-                "__Item__":"air"
-            },
-            {
-                "__Item__":"acacia_fence"
-            },
-            {
-                "__Item__":"air"
-            }
+            "minecraft:air",
+            "minecraft:acacia_fence",
+            "minecraft:air"
         ],
         [
-            {
-                "__Item__":"stone"
-            },
-            {
-                "__Item__":"stone"
-            },
-            {
-                "__Item__":"stone"
-            }
+            "minecraft:stone",
+            "minecraft:stone",
+            "minecraft:stone"
         ],
         [
-            {
-                "__Item__":"stone"
-            },
-            {
-                "__Item__":"stone"
-            },
-            {
-                "__Item__":"stone"
-            }
+            "minecraft:stone",
+            "minecraft:stone",
+            "minecraft:stone"
         ],
         [
-            {
-                "__Item__":"air"
-            },
-            {
-                "__Item__":"air"
-            },
-            {
-                "__Item__":"air"
-            }
+            "minecraft:air",
+            "minecraft:air",
+            "minecraft:air"
         ]
     ],
     [
         [
-            {
-                "__Item__":"air"
-            },
-            {
-                "__Item__":"air"
-            },
-            {
-                "__Item__":"air"
-            }
+            "minecraft:air",
+            "minecraft:air",
+            "minecraft:air"
         ],
         [
-            {
-                "__Item__":"air"
-            },
-            {
-                "__Item__":"air"
-            },
-            {
-                "__Item__":"air"
-            }
+            "minecraft:air",
+            "minecraft:air",
+            "minecraft:air"
         ],
         [
-            {
-                "__Item__":"air"
-            },
-            {
-                "__Item__":"air"
-            },
-            {
-                "__Item__":"air"
-            }
+            "minecraft:air",
+            "minecraft:air",
+            "minecraft:air"
         ],
         [
-            {
-                "__Item__":"air"
-            },
-            {
-                "__Item__":"air"
-            },
-            {
-                "__Item__":"air"
-            }
+            "minecraft:air",
+            "minecraft:air",
+            "minecraft:air"
         ],
         [
-            {
-                "__Item__":"air"
-            },
-            {
-                "__Item__":"air"
-            },
-            {
-                "__Item__":"air"
-            }
+            "minecraft:air",
+            "minecraft:air",
+            "minecraft:air"
         ],
         [
-            {
-                "__Item__":"air"
-            },
-            {
-                "__Item__":"acacia_fence"
-            },
-            {
-                "__Item__":"air"
-            }
+            "minecraft:air",
+            "minecraft:acacia_fence",
+            "minecraft:air"
         ],
         [
-            {
-                "__Item__":"stone"
-            },
-            {
-                "__Item__":"stone"
-            },
-            {
-                "__Item__":"stone"
-            }
+            "minecraft:stone",
+            "minecraft:stone",
+            "minecraft:stone"
         ],
         [
-            {
-                "__Item__":"stone"
-            },
-            {
-                "__Item__":"stone"
-            },
-            {
-                "__Item__":"stone"
-            }
+            "minecraft:stone",
+            "minecraft:stone",
+            "minecraft:stone"
         ],
         [
-            {
-                "__Item__":"stone"
-            },
-            {
-                "__Item__":"air"
-            },
-            {
-                "__Item__":"stone"
-            }
+            "minecraft:stone",
+            "minecraft:air",
+            "minecraft:stone"
         ]
     ],
     [
         [
-            {
-                "__Item__":"air"
-            },
-            {
-                "__Item__":"air"
-            },
-            {
-                "__Item__":"air"
-            }
+            "minecraft:air",
+            "minecraft:air",
+            "minecraft:air"
         ],
         [
-            {
-                "__Item__":"air"
-            },
-            {
-                "__Item__":"air"
-            },
-            {
-                "__Item__":"air"
-            }
+            "minecraft:air",
+            "minecraft:air",
+            "minecraft:air"
         ],
         [
-            {
-                "__Item__":"air"
-            },
-            {
-                "__Item__":"air"
-            },
-            {
-                "__Item__":"air"
-            }
+            "minecraft:air",
+            "minecraft:air",
+            "minecraft:air"
         ],
         [
-            {
-                "__Item__":"air"
-            },
-            {
-                "__Item__":"air"
-            },
-            {
-                "__Item__":"air"
-            }
+            "minecraft:air",
+            "minecraft:air",
+            "minecraft:air"
         ],
         [
-            {
-                "__Item__":"air"
-            },
-            {
-                "__Item__":"air"
-            },
-            {
-                "__Item__":"air"
-            }
+            "minecraft:air",
+            "minecraft:air",
+            "minecraft:air"
         ],
         [
-            {
-                "__Item__":"air"
-            },
-            {
-                "__Item__":"acacia_fence"
-            },
-            {
-                "__Item__":"air"
-            }
+            "minecraft:air",
+            "minecraft:acacia_fence",
+            "minecraft:air"
         ],
         [
-            {
-                "__Item__":"stone"
-            },
-            {
-                "__Item__":"stone"
-            },
-            {
-                "__Item__":"stone"
-            }
+            "minecraft:stone",
+            "minecraft:stone",
+            "minecraft:stone"
         ],
         [
-            {
-                "__Item__":"stone"
-            },
-            {
-                "__Item__":"stone"
-            },
-            {
-                "__Item__":"stone"
-            }
+            "minecraft:stone",
+            "minecraft:stone",
+            "minecraft:stone"
         ],
         [
-            {
-                "__Item__":"air"
-            },
-            {
-                "__Item__":"air"
-            },
-            {
-                "__Item__":"air"
-            }
+            "minecraft:air",
+            "minecraft:air",
+            "minecraft:air"
         ]
     ],
     [
         [
-            {
-                "__Item__":"air"
-            },
-            {
-                "__Item__":"air"
-            },
-            {
-                "__Item__":"air"
-            }
+            "minecraft:air",
+            "minecraft:air",
+            "minecraft:air"
         ],
         [
-            {
-                "__Item__":"air"
-            },
-            {
-                "__Item__":"air"
-            },
-            {
-                "__Item__":"air"
-            }
+            "minecraft:air",
+            "minecraft:air",
+            "minecraft:air"
         ],
         [
-            {
-                "__Item__":"air"
-            },
-            {
-                "__Item__":"air"
-            },
-            {
-                "__Item__":"air"
-            }
+            "minecraft:air",
+            "minecraft:air",
+            "minecraft:air"
         ],
         [
-            {
-                "__Item__":"air"
-            },
-            {
-                "__Item__":"air"
-            },
-            {
-                "__Item__":"air"
-            }
+            "minecraft:air",
+            "minecraft:air",
+            "minecraft:air"
         ],
         [
-            {
-                "__Item__":"air"
-            },
-            {
-                "__Item__":"air"
-            },
-            {
-                "__Item__":"air"
-            }
+            "minecraft:air",
+            "minecraft:air",
+            "minecraft:air"
         ],
         [
-            {
-                "__Item__":"air"
-            },
-            {
-                "__Item__":"acacia_fence"
-            },
-            {
-                "__Item__":"air"
-            }
+            "minecraft:air",
+            "minecraft:acacia_fence",
+            "minecraft:air"
         ],
         [
-            {
-                "__Item__":"stone"
-            },
-            {
-                "__Item__":"stone"
-            },
-            {
-                "__Item__":"stone"
-            }
+            "minecraft:stone",
+            "minecraft:stone",
+            "minecraft:stone"
         ],
         [
-            {
-                "__Item__":"stone"
-            },
-            {
-                "__Item__":"stone"
-            },
-            {
-                "__Item__":"stone"
-            }
+            "minecraft:stone",
+            "minecraft:stone",
+            "minecraft:stone"
         ],
         [
-            {
-                "__Item__":"stone"
-            },
-            {
-                "__Item__":"air"
-            },
-            {
-                "__Item__":"stone"
-            }
+            "minecraft:stone",
+            "minecraft:air",
+            "minecraft:stone"
         ]
     ],
     [
         [
-            {
-                "__Item__":"stone"
-            },
-            {
-                "__Item__":"stone"
-            },
-            {
-                "__Item__":"stone"
-            }
+            "minecraft:stone",
+            "minecraft:stone",
+            "minecraft:stone"
         ],
         [
-            {
-                "__Item__":"stone"
-            },
-            {
-                "__Item__":"stone"
-            },
-            {
-                "__Item__":"stone"
-            }
+            "minecraft:stone",
+            "minecraft:stone",
+            "minecraft:stone"
         ],
         [
-            {
-                "__Item__":"stone"
-            },
-            {
-                "__Item__":"stone"
-            },
-            {
-                "__Item__":"stone"
-            }
+            "minecraft:stone",
+            "minecraft:stone",
+            "minecraft:stone"
         ],
         [
-            {
-                "__Item__":"stone"
-            },
-            {
-                "__Item__":"stone"
-            },
-            {
-                "__Item__":"stone"
-            }
+            "minecraft:stone",
+            "minecraft:stone",
+            "minecraft:stone"
         ],
         [
-            {
-                "__Item__":"stone"
-            },
-            {
-                "__Item__":"stone"
-            },
-            {
-                "__Item__":"stone"
-            }
+            "minecraft:stone",
+            "minecraft:stone",
+            "minecraft:stone"
         ],
         [
-            {
-                "__Item__":"stone"
-            },
-            {
-                "__Item__":"stone"
-            },
-            {
-                "__Item__":"stone"
-            }
+            "minecraft:stone",
+            "minecraft:stone",
+            "minecraft:stone"
         ],
         [
-            {
-                "__Item__":"stone"
-            },
-            {
-                "__Item__":"stone"
-            },
-            {
-                "__Item__":"stone"
-            }
+            "minecraft:stone",
+            "minecraft:stone",
+            "minecraft:stone"
         ],
         [
-            {
-                "__Item__":"stone"
-            },
-            {
-                "__Item__":"stone"
-            },
-            {
-                "__Item__":"stone"
-            }
+            "minecraft:stone",
+            "minecraft:stone",
+            "minecraft:stone"
         ],
         [
-            {
-                "__Item__":"air"
-            },
-            {
-                "__Item__":"air"
-            },
-            {
-                "__Item__":"air"
-            }
+            "minecraft:air",
+            "minecraft:air",
+            "minecraft:air"
         ]
     ],
     [
         [
-            {
-                "__Item__":"air"
-            },
-            {
-                "__Item__":"stone"
-            },
-            {
-                "__Item__":"air"
-            }
+            "minecraft:air",
+            "minecraft:stone",
+            "minecraft:air"
         ],
         [
-            {
-                "__Item__":"air"
-            },
-            {
-                "__Item__":"stone"
-            },
-            {
-                "__Item__":"air"
-            }
+            "minecraft:air",
+            "minecraft:stone",
+            "minecraft:air"
         ],
         [
-            {
-                "__Item__":"air"
-            },
-            {
-                "__Item__":"stone"
-            },
-            {
-                "__Item__":"air"
-            }
+            "minecraft:air",
+            "minecraft:stone",
+            "minecraft:air"
         ],
         [
-            {
-                "__Item__":"air"
-            },
-            {
-                "__Item__":"stone"
-            },
-            {
-                "__Item__":"air"
-            }
+            "minecraft:air",
+            "minecraft:stone",
+            "minecraft:air"
         ],
         [
-            {
-                "__Item__":"air"
-            },
-            {
-                "__Item__":"stone"
-            },
-            {
-                "__Item__":"air"
-            }
+            "minecraft:air",
+            "minecraft:stone",
+            "minecraft:air"
         ],
         [
-            {
-                "__Item__":"air"
-            },
-            {
-                "__Item__":"stone"
-            },
-            {
-                "__Item__":"air"
-            }
+            "minecraft:air",
+            "minecraft:stone",
+            "minecraft:air"
         ],
         [
-            {
-                "__Item__":"air"
-            },
-            {
-                "__Item__":"stone"
-            },
-            {
-                "__Item__":"air"
-            }
+            "minecraft:air",
+            "minecraft:stone",
+            "minecraft:air"
         ],
         [
-            {
-                "__Item__":"stone"
-            },
-            {
-                "__Item__":"stone"
-            },
-            {
-                "__Item__":"stone"
-            }
+            "minecraft:stone",
+            "minecraft:stone",
+            "minecraft:stone"
         ],
         [
-            {
-                "__Item__":"stone"
-            },
-            {
-                "__Item__":"stone"
-            },
-            {
-                "__Item__":"stone"
-            }
+            "minecraft:stone",
+            "minecraft:stone",
+            "minecraft:stone"
         ]
     ]
 ]
