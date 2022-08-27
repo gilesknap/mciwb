@@ -130,7 +130,7 @@ class MockClient:
 
     def compare(self, pos: Vec3, cube: Items):
         """verify that the contents of the world at pos matches cube"""
-        n_cube = np.array(cube)
+        n_cube = np.array(cube, dtype=Item)
         upper = pos + Vec3(*(n_cube.shape))
         world_slice = self.world[pos.x : upper.x, pos.y : upper.y, pos.z : upper.z]
 
