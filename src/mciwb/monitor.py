@@ -3,12 +3,12 @@ Thread functions for running any background tasks. Primarily used for
 monitoring the state of objects in Minecraft.
 """
 
-import logging
 from time import sleep
 from typing import Any, Callable, List, Tuple, Union
 
 from rcon.exceptions import SessionTimeout
 
+from mciwb.logging import log
 from mciwb.player import PlayerNotInWorld
 from mciwb.threads import get_client, get_thread_name, new_thread
 
@@ -72,7 +72,7 @@ class Monitor:
         Begin polling the functions in the pollers list
         """
         if self.poll_thread is None:
-            logging.debug(f"starting polling thread {self.name}")
+            log.debug(f"starting polling thread {self.name}")
             self.poll_thread = new_thread(get_client(), self._poller, self.name)
             self.monitors.append(self)
             self._polling = True
@@ -88,19 +88,19 @@ class Monitor:
                     func(*params)
                 sleep(self.poll_rate)
             except BrokenPipeError:
-                logging.error(
+                log.error(
                     f"Connection to Minecraft Server lost, "
                     f"polling terminated in {get_thread_name()}"
                 )
                 self._polling = False
             except SessionTimeout:
-                logging.warning(f"Connection timeout in {get_thread_name()}")
+                log.warning(f"Connection timeout in {get_thread_name()}")
             except PlayerNotInWorld as e:
-                logging.warning(e)
+                log.warning(e)
                 self._polling = False
             except BaseException:
                 # report any other exception and continue polling
-                logging.error(f"Error in {get_thread_name()}", exc_info=True)
+                log.error(f"Error in {get_thread_name()}", exc_info=True)
 
             if self.once:
                 self._polling = False
@@ -110,7 +110,7 @@ class Monitor:
         self.poll_thread = None
         self.pollers = []
         if not self.once:
-            logging.info(f"Monitor {self.name} stopped")
+            log.info(f"Monitor {self.name} stopped")
 
     def add_poller_func(self, func: CallbackFunction, params: Tuple[Any, ...] = ()):
         """
@@ -135,7 +135,7 @@ class Monitor:
                 self.pollers.remove(t)
                 break
         else:
-            logging.error("removing unknown poller function")
+            log.error("removing unknown poller function")
 
     @classmethod
     def stop_all(cls):
@@ -148,7 +148,7 @@ class Monitor:
             for monitor in cls.monitors:
                 monitor.stop()
             cls.monitors.clear()
-            logging.info("Stopped all monitoring threads")
+            log.info("Stopped all monitoring threads")
 
     def stop(self):
         """

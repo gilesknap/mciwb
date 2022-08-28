@@ -1,4 +1,3 @@
-import logging
 import os
 import re
 import shutil
@@ -6,6 +5,7 @@ from datetime import datetime
 from pathlib import Path
 from zipfile import ZIP_DEFLATED, ZipFile
 
+from mciwb.logging import log
 from mciwb.server import backup_folder, default_server_folder
 from mciwb.threads import get_client
 
@@ -36,10 +36,10 @@ class Backup:
             client = get_client()
             client.say(f"Preparing to backup to {fname}")
             result = client.save_off()
-            logging.debug("save_off: " + result)
+            log.debug("save_off: " + result)
 
             result = client.save_all()
-            logging.debug("save_all: " + result)
+            log.debug("save_all: " + result)
             client.say("Backing up ...")
 
         file = self.backup_folder / fname
@@ -49,12 +49,12 @@ class Backup:
             for wf in world_files:
 
                 zip_file.write(wf, arcname=wf.relative_to(self.world_folder))
-        logging.debug("ZipFile complete")
+        log.debug("ZipFile complete")
 
         if running:
             client = get_client()
             result = client.save_on()
-            logging.debug("save_on: " + result)
+            log.debug("save_on: " + result)
             client.say("Backup Complete.")
 
     def _get_latest_zip(self) -> Path:
@@ -92,7 +92,7 @@ class Backup:
 
         # remove lockfile if it exists
         for file in self.world_folder.glob("*.lock"):
-            logging.debug(f"removing {file}")
+            log.debug(f"removing {file}")
             file.unlink()
 
-        logging.info(f"Restored {self.world_folder} from {rfile}")
+        log.info(f"Restored {self.world_folder} from {rfile}")

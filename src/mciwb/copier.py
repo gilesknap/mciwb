@@ -2,12 +2,11 @@
 Provide copy and paste actions on Volumes of blocks
 """
 
-import logging
-
 from mcipc.rcon.enumerations import CloneMode, MaskMode
 from mcipc.rcon.item import Item
 from mcwb import Vec3, Volume
 
+from mciwb.logging import log
 from mciwb.threads import get_client
 
 zero = Vec3(0, 0, 0)
@@ -91,7 +90,7 @@ class CopyPaste:
             mask_mode=MaskMode.REPLACE,
             clone_mode=mode,
         )
-        logging.info(result)
+        log.info(result)
 
     def paste_safe(self, pos: Vec3):
         """
@@ -112,7 +111,7 @@ class CopyPaste:
         offset = pos
         end = self.paste_pos + self.size + offset
         result = client.fill(self.paste_pos + offset, end, item.value)
-        logging.info(result)
+        log.info(result)
 
     def clear(self, _: Vec3 = zero):
         """
