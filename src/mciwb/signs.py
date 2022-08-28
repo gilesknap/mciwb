@@ -34,8 +34,10 @@ class Signs:
 
     _re_sign_text = re.compile(r"""Text1: '{"text":"([^"]*)"}'""")
     _re_sign_entity = (
-        """minecraft:oak_sign{{BlockEntityTag:{{Text1:'{{"text":"{0}"}}'}},"""
-        """display:{{Name:'{{"text":"{0}"}}'}}}}"""
+        """minecraft:oak_sign{{"""
+        """BlockEntityTag:{{Text1:'{{"text":"{0}"}}'}},"""
+        """display:{{Name:'{{"text":"{0}"}}'}}"""
+        """}}"""
     )
 
     _wall_sign = "minecraft:oak_wall_sign"
@@ -132,4 +134,3 @@ class Signs:
         for command in self.signs:
             if not self._sign_match.format(command) in inventory:
                 client.give(self.player.name, self._re_sign_entity.format(command))
-                print(self._sign_match.format(command), inventory)

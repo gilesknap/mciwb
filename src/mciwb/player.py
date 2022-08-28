@@ -10,6 +10,7 @@ from typing import List, Match, Pattern
 from mcwb.types import Direction, Vec3
 from mcwb.volume import Volume
 
+from mciwb.logging import log
 from mciwb.threads import get_client
 
 regex_coord = re.compile(r"\[(-?\d+.?\d*)d, *(-?\d+.?\d*)d, *(-?\d+.?\d*)d\]")
@@ -41,6 +42,8 @@ class Player:
             match = regex.search(data)
             if match:
                 return match
+            else:
+                log.debug(f"{self.name} not found: {data}")
             sleep(0.1)
 
         raise PlayerNotInWorld(f"player {self.name} left")
