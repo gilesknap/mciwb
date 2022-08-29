@@ -1,4 +1,3 @@
-import logging
 from pathlib import Path
 from typing import Dict, Optional
 
@@ -12,6 +11,7 @@ from rcon.source.proto import Packet
 
 from mciwb.backup import Backup
 from mciwb.copier import CopyPaste
+from mciwb.logging import init_logging, log
 from mciwb.monitor import Monitor
 from mciwb.player import Player, PlayerNotInWorld
 from mciwb.server import HOST, def_port
@@ -72,10 +72,10 @@ class Iwb:
 
     def debug(self, enable: bool = True):
         """
-        Enable/disable debug logging. Enabling this will also enable
-        full Traceback logging.
+        Enable/disable debug log. Enabling this will also enable
+        full Traceback log.
         """
-        logging.getLogger().setLevel(logging.DEBUG if enable else logging.INFO)
+        init_logging(debug=enable)
 
     def backup(self, name=None) -> None:
         """
@@ -83,7 +83,7 @@ class Iwb:
         backup will be named using the current date and time.
         """
         if self._backup is None:
-            logging.warning("no backup available")
+            log.warning("no backup available")
         else:
             self._backup.backup(name=name)
 
@@ -99,7 +99,7 @@ class Iwb:
         # store the client for the main thread
         set_client(client)
 
-        logging.info(f"Connected to {self._server} on {self._port}")
+        log.info(f"Connected to {self._server} on {self._port}")
         # don't announce every rcon command
         client.gamerule("sendCommandFeedback", False)
 
@@ -134,9 +134,9 @@ class Iwb:
             self.signs.give_signs()
         except (PlayerNotInWorld, SessionTimeout, NoPlayerFound) as e:
             # during tests this will fail as there is no real player
-            logging.error("failed to give signs to player, %s", e)
+            log.error("failed to give signs to player, %s", e)
 
-        logging.info(f"Monitoring player {name} enabled for sign commands")
+        log.info(f"Monitoring player {name} enabled for sign commands")
 
     def stop(self):
         Monitor.stop_all()
@@ -156,13 +156,13 @@ class Iwb:
         block_str = f"""{block}[{",".join(nbt)}]"""
 
         result = client.setblock(int_pos, block_str)
-        logging.debug("setblock: " + result)
+        log.debug("setblock: " + result)
 
         # 'Could not set the block' is not an error - it means it was already set
         if not any(
             x in result for x in ["Changed the block", "Could not set the block", ""]
         ):
-            logging.error(result)
+            log.error(result)
 
     def get_block(self, pos: Vec3) -> Item:
         """

@@ -1,4 +1,3 @@
-import logging
 from typing import Any, List, Optional
 
 import numpy as np
@@ -8,6 +7,7 @@ from mcwb import Vec3
 from mcwb.types import Direction
 
 from mciwb.iwb import get_world
+from mciwb.logging import log
 from mciwb.threads import get_client
 
 
@@ -44,7 +44,7 @@ class Wall:
         self._start = self._end
 
     def _render(self):
-        logging.debug(f"drawing a wall v2 from {self._start} to {self._end}")
+        log.debug(f"drawing a wall v2 from {self._start} to {self._end}")
 
         dx = int(self._end.x - self._start.x)
         dz = int(self._end.z - self._start.z)
@@ -62,7 +62,7 @@ class Wall:
             wall_dir = Direction.SOUTH * np.sign(dz)
             step_dir = Direction.EAST * np.sign(dx)
 
-        logging.debug(
+        log.debug(
             f"wall has {sections} sections of len {wall_section_len} "
             "wall_dir {wall_dir} step_dir {step_dir}"
         )
@@ -76,7 +76,7 @@ class Wall:
         col_dir = self._rot_right(wall_dir)
         base = begin
 
-        logging.debug(
+        log.debug(
             f"render section len {length} from {begin}"
             f" to {begin + wall_dir * length}"
         )

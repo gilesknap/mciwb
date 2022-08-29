@@ -1,7 +1,6 @@
 """
 Functions for launching and controlling a Minecraft server in a Docker container.
 """
-import logging
 import shutil
 from datetime import datetime
 from pathlib import Path
@@ -11,6 +10,8 @@ from docker import from_env
 from docker.models.containers import Container
 from mcipc.rcon.je.client import Client
 from mcwb import Vec3
+
+from mciwb.logging import log
 
 HOST = "localhost"
 
@@ -77,9 +78,9 @@ class MinecraftServer:
             logs = "\n".join(str(self.container.logs()).split(r"\n"))
             raise RuntimeError(f"minecraft server failed to start\n\n{logs}")
 
-        logging.info("waiting for server to come online ...")
+        log.info("waiting for server to come online ...")
         for block in self.container.logs(stream=True):
-            logging.debug(block.decode("utf-8").strip())
+            log.debug(block.decode("utf-8").strip())
             if b"RCON running" in block:
                 break
             elapsed = datetime.now() - start_time
@@ -96,28 +97,28 @@ class MinecraftServer:
                 sleep(2)
         else:
             raise RuntimeError("Timeout Starting minecraft")
-        logging.info(f"Server {self.name} is online on port {self.port}")
+        log.info(f"Server {self.name} is online on port {self.port}")
 
     def stop(self):
         """
         Stop the minecraft server
         """
         assert isinstance(self.container, Container)
-        logging.info(f"Stopping Minecraft Server {self.name} ...")
+        log.info(f"Stopping Minecraft Server {self.name} ...")
         self.container.stop()
         self.container.wait()
 
-        logging.info(f"Stopped Minecraft Server {self.name} ...")
+        log.info(f"Stopped Minecraft Server {self.name} ...")
 
     def start(self):
         """
         Start the minecraft server
         """
         assert isinstance(self.container, Container)
-        logging.info(f"Starting Minecraft Server {self.name} on port {self.port}...")
+        log.info(f"Starting Minecraft Server {self.name} on port {self.port}...")
         self.container.start()
         self.wait_server()
-        logging.info(f"Started Minecraft Server {self.name} ...")
+        log.info(f"Started Minecraft Server {self.name} ...")
 
     def remove(self, force=False):
         """
@@ -128,7 +129,7 @@ class MinecraftServer:
         # set env var MCIWB_KEEP_SERVER to keep server alive for faster
         # repeated tests and viewing the world with a minecraft client
         if self.container and (not self.keep or force):
-            logging.info(f"Removing Minecraft Server {self.name} ...")
+            log.info(f"Removing Minecraft Server {self.name} ...")
             self.stop()
             self.container.remove()
 
@@ -152,7 +153,7 @@ class MinecraftServer:
                     self.remove(force=True)
                     break
                 if container.status == "running":
-                    logging.info(
+                    log.info(
                         f"Minecraft Server '{self.name}' "
                         f"already running on port {self.port}"
                     )
@@ -161,9 +162,7 @@ class MinecraftServer:
                     self.start()
                     return
 
-        logging.info(
-            f"Launching Minecraft Server '{self.name}' on port {self.port} ..."
-        )
+        log.info(f"Launching Minecraft Server '{self.name}' on port {self.port} ...")
 
         env = {
             "EULA": "TRUE",
@@ -252,9 +251,9 @@ class MinecraftServer:
         for container in docker_client.containers.list(all=True):
             assert isinstance(container, Container)
             if container.name == name:
-                logging.info(f"Stopping Minecraft Server {name} ...")
+                log.info(f"Stopping Minecraft Server {name} ...")
                 container.stop()
                 container.wait()
                 container.remove()
                 return
-        logging.warning(f"Minecraft Server '{name}' not found")
+        log.warning(f"Minecraft Server '{name}' not found")

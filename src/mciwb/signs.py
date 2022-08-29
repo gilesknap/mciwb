@@ -1,7 +1,6 @@
 """
 Add an interactive capability through the placing of command signs in the world
 """
-import logging
 import re
 from time import sleep
 from typing import Callable, Dict
@@ -9,6 +8,7 @@ from typing import Callable, Dict
 from mcwb.types import Item, Vec3
 
 from mciwb.copier import CopyPaste
+from mciwb.logging import log
 from mciwb.player import Player
 from mciwb.threads import get_client
 
@@ -34,8 +34,10 @@ class Signs:
 
     _re_sign_text = re.compile(r"""Text1: '{"text":"([^"]*)"}'""")
     _re_sign_entity = (
-        """minecraft:oak_sign{{BlockEntityTag:{{Text1:'{{"text":"{0}"}}'}},"""
-        """display:{{Name:'{{"text":"{0}"}}'}}}}"""
+        """minecraft:oak_sign{{"""
+        """BlockEntityTag:{{Text1:'{{"text":"{0}"}}'}},"""
+        """display:{{Name:'{{"text":"{0}"}}'}}"""
+        """}}"""
     )
 
     _wall_sign = "minecraft:oak_wall_sign"
@@ -79,7 +81,7 @@ class Signs:
                 match = self._re_sign_text.search(data)
                 if match:
                     text = match.group(1)
-                    logging.debug(f"Sign at {pos} has text {text}")
+                    log.debug(f"Sign at {pos} has text {text}")
                     target = self._get_target_block(block_pos, facing)
                     self.do_action(text, target, block_pos)
 
@@ -96,7 +98,7 @@ class Signs:
         # if the command is not found then this is just an ordinary sign (I assume!)
         if command in self.signs:
             get_client().setblock(block_pos, str(Item.AIR))
-            logging.info(f"{command} at {target}")
+            log.info(f"{command} at {target}")
             self.signs[command](target)
 
     def add_sign(self, name: str, function: CallbackPosFunction):
@@ -132,4 +134,3 @@ class Signs:
         for command in self.signs:
             if not self._sign_match.format(command) in inventory:
                 client.give(self.player.name, self._re_sign_entity.format(command))
-                print(self._sign_match.format(command), inventory)

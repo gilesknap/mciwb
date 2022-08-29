@@ -1,4 +1,3 @@
-import logging
 import sys
 from pathlib import Path
 from typing import Optional
@@ -13,6 +12,7 @@ from mciwb.backup import Backup
 # so I allow import * here to avoid repetition of imports.py
 from mciwb.imports import *  # noqa: F401, F403
 from mciwb.iwb import Iwb
+from mciwb.logging import exception_handler, init_logging, log
 from mciwb.server import (
     HOST,
     MinecraftServer,
@@ -47,26 +47,6 @@ def main(
     """Minecraft Interactive World Builder"""
 
 
-def exception_handler(exception_type, exception, traceback):
-    if logging.root.level > logging.DEBUG:
-        logging.error("%s: %s", exception_type.__name__, exception)
-    logging.debug("", exc_info=True)
-
-
-def init_logging(debug: bool):
-    if debug:
-        logging.basicConfig(
-            format="%(levelname)s: %(pathname)s:%(lineno)d %(funcName)s "
-            "\n\t%(message)s",
-            level=logging.DEBUG,
-        )
-    else:
-        logging.basicConfig(
-            format="%(levelname)s:\t%(message)s",
-            level=logging.INFO,
-        )
-
-
 @cli.command()
 def shell(
     server: str = HOST,
@@ -92,16 +72,16 @@ def shell(
         if player:
             world.add_player(player)
     except ConnectionRefusedError:
-        logging.error("Could not connect to server")
+        log.error("Could not connect to server")
         exit(1)
     except Exception:
         if world:
             world.stop()
-        logging.error("Failed to start world")
-        logging.debug("", exc_info=True)
+        log.error("Failed to start world")
+        log.debug("", exc_info=True)
         exit(1)
 
-    logging.info("######### Starting Interactive Session ##########\n")
+    log.info("######### Starting Interactive Session ##########\n")
 
     # Prepare IPython shell with auto-reload so user code edits work immediately
     shell = InteractiveShellEmbed()
@@ -139,12 +119,12 @@ def start(
 
     if folder.exists():
         if not folder.is_dir():
-            logging.error(f"{folder} is not a directory")
+            log.error(f"{folder} is not a directory")
             exit(1)
         else:
-            logging.info(f"Launching existing Minecraft server in {folder}")
+            log.info(f"Launching existing Minecraft server in {folder}")
     else:
-        logging.info(f"Creating new Minecraft server in {folder}")
+        log.info(f"Creating new Minecraft server in {folder}")
 
     server = MinecraftServer(server_name, port, password, folder, world_type)
     server.create()

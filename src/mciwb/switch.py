@@ -1,9 +1,9 @@
-import logging
 from typing import Callable, List
 
 from mcipc.rcon.enumerations import Item, SetblockMode
 from mcwb.types import Vec3
 
+from mciwb.logging import log
 from mciwb.monitor import Monitor
 from mciwb.threads import get_client
 
@@ -77,8 +77,8 @@ class Switch:
         full_item = str(item) + properties
         res = get_client().setblock(position, full_item, mode=SetblockMode.REPLACE)
         if "Changed the block" not in res:
-            logging.warning(res)
-        logging.info(f"Created switch {self.name}, id {self.id} at {position}")
+            log.warning(res)
+        log.info(f"Created switch {self.name}, id {self.id} at {position}")
 
         self.monitor = Monitor(self._poll, name=self.name)
 
@@ -100,7 +100,7 @@ class Switch:
             self.switches.remove(self)
         self.monitor.stop()
         get_client().setblock(self.pos, str(Item.AIR), mode=SetblockMode.REPLACE)
-        logging.info(f"Deleted switch {self.id} at {self.pos}")
+        log.info(f"Deleted switch {self.id} at {self.pos}")
 
     @classmethod
     def stop(cls):
