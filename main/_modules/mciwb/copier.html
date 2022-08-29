@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>mciwb.copier &mdash; mciwb 0.7.2.dev15+g91d98de documentation</title>
+  <title>mciwb.copier &mdash; mciwb 0.7.2.dev20+g9114be6 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
@@ -112,12 +112,11 @@
 <span class="sd">Provide copy and paste actions on Volumes of blocks</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">import</span> <span class="nn">logging</span>
-
 <span class="kn">from</span> <span class="nn">mcipc.rcon.enumerations</span> <span class="kn">import</span> <span class="n">CloneMode</span><span class="p">,</span> <span class="n">MaskMode</span>
 <span class="kn">from</span> <span class="nn">mcipc.rcon.item</span> <span class="kn">import</span> <span class="n">Item</span>
 <span class="kn">from</span> <span class="nn">mcwb</span> <span class="kn">import</span> <span class="n">Vec3</span><span class="p">,</span> <span class="n">Volume</span>
 
+<span class="kn">from</span> <span class="nn">mciwb.logging</span> <span class="kn">import</span> <span class="n">log</span>
 <span class="kn">from</span> <span class="nn">mciwb.threads</span> <span class="kn">import</span> <span class="n">get_client</span>
 
 <span class="n">zero</span> <span class="o">=</span> <span class="n">Vec3</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
@@ -201,7 +200,7 @@
             <span class="n">mask_mode</span><span class="o">=</span><span class="n">MaskMode</span><span class="o">.</span><span class="n">REPLACE</span><span class="p">,</span>
             <span class="n">clone_mode</span><span class="o">=</span><span class="n">mode</span><span class="p">,</span>
         <span class="p">)</span>
-        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">result</span><span class="p">)</span></div>
+        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">result</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="CopyPaste.paste_safe"><a class="viewcode-back" href="../../reference/api.html#mciwb.copier.CopyPaste.paste_safe">[docs]</a>    <span class="k">def</span> <span class="nf">paste_safe</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pos</span><span class="p">:</span> <span class="n">Vec3</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -222,7 +221,7 @@
         <span class="n">offset</span> <span class="o">=</span> <span class="n">pos</span>
         <span class="n">end</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">paste_pos</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">size</span> <span class="o">+</span> <span class="n">offset</span>
         <span class="n">result</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">fill</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">paste_pos</span> <span class="o">+</span> <span class="n">offset</span><span class="p">,</span> <span class="n">end</span><span class="p">,</span> <span class="n">item</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
-        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">result</span><span class="p">)</span></div>
+        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">result</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="CopyPaste.clear"><a class="viewcode-back" href="../../reference/api.html#mciwb.copier.CopyPaste.clear">[docs]</a>    <span class="k">def</span> <span class="nf">clear</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_</span><span class="p">:</span> <span class="n">Vec3</span> <span class="o">=</span> <span class="n">zero</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>

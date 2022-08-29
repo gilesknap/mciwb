@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>mciwb.signs &mdash; mciwb 0.7.2.dev15+g91d98de documentation</title>
+  <title>mciwb.signs &mdash; mciwb 0.7.2.dev20+g9114be6 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
@@ -111,7 +111,6 @@
 <span></span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">Add an interactive capability through the placing of command signs in the world</span>
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">import</span> <span class="nn">re</span>
 <span class="kn">from</span> <span class="nn">time</span> <span class="kn">import</span> <span class="n">sleep</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Dict</span>
@@ -119,6 +118,7 @@
 <span class="kn">from</span> <span class="nn">mcwb.types</span> <span class="kn">import</span> <span class="n">Item</span><span class="p">,</span> <span class="n">Vec3</span>
 
 <span class="kn">from</span> <span class="nn">mciwb.copier</span> <span class="kn">import</span> <span class="n">CopyPaste</span>
+<span class="kn">from</span> <span class="nn">mciwb.logging</span> <span class="kn">import</span> <span class="n">log</span>
 <span class="kn">from</span> <span class="nn">mciwb.player</span> <span class="kn">import</span> <span class="n">Player</span>
 <span class="kn">from</span> <span class="nn">mciwb.threads</span> <span class="kn">import</span> <span class="n">get_client</span>
 
@@ -144,8 +144,10 @@
 
     <span class="n">_re_sign_text</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;&quot;&quot;Text1: &#39;{&quot;text&quot;:&quot;([^&quot;]*)&quot;}&#39;&quot;&quot;&quot;</span><span class="p">)</span>
     <span class="n">_re_sign_entity</span> <span class="o">=</span> <span class="p">(</span>
-        <span class="sd">&quot;&quot;&quot;minecraft:oak_sign{{BlockEntityTag:{{Text1:&#39;{{&quot;text&quot;:&quot;{0}&quot;}}&#39;}},&quot;&quot;&quot;</span>
-        <span class="sd">&quot;&quot;&quot;display:{{Name:&#39;{{&quot;text&quot;:&quot;{0}&quot;}}&#39;}}}}&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;minecraft:oak_sign{{&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;BlockEntityTag:{{Text1:&#39;{{&quot;text&quot;:&quot;{0}&quot;}}&#39;}},&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;display:{{Name:&#39;{{&quot;text&quot;:&quot;{0}&quot;}}&#39;}}&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;}}&quot;&quot;&quot;</span>
     <span class="p">)</span>
 
     <span class="n">_wall_sign</span> <span class="o">=</span> <span class="s2">&quot;minecraft:oak_wall_sign&quot;</span>
@@ -189,7 +191,7 @@
                 <span class="n">match</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_re_sign_text</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">match</span><span class="p">:</span>
                     <span class="n">text</span> <span class="o">=</span> <span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-                    <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Sign at </span><span class="si">{</span><span class="n">pos</span><span class="si">}</span><span class="s2"> has text </span><span class="si">{</span><span class="n">text</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                    <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Sign at </span><span class="si">{</span><span class="n">pos</span><span class="si">}</span><span class="s2"> has text </span><span class="si">{</span><span class="n">text</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
                     <span class="n">target</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_target_block</span><span class="p">(</span><span class="n">block_pos</span><span class="p">,</span> <span class="n">facing</span><span class="p">)</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">do_action</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">block_pos</span><span class="p">)</span>
 
@@ -206,7 +208,7 @@
         <span class="c1"># if the command is not found then this is just an ordinary sign (I assume!)</span>
         <span class="k">if</span> <span class="n">command</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">signs</span><span class="p">:</span>
             <span class="n">get_client</span><span class="p">()</span><span class="o">.</span><span class="n">setblock</span><span class="p">(</span><span class="n">block_pos</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">Item</span><span class="o">.</span><span class="n">AIR</span><span class="p">))</span>
-            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">command</span><span class="si">}</span><span class="s2"> at </span><span class="si">{</span><span class="n">target</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">command</span><span class="si">}</span><span class="s2"> at </span><span class="si">{</span><span class="n">target</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">signs</span><span class="p">[</span><span class="n">command</span><span class="p">](</span><span class="n">target</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Signs.add_sign"><a class="viewcode-back" href="../../reference/api.html#mciwb.signs.Signs.add_sign">[docs]</a>    <span class="k">def</span> <span class="nf">add_sign</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">function</span><span class="p">:</span> <span class="n">CallbackPosFunction</span><span class="p">):</span>
@@ -241,8 +243,7 @@
         <span class="n">inventory</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">player</span><span class="o">.</span><span class="n">inventory</span>
         <span class="k">for</span> <span class="n">command</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">signs</span><span class="p">:</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sign_match</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">command</span><span class="p">)</span> <span class="ow">in</span> <span class="n">inventory</span><span class="p">:</span>
-                <span class="n">client</span><span class="o">.</span><span class="n">give</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">player</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_re_sign_entity</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">command</span><span class="p">))</span>
-                <span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sign_match</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">command</span><span class="p">),</span> <span class="n">inventory</span><span class="p">)</span></div></div>
+                <span class="n">client</span><span class="o">.</span><span class="n">give</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">player</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_re_sign_entity</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">command</span><span class="p">))</span></div></div>
 </pre></div>
 
            </div>
