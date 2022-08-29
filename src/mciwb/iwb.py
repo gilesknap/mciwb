@@ -11,7 +11,7 @@ from rcon.source.proto import Packet
 
 from mciwb.backup import Backup
 from mciwb.copier import CopyPaste
-from mciwb.logging import log
+from mciwb.logging import init_logging, log
 from mciwb.monitor import Monitor
 from mciwb.player import Player, PlayerNotInWorld
 from mciwb.server import HOST, def_port
@@ -75,7 +75,7 @@ class Iwb:
         Enable/disable debug log. Enabling this will also enable
         full Traceback log.
         """
-        log.getLogger().setLevel(log.DEBUG if enable else log.INFO)
+        init_logging(debug=enable)
 
     def backup(self, name=None) -> None:
         """

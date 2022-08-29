@@ -1,6 +1,7 @@
 import logging
 
 log = logging.getLogger("mciwb")
+handler = logging.StreamHandler()
 
 
 def exception_handler(exception_type, exception, traceback):
@@ -10,8 +11,6 @@ def exception_handler(exception_type, exception, traceback):
 
 
 def init_logging(debug: bool):
-    handler = logging.StreamHandler()
-
     if debug:
         log.setLevel(logging.DEBUG)
         formatter = logging.Formatter(
