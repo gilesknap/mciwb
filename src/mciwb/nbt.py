@@ -1,6 +1,8 @@
 import json
 import re
 
+from mciwb.logging import log
+
 # extract preamble from string responses to commands (benign for raw SNBT)
 preamble_re = re.compile(r"[^\[{]*(.*)")
 # extract list type identifiers
@@ -24,12 +26,16 @@ def parse_nbt(s_nbt_text: str) -> object:
 
     See https://minecraft.fandom.com/wiki/NBT_format
     """
-    text = preamble_re.sub(r"\1", s_nbt_text)
-    text = list_types_re.sub(r"", text)
-    text = unquoted_re.sub(r'"\1"', text).replace("'", "")
-    text = no_decimal_floats_re.sub(r"\1.0", text)
-    text = floats_re.sub(r"\1", text)
-    text = integers_re.sub(r"\1", text)
-    text = text.replace('"true"', '"True"').replace('"false"', '"False"')
+    try:
+        text = preamble_re.sub(r"\1", s_nbt_text)
+        text = list_types_re.sub(r"", text)
+        text = unquoted_re.sub(r'"\1"', text).replace("'", "")
+        text = no_decimal_floats_re.sub(r"\1.0", text)
+        text = floats_re.sub(r"\1", text)
+        text = integers_re.sub(r"\1", text)
+        text = text.replace('"true"', '"True"').replace('"false"', '"False"')
 
-    return json.loads(text)
+        return json.loads(text)
+    except Exception as e:
+        log.error(f"Error parsing NBT text: {s_nbt_text} \n\n ERROR: {e}")
+        return None

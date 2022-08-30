@@ -28,6 +28,8 @@ def enable_explosions(power=1):
             c.kill(f"@e[{arrow_entity}, {vec2params(pos)}]")
             for i in range(power):
                 c.summon(str(Item.TNT), pos + Direction.UP * (i - power // 2))
+                c.summon(str(Item.TNT), pos + Direction.EAST * (i - power // 2))
+                c.summon(str(Item.TNT), pos + Direction.NORTH * (i - power // 2))
 
     Monitor.stop_named(exploding)
     Monitor(explosion_test, name=exploding)
