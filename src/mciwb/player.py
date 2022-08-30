@@ -14,7 +14,7 @@ from mciwb.logging import log
 from mciwb.threads import get_client
 
 regex_coord = re.compile(r"\[(-?\d+.?\d*)d, *(-?\d+.?\d*)d, *(-?\d+.?\d*)d\]")
-regex_angle = re.compile(r"-?\ *[0-9]+\.?[0-9]*(?:[Ee]\ *-?\ *[0-9]+)?")
+regex_angle = re.compile(r"(-?\ *[0-9]+\.?[0-9]*(?:[Ee]\ *-?\ *[0-9]+)?)f")
 
 
 class PlayerNotInWorld(Exception):
@@ -80,7 +80,7 @@ class Player:
             WEST = Vec3(-1, 0, 0)
         """
         match = self._get_entity_data("Rotation", regex_angle)
-        angle = float(match.group(0))
+        angle = float(match.group(1))
 
         index = int(((math.floor(angle) + 45) % 360) / 90)
         return Direction.cardinals[index]

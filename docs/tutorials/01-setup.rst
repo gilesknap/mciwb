@@ -194,17 +194,30 @@ Python
 
 The Python Programming Language is also free and open-source.
 
-This is essential for working with MCIWB. On Linux you will likely already 
-have it installed. Note that this project has been tested with
-Python 3.9 and 3.10 but other versions may also be OK.
+This is essential for working with MCIWB. 
+Python 3.10 because the underlying RCON library requires it. This is the
+latest version of Python at the time of writing.
 
-These commands will install the necessary packages to make Python 3.9
+These commands will install the necessary packages to make Python 3.10
 available on your system::
 
     sudo apt update
-    sudo apt install -y python3.9
-    sudo apt install -y python3.9-venv
+    sudo apt install -y python3.10
+    sudo apt install -y python3.10-venv
     sudo apt install -y python3-pip
+
+If you have an older version of Ubuntu it may not have Python 3.10 available.
+In this case you need to use the ``deadsnakes`` PPA to get the latest version as
+follows::
+
+    sudo apt install -y software-properties-common
+    sudo add-apt-repository ppa:deadsnakes/ppa
+    sudo apt install -y python3.10
+    sudo apt install -y python3.10-venv
+    sudo apt install -y python3-pip
+
+Virtual Environment
+-------------------
 
 We are going to create a **Virtual Environment** for our Python packages to
 install in. This is a way to keep the packages you install (like mciwb)
@@ -213,7 +226,7 @@ separate from the packages you install for other projects.
 First create the Virtual Environment by typing (note the leading "."
 in the folder name ".venv")::
 
-    python3.9 -m venv .venv
+    python3.10 -m venv .venv
 
 Then activate it by typing the following. This command will need to be 
 repeated each time you restart your terminal or open a new terminal::

@@ -10,6 +10,12 @@ Windows Subsystem for Linux 2 (or WSL2) should already have been
 installed as part
 of the Docker Desktop install that was done in `docker`. 
 
+To make sure the correct version of WSL2 is installed you can open a
+CMD window in Administrator  mode and run the following commands:
+
+    wsl --install
+    wsl --set-version Ubuntu-22.04 2
+
 WSL2 is a Linux distribution that runs inside of Windows. It allows us to make
 the tutorials look exactly the same for Windows, Linux and MacOS. 
 The linux command line in Ubuntu Linux inside WSL2 is called ``bash`` and 
@@ -54,6 +60,10 @@ On the left bar of VSCode there is a remote connections Icon.
 
 Continue with tutorial
 ----------------------
+
+IMPORTANT: close all VSCode windows except for the one that is connected to
+WSL2. This means that when you finish this tutorial and close VSCode it will
+remember to open the WSL2 connection next time.
 
 You can now continue with the main tutorial. If you do everything through
 vscode then the tutorials will work exactly the same for Windows as for a
