@@ -8,14 +8,19 @@ they disappear.
 
 from time import sleep
 
-from mciwb.imports import Direction, Item, Monitor, Vec3, get_client, parse_nbt
+from mciwb.imports import Item, Monitor, Vec3, get_client, parse_nbt
 
 exploding = "exploding_snowballs"
-snowball_entity = "limit=1, type=snowball"
 
 
-def uuid_str(nbt):
-    # need to parse uuid because of the I; and default str(list) has quotes
+def enable_snowballs():
+    Monitor.stop_named(exploding)
+    Monitor(monitor_snowballs, name=exploding, poll_rate=0.1)
+
+
+def uuid_str(nbt: dict):
+    # need to parse uuid because of the I; and default str(list) has extraneous quotes
+    # TODO replace parse_nbt with a class that handles all conversions
     uuid_str = (
         f"UUID:"
         f'[I; {nbt["UUID"][0]}, {nbt["UUID"][1]},'
@@ -31,27 +36,11 @@ def monitor_snowballs():
     if "Snowball" in result:
         nbt = parse_nbt(result)
         if isinstance(nbt, dict):
-            # change the Air property so the main loop no longer sees this snowball
+            # change Air property so monitor_snowballs no longer sees this snowball
             entity = f"@e[limit=1, type=snowball, nbt={{{uuid_str(nbt)}}}]"
             c.data.merge(entity=entity, nbt="{Air:301}")
 
-            def monitor():
-                track_snowball(entity, result)
-
-            Monitor(monitor, once=True)
-
-
-def enable_snowballs(power=1):
-    def explosion(pos: Vec3):
-        c = get_client()
-
-        for i in range(power):
-            c.summon(str(Item.TNT), pos + Direction.UP * (i - power // 2))
-            c.summon(str(Item.TNT), pos + Direction.EAST * (i - power // 2))
-            c.summon(str(Item.TNT), pos + Direction.NORTH * (i - power // 2))
-
-    Monitor.stop_named(exploding)
-    Monitor(monitor_snowballs, name=exploding, poll_rate=0.1)
+            Monitor(track_snowball, once=True, params=(entity, result))
 
 
 def track_snowball(entity: str, result: str):
@@ -63,8 +52,8 @@ def track_snowball(entity: str, result: str):
         last_result = result
         result = c.data.get(entity=entity)
         if "Snowball" not in result:
-            if "Snowball" in last_result:
-                nbt = parse_nbt(last_result)
+            nbt = parse_nbt(last_result)
+            if isinstance(nbt, dict):
                 pos = Vec3(*nbt["Pos"]).with_ints()
                 c.summon(str(Item.TNT), pos)
-                break
+            break

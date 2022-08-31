@@ -20,16 +20,14 @@ def new_thread(client: Client, target, name: str) -> threading.Thread:
 
     def _enter_thread(client, target, name):
         # make new client connection for this thread
-        new_client = type(client)(client.host, client.port, passwd=client.passwd)
-        new_client.connect(True)
+        with type(client)(client.host, client.port, passwd=client.passwd) as new_client:
+            # save our new client in the thread local storage
+            set_client(new_client)
+            thread_local.name = name
 
-        # save our new client in the thread local storage
-        set_client(new_client)
-        thread_local.name = name
+            target()
 
-        target()
-
-    # Start a new thread and use _enter_thread to set it up with a RCON client
+    # Start a new thread and use _enter_thread to set it up with a new RCON client
     new_thread = threading.Thread(target=_enter_thread, args=(client, target, name))
     new_thread.start()
 
