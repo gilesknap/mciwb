@@ -34,7 +34,7 @@ jobs:
       fail-fast: false
       matrix:
         os: ["ubuntu-latest"] # can add windows-latest, macos-latest
-        python: ["3.8", "3.9", "3.10"]
+        python: ["3.10"]
 
     runs-on: ${{ matrix.os }}
     env:
@@ -108,7 +108,7 @@ jobs:
 
       - name: Run tests in the container locked with requirements_dev.txt
         run: |
-          docker run --name test build bash /project/.github/workflows/container_tests.sh
+          docker run -v /var/lib/docker --privileged --init --name test build bash /project/.github/workflows/container_tests.sh
           docker cp test:/project/dist .
           docker cp test:/project/cov.xml .
 
@@ -141,6 +141,10 @@ jobs:
 
     steps:
       - uses: actions/download-artifact@v3
+
+      - uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
 
       - name: Install sdist in a venv and check cli works
         # ${GITHUB_REPOSITORY##*/} is the repo name without org

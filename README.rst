@@ -1,4 +1,4 @@
-|code_ci| |docs_ci| |coverage| |quality| |pypi_version| |license|
+|code_ci| |docs_ci| |coverage| |pypi_version| |license|
 
 
 Minecraft Interactive World Builder

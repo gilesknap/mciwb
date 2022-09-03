@@ -16,6 +16,7 @@ RUN apt-get update && apt-get upgrade -y && \
     && rm -rf /var/lib/apt/lists/* \
     && busybox --install
 
+
 COPY . /project
 
 RUN cd /project && \
@@ -26,6 +27,10 @@ RUN cd /project && \
 
 RUN python -m venv /venv
 ENV PATH=/venv/bin:$PATH
+
+# use vscode script to enable docker inside this container
+RUN busybox wget https://raw.githubusercontent.com/microsoft/vscode-dev-containers/main/script-library/docker-in-docker-debian.sh && \
+    bash docker-in-docker-debian.sh
 
 RUN cd /project && \
     pip install --upgrade pip && \
