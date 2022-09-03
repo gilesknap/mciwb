@@ -16,5 +16,6 @@ Practical step-by-step guides for the more experienced user.
     how-to/backup
     how-to/wsl2
     how-to/coordinates
+    how-to/contributing
 
 
