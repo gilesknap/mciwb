@@ -7,7 +7,7 @@ filing a new one. If you have a great idea but it involves big changes, please
 file a ticket before making a pull request! We want to make sure you don't spend
 your time coding something that might not fit the scope of the project.
 
-.. _GitHub: https://github.com/DiamondLightSource/python3-pip-skeleton/issues
+.. _GitHub: https://github.com/gilesknap/mciwb/issues
 
 Running the tests
 -----------------
@@ -17,8 +17,8 @@ To run in a container
 
 Use vscode devcontainer as follows::
 
-    $ git clone git://github.com/DiamondLightSource/python3-pip-skeleton.git
-    $ vscode python3-pip-skeleton
+    $ git clone git://github.com/gilesknap/mciwb.git
+    $ vscode mciwb
     Click on 'Reopen in Container' when prompted
     In a vscode Terminal:
     $ tox -p
@@ -30,8 +30,8 @@ To run locally
 Get the source source code and run the unit tests directly
 on your workstation as follows::
 
-    $ git clone git://github.com/DiamondLightSource/python3-pip-skeleton.git
-    $ cd python3-pip-skeleton
+    $ git clone git://github.com/gilesknap/mciwb.git
+    $ cd mciwb
     $ virtualenv .venv
     $ source .venv/bin/activate
     $ pip install -e .[dev]
@@ -135,7 +135,7 @@ To make a new release, please follow this checklist:
 Note that tagging and pushing to the main branch has the same effect except that
 you will not get the option to edit the release notes.
 
-.. _release: https://github.com/DiamondLightSource/python3-pip-skeleton/releases
+.. _release: https://github.com/gilesknap/mciwb/releases
 
 
 Checking Dependencies
