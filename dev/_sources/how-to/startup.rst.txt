@@ -13,7 +13,7 @@ Each time you come back to your computer you need to set up your environment
 again. The short description of what you need to do is:
 
 - Start VSCode
-- Start Minecraft client and connect to mciwb_server
+- Start Minecraft client and connect to mciwb-server
 - in the VSCode Terminal
 
   - ``source .venv/bin/activate``
@@ -49,7 +49,7 @@ Here is the long version in case any of the above are not true:
 
 - Open Minecraft Java client from the start menu
 
-  - connect to the server mciwb_server
+  - connect to the server mciwb-server
 
 - Go Back to VSCode Terminal prompt and type:
 

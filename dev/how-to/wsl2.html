@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Windows Subsystem for Linux &mdash; mciwb 0.5.4.dev11+g35d4994 documentation</title>
+  <title>Windows Subsystem for Linux &mdash; mciwb 0.6.4.dev71+gec1aaf0 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
@@ -22,7 +22,7 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Command Completion" href="../explain/completion.html" />
+    <link rel="next" title="Discovering the Coordinates of a Block" href="coordinates.html" />
     <link rel="prev" title="Backup and Restore" href="backup.html" /> 
 </head>
 
@@ -48,21 +48,23 @@
               <p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../tutorials/00-prereq.html">Introduction</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/01-setup.html">Set Up</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/01-setup.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../tutorials/02-orientation.html">Orientation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../tutorials/03-variables.html">Python Variables</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/04-functions.html">Functions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/05-loops.html">Loops</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/06-if-then.html">If Then Else</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/04-loops.html">Loops</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/05-functions.html">Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/05a-modules.html">Modules and Packages</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/06-if-then.html">If - Else</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../tutorials/07-lists.html">Lists</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/08-dictionaries.html">Dictionaries</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/09-classes.html">Classes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/08-classes.html">Classes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/09-dictionaries.html">Dictionaries</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">How-to Guides</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="startup.html">Setup for each Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="completion.html">Command Completion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="extensions.html">VSCode Extensions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="troubleshooting.html">Troubleshooting</a></li>
-<li class="toctree-l1"><a class="reference internal" href="server-config.html">Minecraft Server Config</a></li>
 <li class="toctree-l1"><a class="reference internal" href="backup.html">Backup and Restore</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Windows Subsystem for Linux</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#adding-the-wsl2-extension">Adding the WSL2 extension</a></li>
@@ -70,15 +72,23 @@
 <li class="toctree-l2"><a class="reference internal" href="#continue-with-tutorial">Continue with tutorial</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="coordinates.html">Discovering the Coordinates of a Block</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Explanations</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../explain/completion.html">Command Completion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../explain/scope.html">Variable Scope</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../explain/server-config.html">Minecraft Server Config</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../explain/coordinates.html">Minecraft’s Coordinate System</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../explain/mcipc.html">MCIPC Client object</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../explanations/decisions.html">Architectural Decision Records</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Reference</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../reference/index.html">Finding Things</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../reference/contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/api.html">MCIWB API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/demo.html">Demo Code</a></li>
 <li class="toctree-l1"><a class="reference external" href="https://github.com/gilesknap/mciwb/releases">Releases</a></li>
 <li class="toctree-l1"><a class="reference external" href="genindex.html#http://">Index</a></li>
 </ul>
@@ -114,6 +124,12 @@ Linux.</p>
 <p>Windows Subsystem for Linux 2 (or WSL2) should already have been
 installed as part
 of the Docker Desktop install that was done in <a class="reference internal" href="../tutorials/01-setup.html#docker"><span class="std std-ref">Docker Desktop</span></a>.</p>
+<p>To make sure the correct version of WSL2 is installed you can open a
+CMD window in Administrator  mode and run the following commands:</p>
+<blockquote>
+<div><p>wsl –install
+wsl –set-version Ubuntu-22.04 2</p>
+</div></blockquote>
 <p>WSL2 is a Linux distribution that runs inside of Windows. It allows us to make
 the tutorials look exactly the same for Windows, Linux and MacOS.
 The linux command line in Ubuntu Linux inside WSL2 is called <code class="docutils literal notranslate"><span class="pre">bash</span></code> and
@@ -127,7 +143,7 @@ and click the ‘Install’ button.</p>
 <code class="docutils literal notranslate"><span class="pre">Open</span> <span class="pre">Visual</span> <span class="pre">Studio</span> <span class="pre">Code</span></code>.</p>
 <p>VSCode will launch and you will see information on the extension that looks
 like this:</p>
-<a class="reference internal image-reference" href="../_images/remote_wsl2.excalidraw.png"><img alt="VSCode WSL2" src="../_images/remote_wsl2.excalidraw.png" style="width: 600px;" /></a>
+<a class="reference internal image-reference" href="../_images/remote_wsl2.excalidraw.png"><img alt="VSCode WSL2" class="align-center" src="../_images/remote_wsl2.excalidraw.png" style="width: 600px;" /></a>
 <p>Click the install button and you now have the extension installed.</p>
 </section>
 <section id="connecting-to-wsl2">
@@ -139,10 +155,13 @@ like this:</p>
 if WSL is the only remote target installed)</p></li>
 <li><p>Right click on your Ubuntu installation and choose ‘Connect to WSL’</p></li>
 </ol>
-<a class="reference internal image-reference" href="../_images/remote_ubuntu.excalidraw.png"><img alt="VSCode WSL2" src="../_images/remote_ubuntu.excalidraw.png" style="width: 600px;" /></a>
+<a class="reference internal image-reference" href="../_images/remote_ubuntu.excalidraw.png"><img alt="VSCode WSL2" class="align-center" src="../_images/remote_ubuntu.excalidraw.png" style="width: 600px;" /></a>
 </section>
 <section id="continue-with-tutorial">
 <h2>Continue with tutorial<a class="headerlink" href="#continue-with-tutorial" title="Permalink to this heading"></a></h2>
+<p>IMPORTANT: close all VSCode windows except for the one that is connected to
+WSL2. This means that when you finish this tutorial and close VSCode it will
+remember to open the WSL2 connection next time.</p>
 <p>You can now continue with the main tutorial. If you do everything through
 vscode then the tutorials will work exactly the same for Windows as for a
 linux computer.</p>
@@ -154,7 +173,7 @@ linux computer.</p>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="backup.html" class="btn btn-neutral float-left" title="Backup and Restore" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="../explain/completion.html" class="btn btn-neutral float-right" title="Command Completion" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="coordinates.html" class="btn btn-neutral float-right" title="Discovering the Coordinates of a Block" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

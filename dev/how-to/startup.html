@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Setup for each Tutorial &mdash; mciwb 0.5.4.dev11+g35d4994 documentation</title>
+  <title>Setup for each Tutorial &mdash; mciwb 0.6.4.dev71+gec1aaf0 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
@@ -22,8 +22,8 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Troubleshooting" href="troubleshooting.html" />
-    <link rel="prev" title="Classes" href="../tutorials/09-classes.html" /> 
+    <link rel="next" title="Command Completion" href="completion.html" />
+    <link rel="prev" title="Dictionaries" href="../tutorials/09-dictionaries.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -48,15 +48,16 @@
               <p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../tutorials/00-prereq.html">Introduction</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/01-setup.html">Set Up</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/01-setup.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../tutorials/02-orientation.html">Orientation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../tutorials/03-variables.html">Python Variables</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/04-functions.html">Functions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/05-loops.html">Loops</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/06-if-then.html">If Then Else</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/04-loops.html">Loops</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/05-functions.html">Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/05a-modules.html">Modules and Packages</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/06-if-then.html">If - Else</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../tutorials/07-lists.html">Lists</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/08-dictionaries.html">Dictionaries</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/09-classes.html">Classes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/08-classes.html">Classes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/09-dictionaries.html">Dictionaries</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">How-to Guides</span></p>
 <ul class="current">
@@ -65,19 +66,28 @@
 <li class="toctree-l2"><a class="reference internal" href="#full-startup-description">Full Startup Description</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="completion.html">Command Completion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="extensions.html">VSCode Extensions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="troubleshooting.html">Troubleshooting</a></li>
-<li class="toctree-l1"><a class="reference internal" href="server-config.html">Minecraft Server Config</a></li>
 <li class="toctree-l1"><a class="reference internal" href="backup.html">Backup and Restore</a></li>
 <li class="toctree-l1"><a class="reference internal" href="wsl2.html">Windows Subsystem for Linux</a></li>
+<li class="toctree-l1"><a class="reference internal" href="coordinates.html">Discovering the Coordinates of a Block</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Explanations</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../explain/completion.html">Command Completion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../explain/scope.html">Variable Scope</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../explain/server-config.html">Minecraft Server Config</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../explain/coordinates.html">Minecraft’s Coordinate System</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../explain/mcipc.html">MCIPC Client object</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../explanations/decisions.html">Architectural Decision Records</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Reference</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../reference/index.html">Finding Things</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../reference/contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/api.html">MCIWB API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/demo.html">Demo Code</a></li>
 <li class="toctree-l1"><a class="reference external" href="https://github.com/gilesknap/mciwb/releases">Releases</a></li>
 <li class="toctree-l1"><a class="reference external" href="genindex.html#http://">Index</a></li>
 </ul>
@@ -110,13 +120,13 @@
 <span id="startup"></span><h1>Setup for each Tutorial<a class="headerlink" href="#setup-for-each-tutorial" title="Permalink to this heading"></a></h1>
 <section id="quick-start">
 <h2>Quick Start<a class="headerlink" href="#quick-start" title="Permalink to this heading"></a></h2>
-<p>Once you have completed <a class="reference internal" href="../tutorials/01-setup.html"><span class="doc">Set Up</span></a> you have everything on
+<p>Once you have completed <a class="reference internal" href="../tutorials/01-setup.html"><span class="doc">Installation</span></a> you have everything on
 your computer required to run the remaining tutorials.</p>
 <p>Each time you come back to your computer you need to set up your environment
 again. The short description of what you need to do is:</p>
 <ul class="simple">
 <li><p>Start VSCode</p></li>
-<li><p>Start Minecraft client and connect to mciwb_server</p></li>
+<li><p>Start Minecraft client and connect to mciwb-server</p></li>
 <li><p>in the VSCode Terminal</p>
 <ul>
 <li><p><code class="docutils literal notranslate"><span class="pre">source</span> <span class="pre">.venv/bin/activate</span></code></p></li>
@@ -157,7 +167,7 @@ automatically started and that VSCode reopens the previous session.</p>
 </li>
 <li><p>Open Minecraft Java client from the start menu</p>
 <ul>
-<li><p>connect to the server mciwb_server</p></li>
+<li><p>connect to the server mciwb-server</p></li>
 </ul>
 </li>
 <li><p>Go Back to VSCode Terminal prompt and type:</p>
@@ -176,8 +186,8 @@ automatically started and that VSCode reopens the previous session.</p>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="../tutorials/09-classes.html" class="btn btn-neutral float-left" title="Classes" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="troubleshooting.html" class="btn btn-neutral float-right" title="Troubleshooting" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="../tutorials/09-dictionaries.html" class="btn btn-neutral float-left" title="Dictionaries" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="completion.html" class="btn btn-neutral float-right" title="Command Completion" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

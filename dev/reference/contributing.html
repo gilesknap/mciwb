@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Contributing &mdash; mciwb 0.5.4.dev11+g35d4994 documentation</title>
+  <title>Contributing &mdash; mciwb 0.6.4.dev71+gec1aaf0 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
@@ -22,7 +22,8 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="prev" title="Minecraft’s Coordinate System" href="../explain/coordinates.html" /> 
+    <link rel="next" title="MCIWB API" href="api.html" />
+    <link rel="prev" title="Finding Things" href="index.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -47,31 +48,39 @@
               <p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../tutorials/00-prereq.html">Introduction</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/01-setup.html">Set Up</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/01-setup.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../tutorials/02-orientation.html">Orientation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../tutorials/03-variables.html">Python Variables</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/04-functions.html">Functions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/05-loops.html">Loops</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/06-if-then.html">If Then Else</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/04-loops.html">Loops</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/05-functions.html">Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/05a-modules.html">Modules and Packages</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/06-if-then.html">If - Else</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../tutorials/07-lists.html">Lists</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/08-dictionaries.html">Dictionaries</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/09-classes.html">Classes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/08-classes.html">Classes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/09-dictionaries.html">Dictionaries</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">How-to Guides</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../how-to/startup.html">Setup for each Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../how-to/completion.html">Command Completion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../how-to/extensions.html">VSCode Extensions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../how-to/troubleshooting.html">Troubleshooting</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../how-to/server-config.html">Minecraft Server Config</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../how-to/backup.html">Backup and Restore</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../how-to/wsl2.html">Windows Subsystem for Linux</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../how-to/coordinates.html">Discovering the Coordinates of a Block</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../how-to/contributing.html">Contributing</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Explanations</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../explain/completion.html">Command Completion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../explain/scope.html">Variable Scope</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../explain/server-config.html">Minecraft Server Config</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../explain/coordinates.html">Minecraft’s Coordinate System</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../explain/mcipc.html">MCIPC Client object</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../explanations/decisions.html">Architectural Decision Records</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Reference</span></p>
 <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="index.html">Finding Things</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Contributing</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#running-the-tests">Running the tests</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#to-run-in-a-container">To run in a container</a></li>
@@ -85,6 +94,8 @@
 <li class="toctree-l2"><a class="reference internal" href="#updating-the-tools">Updating the tools</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="api.html">MCIWB API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="demo.html">Demo Code</a></li>
 <li class="toctree-l1"><a class="reference external" href="https://github.com/gilesknap/mciwb/releases">Releases</a></li>
 <li class="toctree-l1"><a class="reference external" href="genindex.html#http://">Index</a></li>
 </ul>
@@ -148,7 +159,7 @@ $ tox -p
 <p>In both cases tox -p runs in parallel the following checks:</p>
 <blockquote>
 <div><ul class="simple">
-<li><p>Build Spinx Documentation</p></li>
+<li><p>Build Sphinx Documentation</p></li>
 <li><p>run pytest on all tests in ./tests</p></li>
 <li><p>run mypy linting on all files in ./src ./tests</p></li>
 <li><p>run pre-commit checks:</p>
@@ -173,7 +184,7 @@ same or is improved by a pull request!</p>
 <li><p><a class="reference external" href="https://github.com/PyCQA/isort">isort</a> for import ordering</p></li>
 <li><p><a class="reference external" href="https://github.com/python/mypy">mypy</a> for static type checking</p></li>
 </ul>
-<p>flake8 and black be run by <a class="reference external" href="https://pre-commit.com/">pre-commit</a>. You can run the above checks on
+<p>flake8 and black and isort are run by <a class="reference external" href="https://pre-commit.com/">pre-commit</a>. You can run the above checks on
 all files with this command:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ tox -e pre-commit,mypy
 </pre></div>
@@ -228,12 +239,15 @@ $ firefox build/html/index.html
 <h2>Release Process<a class="headerlink" href="#release-process" title="Permalink to this heading"></a></h2>
 <p>To make a new release, please follow this checklist:</p>
 <ul class="simple">
-<li><p>Choose a new PEP440 compliant release number</p></li>
-<li><p>Git tag the version</p></li>
-<li><p>Push to GitHub and the actions will make a release on pypi</p></li>
-<li><p>Push to internal gitlab and do a dls-release.py of the tag</p></li>
-<li><p>Check and edit for clarity the autogenerated GitHub <a class="reference external" href="https://github.com/gilesknap/mciwb/releases">release</a></p></li>
+<li><p>Choose a new PEP440 compliant release number (see <a class="reference external" href="https://peps.python.org/pep-0440/">https://peps.python.org/pep-0440/</a>)</p></li>
+<li><p>Go to the GitHub <a class="reference external" href="https://github.com/gilesknap/mciwb/releases">release</a> page</p></li>
+<li><p>Choose <code class="docutils literal notranslate"><span class="pre">Draft</span> <span class="pre">New</span> <span class="pre">Release</span></code></p></li>
+<li><p>Click <code class="docutils literal notranslate"><span class="pre">Choose</span> <span class="pre">Tag</span></code> and supply the new tag you chose (click create new tag)</p></li>
+<li><p>Click <code class="docutils literal notranslate"><span class="pre">Generate</span> <span class="pre">release</span> <span class="pre">notes</span></code>, review and edit these notes</p></li>
+<li><p>Choose a title and click <code class="docutils literal notranslate"><span class="pre">Publish</span> <span class="pre">Release</span></code></p></li>
 </ul>
+<p>Note that tagging and pushing to the main branch has the same effect except that
+you will not get the option to edit the release notes.</p>
 </section>
 <section id="checking-dependencies">
 <h2>Checking Dependencies<a class="headerlink" href="#checking-dependencies" title="Permalink to this heading"></a></h2>
@@ -244,15 +258,15 @@ $ firefox build/html/index.html
 </section>
 <section id="updating-the-tools">
 <h2>Updating the tools<a class="headerlink" href="#updating-the-tools" title="Permalink to this heading"></a></h2>
-<p>This module is merged with the <a class="reference external" href="https://dls-controls.github.io/dls-python3-skeleton">python3-pip-skeleton</a>. This is a generic
+<p>This module is merged with the <a class="reference external" href="https://DiamondLightSource.github.io/python3-pip-skeleton">python3-pip-skeleton</a>. This is a generic
 Python project structure which provides a means to keep tools and
 techniques in sync between multiple Python projects. To update to the
 latest version of the skeleton, run:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ git pull https://github.com/dls-controls/python3-pip-skeleton skeleton
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ git pull https://github.com/DiamondLightSource/python3-pip-skeleton main
 </pre></div>
 </div>
 <p>Any merge conflicts will indicate an area where something has changed that
-conflicts with the setup of the current module. Check the <a class="reference external" href="https://github.com/dls-controls/python3-pip-skeleton/pulls?q=is%3Apr+is%3Aclosed">closed pull requests</a>
+conflicts with the setup of the current module. Check the <a class="reference external" href="https://github.com/DiamondLightSource/python3-pip-skeleton/pulls?q=is%3Apr+is%3Aclosed">closed pull requests</a>
 of the skeleton module for more details.</p>
 </section>
 </section>
@@ -261,7 +275,8 @@ of the skeleton module for more details.</p>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="../explain/coordinates.html" class="btn btn-neutral float-left" title="Minecraft’s Coordinate System" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="index.html" class="btn btn-neutral float-left" title="Finding Things" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="api.html" class="btn btn-neutral float-right" title="MCIWB API" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

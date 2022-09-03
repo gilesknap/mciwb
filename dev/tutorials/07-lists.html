@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Lists &mdash; mciwb 0.5.4.dev11+g35d4994 documentation</title>
+  <title>Lists &mdash; mciwb 0.6.4.dev71+gec1aaf0 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
@@ -22,8 +22,8 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Dictionaries" href="08-dictionaries.html" />
-    <link rel="prev" title="If Then Else" href="06-if-then.html" /> 
+    <link rel="next" title="Classes" href="08-classes.html" />
+    <link rel="prev" title="If - Else" href="06-if-then.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -48,32 +48,42 @@
               <p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="00-prereq.html">Introduction</a></li>
-<li class="toctree-l1"><a class="reference internal" href="01-setup.html">Set Up</a></li>
+<li class="toctree-l1"><a class="reference internal" href="01-setup.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="02-orientation.html">Orientation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="03-variables.html">Python Variables</a></li>
-<li class="toctree-l1"><a class="reference internal" href="04-functions.html">Functions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="05-loops.html">Loops</a></li>
-<li class="toctree-l1"><a class="reference internal" href="06-if-then.html">If Then Else</a></li>
+<li class="toctree-l1"><a class="reference internal" href="04-loops.html">Loops</a></li>
+<li class="toctree-l1"><a class="reference internal" href="05-functions.html">Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="05a-modules.html">Modules and Packages</a></li>
+<li class="toctree-l1"><a class="reference internal" href="06-if-then.html">If - Else</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Lists</a></li>
-<li class="toctree-l1"><a class="reference internal" href="08-dictionaries.html">Dictionaries</a></li>
-<li class="toctree-l1"><a class="reference internal" href="09-classes.html">Classes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="08-classes.html">Classes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="09-dictionaries.html">Dictionaries</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">How-to Guides</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../how-to/startup.html">Setup for each Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../how-to/completion.html">Command Completion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../how-to/extensions.html">VSCode Extensions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../how-to/troubleshooting.html">Troubleshooting</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../how-to/server-config.html">Minecraft Server Config</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../how-to/backup.html">Backup and Restore</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../how-to/wsl2.html">Windows Subsystem for Linux</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../how-to/coordinates.html">Discovering the Coordinates of a Block</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../how-to/contributing.html">Contributing</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Explanations</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../explain/completion.html">Command Completion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../explain/scope.html">Variable Scope</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../explain/server-config.html">Minecraft Server Config</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../explain/coordinates.html">Minecraft’s Coordinate System</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../explain/mcipc.html">MCIPC Client object</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../explanations/decisions.html">Architectural Decision Records</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Reference</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../reference/index.html">Finding Things</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../reference/contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/api.html">MCIWB API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/demo.html">Demo Code</a></li>
 <li class="toctree-l1"><a class="reference external" href="https://github.com/gilesknap/mciwb/releases">Releases</a></li>
 <li class="toctree-l1"><a class="reference external" href="genindex.html#http://">Index</a></li>
 </ul>
@@ -104,14 +114,76 @@
              
   <section id="lists">
 <h1>Lists<a class="headerlink" href="#lists" title="Permalink to this heading"></a></h1>
+<p>TODO: Introduce Python lists and demonstrate by building castle walls around
+our village using this code:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">demo.gate</span> <span class="kn">import</span> <span class="n">disable_gate</span><span class="p">,</span> <span class="n">make_gate</span>
+<span class="kn">from</span> <span class="nn">mciwb.imports</span> <span class="kn">import</span> <span class="n">Item</span><span class="p">,</span> <span class="n">Vec3</span><span class="p">,</span> <span class="n">Wall</span>
+
+<span class="n">battlements_profile</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">[</span>
+        <span class="n">Item</span><span class="o">.</span><span class="n">STONE</span><span class="p">,</span>
+        <span class="n">Item</span><span class="o">.</span><span class="n">OAK_PLANKS</span><span class="p">,</span>
+        <span class="p">[</span><span class="n">Item</span><span class="o">.</span><span class="n">STONE</span><span class="p">,</span> <span class="n">Item</span><span class="o">.</span><span class="n">STONE</span><span class="p">,</span> <span class="n">Item</span><span class="o">.</span><span class="n">STONE</span><span class="p">],</span>
+        <span class="n">Item</span><span class="o">.</span><span class="n">STONE</span><span class="p">,</span>
+        <span class="n">Item</span><span class="o">.</span><span class="n">STONE</span><span class="p">,</span>
+        <span class="n">Item</span><span class="o">.</span><span class="n">STONE</span><span class="p">,</span>
+    <span class="p">],</span>
+    <span class="p">[</span>
+        <span class="p">[</span><span class="n">Item</span><span class="o">.</span><span class="n">OAK_PLANKS</span><span class="p">,</span> <span class="n">Item</span><span class="o">.</span><span class="n">AIR</span><span class="p">,</span> <span class="n">Item</span><span class="o">.</span><span class="n">TORCH</span><span class="p">],</span>
+        <span class="p">[</span><span class="n">Item</span><span class="o">.</span><span class="n">STONE</span><span class="p">,</span> <span class="n">Item</span><span class="o">.</span><span class="n">STONE</span><span class="p">,</span> <span class="n">Item</span><span class="o">.</span><span class="n">STONE</span><span class="p">],</span>
+        <span class="n">Item</span><span class="o">.</span><span class="n">STONE</span><span class="p">,</span>
+        <span class="n">Item</span><span class="o">.</span><span class="n">IRON_BARS</span><span class="p">,</span>
+        <span class="n">Item</span><span class="o">.</span><span class="n">STONE</span><span class="p">,</span>
+    <span class="p">],</span>
+    <span class="p">[</span>
+        <span class="n">Item</span><span class="o">.</span><span class="n">STONE</span><span class="p">,</span>
+        <span class="n">Item</span><span class="o">.</span><span class="n">OAK_PLANKS</span><span class="p">,</span>
+        <span class="p">[</span><span class="n">Item</span><span class="o">.</span><span class="n">STONE</span><span class="p">,</span> <span class="n">Item</span><span class="o">.</span><span class="n">STONE</span><span class="p">,</span> <span class="n">Item</span><span class="o">.</span><span class="n">STONE</span><span class="p">],</span>
+        <span class="n">Item</span><span class="o">.</span><span class="n">STONE</span><span class="p">,</span>
+        <span class="n">Item</span><span class="o">.</span><span class="n">STONE</span><span class="p">,</span>
+        <span class="n">Item</span><span class="o">.</span><span class="n">STONE</span><span class="p">,</span>
+    <span class="p">],</span>
+    <span class="p">[</span>
+        <span class="n">Item</span><span class="o">.</span><span class="n">OAK_PLANKS</span><span class="p">,</span>
+        <span class="p">[</span><span class="n">Item</span><span class="o">.</span><span class="n">OAK_PLANKS</span><span class="p">,</span> <span class="n">Item</span><span class="o">.</span><span class="n">STONE</span><span class="p">,</span> <span class="n">Item</span><span class="o">.</span><span class="n">STONE</span><span class="p">],</span>
+        <span class="n">Item</span><span class="o">.</span><span class="n">OAK_PLANKS</span><span class="p">,</span>
+        <span class="n">Item</span><span class="o">.</span><span class="n">OAK_PLANKS</span><span class="p">,</span>
+        <span class="n">Item</span><span class="o">.</span><span class="n">OAK_PLANKS</span><span class="p">,</span>
+    <span class="p">],</span>
+<span class="p">]</span>
+
+
+<span class="k">def</span> <span class="nf">make_walls</span><span class="p">():</span>
+
+    <span class="n">w</span> <span class="o">=</span> <span class="n">Wall</span><span class="p">(</span><span class="n">profile</span><span class="o">=</span><span class="n">battlements_profile</span><span class="p">)</span>
+
+    <span class="c1"># build the castle walls</span>
+    <span class="n">w</span><span class="o">.</span><span class="n">set_start</span><span class="p">(</span><span class="n">Vec3</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="mi">630</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mi">72</span><span class="p">,</span> <span class="n">z</span><span class="o">=-</span><span class="mi">1660</span><span class="p">))</span>
+    <span class="n">w</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">Vec3</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="mi">644</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mi">72</span><span class="p">,</span> <span class="n">z</span><span class="o">=-</span><span class="mi">1660</span><span class="p">))</span>
+    <span class="n">w</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">Vec3</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="mi">644</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mi">72</span><span class="p">,</span> <span class="n">z</span><span class="o">=-</span><span class="mi">1637</span><span class="p">))</span>
+    <span class="n">w</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">Vec3</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="mi">659</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mi">72</span><span class="p">,</span> <span class="n">z</span><span class="o">=-</span><span class="mi">1637</span><span class="p">))</span>
+    <span class="n">w</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">Vec3</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="mi">659</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mi">72</span><span class="p">,</span> <span class="n">z</span><span class="o">=-</span><span class="mi">1606</span><span class="p">))</span>
+    <span class="n">w</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">Vec3</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="mi">642</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mi">72</span><span class="p">,</span> <span class="n">z</span><span class="o">=-</span><span class="mi">1606</span><span class="p">))</span>
+    <span class="n">w</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">Vec3</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="mi">642</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mi">72</span><span class="p">,</span> <span class="n">z</span><span class="o">=-</span><span class="mi">1601</span><span class="p">))</span>
+    <span class="n">w</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">Vec3</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="mi">609</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mi">72</span><span class="p">,</span> <span class="n">z</span><span class="o">=-</span><span class="mi">1601</span><span class="p">))</span>
+    <span class="n">w</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">Vec3</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="mi">609</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mi">72</span><span class="p">,</span> <span class="n">z</span><span class="o">=-</span><span class="mi">1636</span><span class="p">))</span>
+    <span class="n">w</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">Vec3</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="mi">617</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mi">72</span><span class="p">,</span> <span class="n">z</span><span class="o">=-</span><span class="mi">1660</span><span class="p">))</span>
+    <span class="n">w</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">Vec3</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="mi">620</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mi">72</span><span class="p">,</span> <span class="n">z</span><span class="o">=-</span><span class="mi">1660</span><span class="p">))</span>
+
+    <span class="c1"># disable first to remove monitor on the portcullis lever</span>
+    <span class="n">disable_gate</span><span class="p">()</span>
+    <span class="c1"># build the gate</span>
+    <span class="n">make_gate</span><span class="p">()</span>
+</pre></div>
+</div>
 </section>
 
 
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="06-if-then.html" class="btn btn-neutral float-left" title="If Then Else" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="08-dictionaries.html" class="btn btn-neutral float-right" title="Dictionaries" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="06-if-then.html" class="btn btn-neutral float-left" title="If - Else" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="08-classes.html" class="btn btn-neutral float-right" title="Classes" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

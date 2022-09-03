@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Modules and Packages &mdash; mciwb 0.6.4.dev71+gec1aaf0 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
+    <link rel="shortcut icon" href="../_static/logo.png"/>
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="If - Else" href="06-if-then.html" />
+    <link rel="prev" title="Functions" href="05-functions.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: rgb(7, 43, 93)" >
+            <a href="../index.html" class="icon icon-home"> mciwb
+            <img src="../_static/logo.png" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                main
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="00-prereq.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="01-setup.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="02-orientation.html">Orientation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="03-variables.html">Python Variables</a></li>
+<li class="toctree-l1"><a class="reference internal" href="04-loops.html">Loops</a></li>
+<li class="toctree-l1"><a class="reference internal" href="05-functions.html">Functions</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Modules and Packages</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#getting-a-bash-prompt">Getting a Bash Prompt</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#create-a-package-and-a-module">Create a Package and a Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#how-it-works">How it Works</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#import">Import</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#comments">Comments</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#get-client">Get_client</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#polygon">Polygon</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#making-a-pagoda">Making a Pagoda</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="06-if-then.html">If - Else</a></li>
+<li class="toctree-l1"><a class="reference internal" href="07-lists.html">Lists</a></li>
+<li class="toctree-l1"><a class="reference internal" href="08-classes.html">Classes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="09-dictionaries.html">Dictionaries</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">How-to Guides</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../how-to/startup.html">Setup for each Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../how-to/completion.html">Command Completion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../how-to/extensions.html">VSCode Extensions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../how-to/troubleshooting.html">Troubleshooting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../how-to/backup.html">Backup and Restore</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../how-to/wsl2.html">Windows Subsystem for Linux</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../how-to/coordinates.html">Discovering the Coordinates of a Block</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../how-to/contributing.html">Contributing</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Explanations</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../explain/scope.html">Variable Scope</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../explain/server-config.html">Minecraft Server Config</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../explain/coordinates.html">Minecraft’s Coordinate System</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../explain/mcipc.html">MCIPC Client object</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../explanations/decisions.html">Architectural Decision Records</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../reference/index.html">Finding Things</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/api.html">MCIWB API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/demo.html">Demo Code</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/gilesknap/mciwb/releases">Releases</a></li>
+<li class="toctree-l1"><a class="reference external" href="genindex.html#http://">Index</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: rgb(7, 43, 93)" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">mciwb</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>Modules and Packages</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/tutorials/05a-modules.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="modules-and-packages">
+<h1>Modules and Packages<a class="headerlink" href="#modules-and-packages" title="Permalink to this heading"></a></h1>
+<p>In this tutorial we will start to use vscode to develop a Python package
+for making buildings in the game. We will be starting with
+the pagoda building from the previous tutorial and here we will also
+go into the detail of how the <code class="docutils literal notranslate"><span class="pre">build_pagoda</span></code> function works.</p>
+<p>You may like to install Python extensions for vscode at this point,
+see <a class="reference internal" href="../how-to/extensions.html"><span class="doc">VSCode Extensions</span></a></p>
+<section id="getting-a-bash-prompt">
+<h2>Getting a Bash Prompt<a class="headerlink" href="#getting-a-bash-prompt" title="Permalink to this heading"></a></h2>
+<p>We are going to use some bash commands here so lets open a second terminal
+in VSCode so that we can have a bash prompt but also keep our Python shell
+prompt open.</p>
+<p>Right click in the VSCode terminal area and select <code class="docutils literal notranslate"><span class="pre">Split</span> <span class="pre">Terminal</span></code></p>
+<figure class="align-center" id="id1">
+<a class="reference internal image-reference" href="../_images/split_term.png"><img alt="split_terminal" src="../_images/split_term.png" style="width: 600px;" /></a>
+<figcaption>
+<p><span class="caption-text">Splitting the Terminal</span><a class="headerlink" href="#id1" title="Permalink to this image"></a></p>
+</figcaption>
+</figure>
+<p>You can grab the dividing line between the two terminals and drag it to the
+right with your mouse. This makes the Python terminal bigger and the
+Bash terminal smaller. Then your terminal area of VSCode should look like
+this:</p>
+<figure class="align-center" id="id2">
+<a class="reference internal image-reference" href="../_images/terminals.png"><img alt="split_terminal" src="../_images/terminals.png" style="width: 900px;" /></a>
+<figcaption>
+<p><span class="caption-text">Python prompt and Bash prompt</span><a class="headerlink" href="#id2" title="Permalink to this image"></a></p>
+</figcaption>
+</figure>
+</section>
+<section id="create-a-package-and-a-module">
+<span id="package"></span><h2>Create a Package and a Module<a class="headerlink" href="#create-a-package-and-a-module" title="Permalink to this heading"></a></h2>
+<p>A python module is simply a file with a <code class="docutils literal notranslate"><span class="pre">.py</span></code> extension containing Python
+code.</p>
+<p>A package is simply a folder (directory) that contains python modules.</p>
+<p>We are going to create a package called <code class="docutils literal notranslate"><span class="pre">buildings</span></code> with a single module
+to start with called <code class="docutils literal notranslate"><span class="pre">build_pagoda</span></code>. Type the following commands at the
+bash prompt:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>cd $HOME/my_world
+mkdir buildings
+cd buildings
+touch __init__.py
+code pagoda.py
+</pre></div>
+</div>
+<p>The steps above were:</p>
+<ul class="simple">
+<li><p>Change working directory to <code class="docutils literal notranslate"><span class="pre">$HOME/my_world</span></code> which is our VSCode work folder.</p></li>
+<li><p>Make a new directory called <code class="docutils literal notranslate"><span class="pre">buildings</span></code>, this is our new package</p></li>
+<li><p>Change working directory to <code class="docutils literal notranslate"><span class="pre">buildings</span></code></p></li>
+<li><p>Create an empty file called <code class="docutils literal notranslate"><span class="pre">__init__.py</span></code> in the <code class="docutils literal notranslate"><span class="pre">buildings</span></code> directory.
+This is a special file name that tells Python that this directory is a
+Python package.</p></li>
+<li><p>Tell vscode to open a new file called <code class="docutils literal notranslate"><span class="pre">pagoda.py</span></code> in the editor window</p></li>
+</ul>
+<p>Now we can paste our pagoda function into the editor window and save it with
+Menu -&gt; File -&gt; Save (or Ctrl+S is a shortcut to save the current file).
+Use this slightly modified version of the pagoda function:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">mciwb.imports</span> <span class="kn">import</span> <span class="n">Direction</span><span class="p">,</span> <span class="n">FillMode</span><span class="p">,</span> <span class="n">Item</span><span class="p">,</span> <span class="n">get_client</span><span class="p">,</span> <span class="n">polygon</span>
+
+
+<span class="k">def</span> <span class="nf">build_pagoda</span><span class="p">(</span><span class="n">pos</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">floor_height</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">item</span><span class="p">:</span> <span class="n">Item</span> <span class="o">=</span> <span class="n">Item</span><span class="o">.</span><span class="n">GOLD_BLOCK</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Create a pagoda out of blocks at the given position.</span>
+
+<span class="sd">    Each successive floor is narrower and each has a balcony at the top.</span>
+
+<span class="sd">    :param pos: position of the base of the pagoda</span>
+<span class="sd">    :param width: width of the base of the pagoda</span>
+<span class="sd">    :param floor_height: height of each floor</span>
+<span class="sd">    :param item: block to use for the base of the pagoda</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">c</span> <span class="o">=</span> <span class="n">get_client</span><span class="p">()</span>
+
+    <span class="c1"># calculate how many levels we can make if we reduce width by 2 each level</span>
+    <span class="n">levels</span> <span class="o">=</span> <span class="n">width</span> <span class="o">//</span> <span class="mi">2</span>
+
+    <span class="k">for</span> <span class="n">level</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">levels</span><span class="p">):</span>
+        <span class="c1"># calculate the width of the pagoda for this level</span>
+        <span class="n">floor_width</span> <span class="o">=</span> <span class="n">width</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">level</span>
+
+        <span class="c1"># calculate the base position of the walls for this level</span>
+        <span class="n">base</span> <span class="o">=</span> <span class="n">pos</span> <span class="o">+</span> <span class="n">Direction</span><span class="o">.</span><span class="n">UP</span> <span class="o">*</span> <span class="n">level</span> <span class="o">*</span> <span class="n">floor_height</span>
+
+        <span class="c1"># calculate the position of the balcony for this level</span>
+        <span class="c1"># it should surround the top layer of the walls for this level</span>
+        <span class="n">balcony</span> <span class="o">=</span> <span class="n">base</span> <span class="o">+</span> <span class="n">Direction</span><span class="o">.</span><span class="n">UP</span> <span class="o">*</span> <span class="p">(</span><span class="n">floor_height</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+
+        <span class="c1"># create the balcony for this level</span>
+        <span class="n">polygon</span><span class="p">(</span>
+            <span class="n">client</span><span class="o">=</span><span class="n">c</span><span class="p">,</span>
+            <span class="n">center</span><span class="o">=</span><span class="n">balcony</span><span class="p">,</span>
+            <span class="n">height</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+            <span class="n">diameter</span><span class="o">=</span><span class="n">floor_width</span> <span class="o">+</span> <span class="mi">2</span><span class="p">,</span>
+            <span class="n">sides</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
+            <span class="n">item</span><span class="o">=</span><span class="n">item</span><span class="p">,</span>
+            <span class="n">mode</span><span class="o">=</span><span class="n">FillMode</span><span class="o">.</span><span class="n">REPLACE</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="c1"># create the walls for this level</span>
+        <span class="n">polygon</span><span class="p">(</span>
+            <span class="n">client</span><span class="o">=</span><span class="n">c</span><span class="p">,</span>
+            <span class="n">center</span><span class="o">=</span><span class="n">base</span><span class="p">,</span>
+            <span class="n">height</span><span class="o">=</span><span class="n">floor_height</span><span class="p">,</span>
+            <span class="n">diameter</span><span class="o">=</span><span class="n">floor_width</span><span class="p">,</span>
+            <span class="n">sides</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
+            <span class="n">item</span><span class="o">=</span><span class="n">item</span><span class="p">,</span>
+            <span class="n">mode</span><span class="o">=</span><span class="n">FillMode</span><span class="o">.</span><span class="n">REPLACE</span><span class="p">,</span>
+        <span class="p">)</span>
+</pre></div>
+</div>
+<p>To try using this function you can now type the following command in the
+iPython prompt:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">buildings.pagoda</span> <span class="kn">import</span> <span class="n">build_pagoda</span>
+<span class="n">build_pagoda</span><span class="p">(</span><span class="n">world</span><span class="o">.</span><span class="n">player</span><span class="o">.</span><span class="n">pos</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>That should build a little pagoda around your player. You can break some
+blocks to make a door for you to exit the pagoda!</p>
+</section>
+<section id="how-it-works">
+<h2>How it Works<a class="headerlink" href="#how-it-works" title="Permalink to this heading"></a></h2>
+<p>Let’s take a look at all of the new things that we used in our <code class="docutils literal notranslate"><span class="pre">build_pagoda</span></code>
+function.</p>
+<section id="import">
+<h3>Import<a class="headerlink" href="#import" title="Permalink to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">mciwb.imports</span> <span class="kn">import</span> <span class="n">Direction</span><span class="p">,</span> <span class="n">Item</span><span class="p">,</span> <span class="n">get_client</span><span class="p">,</span> <span class="n">polygon</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">import</span></code> allows us to access code from other modules.</p>
+<p>One of the greatest features of Python is its extensive library of built in
+modules. For example the maths module contains functions for doing math.
+e.g.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">sqrt</span><span class="p">,</span> <span class="n">cos</span><span class="p">,</span> <span class="n">sin</span>
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">polygon</span></code> function that we used to make the pagoda is implemented using
+some of these math functions.
+Luckily, you don’t need to know anything about the mathematics of polygon
+construction because the <code class="docutils literal notranslate"><span class="pre">polygon</span></code> function has done all that for you!</p>
+<p>So, <code class="docutils literal notranslate"><span class="pre">Direction</span></code> and
+<code class="docutils literal notranslate"><span class="pre">Item</span></code> are already familiar, we have previously used them in
+<strong>iPython</strong> without needing to import them.
+But we need to import them here because we are
+writing a new module called <code class="docutils literal notranslate"><span class="pre">pagoda</span></code> (in the file pagoda.py).
+<code class="docutils literal notranslate"><span class="pre">import</span></code> is the command to share
+code between modules and is therefore required in our new <code class="docutils literal notranslate"><span class="pre">pagoda</span></code> module.</p>
+<p>import is usually used at the beginning of a module and code that is
+imported is available to all of the code within the module.</p>
+<p>Once you become familiar with Python you will eventually be comfortable
+looking at online documentation to discover packages and modules you want to
+use and discovering the imports you need to use them. But for now it is
+easiest just to copy the import statements from examples like <code class="docutils literal notranslate"><span class="pre">pagoda.py</span></code>.</p>
+</section>
+<section id="comments">
+<h3>Comments<a class="headerlink" href="#comments" title="Permalink to this heading"></a></h3>
+<p>At the beginning of <code class="docutils literal notranslate"><span class="pre">build_pagoda</span></code> we have a block comment. It uses
+triple quotes <code class="docutils literal notranslate"><span class="pre">&quot;&quot;&quot;</span></code> which allow you to write a block of text
+including line breaks that is not interpreted as Python code.</p>
+<p>Good programmers will usually add a comment block at the top of their
+functions and using triple quotes is the standard way to do this.</p>
+</section>
+<section id="get-client">
+<h3>Get_client<a class="headerlink" href="#get-client" title="Permalink to this heading"></a></h3>
+<p>Whenever we call any functions that make changes to Minecraft we need a client
+object. This represents a connection to our Minecraft server. (An exception to
+this is functions in the <code class="docutils literal notranslate"><span class="pre">world</span></code> object since <code class="docutils literal notranslate"><span class="pre">world</span></code> holds a client
+connection for us to save on typing)</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">get_client</span></code> function obtains a client object for you to use. Here we
+assign it into the variable <code class="docutils literal notranslate"><span class="pre">c</span></code> and pass <code class="docutils literal notranslate"><span class="pre">c</span></code> to the <code class="docutils literal notranslate"><span class="pre">polygon</span></code> function.</p>
+<p>Advanced programmers may want to read up on how this is a thread-safe
+client object! see (<a class="reference internal" href="../explain/mcipc.html#mcipc"><span class="std std-ref">MCIPC Client object</span></a>).</p>
+</section>
+<section id="polygon">
+<h3>Polygon<a class="headerlink" href="#polygon" title="Permalink to this heading"></a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">polygon</span></code> is a function that draws the outline of a polygon using blocks.
+It is capable of
+making any regular polygon and using that shape to build a tower. The
+parameter <code class="docutils literal notranslate"><span class="pre">height</span></code> tells it how many levels of the same polygon to stack
+on top of each other.
+If you want to make a circular tower then you can just pass a large number
+like 400 as the number of sides. In pagoda we use 4 sides to make a square
+pagoda.</p>
+</section>
+<section id="making-a-pagoda">
+<h3>Making a Pagoda<a class="headerlink" href="#making-a-pagoda" title="Permalink to this heading"></a></h3>
+<p>So how does the overall function work?</p>
+<p>The caller has specified the width of the bottom of the pagoda. We use this
+to calculate how many levels we can make. Each level is 2 blocks narrower
+than the one below and so width divided by 2 should be the number of levels.
+We use <code class="docutils literal notranslate"><span class="pre">integer</span> <span class="pre">division</span></code> to round down to the nearest integer as we
+don’t want to try to make half a level <code class="docutils literal notranslate"><span class="pre">//</span></code> is the integer division
+operator.</p>
+<p>Next we  see that we loop over the range of levels.
+For our width 30 pagoda we have 15 levels and therefore <code class="docutils literal notranslate"><span class="pre">level</span></code> will
+range from 0 to 14.</p>
+<p>For each iteration of the <code class="docutils literal notranslate"><span class="pre">for</span> <span class="pre">loop</span></code> we build some walls and a balcony.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">base</span></code> of the walls is calculated as <code class="docutils literal notranslate"><span class="pre">level</span></code> * <code class="docutils literal notranslate"><span class="pre">floor_height</span></code> blocks
+above the starting <code class="docutils literal notranslate"><span class="pre">pos</span></code>. <code class="docutils literal notranslate"><span class="pre">floor_height</span></code> is the default value of 4.
+Thus, the first
+floor <code class="docutils literal notranslate"><span class="pre">base</span></code> is 0 blocks above the starting <code class="docutils literal notranslate"><span class="pre">pos</span></code> (0 times 4) and
+each successive <code class="docutils literal notranslate"><span class="pre">level</span></code> is 4 blocks above the previous <code class="docutils literal notranslate"><span class="pre">level</span></code>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">polygon</span><span class="p">(</span>
+    <span class="n">client</span><span class="o">=</span><span class="n">c</span><span class="p">,</span>
+    <span class="n">center</span><span class="o">=</span><span class="n">base</span><span class="p">,</span>
+    <span class="n">height</span><span class="o">=</span><span class="n">floor_height</span><span class="p">,</span>
+    <span class="n">diameter</span><span class="o">=</span><span class="n">floor_width</span><span class="p">,</span>
+    <span class="n">sides</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
+    <span class="n">item</span><span class="o">=</span><span class="n">item</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<dl class="simple">
+<dt>To create the walls we call polygon with these parameters:</dt><dd><dl class="simple">
+<dt>client is set to c:</dt><dd><p>the client object needed to talk to the Minecraft server</p>
+</dd>
+<dt>centre is set to base:</dt><dd><p>the calculated starting point for the polygon</p>
+</dd>
+<dt>height is set to floor_height:</dt><dd><p>the height of the polygon (defaulted to 4)</p>
+</dd>
+<dt>diameter is set to floor_width:</dt><dd><p>the diameter of the polygon (starting at 30 for the bottom level)</p>
+</dd>
+<dt>sides set to 4:</dt><dd><p>the number of sides of the polygon, we use 4, making a square</p>
+</dd>
+<dt>item is set to item(which was passed to <code class="docutils literal notranslate"><span class="pre">build_pagoda</span></code>):</dt><dd><p>the blocks to use for the polygon, defaulted to GOLD_BLOCK</p>
+</dd>
+<dt>mode is set to FIllMode.REPLACE</dt><dd><p>this means that all pagoda blocks replace existing blocks. You
+could also use FillMode.KEEP which only places blocks if the current
+block is Item.AIR.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p>As we loop around the <code class="docutils literal notranslate"><span class="pre">for</span> <span class="pre">loop</span></code> we create a new polygon at each level,
+but the width of it is shrinking by two blocks at each level. Eventually
+we get to a narrow level at the top and the loop completes.</p>
+<dl class="simple">
+<dt>Exercise:</dt><dd><p>Can you work out how the balcony is being drawn on each level? look
+at the math used to calculate <code class="docutils literal notranslate"><span class="pre">balcony</span></code> and the <code class="docutils literal notranslate"><span class="pre">polygon</span></code> function
+parameters used to draw the balcony and see if you can figure out how
+it works.</p>
+</dd>
+<dt>Exercise 2:</dt><dd><p>I found pesky pillagers patrolling on my pagoda. A friend pointed out that
+you can avoid this by placing slabs on top of every surface of the
+pagoda. Mobs (mobile entities) won’t spawn on a slab. Also you can make
+the slab a different material for an interesting look.
+You can make a pagoda with slabs on its surfaces with just two calls to
+the pagoda function. Can you work out how?</p>
+</dd>
+</dl>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="05-functions.html" class="btn btn-neutral float-left" title="Functions" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="06-if-then.html" class="btn btn-neutral float-right" title="If - Else" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p></p>
+  </div>
+
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+   
+  <div id="other-versions-div" class="rst-versions" data-toggle="rst-versions" role="note" aria-label="Versions" style="visibility: hidden">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      <span class="fa fa-book"> Other Versions</span>
+      main
+      <span class="fa fa-caret-down"></span>
+    </span>
+    <div class="rst-other-versions">
+      <dl id="other-versions-dl"/>
+    </div>
+  </div>
+  <script>
+    function addVersion(name) {
+      var dd = document.createElement("dd");
+      var a = document.createElement("a");
+      a.href = "../../" + name;
+      a.innerText = name;
+      dd.appendChild(a);
+      document.getElementById('other-versions-dl').appendChild(dd);
+    }
+    // Get versions.txt and add a version for each line
+    fetch("../../versions.txt").then(response => {
+      if (response.ok) {
+        document.getElementById('other-versions-div').style.visibility = "visible";
+        return response.text().then(text => text.split(/\r?\n/).forEach(addVersion))
+      }
+    });
+  </script>
+
+
+</body>
+</html>

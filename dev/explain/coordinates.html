@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Minecraft’s Coordinate System &mdash; mciwb 0.5.4.dev11+g35d4994 documentation</title>
+  <title>Minecraft’s Coordinate System &mdash; mciwb 0.6.4.dev71+gec1aaf0 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
@@ -22,8 +22,8 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Contributing" href="../reference/contributing.html" />
-    <link rel="prev" title="Command Completion" href="completion.html" /> 
+    <link rel="next" title="MCIPC Client object" href="mcipc.html" />
+    <link rel="prev" title="Minecraft Server Config" href="server-config.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -48,27 +48,32 @@
               <p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../tutorials/00-prereq.html">Introduction</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/01-setup.html">Set Up</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/01-setup.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../tutorials/02-orientation.html">Orientation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../tutorials/03-variables.html">Python Variables</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/04-functions.html">Functions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/05-loops.html">Loops</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/06-if-then.html">If Then Else</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/04-loops.html">Loops</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/05-functions.html">Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/05a-modules.html">Modules and Packages</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/06-if-then.html">If - Else</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../tutorials/07-lists.html">Lists</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/08-dictionaries.html">Dictionaries</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/09-classes.html">Classes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/08-classes.html">Classes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/09-dictionaries.html">Dictionaries</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">How-to Guides</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../how-to/startup.html">Setup for each Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../how-to/completion.html">Command Completion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../how-to/extensions.html">VSCode Extensions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../how-to/troubleshooting.html">Troubleshooting</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../how-to/server-config.html">Minecraft Server Config</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../how-to/backup.html">Backup and Restore</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../how-to/wsl2.html">Windows Subsystem for Linux</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../how-to/coordinates.html">Discovering the Coordinates of a Block</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../how-to/contributing.html">Contributing</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Explanations</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="completion.html">Command Completion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="scope.html">Variable Scope</a></li>
+<li class="toctree-l1"><a class="reference internal" href="server-config.html">Minecraft Server Config</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Minecraft’s Coordinate System</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#cardinals">Cardinals</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#id1">Coordinates</a></li>
@@ -76,10 +81,15 @@
 <li class="toctree-l2"><a class="reference internal" href="#using-coordinates-vectors-in-python">Using Coordinates (Vectors) in Python</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="mcipc.html">MCIPC Client object</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../explanations/decisions.html">Architectural Decision Records</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Reference</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../reference/index.html">Finding Things</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../reference/contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/api.html">MCIWB API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/demo.html">Demo Code</a></li>
 <li class="toctree-l1"><a class="reference external" href="https://github.com/gilesknap/mciwb/releases">Releases</a></li>
 <li class="toctree-l1"><a class="reference external" href="genindex.html#http://">Index</a></li>
 </ul>
@@ -117,7 +127,7 @@ the Minecraft client by hitting the F3 key. You will see panels of text on
 the left and right. Use F3 again to hide the diagnostic information.</p>
 <p>In the picture below we have picked out the information regarding player’s
 position and which direction they are facing, plus the target block position.</p>
-<a class="reference internal image-reference" href="../_images/coords.excalidraw.png"><img alt="Coordinate System Diagnostics" src="../_images/coords.excalidraw.png" style="width: 700px;" /></a>
+<a class="reference internal image-reference" href="../_images/coords.excalidraw.png"><img alt="Coordinate System Diagnostics" class="align-center" src="../_images/coords.excalidraw.png" style="width: 700px;" /></a>
 <section id="cardinals">
 <h2>Cardinals<a class="headerlink" href="#cardinals" title="Permalink to this heading"></a></h2>
 <p>The cardinal directions are North East South and West. They are used on maps
@@ -126,7 +136,7 @@ in the real world where North is the direction that a magnetic compass points.</
 that the player is facing North. In the MCIWB world North is facing along the
 shore with the sea to your right. Its useful to keep in mind the arrangement
 of the cardinals which is as follows:</p>
-<a class="reference internal image-reference" href="../_images/compass.png"><img alt="Compass" src="../_images/compass.png" style="width: 250px;" /></a>
+<a class="reference internal image-reference" href="../_images/compass.png"><img alt="Compass" class="align-center" src="../_images/compass.png" style="width: 250px;" /></a>
 <p>From the above you can see that facing North means that:</p>
 <ul class="simple">
 <li><p>moving to the right is traveling East</p></li>
@@ -231,8 +241,8 @@ player’s feet.</p>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="completion.html" class="btn btn-neutral float-left" title="Command Completion" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="../reference/contributing.html" class="btn btn-neutral float-right" title="Contributing" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="server-config.html" class="btn btn-neutral float-left" title="Minecraft Server Config" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="mcipc.html" class="btn btn-neutral float-right" title="MCIPC Client object" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

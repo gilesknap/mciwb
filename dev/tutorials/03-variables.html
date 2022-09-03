@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Python Variables &mdash; mciwb 0.5.4.dev11+g35d4994 documentation</title>
+  <title>Python Variables &mdash; mciwb 0.6.4.dev71+gec1aaf0 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
@@ -22,7 +22,7 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Functions" href="04-functions.html" />
+    <link rel="next" title="Loops" href="04-loops.html" />
     <link rel="prev" title="Orientation" href="02-orientation.html" /> 
 </head>
 
@@ -48,7 +48,7 @@
               <p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="00-prereq.html">Introduction</a></li>
-<li class="toctree-l1"><a class="reference internal" href="01-setup.html">Set Up</a></li>
+<li class="toctree-l1"><a class="reference internal" href="01-setup.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="02-orientation.html">Orientation</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Python Variables</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#introduction">Introduction</a></li>
@@ -58,29 +58,39 @@
 <li class="toctree-l2"><a class="reference internal" href="#iron-golem">Iron Golem</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="04-functions.html">Functions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="05-loops.html">Loops</a></li>
-<li class="toctree-l1"><a class="reference internal" href="06-if-then.html">If Then Else</a></li>
+<li class="toctree-l1"><a class="reference internal" href="04-loops.html">Loops</a></li>
+<li class="toctree-l1"><a class="reference internal" href="05-functions.html">Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="05a-modules.html">Modules and Packages</a></li>
+<li class="toctree-l1"><a class="reference internal" href="06-if-then.html">If - Else</a></li>
 <li class="toctree-l1"><a class="reference internal" href="07-lists.html">Lists</a></li>
-<li class="toctree-l1"><a class="reference internal" href="08-dictionaries.html">Dictionaries</a></li>
-<li class="toctree-l1"><a class="reference internal" href="09-classes.html">Classes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="08-classes.html">Classes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="09-dictionaries.html">Dictionaries</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">How-to Guides</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../how-to/startup.html">Setup for each Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../how-to/completion.html">Command Completion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../how-to/extensions.html">VSCode Extensions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../how-to/troubleshooting.html">Troubleshooting</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../how-to/server-config.html">Minecraft Server Config</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../how-to/backup.html">Backup and Restore</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../how-to/wsl2.html">Windows Subsystem for Linux</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../how-to/coordinates.html">Discovering the Coordinates of a Block</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../how-to/contributing.html">Contributing</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Explanations</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../explain/completion.html">Command Completion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../explain/scope.html">Variable Scope</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../explain/server-config.html">Minecraft Server Config</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../explain/coordinates.html">Minecraft’s Coordinate System</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../explain/mcipc.html">MCIPC Client object</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../explanations/decisions.html">Architectural Decision Records</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Reference</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../reference/index.html">Finding Things</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../reference/contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/api.html">MCIWB API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/demo.html">Demo Code</a></li>
 <li class="toctree-l1"><a class="reference external" href="https://github.com/gilesknap/mciwb/releases">Releases</a></li>
 <li class="toctree-l1"><a class="reference external" href="genindex.html#http://">Index</a></li>
 </ul>
@@ -113,18 +123,22 @@
 <h1>Python Variables<a class="headerlink" href="#python-variables" title="Permalink to this heading"></a></h1>
 <section id="introduction">
 <h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this heading"></a></h2>
-<p>We now have everything ready to start learning some Python!</p>
+<p>We now have everything set up ready to start learning some Python!</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>There are many other
 excellent Python beginner’s tutorials available for free on the internet,
 such as:</p>
 <blockquote>
-<div><p><a class="reference external" href="https://python.land/python-tutorial">https://python.land/python-tutorial</a></p>
+<div><ul class="simple">
+<li><p><a class="reference external" href="https://www.w3schools.com/python/default.asp">https://www.w3schools.com/python/default.asp</a></p></li>
+<li><p><a class="reference external" href="https://python.land/python-tutorial">https://python.land/python-tutorial</a></p></li>
+</ul>
 </div></blockquote>
 <p>My tutorials are going to focus on quickly getting into interacting with the
 world of Minecraft. We won’t be going into programming theory
-to any great degree. Therefore, a tutorial like python.land will
+in detail.</p>
+<p>Therefore, a tutorial like w3schools will
 be needed to fill in the background if you want a deeper understanding
 of the language.</p>
 </div>
@@ -142,14 +156,25 @@ computer program. They have the following properties:</p>
 <li><p>Name: a name that is used to identify the variable.</p></li>
 <li><p>Value: the data that the variable holds.</p></li>
 <li><p>Type: the type of data that the variable holds.</p></li>
+<li><p>Scope: in which parts of the code this variable is available.</p></li>
 </ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><strong>Scope</strong> is a moderately advanced concept which you
+can ignore for the moment. Advanced topics like this will be covered
+in the <a class="reference internal" href="../explanations.html"><span class="doc">Explanations</span></a> section. I suggest skipping anything in the
+explanations section on your first read through the tutorials and
+then come back later when you have a better understanding of the
+fundamentals.</p>
+</div>
 <p>Operators are used to make changes to variables. For example the <code class="docutils literal notranslate"><span class="pre">=</span></code> operator
-assigns a value to a variable. In Python we can quickly create a variable
+assigns a value to a variable, and the <code class="docutils literal notranslate"><span class="pre">+</span></code> operator adds two variables
+together.</p>
+<p>In Python we can easily create a variable
 using assignment. This table below shows some Python assignment commands using
-the <code class="docutils literal notranslate"><span class="pre">=</span></code> operator. Note that Python can automatically work out what type of
-variable you are creating.</p>
+the <code class="docutils literal notranslate"><span class="pre">=</span></code> operator.</p>
 <table class="colwidths-given docutils align-default" id="id1">
-<caption><span class="caption-text">Create some variables</span><a class="headerlink" href="#id1" title="Permalink to this table"></a></caption>
+<caption><span class="caption-text">examples of creating variables in Python</span><a class="headerlink" href="#id1" title="Permalink to this table"></a></caption>
 <colgroup>
 <col style="width: 32%" />
 <col style="width: 16%" />
@@ -181,12 +206,17 @@ variable you are creating.</p>
 </tr>
 </tbody>
 </table>
+<p>Note that Python can automatically work out what type of variable you are
+creating. e.g. it recognizes that using quotes means I want a string of
+characters. This
+<a class="reference external" href="https://www.w3schools.com/python/python_variables.asp">w3schools variables page</a>
+has further examples.</p>
 </section>
 <section id="trying-out-variables">
 <h2>Trying out Variables<a class="headerlink" href="#trying-out-variables" title="Permalink to this heading"></a></h2>
-<p>Try out the commands below by typing them into the Python prompt in your
-VSCode window. Note that input [4] asks Interactive Python to show the values
-of the 3 variables you created:</p>
+<p>Try out the commands below by typing them into the <strong>iPython</strong> prompt in your
+VSCode terminal window. Note that input [4] just asks <strong>iPython</strong> to show
+the values of the 3 variables you created:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">In</span> <span class="p">[</span><span class="mi">1</span><span class="p">]:</span> <span class="n">birth_year</span> <span class="o">=</span> <span class="mi">1964</span>
 
 <span class="n">In</span> <span class="p">[</span><span class="mi">2</span><span class="p">]:</span> <span class="n">my_height</span> <span class="o">=</span> <span class="mf">1.94</span>
@@ -209,57 +239,68 @@ Try out the commands below:</p>
 <p>This makes a calculation from the value 2022 and the value of the variable
 <code class="docutils literal notranslate"><span class="pre">birth_year</span></code> and assigned it to variable <code class="docutils literal notranslate"><span class="pre">age</span></code>.
 Interactive Python will always print the value returned by the last
-input command.</p>
+command you input, so in Out[7] <code class="docutils literal notranslate"><span class="pre">age</span></code> evaluates to 58.</p>
 </section>
 <section id="variables-in-minecraft">
-<h2>Variables in Minecraft<a class="headerlink" href="#variables-in-minecraft" title="Permalink to this heading"></a></h2>
+<span id="mc-variables"></span><h2>Variables in Minecraft<a class="headerlink" href="#variables-in-minecraft" title="Permalink to this heading"></a></h2>
 <p>MCIWB provides some built in variables that you can use. The most important
-is called <code class="docutils literal notranslate"><span class="pre">world</span></code> and it is your entry point into most of the functions
+is called <code class="docutils literal notranslate"><span class="pre">world</span></code> and it is your entry point into many of the functions
 provided by the library.</p>
-<p><code class="docutils literal notranslate"><span class="pre">world</span></code> is a special variable called an <code class="docutils literal notranslate"><span class="pre">object</span></code> which can have many values
-stored in its <code class="docutils literal notranslate"><span class="pre">properties</span></code>. Objects can also have <code class="docutils literal notranslate"><span class="pre">methods</span></code> which
-execute code.</p>
-<p>One property of <code class="docutils literal notranslate"><span class="pre">world</span></code> is <code class="docutils literal notranslate"><span class="pre">player</span></code> and a property of <code class="docutils literal notranslate"><span class="pre">player</span></code> is <code class="docutils literal notranslate"><span class="pre">pos</span></code>
-which holds the player’s current position.</p>
+<p><code class="docutils literal notranslate"><span class="pre">world</span></code> is a special type of variable called an <code class="docutils literal notranslate"><span class="pre">object</span></code> which can
+have many values stored in its <code class="docutils literal notranslate"><span class="pre">properties</span></code>.
+Objects can also have <code class="docutils literal notranslate"><span class="pre">methods</span></code> which execute code.</p>
+<p>One property of <code class="docutils literal notranslate"><span class="pre">world</span></code> is <code class="docutils literal notranslate"><span class="pre">player</span></code>. <code class="docutils literal notranslate"><span class="pre">player</span></code> is also an object and it
+has a property called <code class="docutils literal notranslate"><span class="pre">pos</span></code> which holds the player’s current position.</p>
 <p>You can access the player’s location like this:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">In</span> <span class="p">[</span><span class="mi">10</span><span class="p">]:</span> <span class="n">world</span><span class="o">.</span><span class="n">player</span><span class="o">.</span><span class="n">pos</span>
 <span class="n">Out</span><span class="p">[</span><span class="mi">10</span><span class="p">]:</span> <span class="n">Vec3</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="mi">633</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mi">73</span><span class="p">,</span> <span class="n">z</span><span class="o">=-</span><span class="mi">1665</span><span class="p">)</span>
 </pre></div>
 </div>
+<p><code class="docutils literal notranslate"><span class="pre">out[10]</span></code> shows the player’s current position is x=633, y=73, z=-1665.</p>
 <p>Try moving your player around and see how the position changes by repeating
 the above command.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>You will notice that the position is reported as a type of variable
-called Vec3. This holds the Minecraft coordinates that you may be
+called Vec3.</p>
+<p>Vec3  holds the Minecraft coordinates that you may be
 familiar with if you have used e.g. the teleport command.</p>
-<p>For lots of detail on what this all means see <a class="reference internal" href="../explain/coordinates.html#coordinates"><span class="std std-ref">Minecraft’s Coordinate System</span></a>.</p>
-<p>However, for the moment you may prefer to just work through the first
-few tutorials and come back to that level of detail later on.</p>
+<p>For advanced detail on what this all means see <a class="reference internal" href="../explain/coordinates.html#coordinates"><span class="std std-ref">Minecraft’s Coordinate System</span></a>.</p>
 </div>
 <p>An example of a <code class="docutils literal notranslate"><span class="pre">method</span></code> on <code class="docutils literal notranslate"><span class="pre">world</span></code> is <code class="docutils literal notranslate"><span class="pre">set_block</span></code> which will place
 a block in a particular position.</p>
 <p>Make sure your player is standing
 on the flat area of sand and execute the set_block method like this:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pos</span> <span class="o">=</span> <span class="n">world</span><span class="o">.</span><span class="n">player</span><span class="o">.</span><span class="n">pos</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">pos</span> <span class="o">=</span> <span class="n">world</span><span class="o">.</span><span class="n">player</span><span class="o">.</span><span class="n">pos</span>
 <span class="n">world</span><span class="o">.</span><span class="n">set_block</span><span class="p">(</span><span class="n">pos</span><span class="p">,</span> <span class="n">Item</span><span class="o">.</span><span class="n">IRON_BLOCK</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Your player should have been bumped out of their position and if you turn
 around you will see an iron block.</p>
 <p>What you did here was assign your
-players position to the variable <code class="docutils literal notranslate"><span class="pre">pos</span></code> and then called the <code class="docutils literal notranslate"><span class="pre">set_block</span></code>
+player’s position to the variable <code class="docutils literal notranslate"><span class="pre">pos</span></code> and then called the <code class="docutils literal notranslate"><span class="pre">set_block</span></code>
 method on <code class="docutils literal notranslate"><span class="pre">world</span></code>. You told <code class="docutils literal notranslate"><span class="pre">set_block</span></code> to use pos for the position and
 IRON_BLOCK for the block to place.</p>
-<p>Item is another provided variable that you can use. It is a list of all the
-types of blocks in Minecraft. See <a class="reference internal" href="../explain/completion.html#completion"><span class="std std-ref">Command Completion</span></a> for a great way to discover
-all of the block types.</p>
+<p><code class="docutils literal notranslate"><span class="pre">Item</span></code> is another built-in variable that you can use. It is a list of all the
+types of blocks in Minecraft. If you type <code class="docutils literal notranslate"><span class="pre">Item.IR</span></code> in <strong>iPython</strong> and then
+hit <code class="docutils literal notranslate"><span class="pre">Tab</span></code> you will see a list of all the items in Minecraft that begin with
+<strong>IR</strong>. See <a class="reference internal" href="../how-to/completion.html#completion"><span class="std std-ref">Command Completion</span></a> for more details.</p>
 </section>
 <section id="iron-golem">
-<h2>Iron Golem<a class="headerlink" href="#iron-golem" title="Permalink to this heading"></a></h2>
-<p>OK, let’s make an iron golem! Copy and paste these commands into the
-Python terminal:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">world</span><span class="o">.</span><span class="n">set_block</span><span class="p">(</span><span class="n">pos</span><span class="p">,</span> <span class="n">Item</span><span class="o">.</span><span class="n">IRON_BLOCK</span><span class="p">)</span>
+<span id="golem"></span><h2>Iron Golem<a class="headerlink" href="#iron-golem" title="Permalink to this heading"></a></h2>
+<p>OK, let’s make an iron golem! Copy and paste the following Python code commands
+into the Python terminal:</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>To copy and paste code from this page to your terminal:</p>
+<ul class="simple">
+<li><p>Drag the mouse to highlight the code you want to Copy</p></li>
+<li><p>right click the highlight and click <code class="docutils literal notranslate"><span class="pre">Copy</span></code> to copy the
+code to the clipboard</p></li>
+<li><p>right click in your Python Terminal and choose <code class="docutils literal notranslate"><span class="pre">Paste</span></code></p></li>
+</ul>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">world</span><span class="o">.</span><span class="n">set_block</span><span class="p">(</span><span class="n">pos</span><span class="p">,</span> <span class="n">Item</span><span class="o">.</span><span class="n">IRON_BLOCK</span><span class="p">)</span>
 <span class="n">arms</span> <span class="o">=</span> <span class="n">pos</span> <span class="o">+</span> <span class="n">Direction</span><span class="o">.</span><span class="n">UP</span>
 <span class="n">world</span><span class="o">.</span><span class="n">set_block</span><span class="p">(</span><span class="n">arms</span><span class="p">,</span> <span class="n">Item</span><span class="o">.</span><span class="n">IRON_BLOCK</span><span class="p">)</span>
 <span class="n">world</span><span class="o">.</span><span class="n">set_block</span><span class="p">(</span><span class="n">arms</span> <span class="o">+</span> <span class="n">Direction</span><span class="o">.</span><span class="n">EAST</span><span class="p">,</span> <span class="n">Item</span><span class="o">.</span><span class="n">IRON_BLOCK</span><span class="p">)</span>
@@ -268,7 +309,12 @@ Python terminal:</p>
 </pre></div>
 </div>
 <p>Yay! You can paste again to create another one.</p>
-<a class="reference internal image-reference" href="../_images/golem.png"><img alt="Server Address" src="../_images/golem.png" style="width: 500px;" /></a>
+<figure class="align-center" id="id2">
+<a class="reference internal image-reference" href="../_images/golem.png"><img alt="golem" src="../_images/golem.png" style="width: 800px;" /></a>
+<figcaption>
+<p><span class="caption-text">Say hello to the Iron Golem, your first Python creation!</span><a class="headerlink" href="#id2" title="Permalink to this image"></a></p>
+</figcaption>
+</figure>
 <p>(See “Creation” in this article <a class="reference external" href="https://minecraft.fandom.com/wiki/Iron_Golem">https://minecraft.fandom.com/wiki/Iron_Golem</a>
 if you don’t know about making iron golems)</p>
 <p>How does this work? We use <code class="docutils literal notranslate"><span class="pre">set_block</span></code> to place all the necessary blocks
@@ -278,9 +324,9 @@ to control where those blocks are placed.</p>
 particular direction when added/subtracted to/from that position. Note that we
 are using the operator <code class="docutils literal notranslate"><span class="pre">+</span></code> and that it can add more than just numbers.</p>
 <p>So, first we place the golem’s feet at <code class="docutils literal notranslate"><span class="pre">pos</span></code>.
-Then we move Up one block from the position <code class="docutils literal notranslate"><span class="pre">pos</span></code> to the arm level of
-the golem and save  that position in <code class="docutils literal notranslate"><span class="pre">arms</span></code>. Now we can step east
-and west from <code class="docutils literal notranslate"><span class="pre">arms</span></code> to make the arms and Up to make the head.</p>
+Then we move UP one block from the position <code class="docutils literal notranslate"><span class="pre">pos</span></code> to the arm level of
+the golem and save  that position in <code class="docutils literal notranslate"><span class="pre">arms</span></code>. Now we can step EAST
+and WEST from <code class="docutils literal notranslate"><span class="pre">arms</span></code> to make the arms. Finally we step UP to make the head.</p>
 </section>
 </section>
 
@@ -289,7 +335,7 @@ and west from <code class="docutils literal notranslate"><span class="pre">arms<
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="02-orientation.html" class="btn btn-neutral float-left" title="Orientation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="04-functions.html" class="btn btn-neutral float-right" title="Functions" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="04-loops.html" class="btn btn-neutral float-right" title="Loops" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

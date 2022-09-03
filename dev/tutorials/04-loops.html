@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Loops &mdash; mciwb 0.6.4.dev71+gec1aaf0 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
+    <link rel="shortcut icon" href="../_static/logo.png"/>
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Functions" href="05-functions.html" />
+    <link rel="prev" title="Python Variables" href="03-variables.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: rgb(7, 43, 93)" >
+            <a href="../index.html" class="icon icon-home"> mciwb
+            <img src="../_static/logo.png" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                main
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="00-prereq.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="01-setup.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="02-orientation.html">Orientation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="03-variables.html">Python Variables</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Loops</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#introduction">Introduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#backups">Backups</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#for-loops">For Loops</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#nested-loops">Nested Loops</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#nether-portal">Nether Portal</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#comments">Comments</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#flint-and-steel">Flint and Steel</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="05-functions.html">Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="05a-modules.html">Modules and Packages</a></li>
+<li class="toctree-l1"><a class="reference internal" href="06-if-then.html">If - Else</a></li>
+<li class="toctree-l1"><a class="reference internal" href="07-lists.html">Lists</a></li>
+<li class="toctree-l1"><a class="reference internal" href="08-classes.html">Classes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="09-dictionaries.html">Dictionaries</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">How-to Guides</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../how-to/startup.html">Setup for each Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../how-to/completion.html">Command Completion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../how-to/extensions.html">VSCode Extensions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../how-to/troubleshooting.html">Troubleshooting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../how-to/backup.html">Backup and Restore</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../how-to/wsl2.html">Windows Subsystem for Linux</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../how-to/coordinates.html">Discovering the Coordinates of a Block</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../how-to/contributing.html">Contributing</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Explanations</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../explain/scope.html">Variable Scope</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../explain/server-config.html">Minecraft Server Config</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../explain/coordinates.html">Minecraft’s Coordinate System</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../explain/mcipc.html">MCIPC Client object</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../explanations/decisions.html">Architectural Decision Records</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../reference/index.html">Finding Things</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/api.html">MCIWB API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/demo.html">Demo Code</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/gilesknap/mciwb/releases">Releases</a></li>
+<li class="toctree-l1"><a class="reference external" href="genindex.html#http://">Index</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: rgb(7, 43, 93)" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">mciwb</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>Loops</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/tutorials/04-loops.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="loops">
+<h1>Loops<a class="headerlink" href="#loops" title="Permalink to this heading"></a></h1>
+<section id="introduction">
+<h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this heading"></a></h2>
+<p>For this tutorial we are going to write code that will create a Nether
+Portal. If you don’t know about Nether Portals, you can read about them
+here: <a class="reference external" href="https://minecraft.fandom.com/wiki/Nether_portal">https://minecraft.fandom.com/wiki/Nether_portal</a>.</p>
+<p>A Nether Portal requires a minimum of 14 blocks. Now we could use a similar
+approach as that for the iron golem in the previous tutorial. But that would
+be a lot of typing. So instead we’ll take a look at Python <code class="docutils literal notranslate"><span class="pre">for</span> <span class="pre">loops</span></code>.</p>
+</section>
+<section id="backups">
+<h2>Backups<a class="headerlink" href="#backups" title="Permalink to this heading"></a></h2>
+<p>Before we proceed I recommend that you learn about making backups of the
+world. That way we can experiment as much as we like and restore our
+world back to a good state. Go and read <a class="reference internal" href="../how-to/backup.html#backups"><span class="std std-ref">Backups of mciwb-server</span></a> and then come back to
+this tutorial.</p>
+</section>
+<section id="for-loops">
+<h2>For Loops<a class="headerlink" href="#for-loops" title="Permalink to this heading"></a></h2>
+<p>For loops provide the mechanism to repeat a block of code a number of times.
+Try the following code in iPython, note that the second line
+is indented by 4 spaces, you can use the <code class="docutils literal notranslate"><span class="pre">tab</span></code> key to do this indent.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;hello&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">range</span></code> function creates a list of numbers from 0 to 9 (i.e. it starts
+at 0 and does 10 numbers).</p>
+<p>Then <code class="docutils literal notranslate"><span class="pre">for</span></code> loops through those numbers. For
+each of them it sets the variable <code class="docutils literal notranslate"><span class="pre">i</span></code> equal to the current number in the range
+and then executes the code block.</p>
+<p>An important concept in Python is that a block of code is declared by
+indenting it (usually by 4 spaces).</p>
+<p>Thus the two print functions above are inside of the block controlled
+by the for loop. This is why both of those print functions get called 10
+times each.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">print()</span></code> function simply outputs values to the terminal.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>In the above code we used a <code class="docutils literal notranslate"><span class="pre">string</span></code> of characters which was the word
+“hello”. Python variables with this type of data are called <code class="docutils literal notranslate"><span class="pre">str</span></code> and
+you can make strings by enclosing your text in quotes as we did above
+for “hello”.</p>
+</div>
+</section>
+<section id="nested-loops">
+<h2>Nested Loops<a class="headerlink" href="#nested-loops" title="Permalink to this heading"></a></h2>
+<p>You can have loops inside of loops which is called a nested loop. Try the
+following:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;i is &quot;</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;    j is &quot;</span><span class="p">,</span> <span class="n">j</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;    j times i is &quot;</span><span class="p">,</span> <span class="n">j</span> <span class="o">*</span> <span class="n">i</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This is two loops inside of each other, each loops 3 times and so the total
+number of times the code block is executed is 3 times 3 = 9.</p>
+<dl class="simple">
+<dt>Exercise:</dt><dd><p>Try executing the above nested loop in <strong>iPython</strong> and see if you can
+work out why the output looks like it does.</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>We used a new operator here. The <code class="docutils literal notranslate"><span class="pre">*</span></code> operator is used to multiply two
+numbers together. It is just the same as multiplication in basic
+arithmetic.</p>
+<p>Most computer languages use the star symbol to signify
+multiplication. This is because there is no multiply symbol on
+computer keyboards since they evolved from typewriter keyboards!</p>
+<p>Similarly the symbol <code class="docutils literal notranslate"><span class="pre">/</span></code> is used to represent “divide by”.</p>
+<p>The picture below is the advanced IBM ‘Selectric’ typewriter that came
+out in 1961. At this point IBM did not think that people needed
+mathematical symbols on their keyboards. As computers took over in the
+next few decades they just copied the same layout.</p>
+<figure class="align-center" id="id2">
+<a class="reference internal image-reference" href="../_images/typewriter.jpg"><img alt="nether portal" src="../_images/typewriter.jpg" style="width: 500px;" /></a>
+<figcaption>
+<p><span class="caption-text">IBM Selectric typewriter 1961</span><a class="headerlink" href="#id2" title="Permalink to this image"></a></p>
+</figcaption>
+</figure>
+<p>In case you don’t know, typewriters printed what you typed directly to
+paper and did not save it! Imagine that!</p>
+</div>
+</section>
+<section id="nether-portal">
+<span id="portal"></span><h2>Nether Portal<a class="headerlink" href="#nether-portal" title="Permalink to this heading"></a></h2>
+<p>We have enough knowledge now to make loops to build a nether portal.
+Try the following code in your Python Terminal:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">pos</span> <span class="o">=</span> <span class="n">world</span><span class="o">.</span><span class="n">player</span><span class="o">.</span><span class="n">pos</span>
+
+<span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">):</span>
+    <span class="c1"># bottom row</span>
+    <span class="n">world</span><span class="o">.</span><span class="n">set_block</span><span class="p">(</span><span class="n">pos</span> <span class="o">+</span> <span class="n">Direction</span><span class="o">.</span><span class="n">EAST</span> <span class="o">*</span> <span class="n">x</span><span class="p">,</span> <span class="n">Item</span><span class="o">.</span><span class="n">OBSIDIAN</span><span class="p">)</span>
+    <span class="c1"># top row</span>
+    <span class="n">world</span><span class="o">.</span><span class="n">set_block</span><span class="p">(</span><span class="n">pos</span> <span class="o">+</span> <span class="n">Direction</span><span class="o">.</span><span class="n">EAST</span> <span class="o">*</span> <span class="n">x</span> <span class="o">+</span> <span class="n">Direction</span><span class="o">.</span><span class="n">UP</span> <span class="o">*</span> <span class="mi">4</span> <span class="p">,</span> <span class="n">Item</span><span class="o">.</span><span class="n">OBSIDIAN</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">):</span>
+    <span class="c1"># left side</span>
+    <span class="n">world</span><span class="o">.</span><span class="n">set_block</span><span class="p">(</span><span class="n">pos</span> <span class="o">+</span> <span class="n">Direction</span><span class="o">.</span><span class="n">UP</span> <span class="o">*</span> <span class="n">y</span><span class="p">,</span> <span class="n">Item</span><span class="o">.</span><span class="n">OBSIDIAN</span><span class="p">)</span>
+    <span class="c1"># top row</span>
+    <span class="n">world</span><span class="o">.</span><span class="n">set_block</span><span class="p">(</span><span class="n">pos</span> <span class="o">+</span> <span class="n">Direction</span><span class="o">.</span><span class="n">UP</span> <span class="o">*</span> <span class="n">y</span> <span class="o">+</span> <span class="n">Direction</span><span class="o">.</span><span class="n">EAST</span> <span class="o">*</span> <span class="mi">3</span> <span class="p">,</span> <span class="n">Item</span><span class="o">.</span><span class="n">OBSIDIAN</span><span class="p">)</span>
+
+<span class="n">c</span> <span class="o">=</span> <span class="n">get_client</span><span class="p">()</span>
+<span class="n">c</span><span class="o">.</span><span class="n">give</span><span class="p">(</span><span class="s2">&quot;@a&quot;</span><span class="p">,</span> <span class="n">Item</span><span class="o">.</span><span class="n">FLINT_AND_STEEL</span><span class="p">)</span>
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="../_images/portal.png"><img alt="nether portal" class="align-center" src="../_images/portal.png" style="width: 500px;" /></a>
+<p>The most important thing to note here is that I used multiplication on the
+Direction values to add them multiple times to a starting position. This means
+that:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># bottom row</span>
+<span class="n">world</span><span class="o">.</span><span class="n">set_block</span><span class="p">(</span><span class="n">pos</span> <span class="o">+</span> <span class="n">Direction</span><span class="o">.</span><span class="n">EAST</span> <span class="o">*</span> <span class="n">x</span><span class="p">,</span> <span class="n">Item</span><span class="o">.</span><span class="n">OBSIDIAN</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>places an obsidian block at the position offset from <code class="docutils literal notranslate"><span class="pre">pos</span></code> in an Easterly
+direction. How much it is offset is determined by the value of <code class="docutils literal notranslate"><span class="pre">x</span></code>. We know
+that the for loop is looping over values of <code class="docutils literal notranslate"><span class="pre">x</span></code> from 0 to 3. So we have:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Loop</span> <span class="mi">1</span> <span class="k">with</span> <span class="n">x</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="nb">set</span> <span class="n">block</span> <span class="n">at</span> <span class="n">pos</span>
+<span class="n">Loop</span> <span class="mi">2</span> <span class="k">with</span> <span class="n">x</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="nb">set</span> <span class="n">block</span> <span class="n">at</span> <span class="mi">1</span> <span class="n">step</span> <span class="n">EAST</span> <span class="kn">from</span> <span class="nn">pos</span>
+<span class="n">Loop</span> <span class="mi">3</span> <span class="k">with</span> <span class="n">x</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="nb">set</span> <span class="n">block</span> <span class="n">at</span> <span class="mi">2</span> <span class="n">steps</span> <span class="n">EAST</span> <span class="kn">from</span> <span class="nn">pos</span>
+<span class="n">Loop</span> <span class="mi">4</span> <span class="k">with</span> <span class="n">x</span> <span class="o">=</span> <span class="mi">3</span>
+    <span class="nb">set</span> <span class="n">block</span> <span class="n">at</span> <span class="mi">3</span> <span class="n">steps</span> <span class="n">EAST</span> <span class="kn">from</span> <span class="nn">pos</span>
+</pre></div>
+</div>
+<p>For the top row we do the same thing but also add 4 steps upwards. The
+loop over <code class="docutils literal notranslate"><span class="pre">y</span></code> does a similar thing for the two sides of the portal.</p>
+<dl class="simple">
+<dt>Exercise:</dt><dd><p>See if you can experiment with creating different sizes of nether portals.
+Maybe you can create other shapes? If you used a nested loop you could make
+steps for example?</p>
+</dd>
+</dl>
+</section>
+<section id="comments">
+<span id="id1"></span><h2>Comments<a class="headerlink" href="#comments" title="Permalink to this heading"></a></h2>
+<p>Some of the lines in the above code example are comments. In Python we
+precede comments with <code class="docutils literal notranslate"><span class="pre">#</span></code>. This instructs Python to ignore the rest of
+the line.</p>
+<p>Comments do not change the behaviour of the code, rather they help you
+understand what the code is supposed to do. Good programmers always
+comment their code, especially when they are doing something that may
+not be immediately easy to understand.</p>
+</section>
+<section id="flint-and-steel">
+<h2>Flint and Steel<a class="headerlink" href="#flint-and-steel" title="Permalink to this heading"></a></h2>
+<p>Did you notice the <code class="docutils literal notranslate"><span class="pre">get_client</span></code> and <code class="docutils literal notranslate"><span class="pre">c.give()</span></code> at the end of the code
+snippet? This handed a Flint and Steel to every player in the world.
+You can equip this in your hand and ignite
+your portal by left clicking in the interior of the portal. It should then
+look like my picture above and you can jump through to see the Nether.</p>
+<p>For an advanced, in-depth description of the use of <code class="docutils literal notranslate"><span class="pre">get_client()</span></code> see <a class="reference internal" href="../explain/mcipc.html#mcipc"><span class="std std-ref">MCIPC Client object</span></a></p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="03-variables.html" class="btn btn-neutral float-left" title="Python Variables" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="05-functions.html" class="btn btn-neutral float-right" title="Functions" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p></p>
+  </div>
+
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+   
+  <div id="other-versions-div" class="rst-versions" data-toggle="rst-versions" role="note" aria-label="Versions" style="visibility: hidden">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      <span class="fa fa-book"> Other Versions</span>
+      main
+      <span class="fa fa-caret-down"></span>
+    </span>
+    <div class="rst-other-versions">
+      <dl id="other-versions-dl"/>
+    </div>
+  </div>
+  <script>
+    function addVersion(name) {
+      var dd = document.createElement("dd");
+      var a = document.createElement("a");
+      a.href = "../../" + name;
+      a.innerText = name;
+      dd.appendChild(a);
+      document.getElementById('other-versions-dl').appendChild(dd);
+    }
+    // Get versions.txt and add a version for each line
+    fetch("../../versions.txt").then(response => {
+      if (response.ok) {
+        document.getElementById('other-versions-div').style.visibility = "visible";
+        return response.text().then(text => text.split(/\r?\n/).forEach(addVersion))
+      }
+    });
+  </script>
+
+
+</body>
+</html>
