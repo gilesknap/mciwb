@@ -72,10 +72,6 @@ with Python and the current version of MCIWB.
     :target: https://github.com/gilesknap/mciwb/actions?query=workflow%3A%22Docs+CI%22
     :alt: Docs CI
 
-.. |quality| image:: https://app.codacy.com/project/badge/Grade/4c514b64299e4ccd8c569d3e787245c7    
-    :target: https://www.codacy.com/gh/gilesknap/mciwb/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=gilesknap/mciwb&amp;utm_campaign=Badge_Grade
-    :alt: Code Quality
-
 .. |coverage| image:: https://app.codacy.com/project/badge/Coverage/4c514b64299e4ccd8c569d3e787245c7    
     :target: https://www.codacy.com/gh/gilesknap/mciwb/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=gilesknap/mciwb&amp;utm_campaign=Badge_Coverage
     :alt: Test Coverage
@@ -87,8 +83,6 @@ with Python and the current version of MCIWB.
 .. |license| image:: https://img.shields.io/badge/License-Apache%202.0-blue.svg
     :target: https://opensource.org/licenses/Apache-2.0
     :alt: Apache License
-
-
 
 ..
     Anything below this line is used when viewing README.rst and will be replaced

@@ -1,6 +1,6 @@
 {
     "recommendations": [
-        "ms-python.vscode-pylance",
+        "ms-vscode-remote.remote-containers""ms-python.vscode-pylance",
         "ms-python.python",
         "ryanluker.vscode-coverage-gutters"
     ]
