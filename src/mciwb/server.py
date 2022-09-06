@@ -16,7 +16,7 @@ from mciwb.logging import log
 HOST = "localhost"
 
 # the default locally mapped backup folder for minecraft data
-backup_folder = Path.home() / "mciwb-backups"
+backup_folder_default = Path.home() / "mciwb-backups"
 server_name = "mciwb-server"
 default_server_folder = Path.home() / server_name
 
@@ -45,6 +45,7 @@ class MinecraftServer:
         password: str,
         server_folder: Path,
         world_type: str,
+        backup_folder: Path = None,  # type: ignore
         keep: bool = True,
         test=False,
     ) -> None:
@@ -57,6 +58,7 @@ class MinecraftServer:
         self.name = name
         self.password = password
         self.server_folder = server_folder
+        self.backup_folder = backup_folder or backup_folder_default
         self.world = self.server_folder / "world"
         self.world_type = world_type
         self.container = None
@@ -204,8 +206,8 @@ class MinecraftServer:
             shutil.rmtree(self.server_folder)
             self.server_folder.mkdir(parents=True)
 
-        if not backup_folder.exists():
-            backup_folder.mkdir(parents=True)
+        if not self.backup_folder.exists():
+            self.backup_folder.mkdir(parents=True)
 
         container = docker_client.containers.run(
             "itzg/minecraft-server",
@@ -215,7 +217,10 @@ class MinecraftServer:
             restart_policy={"Name": "always" if self.keep else "no"},
             volumes={
                 str(self.server_folder): {"bind": "/data", "mode": "rw"},
-                str(backup_folder): {"bind": str(backup_folder), "mode": "rw"},
+                str(self.backup_folder): {
+                    "bind": str(self.backup_folder),
+                    "mode": "rw",
+                },
             },
             name=self.name,
         )

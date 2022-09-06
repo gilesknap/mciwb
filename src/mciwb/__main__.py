@@ -16,7 +16,7 @@ from mciwb.logging import exception_handler, init_logging, log
 from mciwb.server import (
     HOST,
     MinecraftServer,
-    backup_folder,
+    backup_folder_default,
     def_pass,
     def_port,
     def_world_type,
@@ -148,7 +148,7 @@ def stop(
 def backup(
     folder: Path = default_server_folder,
     backup_name: str = "",
-    backup_folder: Path = backup_folder,
+    backup_folder: Path = backup_folder_default,
     debug: bool = False,
 ):
     """
@@ -165,7 +165,7 @@ def restore(
     backup_name: str = typer.Argument(""),
     debug: bool = False,
     folder: Path = default_server_folder,
-    backup_folder: Path = backup_folder,
+    backup_folder: Path = backup_folder_default,
     server_name: str = server_name,
     port: int = def_port,
 ):

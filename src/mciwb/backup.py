@@ -6,7 +6,7 @@ from pathlib import Path
 from zipfile import ZIP_DEFLATED, ZipFile
 
 from mciwb.logging import log
-from mciwb.server import backup_folder, default_server_folder
+from mciwb.server import backup_folder_default, default_server_folder
 from mciwb.threads import get_client
 
 
@@ -16,7 +16,7 @@ class Backup:
     def __init__(
         self,
         world_folder: Path = default_server_folder / "world",
-        backup_folder: Path = backup_folder,
+        backup_folder: Path = backup_folder_default,
     ):
         self.world_folder = Path(world_folder)
         self.backup_folder = Path(backup_folder)

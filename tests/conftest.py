@@ -24,6 +24,7 @@ ENTITY_NAME = "george"
 ENTITY_POS = Vec3(0, -60, 0)
 
 test_server_name = "mciwb-test-server"
+test_backup_name = "mciwb-backup-server"
 servers_folder = Path(gettempdir()) / "test-mc-servers"
 
 logging.basicConfig(
@@ -48,6 +49,7 @@ def minecraft_container(request: pytest.FixtureRequest):
         keep=KEEP_SERVER,
         world_type="flat",
         server_folder=servers_folder / test_server_name,
+        backup_folder=servers_folder / test_backup_name,
         test=True,
     )
     mc.create()
