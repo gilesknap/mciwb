@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>mciwb.signs &mdash; mciwb 0.6.4.dev72+g3c56e1b documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/theme_overrides.css" type="text/css" />
+    <link rel="shortcut icon" href="../../_static/logo.png"/>
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: rgb(7, 43, 93)" >
+            <a href="../../index.html" class="icon icon-home"> mciwb
+            <img src="../../_static/logo.png" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                main
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/00-prereq.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/01-setup.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/02-orientation.html">Orientation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/03-variables.html">Python Variables</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/04-loops.html">Loops</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/05-functions.html">Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/05a-modules.html">Modules and Packages</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/06-if-then.html">If - Else</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/07-lists.html">Lists</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/08-classes.html">Classes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/09-dictionaries.html">Dictionaries</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">How-to Guides</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../how-to/startup.html">Setup for each Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../how-to/completion.html">Command Completion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../how-to/extensions.html">VSCode Extensions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../how-to/troubleshooting.html">Troubleshooting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../how-to/backup.html">Backup and Restore</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../how-to/wsl2.html">Windows Subsystem for Linux</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../how-to/coordinates.html">Discovering the Coordinates of a Block</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../how-to/contributing.html">Contributing</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Explanations</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../explain/scope.html">Variable Scope</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../explain/server-config.html">Minecraft Server Config</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../explain/coordinates.html">Minecraft’s Coordinate System</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../explain/mcipc.html">MCIPC Client object</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../explanations/decisions.html">Architectural Decision Records</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../reference/index.html">Finding Things</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference/contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference/api.html">MCIWB API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference/demo.html">Demo Code</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/gilesknap/mciwb/releases">Releases</a></li>
+<li class="toctree-l1"><a class="reference external" href="genindex.html#http://">Index</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: rgb(7, 43, 93)" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">mciwb</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+      <li>mciwb.signs</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for mciwb.signs</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Add an interactive capability through the placing of command signs in the world</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">from</span> <span class="nn">time</span> <span class="kn">import</span> <span class="n">sleep</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Dict</span>
+
+<span class="kn">from</span> <span class="nn">mcwb.types</span> <span class="kn">import</span> <span class="n">Item</span><span class="p">,</span> <span class="n">Vec3</span>
+
+<span class="kn">from</span> <span class="nn">mciwb.copier</span> <span class="kn">import</span> <span class="n">CopyPaste</span>
+<span class="kn">from</span> <span class="nn">mciwb.logging</span> <span class="kn">import</span> <span class="n">log</span>
+<span class="kn">from</span> <span class="nn">mciwb.player</span> <span class="kn">import</span> <span class="n">Player</span>
+<span class="kn">from</span> <span class="nn">mciwb.threads</span> <span class="kn">import</span> <span class="n">get_client</span>
+
+<span class="n">CallbackPosFunction</span> <span class="o">=</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Vec3</span><span class="p">],</span> <span class="kc">None</span><span class="p">]</span>
+
+
+<div class="viewcode-block" id="Signs"><a class="viewcode-back" href="../../reference/api.html#mciwb.signs.Signs">[docs]</a><span class="k">class</span> <span class="nc">Signs</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Monitor the world for signs placed by a player. Perform an action based</span>
+<span class="sd">    on the text of the sign.</span>
+
+<span class="sd">    Each sign object can be used to monitor the placing of signs by a single</span>
+<span class="sd">    player. The object can be hooked to functions that are to be called when</span>
+<span class="sd">    a sign is placed by the player.</span>
+
+<span class="sd">    By default each Sign object is initialized with select/copy/paste</span>
+<span class="sd">    functions. Additional signs with callback functions can be added.</span>
+
+<span class="sd">    For best results, use the bound methods of an object for the callback</span>
+<span class="sd">    functions. That way the user code can manage state within the object</span>
+<span class="sd">    providing those functions.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">_re_sign_text</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;&quot;&quot;Text1: &#39;{&quot;text&quot;:&quot;([^&quot;]*)&quot;}&#39;&quot;&quot;&quot;</span><span class="p">)</span>
+    <span class="n">_re_sign_entity</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="sd">&quot;&quot;&quot;minecraft:oak_sign{{&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;BlockEntityTag:{{Text1:&#39;{{&quot;text&quot;:&quot;{0}&quot;}}&#39;}},&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;display:{{Name:&#39;{{&quot;text&quot;:&quot;{0}&quot;}}&#39;}}&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;}}&quot;&quot;&quot;</span>
+    <span class="p">)</span>
+
+    <span class="n">_wall_sign</span> <span class="o">=</span> <span class="s2">&quot;minecraft:oak_wall_sign&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">player</span><span class="p">:</span> <span class="n">Player</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">player</span> <span class="o">=</span> <span class="n">player</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">copy</span> <span class="o">=</span> <span class="n">CopyPaste</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">signs</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">CallbackPosFunction</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy</span><span class="o">.</span><span class="n">get_commands</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_get_target_block</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pos</span><span class="p">:</span> <span class="n">Vec3</span><span class="p">,</span> <span class="n">facing</span><span class="p">:</span> <span class="n">Vec3</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Vec3</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        determine the target block that the sign at pos indicates</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># use &#39;execute if&#39; with a benign command like seed</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">get_client</span><span class="p">()</span><span class="o">.</span><span class="n">execute</span><span class="o">.</span><span class="n">if_</span><span class="o">.</span><span class="n">block</span><span class="p">(</span><span class="n">pos</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wall_sign</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="s2">&quot;seed&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="s2">&quot;Seed&quot;</span> <span class="ow">in</span> <span class="n">result</span><span class="p">:</span>
+            <span class="c1"># wall signs target the block behind them</span>
+            <span class="n">pos</span> <span class="o">+=</span> <span class="n">facing</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># standing signs target the block below them</span>
+            <span class="n">pos</span> <span class="o">+=</span> <span class="n">Vec3</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">pos</span>
+
+    <span class="k">def</span> <span class="nf">_poll</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        check if a sign has been placed in front of the player</span>
+<span class="sd">        1 to 4 blocks away and take action based on sign text</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">client</span> <span class="o">=</span> <span class="n">get_client</span><span class="p">()</span>
+
+        <span class="n">facing</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">player</span><span class="o">.</span><span class="n">facing</span>
+        <span class="n">player_pos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">player</span><span class="o">.</span><span class="n">pos</span>
+        <span class="k">for</span> <span class="n">height</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">distance</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">):</span>
+                <span class="n">sleep</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>  <span class="c1"># don&#39;t hog the connection</span>
+                <span class="n">pos</span> <span class="o">=</span> <span class="n">player_pos</span> <span class="o">+</span> <span class="n">facing</span> <span class="o">*</span> <span class="n">distance</span>
+                <span class="n">block_pos</span> <span class="o">=</span> <span class="n">pos</span><span class="o">.</span><span class="n">with_ints</span><span class="p">()</span> <span class="o">+</span> <span class="n">Vec3</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+                <span class="n">data</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">block</span><span class="o">=</span><span class="n">block_pos</span><span class="p">)</span>
+                <span class="n">match</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_re_sign_text</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">match</span><span class="p">:</span>
+                    <span class="n">text</span> <span class="o">=</span> <span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+                    <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Sign at </span><span class="si">{</span><span class="n">pos</span><span class="si">}</span><span class="s2"> has text </span><span class="si">{</span><span class="n">text</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                    <span class="n">target</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_target_block</span><span class="p">(</span><span class="n">block_pos</span><span class="p">,</span> <span class="n">facing</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">do_action</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">block_pos</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Signs.do_action"><a class="viewcode-back" href="../../reference/api.html#mciwb.signs.Signs.do_action">[docs]</a>    <span class="k">def</span> <span class="nf">do_action</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">command</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">target</span><span class="p">:</span> <span class="n">Vec3</span><span class="p">,</span> <span class="n">block_pos</span><span class="p">:</span> <span class="n">Vec3</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Perform an action based on the text of the sign. The action is to</span>
+<span class="sd">        call the callback function that is configured for this sign text.</span>
+
+<span class="sd">        :param command: the text of the sign</span>
+<span class="sd">        :param target: the target block that the sign indicates</span>
+<span class="sd">        :param block_pos: the position of the block that the sign is on - this is</span>
+<span class="sd">            cleared if the sign is used</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># if the command is not found then this is just an ordinary sign (I assume!)</span>
+        <span class="k">if</span> <span class="n">command</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">signs</span><span class="p">:</span>
+            <span class="n">get_client</span><span class="p">()</span><span class="o">.</span><span class="n">setblock</span><span class="p">(</span><span class="n">block_pos</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">Item</span><span class="o">.</span><span class="n">AIR</span><span class="p">))</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">command</span><span class="si">}</span><span class="s2"> at </span><span class="si">{</span><span class="n">target</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">signs</span><span class="p">[</span><span class="n">command</span><span class="p">](</span><span class="n">target</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Signs.add_sign"><a class="viewcode-back" href="../../reference/api.html#mciwb.signs.Signs.add_sign">[docs]</a>    <span class="k">def</span> <span class="nf">add_sign</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">function</span><span class="p">:</span> <span class="n">CallbackPosFunction</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Add a new sign type with its action callback function</span>
+
+<span class="sd">        :param name: the text of the sign</span>
+<span class="sd">        :param function: the callback function to be called when the sign is placed</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># don&#39;t allow multiple signs with the same name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">remove_sign</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">signs</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">function</span></div>
+
+<div class="viewcode-block" id="Signs.remove_sign"><a class="viewcode-back" href="../../reference/api.html#mciwb.signs.Signs.remove_sign">[docs]</a>    <span class="k">def</span> <span class="nf">remove_sign</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Stop monitoring for a sign with the given name</span>
+
+<span class="sd">        :param name: the text of the sign</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">signs</span><span class="p">:</span>
+            <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">signs</span><span class="p">[</span><span class="n">name</span><span class="p">]</span></div>
+
+    <span class="n">_sign_match</span> <span class="o">=</span> <span class="s1">&#39;{{&quot;text&quot;:&quot;</span><span class="si">{}</span><span class="s1">&quot;}}&#39;</span>
+
+<div class="viewcode-block" id="Signs.give_signs"><a class="viewcode-back" href="../../reference/api.html#mciwb.signs.Signs.give_signs">[docs]</a>    <span class="k">def</span> <span class="nf">give_signs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Give player one of each command sign in our commands list</span>
+
+<span class="sd">        Check first if the player has the sign already</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">client</span> <span class="o">=</span> <span class="n">get_client</span><span class="p">()</span>
+        <span class="n">inventory</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">player</span><span class="o">.</span><span class="n">inventory</span>
+        <span class="k">for</span> <span class="n">command</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">signs</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sign_match</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">command</span><span class="p">)</span> <span class="ow">in</span> <span class="n">inventory</span><span class="p">:</span>
+                <span class="n">client</span><span class="o">.</span><span class="n">give</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">player</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_re_sign_entity</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">command</span><span class="p">))</span></div></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p></p>
+  </div>
+
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+   
+  <div id="other-versions-div" class="rst-versions" data-toggle="rst-versions" role="note" aria-label="Versions" style="visibility: hidden">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      <span class="fa fa-book"> Other Versions</span>
+      main
+      <span class="fa fa-caret-down"></span>
+    </span>
+    <div class="rst-other-versions">
+      <dl id="other-versions-dl"/>
+    </div>
+  </div>
+  <script>
+    function addVersion(name) {
+      var dd = document.createElement("dd");
+      var a = document.createElement("a");
+      a.href = "../../../" + name;
+      a.innerText = name;
+      dd.appendChild(a);
+      document.getElementById('other-versions-dl').appendChild(dd);
+    }
+    // Get versions.txt and add a version for each line
+    fetch("../../../versions.txt").then(response => {
+      if (response.ok) {
+        document.getElementById('other-versions-div').style.visibility = "visible";
+        return response.text().then(text => text.split(/\r?\n/).forEach(addVersion))
+      }
+    });
+  </script>
+
+
+</body>
+</html>
