@@ -28,9 +28,11 @@ RUN cd /project && \
 RUN python -m venv /venv
 ENV PATH=/venv/bin:$PATH
 
-# use vscode script to enable docker inside this container
-RUN busybox wget https://raw.githubusercontent.com/microsoft/vscode-dev-containers/main/script-library/docker-in-docker-debian.sh && \
-    bash docker-in-docker-debian.sh
+# add the docker cli only
+RUN docker_url=https://download.docker.com/linux/static/stable/x86_64 && \
+    docker_version=20.10.9 && \
+    curl -fsSL $docker_url/docker-$docker_version.tgz | \
+    tar zxvf - --strip 1 -C /usr/bin docker/docker
 
 RUN cd /project && \
     pip install --upgrade pip && \
