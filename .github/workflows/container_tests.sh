@@ -1,8 +1,6 @@
 #!/bin/bash
 set -x
 
-/usr/local/share/docker-init.sh
-
 cd /project
 source /venv/bin/activate
 
