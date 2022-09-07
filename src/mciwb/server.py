@@ -210,7 +210,7 @@ class MinecraftServer:
             self.backup_folder.mkdir(parents=True)
 
         container = docker_client.containers.run(
-            "itzg/minecraft-server",
+            "docker.io/itzg/minecraft-server",
             detach=True,
             environment=env,
             ports={f"{self.rcon}/tcp": self.rcon, f"{self.port}": self.port},
