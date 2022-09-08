@@ -214,7 +214,7 @@ class MinecraftServer:
             detach=True,
             environment=env,
             ports={f"{self.rcon}/tcp": self.rcon, f"{self.port}": self.port},
-            restart_policy={"Name": "always" if self.keep else "no"},
+            restart_policy={"Name": "unless-stopped" if self.keep else "no"},
             volumes={
                 str(self.server_folder): {"bind": "/data", "mode": "rw"},
                 str(self.backup_folder): {
