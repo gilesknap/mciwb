@@ -27,6 +27,7 @@ RUN cd /project && \
 
 RUN python -m venv /venv
 ENV PATH=/venv/bin:$PATH
+ENV TOX_DIRECT=1
 
 # add the docker cli only
 RUN docker_url=https://download.docker.com/linux/static/stable/x86_64 && \
