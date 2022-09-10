@@ -3,4 +3,4 @@ requires = ["setuptools>=64", "setuptools_scm[toml]>=6.2", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools_scm]
-write_to = "src/python3_pip_skeleton/_version.py"
+write_to = "src/mciwb/_version.py"
