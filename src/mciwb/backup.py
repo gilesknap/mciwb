@@ -73,7 +73,7 @@ class Backup:
         else:
             if not name.endswith(".zip"):
                 name += ".zip"
-            rfile = backup_folder / self.re_valid_filename.sub("_", name)
+            rfile = self.backup_folder / self.re_valid_filename.sub("_", name)
         if not rfile.exists():
             raise ValueError(f"{rfile} not found")
 
