@@ -71,7 +71,7 @@ Now we can paste our pagoda function into the editor window and save it with
 Menu -> File -> Save (or Ctrl+S is a shortcut to save the current file).
 Use this slightly modified version of the pagoda function:
 
-.. literalinclude :: ../../src/demo/pagoda.py
+.. literalinclude :: ../../../src/demo/pagoda.py
    :language: python
 
 To try using this function you can now type the following command in the

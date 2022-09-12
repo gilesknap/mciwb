@@ -97,7 +97,7 @@ tutorial we will look into the detail of how this function works.
 
 Try copying and pasting this function into your Python console.
 
-.. literalinclude :: ../../src/demo/pagoda.py
+.. literalinclude :: ../../../src/demo/pagoda.py
    :language: python
    :lines: 4-
 

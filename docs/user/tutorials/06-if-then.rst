@@ -149,7 +149,7 @@ Here is a reminder of how to do that using your bash prompt:
 
 Paste this code into gate.py and save it.
 
-.. literalinclude :: ../../src/demo/gate.py
+.. literalinclude :: ../../../src/demo/gate.py
    :language: python
 
 Note that the ``build_gate`` function has a default value for position. I 
@@ -179,7 +179,7 @@ called ``open_close``. This function will be called when the lever is activated.
 
 By defining ``open_close`` *inside* of ``make_gate`` we are able to use
 the variable ``position`` which is needed when moving the 
-portcullis. (If you want to understand more about this see `../explain/scope`)
+portcullis. (If you want to understand more about this see `../explanations/scope`)
 
 This code always creates a gate facing north. ``position`` represents the
 bottom WEST corner of the portcullis. 

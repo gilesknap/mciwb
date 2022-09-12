@@ -132,32 +132,31 @@ html_theme_options = dict(
         text=project,
     ),
     use_edit_page_button=True,
-    github_url="https://github.com/DiamondLightSource/python3-pip-skeleton",
+    github_url="https://github.com/gilesknap/mciwb",
     icon_links=[
         dict(
             name="PyPI",
-            url="https://pypi.org/project/python3-pip-skeleton",
+            url="https://pypi.org/project/mciwb",
             icon="fas fa-cube",
         )
     ],
     switcher=dict(
-        json_url="https://DiamondLightSource.github.io/python3-pip-skeleton"
-        + "/switcher.json",
+        json_url="https://gilesknap.github.io/mciwb" + "/switcher.json",
         version_match=version,
     ),
     navbar_end=["theme-switcher", "icon-links", "version-switcher"],
     external_links=[
         dict(
             name="Release Notes",
-            url="https://github.com/DiamondLightSource/python3-pip-skeleton/releases",
+            url="https://github.com/gilesknap/mciwb/releases",
         )
     ],
 )
 
 # A dictionary of values to pass into the template engine’s context for all pages
 html_context = dict(
-    github_user="DiamondLightSource",
-    github_repo="python3-pip-skeleton",
+    github_user="gilesknap",
+    github_repo="mciwb",
     github_version=version,
     doc_path="docs",
 )

@@ -43,7 +43,7 @@ computer program. They have the following properties:
 .. note:: 
     **Scope** is a moderately advanced concept which you 
     can ignore for the moment. Advanced topics like this will be covered
-    in the `../explanations` section. I suggest skipping anything in the 
+    in the ``explanations`` section. I suggest skipping anything in the 
     explanations section on your first read through the tutorials and 
     then come back later when you have a better understanding of the
     fundamentals.

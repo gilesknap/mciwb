@@ -13,7 +13,17 @@ side-bar.
             :caption: Tutorials
             :maxdepth: 1
 
-            tutorials/installation
+            tutorials/00-prereq
+            tutorials/01-setup
+            tutorials/02-orientation
+            tutorials/03-variables
+            tutorials/04-loops
+            tutorials/05-functions
+            tutorials/05a-modules
+            tutorials/06-if-then
+            tutorials/07-lists
+            tutorials/08-classes
+            tutorials/09-dictionaries
 
         +++
 
@@ -25,6 +35,13 @@ side-bar.
             :caption: How-to Guides
             :maxdepth: 1
 
+            how-to/startup
+            how-to/completion
+            how-to/extensions
+            how-to/troubleshooting
+            how-to/backup
+            how-to/wsl2
+            how-to/coordinates
             how-to/run-container
 
         +++
@@ -38,6 +55,11 @@ side-bar.
             :maxdepth: 1
 
             explanations/docs-structure
+            explanations/scope
+            explanations/server-config
+            explanations/coordinates
+            explanations/mcipc
+
 
         +++
 
@@ -49,7 +71,9 @@ side-bar.
             :caption: Reference
             :maxdepth: 1
 
+            reference/index
             reference/api
+            reference/demo
             ../genindex
 
         +++

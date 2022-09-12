@@ -9,12 +9,30 @@ This project is intended as a fun way to learn the Python Programming Language.
 Experienced Python programmers can also use this library to create 
 Minecraft worlds with interactive Python features.
 
-============== ==============================================================
-PyPI           ``pip install mciwb``
-Source code    https://github.com/gilesknap/mciwb
-Documentation  https://gilesknap.github.io/mciwb
-Releases       https://github.com/gilesknap/mciwb/releases
-============== ==============================================================
+Quick Start
+-----------
+
+To get started learning Python, see
+`Introduction <https://gilesknap.github.io/mciwb/main/tutorials/00-prereq.html>`_ 
+
+For existing Python developers, see
+`API documentation  <https://gilesknap.github.io/mciwb/main/reference/api.html>`_ 
+
+Example Build
+-------------
+
+The pagoda and castle with working portcullis were all created programmatically 
+with Python and the current version of MCIWB.
+
+.. figure:: user/images/castle.png
+   :alt: pylance
+   :align: center
+   :width: 600px
+
+   Example Build
+
+Goals
+-----
 
 Minecraft Interactive World Builder's goals are:
 
@@ -28,12 +46,6 @@ All instructions on how to set up a Minecraft Server and the Python developer
 environment are included. There are step by step tutorials to
 introduce Python Programming and the features of Minecraft Interactive World
 Builder.
-
-To get started learning Python, see
-`Introduction <https://gilesknap.github.io/mciwb/main/tutorials/00-prereq.html>`_ 
-
-For existing Python developers, see
-`API documentation  <https://gilesknap.github.io/mciwb/main/reference/api.html>`_ 
 
 .. note::
     
@@ -50,18 +62,15 @@ Credits
 This project would not be possible without `mcipc <https://github.com/conqp/mcipc/>`_,
 which provides the client library for Minecraft RCON.
 
-Example Build
--------------
+Links
+-----
 
-The pagoda and castle with working portcullis were all created programmatically 
-with Python and the current version of MCIWB.
-
-.. figure:: images/castle.png
-   :alt: pylance
-   :align: center
-   :width: 600px
-
-   Example Build
+============== ==============================================================
+PyPI           ``pip install mciwb``
+Source code    https://github.com/gilesknap/mciwb
+Documentation  https://gilesknap.github.io/mciwb
+Releases       https://github.com/gilesknap/mciwb/releases
+============== ==============================================================
 
 
 .. |code_ci| image:: https://github.com/gilesknap/mciwb/workflows/Code%20CI/badge.svg?branch=main
