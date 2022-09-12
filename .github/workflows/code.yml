@@ -108,7 +108,7 @@ jobs:
 
       - name: Run tests in the container locked with requirements_dev.txt
         run: |
-          docker run -v /var/lib/docker --privileged --init --name test build bash /project/.github/workflows/container_tests.sh
+          docker run -v /var/lib/docker:/var/lib/docker --privileged --init --name test build bash /project/.github/workflows/container_tests.sh
           docker cp test:/project/dist .
           docker cp test:/project/cov.xml .
 
