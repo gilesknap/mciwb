@@ -25,21 +25,21 @@ Installing the library
 
 You can now use ``pip`` to install the library::
 
-    python3 -m pip install python3-pip-skeleton
+    python3 -m pip install mciwb
 
 If you require a feature that is not currently released you can also install
 from github::
 
-    python3 -m pip install git+https://github.com/DiamondLightSource/python3-pip-skeleton.git
+    python3 -m pip install git+https://github.com/gilesknap/mciwb.git
 
 The library should now be installed and the commandline interface on your path.
 You can check the version that has been installed by typing::
 
-    python3-pip-skeleton --version
+    mciwb --version
 
 Running in a container
 ----------------------
 
 To pull the container from github container registry and run::
     
-    docker run ghcr.io/DiamondLightSource/python3-pip-skeleton:main --version
+    docker run ghcr.io/gilesknap/mciwb:main --version
