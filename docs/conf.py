@@ -125,6 +125,8 @@ copybutton_prompt_is_regexp = True
 # a list of builtin themes.
 #
 html_theme = "pydata_sphinx_theme"
+github_repo = project
+github_user = "gilesknap"
 
 # Theme options for pydata_sphinx_theme
 html_theme_options = dict(
@@ -132,31 +134,31 @@ html_theme_options = dict(
         text=project,
     ),
     use_edit_page_button=True,
-    github_url="https://github.com/gilesknap/mciwb",
+    github_url=f"https://github.com/{github_user}/{github_repo}",
     icon_links=[
         dict(
             name="PyPI",
-            url="https://pypi.org/project/mciwb",
+            url=f"https://pypi.org/project/{project}",
             icon="fas fa-cube",
         )
     ],
     switcher=dict(
-        json_url="https://gilesknap.github.io/mciwb" + "/switcher.json",
+        json_url=f"https://{github_user}.github.io/{github_repo}/switcher.json",
         version_match=version,
     ),
     navbar_end=["theme-switcher", "icon-links", "version-switcher"],
     external_links=[
         dict(
             name="Release Notes",
-            url="https://github.com/gilesknap/mciwb/releases",
+            url=f"https://github.com/{github_user}/{github_repo}/releases",
         )
     ],
 )
 
 # A dictionary of values to pass into the template engine’s context for all pages
 html_context = dict(
-    github_user="gilesknap",
-    github_repo="mciwb",
+    github_user=github_user,
+    github_repo=project,
     github_version=version,
     doc_path="docs",
 )
