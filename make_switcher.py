@@ -81,8 +81,7 @@ def main(args=None):
     )
     parser.add_argument(
         "repository",
-        help="The org and repository name, "
-        + "e.g. DiamondLightSource/python3-pip-skeleton",
+        help="The GitHub org and repository name: ORG/REPO",
     )
     parser.add_argument(
         "output",
