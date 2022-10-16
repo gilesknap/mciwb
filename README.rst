@@ -3,25 +3,25 @@
 
 Minecraft Interactive World Builder
 ===================================
-    
+
 This project is intended as a fun way to learn the Python Programming Language.
 
-Experienced Python programmers can also use this library to create 
+Experienced Python programmers can also use this library to create
 Minecraft worlds with interactive Python features.
 
 Quick Start
 -----------
 
 To get started learning Python, see
-`Introduction <https://gilesknap.github.io/mciwb/main/tutorials/00-prereq.html>`_ 
+`Introduction <https://gilesknap.github.io/mciwb/main/tutorials/00-prereq.html>`_
 
 For existing Python developers, see
-`API documentation  <https://gilesknap.github.io/mciwb/main/reference/api.html>`_ 
+`API documentation  <https://gilesknap.github.io/mciwb/main/reference/api.html>`_
 
 Example Build
 -------------
 
-The pagoda and castle with working portcullis were all created programmatically 
+The pagoda and castle with working portcullis were all created programmatically
 with Python and the current version of MCIWB.
 
 .. figure:: user/images/castle.png
@@ -36,10 +36,10 @@ Goals
 
 Minecraft Interactive World Builder's goals are:
 
- - Use Python to create anything inside of Minecraft worlds. 
+ - Use Python to create anything inside of Minecraft worlds.
  - Call Python code when events occur inside the world.
  - Use an iPython prompt to interact with the world by typing Python commands
- - Have your player inside the world execute Python code by placing command 
+ - Have your player inside the world execute Python code by placing command
    signs or activating switches/levers with Python actions.
 
 All instructions on how to set up a Minecraft Server and the Python developer
@@ -48,7 +48,7 @@ introduce Python Programming and the features of Minecraft Interactive World
 Builder.
 
 .. note::
-    
+
     This is a work in progress. There are now enough tutorials to learn the
     fundamentals of Python and enough functionality to have some fun
     interacting with Minecraft from Python code.
@@ -73,15 +73,16 @@ Releases       https://github.com/gilesknap/mciwb/releases
 ============== ==============================================================
 
 
-.. |code_ci| image:: https://github.com/gilesknap/mciwb/workflows/Code%20CI/badge.svg?branch=main
-    :target: https://github.com/gilesknap/mciwb/actions?query=workflow%3A%22Code+CI%22
+
+.. |code_ci| image:: https://github.com/gilesknap/mciwb/actions/workflows/code.yml/badge.svg?branch=main
+    :target: https://github.com/gilesknap/mciwb/actions/workflows/code.yml
     :alt: Code CI
 
-.. |docs_ci| image:: https://github.com/gilesknap/mciwb/workflows/Docs%20CI/badge.svg?branch=main
-    :target: https://github.com/gilesknap/mciwb/actions?query=workflow%3A%22Docs+CI%22
+.. |docs_ci| image:: https://github.com/gilesknap/mciwb/actions/workflows/docs.yml/badge.svg?branch=main
+    :target: https://github.com/gilesknap/mciwb/actions/workflows/docs.yml
     :alt: Docs CI
 
-.. |coverage| image:: https://app.codacy.com/project/badge/Coverage/4c514b64299e4ccd8c569d3e787245c7    
+.. |coverage| image:: https://app.codacy.com/project/badge/Coverage/4c514b64299e4ccd8c569d3e787245c7
     :target: https://www.codacy.com/gh/gilesknap/mciwb/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=gilesknap/mciwb&amp;utm_campaign=Badge_Coverage
     :alt: Test Coverage
 
