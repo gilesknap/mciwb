@@ -108,9 +108,11 @@ jobs:
 
       - name: Run tests in the container locked with requirements_dev.txt
         run: |
-          docker run -v /var/lib/docker:/var/lib/docker --privileged --init --name test build bash /project/.github/workflows/container_tests.sh
-          docker cp test:/project/dist .
-          docker cp test:/project/cov.xml .
+          docker run -v /var/run/docker.sock:/var/run/docker.sock --privileged \
+              --init --name tests --net host -v /tmp:/tmp \
+              build bash /project/.github/workflows/container_tests.sh
+          docker cp tests:/project/dist .
+          docker cp tests:/project/cov.xml .
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v3
@@ -129,6 +131,11 @@ jobs:
       - name: Test cli works in runtime image
         # check that the first tag can run with --version parameter
         run: docker run $(echo ${{ steps.meta.outputs.tags }} | head -1) --version
+
+      - name: Setup python 3.10
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
 
       - name: Test cli works in sdist installed in local python
         # ${GITHUB_REPOSITORY##*/} is the repo name without org

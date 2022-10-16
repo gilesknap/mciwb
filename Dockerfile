@@ -16,18 +16,19 @@ RUN apt-get update && apt-get upgrade -y && \
     && rm -rf /var/lib/apt/lists/* \
     && busybox --install
 
-
 COPY . /project
 
+# set up a virtual environment and put it in PATH
+RUN python -m venv /venv
+ENV PATH=/venv/bin:$PATH
+ENV TOX_DIRECT=1
+
+# build the source distribution and wheel
 RUN cd /project && \
     pip install --upgrade pip build && \
     export SOURCE_DATE_EPOCH=$(git log -1 --pretty=%ct) && \
     python -m build --sdist --wheel && \
     touch requirements.txt
-
-RUN python -m venv /venv
-ENV PATH=/venv/bin:$PATH
-ENV TOX_DIRECT=1
 
 # add the docker cli only
 RUN docker_url=https://download.docker.com/linux/static/stable/x86_64 && \
@@ -35,8 +36,8 @@ RUN docker_url=https://download.docker.com/linux/static/stable/x86_64 && \
     curl -fsSL $docker_url/docker-$docker_version.tgz | \
     tar zxvf - --strip 1 -C /usr/bin docker/docker
 
+# install the wheel and generate the requirements file
 RUN cd /project && \
-    pip install --upgrade pip && \
     pip install -r requirements.txt dist/*.whl && \
     pip freeze  > dist/requirements.txt && \
     # we don't want to include our own wheel in requirements - remove with sed
