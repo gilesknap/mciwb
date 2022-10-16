@@ -13,10 +13,10 @@ Quick Start
 -----------
 
 To get started learning Python, see
-`Introduction <https://gilesknap.github.io/mciwb/main/tutorials/00-prereq.html>`_
+`Introduction <https://gilesknap.github.io/mciwb/main/user/tutorials/00-prereq.html>`_
 
 For existing Python developers, see
-`API documentation  <https://gilesknap.github.io/mciwb/main/reference/api.html>`_
+`API documentation  <https://gilesknap.github.io/mciwb/main/user/reference/api.html>`_
 
 Example Build
 -------------
