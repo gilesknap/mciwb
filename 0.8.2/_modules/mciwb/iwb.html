@@ -1,0 +1,543 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>mciwb.iwb &#8212; mciwb 0.8.2 documentation</title>
+<script>
+  document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+  document.documentElement.dataset.theme = localStorage.getItem("theme") || "light"
+</script>
+
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=92025949c220c2e29695" rel="stylesheet">
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=92025949c220c2e29695" rel="stylesheet">
+
+
+  <link rel="stylesheet"
+    href="../../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
+
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=92025949c220c2e29695">
+
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/clipboard.min.js"></script>
+    <script src="../../_static/copybutton.js"></script>
+    <script src="../../_static/design-tabs.js"></script>
+    <link rel="shortcut icon" href="../../_static/logo.png"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="docsearch:language" content="en">
+  </head>
+  
+  
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="180" data-default-mode="">
+    <div class="bd-header-announcement container-fluid" id="banner">
+      
+
+    </div>
+
+    
+    <nav class="bd-header navbar navbar-light navbar-expand-lg bg-light fixed-top bd-navbar" id="navbar-main"><div class="bd-header__inner container-xl">
+
+  <div id="navbar-start">
+    
+    
+  
+
+
+<a class="navbar-brand logo" href="../../index.html">
+  
+  
+  
+  
+    <img src="../../_static/logo.png" class="logo__image only-light" alt="Logo image">
+    <img src="../../_static/logo.png" class="logo__image only-dark" alt="Logo image">
+  
+  
+    <p class="title logo__title">mciwb</p>
+  
+</a>
+    
+  </div>
+
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-collapsible" aria-controls="navbar-collapsible" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="fas fa-bars"></span>
+  </button>
+
+  
+  <div id="navbar-collapsible" class="col-lg-9 collapse navbar-collapse">
+    <div id="navbar-center" class="mr-auto">
+      
+      <div class="navbar-center-item">
+        <ul id="navbar-main-elements" class="navbar-nav">
+    <li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="../../user/index.html">
+  User Guide
+ </a>
+</li>
+
+<li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="../../developer/index.html">
+  Developer Guide
+ </a>
+</li>
+
+    
+    <li class="nav-item">
+        <a class="nav-link nav-external" href="https://github.com/gilesknap/mciwb/releases">Release Notes<i class="fas fa-external-link-alt"></i></a>
+    </li>
+    
+</ul>
+      </div>
+      
+    </div>
+
+    <div id="navbar-end">
+      
+      <div class="navbar-end-item">
+        <span id="theme-switch" class="btn btn-sm btn-outline-primary navbar-btn rounded-circle">
+    <a class="theme-switch" data-mode="light"><i class="fas fa-sun"></i></a>
+    <a class="theme-switch" data-mode="dark"><i class="far fa-moon"></i></a>
+    <a class="theme-switch" data-mode="auto"><i class="fas fa-adjust"></i></a>
+</span>
+      </div>
+      
+      <div class="navbar-end-item">
+        <ul id="navbar-icon-links" class="navbar-nav" aria-label="Icon Links">
+        <li class="nav-item">
+          <a class="nav-link" href="https://github.com/gilesknap/mciwb" rel="noopener" target="_blank" title="GitHub"><span><i class="fab fa-github-square"></i></span>
+            <label class="sr-only">GitHub</label></a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="https://pypi.org/project/mciwb" rel="noopener" target="_blank" title="PyPI"><span><i class="fas fa-cube"></i></span>
+            <label class="sr-only">PyPI</label></a>
+        </li>
+      </ul>
+      </div>
+      
+      <div class="navbar-end-item">
+        <div class="dropdown" id="version_switcher">
+    <button type="button" class="btn btn-sm navbar-btn dropdown-toggle" id="version_switcher_button" data-toggle="dropdown">
+        0.8.2  <!-- this text may get changed later by javascript -->
+        <span class="caret"></span>
+    </button>
+    <div id="version_switcher_menu" class="dropdown-menu list-group-flush py-0" aria-labelledby="version_switcher_button">
+    <!-- dropdown will be populated by javascript on page load -->
+    </div>
+</div>
+
+<!-- NOTE: this JS must live here (not in our global JS file) because it relies
+     on being processed by Jinja before it is run (specifically for replacing
+     variables _modules/mciwb/iwb and {'json_url': 'https://gilesknap.github.io/mciwb/switcher.json', 'version_match': '0.8.2'}.
+-->
+
+<script type="text/javascript">
+// Check if corresponding page path exists in other version of docs
+// and, if so, go there instead of the homepage of the other docs version
+function checkPageExistsAndRedirect(event) {
+    const currentFilePath = "_modules/mciwb/iwb.html",
+          tryUrl = event.target.getAttribute("href");
+    let otherDocsHomepage = tryUrl.replace(currentFilePath, "");
+    $.ajax({
+        type: 'HEAD',
+        url: tryUrl,
+        // if the page exists, go there
+        success: function() {
+            location.href = tryUrl;
+        }
+    }).fail(function() {
+        location.href = otherDocsHomepage;
+    });
+    // this prevents the browser from following the href of the clicked node
+    // (which is fine because this function takes care of redirecting)
+    return false;
+}
+
+// Populate the version switcher from the JSON config file
+(function () {
+    $.getJSON("https://gilesknap.github.io/mciwb/switcher.json", function(data, textStatus, jqXHR) {
+        const currentFilePath = "_modules/mciwb/iwb.html";
+        let btn = document.getElementById("version_switcher_button");
+        // Set empty strings by default so that these attributes exist and can be used in CSS selectors
+        btn.dataset["activeVersionName"] = "";
+        btn.dataset["activeVersion"] = "";
+        // create links to the corresponding page in the other docs versions
+        $.each(data, function(index, entry) {
+            // if no custom name specified (e.g., "latest"), use version string
+            if (!("name" in entry)) {
+                entry.name = entry.version;
+            }
+            // create the node
+            const node = document.createElement("a");
+            node.setAttribute("class", "list-group-item list-group-item-action py-1");
+            node.textContent = `${entry.name}`;
+            node.setAttribute("href", `${entry.url}${currentFilePath}`);
+            // on click, AJAX calls will check if the linked page exists before
+            // trying to redirect, and if not, will redirect to the homepage
+            // for that version of the docs.
+            node.onclick = checkPageExistsAndRedirect;
+            // Add dataset values for the version and name in case people want
+            // to apply CSS styling based on this information.
+            node.dataset["versionName"] = entry.name;
+            node.dataset["version"] = entry.version;
+
+            $("#version_switcher_menu").append(node);
+            // replace dropdown button text with the preferred display name of
+            // this version, rather than using sphinx's 0.8.2 variable.
+            // also highlight the dropdown entry for the currently-viewed
+            // version's entry
+            if (entry.version == "0.8.2") {
+                node.classList.add("active");
+                btn.innerText = btn.dataset["activeVersionName"] = entry.name;
+                btn.dataset["activeVersion"] = entry.version;
+            }
+        });
+    });
+})();
+</script>
+      </div>
+      
+    </div>
+  </div>
+</div>
+    </nav>
+    
+
+    <div class="bd-container container-xl">
+      <div class="bd-container__inner row">
+          
+
+<!-- Only show if we have sidebars configured, else just a small margin  -->
+<div class="bd-sidebar-primary col-12 col-md-3 bd-sidebar">
+  <div class="sidebar-start-items"><form class="bd-search d-flex align-items-center" action="../../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
+  <div class="bd-toc-item active">
+    
+  </div>
+</nav>
+  </div>
+  <div class="sidebar-end-items">
+  </div>
+</div>
+
+
+          
+
+
+<div class="bd-sidebar-secondary d-none d-xl-block col-xl-2 bd-toc">
+  
+</div>
+
+
+          
+          
+          <div class="bd-content col-12 col-md-9 col-xl-7">
+              
+              <article class="bd-article" role="main">
+                
+  <h1>Source code for mciwb.iwb</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Optional</span>
+
+<span class="kn">from</span> <span class="nn">mcipc.rcon.exceptions</span> <span class="kn">import</span> <span class="n">NoPlayerFound</span>
+<span class="kn">from</span> <span class="nn">mcipc.rcon.item</span> <span class="kn">import</span> <span class="n">Item</span>
+<span class="kn">from</span> <span class="nn">mcipc.rcon.je</span> <span class="kn">import</span> <span class="n">Client</span>
+<span class="kn">from</span> <span class="nn">mcwb</span> <span class="kn">import</span> <span class="n">Anchor3</span><span class="p">,</span> <span class="n">Blocks</span><span class="p">,</span> <span class="n">Direction</span><span class="p">,</span> <span class="n">Vec3</span><span class="p">,</span> <span class="n">Volume</span>
+<span class="kn">from</span> <span class="nn">mcwb.itemlists</span> <span class="kn">import</span> <span class="n">grab</span><span class="p">,</span> <span class="n">load_items</span><span class="p">,</span> <span class="n">save_items</span>
+<span class="kn">from</span> <span class="nn">rcon.exceptions</span> <span class="kn">import</span> <span class="n">SessionTimeout</span>
+<span class="kn">from</span> <span class="nn">rcon.source.proto</span> <span class="kn">import</span> <span class="n">Packet</span>
+
+<span class="kn">from</span> <span class="nn">mciwb.backup</span> <span class="kn">import</span> <span class="n">Backup</span>
+<span class="kn">from</span> <span class="nn">mciwb.copier</span> <span class="kn">import</span> <span class="n">CopyPaste</span>
+<span class="kn">from</span> <span class="nn">mciwb.logging</span> <span class="kn">import</span> <span class="n">init_logging</span><span class="p">,</span> <span class="n">log</span>
+<span class="kn">from</span> <span class="nn">mciwb.monitor</span> <span class="kn">import</span> <span class="n">Monitor</span>
+<span class="kn">from</span> <span class="nn">mciwb.player</span> <span class="kn">import</span> <span class="n">Player</span><span class="p">,</span> <span class="n">PlayerNotInWorld</span>
+<span class="kn">from</span> <span class="nn">mciwb.server</span> <span class="kn">import</span> <span class="n">HOST</span><span class="p">,</span> <span class="n">def_port</span>
+<span class="kn">from</span> <span class="nn">mciwb.signs</span> <span class="kn">import</span> <span class="n">Signs</span>
+<span class="kn">from</span> <span class="nn">mciwb.threads</span> <span class="kn">import</span> <span class="n">get_client</span><span class="p">,</span> <span class="n">set_client</span>
+
+<span class="n">world</span><span class="p">:</span> <span class="s2">&quot;Iwb&quot;</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># type: ignore</span>
+
+
+<span class="k">def</span> <span class="nf">get_world</span><span class="p">():</span>
+    <span class="k">return</span> <span class="n">Iwb</span><span class="o">.</span><span class="n">the_world</span>
+
+
+<div class="viewcode-block" id="Iwb"><a class="viewcode-back" href="../../user/reference/api.html#mciwb.iwb.Iwb">[docs]</a><span class="k">class</span> <span class="nc">Iwb</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Interactive World Builder class. Provides a very simple interface for</span>
+<span class="sd">    interactive functions for use in an IPython shell.</span>
+
+<span class="sd">    :ivar player: The default `Player` object.</span>
+<span class="sd">    :ivar copier: `CopyPaste` object for the above player.</span>
+<span class="sd">    :ivar signs: The `Signs` object for the above player.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">the_world</span><span class="p">:</span> <span class="s2">&quot;Iwb&quot;</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># type: ignore</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">server</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">port</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">passwd</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initialise the world object.</span>
+
+<span class="sd">        :param server: the server address</span>
+<span class="sd">        :param port: the server port</span>
+<span class="sd">        :param passwd: the server password</span>
+
+<span class="sd">        :raises SessionTimeout: if the connection to the server fails</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">Iwb</span><span class="o">.</span><span class="n">the_world</span> <span class="o">=</span> <span class="bp">self</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_server</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">server</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_port</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">port</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_passwd</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">passwd</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">connect</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">player</span><span class="p">:</span> <span class="n">Player</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># type: ignore</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">copier</span><span class="p">:</span> <span class="n">CopyPaste</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># type: ignore</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">signs</span><span class="p">:</span> <span class="n">Signs</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># type: ignore</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_players</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Player</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_copiers</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">CopyPaste</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="c1"># if we are using the default server created by mciwb then we know</span>
+        <span class="c1"># where the folders are for doing backups</span>
+        <span class="k">if</span> <span class="n">server</span> <span class="o">==</span> <span class="n">HOST</span> <span class="ow">and</span> <span class="n">port</span> <span class="o">==</span> <span class="n">def_port</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_backup</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Backup</span><span class="p">]</span> <span class="o">=</span> <span class="n">Backup</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_backup</span> <span class="o">=</span> <span class="kc">None</span>
+
+<div class="viewcode-block" id="Iwb.debug"><a class="viewcode-back" href="../../user/reference/api.html#mciwb.iwb.Iwb.debug">[docs]</a>    <span class="k">def</span> <span class="nf">debug</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">enable</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Enable/disable debug log. Enabling this will also enable</span>
+<span class="sd">        full Traceback log.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">init_logging</span><span class="p">(</span><span class="n">debug</span><span class="o">=</span><span class="n">enable</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Iwb.backup"><a class="viewcode-back" href="../../user/reference/api.html#mciwb.iwb.Iwb.backup">[docs]</a>    <span class="k">def</span> <span class="nf">backup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Backup the Minecraft world to a file. If no name is given then the</span>
+<span class="sd">        backup will be named using the current date and time.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_backup</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;no backup available&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_backup</span><span class="o">.</span><span class="n">backup</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Iwb.connect"><a class="viewcode-back" href="../../user/reference/api.html#mciwb.iwb.Iwb.connect">[docs]</a>    <span class="k">def</span> <span class="nf">connect</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Client</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Makes a connection to the Minecraft Server. Can be called again</span>
+<span class="sd">        if the connection is lost e.g. due to server reboot.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">client</span> <span class="o">=</span> <span class="n">Client</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_server</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_port</span><span class="p">),</span> <span class="n">passwd</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_passwd</span><span class="p">)</span>
+        <span class="n">client</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="c1"># store the client for the main thread</span>
+        <span class="n">set_client</span><span class="p">(</span><span class="n">client</span><span class="p">)</span>
+
+        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Connected to </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_server</span><span class="si">}</span><span class="s2"> on </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_port</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="c1"># don&#39;t announce every rcon command</span>
+        <span class="n">client</span><span class="o">.</span><span class="n">gamerule</span><span class="p">(</span><span class="s2">&quot;sendCommandFeedback&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">client</span></div>
+
+<div class="viewcode-block" id="Iwb.add_player"><a class="viewcode-back" href="../../user/reference/api.html#mciwb.iwb.Iwb.add_player">[docs]</a>    <span class="k">def</span> <span class="nf">add_player</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">me</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Add a player to the world object. This provides monitoring of the</span>
+<span class="sd">        player&#39;s position and handles the player&#39;s placing of action signs.</span>
+
+<span class="sd">        If me is True then the player will be set as the current default</span>
+<span class="sd">        player. The default player is available using::</span>
+
+<span class="sd">            Iwb.the_world.player</span>
+
+<span class="sd">        All players are available using::</span>
+
+<span class="sd">            Iwb.the_world._players</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">player</span> <span class="o">=</span> <span class="n">Player</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_players</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">player</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">signs</span> <span class="o">=</span> <span class="n">Signs</span><span class="p">(</span><span class="n">player</span><span class="p">)</span>
+            <span class="n">Monitor</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">signs</span><span class="o">.</span><span class="n">_poll</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_copiers</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">signs</span><span class="o">.</span><span class="n">copy</span>
+
+            <span class="k">if</span> <span class="n">me</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">player</span> <span class="o">=</span> <span class="n">player</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">copier</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">signs</span><span class="o">.</span><span class="n">copy</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">signs</span><span class="o">.</span><span class="n">give_signs</span><span class="p">()</span>
+        <span class="k">except</span> <span class="p">(</span><span class="n">PlayerNotInWorld</span><span class="p">,</span> <span class="n">SessionTimeout</span><span class="p">,</span> <span class="n">NoPlayerFound</span><span class="p">)</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="c1"># during tests this will fail as there is no real player</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;failed to give signs to player, </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span>
+
+        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Monitoring player </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2"> enabled for sign commands&quot;</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">Monitor</span><span class="o">.</span><span class="n">stop_all</span><span class="p">()</span>
+
+<div class="viewcode-block" id="Iwb.set_block"><a class="viewcode-back" href="../../user/reference/api.html#mciwb.iwb.Iwb.set_block">[docs]</a>    <span class="k">def</span> <span class="nf">set_block</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pos</span><span class="p">:</span> <span class="n">Vec3</span><span class="p">,</span> <span class="n">block</span><span class="p">:</span> <span class="n">Item</span><span class="p">,</span> <span class="n">facing</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Vec3</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets a block in the world</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">client</span> <span class="o">=</span> <span class="n">get_client</span><span class="p">()</span>
+
+        <span class="n">pos</span> <span class="o">=</span> <span class="n">Vec3</span><span class="p">(</span><span class="o">*</span><span class="n">pos</span><span class="p">)</span>
+        <span class="n">int_pos</span> <span class="o">=</span> <span class="n">pos</span><span class="o">.</span><span class="n">with_ints</span><span class="p">()</span>
+        <span class="n">nbt</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">if</span> <span class="n">facing</span><span class="p">:</span>
+            <span class="n">nbt</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&quot;&quot;facing=</span><span class="si">{</span><span class="n">Direction</span><span class="o">.</span><span class="n">name</span><span class="p">(</span><span class="n">facing</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;&quot;&quot;</span><span class="p">)</span>
+        <span class="n">block_str</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span><span class="si">{</span><span class="n">block</span><span class="si">}</span><span class="s2">[</span><span class="si">{</span><span class="s2">&quot;,&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">nbt</span><span class="p">)</span><span class="si">}</span><span class="s2">]&quot;&quot;&quot;</span>
+
+        <span class="n">result</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">setblock</span><span class="p">(</span><span class="n">int_pos</span><span class="p">,</span> <span class="n">block_str</span><span class="p">)</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;setblock: &quot;</span> <span class="o">+</span> <span class="n">result</span><span class="p">)</span>
+
+        <span class="c1"># &#39;Could not set the block&#39; is not an error - it means it was already set</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">any</span><span class="p">(</span>
+            <span class="n">x</span> <span class="ow">in</span> <span class="n">result</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;Changed the block&quot;</span><span class="p">,</span> <span class="s2">&quot;Could not set the block&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">]</span>
+        <span class="p">):</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">result</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Iwb.get_block"><a class="viewcode-back" href="../../user/reference/api.html#mciwb.iwb.Iwb.get_block">[docs]</a>    <span class="k">def</span> <span class="nf">get_block</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pos</span><span class="p">:</span> <span class="n">Vec3</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Item</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Gets a block in the world</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">client</span> <span class="o">=</span> <span class="n">get_client</span><span class="p">()</span>
+
+        <span class="n">int_pos</span> <span class="o">=</span> <span class="n">Vec3</span><span class="p">(</span><span class="o">*</span><span class="n">pos</span><span class="p">)</span><span class="o">.</span><span class="n">with_ints</span><span class="p">()</span>
+
+        <span class="n">grab_volume</span> <span class="o">=</span> <span class="n">Volume</span><span class="o">.</span><span class="n">from_corners</span><span class="p">(</span><span class="n">int_pos</span><span class="p">,</span> <span class="n">int_pos</span><span class="p">)</span>
+        <span class="n">blocks</span> <span class="o">=</span> <span class="n">grab</span><span class="p">(</span><span class="n">client</span><span class="p">,</span> <span class="n">grab_volume</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">blocks</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span></div>
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="n">report</span> <span class="o">=</span> <span class="s2">&quot;Minecraft Interactive World Builder status:</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">copier</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">report</span> <span class="o">+=</span> <span class="p">(</span>
+                <span class="s2">&quot;  copy buffer start: </span><span class="si">{o.copier.start_pos}</span><span class="se">\n</span><span class="s2">&quot;</span>
+                <span class="s2">&quot;  copy buffer stop: </span><span class="si">{o.copier.stop_pos}</span><span class="se">\n</span><span class="s2">&quot;</span>
+                <span class="s2">&quot;  copy buffer size: </span><span class="si">{o.copier.size}</span><span class="se">\n</span><span class="s2">&quot;</span>
+                <span class="s2">&quot;  paste point: </span><span class="si">{o.copier.paste_pos}</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">player</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">report</span> <span class="o">+=</span> <span class="p">(</span>
+                <span class="s2">&quot;  player: </span><span class="si">{o.player.name}</span><span class="se">\n</span><span class="s2">&quot;</span>
+                <span class="s2">&quot;  player position: </span><span class="si">{o.player.pos}</span><span class="se">\n</span><span class="s2">&quot;</span>
+                <span class="s2">&quot;  player facing: </span><span class="si">{o.player.facing}</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">report</span> <span class="o">+=</span> <span class="s2">&quot;  no player selected</span><span class="se">\n</span><span class="s2">&quot;</span>
+
+        <span class="k">return</span> <span class="n">report</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">o</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Iwb.save"><a class="viewcode-back" href="../../user/reference/api.html#mciwb.iwb.Iwb.save">[docs]</a>    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">vol</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Volume</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Save a Volume of blocks to a file. The volume can be specified in</span>
+<span class="sd">        the *vol* parameter or alternatively defaults to the current copy buffer.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">vol</span><span class="p">:</span>
+            <span class="n">vol</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">copier</span><span class="o">.</span><span class="n">to_volume</span><span class="p">()</span>
+
+        <span class="n">blocks</span> <span class="o">=</span> <span class="n">grab</span><span class="p">(</span><span class="n">get_client</span><span class="p">(),</span> <span class="n">vol</span><span class="p">)</span>
+        <span class="n">save_items</span><span class="p">(</span><span class="n">blocks</span><span class="p">,</span> <span class="n">Path</span><span class="p">(</span><span class="n">filename</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="Iwb.load"><a class="viewcode-back" href="../../user/reference/api.html#mciwb.iwb.Iwb.load">[docs]</a>    <span class="k">def</span> <span class="nf">load</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">position</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Vec3</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">anchor</span><span class="p">:</span> <span class="n">Anchor3</span> <span class="o">=</span> <span class="n">Anchor3</span><span class="o">.</span><span class="n">BOTTOM_SW</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Load a saved set of blocks into a location. The location can be</span>
+<span class="sd">        specified in argument *position* or alternatively defaults</span>
+<span class="sd">        to the copy buffer start position.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">position</span><span class="p">:</span>
+            <span class="n">position</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">copier</span><span class="o">.</span><span class="n">start_pos</span>
+
+        <span class="c1"># load a 3d array of Item from the file</span>
+        <span class="n">items</span> <span class="o">=</span> <span class="n">load_items</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">filename</span><span class="p">),</span> <span class="n">dimensions</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+        <span class="c1"># convert the items into a Blocks object which renders them in the world</span>
+        <span class="n">blocks</span> <span class="o">=</span> <span class="n">Blocks</span><span class="p">(</span><span class="n">get_client</span><span class="p">(),</span> <span class="n">position</span><span class="p">,</span> <span class="n">items</span><span class="p">,</span> <span class="n">anchor</span><span class="o">=</span><span class="n">anchor</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">copier</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">copier</span><span class="o">.</span><span class="n">apply_volume</span><span class="p">(</span><span class="n">blocks</span><span class="o">.</span><span class="n">volume</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Iwb.cmd"><a class="viewcode-back" href="../../user/reference/api.html#mciwb.iwb.Iwb.cmd">[docs]</a>    <span class="k">def</span> <span class="nf">cmd</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cmd</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Run any arbitrary Minecraft console command on the server.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">encoding</span> <span class="o">=</span> <span class="s2">&quot;utf-8&quot;</span>
+        <span class="n">client</span> <span class="o">=</span> <span class="n">get_client</span><span class="p">()</span>
+        <span class="n">request</span> <span class="o">=</span> <span class="n">Packet</span><span class="o">.</span><span class="n">make_command</span><span class="p">(</span><span class="n">cmd</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="n">encoding</span><span class="p">)</span>
+
+        <span class="n">response</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">communicate</span><span class="p">(</span><span class="n">request</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">id</span> <span class="o">!=</span> <span class="n">request</span><span class="o">.</span><span class="n">id</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">SessionTimeout</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="n">response</span><span class="o">.</span><span class="n">payload</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">encoding</span><span class="p">)</span></div></div>
+</pre></div>
+
+              </article>
+              
+
+              
+              <footer class="bd-footer-article">
+                  <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+</div>
+              </footer>
+              
+          </div>
+          
+      </div>
+    </div>
+
+  
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../_static/scripts/pydata-sphinx-theme.js?digest=92025949c220c2e29695"></script>
+
+<footer class="bd-footer"><div class="bd-footer__inner container">
+  
+  <div class="footer-item">
+    <p class="copyright">
+    &copy; Copyright .<br>
+</p>
+  </div>
+  
+  <div class="footer-item">
+    <p class="sphinx-version">
+Created using <a href="http://sphinx-doc.org/">Sphinx</a> 5.3.0.<br>
+</p>
+  </div>
+  
+</div>
+</footer>
+  </body>
+</html>
