@@ -48,6 +48,7 @@ def test_backup(tmp_path):
     server_folder = Path(tempfile.gettempdir()) / "test-backup-server"
     server_folder2 = Path(tempfile.gettempdir()) / "test-backup-server2"
     backup_folder = Path(tempfile.gettempdir()) / "test-backup-backup"
+    backup_folder_tmp = Path(tempfile.gettempdir()) / "test-backup-backup"
 
     result = run_cli(
         "start",
@@ -57,6 +58,8 @@ def test_backup(tmp_path):
         "test",
         "--port",
         "20200",
+        "--backup-folder",
+        backup_folder_tmp,
     )
     assert not any(err in result.stdout for err in checks)
 

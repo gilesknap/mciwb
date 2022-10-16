@@ -2,18 +2,14 @@ name: Docs CI
 
 on:
   push:
-    branches:
-      - main
-    tags:
-      - "*"
   pull_request:
 
 jobs:
   docs:
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name != github.repository
     strategy:
       fail-fast: false
       matrix:
-        os: ["ubuntu-latest"]
         python: ["3.10"]
 
     runs-on: ubuntu-latest
@@ -24,7 +20,7 @@ jobs:
         run: sleep 60
 
       - name: Install python version
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python }}
 
@@ -33,7 +29,7 @@ jobs:
         run: sudo apt-get install graphviz
 
       - name: checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           fetch-depth: 0
 
@@ -45,12 +41,14 @@ jobs:
       - name: Build docs
         run: tox -e docs
 
-      - name: Move to versioned directory
-        # e.g. master or 0.1.2
-        run: mv build/html ".github/pages/${GITHUB_REF##*/}"
+      - name: Sanitize ref name for docs version
+        run: echo "DOCS_VERSION=${GITHUB_REF_NAME//[^A-Za-z0-9._-]/_}" >> $GITHUB_ENV
 
-      - name: Write versions.txt
-        run: sphinx_rtd_theme_github_versions .github/pages
+      - name: Move to versioned directory
+        run: mv build/html .github/pages/$DOCS_VERSION
+
+      - name: Write switcher.json
+        run: python .github/pages/make_switcher.py --add $DOCS_VERSION ${{ github.repository }} .github/pages/switcher.json
 
       - name: Publish Docs to gh-pages
         if: github.event_name == 'push'

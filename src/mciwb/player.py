@@ -5,7 +5,7 @@ state
 import math
 import re
 from time import sleep
-from typing import List, Match, Pattern
+from typing import List, Match, Pattern, Tuple
 
 from mcwb.types import Direction, Vec3
 from mcwb.volume import Volume
@@ -14,7 +14,9 @@ from mciwb.logging import log
 from mciwb.threads import get_client
 
 regex_coord = re.compile(r"\[(-?\d+.?\d*)d, *(-?\d+.?\d*)d, *(-?\d+.?\d*)d\]")
-regex_angle = re.compile(r"-?\ *[0-9]+\.?[0-9]*(?:[Ee]\ *-?\ *[0-9]+)?")
+float_reg = r"(-?\ *[0-9]+\.?[0-9]*(?:[Ee]\ *-?\ *[0-9]+)?)f"
+regex_angle = re.compile(float_reg)
+regex_rot = re.compile(r"\[(-?\d+.?\d*)f, *(-?\d+.?\d*)f\]")
 
 
 class PlayerNotInWorld(Exception):
@@ -58,15 +60,19 @@ class Player:
         return get_client().data.get(entity=self.name, path="Inventory")
 
     @property
-    def pos(self) -> Vec3:
+    def pos_f(self) -> Vec3:
         """
-        Return the player's position
+        Return the player's precise position
         """
         match = self._get_entity_data("Pos", regex_coord)
-        pos = Vec3(
-            float(match.group(1)), float(match.group(2)), float(match.group(3))
-        ).with_ints()
-        return pos
+        return Vec3(float(match.group(1)), float(match.group(2)), float(match.group(3)))
+
+    @property
+    def pos(self) -> Vec3:
+        """
+        Return the player's block position
+        """
+        return self.pos_f.with_ints()
 
     @property
     def facing(self) -> Vec3:
@@ -80,10 +86,18 @@ class Player:
             WEST = Vec3(-1, 0, 0)
         """
         match = self._get_entity_data("Rotation", regex_angle)
-        angle = float(match.group(0))
+        angle = float(match.group(1))
 
         index = int(((math.floor(angle) + 45) % 360) / 90)
         return Direction.cardinals[index]
+
+    @property
+    def rotation(self) -> Tuple[float, float]:
+        """
+        Get the player's rotation in degrees
+        """
+        match = self._get_entity_data("Rotation", regex_rot)
+        return float(match.group(1)), float(match.group(2))
 
     def player_in(self, volume: Volume) -> bool:
         """

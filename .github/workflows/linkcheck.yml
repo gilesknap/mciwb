@@ -3,30 +3,25 @@ name: Link Check
 on:
   schedule:
     # Run every Monday at 8am to check URL links still resolve
-    - cron: "0 8 * * MON"
+    - cron: "0 8 * * WED"
 
 jobs:
   docs:
     strategy:
       fail-fast: false
       matrix:
-        os: ["ubuntu-latest"]
         python: ["3.10"]
 
     runs-on: ubuntu-latest
 
     steps:
-      - name: Avoid git conflicts when tag and branch pushed at same time
-        if: startsWith(github.ref, 'refs/tags')
-        run: sleep 60
-
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           fetch-depth: 0
 
       - name: Install python version
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python }}
 

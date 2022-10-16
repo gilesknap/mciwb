@@ -16,7 +16,7 @@ from mciwb.logging import exception_handler, init_logging, log
 from mciwb.server import (
     HOST,
     MinecraftServer,
-    backup_folder,
+    backup_folder_default,
     def_pass,
     def_port,
     def_world_type,
@@ -108,6 +108,7 @@ def start(
     world_type: str = def_world_type,
     server_name: str = server_name,
     folder: Path = default_server_folder,
+    backup_folder: Path = backup_folder_default,
     port: int = def_port,
     debug: bool = False,
 ):
@@ -126,7 +127,9 @@ def start(
     else:
         log.info(f"Creating new Minecraft server in {folder}")
 
-    server = MinecraftServer(server_name, port, password, folder, world_type)
+    server = MinecraftServer(
+        server_name, port, password, folder, world_type, backup_folder=backup_folder
+    )
     server.create()
 
 
@@ -148,7 +151,7 @@ def stop(
 def backup(
     folder: Path = default_server_folder,
     backup_name: str = "",
-    backup_folder: Path = backup_folder,
+    backup_folder: Path = backup_folder_default,
     debug: bool = False,
 ):
     """
@@ -165,7 +168,7 @@ def restore(
     backup_name: str = typer.Argument(""),
     debug: bool = False,
     folder: Path = default_server_folder,
-    backup_folder: Path = backup_folder,
+    backup_folder: Path = backup_folder_default,
     server_name: str = server_name,
     port: int = def_port,
 ):
@@ -177,7 +180,9 @@ def restore(
     stop(server_name=server_name)
     backup = Backup(world_folder=folder / "world", backup_folder=backup_folder)
     backup.restore(name=backup_name)
-    start(folder=folder, port=port, server_name=server_name)
+    start(
+        folder=folder, port=port, server_name=server_name, backup_folder=backup_folder
+    )
 
 
 if __name__ == "__main__":
