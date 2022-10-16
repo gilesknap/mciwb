@@ -24,8 +24,8 @@ Example Build
 The pagoda and castle with working portcullis were all created programmatically
 with Python and the current version of MCIWB.
 
-.. figure:: user/images/castle.png
-   :alt: pylance
+.. figure:: https://gilesknap.github.io/mciwb/main/_images/castle.png
+   :alt: castle
    :align: center
    :width: 600px
 
