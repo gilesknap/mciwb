@@ -73,7 +73,6 @@ Releases       https://github.com/gilesknap/mciwb/releases
 ============== ==============================================================
 
 
-
 .. |code_ci| image:: https://github.com/gilesknap/mciwb/actions/workflows/code.yml/badge.svg?branch=main
     :target: https://github.com/gilesknap/mciwb/actions/workflows/code.yml
     :alt: Code CI
