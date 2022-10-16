@@ -1,0 +1,769 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+    <title>Installation &#8212; mciwb 0.8.1 documentation</title>
+<script>
+  document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+  document.documentElement.dataset.theme = localStorage.getItem("theme") || "light"
+</script>
+
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=92025949c220c2e29695" rel="stylesheet">
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=92025949c220c2e29695" rel="stylesheet">
+
+
+  <link rel="stylesheet"
+    href="../../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
+
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=92025949c220c2e29695">
+
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/clipboard.min.js"></script>
+    <script src="../../_static/copybutton.js"></script>
+    <script src="../../_static/design-tabs.js"></script>
+    <link rel="shortcut icon" href="../../_static/logo.png"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Orientation" href="02-orientation.html" />
+    <link rel="prev" title="Introduction" href="00-prereq.html" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="docsearch:language" content="en">
+  </head>
+  
+  
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="180" data-default-mode="">
+    <div class="bd-header-announcement container-fluid" id="banner">
+      
+
+    </div>
+
+    
+    <nav class="bd-header navbar navbar-light navbar-expand-lg bg-light fixed-top bd-navbar" id="navbar-main"><div class="bd-header__inner container-xl">
+
+  <div id="navbar-start">
+    
+    
+  
+
+
+<a class="navbar-brand logo" href="../../index.html">
+  
+  
+  
+  
+    <img src="../../_static/logo.png" class="logo__image only-light" alt="Logo image">
+    <img src="../../_static/logo.png" class="logo__image only-dark" alt="Logo image">
+  
+  
+    <p class="title logo__title">mciwb</p>
+  
+</a>
+    
+  </div>
+
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-collapsible" aria-controls="navbar-collapsible" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="fas fa-bars"></span>
+  </button>
+
+  
+  <div id="navbar-collapsible" class="col-lg-9 collapse navbar-collapse">
+    <div id="navbar-center" class="mr-auto">
+      
+      <div class="navbar-center-item">
+        <ul id="navbar-main-elements" class="navbar-nav">
+    <li class="toctree-l1 current active nav-item">
+ <a class="reference internal nav-link" href="../index.html">
+  User Guide
+ </a>
+</li>
+
+<li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="../../developer/index.html">
+  Developer Guide
+ </a>
+</li>
+
+    
+    <li class="nav-item">
+        <a class="nav-link nav-external" href="https://github.com/gilesknap/mciwb/releases">Release Notes<i class="fas fa-external-link-alt"></i></a>
+    </li>
+    
+</ul>
+      </div>
+      
+    </div>
+
+    <div id="navbar-end">
+      
+      <div class="navbar-end-item">
+        <span id="theme-switch" class="btn btn-sm btn-outline-primary navbar-btn rounded-circle">
+    <a class="theme-switch" data-mode="light"><i class="fas fa-sun"></i></a>
+    <a class="theme-switch" data-mode="dark"><i class="far fa-moon"></i></a>
+    <a class="theme-switch" data-mode="auto"><i class="fas fa-adjust"></i></a>
+</span>
+      </div>
+      
+      <div class="navbar-end-item">
+        <ul id="navbar-icon-links" class="navbar-nav" aria-label="Icon Links">
+        <li class="nav-item">
+          <a class="nav-link" href="https://github.com/gilesknap/mciwb" rel="noopener" target="_blank" title="GitHub"><span><i class="fab fa-github-square"></i></span>
+            <label class="sr-only">GitHub</label></a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="https://pypi.org/project/mciwb" rel="noopener" target="_blank" title="PyPI"><span><i class="fas fa-cube"></i></span>
+            <label class="sr-only">PyPI</label></a>
+        </li>
+      </ul>
+      </div>
+      
+      <div class="navbar-end-item">
+        <div class="dropdown" id="version_switcher">
+    <button type="button" class="btn btn-sm navbar-btn dropdown-toggle" id="version_switcher_button" data-toggle="dropdown">
+        0.8.1  <!-- this text may get changed later by javascript -->
+        <span class="caret"></span>
+    </button>
+    <div id="version_switcher_menu" class="dropdown-menu list-group-flush py-0" aria-labelledby="version_switcher_button">
+    <!-- dropdown will be populated by javascript on page load -->
+    </div>
+</div>
+
+<!-- NOTE: this JS must live here (not in our global JS file) because it relies
+     on being processed by Jinja before it is run (specifically for replacing
+     variables user/tutorials/01-setup and {'json_url': 'https://gilesknap.github.io/mciwb/switcher.json', 'version_match': '0.8.1'}.
+-->
+
+<script type="text/javascript">
+// Check if corresponding page path exists in other version of docs
+// and, if so, go there instead of the homepage of the other docs version
+function checkPageExistsAndRedirect(event) {
+    const currentFilePath = "user/tutorials/01-setup.html",
+          tryUrl = event.target.getAttribute("href");
+    let otherDocsHomepage = tryUrl.replace(currentFilePath, "");
+    $.ajax({
+        type: 'HEAD',
+        url: tryUrl,
+        // if the page exists, go there
+        success: function() {
+            location.href = tryUrl;
+        }
+    }).fail(function() {
+        location.href = otherDocsHomepage;
+    });
+    // this prevents the browser from following the href of the clicked node
+    // (which is fine because this function takes care of redirecting)
+    return false;
+}
+
+// Populate the version switcher from the JSON config file
+(function () {
+    $.getJSON("https://gilesknap.github.io/mciwb/switcher.json", function(data, textStatus, jqXHR) {
+        const currentFilePath = "user/tutorials/01-setup.html";
+        let btn = document.getElementById("version_switcher_button");
+        // Set empty strings by default so that these attributes exist and can be used in CSS selectors
+        btn.dataset["activeVersionName"] = "";
+        btn.dataset["activeVersion"] = "";
+        // create links to the corresponding page in the other docs versions
+        $.each(data, function(index, entry) {
+            // if no custom name specified (e.g., "latest"), use version string
+            if (!("name" in entry)) {
+                entry.name = entry.version;
+            }
+            // create the node
+            const node = document.createElement("a");
+            node.setAttribute("class", "list-group-item list-group-item-action py-1");
+            node.textContent = `${entry.name}`;
+            node.setAttribute("href", `${entry.url}${currentFilePath}`);
+            // on click, AJAX calls will check if the linked page exists before
+            // trying to redirect, and if not, will redirect to the homepage
+            // for that version of the docs.
+            node.onclick = checkPageExistsAndRedirect;
+            // Add dataset values for the version and name in case people want
+            // to apply CSS styling based on this information.
+            node.dataset["versionName"] = entry.name;
+            node.dataset["version"] = entry.version;
+
+            $("#version_switcher_menu").append(node);
+            // replace dropdown button text with the preferred display name of
+            // this version, rather than using sphinx's 0.8.1 variable.
+            // also highlight the dropdown entry for the currently-viewed
+            // version's entry
+            if (entry.version == "0.8.1") {
+                node.classList.add("active");
+                btn.innerText = btn.dataset["activeVersionName"] = entry.name;
+                btn.dataset["activeVersion"] = entry.version;
+            }
+        });
+    });
+})();
+</script>
+      </div>
+      
+    </div>
+  </div>
+</div>
+    </nav>
+    
+
+    <div class="bd-container container-xl">
+      <div class="bd-container__inner row">
+          
+
+<!-- Only show if we have sidebars configured, else just a small margin  -->
+<div class="bd-sidebar-primary col-12 col-md-3 bd-sidebar">
+  <div class="sidebar-start-items"><form class="bd-search d-flex align-items-center" action="../../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
+  <div class="bd-toc-item active">
+    <p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Tutorials
+ </span>
+</p>
+<ul class="current nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="00-prereq.html">
+   Introduction
+  </a>
+ </li>
+ <li class="toctree-l1 current active">
+  <a class="current reference internal" href="#">
+   Installation
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="02-orientation.html">
+   Orientation
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="03-variables.html">
+   Python Variables
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="04-loops.html">
+   Loops
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="05-functions.html">
+   Functions
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="05a-modules.html">
+   Modules and Packages
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="06-if-then.html">
+   If - Else
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="07-lists.html">
+   Lists
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="08-classes.html">
+   Classes
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="09-dictionaries.html">
+   Dictionaries
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  How-to Guides
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../how-to/startup.html">
+   Setup for each Tutorial
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../how-to/completion.html">
+   Command Completion
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../how-to/extensions.html">
+   VSCode Extensions
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../how-to/troubleshooting.html">
+   Troubleshooting
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../how-to/backup.html">
+   Backup and Restore
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../how-to/wsl2.html">
+   Windows Subsystem for Linux
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../how-to/coordinates.html">
+   Discovering the Coordinates of a Block
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../how-to/run-container.html">
+   Run in a container
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Explanations
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../explanations/docs-structure.html">
+   About the documentation
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../explanations/scope.html">
+   Variable Scope
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../explanations/server-config.html">
+   Minecraft Server Config
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../explanations/coordinates.html">
+   Minecraft’s Coordinate System
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../explanations/mcipc.html">
+   MCIPC Client object
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Reference
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../reference/index.html">
+   Finding Things
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../reference/api.html">
+   MCIWB API
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../reference/demo.html">
+   Demo Code
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../genindex.html">
+   Index
+  </a>
+ </li>
+</ul>
+
+  </div>
+</nav>
+  </div>
+  <div class="sidebar-end-items">
+  </div>
+</div>
+
+
+          
+
+
+<div class="bd-sidebar-secondary d-none d-xl-block col-xl-2 bd-toc">
+  
+    
+    <div class="toc-item">
+      
+<div class="tocsection onthispage mt-5 pt-1 pb-3">
+    <i class="fas fa-list"></i> On this page
+</div>
+
+<nav id="bd-toc-nav">
+    <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#introduction">
+   Introduction
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#the-minecraft-java-client">
+   The Minecraft Java Client
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#docker-desktop">
+   Docker Desktop
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#visual-studio-code">
+   Visual Studio Code
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#command-line">
+   Command Line
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#python">
+   Python
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#virtual-environment">
+   Virtual Environment
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#minecraft-interactive-world-builder-library">
+   Minecraft Interactive World Builder library
+  </a>
+ </li>
+</ul>
+
+</nav>
+    </div>
+    
+    <div class="toc-item">
+      
+
+<div class="tocsection editthispage">
+    <a href="https://github.com/gilesknap/mciwb/edit/0.8.1/docs/user/tutorials/01-setup.rst">
+        <i class="fas fa-pencil-alt"></i> Edit this page
+    </a>
+</div>
+
+    </div>
+    
+  
+</div>
+
+
+          
+          
+          <div class="bd-content col-12 col-md-9 col-xl-7">
+              
+              <article class="bd-article" role="main">
+                
+  <section id="installation">
+<h1>Installation<a class="headerlink" href="#installation" title="Permalink to this heading">#</a></h1>
+<section id="introduction">
+<h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this heading">#</a></h2>
+<p>For the first tutorial we are going to prepare your computer for the rest
+of the tutorials. To do so we need to install the following software:</p>
+<ul class="simple">
+<li><p>The Minecraft Java Client (with Minecraft account purchase)</p></li>
+<li><p>Docker Desktop</p></li>
+<li><p>Visual Studio Code</p></li>
+<li><p>Python</p></li>
+<li><p>Minecraft Interactive World Builder Python package</p></li>
+</ul>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>The tutorials for this project are intended to be accessible for
+complete beginners. However, this first step of getting all of the
+software installed may need a little bit of knowledge of the basics of
+your operating system.</p>
+<p>For this Setup Tutorial, I recommend that novices get a little help from
+someone with computer experience. This setup tutorial need only
+be done once (per computer) and the remaining tutorials should not
+require prior knowledge.</p>
+</div>
+</section>
+<section id="the-minecraft-java-client">
+<h2>The Minecraft Java Client<a class="headerlink" href="#the-minecraft-java-client" title="Permalink to this heading">#</a></h2>
+<p>If you already have the Minecraft Java Client installed proceed to <a class="reference internal" href="#docker"><span class="std std-ref">Docker Desktop</span></a>.</p>
+<p>You will need to purchase a license for Minecraft from Microsoft.</p>
+<p>Go to this site to buy your copy, if you do not already have one:</p>
+<blockquote>
+<div><p><a class="reference external" href="https://www.minecraft.net/en-us/store/minecraft-java-bedrock-edition-pc">https://www.minecraft.net/en-us/store/minecraft-java-bedrock-edition-pc</a></p>
+</div></blockquote>
+<p>Once you have a license, download the Java client to
+the computer where you will be trying out MCIWB.
+This is the download link for the Java client:</p>
+<blockquote>
+<div><p><a class="reference external" href="https://www.minecraft.net/en-us/download">https://www.minecraft.net/en-us/download</a></p>
+</div></blockquote>
+<p>Microsoft has now bundled the Java and Bedrock editions together.
+We are using the Java edition here but this project could be adapted to
+work for either in future.</p>
+<p>When you start Minecraft you will be asked to login with your Microsoft details,
+note that the ‘Mojang Login’ option is only for legacy users who have not
+yet migrated.</p>
+<p>When you have successfully launched the Minecraft Launcher, you will see a
+a screen like the following. Leave this screen open and move on to the rest
+of the tutorial. We will come back here and connect to a Minecraft server in a
+later tutorial.</p>
+<a class="reference internal image-reference" href="../../_images/launcher.png"><img alt="Minecraft Launcher" class="align-center" src="../../_images/launcher.png" style="width: 700px;" /></a>
+</section>
+<section id="docker-desktop">
+<span id="docker"></span><h2>Docker Desktop<a class="headerlink" href="#docker-desktop" title="Permalink to this heading">#</a></h2>
+<p>Docker is a tool that allows you to run your Minecraft Server in a container.
+This makes it easy to run and avoids having to manually install and
+maintain the server code.
+You do not need to understand too much about this since MCIWB will automatically
+use docker on your behalf.</p>
+<p>The easiest way to install Docker is to use Docker Desktop which is free to
+use for individuals.</p>
+<dl class="simple">
+<dt>Windows:</dt><dd><p>Docker Desktop requires WSL2 and a linux distribution to go with it.
+So you should first install WSL2 and Ubuntu 22.04 LTS from here
+- <a class="reference external" href="https://apps.microsoft.com/store/detail/ubuntu-2204-lts/9PN20MSR04DW">https://apps.microsoft.com/store/detail/ubuntu-2204-lts/9PN20MSR04DW</a></p>
+</dd>
+<dt>All Platforms:</dt><dd><p>Instructions for Docker Desktop installation for all platforms are here:
+- <a class="reference external" href="https://docs.docker.com/get-docker/">https://docs.docker.com/get-docker/</a></p>
+</dd>
+</dl>
+<p>For mciwb to work you will need Docker Desktop to be running before you
+start Visual Studio Code. So start it from the start menu before moving to
+the next step.</p>
+<p>To make things easier next time you could go into settings (accessed
+via the cog icon in the title bar of the Docker Desktop main window)
+and tick the option
+<code class="docutils literal notranslate"><span class="pre">Start</span> <span class="pre">Docker</span> <span class="pre">Desktop</span> <span class="pre">when</span> <span class="pre">you</span> <span class="pre">log</span> <span class="pre">in</span></code>.</p>
+</section>
+<section id="visual-studio-code">
+<span id="vscode"></span><h2>Visual Studio Code<a class="headerlink" href="#visual-studio-code" title="Permalink to this heading">#</a></h2>
+<p>This is the tool we will use to edit our Python code. If you are already
+a developer then you can use your preferred IDE instead. The tutorials
+will use Visual Studio Code, so if you are new to programming this is
+a recommended install.</p>
+<p>VSCode is free, open-source software.</p>
+<p>This link provides downloads for all flavours of VSCode:</p>
+<blockquote>
+<div><p><a class="reference external" href="https://code.visualstudio.com/download">https://code.visualstudio.com/download</a></p>
+</div></blockquote>
+</section>
+<section id="command-line">
+<h2>Command Line<a class="headerlink" href="#command-line" title="Permalink to this heading">#</a></h2>
+<p>From now on we are going to start using the command line. You are free to use
+whatever terminal program you like, however I recommend that you use the
+integrated terminal inside of Visual Studio Code.</p>
+<p>Here we will set up our initial VSCode work folder and get a <code class="docutils literal notranslate"><span class="pre">bash</span></code>
+command line prompt. <code class="docutils literal notranslate"><span class="pre">bash</span></code> is the most popular <code class="docutils literal notranslate"><span class="pre">shell</span></code> for Linux,
+it provides a command line interface to all the utilities and services
+on a Linux computer. On Windows we will be using the Linux Subsystem so will
+also use <code class="docutils literal notranslate"><span class="pre">bash</span></code>. On Mac we will be using <code class="docutils literal notranslate"><span class="pre">zsh</span></code> but this is pretty similar
+to <code class="docutils literal notranslate"><span class="pre">bash</span></code>.</p>
+<p>First open VSCode from the start menu.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><strong>Windows Users: Important</strong></p>
+<p>We are going to use ‘Windows Subsystem for Linux 2’ or WSL2.
+Go here first to get VSCode connected to WSL2:
+<a class="reference internal" href="../how-to/wsl2.html#wsl2"><span class="std std-ref">Windows Subsystem for Linux</span></a></p>
+</div>
+<p>Let’s create a work folder for use in further tutorials and tell VSCode To
+open the folder. We’ll call it  <code class="docutils literal notranslate"><span class="pre">my_world</span></code> but you are free to use your
+own name.</p>
+<p>First start a terminal by selecting from the menu bar
+<code class="docutils literal notranslate"><span class="pre">Terminal</span> <span class="pre">-&gt;</span> <span class="pre">New</span> <span class="pre">Terminal</span></code>.</p>
+<p>The bottom half of your VSCode window will display a <code class="docutils literal notranslate"><span class="pre">bash</span></code>
+prompt like this:</p>
+<a class="reference internal image-reference" href="../../_images/prompt.excalidraw.png"><img alt="VSCode Startup" class="align-center" src="../../_images/prompt.excalidraw.png" style="width: 400px;" /></a>
+<p>Type the following to make sure you are in in your home directory and then
+create a new folder called <code class="docutils literal notranslate"><span class="pre">my_world</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span>
+<span class="n">mkdir</span> <span class="n">my_world</span>
+</pre></div>
+</div>
+<p>Now we want to reopen VSCode with the new folder set as its work area.
+From the menu bar choose <code class="docutils literal notranslate"><span class="pre">File</span> <span class="pre">-&gt;</span> <span class="pre">Open</span> <span class="pre">Folder</span></code>. You will see a list of
+folders, select <code class="docutils literal notranslate"><span class="pre">my_world</span></code> and click OK.</p>
+<p>You will be asked if you trust the authors of files in this folder.
+You do trust them because they are you! So click
+<code class="docutils literal notranslate"><span class="pre">Yes</span> <span class="pre">I</span> <span class="pre">trust</span> <span class="pre">the</span> <span class="pre">authors</span></code>.</p>
+<a class="reference internal image-reference" href="../../_images/trust.png"><img alt="VSCode Startup" class="align-center" src="../../_images/trust.png" style="width: 500px;" /></a>
+<p>Now you should see a you VSCode window that looks something like this:</p>
+<a class="reference internal image-reference" href="../../_images/vscode_hello.excalidraw.png"><img alt="VSCode Startup" class="align-left" src="../../_images/vscode_hello.excalidraw.png" style="width: 700px;" /></a>
+<p>From this point on all commands typed in the console and chosen from VSCode
+menus should be the same for Windows, Linux and MacOS. This is because you
+now have a bash shell for typing commands.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>There is one caveat here. When directed to install a software package with
+<code class="docutils literal notranslate"><span class="pre">sudo</span> <span class="pre">apt</span></code>, this will only apply if you are using a Debian derived
+OS such as Ubuntu (this also covers Windows WSL2 users).
+Mac, CentOs, Arch based users - I’m hoping you will know the equivalent
+commands. I will supply an appendix for other OSes in future.</p>
+</div>
+</section>
+<section id="python">
+<h2>Python<a class="headerlink" href="#python" title="Permalink to this heading">#</a></h2>
+<p>The Python Programming Language is also free and open-source.</p>
+<p>This is essential for working with MCIWB.
+Python 3.10 because the underlying RCON library requires it. This is the
+latest version of Python at the time of writing.</p>
+<p>These commands will install the necessary packages to make Python 3.10
+available on your system:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">apt</span> <span class="n">update</span>
+<span class="n">sudo</span> <span class="n">apt</span> <span class="n">install</span> <span class="o">-</span><span class="n">y</span> <span class="n">python3</span><span class="mf">.10</span>
+<span class="n">sudo</span> <span class="n">apt</span> <span class="n">install</span> <span class="o">-</span><span class="n">y</span> <span class="n">python3</span><span class="mf">.10</span><span class="o">-</span><span class="n">venv</span>
+<span class="n">sudo</span> <span class="n">apt</span> <span class="n">install</span> <span class="o">-</span><span class="n">y</span> <span class="n">python3</span><span class="o">-</span><span class="n">pip</span>
+</pre></div>
+</div>
+<p>If you have an older version of Ubuntu it may not have Python 3.10 available.
+In this case you need to use the <code class="docutils literal notranslate"><span class="pre">deadsnakes</span></code> PPA to get the latest version as
+follows:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">apt</span> <span class="n">install</span> <span class="o">-</span><span class="n">y</span> <span class="n">software</span><span class="o">-</span><span class="n">properties</span><span class="o">-</span><span class="n">common</span>
+<span class="n">sudo</span> <span class="n">add</span><span class="o">-</span><span class="n">apt</span><span class="o">-</span><span class="n">repository</span> <span class="n">ppa</span><span class="p">:</span><span class="n">deadsnakes</span><span class="o">/</span><span class="n">ppa</span>
+<span class="n">sudo</span> <span class="n">apt</span> <span class="n">install</span> <span class="o">-</span><span class="n">y</span> <span class="n">python3</span><span class="mf">.10</span>
+<span class="n">sudo</span> <span class="n">apt</span> <span class="n">install</span> <span class="o">-</span><span class="n">y</span> <span class="n">python3</span><span class="mf">.10</span><span class="o">-</span><span class="n">venv</span>
+<span class="n">sudo</span> <span class="n">apt</span> <span class="n">install</span> <span class="o">-</span><span class="n">y</span> <span class="n">python3</span><span class="o">-</span><span class="n">pip</span>
+</pre></div>
+</div>
+</section>
+<section id="virtual-environment">
+<h2>Virtual Environment<a class="headerlink" href="#virtual-environment" title="Permalink to this heading">#</a></h2>
+<p>We are going to create a <strong>Virtual Environment</strong> for our Python packages to
+install in. This is a way to keep the packages you install (like mciwb)
+separate from the packages you install for other projects.</p>
+<p>First create the Virtual Environment by typing (note the leading “.”
+in the folder name “.venv”):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python3</span><span class="mf">.10</span> <span class="o">-</span><span class="n">m</span> <span class="n">venv</span> <span class="o">.</span><span class="n">venv</span>
+</pre></div>
+</div>
+<p>Then activate it by typing the following. This command will need to be
+repeated each time you restart your terminal or open a new terminal:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">source</span> <span class="o">.</span><span class="n">venv</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">activate</span>
+</pre></div>
+</div>
+<p>Note you can tell you have an active <strong>Virtual Environment</strong> because
+your terminal prompt will change to have a leading (.venv) like this:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(.venv) giles@gkwin:~/my_world$
+</pre></div>
+</div>
+</section>
+<section id="minecraft-interactive-world-builder-library">
+<h2>Minecraft Interactive World Builder library<a class="headerlink" href="#minecraft-interactive-world-builder-library" title="Permalink to this heading">#</a></h2>
+<p>The final component is MCIWB itself. This needs to be added to the
+Python environment we already made above. Again, this is free open open-source
+software.</p>
+<p>Before the next step, let’s make sure that we are in the right folder and
+that we have the <strong>Virtual Environment</strong> activated:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>cd $HOME/my_world
+source .venv/bin/activate
+</pre></div>
+</div>
+<p>The cd command stands for <code class="docutils literal notranslate"><span class="pre">Change</span> <span class="pre">Directory</span></code>. This is a command that sets
+the current working folder (or directory). This is the default folder
+that your commands will work with from now. <code class="docutils literal notranslate"><span class="pre">$HOME</span></code> is your default HOME
+folder, the folder in which your user keeps their personal files. We already
+created the folder <code class="docutils literal notranslate"><span class="pre">$HOME/my_world</span></code> earlier and this is where we will store
+all of the work we do with MCIWB.</p>
+<p>Everything is all set up ready so the following simple command will get
+mciwb from the Python Package Index (PyPi) and install it into the
+<strong>Virtual Environment</strong>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="n">mciwb</span>
+</pre></div>
+</div>
+<p>Assuming all is well you should be able to verify everything is working
+by typing the following:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">mciwb</span> <span class="o">--</span><span class="n">help</span>
+</pre></div>
+</div>
+<p>That’s all the hard bits done and they only need to be done once.
+You can now proceed to the next tutorial.</p>
+</section>
+</section>
+
+
+              </article>
+              
+
+              
+              <footer class="bd-footer-article">
+                  <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+  <a class='left-prev' id="prev-link" href="00-prereq.html" title="previous page">
+      <i class="fas fa-angle-left"></i>
+      <div class="prev-next-info">
+          <p class="prev-next-subtitle">previous</p>
+          <p class="prev-next-title">Introduction</p>
+      </div>
+  </a>
+  <a class='right-next' id="next-link" href="02-orientation.html" title="next page">
+  <div class="prev-next-info">
+      <p class="prev-next-subtitle">next</p>
+      <p class="prev-next-title">Orientation</p>
+  </div>
+  <i class="fas fa-angle-right"></i>
+  </a>
+</div>
+              </footer>
+              
+          </div>
+          
+      </div>
+    </div>
+
+  
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../_static/scripts/pydata-sphinx-theme.js?digest=92025949c220c2e29695"></script>
+
+<footer class="bd-footer"><div class="bd-footer__inner container">
+  
+  <div class="footer-item">
+    <p class="copyright">
+    &copy; Copyright .<br>
+</p>
+  </div>
+  
+  <div class="footer-item">
+    <p class="sphinx-version">
+Created using <a href="http://sphinx-doc.org/">Sphinx</a> 5.3.0.<br>
+</p>
+  </div>
+  
+</div>
+</footer>
+  </body>
+</html>
