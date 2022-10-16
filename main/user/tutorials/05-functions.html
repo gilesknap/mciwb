@@ -1,0 +1,678 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+    <title>Functions &#8212; mciwb 0.7.2.dev67+g7437e38 documentation</title>
+<script>
+  document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+  document.documentElement.dataset.theme = localStorage.getItem("theme") || "light"
+</script>
+
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=92025949c220c2e29695" rel="stylesheet">
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=92025949c220c2e29695" rel="stylesheet">
+
+
+  <link rel="stylesheet"
+    href="../../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
+
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=92025949c220c2e29695">
+
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/clipboard.min.js"></script>
+    <script src="../../_static/copybutton.js"></script>
+    <script src="../../_static/design-tabs.js"></script>
+    <link rel="shortcut icon" href="../../_static/logo.png"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Modules and Packages" href="05a-modules.html" />
+    <link rel="prev" title="Loops" href="04-loops.html" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="docsearch:language" content="en">
+  </head>
+  
+  
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="180" data-default-mode="">
+    <div class="bd-header-announcement container-fluid" id="banner">
+      
+
+    </div>
+
+    
+    <nav class="bd-header navbar navbar-light navbar-expand-lg bg-light fixed-top bd-navbar" id="navbar-main"><div class="bd-header__inner container-xl">
+
+  <div id="navbar-start">
+    
+    
+  
+
+
+<a class="navbar-brand logo" href="../../index.html">
+  
+  
+  
+  
+    <img src="../../_static/logo.png" class="logo__image only-light" alt="Logo image">
+    <img src="../../_static/logo.png" class="logo__image only-dark" alt="Logo image">
+  
+  
+    <p class="title logo__title">mciwb</p>
+  
+</a>
+    
+  </div>
+
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-collapsible" aria-controls="navbar-collapsible" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="fas fa-bars"></span>
+  </button>
+
+  
+  <div id="navbar-collapsible" class="col-lg-9 collapse navbar-collapse">
+    <div id="navbar-center" class="mr-auto">
+      
+      <div class="navbar-center-item">
+        <ul id="navbar-main-elements" class="navbar-nav">
+    <li class="toctree-l1 current active nav-item">
+ <a class="reference internal nav-link" href="../index.html">
+  User Guide
+ </a>
+</li>
+
+<li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="../../developer/index.html">
+  Developer Guide
+ </a>
+</li>
+
+    
+    <li class="nav-item">
+        <a class="nav-link nav-external" href="https://github.com/gilesknap/mciwb/releases">Release Notes<i class="fas fa-external-link-alt"></i></a>
+    </li>
+    
+</ul>
+      </div>
+      
+    </div>
+
+    <div id="navbar-end">
+      
+      <div class="navbar-end-item">
+        <span id="theme-switch" class="btn btn-sm btn-outline-primary navbar-btn rounded-circle">
+    <a class="theme-switch" data-mode="light"><i class="fas fa-sun"></i></a>
+    <a class="theme-switch" data-mode="dark"><i class="far fa-moon"></i></a>
+    <a class="theme-switch" data-mode="auto"><i class="fas fa-adjust"></i></a>
+</span>
+      </div>
+      
+      <div class="navbar-end-item">
+        <ul id="navbar-icon-links" class="navbar-nav" aria-label="Icon Links">
+        <li class="nav-item">
+          <a class="nav-link" href="https://github.com/gilesknap/mciwb" rel="noopener" target="_blank" title="GitHub"><span><i class="fab fa-github-square"></i></span>
+            <label class="sr-only">GitHub</label></a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="https://pypi.org/project/mciwb" rel="noopener" target="_blank" title="PyPI"><span><i class="fas fa-cube"></i></span>
+            <label class="sr-only">PyPI</label></a>
+        </li>
+      </ul>
+      </div>
+      
+      <div class="navbar-end-item">
+        <div class="dropdown" id="version_switcher">
+    <button type="button" class="btn btn-sm navbar-btn dropdown-toggle" id="version_switcher_button" data-toggle="dropdown">
+        main  <!-- this text may get changed later by javascript -->
+        <span class="caret"></span>
+    </button>
+    <div id="version_switcher_menu" class="dropdown-menu list-group-flush py-0" aria-labelledby="version_switcher_button">
+    <!-- dropdown will be populated by javascript on page load -->
+    </div>
+</div>
+
+<!-- NOTE: this JS must live here (not in our global JS file) because it relies
+     on being processed by Jinja before it is run (specifically for replacing
+     variables user/tutorials/05-functions and {'json_url': 'https://gilesknap.github.io/mciwb/switcher.json', 'version_match': 'main'}.
+-->
+
+<script type="text/javascript">
+// Check if corresponding page path exists in other version of docs
+// and, if so, go there instead of the homepage of the other docs version
+function checkPageExistsAndRedirect(event) {
+    const currentFilePath = "user/tutorials/05-functions.html",
+          tryUrl = event.target.getAttribute("href");
+    let otherDocsHomepage = tryUrl.replace(currentFilePath, "");
+    $.ajax({
+        type: 'HEAD',
+        url: tryUrl,
+        // if the page exists, go there
+        success: function() {
+            location.href = tryUrl;
+        }
+    }).fail(function() {
+        location.href = otherDocsHomepage;
+    });
+    // this prevents the browser from following the href of the clicked node
+    // (which is fine because this function takes care of redirecting)
+    return false;
+}
+
+// Populate the version switcher from the JSON config file
+(function () {
+    $.getJSON("https://gilesknap.github.io/mciwb/switcher.json", function(data, textStatus, jqXHR) {
+        const currentFilePath = "user/tutorials/05-functions.html";
+        let btn = document.getElementById("version_switcher_button");
+        // Set empty strings by default so that these attributes exist and can be used in CSS selectors
+        btn.dataset["activeVersionName"] = "";
+        btn.dataset["activeVersion"] = "";
+        // create links to the corresponding page in the other docs versions
+        $.each(data, function(index, entry) {
+            // if no custom name specified (e.g., "latest"), use version string
+            if (!("name" in entry)) {
+                entry.name = entry.version;
+            }
+            // create the node
+            const node = document.createElement("a");
+            node.setAttribute("class", "list-group-item list-group-item-action py-1");
+            node.textContent = `${entry.name}`;
+            node.setAttribute("href", `${entry.url}${currentFilePath}`);
+            // on click, AJAX calls will check if the linked page exists before
+            // trying to redirect, and if not, will redirect to the homepage
+            // for that version of the docs.
+            node.onclick = checkPageExistsAndRedirect;
+            // Add dataset values for the version and name in case people want
+            // to apply CSS styling based on this information.
+            node.dataset["versionName"] = entry.name;
+            node.dataset["version"] = entry.version;
+
+            $("#version_switcher_menu").append(node);
+            // replace dropdown button text with the preferred display name of
+            // this version, rather than using sphinx's main variable.
+            // also highlight the dropdown entry for the currently-viewed
+            // version's entry
+            if (entry.version == "main") {
+                node.classList.add("active");
+                btn.innerText = btn.dataset["activeVersionName"] = entry.name;
+                btn.dataset["activeVersion"] = entry.version;
+            }
+        });
+    });
+})();
+</script>
+      </div>
+      
+    </div>
+  </div>
+</div>
+    </nav>
+    
+
+    <div class="bd-container container-xl">
+      <div class="bd-container__inner row">
+          
+
+<!-- Only show if we have sidebars configured, else just a small margin  -->
+<div class="bd-sidebar-primary col-12 col-md-3 bd-sidebar">
+  <div class="sidebar-start-items"><form class="bd-search d-flex align-items-center" action="../../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
+  <div class="bd-toc-item active">
+    <p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Tutorials
+ </span>
+</p>
+<ul class="current nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="00-prereq.html">
+   Introduction
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="01-setup.html">
+   Installation
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="02-orientation.html">
+   Orientation
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="03-variables.html">
+   Python Variables
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="04-loops.html">
+   Loops
+  </a>
+ </li>
+ <li class="toctree-l1 current active">
+  <a class="current reference internal" href="#">
+   Functions
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="05a-modules.html">
+   Modules and Packages
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="06-if-then.html">
+   If - Else
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="07-lists.html">
+   Lists
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="08-classes.html">
+   Classes
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="09-dictionaries.html">
+   Dictionaries
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  How-to Guides
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../how-to/startup.html">
+   Setup for each Tutorial
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../how-to/completion.html">
+   Command Completion
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../how-to/extensions.html">
+   VSCode Extensions
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../how-to/troubleshooting.html">
+   Troubleshooting
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../how-to/backup.html">
+   Backup and Restore
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../how-to/wsl2.html">
+   Windows Subsystem for Linux
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../how-to/coordinates.html">
+   Discovering the Coordinates of a Block
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../how-to/run-container.html">
+   Run in a container
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Explanations
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../explanations/docs-structure.html">
+   About the documentation
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../explanations/scope.html">
+   Variable Scope
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../explanations/server-config.html">
+   Minecraft Server Config
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../explanations/coordinates.html">
+   Minecraft’s Coordinate System
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../explanations/mcipc.html">
+   MCIPC Client object
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Reference
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../reference/index.html">
+   Finding Things
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../reference/api.html">
+   MCIWB API
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../reference/demo.html">
+   Demo Code
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../genindex.html">
+   Index
+  </a>
+ </li>
+</ul>
+
+  </div>
+</nav>
+  </div>
+  <div class="sidebar-end-items">
+  </div>
+</div>
+
+
+          
+
+
+<div class="bd-sidebar-secondary d-none d-xl-block col-xl-2 bd-toc">
+  
+    
+    <div class="toc-item">
+      
+<div class="tocsection onthispage mt-5 pt-1 pb-3">
+    <i class="fas fa-list"></i> On this page
+</div>
+
+<nav id="bd-toc-nav">
+    <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#introduction">
+   Introduction
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#simple-function">
+   Simple Function
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#variable-naming">
+   Variable Naming
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#pagoda-function">
+   Pagoda Function
+  </a>
+ </li>
+</ul>
+
+</nav>
+    </div>
+    
+    <div class="toc-item">
+      
+
+<div class="tocsection editthispage">
+    <a href="https://github.com/gilesknap/mciwb/edit/main/docs/user/tutorials/05-functions.rst">
+        <i class="fas fa-pencil-alt"></i> Edit this page
+    </a>
+</div>
+
+    </div>
+    
+  
+</div>
+
+
+          
+          
+          <div class="bd-content col-12 col-md-9 col-xl-7">
+              
+              <article class="bd-article" role="main">
+                
+  <section id="functions">
+<h1>Functions<a class="headerlink" href="#functions" title="Permalink to this heading">#</a></h1>
+<section id="introduction">
+<h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this heading">#</a></h2>
+<p>In this tutorial we are going to start to create a few buildings for our village.
+We will expand on the types of buildings in later tutorials as we learn new
+features of Python.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Before starting it is worth making a backup of your world. We will be
+creating lost of test buildings and it would be good to be able to
+reset back to the original state. See <a class="reference internal" href="../how-to/backup.html#backups"><span class="std std-ref">Backups of mciwb-server</span></a>.</p>
+</div>
+<p>To do this we will learn to use functions to packaged up our code into
+reusable chunks. In the next tutorial will also learn to save our code in
+Python modules so that we don’t need to do typing or pasting code all
+of the time.</p>
+</section>
+<section id="simple-function">
+<h2>Simple Function<a class="headerlink" href="#simple-function" title="Permalink to this heading">#</a></h2>
+<p>A function is a named block of code with some parameters and a return value.
+Parameters are variables that are set by the code that calls the function.
+The return value is passed back to the calling code.</p>
+<p>Try typing (or pasting) this very simple function</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">age</span><span class="p">(</span><span class="n">birth_year</span><span class="p">,</span> <span class="n">current_year</span><span class="o">=</span><span class="mi">2022</span><span class="p">):</span>
+    <span class="n">calculated_age</span> <span class="o">=</span> <span class="n">current_year</span> <span class="o">-</span> <span class="n">birth_year</span>
+    <span class="k">return</span> <span class="n">calculated_age</span>
+</pre></div>
+</div>
+<p>When you hit enter after typing the function definition above nothing appears
+to happen. But you have created a function which you can now call like this:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">my_age</span> <span class="o">=</span> <span class="n">age</span><span class="p">(</span><span class="mi">1964</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">my_age</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>If you substitute your  own birth_year value this function will print your
+age at the end of the year 2022.</p>
+<p><code class="docutils literal notranslate"><span class="pre">age(1964)</span></code> calls the function defined above and passes 1964 for the
+value of <code class="docutils literal notranslate"><span class="pre">birth_year</span></code>. It does not pass a value for the parameter
+<code class="docutils literal notranslate"><span class="pre">current_year</span></code>. The default value for <code class="docutils literal notranslate"><span class="pre">current_year</span></code> was set to 2022.</p>
+<p>The function performs a <code class="docutils literal notranslate"><span class="pre">-</span></code> subtraction operation, taking the value of
+<code class="docutils literal notranslate"><span class="pre">current_year</span></code> and subtracting the value of <code class="docutils literal notranslate"><span class="pre">birth_year</span></code>. The result
+is assigned into <code class="docutils literal notranslate"><span class="pre">calculated_age</span></code> with <code class="docutils literal notranslate"><span class="pre">=</span></code>.</p>
+<p>The function uses <code class="docutils literal notranslate"><span class="pre">return</span></code> to pass the value of <code class="docutils literal notranslate"><span class="pre">calculated_age</span></code> back to
+the caller. Our caller assigns the returned value to a variable called
+<code class="docutils literal notranslate"><span class="pre">my_age</span></code> and prints it out.</p>
+<p>Now if you don’t want to use the default of 2022 (when this tutorial was
+written) you can pass your own value for <code class="docutils literal notranslate"><span class="pre">current_year</span></code>. e.g. to find
+out how old you were when the first Apple Mac was released:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">age</span><span class="p">(</span><span class="mi">1964</span><span class="p">,</span> <span class="n">current_year</span><span class="o">=</span><span class="mi">1984</span><span class="p">))</span>
+<span class="mi">20</span>
+</pre></div>
+</div>
+<p>Obviously if unlike me, you were born after 1984 you would get a negative
+result.</p>
+</section>
+<section id="variable-naming">
+<h2>Variable Naming<a class="headerlink" href="#variable-naming" title="Permalink to this heading">#</a></h2>
+<p>Notice the use of <code class="docutils literal notranslate"><span class="pre">_</span></code> in the variable names. This is used to separate words
+in the variable name. Typically variable names are lowercase with words separated
+by underscores. It is also legal to use uppercase letters and numbers in variable
+names (but a number must not be the first character).</p>
+</section>
+<section id="pagoda-function">
+<span id="pagoda"></span><h2>Pagoda Function<a class="headerlink" href="#pagoda-function" title="Permalink to this heading">#</a></h2>
+<p>Lets create a function that will create a pagoda. This function will have
+the following parameters that the caller can supply:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">pos</span></code> - the position of center of the base of the pagoda</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">width</span></code> - the width of the pagoda’s base (defaults to 4)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">floor_height</span></code> - the height of each floor (defaults to 4)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">item</span></code> - what blocks to use (defaults to gold block)</p></li>
+</ul>
+<p>For now we are just going to have some fun making pagodas. In the next
+tutorial we will look into the detail of how this function works.</p>
+<p>Try copying and pasting this function into your Python console.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">build_pagoda</span><span class="p">(</span><span class="n">pos</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">floor_height</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">item</span><span class="p">:</span> <span class="n">Item</span> <span class="o">=</span> <span class="n">Item</span><span class="o">.</span><span class="n">GOLD_BLOCK</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Create a pagoda out of blocks at the given position.</span>
+
+<span class="sd">    Each successive floor is narrower and each has a balcony at the top.</span>
+
+<span class="sd">    :param pos: position of the base of the pagoda</span>
+<span class="sd">    :param width: width of the base of the pagoda</span>
+<span class="sd">    :param floor_height: height of each floor</span>
+<span class="sd">    :param item: block to use for the base of the pagoda</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">c</span> <span class="o">=</span> <span class="n">get_client</span><span class="p">()</span>
+
+    <span class="c1"># calculate how many levels we can make if we reduce width by 2 each level</span>
+    <span class="n">levels</span> <span class="o">=</span> <span class="n">width</span> <span class="o">//</span> <span class="mi">2</span>
+
+    <span class="k">for</span> <span class="n">level</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">levels</span><span class="p">):</span>
+        <span class="c1"># calculate the width of the pagoda for this level</span>
+        <span class="n">floor_width</span> <span class="o">=</span> <span class="n">width</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">level</span>
+
+        <span class="c1"># calculate the base position of the walls for this level</span>
+        <span class="n">base</span> <span class="o">=</span> <span class="n">pos</span> <span class="o">+</span> <span class="n">Direction</span><span class="o">.</span><span class="n">UP</span> <span class="o">*</span> <span class="n">level</span> <span class="o">*</span> <span class="n">floor_height</span>
+
+        <span class="c1"># calculate the position of the balcony for this level</span>
+        <span class="c1"># it should surround the top layer of the walls for this level</span>
+        <span class="n">balcony</span> <span class="o">=</span> <span class="n">base</span> <span class="o">+</span> <span class="n">Direction</span><span class="o">.</span><span class="n">UP</span> <span class="o">*</span> <span class="p">(</span><span class="n">floor_height</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+
+        <span class="c1"># create the balcony for this level</span>
+        <span class="n">polygon</span><span class="p">(</span>
+            <span class="n">client</span><span class="o">=</span><span class="n">c</span><span class="p">,</span>
+            <span class="n">center</span><span class="o">=</span><span class="n">balcony</span><span class="p">,</span>
+            <span class="n">height</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+            <span class="n">diameter</span><span class="o">=</span><span class="n">floor_width</span> <span class="o">+</span> <span class="mi">2</span><span class="p">,</span>
+            <span class="n">sides</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
+            <span class="n">item</span><span class="o">=</span><span class="n">item</span><span class="p">,</span>
+            <span class="n">mode</span><span class="o">=</span><span class="n">FillMode</span><span class="o">.</span><span class="n">REPLACE</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="c1"># create the walls for this level</span>
+        <span class="n">polygon</span><span class="p">(</span>
+            <span class="n">client</span><span class="o">=</span><span class="n">c</span><span class="p">,</span>
+            <span class="n">center</span><span class="o">=</span><span class="n">base</span><span class="p">,</span>
+            <span class="n">height</span><span class="o">=</span><span class="n">floor_height</span><span class="p">,</span>
+            <span class="n">diameter</span><span class="o">=</span><span class="n">floor_width</span><span class="p">,</span>
+            <span class="n">sides</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
+            <span class="n">item</span><span class="o">=</span><span class="n">item</span><span class="p">,</span>
+            <span class="n">mode</span><span class="o">=</span><span class="n">FillMode</span><span class="o">.</span><span class="n">REPLACE</span><span class="p">,</span>
+        <span class="p">)</span>
+</pre></div>
+</div>
+<p>Now type in the following code in <strong>iPython</strong> to call your <code class="docutils literal notranslate"><span class="pre">build_pagoda</span></code>
+function:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">pagoda_pos</span><span class="o">=</span><span class="n">Vec3</span><span class="p">(</span><span class="mi">585</span><span class="p">,</span><span class="mi">71</span><span class="p">,</span><span class="o">-</span><span class="mi">1728</span><span class="p">)</span>
+<span class="n">build_pagoda</span><span class="p">(</span><span class="n">pagoda_pos</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">30</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>If your player then looks to the North from our spawn point you should
+see this:</p>
+<a class="reference internal image-reference" href="../../_images/pagoda.png"><img alt="pagoda" src="../../_images/pagoda.png" style="width: 800px;" /></a>
+<p>The <code class="docutils literal notranslate"><span class="pre">pagoda_pos</span></code> I chose is deliberately a little outside of our main village
+area. This is so that the massive building does not overshadow the village too
+much!</p>
+<dl class="simple">
+<dt>Exercise:</dt><dd><p>You could now do a backup of the world and experiment with building pagodas
+of different sizes and materials. Then restore your world after you are
+done experimenting.</p>
+</dd>
+</dl>
+<p>For the position of your pagodas you can always use <code class="docutils literal notranslate"><span class="pre">world.player.pos</span></code>
+in which case the
+pagoda will build around your player. But now might also be a good time to
+learn about discovering coordinates in the world. See <a class="reference internal" href="../how-to/coordinates.html"><span class="doc">Discovering the Coordinates of a Block</span></a></p>
+</section>
+</section>
+
+
+              </article>
+              
+
+              
+              <footer class="bd-footer-article">
+                  <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+  <a class='left-prev' id="prev-link" href="04-loops.html" title="previous page">
+      <i class="fas fa-angle-left"></i>
+      <div class="prev-next-info">
+          <p class="prev-next-subtitle">previous</p>
+          <p class="prev-next-title">Loops</p>
+      </div>
+  </a>
+  <a class='right-next' id="next-link" href="05a-modules.html" title="next page">
+  <div class="prev-next-info">
+      <p class="prev-next-subtitle">next</p>
+      <p class="prev-next-title">Modules and Packages</p>
+  </div>
+  <i class="fas fa-angle-right"></i>
+  </a>
+</div>
+              </footer>
+              
+          </div>
+          
+      </div>
+    </div>
+
+  
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../_static/scripts/pydata-sphinx-theme.js?digest=92025949c220c2e29695"></script>
+
+<footer class="bd-footer"><div class="bd-footer__inner container">
+  
+  <div class="footer-item">
+    <p class="copyright">
+    &copy; Copyright .<br>
+</p>
+  </div>
+  
+  <div class="footer-item">
+    <p class="sphinx-version">
+Created using <a href="http://sphinx-doc.org/">Sphinx</a> 5.3.0.<br>
+</p>
+  </div>
+  
+</div>
+</footer>
+  </body>
+</html>
