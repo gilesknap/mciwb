@@ -1,54 +1,54 @@
 [
   {
-    "name": "main",
+    "version": "main",
     "url": "https://gilesknap.github.io/mciwb/main/"
   },
   {
-    "name": "0.7.1",
+    "version": "0.7.1",
     "url": "https://gilesknap.github.io/mciwb/0.7.1/"
   },
   {
-    "name": "0.7.0",
+    "version": "0.7.0",
     "url": "https://gilesknap.github.io/mciwb/0.7.0/"
   },
   {
-    "name": "0.6.3",
+    "version": "0.6.3",
     "url": "https://gilesknap.github.io/mciwb/0.6.3/"
   },
   {
-    "name": "0.6.2",
+    "version": "0.6.2",
     "url": "https://gilesknap.github.io/mciwb/0.6.2/"
   },
   {
-    "name": "0.6.1",
+    "version": "0.6.1",
     "url": "https://gilesknap.github.io/mciwb/0.6.1/"
   },
   {
-    "name": "0.6.0",
+    "version": "0.6.0",
     "url": "https://gilesknap.github.io/mciwb/0.6.0/"
   },
   {
-    "name": "0.5.3",
+    "version": "0.5.3",
     "url": "https://gilesknap.github.io/mciwb/0.5.3/"
   },
   {
-    "name": "0.5.2",
+    "version": "0.5.2",
     "url": "https://gilesknap.github.io/mciwb/0.5.2/"
   },
   {
-    "name": "0.5.1",
+    "version": "0.5.1",
     "url": "https://gilesknap.github.io/mciwb/0.5.1/"
   },
   {
-    "name": "0.5",
+    "version": "0.5",
     "url": "https://gilesknap.github.io/mciwb/0.5/"
   },
   {
-    "name": "containers",
+    "version": "containers",
     "url": "https://gilesknap.github.io/mciwb/containers/"
   },
   {
-    "name": "dev",
+    "version": "dev",
     "url": "https://gilesknap.github.io/mciwb/dev/"
   }
 ]
