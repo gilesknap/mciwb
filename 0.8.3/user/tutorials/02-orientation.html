@@ -1,0 +1,712 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+    <title>Orientation &#8212; mciwb 0.8.3 documentation</title>
+<script>
+  document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+  document.documentElement.dataset.theme = localStorage.getItem("theme") || "light"
+</script>
+
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=92025949c220c2e29695" rel="stylesheet">
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=92025949c220c2e29695" rel="stylesheet">
+
+
+  <link rel="stylesheet"
+    href="../../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
+
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=92025949c220c2e29695">
+
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/clipboard.min.js"></script>
+    <script src="../../_static/copybutton.js"></script>
+    <script src="../../_static/design-tabs.js"></script>
+    <link rel="shortcut icon" href="../../_static/logo.png"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Python Variables" href="03-variables.html" />
+    <link rel="prev" title="Installation" href="01-setup.html" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="docsearch:language" content="en">
+  </head>
+  
+  
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="180" data-default-mode="">
+    <div class="bd-header-announcement container-fluid" id="banner">
+      
+
+    </div>
+
+    
+    <nav class="bd-header navbar navbar-light navbar-expand-lg bg-light fixed-top bd-navbar" id="navbar-main"><div class="bd-header__inner container-xl">
+
+  <div id="navbar-start">
+    
+    
+  
+
+
+<a class="navbar-brand logo" href="../../index.html">
+  
+  
+  
+  
+    <img src="../../_static/logo.png" class="logo__image only-light" alt="Logo image">
+    <img src="../../_static/logo.png" class="logo__image only-dark" alt="Logo image">
+  
+  
+    <p class="title logo__title">mciwb</p>
+  
+</a>
+    
+  </div>
+
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-collapsible" aria-controls="navbar-collapsible" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="fas fa-bars"></span>
+  </button>
+
+  
+  <div id="navbar-collapsible" class="col-lg-9 collapse navbar-collapse">
+    <div id="navbar-center" class="mr-auto">
+      
+      <div class="navbar-center-item">
+        <ul id="navbar-main-elements" class="navbar-nav">
+    <li class="toctree-l1 current active nav-item">
+ <a class="reference internal nav-link" href="../index.html">
+  User Guide
+ </a>
+</li>
+
+<li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="../../developer/index.html">
+  Developer Guide
+ </a>
+</li>
+
+    
+    <li class="nav-item">
+        <a class="nav-link nav-external" href="https://github.com/gilesknap/mciwb/releases">Release Notes<i class="fas fa-external-link-alt"></i></a>
+    </li>
+    
+</ul>
+      </div>
+      
+    </div>
+
+    <div id="navbar-end">
+      
+      <div class="navbar-end-item">
+        <span id="theme-switch" class="btn btn-sm btn-outline-primary navbar-btn rounded-circle">
+    <a class="theme-switch" data-mode="light"><i class="fas fa-sun"></i></a>
+    <a class="theme-switch" data-mode="dark"><i class="far fa-moon"></i></a>
+    <a class="theme-switch" data-mode="auto"><i class="fas fa-adjust"></i></a>
+</span>
+      </div>
+      
+      <div class="navbar-end-item">
+        <ul id="navbar-icon-links" class="navbar-nav" aria-label="Icon Links">
+        <li class="nav-item">
+          <a class="nav-link" href="https://github.com/gilesknap/mciwb" rel="noopener" target="_blank" title="GitHub"><span><i class="fab fa-github-square"></i></span>
+            <label class="sr-only">GitHub</label></a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="https://pypi.org/project/mciwb" rel="noopener" target="_blank" title="PyPI"><span><i class="fas fa-cube"></i></span>
+            <label class="sr-only">PyPI</label></a>
+        </li>
+      </ul>
+      </div>
+      
+      <div class="navbar-end-item">
+        <div class="dropdown" id="version_switcher">
+    <button type="button" class="btn btn-sm navbar-btn dropdown-toggle" id="version_switcher_button" data-toggle="dropdown">
+        0.8.3  <!-- this text may get changed later by javascript -->
+        <span class="caret"></span>
+    </button>
+    <div id="version_switcher_menu" class="dropdown-menu list-group-flush py-0" aria-labelledby="version_switcher_button">
+    <!-- dropdown will be populated by javascript on page load -->
+    </div>
+</div>
+
+<!-- NOTE: this JS must live here (not in our global JS file) because it relies
+     on being processed by Jinja before it is run (specifically for replacing
+     variables user/tutorials/02-orientation and {'json_url': 'https://gilesknap.github.io/mciwb/switcher.json', 'version_match': '0.8.3'}.
+-->
+
+<script type="text/javascript">
+// Check if corresponding page path exists in other version of docs
+// and, if so, go there instead of the homepage of the other docs version
+function checkPageExistsAndRedirect(event) {
+    const currentFilePath = "user/tutorials/02-orientation.html",
+          tryUrl = event.target.getAttribute("href");
+    let otherDocsHomepage = tryUrl.replace(currentFilePath, "");
+    $.ajax({
+        type: 'HEAD',
+        url: tryUrl,
+        // if the page exists, go there
+        success: function() {
+            location.href = tryUrl;
+        }
+    }).fail(function() {
+        location.href = otherDocsHomepage;
+    });
+    // this prevents the browser from following the href of the clicked node
+    // (which is fine because this function takes care of redirecting)
+    return false;
+}
+
+// Populate the version switcher from the JSON config file
+(function () {
+    $.getJSON("https://gilesknap.github.io/mciwb/switcher.json", function(data, textStatus, jqXHR) {
+        const currentFilePath = "user/tutorials/02-orientation.html";
+        let btn = document.getElementById("version_switcher_button");
+        // Set empty strings by default so that these attributes exist and can be used in CSS selectors
+        btn.dataset["activeVersionName"] = "";
+        btn.dataset["activeVersion"] = "";
+        // create links to the corresponding page in the other docs versions
+        $.each(data, function(index, entry) {
+            // if no custom name specified (e.g., "latest"), use version string
+            if (!("name" in entry)) {
+                entry.name = entry.version;
+            }
+            // create the node
+            const node = document.createElement("a");
+            node.setAttribute("class", "list-group-item list-group-item-action py-1");
+            node.textContent = `${entry.name}`;
+            node.setAttribute("href", `${entry.url}${currentFilePath}`);
+            // on click, AJAX calls will check if the linked page exists before
+            // trying to redirect, and if not, will redirect to the homepage
+            // for that version of the docs.
+            node.onclick = checkPageExistsAndRedirect;
+            // Add dataset values for the version and name in case people want
+            // to apply CSS styling based on this information.
+            node.dataset["versionName"] = entry.name;
+            node.dataset["version"] = entry.version;
+
+            $("#version_switcher_menu").append(node);
+            // replace dropdown button text with the preferred display name of
+            // this version, rather than using sphinx's 0.8.3 variable.
+            // also highlight the dropdown entry for the currently-viewed
+            // version's entry
+            if (entry.version == "0.8.3") {
+                node.classList.add("active");
+                btn.innerText = btn.dataset["activeVersionName"] = entry.name;
+                btn.dataset["activeVersion"] = entry.version;
+            }
+        });
+    });
+})();
+</script>
+      </div>
+      
+    </div>
+  </div>
+</div>
+    </nav>
+    
+
+    <div class="bd-container container-xl">
+      <div class="bd-container__inner row">
+          
+
+<!-- Only show if we have sidebars configured, else just a small margin  -->
+<div class="bd-sidebar-primary col-12 col-md-3 bd-sidebar">
+  <div class="sidebar-start-items"><form class="bd-search d-flex align-items-center" action="../../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
+  <div class="bd-toc-item active">
+    <p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Tutorials
+ </span>
+</p>
+<ul class="current nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="00-prereq.html">
+   Introduction
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="01-setup.html">
+   Installation
+  </a>
+ </li>
+ <li class="toctree-l1 current active">
+  <a class="current reference internal" href="#">
+   Orientation
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="03-variables.html">
+   Python Variables
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="04-loops.html">
+   Loops
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="05-functions.html">
+   Functions
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="05a-modules.html">
+   Modules and Packages
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="06-if-then.html">
+   If - Else
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="07-lists.html">
+   Lists
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="08-classes.html">
+   Classes
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="09-dictionaries.html">
+   Dictionaries
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  How-to Guides
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../how-to/startup.html">
+   Setup for each Tutorial
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../how-to/completion.html">
+   Command Completion
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../how-to/extensions.html">
+   VSCode Extensions
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../how-to/troubleshooting.html">
+   Troubleshooting
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../how-to/backup.html">
+   Backup and Restore
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../how-to/wsl2.html">
+   Windows Subsystem for Linux
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../how-to/coordinates.html">
+   Discovering the Coordinates of a Block
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../how-to/run-container.html">
+   Run in a container
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Explanations
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../explanations/docs-structure.html">
+   About the documentation
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../explanations/scope.html">
+   Variable Scope
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../explanations/server-config.html">
+   Minecraft Server Config
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../explanations/coordinates.html">
+   Minecraft’s Coordinate System
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../explanations/mcipc.html">
+   MCIPC Client object
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Reference
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../reference/index.html">
+   Finding Things
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../reference/api.html">
+   MCIWB API
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../reference/demo.html">
+   Demo Code
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../genindex.html">
+   Index
+  </a>
+ </li>
+</ul>
+
+  </div>
+</nav>
+  </div>
+  <div class="sidebar-end-items">
+  </div>
+</div>
+
+
+          
+
+
+<div class="bd-sidebar-secondary d-none d-xl-block col-xl-2 bd-toc">
+  
+    
+    <div class="toc-item">
+      
+<div class="tocsection onthispage mt-5 pt-1 pb-3">
+    <i class="fas fa-list"></i> On this page
+</div>
+
+<nav id="bd-toc-nav">
+    <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#introduction">
+   Introduction
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#get-a-minecraft-server-running">
+   Get a Minecraft Server Running
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#connect-your-client-to-the-server">
+   Connect your Client to the Server
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#connect-mciwb-to-your-minecraft-server">
+   Connect MCIWB to your Minecraft Server
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#try-out-some-action-signs">
+   Try out Some Action Signs
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#experimenting-with-ipython">
+   Experimenting with
+   <strong>
+    iPython
+   </strong>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#exiting-the-python-prompt">
+   Exiting the Python prompt
+  </a>
+ </li>
+</ul>
+
+</nav>
+    </div>
+    
+    <div class="toc-item">
+      
+
+<div class="tocsection editthispage">
+    <a href="https://github.com/gilesknap/mciwb/edit/0.8.3/docs/user/tutorials/02-orientation.rst">
+        <i class="fas fa-pencil-alt"></i> Edit this page
+    </a>
+</div>
+
+    </div>
+    
+  
+</div>
+
+
+          
+          
+          <div class="bd-content col-12 col-md-9 col-xl-7">
+              
+              <article class="bd-article" role="main">
+                
+  <section id="orientation">
+<h1>Orientation<a class="headerlink" href="#orientation" title="Permalink to this heading">#</a></h1>
+<section id="introduction">
+<h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this heading">#</a></h2>
+<p>In this tutorial We will just learn some of the background concepts needed to
+write code to do things in Minecraft. We will then use a couple
+of Python commands to get warmed up.</p>
+</section>
+<section id="get-a-minecraft-server-running">
+<h2>Get a Minecraft Server Running<a class="headerlink" href="#get-a-minecraft-server-running" title="Permalink to this heading">#</a></h2>
+<p>Make sure we are in the right folder and have the Environment activated:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>cd $HOME/my_world
+source .venv/bin/activate
+</pre></div>
+</div>
+<p>To start the default server, run the following command:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">mciwb</span> <span class="n">start</span>
+</pre></div>
+</div>
+<p>You should see the following output:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">INFO</span><span class="p">:</span>   <span class="n">Launching</span> <span class="n">existing</span> <span class="n">Minecraft</span> <span class="n">server</span> <span class="ow">in</span> <span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">giles</span><span class="o">/</span><span class="n">mciwb</span><span class="o">-</span><span class="n">server</span>
+<span class="n">INFO</span><span class="p">:</span>   <span class="n">Launching</span> <span class="n">Minecraft</span> <span class="n">Server</span> <span class="s1">&#39;mciwb-server&#39;</span> <span class="n">on</span> <span class="n">port</span> <span class="mi">20101</span> <span class="o">...</span>
+<span class="n">INFO</span><span class="p">:</span>   <span class="n">waiting</span> <span class="k">for</span> <span class="n">server</span> <span class="n">to</span> <span class="n">come</span> <span class="n">online</span> <span class="o">...</span>
+<span class="n">INFO</span><span class="p">:</span>   <span class="n">Server</span> <span class="n">mciwb</span><span class="o">-</span><span class="n">server</span> <span class="ow">is</span> <span class="n">online</span> <span class="n">on</span> <span class="n">port</span> <span class="mi">20101</span>
+</pre></div>
+</div>
+<p>If this does not work take a look in <a class="reference internal" href="../how-to/troubleshooting.html#troubleshooting"><span class="std std-ref">Troubleshooting</span></a>.</p>
+</section>
+<section id="connect-your-client-to-the-server">
+<h2>Connect your Client to the Server<a class="headerlink" href="#connect-your-client-to-the-server" title="Permalink to this heading">#</a></h2>
+<p>Now you are ready to connect your client to the server. Go back to the
+Minecraft client that we started in Tutorial 01 or relaunch
+“Minecraft Launcher” from the start menu.</p>
+<p>Make sure “Minecraft Java Edition” is selected on the left and click
+“Play”.</p>
+<p>Now choose the “Multiplayer” option and click “Add Server”. You will
+see a screen like this:</p>
+<figure class="align-center" id="id1">
+<a class="reference internal image-reference" href="../../_images/server_address.png"><img alt="Server Address" src="../../_images/server_address.png" style="width: 400px;" /></a>
+<figcaption>
+<p><span class="caption-text">Set Up the Minecraft Server Connection</span><a class="headerlink" href="#id1" title="Permalink to this image">#</a></p>
+</figcaption>
+</figure>
+<p>Input a server name and the server address.
+You can make the Server Name whatever you like. The Server Address must be:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">localhost</span><span class="p">:</span><span class="mi">20101</span>
+</pre></div>
+</div>
+<p>Click “Done”, select your new Server and click “Join Server”.</p>
+<p>Your player should appear in the new world on a desert next to an ocean
+filled with beautiful corals. I chose this starting location as it is
+relatively flat and a good place to try some programming ideas, yet has
+quite nice scenery.</p>
+<p>If you have not played Minecraft before then take some time to familiarize
+yourself with the controls and game play. You may find
+<a class="reference external" href="https://minecraft.fandom.com/wiki/Tutorials/Beginner%27s_guide">this wiki</a>
+useful if you are a beginner. When you are really to move on type the
+command <code class="docutils literal notranslate"><span class="pre">/kill</span></code> to return to the spawn point.</p>
+</section>
+<section id="connect-mciwb-to-your-minecraft-server">
+<h2>Connect MCIWB to your Minecraft Server<a class="headerlink" href="#connect-mciwb-to-your-minecraft-server" title="Permalink to this heading">#</a></h2>
+<p>Now you are ready to connect MCIWB to the same server that your player is
+inside. It is probably best at this point to arrange the windows on your screen
+so that you can see both Minecraft and VSCode.</p>
+<p>Simply type this command at the <code class="docutils literal notranslate"><span class="pre">bash</span></code> prompt in VSCode, replace
+&lt;player_name&gt; with your player’s name:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">mciwb</span> <span class="n">shell</span> <span class="o">--</span><span class="n">player</span> <span class="o">&lt;</span><span class="n">player_name</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<p>You should see output like this:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">INFO</span><span class="p">:</span>   <span class="n">Connected</span> <span class="n">to</span> <span class="n">localhost</span> <span class="n">on</span> <span class="mi">20100</span>
+<span class="n">INFO</span><span class="p">:</span>   <span class="n">Monitoring</span> <span class="n">player</span> <span class="n">TransformerScorn</span> <span class="n">enabled</span> <span class="k">for</span> <span class="n">sign</span> <span class="n">commands</span>
+<span class="n">INFO</span><span class="p">:</span>   <span class="c1">######### Starting Interactive Session ##########</span>
+
+<span class="n">Python</span> <span class="mf">3.9.5</span> <span class="p">(</span><span class="n">default</span><span class="p">,</span> <span class="n">Nov</span> <span class="mi">23</span> <span class="mi">2021</span><span class="p">,</span> <span class="mi">15</span><span class="p">:</span><span class="mi">27</span><span class="p">:</span><span class="mi">38</span><span class="p">)</span>
+<span class="n">Type</span> <span class="s1">&#39;copyright&#39;</span><span class="p">,</span> <span class="s1">&#39;credits&#39;</span> <span class="ow">or</span> <span class="s1">&#39;license&#39;</span> <span class="k">for</span> <span class="n">more</span> <span class="n">information</span>
+<span class="n">IPython</span> <span class="mf">8.4.0</span> <span class="o">--</span> <span class="n">An</span> <span class="n">enhanced</span> <span class="n">Interactive</span> <span class="n">Python</span><span class="o">.</span> <span class="n">Type</span> <span class="s1">&#39;?&#39;</span> <span class="k">for</span> <span class="n">help</span><span class="o">.</span>
+
+<span class="n">In</span> <span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+</pre></div>
+</div>
+<p>The prompt at the end is the Python Interactive Shell known as <strong>iPython</strong>.
+In a moment we will
+start to type some Python commands at this prompt.</p>
+<p>You should see only the INFO: outputs shown above. If you see
+ERROR: or WARNING: then take a look at <a class="reference internal" href="../how-to/troubleshooting.html#troubleshooting"><span class="std std-ref">Troubleshooting</span></a>. If that does not
+help then please create a new issue at <a class="reference external" href="https://github.com/gilesknap/mciwb/issues">https://github.com/gilesknap/mciwb/issues</a>
+and I will help you.</p>
+</section>
+<section id="try-out-some-action-signs">
+<span id="signs-try"></span><h2>Try out Some Action Signs<a class="headerlink" href="#try-out-some-action-signs" title="Permalink to this heading">#</a></h2>
+<p>One feature of MCIWB is that it allows you to set up action signs. These
+are signs that your player can place in the world and they will call
+some Python code and tell the code which block they were placed on.</p>
+<p>MCIWB comes pre-configured with some action signs that let you cut and paste
+volumes of blocks. When you told MCIWB to interact with your player it
+automatically gives you one of each of the currently configure action signs.</p>
+<p>You can also create your own action signs and we will do
+this in a later tutorial.</p>
+<p>For now we shall try out the copy and paste signs to have a go at flattening
+an area around the spawn point, ready for us to do some building with
+Python code.</p>
+<p>To use the signs:</p>
+<ul class="simple">
+<li><p>Place a <code class="docutils literal notranslate"><span class="pre">select</span></code> sign at two opposite corners of a volume of blocks. This
+selects the volume for copying.</p></li>
+<li><p>Place a <code class="docutils literal notranslate"><span class="pre">paste</span></code> sign at the point you would like to paste a copy of the
+volume</p></li>
+<li><p>Note that the last select is the ‘anchor’, it is corner of your volume that
+will be placed at the paste point</p></li>
+<li><p>Place a <code class="docutils literal notranslate"><span class="pre">clear</span></code> sign anywhere to clear out the current selected volume</p></li>
+</ul>
+<p>Note that the sign must be directly in front of your player to get activated,
+you can tell it is activated when it disappears.</p>
+<iframe width="700" height="600" src="https://www.youtube.com/embed/5LYezCAHJts?start=1" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe><p class="centered">
+<strong><em>Cut and Paste Signs Demo</em></strong></p><p>The above video is a demo of flattening out the area around the spawn point
+using copy and paste. First I select a large area of sandy floor and then I
+keep pasting it until I have a nice flat area to start working with.</p>
+</section>
+<section id="experimenting-with-ipython">
+<span id="experiment"></span><h2>Experimenting with <strong>iPython</strong><a class="headerlink" href="#experimenting-with-ipython" title="Permalink to this heading">#</a></h2>
+<p><strong>iPython</strong> stands for Interactive Python. We already saw that we
+can connect to a Minecraft server and get an Interactive Python shell prompt
+by typing the following command in the VSCode terminal:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">mciwb</span> <span class="n">shell</span> <span class="o">--</span><span class="n">player</span> <span class="o">&lt;</span><span class="n">player_name</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<p>Let’s try out a couple of commands on the <strong>iPython</strong> prompt. You don’t need
+to understand the detail of this yet, we’ll introduced the programming
+concepts used here gradually over the next few tutorials.</p>
+<p>The starting point for many MCIWB <strong>iPython</strong> interactions is <code class="docutils literal notranslate"><span class="pre">world</span></code>.</p>
+<p>For example you can find out your player’s position in the world with:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">In</span> <span class="p">[</span><span class="mi">3</span><span class="p">]:</span> <span class="n">world</span><span class="o">.</span><span class="n">player</span><span class="o">.</span><span class="n">pos</span>
+<span class="n">Out</span><span class="p">[</span><span class="mi">3</span><span class="p">]:</span> <span class="n">Vec3</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="mi">622</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mi">73</span><span class="p">,</span> <span class="n">z</span><span class="o">=-</span><span class="mi">1652</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Notice that interactive Python prefixes each line with <strong>In</strong> or <strong>Out</strong>
+depending on
+whether it is input that you provide or output that is the result of executing
+your input.</p>
+<p>The above example output labelled <code class="docutils literal notranslate"><span class="pre">Out[3]</span></code> shows that my player is at the
+world spawn point x=622, y=73, z=-1652.</p>
+<p>The world <code class="docutils literal notranslate"><span class="pre">set_block</span></code> function will place a block in the world.
+The item <code class="docutils literal notranslate"><span class="pre">Item</span></code> type provides a list of all the known block types.
+You can use these as follows to place a block:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">world</span><span class="o">.</span><span class="n">set_block</span><span class="p">(</span><span class="n">world</span><span class="o">.</span><span class="n">player</span><span class="o">.</span><span class="n">pos</span><span class="p">,</span> <span class="n">Item</span><span class="o">.</span><span class="n">BEDROCK</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This causes your player to get moved by a lump of bedrock appearing at their
+feet. You can also try this command which tells you what type of block your
+player is standing on.:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">In</span> <span class="p">[</span><span class="mi">5</span><span class="p">]:</span> <span class="n">world</span><span class="o">.</span><span class="n">get_block</span><span class="p">(</span><span class="n">world</span><span class="o">.</span><span class="n">player</span><span class="o">.</span><span class="n">pos</span> <span class="o">+</span> <span class="n">Direction</span><span class="o">.</span><span class="n">DOWN</span><span class="p">)</span>
+<span class="n">Out</span><span class="p">[</span><span class="mi">5</span><span class="p">]:</span> <span class="o">&lt;</span><span class="n">Item</span><span class="o">.</span><span class="n">SAND</span><span class="p">:</span> <span class="s1">&#39;sand&#39;</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<p>Here we also used <code class="docutils literal notranslate"><span class="pre">Direction</span></code> which provides a list of all the possible
+directions. By adding <code class="docutils literal notranslate"><span class="pre">Direction.DOWN</span></code> to our player’s position we get
+the block directly below our player.</p>
+</section>
+<section id="exiting-the-python-prompt">
+<h2>Exiting the Python prompt<a class="headerlink" href="#exiting-the-python-prompt" title="Permalink to this heading">#</a></h2>
+<p>To exit the <strong>iPython</strong> prompt type <code class="docutils literal notranslate"><span class="pre">&lt;ctrl&gt;</span> <span class="pre">D`</span></code></p>
+<p>This will exit <strong>iPython</strong> and return you to your <code class="docutils literal notranslate"><span class="pre">bash</span></code>
+terminal prompt.</p>
+</section>
+</section>
+
+
+              </article>
+              
+
+              
+              <footer class="bd-footer-article">
+                  <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+  <a class='left-prev' id="prev-link" href="01-setup.html" title="previous page">
+      <i class="fas fa-angle-left"></i>
+      <div class="prev-next-info">
+          <p class="prev-next-subtitle">previous</p>
+          <p class="prev-next-title">Installation</p>
+      </div>
+  </a>
+  <a class='right-next' id="next-link" href="03-variables.html" title="next page">
+  <div class="prev-next-info">
+      <p class="prev-next-subtitle">next</p>
+      <p class="prev-next-title">Python Variables</p>
+  </div>
+  <i class="fas fa-angle-right"></i>
+  </a>
+</div>
+              </footer>
+              
+          </div>
+          
+      </div>
+    </div>
+
+  
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../_static/scripts/pydata-sphinx-theme.js?digest=92025949c220c2e29695"></script>
+
+<footer class="bd-footer"><div class="bd-footer__inner container">
+  
+  <div class="footer-item">
+    <p class="copyright">
+    &copy; Copyright .<br>
+</p>
+  </div>
+  
+  <div class="footer-item">
+    <p class="sphinx-version">
+Created using <a href="http://sphinx-doc.org/">Sphinx</a> 5.3.0.<br>
+</p>
+  </div>
+  
+</div>
+</footer>
+  </body>
+</html>

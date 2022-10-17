@@ -1,0 +1,856 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+    <title>If - Else &#8212; mciwb 0.8.3 documentation</title>
+<script>
+  document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+  document.documentElement.dataset.theme = localStorage.getItem("theme") || "light"
+</script>
+
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=92025949c220c2e29695" rel="stylesheet">
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=92025949c220c2e29695" rel="stylesheet">
+
+
+  <link rel="stylesheet"
+    href="../../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
+
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=92025949c220c2e29695">
+
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/clipboard.min.js"></script>
+    <script src="../../_static/copybutton.js"></script>
+    <script src="../../_static/design-tabs.js"></script>
+    <link rel="shortcut icon" href="../../_static/logo.png"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Lists" href="07-lists.html" />
+    <link rel="prev" title="Modules and Packages" href="05a-modules.html" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="docsearch:language" content="en">
+  </head>
+  
+  
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="180" data-default-mode="">
+    <div class="bd-header-announcement container-fluid" id="banner">
+      
+
+    </div>
+
+    
+    <nav class="bd-header navbar navbar-light navbar-expand-lg bg-light fixed-top bd-navbar" id="navbar-main"><div class="bd-header__inner container-xl">
+
+  <div id="navbar-start">
+    
+    
+  
+
+
+<a class="navbar-brand logo" href="../../index.html">
+  
+  
+  
+  
+    <img src="../../_static/logo.png" class="logo__image only-light" alt="Logo image">
+    <img src="../../_static/logo.png" class="logo__image only-dark" alt="Logo image">
+  
+  
+    <p class="title logo__title">mciwb</p>
+  
+</a>
+    
+  </div>
+
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-collapsible" aria-controls="navbar-collapsible" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="fas fa-bars"></span>
+  </button>
+
+  
+  <div id="navbar-collapsible" class="col-lg-9 collapse navbar-collapse">
+    <div id="navbar-center" class="mr-auto">
+      
+      <div class="navbar-center-item">
+        <ul id="navbar-main-elements" class="navbar-nav">
+    <li class="toctree-l1 current active nav-item">
+ <a class="reference internal nav-link" href="../index.html">
+  User Guide
+ </a>
+</li>
+
+<li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="../../developer/index.html">
+  Developer Guide
+ </a>
+</li>
+
+    
+    <li class="nav-item">
+        <a class="nav-link nav-external" href="https://github.com/gilesknap/mciwb/releases">Release Notes<i class="fas fa-external-link-alt"></i></a>
+    </li>
+    
+</ul>
+      </div>
+      
+    </div>
+
+    <div id="navbar-end">
+      
+      <div class="navbar-end-item">
+        <span id="theme-switch" class="btn btn-sm btn-outline-primary navbar-btn rounded-circle">
+    <a class="theme-switch" data-mode="light"><i class="fas fa-sun"></i></a>
+    <a class="theme-switch" data-mode="dark"><i class="far fa-moon"></i></a>
+    <a class="theme-switch" data-mode="auto"><i class="fas fa-adjust"></i></a>
+</span>
+      </div>
+      
+      <div class="navbar-end-item">
+        <ul id="navbar-icon-links" class="navbar-nav" aria-label="Icon Links">
+        <li class="nav-item">
+          <a class="nav-link" href="https://github.com/gilesknap/mciwb" rel="noopener" target="_blank" title="GitHub"><span><i class="fab fa-github-square"></i></span>
+            <label class="sr-only">GitHub</label></a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="https://pypi.org/project/mciwb" rel="noopener" target="_blank" title="PyPI"><span><i class="fas fa-cube"></i></span>
+            <label class="sr-only">PyPI</label></a>
+        </li>
+      </ul>
+      </div>
+      
+      <div class="navbar-end-item">
+        <div class="dropdown" id="version_switcher">
+    <button type="button" class="btn btn-sm navbar-btn dropdown-toggle" id="version_switcher_button" data-toggle="dropdown">
+        0.8.3  <!-- this text may get changed later by javascript -->
+        <span class="caret"></span>
+    </button>
+    <div id="version_switcher_menu" class="dropdown-menu list-group-flush py-0" aria-labelledby="version_switcher_button">
+    <!-- dropdown will be populated by javascript on page load -->
+    </div>
+</div>
+
+<!-- NOTE: this JS must live here (not in our global JS file) because it relies
+     on being processed by Jinja before it is run (specifically for replacing
+     variables user/tutorials/06-if-then and {'json_url': 'https://gilesknap.github.io/mciwb/switcher.json', 'version_match': '0.8.3'}.
+-->
+
+<script type="text/javascript">
+// Check if corresponding page path exists in other version of docs
+// and, if so, go there instead of the homepage of the other docs version
+function checkPageExistsAndRedirect(event) {
+    const currentFilePath = "user/tutorials/06-if-then.html",
+          tryUrl = event.target.getAttribute("href");
+    let otherDocsHomepage = tryUrl.replace(currentFilePath, "");
+    $.ajax({
+        type: 'HEAD',
+        url: tryUrl,
+        // if the page exists, go there
+        success: function() {
+            location.href = tryUrl;
+        }
+    }).fail(function() {
+        location.href = otherDocsHomepage;
+    });
+    // this prevents the browser from following the href of the clicked node
+    // (which is fine because this function takes care of redirecting)
+    return false;
+}
+
+// Populate the version switcher from the JSON config file
+(function () {
+    $.getJSON("https://gilesknap.github.io/mciwb/switcher.json", function(data, textStatus, jqXHR) {
+        const currentFilePath = "user/tutorials/06-if-then.html";
+        let btn = document.getElementById("version_switcher_button");
+        // Set empty strings by default so that these attributes exist and can be used in CSS selectors
+        btn.dataset["activeVersionName"] = "";
+        btn.dataset["activeVersion"] = "";
+        // create links to the corresponding page in the other docs versions
+        $.each(data, function(index, entry) {
+            // if no custom name specified (e.g., "latest"), use version string
+            if (!("name" in entry)) {
+                entry.name = entry.version;
+            }
+            // create the node
+            const node = document.createElement("a");
+            node.setAttribute("class", "list-group-item list-group-item-action py-1");
+            node.textContent = `${entry.name}`;
+            node.setAttribute("href", `${entry.url}${currentFilePath}`);
+            // on click, AJAX calls will check if the linked page exists before
+            // trying to redirect, and if not, will redirect to the homepage
+            // for that version of the docs.
+            node.onclick = checkPageExistsAndRedirect;
+            // Add dataset values for the version and name in case people want
+            // to apply CSS styling based on this information.
+            node.dataset["versionName"] = entry.name;
+            node.dataset["version"] = entry.version;
+
+            $("#version_switcher_menu").append(node);
+            // replace dropdown button text with the preferred display name of
+            // this version, rather than using sphinx's 0.8.3 variable.
+            // also highlight the dropdown entry for the currently-viewed
+            // version's entry
+            if (entry.version == "0.8.3") {
+                node.classList.add("active");
+                btn.innerText = btn.dataset["activeVersionName"] = entry.name;
+                btn.dataset["activeVersion"] = entry.version;
+            }
+        });
+    });
+})();
+</script>
+      </div>
+      
+    </div>
+  </div>
+</div>
+    </nav>
+    
+
+    <div class="bd-container container-xl">
+      <div class="bd-container__inner row">
+          
+
+<!-- Only show if we have sidebars configured, else just a small margin  -->
+<div class="bd-sidebar-primary col-12 col-md-3 bd-sidebar">
+  <div class="sidebar-start-items"><form class="bd-search d-flex align-items-center" action="../../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
+  <div class="bd-toc-item active">
+    <p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Tutorials
+ </span>
+</p>
+<ul class="current nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="00-prereq.html">
+   Introduction
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="01-setup.html">
+   Installation
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="02-orientation.html">
+   Orientation
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="03-variables.html">
+   Python Variables
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="04-loops.html">
+   Loops
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="05-functions.html">
+   Functions
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="05a-modules.html">
+   Modules and Packages
+  </a>
+ </li>
+ <li class="toctree-l1 current active">
+  <a class="current reference internal" href="#">
+   If - Else
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="07-lists.html">
+   Lists
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="08-classes.html">
+   Classes
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="09-dictionaries.html">
+   Dictionaries
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  How-to Guides
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../how-to/startup.html">
+   Setup for each Tutorial
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../how-to/completion.html">
+   Command Completion
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../how-to/extensions.html">
+   VSCode Extensions
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../how-to/troubleshooting.html">
+   Troubleshooting
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../how-to/backup.html">
+   Backup and Restore
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../how-to/wsl2.html">
+   Windows Subsystem for Linux
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../how-to/coordinates.html">
+   Discovering the Coordinates of a Block
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../how-to/run-container.html">
+   Run in a container
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Explanations
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../explanations/docs-structure.html">
+   About the documentation
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../explanations/scope.html">
+   Variable Scope
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../explanations/server-config.html">
+   Minecraft Server Config
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../explanations/coordinates.html">
+   Minecraft’s Coordinate System
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../explanations/mcipc.html">
+   MCIPC Client object
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Reference
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../reference/index.html">
+   Finding Things
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../reference/api.html">
+   MCIWB API
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../reference/demo.html">
+   Demo Code
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../genindex.html">
+   Index
+  </a>
+ </li>
+</ul>
+
+  </div>
+</nav>
+  </div>
+  <div class="sidebar-end-items">
+  </div>
+</div>
+
+
+          
+
+
+<div class="bd-sidebar-secondary d-none d-xl-block col-xl-2 bd-toc">
+  
+    
+    <div class="toc-item">
+      
+<div class="tocsection onthispage mt-5 pt-1 pb-3">
+    <i class="fas fa-list"></i> On this page
+</div>
+
+<nav id="bd-toc-nav">
+    <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#logical-operators-and-boolean">
+   Logical Operators and Boolean
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#code-branching">
+   Code Branching
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#gate-with-working-portcullis">
+   Gate with Working Portcullis
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#how-it-works">
+   How it Works
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#make-gate">
+     Make_gate
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#open-close">
+     Open_close
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#portcullis">
+     Portcullis
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#saving-blocks-to-a-file">
+   Saving Blocks to a File
+  </a>
+ </li>
+</ul>
+
+</nav>
+    </div>
+    
+    <div class="toc-item">
+      
+
+<div class="tocsection editthispage">
+    <a href="https://github.com/gilesknap/mciwb/edit/0.8.3/docs/user/tutorials/06-if-then.rst">
+        <i class="fas fa-pencil-alt"></i> Edit this page
+    </a>
+</div>
+
+    </div>
+    
+  
+</div>
+
+
+          
+          
+          <div class="bd-content col-12 col-md-9 col-xl-7">
+              
+              <article class="bd-article" role="main">
+                
+  <section id="if-else">
+<h1>If - Else<a class="headerlink" href="#if-else" title="Permalink to this heading">#</a></h1>
+<p>In this tutorial we will:</p>
+<ul class="simple">
+<li><p>learn about the Python <code class="docutils literal notranslate"><span class="pre">if</span> <span class="pre">else</span></code> statements</p></li>
+<li><p>learn how to load a volume of blocks into the world from a file</p>
+<ul>
+<li><p>and how to save a volume of blocks to a file</p></li>
+</ul>
+</li>
+<li><p>learn how to place buttons or levers in the world and have them
+call Python code when activated</p></li>
+</ul>
+<section id="logical-operators-and-boolean">
+<h2>Logical Operators and Boolean<a class="headerlink" href="#logical-operators-and-boolean" title="Permalink to this heading">#</a></h2>
+<p>Here we will introduce a new type called a Boolean. A Boolean is
+a value that can only be either True or False.</p>
+<p>I can create boolean variables like this:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">b1</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="n">b2</span> <span class="o">=</span> <span class="kc">False</span>
+</pre></div>
+</div>
+<p>Python supports the logical operators that you are familiar with from maths.
+These operators make comparisons between numbers and return True or False
+(so return a Boolean).
+e.g. try this in iPython:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">In</span> <span class="p">[</span><span class="mi">6</span><span class="p">]:</span> <span class="n">a</span> <span class="o">=</span> <span class="mi">4</span>
+
+<span class="n">In</span> <span class="p">[</span><span class="mi">7</span><span class="p">]:</span> <span class="n">b</span> <span class="o">=</span> <span class="mi">6</span>
+
+<span class="n">In</span> <span class="p">[</span><span class="mi">8</span><span class="p">]:</span> <span class="n">a</span> <span class="o">&gt;</span> <span class="n">b</span>
+<span class="n">Out</span><span class="p">[</span><span class="mi">8</span><span class="p">]:</span> <span class="kc">False</span>
+</pre></div>
+</div>
+<p>Common logical operators are:</p>
+<ul class="simple">
+<li><p>a &gt; b (a is greater than b)</p></li>
+<li><p>a &lt; b (a is less than b)</p></li>
+<li><p>a == b (a is equal to b)</p></li>
+<li><p>a != b (a is not equal to b)</p></li>
+<li><p>a &gt;= b (a is greater than or equal to b)</p></li>
+<li><p>a &lt;= b (a is less than or equal to b)</p></li>
+</ul>
+<p>You can also assign the result of a logical operator to a variable. Try this
+in iPython (reusing values of a and b you assigned a moment ago):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">In</span> <span class="p">[</span><span class="mi">9</span><span class="p">]:</span> <span class="n">b1</span> <span class="o">=</span> <span class="n">a</span> <span class="o">&lt;</span> <span class="n">b</span>
+
+<span class="n">In</span> <span class="p">[</span><span class="mi">10</span><span class="p">]:</span> <span class="n">b1</span>
+<span class="n">Out</span><span class="p">[</span><span class="mi">10</span><span class="p">]:</span> <span class="kc">True</span>
+</pre></div>
+</div>
+<p>Above we compared a and b and assigned the result to b1. The value of b1
+is True because a is less than b.</p>
+<p>It is important to remember the difference between <code class="docutils literal notranslate"><span class="pre">=</span></code> and <code class="docutils literal notranslate"><span class="pre">==</span></code>. The
+<code class="docutils literal notranslate"><span class="pre">=</span></code> operator is used to assign a value to a variable. The <code class="docutils literal notranslate"><span class="pre">==</span></code> operator is
+used to compare two values. In written maths we do not have this distinction,
+but it helps Python to be clear about the meaning of a statement.</p>
+</section>
+<section id="code-branching">
+<h2>Code Branching<a class="headerlink" href="#code-branching" title="Permalink to this heading">#</a></h2>
+<p>Up to this point we have always executed all the lines of code we have
+written in the order they appear in the program. The <code class="docutils literal notranslate"><span class="pre">for</span></code> loop does allow
+us to repeat sections of code. It is also very useful to have more than
+one branch of code to execute. To achieve this is we use
+<code class="docutils literal notranslate"><span class="pre">if</span> <span class="pre">else</span></code>.</p>
+<p>This is reasonably easy to understand as it reads like an English sentence.</p>
+<p>Consider this simple function and see if you can work out what it does:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">age_test</span><span class="p">(</span><span class="n">my_birth_year</span><span class="p">,</span> <span class="n">your_birth_year</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">my_birth_year</span> <span class="o">&gt;</span> <span class="n">your_birth_year</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;You are older than me&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;I am older than you&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Lets try this with my birth date is 1964 and yours is 2012:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">In</span> <span class="p">[</span><span class="mi">12</span><span class="p">]:</span>     <span class="n">age_test</span><span class="p">(</span><span class="mi">1964</span><span class="p">,</span> <span class="mi">2012</span><span class="p">)</span>
+<span class="n">I</span> <span class="n">am</span> <span class="n">older</span> <span class="n">than</span> <span class="n">you</span>
+</pre></div>
+</div>
+<p>There is a bug in our code at the moment. What if the birth years are the
+same? Then the program can’t tell which one is older without knowing
+the month and day of each birthday.</p>
+<p>We could write the function like this:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">age_test</span><span class="p">(</span><span class="n">my_birth_year</span><span class="p">,</span> <span class="n">your_birth_year</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">my_birth_year</span> <span class="o">==</span> <span class="n">your_birth_year</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;We have the same birth year!&quot;</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">my_birth_year</span> <span class="o">&gt;</span> <span class="n">your_birth_year</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;You are older than me&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;I am older than you&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>In this function we first check for the same year. Then we use <code class="docutils literal notranslate"><span class="pre">elif</span></code>. This
+is short for “else if”. So if the years are not the same then it does the
+second check for “if my_birth_year &gt; your_birth_year”.</p>
+</section>
+<section id="gate-with-working-portcullis">
+<h2>Gate with Working Portcullis<a class="headerlink" href="#gate-with-working-portcullis" title="Permalink to this heading">#</a></h2>
+<p>Now lets use what we have learnt to make a working gate for our village. The
+following video is a demo of what we will make in this section:</p>
+<iframe width=700 height=650 src="https://www.youtube.com/embed/6eFvjlkh6zQ" title="YouTube video player" frameborder="0" allowfullscreen></iframe><p class="centered">
+<strong><em>Gateway with Portcullis Demo</em></strong></p><p>The shape of the gate itself is going to be loaded in from a file that I
+will provide. You will be free to edit the gate to look how you would like it
+and then save it back over the original file (see <a class="reference internal" href="#saving"><span class="std std-ref">Saving Blocks to a File</span></a>).</p>
+<p>The following commands need to be executed in a bash shell. They will
+create a folder called blocks and download my sample <code class="docutils literal notranslate"><span class="pre">gate.json</span></code> file
+into that folder</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span> <span class="nv">$HOME</span>/my_world
+mkdir blocks
+<span class="nb">cd</span> blocks
+wget https://raw.githubusercontent.com/gilesknap/mciwb/main/blocks/gate.json
+</pre></div>
+</div>
+<p>For the moment we don’t need to look inside the gate.json file. Just know that
+you can save and load a volume of blocks in the world to and from a file.
+(Later when we learn about Python Lists we will look inside these files).</p>
+<p>Let’s jump right in and make the gate and then go back to explain what we have
+done. Create a new module in your <code class="docutils literal notranslate"><span class="pre">buildings</span></code> package and name it <code class="docutils literal notranslate"><span class="pre">gate.py</span></code>.
+Here is a reminder of how to do that using your bash prompt:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span> <span class="nv">$HOME</span>/my_world
+code buildings/gate.py
+</pre></div>
+</div>
+<p>Paste this code into gate.py and save it.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Define a castle gateway with portcullis</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">time</span> <span class="kn">import</span> <span class="n">sleep</span>
+
+<span class="kn">from</span> <span class="nn">mciwb.imports</span> <span class="kn">import</span> <span class="n">Direction</span><span class="p">,</span> <span class="n">FillMode</span><span class="p">,</span> <span class="n">Item</span><span class="p">,</span> <span class="n">Switch</span><span class="p">,</span> <span class="n">Vec3</span><span class="p">,</span> <span class="n">get_client</span><span class="p">,</span> <span class="n">get_world</span>
+
+
+<span class="k">def</span> <span class="nf">portcullis</span><span class="p">(</span><span class="n">position</span><span class="p">,</span> <span class="n">close</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">6</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Open and close a portcullis</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">close</span><span class="p">:</span>
+        <span class="n">steps</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="n">height</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">item</span> <span class="o">=</span> <span class="n">Item</span><span class="o">.</span><span class="n">ACACIA_FENCE</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">steps</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">height</span><span class="p">)</span>
+        <span class="n">item</span> <span class="o">=</span> <span class="n">Item</span><span class="o">.</span><span class="n">AIR</span>
+
+    <span class="n">c</span> <span class="o">=</span> <span class="n">get_client</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">step</span> <span class="ow">in</span> <span class="n">steps</span><span class="p">:</span>
+        <span class="n">start</span> <span class="o">=</span> <span class="n">position</span> <span class="o">+</span> <span class="n">Direction</span><span class="o">.</span><span class="n">UP</span> <span class="o">*</span> <span class="p">(</span><span class="n">step</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">stop</span> <span class="o">=</span> <span class="n">start</span> <span class="o">+</span> <span class="n">Direction</span><span class="o">.</span><span class="n">EAST</span> <span class="o">*</span> <span class="n">width</span>
+        <span class="n">c</span><span class="o">.</span><span class="n">fill</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">item</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="n">FillMode</span><span class="o">.</span><span class="n">REPLACE</span><span class="p">)</span>
+        <span class="n">sleep</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">make_gate</span><span class="p">(</span><span class="n">position</span><span class="o">=</span><span class="n">Vec3</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="mi">623</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mi">73</span><span class="p">,</span> <span class="n">z</span><span class="o">=-</span><span class="mi">1660</span><span class="p">)):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Create a castle gate with working portcullis</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">open_close</span><span class="p">(</span><span class="n">switch</span><span class="p">):</span>
+        <span class="n">portcullis</span><span class="p">(</span><span class="n">position</span><span class="p">,</span> <span class="n">switch</span><span class="o">.</span><span class="n">powered</span><span class="p">)</span>
+
+    <span class="n">gate_pos</span> <span class="o">=</span> <span class="n">position</span> <span class="o">+</span> <span class="n">Direction</span><span class="o">.</span><span class="n">SOUTH</span> <span class="o">+</span> <span class="n">Direction</span><span class="o">.</span><span class="n">WEST</span> <span class="o">*</span> <span class="mi">2</span>
+    <span class="n">get_world</span><span class="p">()</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;blocks/gate.json&quot;</span><span class="p">,</span> <span class="n">gate_pos</span><span class="p">)</span>
+    <span class="n">Switch</span><span class="p">(</span><span class="n">gate_pos</span><span class="p">,</span> <span class="n">Item</span><span class="o">.</span><span class="n">LEVER</span><span class="p">,</span> <span class="n">open_close</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;portcullis&quot;</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">disable_gate</span><span class="p">():</span>
+    <span class="n">Switch</span><span class="o">.</span><span class="n">remove_named</span><span class="p">(</span><span class="s2">&quot;portcullis&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Note that the <code class="docutils literal notranslate"><span class="pre">build_gate</span></code> function has a default value for position. I
+chose this as a likely entrance point to the village (we will add a
+drawbridge later!). If you want to change this you can pass a different
+position to the make_gate function. For help in choosing position coordinates
+see <a class="reference internal" href="../how-to/coordinates.html"><span class="doc">Discovering the Coordinates of a Block</span></a>.</p>
+<p>To make the gate type this in iPython:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">buildings.gate</span> <span class="kn">import</span> <span class="n">make_gate</span>
+<span class="n">make_gate</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>This should place the gate in the world. Try out the lever and watch the
+portcullis open and close.</p>
+</section>
+<section id="how-it-works">
+<h2>How it Works<a class="headerlink" href="#how-it-works" title="Permalink to this heading">#</a></h2>
+<section id="make-gate">
+<h3>Make_gate<a class="headerlink" href="#make-gate" title="Permalink to this heading">#</a></h3>
+<p>The first thing that the <code class="docutils literal notranslate"><span class="pre">make_gate</span></code> function does is define another function
+called <code class="docutils literal notranslate"><span class="pre">open_close</span></code>. This function will be called when the lever is activated.</p>
+<p>By defining <code class="docutils literal notranslate"><span class="pre">open_close</span></code> <em>inside</em> of <code class="docutils literal notranslate"><span class="pre">make_gate</span></code> we are able to use
+the variable <code class="docutils literal notranslate"><span class="pre">position</span></code> which is needed when moving the
+portcullis. (If you want to understand more about this see <a class="reference internal" href="../explanations/scope.html"><span class="doc">Variable Scope</span></a>)</p>
+<p>This code always creates a gate facing north. <code class="docutils literal notranslate"><span class="pre">position</span></code> represents the
+bottom WEST corner of the portcullis.</p>
+<p>Because we want the stone gate to
+surround the portcullis we define the position of the South West corner
+of the gate as a couple of steps to the WEST (left if you are looking North)
+and one step SOUTH (back if you are looking North).</p>
+<p>Next we load in the file we downloaded earlier. This uses the world function
+<code class="docutils literal notranslate"><span class="pre">load</span></code>. In order to get the world object inside of a module we use
+the get_world(). Because we need world only once I did not bother to
+assign it to a variable, see the equivalent approaches below.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># using a variable to do world.load()</span>
+<span class="n">w</span> <span class="o">=</span> <span class="n">get_world</span><span class="p">()</span>
+<span class="n">w</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;gate.json&quot;</span><span class="p">)</span>
+
+<span class="c1"># A shortcut to do the same thing</span>
+<span class="n">get_world</span><span class="p">()</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;gate.json&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>When loading blocks into the world with <code class="docutils literal notranslate"><span class="pre">world.load</span></code> the position always
+specifies the bottom left SOUTH WEST corner of the blocks. Thus if you
+face North and choose a block in front of you the loaded object will
+extend away from you and to your right.</p>
+<p>The final step in <code class="docutils literal notranslate"><span class="pre">make_gate</span></code> is to create a Switch object, we pass it the
+position and the Item type (we use a lever here). The final parameter is the
+function to call when the lever is activated.</p>
+</section>
+<section id="open-close">
+<h3>Open_close<a class="headerlink" href="#open-close" title="Permalink to this heading">#</a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">open_close</span></code> function is the callback function that the Switch object
+will call when it detects a change in the state of the lever. Switch
+callback functions are always passed the Switch object that triggered them.</p>
+<p>The Switch object’s most important property is <code class="docutils literal notranslate"><span class="pre">powered</span></code> which is a boolean
+that is <strong>True</strong> if the lever is currently on and <strong>False</strong> if it is off.</p>
+<p>Therefore this callback will always call the portcullis function and pass it
+the original <code class="docutils literal notranslate"><span class="pre">position</span></code> value that we gave to <code class="docutils literal notranslate"><span class="pre">make_gate</span></code> plus a boolean
+to say if the lever is on or off.</p>
+</section>
+<section id="portcullis">
+<h3>Portcullis<a class="headerlink" href="#portcullis" title="Permalink to this heading">#</a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">portcullis</span></code> function is called when the lever is activated. It
+takes a <code class="docutils literal notranslate"><span class="pre">position</span></code> and a boolean to say if the lever is on or off.</p>
+<p>It also takes a width and height for the portcullis, but we use the default
+values for these as they match the size of our stone gate.</p>
+<p>The first thing we do is use <code class="docutils literal notranslate"><span class="pre">if</span> <span class="pre">else</span></code> to change the function’s behavior
+based on the boolean called <code class="docutils literal notranslate"><span class="pre">close</span></code>. When <code class="docutils literal notranslate"><span class="pre">open_close</span></code> calls <code class="docutils literal notranslate"><span class="pre">portcullis</span></code>
+it passes the <code class="docutils literal notranslate"><span class="pre">powered</span></code> state of the lever in as the <code class="docutils literal notranslate"><span class="pre">close</span></code> parameter.</p>
+<p>Thus if the lever is powered then we close the portcullis and if the lever
+is not powered then we open the portcullis.</p>
+<p>How does the opening and closing get represented in the world? We have a <code class="docutils literal notranslate"><span class="pre">for</span>
+<span class="pre">loop</span></code> that sets one row of blocks of the portcullis at each iteration, after
+each iteration it pauses for half a second. The <code class="docutils literal notranslate"><span class="pre">sleep</span></code> function from the
+built-in module called <code class="docutils literal notranslate"><span class="pre">time</span></code> is used to provide the pause, note the
+import of this function at the top of the file.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">if</span></code> statement chooses some values for variables used by the <code class="docutils literal notranslate"><span class="pre">for</span> <span class="pre">loop</span></code>
+as follows:</p>
+<ul class="simple">
+<li><p>Closing:</p>
+<ul>
+<li><p>we set the rows of blocks to
+<code class="docutils literal notranslate"><span class="pre">Item.ACACIA_FENCE</span></code> starting at the top and working down.</p></li>
+</ul>
+</li>
+<li><p>Opening:</p>
+<ul>
+<li><p>we set the rows of blocks to
+<code class="docutils literal notranslate"><span class="pre">Item.AIR</span></code> starting at the bottom and working up.</p></li>
+</ul>
+</li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">range</span></code> function we have used so far always counts from zero
+upwards. When closing the portcullis
+we want to start at the top and work down.</p>
+<p>To do this we add additional parameters to the <code class="docutils literal notranslate"><span class="pre">range</span></code> function.
+See
+<a class="reference external" href="https://www.w3schools.com/python/ref_func_range.asp">this description</a>
+for details of the parameters for <code class="docutils literal notranslate"><span class="pre">range</span></code>.</p>
+<p>The code <code class="docutils literal notranslate"><span class="pre">range(height,</span> <span class="pre">0,</span> <span class="pre">-1)</span></code> creates a range that starts at <code class="docutils literal notranslate"><span class="pre">height</span></code>
+and goes in steps of -1 until before it reaches zero.</p>
+</div>
+</section>
+</section>
+<section id="saving-blocks-to-a-file">
+<span id="saving"></span><h2>Saving Blocks to a File<a class="headerlink" href="#saving-blocks-to-a-file" title="Permalink to this heading">#</a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">world</span></code> object also has a save function and you can use it to save a
+volume of blocks to a file. Then you can reload those blocks in a new
+location at a later date.</p>
+<p>To demonstrate this lets build something in Minecraft and save it to a file,
+then reload it in a new location.</p>
+<p>The steps are as follows:</p>
+<ul class="simple">
+<li><p>Build something you would like to Save, my example in the video
+is giant a table.</p></li>
+<li><p>use the selection sign to select the volume of blocks you want to save:
+- first select one corner e.g. bottom south west
+- then select the opposite corner e.g. top north east</p></li>
+<li><p>in iPython type: <code class="docutils literal notranslate"><span class="pre">world.save(&quot;blocks/table.json&quot;)</span></code></p></li>
+<li><p>Now select the block where you want to load a copy:
+- select where you want the SOUTH WEST corner to be</p></li>
+<li><p>in iPython type: <code class="docutils literal notranslate"><span class="pre">world.load(&quot;blocks/table.json&quot;)</span></code></p></li>
+</ul>
+<p>For a demo of this feature see the video below.</p>
+<iframe width=700 height=650 src="https://www.youtube.com/embed/1ldhshwD6QQ" title="YouTube video player" frameborder="0" allowfullscreen></iframe><p class="centered">
+<strong><em>Save and Load Blocks Volumes</em></strong></p><p>By the way, files that you create with code can be inspected using the vscode
+explorer. In the image below you can see the <code class="docutils literal notranslate"><span class="pre">table.json</span></code> file that we
+created in the above steps. To see this
+you would need to click on the <code class="docutils literal notranslate"><span class="pre">blocks</span></code> folder to expand it.</p>
+<figure class="align-center" id="id1">
+<a class="reference internal image-reference" href="../../_images/table_json.png"><img alt="file explorer" src="../../_images/table_json.png" style="width: 900px;" /></a>
+<figcaption>
+<p><span class="caption-text">Viewing files in the VSCode explorer</span><a class="headerlink" href="#id1" title="Permalink to this image">#</a></p>
+</figcaption>
+</figure>
+</section>
+</section>
+
+
+              </article>
+              
+
+              
+              <footer class="bd-footer-article">
+                  <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+  <a class='left-prev' id="prev-link" href="05a-modules.html" title="previous page">
+      <i class="fas fa-angle-left"></i>
+      <div class="prev-next-info">
+          <p class="prev-next-subtitle">previous</p>
+          <p class="prev-next-title">Modules and Packages</p>
+      </div>
+  </a>
+  <a class='right-next' id="next-link" href="07-lists.html" title="next page">
+  <div class="prev-next-info">
+      <p class="prev-next-subtitle">next</p>
+      <p class="prev-next-title">Lists</p>
+  </div>
+  <i class="fas fa-angle-right"></i>
+  </a>
+</div>
+              </footer>
+              
+          </div>
+          
+      </div>
+    </div>
+
+  
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../_static/scripts/pydata-sphinx-theme.js?digest=92025949c220c2e29695"></script>
+
+<footer class="bd-footer"><div class="bd-footer__inner container">
+  
+  <div class="footer-item">
+    <p class="copyright">
+    &copy; Copyright .<br>
+</p>
+  </div>
+  
+  <div class="footer-item">
+    <p class="sphinx-version">
+Created using <a href="http://sphinx-doc.org/">Sphinx</a> 5.3.0.<br>
+</p>
+  </div>
+  
+</div>
+</footer>
+  </body>
+</html>
