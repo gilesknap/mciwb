@@ -6,7 +6,7 @@ source /venv/bin/activate
 
 touch requirements_dev.txt
 pip install -r requirements_dev.txt -e .[dev]
-mkdir lockfiles
+mkdir -p lockfiles
 pip freeze --exclude-editable > lockfiles/requirements_dev.txt
 
 pipdeptree

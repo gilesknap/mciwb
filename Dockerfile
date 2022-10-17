@@ -39,7 +39,7 @@ RUN docker_url=https://download.docker.com/linux/static/stable/x86_64 && \
 # install the wheel and generate the requirements file
 RUN cd /project && \
     pip install -r requirements.txt dist/*.whl && \
-    mkdir lockfiles && \
+    mkdir -p lockfiles && \
     pip freeze  > lockfiles/requirements.txt && \
     # we don't want to include our own wheel in requirements - remove with sed
     # and replace with a comment to avoid a zero length asset upload later
