@@ -1,114 +1,260 @@
+
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>mciwb.copier &mdash; mciwb 0.6.4.dev71+gb9c6038 documentation</title>
-      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-      <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
-      <link rel="stylesheet" href="../../_static/theme_overrides.css" type="text/css" />
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>mciwb.copier &#8212; mciwb 0.8.2.dev35+g0d92912 documentation</title>
+<script>
+  document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+  document.documentElement.dataset.theme = localStorage.getItem("theme") || "light"
+</script>
+
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=92025949c220c2e29695" rel="stylesheet">
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=92025949c220c2e29695" rel="stylesheet">
+
+
+  <link rel="stylesheet"
+    href="../../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
+
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=92025949c220c2e29695">
+
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/clipboard.min.js"></script>
+    <script src="../../_static/copybutton.js"></script>
+    <script src="../../_static/design-tabs.js"></script>
     <link rel="shortcut icon" href="../../_static/logo.png"/>
-  <!--[if lt IE 9]>
-    <script src="../../_static/js/html5shiv.min.js"></script>
-  <![endif]-->
-  
-        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-        <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/underscore.js"></script>
-        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="../../_static/doctools.js"></script>
-    <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
-    <link rel="search" title="Search" href="../../search.html" /> 
-</head>
+    <link rel="search" title="Search" href="../../search.html" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="docsearch:language" content="en">
+  </head>
+  
+  
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="180" data-default-mode="">
+    <div class="bd-header-announcement container-fluid" id="banner">
+      
 
-<body class="wy-body-for-nav"> 
-  <div class="wy-grid-for-nav">
-    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
-      <div class="wy-side-scroll">
-        <div class="wy-side-nav-search"  style="background: rgb(7, 43, 93)" >
-            <a href="../../index.html" class="icon icon-home"> mciwb
-            <img src="../../_static/logo.png" class="logo" alt="Logo"/>
-          </a>
-              <div class="version">
-                main
-              </div>
-<div role="search">
-  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
-    <input type="hidden" name="check_keywords" value="yes" />
-    <input type="hidden" name="area" value="default" />
-  </form>
-</div>
-        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../tutorials/00-prereq.html">Introduction</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../tutorials/01-setup.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../tutorials/02-orientation.html">Orientation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../tutorials/03-variables.html">Python Variables</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../tutorials/04-loops.html">Loops</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../tutorials/05-functions.html">Functions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../tutorials/05a-modules.html">Modules and Packages</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../tutorials/06-if-then.html">If - Else</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../tutorials/07-lists.html">Lists</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../tutorials/08-classes.html">Classes</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../tutorials/09-dictionaries.html">Dictionaries</a></li>
-</ul>
-<p class="caption" role="heading"><span class="caption-text">How-to Guides</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../how-to/startup.html">Setup for each Tutorial</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../how-to/completion.html">Command Completion</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../how-to/extensions.html">VSCode Extensions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../how-to/troubleshooting.html">Troubleshooting</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../how-to/backup.html">Backup and Restore</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../how-to/wsl2.html">Windows Subsystem for Linux</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../how-to/coordinates.html">Discovering the Coordinates of a Block</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../how-to/contributing.html">Contributing</a></li>
-</ul>
-<p class="caption" role="heading"><span class="caption-text">Explanations</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../explain/scope.html">Variable Scope</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../explain/server-config.html">Minecraft Server Config</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../explain/coordinates.html">Minecraft’s Coordinate System</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../explain/mcipc.html">MCIPC Client object</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../explanations/decisions.html">Architectural Decision Records</a></li>
-</ul>
-<p class="caption" role="heading"><span class="caption-text">Reference</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../reference/index.html">Finding Things</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../reference/contributing.html">Contributing</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../reference/api.html">MCIWB API</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../reference/demo.html">Demo Code</a></li>
-<li class="toctree-l1"><a class="reference external" href="https://github.com/gilesknap/mciwb/releases">Releases</a></li>
-<li class="toctree-l1"><a class="reference external" href="genindex.html#http://">Index</a></li>
-</ul>
+    </div>
 
-        </div>
+    
+    <nav class="bd-header navbar navbar-light navbar-expand-lg bg-light fixed-top bd-navbar" id="navbar-main"><div class="bd-header__inner container-xl">
+
+  <div id="navbar-start">
+    
+    
+  
+
+
+<a class="navbar-brand logo" href="../../index.html">
+  
+  
+  
+  
+    <img src="../../_static/logo.png" class="logo__image only-light" alt="Logo image">
+    <img src="../../_static/logo.png" class="logo__image only-dark" alt="Logo image">
+  
+  
+    <p class="title logo__title">mciwb</p>
+  
+</a>
+    
+  </div>
+
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-collapsible" aria-controls="navbar-collapsible" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="fas fa-bars"></span>
+  </button>
+
+  
+  <div id="navbar-collapsible" class="col-lg-9 collapse navbar-collapse">
+    <div id="navbar-center" class="mr-auto">
+      
+      <div class="navbar-center-item">
+        <ul id="navbar-main-elements" class="navbar-nav">
+    <li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="../../user/index.html">
+  User Guide
+ </a>
+</li>
+
+<li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="../../developer/index.html">
+  Developer Guide
+ </a>
+</li>
+
+    
+    <li class="nav-item">
+        <a class="nav-link nav-external" href="https://github.com/gilesknap/mciwb/releases">Release Notes<i class="fas fa-external-link-alt"></i></a>
+    </li>
+    
+</ul>
       </div>
-    </nav>
+      
+    </div>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: rgb(7, 43, 93)" >
-          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../../index.html">mciwb</a>
-      </nav>
-
-      <div class="wy-nav-content">
-        <div class="rst-content">
-          <div role="navigation" aria-label="Page navigation">
-  <ul class="wy-breadcrumbs">
-      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="../index.html">Module code</a> &raquo;</li>
-      <li>mciwb.copier</li>
-      <li class="wy-breadcrumbs-aside">
-      </li>
-  </ul>
-  <hr/>
+    <div id="navbar-end">
+      
+      <div class="navbar-end-item">
+        <span id="theme-switch" class="btn btn-sm btn-outline-primary navbar-btn rounded-circle">
+    <a class="theme-switch" data-mode="light"><i class="fas fa-sun"></i></a>
+    <a class="theme-switch" data-mode="dark"><i class="far fa-moon"></i></a>
+    <a class="theme-switch" data-mode="auto"><i class="fas fa-adjust"></i></a>
+</span>
+      </div>
+      
+      <div class="navbar-end-item">
+        <ul id="navbar-icon-links" class="navbar-nav" aria-label="Icon Links">
+        <li class="nav-item">
+          <a class="nav-link" href="https://github.com/gilesknap/mciwb" rel="noopener" target="_blank" title="GitHub"><span><i class="fab fa-github-square"></i></span>
+            <label class="sr-only">GitHub</label></a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="https://pypi.org/project/mciwb" rel="noopener" target="_blank" title="PyPI"><span><i class="fas fa-cube"></i></span>
+            <label class="sr-only">PyPI</label></a>
+        </li>
+      </ul>
+      </div>
+      
+      <div class="navbar-end-item">
+        <div class="dropdown" id="version_switcher">
+    <button type="button" class="btn btn-sm navbar-btn dropdown-toggle" id="version_switcher_button" data-toggle="dropdown">
+        dev  <!-- this text may get changed later by javascript -->
+        <span class="caret"></span>
+    </button>
+    <div id="version_switcher_menu" class="dropdown-menu list-group-flush py-0" aria-labelledby="version_switcher_button">
+    <!-- dropdown will be populated by javascript on page load -->
+    </div>
 </div>
-          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
-           <div itemprop="articleBody">
-             
+
+<!-- NOTE: this JS must live here (not in our global JS file) because it relies
+     on being processed by Jinja before it is run (specifically for replacing
+     variables _modules/mciwb/copier and {'json_url': 'https://gilesknap.github.io/mciwb/switcher.json', 'version_match': 'dev'}.
+-->
+
+<script type="text/javascript">
+// Check if corresponding page path exists in other version of docs
+// and, if so, go there instead of the homepage of the other docs version
+function checkPageExistsAndRedirect(event) {
+    const currentFilePath = "_modules/mciwb/copier.html",
+          tryUrl = event.target.getAttribute("href");
+    let otherDocsHomepage = tryUrl.replace(currentFilePath, "");
+    $.ajax({
+        type: 'HEAD',
+        url: tryUrl,
+        // if the page exists, go there
+        success: function() {
+            location.href = tryUrl;
+        }
+    }).fail(function() {
+        location.href = otherDocsHomepage;
+    });
+    // this prevents the browser from following the href of the clicked node
+    // (which is fine because this function takes care of redirecting)
+    return false;
+}
+
+// Populate the version switcher from the JSON config file
+(function () {
+    $.getJSON("https://gilesknap.github.io/mciwb/switcher.json", function(data, textStatus, jqXHR) {
+        const currentFilePath = "_modules/mciwb/copier.html";
+        let btn = document.getElementById("version_switcher_button");
+        // Set empty strings by default so that these attributes exist and can be used in CSS selectors
+        btn.dataset["activeVersionName"] = "";
+        btn.dataset["activeVersion"] = "";
+        // create links to the corresponding page in the other docs versions
+        $.each(data, function(index, entry) {
+            // if no custom name specified (e.g., "latest"), use version string
+            if (!("name" in entry)) {
+                entry.name = entry.version;
+            }
+            // create the node
+            const node = document.createElement("a");
+            node.setAttribute("class", "list-group-item list-group-item-action py-1");
+            node.textContent = `${entry.name}`;
+            node.setAttribute("href", `${entry.url}${currentFilePath}`);
+            // on click, AJAX calls will check if the linked page exists before
+            // trying to redirect, and if not, will redirect to the homepage
+            // for that version of the docs.
+            node.onclick = checkPageExistsAndRedirect;
+            // Add dataset values for the version and name in case people want
+            // to apply CSS styling based on this information.
+            node.dataset["versionName"] = entry.name;
+            node.dataset["version"] = entry.version;
+
+            $("#version_switcher_menu").append(node);
+            // replace dropdown button text with the preferred display name of
+            // this version, rather than using sphinx's dev variable.
+            // also highlight the dropdown entry for the currently-viewed
+            // version's entry
+            if (entry.version == "dev") {
+                node.classList.add("active");
+                btn.innerText = btn.dataset["activeVersionName"] = entry.name;
+                btn.dataset["activeVersion"] = entry.version;
+            }
+        });
+    });
+})();
+</script>
+      </div>
+      
+    </div>
+  </div>
+</div>
+    </nav>
+    
+
+    <div class="bd-container container-xl">
+      <div class="bd-container__inner row">
+          
+
+<!-- Only show if we have sidebars configured, else just a small margin  -->
+<div class="bd-sidebar-primary col-12 col-md-3 bd-sidebar">
+  <div class="sidebar-start-items"><form class="bd-search d-flex align-items-center" action="../../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
+  <div class="bd-toc-item active">
+    
+  </div>
+</nav>
+  </div>
+  <div class="sidebar-end-items">
+  </div>
+</div>
+
+
+          
+
+
+<div class="bd-sidebar-secondary d-none d-xl-block col-xl-2 bd-toc">
+  
+</div>
+
+
+          
+          
+          <div class="bd-content col-12 col-md-9 col-xl-7">
+              
+              <article class="bd-article" role="main">
+                
   <h1>Source code for mciwb.copier</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">Provide copy and paste actions on Volumes of blocks</span>
@@ -124,7 +270,7 @@
 <span class="n">zero</span> <span class="o">=</span> <span class="n">Vec3</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="CopyPaste"><a class="viewcode-back" href="../../reference/api.html#mciwb.copier.CopyPaste">[docs]</a><span class="k">class</span> <span class="nc">CopyPaste</span><span class="p">:</span>
+<div class="viewcode-block" id="CopyPaste"><a class="viewcode-back" href="../../user/reference/api.html#mciwb.copier.CopyPaste">[docs]</a><span class="k">class</span> <span class="nc">CopyPaste</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Provides an interactive way to use copy and paste commands within a</span>
 <span class="sd">    Minecraft world.</span>
@@ -137,14 +283,14 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_clone_dest</span> <span class="o">=</span> <span class="n">zero</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">size</span> <span class="o">=</span> <span class="n">zero</span>
 
-<div class="viewcode-block" id="CopyPaste.to_volume"><a class="viewcode-back" href="../../reference/api.html#mciwb.copier.CopyPaste.to_volume">[docs]</a>    <span class="k">def</span> <span class="nf">to_volume</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Volume</span><span class="p">:</span>
+<div class="viewcode-block" id="CopyPaste.to_volume"><a class="viewcode-back" href="../../user/reference/api.html#mciwb.copier.CopyPaste.to_volume">[docs]</a>    <span class="k">def</span> <span class="nf">to_volume</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Volume</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Converts the copy buffer location and dimensions to a Volume</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">v</span> <span class="o">=</span> <span class="n">Volume</span><span class="o">.</span><span class="n">from_corners</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">start_pos</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">stop_pos</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">v</span></div>
 
-<div class="viewcode-block" id="CopyPaste.apply_volume"><a class="viewcode-back" href="../../reference/api.html#mciwb.copier.CopyPaste.apply_volume">[docs]</a>    <span class="k">def</span> <span class="nf">apply_volume</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vol</span><span class="p">:</span> <span class="n">Volume</span><span class="p">):</span>
+<div class="viewcode-block" id="CopyPaste.apply_volume"><a class="viewcode-back" href="../../user/reference/api.html#mciwb.copier.CopyPaste.apply_volume">[docs]</a>    <span class="k">def</span> <span class="nf">apply_volume</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vol</span><span class="p">:</span> <span class="n">Volume</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Use a Volume to set the copy buffer location and dimensions</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -152,7 +298,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_set_paste</span><span class="p">(</span><span class="n">vol</span><span class="o">.</span><span class="n">start</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">paste_pos</span> <span class="o">=</span> <span class="n">vol</span><span class="o">.</span><span class="n">start</span></div>
 
-<div class="viewcode-block" id="CopyPaste.get_commands"><a class="viewcode-back" href="../../reference/api.html#mciwb.copier.CopyPaste.get_commands">[docs]</a>    <span class="k">def</span> <span class="nf">get_commands</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="CopyPaste.get_commands"><a class="viewcode-back" href="../../user/reference/api.html#mciwb.copier.CopyPaste.get_commands">[docs]</a>    <span class="k">def</span> <span class="nf">get_commands</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        return a list of command names and the callback functions they</span>
 <span class="sd">        represent. For use in setting up a `Signs` object that can be</span>
@@ -165,7 +311,7 @@
             <span class="s2">&quot;clear&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">clear</span><span class="p">,</span>
         <span class="p">}</span></div>
 
-<div class="viewcode-block" id="CopyPaste.select"><a class="viewcode-back" href="../../reference/api.html#mciwb.copier.CopyPaste.select">[docs]</a>    <span class="k">def</span> <span class="nf">select</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pos</span><span class="p">:</span> <span class="n">Vec3</span><span class="p">):</span>
+<div class="viewcode-block" id="CopyPaste.select"><a class="viewcode-back" href="../../user/reference/api.html#mciwb.copier.CopyPaste.select">[docs]</a>    <span class="k">def</span> <span class="nf">select</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pos</span><span class="p">:</span> <span class="n">Vec3</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Select a new copy buffer start point in the world.</span>
 <span class="sd">        The previous start point becomes the stop point</span>
@@ -188,7 +334,7 @@
         <span class="n">z_off</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="o">.</span><span class="n">z</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="o">.</span><span class="n">z</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="mi">0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_clone_dest</span> <span class="o">+=</span> <span class="n">Vec3</span><span class="p">(</span><span class="n">x_off</span><span class="p">,</span> <span class="n">y_off</span><span class="p">,</span> <span class="n">z_off</span><span class="p">)</span>
 
-<div class="viewcode-block" id="CopyPaste.paste"><a class="viewcode-back" href="../../reference/api.html#mciwb.copier.CopyPaste.paste">[docs]</a>    <span class="k">def</span> <span class="nf">paste</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pos</span><span class="p">:</span> <span class="n">Vec3</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="CopyPaste.paste"><a class="viewcode-back" href="../../user/reference/api.html#mciwb.copier.CopyPaste.paste">[docs]</a>    <span class="k">def</span> <span class="nf">paste</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pos</span><span class="p">:</span> <span class="n">Vec3</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Copy the contents of past buffer to pos</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -204,14 +350,14 @@
         <span class="p">)</span>
         <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">result</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="CopyPaste.paste_safe"><a class="viewcode-back" href="../../reference/api.html#mciwb.copier.CopyPaste.paste_safe">[docs]</a>    <span class="k">def</span> <span class="nf">paste_safe</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pos</span><span class="p">:</span> <span class="n">Vec3</span><span class="p">):</span>
+<div class="viewcode-block" id="CopyPaste.paste_safe"><a class="viewcode-back" href="../../user/reference/api.html#mciwb.copier.CopyPaste.paste_safe">[docs]</a>    <span class="k">def</span> <span class="nf">paste_safe</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pos</span><span class="p">:</span> <span class="n">Vec3</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Paste the contents of the paste buffer to pos, but only if the</span>
 <span class="sd">        paste buffer does not overlap with the target area</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">paste</span><span class="p">(</span><span class="n">pos</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="CopyPaste.fill"><a class="viewcode-back" href="../../reference/api.html#mciwb.copier.CopyPaste.fill">[docs]</a>    <span class="k">def</span> <span class="nf">fill</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pos</span><span class="p">:</span> <span class="n">Vec3</span> <span class="o">=</span> <span class="n">zero</span><span class="p">,</span> <span class="n">item</span><span class="p">:</span> <span class="n">Item</span> <span class="o">=</span> <span class="n">Item</span><span class="o">.</span><span class="n">AIR</span><span class="p">):</span>
+<div class="viewcode-block" id="CopyPaste.fill"><a class="viewcode-back" href="../../user/reference/api.html#mciwb.copier.CopyPaste.fill">[docs]</a>    <span class="k">def</span> <span class="nf">fill</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pos</span><span class="p">:</span> <span class="n">Vec3</span> <span class="o">=</span> <span class="n">zero</span><span class="p">,</span> <span class="n">item</span><span class="p">:</span> <span class="n">Item</span> <span class="o">=</span> <span class="n">Item</span><span class="o">.</span><span class="n">AIR</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        fill the paste buffer offset by pos with Air or a specified block</span>
 
@@ -225,13 +371,13 @@
         <span class="n">result</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">fill</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">paste_pos</span> <span class="o">+</span> <span class="n">offset</span><span class="p">,</span> <span class="n">end</span><span class="p">,</span> <span class="n">item</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
         <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">result</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="CopyPaste.clear"><a class="viewcode-back" href="../../reference/api.html#mciwb.copier.CopyPaste.clear">[docs]</a>    <span class="k">def</span> <span class="nf">clear</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_</span><span class="p">:</span> <span class="n">Vec3</span> <span class="o">=</span> <span class="n">zero</span><span class="p">):</span>
+<div class="viewcode-block" id="CopyPaste.clear"><a class="viewcode-back" href="../../user/reference/api.html#mciwb.copier.CopyPaste.clear">[docs]</a>    <span class="k">def</span> <span class="nf">clear</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_</span><span class="p">:</span> <span class="n">Vec3</span> <span class="o">=</span> <span class="n">zero</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Clear the blocks in the current paste buffer</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">fill</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="CopyPaste.expand_to"><a class="viewcode-back" href="../../reference/api.html#mciwb.copier.CopyPaste.expand_to">[docs]</a>    <span class="k">def</span> <span class="nf">expand_to</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pos</span><span class="p">:</span> <span class="n">Vec3</span><span class="p">):</span>
+<div class="viewcode-block" id="CopyPaste.expand_to"><a class="viewcode-back" href="../../user/reference/api.html#mciwb.copier.CopyPaste.expand_to">[docs]</a>    <span class="k">def</span> <span class="nf">expand_to</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pos</span><span class="p">:</span> <span class="n">Vec3</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        expand one or more of the dimensions of the copy buffer by moving</span>
 <span class="sd">        the faces outwards to the specified point</span>
@@ -255,7 +401,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">Vec3</span><span class="p">(</span><span class="o">**</span><span class="n">stop</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">Vec3</span><span class="p">(</span><span class="o">**</span><span class="n">start</span><span class="p">))</span></div>
 
-<div class="viewcode-block" id="CopyPaste.expand"><a class="viewcode-back" href="../../reference/api.html#mciwb.copier.CopyPaste.expand">[docs]</a>    <span class="k">def</span> <span class="nf">expand</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+<div class="viewcode-block" id="CopyPaste.expand"><a class="viewcode-back" href="../../user/reference/api.html#mciwb.copier.CopyPaste.expand">[docs]</a>    <span class="k">def</span> <span class="nf">expand</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        expand one or more of the dimensions of the copy buffer by relative</span>
 <span class="sd">        amounts</span>
@@ -281,57 +427,41 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">Vec3</span><span class="p">(</span><span class="o">**</span><span class="n">start</span><span class="p">))</span></div></div>
 </pre></div>
 
-           </div>
+              </article>
+              
+
+              
+              <footer class="bd-footer-article">
+                  <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+</div>
+              </footer>
+              
           </div>
-          <footer>
-
-  <hr/>
-
-  <div role="contentinfo">
-    <p></p>
-  </div>
-
-   
-
-</footer>
-        </div>
+          
       </div>
-    </section>
-  </div>
-  <script>
-      jQuery(function () {
-          SphinxRtdTheme.Navigation.enable(true);
-      });
-  </script>
-   
-  <div id="other-versions-div" class="rst-versions" data-toggle="rst-versions" role="note" aria-label="Versions" style="visibility: hidden">
-    <span class="rst-current-version" data-toggle="rst-current-version">
-      <span class="fa fa-book"> Other Versions</span>
-      main
-      <span class="fa fa-caret-down"></span>
-    </span>
-    <div class="rst-other-versions">
-      <dl id="other-versions-dl"/>
     </div>
+
+  
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../_static/scripts/pydata-sphinx-theme.js?digest=92025949c220c2e29695"></script>
+
+<footer class="bd-footer"><div class="bd-footer__inner container">
+  
+  <div class="footer-item">
+    <p class="copyright">
+    &copy; Copyright .<br>
+</p>
   </div>
-  <script>
-    function addVersion(name) {
-      var dd = document.createElement("dd");
-      var a = document.createElement("a");
-      a.href = "../../../" + name;
-      a.innerText = name;
-      dd.appendChild(a);
-      document.getElementById('other-versions-dl').appendChild(dd);
-    }
-    // Get versions.txt and add a version for each line
-    fetch("../../../versions.txt").then(response => {
-      if (response.ok) {
-        document.getElementById('other-versions-div').style.visibility = "visible";
-        return response.text().then(text => text.split(/\r?\n/).forEach(addVersion))
-      }
-    });
-  </script>
-
-
-</body>
+  
+  <div class="footer-item">
+    <p class="sphinx-version">
+Created using <a href="http://sphinx-doc.org/">Sphinx</a> 5.3.0.<br>
+</p>
+  </div>
+  
+</div>
+</footer>
+  </body>
 </html>
