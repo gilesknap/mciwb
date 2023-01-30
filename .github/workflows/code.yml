@@ -99,7 +99,7 @@ jobs:
         uses: docker/setup-buildx-action@v2
 
       - name: Build developer image for testing
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v4
         with:
           tags: build:latest
           context: .
@@ -121,7 +121,7 @@ jobs:
           files: cov.xml
 
       - name: Build runtime image
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v4
         with:
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}
