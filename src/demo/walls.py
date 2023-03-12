@@ -36,7 +36,6 @@ battlements_profile = [
 
 
 def make_walls():
-
     w = Wall(profile=battlements_profile)
 
     # build the castle walls

@@ -52,7 +52,6 @@ def copy_anchors():
         ((4, 7, 4), (2, 5, 2), Anchor3.TOP_SE),
     )
     try:
-
         for start, stop, anchor in corner_pairs:
             logging.info("copy anchors test: %s, %s, %s", start, stop, anchor)
             copier.select(Vec3(*stop))

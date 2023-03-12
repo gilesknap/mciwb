@@ -236,7 +236,6 @@ class MinecraftServer:
         Some default settings for the server that this class creates
         """
         with Client(HOST, self.rcon, passwd=self.password) as client:
-
             # make sure the local chunk around world centre is loaded
             # this is because the getblock trick needs 0,0,0 in the world
             client.forceload.add((0, 0), (0, 0))

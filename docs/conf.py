@@ -4,8 +4,11 @@
 # list see the documentation:
 # https://www.sphinx-doc.org/en/master/usage/configuration.html
 
+import sys
 from pathlib import Path
 from subprocess import check_output
+
+import requests
 
 import mciwb
 
@@ -126,8 +129,26 @@ copybutton_prompt_is_regexp = True
 html_theme = "pydata_sphinx_theme"
 github_repo = project
 github_user = "gilesknap"
+switcher_json = f"https://{github_user}.github.io/{github_repo}/switcher.json"
+switcher_exists = requests.get(switcher_json).ok
+if not switcher_exists:
+    print(
+        "*** Can't read version switcher, is GitHub pages enabled? \n"
+        "    Once Docs CI job has successfully run once, set the "
+        "Github pages source branch to be 'gh-pages' at:\n"
+        f"    https://github.com/{github_user}/{github_repo}/settings/pages",
+        file=sys.stderr,
+    )
 
 # Theme options for pydata_sphinx_theme
+# We don't check switcher because there are 3 possible states for a repo:
+# 1. New project, docs are not published so there is no switcher
+# 2. Existing project with latest skeleton, switcher exists and works
+# 3. Existing project with old skeleton that makes broken switcher,
+#    switcher exists but is broken
+# Point 3 makes checking switcher difficult, because the updated skeleton
+# will fix the switcher at the end of the docs workflow, but never gets a chance
+# to complete as the docs build warns and fails.
 html_theme_options = dict(
     logo=dict(
         text=project,
@@ -142,9 +163,10 @@ html_theme_options = dict(
         )
     ],
     switcher=dict(
-        json_url=f"https://{github_user}.github.io/{github_repo}/switcher.json",
+        json_url=switcher_json,
         version_match=version,
     ),
+    check_switcher=False,
     navbar_end=["theme-switcher", "icon-links", "version-switcher"],
     external_links=[
         dict(
