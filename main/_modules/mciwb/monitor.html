@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>mciwb.monitor &#8212; mciwb 0.8.2.dev2+g5fdf2d1 documentation</title>
+    <title>mciwb.monitor &#8212; mciwb 0.8.2.dev5+g4dfe312 documentation</title>
 <script>
   document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
   document.documentElement.dataset.theme = localStorage.getItem("theme") || "light"
@@ -275,7 +275,7 @@ function checkPageExistsAndRedirect(event) {
 
 
 <div class="viewcode-block" id="Monitor"><a class="viewcode-back" href="../../user/reference/api.html#mciwb.monitor.Monitor">[docs]</a><span class="k">class</span> <span class="nc">Monitor</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot; &quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; &quot;</span>
 <span class="sd">    A class to provide threads for monitoring. Each thread maintains a</span>
 <span class="sd">    list of functions to call repeatedly.</span>
 
@@ -326,7 +326,7 @@ function checkPageExistsAndRedirect(event) {
             <span class="bp">self</span><span class="o">.</span><span class="n">start_poller</span><span class="p">()</span>
 
 <div class="viewcode-block" id="Monitor.start_poller"><a class="viewcode-back" href="../../user/reference/api.html#mciwb.monitor.Monitor.start_poller">[docs]</a>    <span class="k">def</span> <span class="nf">start_poller</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Begin polling the functions in the pollers list</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">poll_thread</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -336,7 +336,7 @@ function checkPageExistsAndRedirect(event) {
             <span class="bp">self</span><span class="o">.</span><span class="n">_polling</span> <span class="o">=</span> <span class="kc">True</span></div>
 
     <span class="k">def</span> <span class="nf">_poller</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        the polling function will run until the monitor is stopped</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
@@ -371,7 +371,7 @@ function checkPageExistsAndRedirect(event) {
             <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Monitor </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> stopped&quot;</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Monitor.add_poller_func"><a class="viewcode-back" href="../../user/reference/api.html#mciwb.monitor.Monitor.add_poller_func">[docs]</a>    <span class="k">def</span> <span class="nf">add_poller_func</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="p">:</span> <span class="n">CallbackFunction</span><span class="p">,</span> <span class="n">params</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="p">()):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Add a function to the pollers list</span>
 
 <span class="sd">        :param func: function to add</span>
@@ -382,7 +382,7 @@ function checkPageExistsAndRedirect(event) {
     <span class="c1"># TODO: consider using a dict or indexing pollers in some fashion</span>
     <span class="c1"># currently this does not support 2 calls to same function</span>
 <div class="viewcode-block" id="Monitor.remove_poller_func"><a class="viewcode-back" href="../../user/reference/api.html#mciwb.monitor.Monitor.remove_poller_func">[docs]</a>    <span class="k">def</span> <span class="nf">remove_poller_func</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="p">:</span> <span class="n">CallbackFunction</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Remove a function from the pollers list</span>
 
 <span class="sd">        :param func: function to remove</span>
@@ -397,7 +397,7 @@ function checkPageExistsAndRedirect(event) {
 
 <div class="viewcode-block" id="Monitor.stop_all"><a class="viewcode-back" href="../../user/reference/api.html#mciwb.monitor.Monitor.stop_all">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">stop_all</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Stop all instances of Monitor and tidy up. Call this before exiting</span>
 <span class="sd">        the program otherwise Python will wait on the background threads</span>
 <span class="sd">        indefinitely.</span>
@@ -409,14 +409,14 @@ function checkPageExistsAndRedirect(event) {
             <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Stopped all monitoring threads&quot;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Monitor.stop"><a class="viewcode-back" href="../../user/reference/api.html#mciwb.monitor.Monitor.stop">[docs]</a>    <span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Stop this instance of Monitor</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_polling</span> <span class="o">=</span> <span class="kc">False</span></div>
 
 <div class="viewcode-block" id="Monitor.stop_named"><a class="viewcode-back" href="../../user/reference/api.html#mciwb.monitor.Monitor.stop_named">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">stop_named</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Stop a named instance of Monitor</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">monitor</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="n">monitors</span><span class="p">:</span>

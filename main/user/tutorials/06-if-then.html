@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>If - Else &#8212; mciwb 0.8.2.dev2+g5fdf2d1 documentation</title>
+    <title>If - Else &#8212; mciwb 0.8.2.dev5+g4dfe312 documentation</title>
 <script>
   document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
   document.documentElement.dataset.theme = localStorage.getItem("theme") || "light"
@@ -601,10 +601,10 @@ and then save it back over the original file (see <a class="reference internal" 
 <p>The following commands need to be executed in a bash shell. They will
 create a folder called blocks and download my sample <code class="docutils literal notranslate"><span class="pre">gate.json</span></code> file
 into that folder</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span> <span class="nv">$HOME</span>/my_world
-mkdir blocks
-<span class="nb">cd</span> blocks
-wget https://raw.githubusercontent.com/gilesknap/mciwb/main/blocks/gate.json
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span><span class="nv">$HOME</span>/my_world
+mkdir<span class="w"> </span>blocks
+<span class="nb">cd</span><span class="w"> </span>blocks
+wget<span class="w"> </span>https://raw.githubusercontent.com/gilesknap/mciwb/main/blocks/gate.json
 </pre></div>
 </div>
 <p>For the moment we don’t need to look inside the gate.json file. Just know that
@@ -613,8 +613,8 @@ you can save and load a volume of blocks in the world to and from a file.
 <p>Let’s jump right in and make the gate and then go back to explain what we have
 done. Create a new module in your <code class="docutils literal notranslate"><span class="pre">buildings</span></code> package and name it <code class="docutils literal notranslate"><span class="pre">gate.py</span></code>.
 Here is a reminder of how to do that using your bash prompt:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span> <span class="nv">$HOME</span>/my_world
-code buildings/gate.py
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span><span class="nv">$HOME</span>/my_world
+code<span class="w"> </span>buildings/gate.py
 </pre></div>
 </div>
 <p>Paste this code into gate.py and save it.</p>
@@ -627,7 +627,7 @@ code buildings/gate.py
 
 
 <span class="k">def</span> <span class="nf">portcullis</span><span class="p">(</span><span class="n">position</span><span class="p">,</span> <span class="n">close</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">6</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Open and close a portcullis</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">close</span><span class="p">:</span>
@@ -646,7 +646,7 @@ code buildings/gate.py
 
 
 <span class="k">def</span> <span class="nf">make_gate</span><span class="p">(</span><span class="n">position</span><span class="o">=</span><span class="n">Vec3</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="mi">623</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mi">73</span><span class="p">,</span> <span class="n">z</span><span class="o">=-</span><span class="mi">1660</span><span class="p">)):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create a castle gate with working portcullis</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 

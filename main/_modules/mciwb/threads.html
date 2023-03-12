@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>mciwb.threads &#8212; mciwb 0.8.2.dev2+g5fdf2d1 documentation</title>
+    <title>mciwb.threads &#8212; mciwb 0.8.2.dev5+g4dfe312 documentation</title>
 <script>
   document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
   document.documentElement.dataset.theme = localStorage.getItem("theme") || "light"
@@ -284,7 +284,7 @@ function checkPageExistsAndRedirect(event) {
 
 
 <div class="viewcode-block" id="new_thread"><a class="viewcode-back" href="../../user/reference/api.html#mciwb.threads.new_thread">[docs]</a><span class="k">def</span> <span class="nf">new_thread</span><span class="p">(</span><span class="n">client</span><span class="p">:</span> <span class="n">Client</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create a thread with its own RCON Client connection stored in thread local storage</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -296,7 +296,7 @@ function checkPageExistsAndRedirect(event) {
 
 
 <div class="viewcode-block" id="set_client"><a class="viewcode-back" href="../../user/reference/api.html#mciwb.threads.set_client">[docs]</a><span class="k">def</span> <span class="nf">set_client</span><span class="p">(</span><span class="n">client</span><span class="p">:</span> <span class="n">Client</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Set the client for this thread. Use this when the client object has been</span>
 <span class="sd">    created outside of `new_thread`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -305,14 +305,14 @@ function checkPageExistsAndRedirect(event) {
 
 
 <div class="viewcode-block" id="get_client"><a class="viewcode-back" href="../../user/reference/api.html#mciwb.threads.get_client">[docs]</a><span class="k">def</span> <span class="nf">get_client</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Client</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    retrieve the client for the current thread</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">thread_local</span><span class="o">.</span><span class="n">client</span></div>
 
 
 <div class="viewcode-block" id="get_thread_name"><a class="viewcode-back" href="../../user/reference/api.html#mciwb.threads.get_thread_name">[docs]</a><span class="k">def</span> <span class="nf">get_thread_name</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    retrieve the name of the current thread. This is the name that was passed</span>
 <span class="sd">    to `new_thread`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>

@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>mciwb.switch &#8212; mciwb 0.8.2.dev2+g5fdf2d1 documentation</title>
+    <title>mciwb.switch &#8212; mciwb 0.8.2.dev5+g4dfe312 documentation</title>
 <script>
   document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
   document.documentElement.dataset.theme = localStorage.getItem("theme") || "light"
@@ -280,7 +280,7 @@ function checkPageExistsAndRedirect(event) {
 
 
 <div class="viewcode-block" id="Switch"><a class="viewcode-back" href="../../user/reference/api.html#mciwb.switch.Switch">[docs]</a><span class="k">class</span> <span class="nc">Switch</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Defines a class for representing a lever, button or any other activator</span>
 <span class="sd">    in the world. Implements monitoring of the switch&#39;s state with callbacks.</span>
 
@@ -342,7 +342,7 @@ function checkPageExistsAndRedirect(event) {
 
 <div class="viewcode-block" id="Switch.remove_named"><a class="viewcode-back" href="../../user/reference/api.html#mciwb.switch.Switch.remove_named">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">remove_named</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Remove a switch by name.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">switch</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="n">switches</span><span class="p">:</span>
@@ -351,7 +351,7 @@ function checkPageExistsAndRedirect(event) {
         <span class="c1"># fail silently if the switch isn&#39;t found</span>
 
 <div class="viewcode-block" id="Switch.remove"><a class="viewcode-back" href="../../user/reference/api.html#mciwb.switch.Switch.remove">[docs]</a>    <span class="k">def</span> <span class="nf">remove</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Remove the switch from the world. Clean up the monitor.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">switches</span><span class="p">:</span>
@@ -362,14 +362,14 @@ function checkPageExistsAndRedirect(event) {
 
 <div class="viewcode-block" id="Switch.stop"><a class="viewcode-back" href="../../user/reference/api.html#mciwb.switch.Switch.stop">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Stop monitoring the state of all switches.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># TODO this does nothing currently?</span>
         <span class="bp">cls</span><span class="o">.</span><span class="n">monitoring</span> <span class="o">=</span> <span class="kc">False</span></div>
 
 <div class="viewcode-block" id="Switch.check_state"><a class="viewcode-back" href="../../user/reference/api.html#mciwb.switch.Switch.check_state">[docs]</a>    <span class="k">def</span> <span class="nf">check_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Test the state of one of the switch&#39;s properties.</span>
 
 <span class="sd">        :param state: the state to test for, should be one of</span>

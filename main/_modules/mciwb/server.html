@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>mciwb.server &#8212; mciwb 0.8.2.dev2+g5fdf2d1 documentation</title>
+    <title>mciwb.server &#8212; mciwb 0.8.2.dev5+g4dfe312 documentation</title>
 <script>
   document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
   document.documentElement.dataset.theme = localStorage.getItem("theme") || "light"
@@ -284,7 +284,7 @@ function checkPageExistsAndRedirect(event) {
 
 
 <div class="viewcode-block" id="MinecraftServer"><a class="viewcode-back" href="../../user/reference/api.html#mciwb.server.MinecraftServer">[docs]</a><span class="k">class</span> <span class="nc">MinecraftServer</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create an monitor Minecraft servers on the local machine using Docker</span>
 
 <span class="sd">    :param name: the name of the server</span>
@@ -307,7 +307,7 @@ function checkPageExistsAndRedirect(event) {
         <span class="n">keep</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">test</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Create a `MinecraftServer` object only. Use `create` to</span>
 <span class="sd">        spin up the container.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -324,7 +324,7 @@ function checkPageExistsAndRedirect(event) {
         <span class="bp">self</span><span class="o">.</span><span class="n">test</span> <span class="o">=</span> <span class="n">test</span>
 
 <div class="viewcode-block" id="MinecraftServer.wait_server"><a class="viewcode-back" href="../../user/reference/api.html#mciwb.server.MinecraftServer.wait_server">[docs]</a>    <span class="k">def</span> <span class="nf">wait_server</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Wait until the server is ready to accept rcon connections</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
@@ -360,7 +360,7 @@ function checkPageExistsAndRedirect(event) {
         <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Server </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> is online on port </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">port</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="MinecraftServer.stop"><a class="viewcode-back" href="../../user/reference/api.html#mciwb.server.MinecraftServer.stop">[docs]</a>    <span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Stop the minecraft server</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">container</span><span class="p">,</span> <span class="n">Container</span><span class="p">)</span>
@@ -371,7 +371,7 @@ function checkPageExistsAndRedirect(event) {
         <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Stopped Minecraft Server </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> ...&quot;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="MinecraftServer.start"><a class="viewcode-back" href="../../user/reference/api.html#mciwb.server.MinecraftServer.start">[docs]</a>    <span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Start the minecraft server</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">container</span><span class="p">,</span> <span class="n">Container</span><span class="p">)</span>
@@ -381,7 +381,7 @@ function checkPageExistsAndRedirect(event) {
         <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Started Minecraft Server </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> ...&quot;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="MinecraftServer.remove"><a class="viewcode-back" href="../../user/reference/api.html#mciwb.server.MinecraftServer.remove">[docs]</a>    <span class="k">def</span> <span class="nf">remove</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Remove a minecraft server container</span>
 
 <span class="sd">        :param force: force the removal of the container</span>
@@ -394,7 +394,7 @@ function checkPageExistsAndRedirect(event) {
             <span class="bp">self</span><span class="o">.</span><span class="n">container</span><span class="o">.</span><span class="n">remove</span><span class="p">()</span></div>
 
 <div class="viewcode-block" id="MinecraftServer.create"><a class="viewcode-back" href="../../user/reference/api.html#mciwb.server.MinecraftServer.create">[docs]</a>    <span class="k">def</span> <span class="nf">create</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">world_zip</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Spin up a minecraft server in a container</span>
 
 <span class="sd">        :param world_zip: the zip file to use as the world data. If None is</span>
@@ -490,7 +490,7 @@ function checkPageExistsAndRedirect(event) {
         <span class="bp">self</span><span class="o">.</span><span class="n">_settings</span><span class="p">()</span></div>
 
     <span class="k">def</span> <span class="nf">_settings</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Some default settings for the server that this class creates</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">with</span> <span class="n">Client</span><span class="p">(</span><span class="n">HOST</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">rcon</span><span class="p">,</span> <span class="n">passwd</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">password</span><span class="p">)</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
@@ -505,7 +505,7 @@ function checkPageExistsAndRedirect(event) {
 
 <div class="viewcode-block" id="MinecraftServer.stop_named"><a class="viewcode-back" href="../../user/reference/api.html#mciwb.server.MinecraftServer.stop_named">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">stop_named</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Stop a minecraft server by name</span>
 
 <span class="sd">        :param name: the name of the server to stop</span>
