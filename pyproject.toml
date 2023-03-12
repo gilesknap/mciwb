@@ -79,7 +79,12 @@ addopts = """
     --cov=mciwb --cov-report term --cov-report xml:cov.xml
     """
 # https://iscinumpy.gitlab.io/post/bound-version-constraints/#watch-for-warnings
-filterwarnings = "error"
+filterwarnings = [
+    "error",
+    # its difficult to ensure all sockets are closed in tests so ignore
+    "ignore:.*socket.*:ResourceWarning",
+    "ignore::DeprecationWarning",
+    ]
 # Doctest python code in docs, python code in src docstrings, test functions in tests
 testpaths = "docs src tests"
 

@@ -47,7 +47,6 @@ class Monitor:
         poll_rate=0.2,
         start=True,
     ) -> None:
-
         if name is None:
             name = f"Monitor{Monitor.monitor_num}"
             Monitor.monitor_num += 1

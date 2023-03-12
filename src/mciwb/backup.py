@@ -26,7 +26,6 @@ class Backup:
             raise ValueError(f"{world_folder} does not look like a minecraft world")
 
     def backup(self, name=None, running=True):
-
         fname = name or datetime.strftime(datetime.now(), "%y-%m-%d.%H.%M.%S.zip")
         fname = self.re_valid_filename.sub("_", fname)
         if not fname.endswith(".zip"):
@@ -47,7 +46,6 @@ class Backup:
         world_files = [f for f in world_files if not f.suffix == ".lock"]
         with ZipFile(file, "w", compression=ZIP_DEFLATED) as zip_file:
             for wf in world_files:
-
                 zip_file.write(wf, arcname=wf.relative_to(self.world_folder))
         log.debug("ZipFile complete")
 
@@ -63,7 +61,6 @@ class Backup:
         return ordered[0]
 
     def restore(self, name=None, backup=False):
-
         """
         restore world from backup. This must be called with the server stopped.
         """
