@@ -60,6 +60,10 @@
     "url": "https://gilesknap.github.io/mciwb/containers/"
   },
   {
+    "version": "dev",
+    "url": "https://gilesknap.github.io/mciwb/dev/"
+  },
+  {
     "version": "pypi-fix",
     "url": "https://gilesknap.github.io/mciwb/pypi-fix/"
   },
