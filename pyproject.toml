@@ -12,11 +12,11 @@ classifiers = [
 ]
 description = "Minecraft Interactive world builder"
 dependencies = [
-    numpy==1.23.5
-    typer==0.7.0
-    mcwb>=0.2.3
-    ipython==8.10.0
-    docker==5.0.3
+    "numpy==1.23.5",
+    "typer==0.7.0",
+    "mcwb>=0.2.3",
+    "ipython==8.10.0",
+    "docker==5.0.3",
     ]
 dynamic = ["version"]
 license.file = "LICENSE"
