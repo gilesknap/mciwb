@@ -112,6 +112,7 @@ jobs:
               --init --name tests --net host -v /tmp:/tmp \
               build bash /project/.github/workflows/container_tests.sh
           docker cp tests:/project/dist .
+          docker cp tests:/project/lockfiles .
           docker cp tests:/project/cov.xml .
 
       - name: Upload coverage to Codecov
@@ -146,7 +147,9 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: dist
-          path: dist
+          path:
+            dist
+            lockfiles
 
   release:
     # upload to PyPI and make a release on every tag
@@ -164,8 +167,8 @@ jobs:
         with:
           prerelease: ${{ contains(github.ref_name, 'a') || contains(github.ref_name, 'b') || contains(github.ref_name, 'rc') }}
           files:
-            dist/*.whl
-            dist/*.gz
+            dist/*
+            lockfiles/*
           generate_release_notes: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -39,10 +39,11 @@ RUN docker_url=https://download.docker.com/linux/static/stable/x86_64 && \
 # install the wheel and generate the requirements file
 RUN cd /project && \
     pip install -r requirements.txt dist/*.whl && \
-    pip freeze  > dist/requirements.txt && \
+    mkdir -p lockfiles && \
+    pip freeze  > lockfiles/requirements.txt && \
     # we don't want to include our own wheel in requirements - remove with sed
     # and replace with a comment to avoid a zero length asset upload later
-    sed -i '/file:/s/^/# Requirements for /' dist/requirements.txt
+    sed -i '/file:/s/^/# Requirements for /' lockfiles/requirements.txt
 
 FROM python:3.10-slim as runtime
 
