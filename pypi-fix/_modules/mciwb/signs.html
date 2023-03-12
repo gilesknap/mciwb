@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>mciwb.signs &#8212; mciwb 0.8.3 documentation</title>
+    <title>mciwb.signs &#8212; mciwb 0.8.4.dev1+gfe6bc7f documentation</title>
 <script>
   document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
   document.documentElement.dataset.theme = localStorage.getItem("theme") || "light"
@@ -136,7 +136,7 @@
       <div class="navbar-end-item">
         <div class="dropdown" id="version_switcher">
     <button type="button" class="btn btn-sm navbar-btn dropdown-toggle" id="version_switcher_button" data-toggle="dropdown">
-        0.8.3  <!-- this text may get changed later by javascript -->
+        pypi-fix  <!-- this text may get changed later by javascript -->
         <span class="caret"></span>
     </button>
     <div id="version_switcher_menu" class="dropdown-menu list-group-flush py-0" aria-labelledby="version_switcher_button">
@@ -146,7 +146,7 @@
 
 <!-- NOTE: this JS must live here (not in our global JS file) because it relies
      on being processed by Jinja before it is run (specifically for replacing
-     variables _modules/mciwb/signs and {'json_url': 'https://gilesknap.github.io/mciwb/switcher.json', 'version_match': '0.8.3'}.
+     variables _modules/mciwb/signs and {'json_url': 'https://gilesknap.github.io/mciwb/switcher.json', 'version_match': 'pypi-fix'}.
 -->
 
 <script type="text/javascript">
@@ -201,10 +201,10 @@ function checkPageExistsAndRedirect(event) {
 
             $("#version_switcher_menu").append(node);
             // replace dropdown button text with the preferred display name of
-            // this version, rather than using sphinx's 0.8.3 variable.
+            // this version, rather than using sphinx's pypi-fix variable.
             // also highlight the dropdown entry for the currently-viewed
             // version's entry
-            if (entry.version == "0.8.3") {
+            if (entry.version == "pypi-fix") {
                 node.classList.add("active");
                 btn.innerText = btn.dataset["activeVersionName"] = entry.name;
                 btn.dataset["activeVersion"] = entry.version;
@@ -274,7 +274,7 @@ function checkPageExistsAndRedirect(event) {
 
 
 <div class="viewcode-block" id="Signs"><a class="viewcode-back" href="../../user/reference/api.html#mciwb.signs.Signs">[docs]</a><span class="k">class</span> <span class="nc">Signs</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Monitor the world for signs placed by a player. Perform an action based</span>
 <span class="sd">    on the text of the sign.</span>
 
@@ -292,10 +292,10 @@ function checkPageExistsAndRedirect(event) {
 
     <span class="n">_re_sign_text</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;&quot;&quot;Text1: &#39;{&quot;text&quot;:&quot;([^&quot;]*)&quot;}&#39;&quot;&quot;&quot;</span><span class="p">)</span>
     <span class="n">_re_sign_entity</span> <span class="o">=</span> <span class="p">(</span>
-        <span class="sd">&quot;&quot;&quot;minecraft:oak_sign{{&quot;&quot;&quot;</span>
-        <span class="sd">&quot;&quot;&quot;BlockEntityTag:{{Text1:&#39;{{&quot;text&quot;:&quot;{0}&quot;}}&#39;}},&quot;&quot;&quot;</span>
-        <span class="sd">&quot;&quot;&quot;display:{{Name:&#39;{{&quot;text&quot;:&quot;{0}&quot;}}&#39;}}&quot;&quot;&quot;</span>
-        <span class="sd">&quot;&quot;&quot;}}&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;minecraft:oak_sign{{&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;BlockEntityTag:{{Text1:&#39;{{&quot;text&quot;:&quot;{0}&quot;}}&#39;}},&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;display:{{Name:&#39;{{&quot;text&quot;:&quot;{0}&quot;}}&#39;}}&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;}}&quot;&quot;&quot;</span>
     <span class="p">)</span>
 
     <span class="n">_wall_sign</span> <span class="o">=</span> <span class="s2">&quot;minecraft:oak_wall_sign&quot;</span>
@@ -306,7 +306,7 @@ function checkPageExistsAndRedirect(event) {
         <span class="bp">self</span><span class="o">.</span><span class="n">signs</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">CallbackPosFunction</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy</span><span class="o">.</span><span class="n">get_commands</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">_get_target_block</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pos</span><span class="p">:</span> <span class="n">Vec3</span><span class="p">,</span> <span class="n">facing</span><span class="p">:</span> <span class="n">Vec3</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Vec3</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        determine the target block that the sign at pos indicates</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># use &#39;execute if&#39; with a benign command like seed</span>
@@ -322,7 +322,7 @@ function checkPageExistsAndRedirect(event) {
         <span class="k">return</span> <span class="n">pos</span>
 
     <span class="k">def</span> <span class="nf">_poll</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        check if a sign has been placed in front of the player</span>
 <span class="sd">        1 to 4 blocks away and take action based on sign text</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -344,7 +344,7 @@ function checkPageExistsAndRedirect(event) {
                     <span class="bp">self</span><span class="o">.</span><span class="n">do_action</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">block_pos</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Signs.do_action"><a class="viewcode-back" href="../../user/reference/api.html#mciwb.signs.Signs.do_action">[docs]</a>    <span class="k">def</span> <span class="nf">do_action</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">command</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">target</span><span class="p">:</span> <span class="n">Vec3</span><span class="p">,</span> <span class="n">block_pos</span><span class="p">:</span> <span class="n">Vec3</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Perform an action based on the text of the sign. The action is to</span>
 <span class="sd">        call the callback function that is configured for this sign text.</span>
 
@@ -360,7 +360,7 @@ function checkPageExistsAndRedirect(event) {
             <span class="bp">self</span><span class="o">.</span><span class="n">signs</span><span class="p">[</span><span class="n">command</span><span class="p">](</span><span class="n">target</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Signs.add_sign"><a class="viewcode-back" href="../../user/reference/api.html#mciwb.signs.Signs.add_sign">[docs]</a>    <span class="k">def</span> <span class="nf">add_sign</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">function</span><span class="p">:</span> <span class="n">CallbackPosFunction</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Add a new sign type with its action callback function</span>
 
 <span class="sd">        :param name: the text of the sign</span>
@@ -371,7 +371,7 @@ function checkPageExistsAndRedirect(event) {
         <span class="bp">self</span><span class="o">.</span><span class="n">signs</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">function</span></div>
 
 <div class="viewcode-block" id="Signs.remove_sign"><a class="viewcode-back" href="../../user/reference/api.html#mciwb.signs.Signs.remove_sign">[docs]</a>    <span class="k">def</span> <span class="nf">remove_sign</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Stop monitoring for a sign with the given name</span>
 
 <span class="sd">        :param name: the text of the sign</span>
@@ -382,7 +382,7 @@ function checkPageExistsAndRedirect(event) {
     <span class="n">_sign_match</span> <span class="o">=</span> <span class="s1">&#39;{{&quot;text&quot;:&quot;</span><span class="si">{}</span><span class="s1">&quot;}}&#39;</span>
 
 <div class="viewcode-block" id="Signs.give_signs"><a class="viewcode-back" href="../../user/reference/api.html#mciwb.signs.Signs.give_signs">[docs]</a>    <span class="k">def</span> <span class="nf">give_signs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Give player one of each command sign in our commands list</span>
 
 <span class="sd">        Check first if the player has the sign already</span>

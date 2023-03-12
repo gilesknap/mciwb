@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>demo.gate &#8212; mciwb 0.8.3 documentation</title>
+    <title>demo.gate &#8212; mciwb 0.8.4.dev1+gfe6bc7f documentation</title>
 <script>
   document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
   document.documentElement.dataset.theme = localStorage.getItem("theme") || "light"
@@ -136,7 +136,7 @@
       <div class="navbar-end-item">
         <div class="dropdown" id="version_switcher">
     <button type="button" class="btn btn-sm navbar-btn dropdown-toggle" id="version_switcher_button" data-toggle="dropdown">
-        0.8.3  <!-- this text may get changed later by javascript -->
+        pypi-fix  <!-- this text may get changed later by javascript -->
         <span class="caret"></span>
     </button>
     <div id="version_switcher_menu" class="dropdown-menu list-group-flush py-0" aria-labelledby="version_switcher_button">
@@ -146,7 +146,7 @@
 
 <!-- NOTE: this JS must live here (not in our global JS file) because it relies
      on being processed by Jinja before it is run (specifically for replacing
-     variables _modules/demo/gate and {'json_url': 'https://gilesknap.github.io/mciwb/switcher.json', 'version_match': '0.8.3'}.
+     variables _modules/demo/gate and {'json_url': 'https://gilesknap.github.io/mciwb/switcher.json', 'version_match': 'pypi-fix'}.
 -->
 
 <script type="text/javascript">
@@ -201,10 +201,10 @@ function checkPageExistsAndRedirect(event) {
 
             $("#version_switcher_menu").append(node);
             // replace dropdown button text with the preferred display name of
-            // this version, rather than using sphinx's 0.8.3 variable.
+            // this version, rather than using sphinx's pypi-fix variable.
             // also highlight the dropdown entry for the currently-viewed
             // version's entry
-            if (entry.version == "0.8.3") {
+            if (entry.version == "pypi-fix") {
                 node.classList.add("active");
                 btn.innerText = btn.dataset["activeVersionName"] = entry.name;
                 btn.dataset["activeVersion"] = entry.version;
@@ -265,7 +265,7 @@ function checkPageExistsAndRedirect(event) {
 
 
 <div class="viewcode-block" id="portcullis"><a class="viewcode-back" href="../../user/reference/demo.html#demo.gate.portcullis">[docs]</a><span class="k">def</span> <span class="nf">portcullis</span><span class="p">(</span><span class="n">position</span><span class="p">,</span> <span class="n">close</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">6</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Open and close a portcullis</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">close</span><span class="p">:</span>
@@ -284,7 +284,7 @@ function checkPageExistsAndRedirect(event) {
 
 
 <div class="viewcode-block" id="make_gate"><a class="viewcode-back" href="../../user/reference/demo.html#demo.gate.make_gate">[docs]</a><span class="k">def</span> <span class="nf">make_gate</span><span class="p">(</span><span class="n">position</span><span class="o">=</span><span class="n">Vec3</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="mi">623</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mi">73</span><span class="p">,</span> <span class="n">z</span><span class="o">=-</span><span class="mi">1660</span><span class="p">)):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create a castle gate with working portcullis</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 

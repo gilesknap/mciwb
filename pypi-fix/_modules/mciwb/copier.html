@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>mciwb.copier &#8212; mciwb 0.8.3 documentation</title>
+    <title>mciwb.copier &#8212; mciwb 0.8.4.dev1+gfe6bc7f documentation</title>
 <script>
   document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
   document.documentElement.dataset.theme = localStorage.getItem("theme") || "light"
@@ -136,7 +136,7 @@
       <div class="navbar-end-item">
         <div class="dropdown" id="version_switcher">
     <button type="button" class="btn btn-sm navbar-btn dropdown-toggle" id="version_switcher_button" data-toggle="dropdown">
-        0.8.3  <!-- this text may get changed later by javascript -->
+        pypi-fix  <!-- this text may get changed later by javascript -->
         <span class="caret"></span>
     </button>
     <div id="version_switcher_menu" class="dropdown-menu list-group-flush py-0" aria-labelledby="version_switcher_button">
@@ -146,7 +146,7 @@
 
 <!-- NOTE: this JS must live here (not in our global JS file) because it relies
      on being processed by Jinja before it is run (specifically for replacing
-     variables _modules/mciwb/copier and {'json_url': 'https://gilesknap.github.io/mciwb/switcher.json', 'version_match': '0.8.3'}.
+     variables _modules/mciwb/copier and {'json_url': 'https://gilesknap.github.io/mciwb/switcher.json', 'version_match': 'pypi-fix'}.
 -->
 
 <script type="text/javascript">
@@ -201,10 +201,10 @@ function checkPageExistsAndRedirect(event) {
 
             $("#version_switcher_menu").append(node);
             // replace dropdown button text with the preferred display name of
-            // this version, rather than using sphinx's 0.8.3 variable.
+            // this version, rather than using sphinx's pypi-fix variable.
             // also highlight the dropdown entry for the currently-viewed
             // version's entry
-            if (entry.version == "0.8.3") {
+            if (entry.version == "pypi-fix") {
                 node.classList.add("active");
                 btn.innerText = btn.dataset["activeVersionName"] = entry.name;
                 btn.dataset["activeVersion"] = entry.version;
@@ -271,7 +271,7 @@ function checkPageExistsAndRedirect(event) {
 
 
 <div class="viewcode-block" id="CopyPaste"><a class="viewcode-back" href="../../user/reference/api.html#mciwb.copier.CopyPaste">[docs]</a><span class="k">class</span> <span class="nc">CopyPaste</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Provides an interactive way to use copy and paste commands within a</span>
 <span class="sd">    Minecraft world.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -284,14 +284,14 @@ function checkPageExistsAndRedirect(event) {
         <span class="bp">self</span><span class="o">.</span><span class="n">size</span> <span class="o">=</span> <span class="n">zero</span>
 
 <div class="viewcode-block" id="CopyPaste.to_volume"><a class="viewcode-back" href="../../user/reference/api.html#mciwb.copier.CopyPaste.to_volume">[docs]</a>    <span class="k">def</span> <span class="nf">to_volume</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Volume</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Converts the copy buffer location and dimensions to a Volume</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">v</span> <span class="o">=</span> <span class="n">Volume</span><span class="o">.</span><span class="n">from_corners</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">start_pos</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">stop_pos</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">v</span></div>
 
 <div class="viewcode-block" id="CopyPaste.apply_volume"><a class="viewcode-back" href="../../user/reference/api.html#mciwb.copier.CopyPaste.apply_volume">[docs]</a>    <span class="k">def</span> <span class="nf">apply_volume</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vol</span><span class="p">:</span> <span class="n">Volume</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Use a Volume to set the copy buffer location and dimensions</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_set_paste</span><span class="p">(</span><span class="n">vol</span><span class="o">.</span><span class="n">end</span><span class="p">)</span>
@@ -299,7 +299,7 @@ function checkPageExistsAndRedirect(event) {
         <span class="bp">self</span><span class="o">.</span><span class="n">paste_pos</span> <span class="o">=</span> <span class="n">vol</span><span class="o">.</span><span class="n">start</span></div>
 
 <div class="viewcode-block" id="CopyPaste.get_commands"><a class="viewcode-back" href="../../user/reference/api.html#mciwb.copier.CopyPaste.get_commands">[docs]</a>    <span class="k">def</span> <span class="nf">get_commands</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        return a list of command names and the callback functions they</span>
 <span class="sd">        represent. For use in setting up a `Signs` object that can be</span>
 <span class="sd">        used to interactively call the copy paste functions.</span>
@@ -312,7 +312,7 @@ function checkPageExistsAndRedirect(event) {
         <span class="p">}</span></div>
 
 <div class="viewcode-block" id="CopyPaste.select"><a class="viewcode-back" href="../../user/reference/api.html#mciwb.copier.CopyPaste.select">[docs]</a>    <span class="k">def</span> <span class="nf">select</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pos</span><span class="p">:</span> <span class="n">Vec3</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Select a new copy buffer start point in the world.</span>
 <span class="sd">        The previous start point becomes the stop point</span>
 <span class="sd">        (i.e. opposite corner of the paste buffer)</span>
@@ -323,7 +323,7 @@ function checkPageExistsAndRedirect(event) {
         <span class="bp">self</span><span class="o">.</span><span class="n">_set_paste</span><span class="p">(</span><span class="n">Vec3</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">start_pos</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">start_pos</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">start_pos</span><span class="o">.</span><span class="n">z</span><span class="p">))</span></div>
 
     <span class="k">def</span> <span class="nf">_set_paste</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pos</span><span class="p">:</span> <span class="n">Vec3</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Set the paste point to the specified position</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">paste_pos</span> <span class="o">=</span> <span class="n">pos</span>
@@ -335,7 +335,7 @@ function checkPageExistsAndRedirect(event) {
         <span class="bp">self</span><span class="o">.</span><span class="n">_clone_dest</span> <span class="o">+=</span> <span class="n">Vec3</span><span class="p">(</span><span class="n">x_off</span><span class="p">,</span> <span class="n">y_off</span><span class="p">,</span> <span class="n">z_off</span><span class="p">)</span>
 
 <div class="viewcode-block" id="CopyPaste.paste"><a class="viewcode-back" href="../../user/reference/api.html#mciwb.copier.CopyPaste.paste">[docs]</a>    <span class="k">def</span> <span class="nf">paste</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pos</span><span class="p">:</span> <span class="n">Vec3</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Copy the contents of past buffer to pos</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">client</span> <span class="o">=</span> <span class="n">get_client</span><span class="p">()</span>
@@ -351,14 +351,14 @@ function checkPageExistsAndRedirect(event) {
         <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">result</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="CopyPaste.paste_safe"><a class="viewcode-back" href="../../user/reference/api.html#mciwb.copier.CopyPaste.paste_safe">[docs]</a>    <span class="k">def</span> <span class="nf">paste_safe</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pos</span><span class="p">:</span> <span class="n">Vec3</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Paste the contents of the paste buffer to pos, but only if the</span>
 <span class="sd">        paste buffer does not overlap with the target area</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">paste</span><span class="p">(</span><span class="n">pos</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="CopyPaste.fill"><a class="viewcode-back" href="../../user/reference/api.html#mciwb.copier.CopyPaste.fill">[docs]</a>    <span class="k">def</span> <span class="nf">fill</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pos</span><span class="p">:</span> <span class="n">Vec3</span> <span class="o">=</span> <span class="n">zero</span><span class="p">,</span> <span class="n">item</span><span class="p">:</span> <span class="n">Item</span> <span class="o">=</span> <span class="n">Item</span><span class="o">.</span><span class="n">AIR</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        fill the paste buffer offset by pos with Air or a specified block</span>
 
 <span class="sd">        :param pos: offset from the paste buffer start point</span>
@@ -372,13 +372,13 @@ function checkPageExistsAndRedirect(event) {
         <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">result</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="CopyPaste.clear"><a class="viewcode-back" href="../../user/reference/api.html#mciwb.copier.CopyPaste.clear">[docs]</a>    <span class="k">def</span> <span class="nf">clear</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_</span><span class="p">:</span> <span class="n">Vec3</span> <span class="o">=</span> <span class="n">zero</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Clear the blocks in the current paste buffer</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">fill</span><span class="p">()</span></div>
 
 <div class="viewcode-block" id="CopyPaste.expand_to"><a class="viewcode-back" href="../../user/reference/api.html#mciwb.copier.CopyPaste.expand_to">[docs]</a>    <span class="k">def</span> <span class="nf">expand_to</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pos</span><span class="p">:</span> <span class="n">Vec3</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        expand one or more of the dimensions of the copy buffer by moving</span>
 <span class="sd">        the faces outwards to the specified point</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -402,7 +402,7 @@ function checkPageExistsAndRedirect(event) {
         <span class="bp">self</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">Vec3</span><span class="p">(</span><span class="o">**</span><span class="n">start</span><span class="p">))</span></div>
 
 <div class="viewcode-block" id="CopyPaste.expand"><a class="viewcode-back" href="../../user/reference/api.html#mciwb.copier.CopyPaste.expand">[docs]</a>    <span class="k">def</span> <span class="nf">expand</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        expand one or more of the dimensions of the copy buffer by relative</span>
 <span class="sd">        amounts</span>
 <span class="sd">        &quot;&quot;&quot;</span>
