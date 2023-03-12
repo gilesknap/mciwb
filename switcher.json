@@ -62,5 +62,9 @@
   {
     "version": "pypi-fix",
     "url": "https://gilesknap.github.io/mciwb/pypi-fix/"
+  },
+  {
+    "version": "skeleton-merge",
+    "url": "https://gilesknap.github.io/mciwb/skeleton-merge/"
   }
 ]
