@@ -105,7 +105,7 @@ jobs:
 
       - name: Test module --version works using the installed wheel
         # If more than one module in src/ replace with module name to test
-        run: python -m $(ls src | head -1) --version
+        run: python -m mciwb --version
 
   container:
     needs: [lint, dist, test]
