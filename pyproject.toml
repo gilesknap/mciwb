@@ -17,7 +17,7 @@ dependencies = [
     "mcwb>=0.2.3",
     "ipython==8.10.0",
     "docker==5.0.3",
-    ]
+]
 dynamic = ["version"]
 license.file = "LICENSE"
 readme = "README.rst"
@@ -84,9 +84,9 @@ filterwarnings = [
     # its difficult to ensure all sockets are closed in tests so ignore
     "ignore:.*socket.*:ResourceWarning",
     "ignore::DeprecationWarning",
-    ]
+]
 # Doctest python code in docs, python code in src docstrings, test functions in tests
-testpaths = "docs src tests"
+testpaths = "docs tests"
 
 [tool.coverage.run]
 data_file = "/tmp/mciwb.coverage"

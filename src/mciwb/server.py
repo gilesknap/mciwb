@@ -174,9 +174,8 @@ class MinecraftServer:
             "RCON_PASSWORD": self.password,
             "SEED": 0,
             "LEVEL_TYPE": self.world_type,
-            "OPS": "TransformerScorn",
             "MODE": "creative",
-            "SPAWN_PROTECTION": "FALSE",
+            "SPAWN_PROTECTION": 0,
         }
 
         if self.test:
@@ -223,6 +222,7 @@ class MinecraftServer:
                 },
             },
             name=self.name,
+            security_opt=["label=disable"],
         )
 
         self.container = container

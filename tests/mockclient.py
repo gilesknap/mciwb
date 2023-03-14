@@ -31,6 +31,12 @@ class MockClient:
     # the following are mock versions of the original Client Functions ########
     ###########################################################################
 
+    def op(self, name):
+        """set user as operator"""
+
+    def gamemode(self, mode, user):
+        """set user gamemode"""
+
     def connect(self, retry=True):
         self.connected = True
 
@@ -95,7 +101,7 @@ class MockClient:
         """
         summon an entity at position with properties
         """
-        # for simplicity, assume 'george' was summoned at 0,-16,-60, rotation=0
+        # for simplicity, assume 'georgeTest' was summoned at 0,-16,-60, rotation=0
         # the data property below will deliver these values
 
     @property
@@ -103,7 +109,7 @@ class MockClient:
         class players_cls:
             @property
             def players(self):
-                return [Player("george")]
+                return [Player("georgeTest")]
 
         return players_cls()
 
