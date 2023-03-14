@@ -31,6 +31,12 @@ class MockClient:
     # the following are mock versions of the original Client Functions ########
     ###########################################################################
 
+    def op(self, name):
+        """set user as operator"""
+
+    def gamemode(self, mode, user):
+        """set user gamemode"""
+
     def connect(self, retry=True):
         self.connected = True
 
