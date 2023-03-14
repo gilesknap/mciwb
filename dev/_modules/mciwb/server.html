@@ -8,7 +8,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>mciwb.server &#8212; mciwb 0.8.5.dev1+g3917652 documentation</title>
+    <title>mciwb.server &#8212; mciwb 0.8.5.dev2+ge4bd818 documentation</title>
   
   
   
@@ -595,9 +595,8 @@ document.write(`
             <span class="s2">&quot;RCON_PASSWORD&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">password</span><span class="p">,</span>
             <span class="s2">&quot;SEED&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
             <span class="s2">&quot;LEVEL_TYPE&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">world_type</span><span class="p">,</span>
-            <span class="s2">&quot;OPS&quot;</span><span class="p">:</span> <span class="s2">&quot;TransformerScorn&quot;</span><span class="p">,</span>
             <span class="s2">&quot;MODE&quot;</span><span class="p">:</span> <span class="s2">&quot;creative&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;SPAWN_PROTECTION&quot;</span><span class="p">:</span> <span class="s2">&quot;FALSE&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;SPAWN_PROTECTION&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
         <span class="p">}</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">test</span><span class="p">:</span>
@@ -644,6 +643,7 @@ document.write(`
                 <span class="p">},</span>
             <span class="p">},</span>
             <span class="n">name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+            <span class="n">security_opt</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;label=disable&quot;</span><span class="p">],</span>
         <span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">container</span> <span class="o">=</span> <span class="n">container</span>
