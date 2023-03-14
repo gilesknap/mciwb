@@ -20,7 +20,7 @@ KEEP_SERVER = "MCIWB_KEEP_SERVER" in os.environ
 
 RCON_PORT = 20401
 RCON_P = "pass"
-ENTITY_NAME = "george"
+ENTITY_NAME = "georgeTest"
 ENTITY_POS = Vec3(0, -60, 0)
 
 test_server_name = "mciwb-test-server"

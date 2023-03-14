@@ -101,7 +101,7 @@ class MockClient:
         """
         summon an entity at position with properties
         """
-        # for simplicity, assume 'george' was summoned at 0,-16,-60, rotation=0
+        # for simplicity, assume 'georgeTest' was summoned at 0,-16,-60, rotation=0
         # the data property below will deliver these values
 
     @property
@@ -109,7 +109,7 @@ class MockClient:
         class players_cls:
             @property
             def players(self):
-                return [Player("george")]
+                return [Player("georgeTest")]
 
         return players_cls()
 

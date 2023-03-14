@@ -36,10 +36,10 @@ def test_repr(tmp_path: Path, minecraft_container, minecraft_client, minecraft_p
         "--passwd",
         RCON_P,
         "--player",
-        "george",
+        "georgeTest",
     )
 
-    assert "player: george" in result.stdout
+    assert "player: georgeTest" in result.stdout
 
 
 def test_backup(tmp_path):
