@@ -38,7 +38,7 @@
     "initializeCommand": "bash -c 'for i in $HOME/.inputrc; do [ -f $i ] || touch $i; done'",
     "runArgs": [
         "--net=host",
-        "--security-opt=label=type:container_runtime_t"
+        "--security-opt=label=disable"
     ],
     "mounts": [
         "source=${localEnv:HOME}/.ssh,target=/root/.ssh,type=bind",

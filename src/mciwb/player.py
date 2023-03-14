@@ -31,6 +31,10 @@ class Player:
 
     def __init__(self, name: str) -> None:
         self.name = name
+        client = get_client()
+        # make sure the player is an operator in creative mode
+        client.op(name)
+        client.gamemode("creative", name)
 
     def _get_entity_data(self, path: str, regex: Pattern[str]) -> Match[str]:
         """
