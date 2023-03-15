@@ -9,6 +9,10 @@ This project is intended as a fun way to learn the Python Programming Language.
 Experienced Python programmers can also use this library to create
 Minecraft worlds with interactive Python features.
 
+
+For the Reddit discussion see  
+`HERE <https://www.reddit.com/r/Minecraftbuilds/comments/11rqauh/build_things_using_python>`_
+
 Quick Start
 -----------
 
