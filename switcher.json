@@ -72,6 +72,10 @@
     "url": "https://gilesknap.github.io/mciwb/gilesknap-patch-1/"
   },
   {
+    "version": "gilesknap-patch-2",
+    "url": "https://gilesknap.github.io/mciwb/gilesknap-patch-2/"
+  },
+  {
     "version": "pypi-fix",
     "url": "https://gilesknap.github.io/mciwb/pypi-fix/"
   },
