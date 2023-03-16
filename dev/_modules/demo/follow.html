@@ -8,7 +8,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>demo.follow &#8212; mciwb 0.8.6.dev6+g9e5d175 documentation</title>
+    <title>demo.follow &#8212; mciwb 0.8.6.dev7+gd21acfb documentation</title>
   
   
   
@@ -419,31 +419,42 @@ document.write(`
                 <article class="bd-article" role="main">
                   
   <h1>Source code for demo.follow</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">time</span>
-
-<span class="kn">from</span> <span class="nn">demo.shapes</span> <span class="kn">import</span> <span class="n">pyramid</span>
-<span class="kn">from</span> <span class="nn">mciwb.imports</span> <span class="kn">import</span> <span class="n">Direction</span><span class="p">,</span> <span class="n">Item</span><span class="p">,</span> <span class="n">Vec3</span><span class="p">,</span> <span class="n">get_world</span>
+<span></span><span class="kn">from</span> <span class="nn">demo.shapes</span> <span class="kn">import</span> <span class="n">pyramid</span>
+<span class="kn">from</span> <span class="nn">mciwb.imports</span> <span class="kn">import</span> <span class="n">Direction</span><span class="p">,</span> <span class="n">Item</span><span class="p">,</span> <span class="n">Monitor</span><span class="p">,</span> <span class="n">Vec3</span><span class="p">,</span> <span class="n">get_world</span>
 
 
-<div class="viewcode-block" id="follow"><a class="viewcode-back" href="../../user/reference/demo.html#demo.follow.follow">[docs]</a><span class="k">def</span> <span class="nf">follow</span><span class="p">(</span><span class="n">pyramid_centre</span><span class="p">):</span>
+<div class="viewcode-block" id="SpookyPyramid"><a class="viewcode-back" href="../../user/reference/demo.html#demo.follow.SpookyPyramid">[docs]</a><span class="k">class</span> <span class="nc">SpookyPyramid</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Spooky Pyramid function: draws a pyramid centred at pyramid_centre, made</span>
+<span class="sd">    Spooky Pyramid Class: draws a pyramid centred at pyramid_centre, made</span>
 <span class="sd">    of carved pumpkins that always turn to face the player</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">world</span> <span class="o">=</span> <span class="n">get_world</span><span class="p">()</span>
 
-    <span class="n">pyramid_centre</span> <span class="o">=</span> <span class="n">Vec3</span><span class="p">(</span><span class="o">*</span><span class="n">pyramid_centre</span><span class="p">)</span>
-    <span class="n">size</span> <span class="o">=</span> <span class="mi">11</span>
-    <span class="n">half</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">size</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
-    <span class="n">corner</span> <span class="o">=</span> <span class="n">pyramid_centre</span> <span class="o">+</span> <span class="n">Direction</span><span class="o">.</span><span class="n">SOUTH</span> <span class="o">*</span> <span class="n">half</span> <span class="o">+</span> <span class="n">Direction</span><span class="o">.</span><span class="n">WEST</span> <span class="o">*</span> <span class="n">half</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pyramid_centre</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">11</span><span class="p">,</span> <span class="n">player</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pyramid_centre</span> <span class="o">=</span> <span class="n">Vec3</span><span class="p">(</span><span class="o">*</span><span class="n">pyramid_centre</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">size</span> <span class="o">=</span> <span class="n">size</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">half</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">size</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">corner</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">pyramid_centre</span>
+            <span class="o">+</span> <span class="n">Direction</span><span class="o">.</span><span class="n">SOUTH</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">half</span>
+            <span class="o">+</span> <span class="n">Direction</span><span class="o">.</span><span class="n">WEST</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">half</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">old_direction</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">world</span> <span class="o">=</span> <span class="n">get_world</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">player</span> <span class="o">=</span> <span class="n">player</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">world</span><span class="o">.</span><span class="n">player</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;spooky_pyramid_&quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">player</span><span class="o">.</span><span class="n">name</span>
 
-    <span class="n">old_direction</span> <span class="o">=</span> <span class="mi">0</span>
-    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
-        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span>
-        <span class="n">direction</span> <span class="o">=</span> <span class="n">Direction</span><span class="o">.</span><span class="n">facing</span><span class="p">(</span><span class="n">Vec3</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">5</span><span class="p">),</span> <span class="n">world</span><span class="o">.</span><span class="n">player</span><span class="o">.</span><span class="n">pos</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">direction</span> <span class="o">!=</span> <span class="n">old_direction</span><span class="p">:</span>
-            <span class="n">old_direction</span> <span class="o">=</span> <span class="n">direction</span>
-            <span class="n">pyramid</span><span class="p">(</span><span class="n">corner</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">Item</span><span class="o">.</span><span class="n">CARVED_PUMPKIN</span><span class="p">,</span> <span class="n">facing</span><span class="o">=</span><span class="n">direction</span><span class="p">)</span></div>
+    <span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">Monitor</span><span class="o">.</span><span class="n">stop_named</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">go</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">Monitor</span><span class="o">.</span><span class="n">stop_named</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+        <span class="n">Monitor</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">draw</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">draw</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">direction</span> <span class="o">=</span> <span class="n">Direction</span><span class="o">.</span><span class="n">facing</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pyramid_centre</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">player</span><span class="o">.</span><span class="n">pos</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">direction</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">old_direction</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">old_direction</span> <span class="o">=</span> <span class="n">direction</span>
+            <span class="n">pyramid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">corner</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">,</span> <span class="n">Item</span><span class="o">.</span><span class="n">CARVED_PUMPKIN</span><span class="p">,</span> <span class="n">facing</span><span class="o">=</span><span class="n">direction</span><span class="p">)</span></div>
 </pre></div>
 
                 </article>
