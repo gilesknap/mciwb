@@ -1,25 +1,36 @@
-import time
-
 from demo.shapes import pyramid
-from mciwb.imports import Direction, Item, Vec3, get_world
+from mciwb.imports import Direction, Item, Monitor, Vec3, get_world
 
 
-def follow(pyramid_centre):
+class SpookyPyramid:
     """
-    Spooky Pyramid function: draws a pyramid centred at pyramid_centre, made
+    Spooky Pyramid Class: draws a pyramid centred at pyramid_centre, made
     of carved pumpkins that always turn to face the player
     """
-    world = get_world()
 
-    pyramid_centre = Vec3(*pyramid_centre)
-    size = 11
-    half = int(size / 2)
-    corner = pyramid_centre + Direction.SOUTH * half + Direction.WEST * half
+    def __init__(self, pyramid_centre, size=11, player=None):
+        self.pyramid_centre = Vec3(*pyramid_centre)
+        self.size = size
+        self.half = int(size / 2)
+        self.corner = (
+            self.pyramid_centre
+            + Direction.SOUTH * self.half
+            + Direction.WEST * self.half
+        )
+        self.old_direction = 0
+        self.world = get_world()
+        self.player = player or self.world.player
+        self.name = "spooky_pyramid_" + self.player.name
 
-    old_direction = 0
-    while True:
-        time.sleep(0.5)
-        direction = Direction.facing(Vec3(5, 0, -5), world.player.pos)
-        if direction != old_direction:
-            old_direction = direction
-            pyramid(corner, size, Item.CARVED_PUMPKIN, facing=direction)
+    def stop(self):
+        Monitor.stop_named(self.name)
+
+    def go(self):
+        Monitor.stop_named(self.name)
+        Monitor(self.draw, name=self.name)
+
+    def draw(self):
+        direction = Direction.facing(self.pyramid_centre, self.player.pos)
+        if direction != self.old_direction:
+            self.old_direction = direction
+            pyramid(self.corner, self.size, Item.CARVED_PUMPKIN, facing=direction)
