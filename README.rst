@@ -29,8 +29,9 @@ The pagoda and castle with working portcullis were all created programmatically
 with Python and the current version of MCIWB.
 .. raw:: html
 
-    <iframe width="700" height="300" src="https://photos.app.goo.gl/HBw2sx4NBckSkbsK8" title="Castle Build" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-
+    <embed>
+        <iframe width="700" height="300" src="https://photos.app.goo.gl/HBw2sx4NBckSkbsK8" title="Castle Build" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+    </embed>
 
 Goals
 -----
