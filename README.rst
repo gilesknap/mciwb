@@ -33,7 +33,7 @@ with Python and the current version of MCIWB.
    :alt: castle
    :align: center
    :width: 600px
-   :target: https://photos.app.goo.gl/HBw2sx4NBckSkbsK8
+   :target: https://photos.google.com/share/AF1QipPbCXotAahXaRuS3iqjIm1YjJ1MAbBddcwHT6pOTXPZVrFrD3Rsh1tBU2hAvkFfcQ/photo/AF1QipNebhR4kp01DzH4SqNFb_4-xhfLD_3_klzrlt4l?key=ODRGVUVuQW94ZmhObFRodGxtZEFiU2d6M0JQcG53
    
    Example Build - Click for Video 
 
