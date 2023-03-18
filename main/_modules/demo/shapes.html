@@ -8,7 +8,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>demo.shapes &#8212; mciwb 0.8.6.dev12+g20d23e8 documentation</title>
+    <title>demo.shapes &#8212; mciwb 0.8.6.dev17+g83e6dfc documentation</title>
   
   
   
@@ -424,6 +424,7 @@ document.write(`
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
 
 <span class="kn">from</span> <span class="nn">mciwb.imports</span> <span class="kn">import</span> <span class="n">Direction</span><span class="p">,</span> <span class="n">Item</span><span class="p">,</span> <span class="n">Vec3</span><span class="p">,</span> <span class="n">get_world</span>
 
@@ -495,6 +496,40 @@ document.write(`
         <span class="n">row_size</span> <span class="o">-=</span> <span class="mi">2</span>
         <span class="k">if</span> <span class="n">row_size</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">break</span></div>
+
+
+<span class="c1"># Minecraft Education Edition Equivalent</span>
+
+<span class="c1"># def tower(start, size, height, item):</span>
+<span class="c1">#     for y in range(height):</span>
+<span class="c1">#         for x in range(size):</span>
+<span class="c1">#             for z in range(size):</span>
+<span class="c1">#                 blocks.place(item, start.add(pos(0,y,z)))</span>
+<span class="c1">#                 blocks.place(item, start.add(pos(size,y,z)))</span>
+<span class="c1">#                 blocks.place(item, start.add(pos(x,y,0)))</span>
+<span class="c1">#                 blocks.place(item, start.add(pos(x,y,size)))</span>
+<span class="c1">#         blocks.place(item, start.add(pos(x,y,z)))</span>
+
+<span class="c1"># tower(world(0, 4, 0), 9, 10, COBBLESTONE)</span>
+
+
+<span class="k">def</span> <span class="nf">tower</span><span class="p">(</span><span class="n">start</span><span class="p">:</span> <span class="n">Vec3</span><span class="p">,</span> <span class="n">size</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">height</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">item</span><span class="o">=</span><span class="n">Item</span><span class="o">.</span><span class="n">COBBLESTONE</span><span class="p">):</span>
+    <span class="n">world</span> <span class="o">=</span> <span class="n">get_world</span><span class="p">()</span>
+
+    <span class="n">start_time</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+
+    <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">height</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">size</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">z</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">size</span><span class="p">):</span>
+                <span class="n">world</span><span class="o">.</span><span class="n">set_block</span><span class="p">(</span><span class="n">start</span> <span class="o">+</span> <span class="n">Vec3</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">),</span> <span class="n">item</span><span class="p">)</span>
+                <span class="n">world</span><span class="o">.</span><span class="n">set_block</span><span class="p">(</span><span class="n">start</span> <span class="o">+</span> <span class="n">Vec3</span><span class="p">(</span><span class="n">size</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">),</span> <span class="n">item</span><span class="p">)</span>
+                <span class="n">world</span><span class="o">.</span><span class="n">set_block</span><span class="p">(</span><span class="n">start</span> <span class="o">+</span> <span class="n">Vec3</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">item</span><span class="p">)</span>
+                <span class="n">world</span><span class="o">.</span><span class="n">set_block</span><span class="p">(</span><span class="n">start</span> <span class="o">+</span> <span class="n">Vec3</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">size</span><span class="p">),</span> <span class="n">item</span><span class="p">)</span>
+        <span class="n">world</span><span class="o">.</span><span class="n">set_block</span><span class="p">(</span><span class="n">start</span> <span class="o">+</span> <span class="n">Vec3</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">),</span> <span class="n">item</span><span class="p">)</span>
+
+    <span class="n">diff_time</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span> <span class="o">-</span> <span class="n">start_time</span>
+
+    <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;tower took </span><span class="si">{</span><span class="n">diff_time</span><span class="o">.</span><span class="n">total_seconds</span><span class="p">()</span><span class="si">}</span><span class="s2"> seconds&quot;</span><span class="p">)</span>
 </pre></div>
 
                 </article>

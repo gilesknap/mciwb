@@ -24,6 +24,10 @@ side-bar.
             tutorials/07-lists
             tutorials/08-classes
             tutorials/09-dictionaries
+            tutorials/10-threading
+            tutorials/11-switches
+            tutorials/12-signs
+            tutorials/13-structures
 
         +++
 
@@ -59,6 +63,7 @@ side-bar.
             explanations/server-config
             explanations/coordinates
             explanations/mcipc
+            explanations/mcee
 
 
         +++
