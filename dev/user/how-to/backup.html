@@ -9,7 +9,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>Backup and Restore &#8212; mciwb 0.8.6.dev8+g8ef62f2 documentation</title>
+    <title>Backup and Restore &#8212; mciwb 0.8.6.dev9+g3fd2c4f documentation</title>
   
   
   
@@ -501,9 +501,13 @@ the words.</p>
 flat area, this is to make a change that we don’t want to keep.
 Then exit the Python Prompt using ‘Ctrl+D’. Now we are back
 at the <code class="docutils literal notranslate"><span class="pre">bash</span></code> prompt and we can look in the backups folder to see our
-list of backups e.g:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(.venv) [giles@ws1 mciwb]$ ls $HOME/mciwb-backups
-22-07-13.06.26.01.zip  22-07-13.06.34.06.zip  flat-area-backup.zip
+list of backups e.g</p>
+<p>This command:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>ls $HOME/mciwb-backups
+</pre></div>
+</div>
+<p>Shows my backup files like this:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mi">22</span><span class="o">-</span><span class="mi">07</span><span class="o">-</span><span class="mf">13.06.26.01</span><span class="o">.</span><span class="n">zip</span>  <span class="mi">22</span><span class="o">-</span><span class="mi">07</span><span class="o">-</span><span class="mf">13.06.34.06</span><span class="o">.</span><span class="n">zip</span>  <span class="n">my</span><span class="o">-</span><span class="n">first</span><span class="o">-</span><span class="n">backup</span><span class="o">.</span><span class="n">zip</span>
 </pre></div>
 </div>
 <p>You backups are stored in a folder called $HOME/mciwb-backups and <code class="docutils literal notranslate"><span class="pre">ls</span></code> is
@@ -512,15 +516,16 @@ a terminal command that lists the contents of that folder.</p>
 that the backup files all end in <code class="docutils literal notranslate"><span class="pre">.zip</span></code>. Some of them are dated but you also
 see the <code class="docutils literal notranslate"><span class="pre">flat-area-backup.zip</span></code> file that we named explicitly.</p>
 <p>Now you can restore from backup with the following command:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(.venv) [giles@ws1 mciwb]$ mciwb restore flat-area-backup
-INFO:   Stopping Minecraft Server mciwb-server ...
-INFO:   Restored /home/giles/mciwb-server/world from /home/giles/mciwb-backups/flat-area-backup.zip
-INFO:   Launching existing Minecraft server in /home/giles/mciwb-server
-INFO:   Launching Minecraft Server &#39;mciwb-server&#39; on port 20101 ...
-INFO:   waiting for server to come online ...
-INFO:   Server mciwb-server is online on port 20101
-
-(.venv) [giles@ws1 mciwb]$
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">mciwb</span> <span class="n">restore</span> <span class="n">flat</span><span class="o">-</span><span class="n">area</span><span class="o">-</span><span class="n">backup</span>
+</pre></div>
+</div>
+<p>The output should look something like this:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">INFO</span><span class="p">:</span>   <span class="n">Stopping</span> <span class="n">Minecraft</span> <span class="n">Server</span> <span class="n">mciwb</span><span class="o">-</span><span class="n">server</span> <span class="o">...</span>
+<span class="n">INFO</span><span class="p">:</span>   <span class="n">Restored</span> <span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">giles</span><span class="o">/</span><span class="n">mciwb</span><span class="o">-</span><span class="n">server</span><span class="o">/</span><span class="n">world</span> <span class="kn">from</span> <span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">giles</span><span class="o">/</span><span class="n">mciwb</span><span class="o">-</span><span class="n">backups</span><span class="o">/</span><span class="n">flat</span><span class="o">-</span><span class="n">area</span><span class="o">-</span><span class="n">backup</span><span class="o">.</span><span class="n">zip</span>
+<span class="n">INFO</span><span class="p">:</span>   <span class="n">Launching</span> <span class="n">existing</span> <span class="n">Minecraft</span> <span class="n">server</span> <span class="ow">in</span> <span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">giles</span><span class="o">/</span><span class="n">mciwb</span><span class="o">-</span><span class="n">server</span>
+<span class="n">INFO</span><span class="p">:</span>   <span class="n">Launching</span> <span class="n">Minecraft</span> <span class="n">Server</span> <span class="s1">&#39;mciwb-server&#39;</span> <span class="n">on</span> <span class="n">port</span> <span class="mi">20101</span> <span class="o">...</span>
+<span class="n">INFO</span><span class="p">:</span>   <span class="n">waiting</span> <span class="k">for</span> <span class="n">server</span> <span class="n">to</span> <span class="n">come</span> <span class="n">online</span> <span class="o">...</span>
+<span class="n">INFO</span><span class="p">:</span>   <span class="n">Server</span> <span class="n">mciwb</span><span class="o">-</span><span class="n">server</span> <span class="ow">is</span> <span class="n">online</span> <span class="n">on</span> <span class="n">port</span> <span class="mi">20101</span>
 </pre></div>
 </div>
 <p>The <code class="docutils literal notranslate"><span class="pre">mciwb</span> <span class="pre">restore</span></code>

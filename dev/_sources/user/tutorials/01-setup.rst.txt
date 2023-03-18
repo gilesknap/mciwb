@@ -14,14 +14,14 @@ of the tutorials. To do so we need to install the following software:
 - Minecraft Interactive World Builder Python package
 
 .. warning::
-    
-    The tutorials for this project are intended to be accessible for
-    complete beginners. However, this first step of getting all of the 
-    software installed may need a little bit of knowledge of the basics of
-    your operating system. 
 
-    For this Setup Tutorial, I recommend that novices get a little help from 
-    someone with computer experience. This setup tutorial need only 
+    The tutorials for this project are intended to be accessible for
+    complete beginners. However, this first step of getting all of the
+    software installed may need a little bit of knowledge of the basics of
+    your operating system.
+
+    For this Setup Tutorial, I recommend that novices get a little help from
+    someone with computer experience. This setup tutorial need only
     be done once (per computer) and the remaining tutorials should not
     require prior knowledge.
 
@@ -35,15 +35,15 @@ You will need to purchase a license for Minecraft from Microsoft.
 
 Go to this site to buy your copy, if you do not already have one:
 
-    https://www.minecraft.net/en-us/store/minecraft-java-bedrock-edition-pc  
+    https://www.minecraft.net/en-us/store/minecraft-java-bedrock-edition-pc
 
 Once you have a license, download the Java client to
-the computer where you will be trying out MCIWB. 
+the computer where you will be trying out MCIWB.
 This is the download link for the Java client:
-    
+
         https://www.minecraft.net/en-us/download
 
-Microsoft has now bundled the Java and Bedrock editions together. 
+Microsoft has now bundled the Java and Bedrock editions together.
 We are using the Java edition here but this project could be adapted to
 work for either in future.
 
@@ -77,20 +77,20 @@ use for individuals.
 
 Windows:
     Docker Desktop requires WSL2 and a linux distribution to go with it.
-    So you should first install WSL2 and Ubuntu 22.04 LTS from here 
+    So you should first install WSL2 and Ubuntu 22.04 LTS from here
     - https://apps.microsoft.com/store/detail/ubuntu-2204-lts/9PN20MSR04DW
 
 All Platforms:
     Instructions for Docker Desktop installation for all platforms are here:
     - https://docs.docker.com/get-docker/
 
-For mciwb to work you will need Docker Desktop to be running before you 
-start Visual Studio Code. So start it from the start menu before moving to 
+For mciwb to work you will need Docker Desktop to be running before you
+start Visual Studio Code. So start it from the start menu before moving to
 the next step.
 
 To make things easier next time you could go into settings (accessed
-via the cog icon in the title bar of the Docker Desktop main window) 
-and tick the option 
+via the cog icon in the title bar of the Docker Desktop main window)
+and tick the option
 ``Start Docker Desktop when you log in``.
 
 
@@ -101,13 +101,13 @@ Visual Studio Code
 
 This is the tool we will use to edit our Python code. If you are already
 a developer then you can use your preferred IDE instead. The tutorials
-will use Visual Studio Code, so if you are new to programming this is 
+will use Visual Studio Code, so if you are new to programming this is
 a recommended install.
 
 VSCode is free, open-source software.
 
 This link provides downloads for all flavours of VSCode:
-    
+
     https://code.visualstudio.com/download
 
 
@@ -115,14 +115,14 @@ Command Line
 ------------
 
 From now on we are going to start using the command line. You are free to use
-whatever terminal program you like, however I recommend that you use the 
+whatever terminal program you like, however I recommend that you use the
 integrated terminal inside of Visual Studio Code.
 
-Here we will set up our initial VSCode work folder and get a ``bash`` 
-command line prompt. ``bash`` is the most popular ``shell`` for Linux, 
-it provides a command line interface to all the utilities and services 
-on a Linux computer. On Windows we will be using the Linux Subsystem so will 
-also use ``bash``. On Mac we will be using ``zsh`` but this is pretty similar 
+Here we will set up our initial VSCode work folder and get a ``bash``
+command line prompt. ``bash`` is the most popular ``shell`` for Linux,
+it provides a command line interface to all the utilities and services
+on a Linux computer. On Windows we will be using the Linux Subsystem so will
+also use ``bash``. On Mac we will be using ``zsh`` but this is pretty similar
 to ``bash``.
 
 
@@ -133,15 +133,15 @@ First open VSCode from the start menu.
     **Windows Users: Important**
 
     We are going to use 'Windows Subsystem for Linux 2' or WSL2.
-    Go here first to get VSCode connected to WSL2: 
+    Go here first to get VSCode connected to WSL2:
     `wsl2`
 
 
 Let's create a work folder for use in further tutorials and tell VSCode To
-open the folder. We'll call it  ``my_world`` but you are free to use your 
+open the folder. We'll call it  ``my_world`` but you are free to use your
 own name.
 
-First start a terminal by selecting from the menu bar 
+First start a terminal by selecting from the menu bar
 ``Terminal -> New Terminal``.
 
 The bottom half of your VSCode window will display a ``bash``
@@ -159,11 +159,11 @@ create a new folder called ``my_world``::
     mkdir my_world
 
 Now we want to reopen VSCode with the new folder set as its work area.
-From the menu bar choose ``File -> Open Folder``. You will see a list of 
+From the menu bar choose ``File -> Open Folder``. You will see a list of
 folders, select ``my_world`` and click OK.
 
-You will be asked if you trust the authors of files in this folder. 
-You do trust them because they are you! So click 
+You will be asked if you trust the authors of files in this folder.
+You do trust them because they are you! So click
 ``Yes I trust the authors``.
 
 .. image:: ../images/trust.png
@@ -183,10 +183,10 @@ menus should be the same for Windows, Linux and MacOS. This is because you
 now have a bash shell for typing commands.
 
 .. warning::
-    There is one caveat here. When directed to install a software package with 
+    There is one caveat here. When directed to install a software package with
     ``sudo apt``, this will only apply if you are using a Debian derived
-    OS such as Ubuntu (this also covers Windows WSL2 users). 
-    Mac, CentOs, Arch based users - I'm hoping you will know the equivalent 
+    OS such as Ubuntu (this also covers Windows WSL2 users).
+    Mac, CentOs, Arch based users - I'm hoping you will know the equivalent
     commands. I will supply an appendix for other OSes in future.
 
 Python
@@ -194,7 +194,7 @@ Python
 
 The Python Programming Language is also free and open-source.
 
-This is essential for working with MCIWB. 
+This is essential for working with MCIWB.
 Python 3.10 because the underlying RCON library requires it. This is the
 latest version of Python at the time of writing.
 
@@ -228,20 +228,21 @@ in the folder name ".venv")::
 
     python3.10 -m venv .venv
 
-Then activate it by typing the following. This command will need to be 
+Then activate it by typing the following. This command will need to be
 repeated each time you restart your terminal or open a new terminal::
 
     source .venv/bin/activate
 
-Note you can tell you have an active **Virtual Environment** because 
+Note you can tell you have an active **Virtual Environment** because
 your terminal prompt will change to have a leading (.venv) like this::
 
-    (.venv) giles@gkwin:~/my_world$
+    (.venv) $
+
 
 Minecraft Interactive World Builder library
 -------------------------------------------
 
-The final component is MCIWB itself. This needs to be added to the 
+The final component is MCIWB itself. This needs to be added to the
 Python environment we already made above. Again, this is free open open-source
 software.
 
@@ -264,11 +265,11 @@ mciwb from the Python Package Index (PyPi) and install it into the
 
     pip install mciwb
 
-Assuming all is well you should be able to verify everything is working 
+Assuming all is well you should be able to verify everything is working
 by typing the following::
 
     mciwb --help
 
-That's all the hard bits done and they only need to be done once. 
+That's all the hard bits done and they only need to be done once.
 You can now proceed to the next tutorial.
 
