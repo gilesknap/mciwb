@@ -8,7 +8,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>demo.shapes &#8212; mciwb 0.8.6.dev9+g3fd2c4f documentation</title>
+    <title>demo.shapes &#8212; mciwb 0.8.6.dev10+g1282bbd documentation</title>
   
   
   
@@ -495,6 +495,26 @@ document.write(`
         <span class="n">row_size</span> <span class="o">-=</span> <span class="mi">2</span>
         <span class="k">if</span> <span class="n">row_size</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">break</span></div>
+
+
+<span class="c1"># Minecraft Education Edition Equivalent</span>
+
+<span class="c1"># def tower(start, size, height, item):</span>
+<span class="c1">#     start = world(0, 4, 0)</span>
+<span class="c1">#     for y in range(height):</span>
+<span class="c1">#         for x in range(size):</span>
+<span class="c1">#             for z in range(size):</span>
+<span class="c1">#                 blocks.place(item, start.add(pos(0,y,z)))</span>
+<span class="c1">#                 blocks.place(item, start.add(pos(size,y,z)))</span>
+<span class="c1">#                 blocks.place(item, start.add(pos(x,y,0)))</span>
+<span class="c1">#                 blocks.place(item, start.add(pos(x,y,size)))</span>
+<span class="c1">#         blocks.place(item, start.add(pos(x,y,z)))</span>
+
+<span class="c1"># tower(world(0, 4, 0), 9, 10, COBBLESTONE)</span>
+
+
+<span class="k">def</span> <span class="nf">tower</span><span class="p">(</span><span class="n">start</span><span class="p">:</span> <span class="n">Vec3</span><span class="p">,</span> <span class="n">size</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="n">item</span><span class="o">=</span><span class="n">Item</span><span class="o">.</span><span class="n">COBBLESTONE</span><span class="p">):</span>
+    <span class="k">pass</span>
 </pre></div>
 
                 </article>
