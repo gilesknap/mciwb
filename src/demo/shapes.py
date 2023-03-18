@@ -3,6 +3,7 @@ Functions to make some shapes in the world
 """
 
 import logging
+from datetime import datetime
 
 from mciwb.imports import Direction, Item, Vec3, get_world
 
@@ -74,3 +75,37 @@ def pyramid(start: Vec3, size: int, item=Item.COBBLESTONE, **kwargs):
         row_size -= 2
         if row_size <= 0:
             break
+
+
+# Minecraft Education Edition Equivalent
+
+# def tower(start, size, height, item):
+#     for y in range(height):
+#         for x in range(size):
+#             for z in range(size):
+#                 blocks.place(item, start.add(pos(0,y,z)))
+#                 blocks.place(item, start.add(pos(size,y,z)))
+#                 blocks.place(item, start.add(pos(x,y,0)))
+#                 blocks.place(item, start.add(pos(x,y,size)))
+#         blocks.place(item, start.add(pos(x,y,z)))
+
+# tower(world(0, 4, 0), 9, 10, COBBLESTONE)
+
+
+def tower(start: Vec3, size: int, height: int, item=Item.COBBLESTONE):
+    world = get_world()
+
+    start_time = datetime.now()
+
+    for y in range(height):
+        for x in range(size):
+            for z in range(size):
+                world.set_block(start + Vec3(0, y, z), item)
+                world.set_block(start + Vec3(size, y, z), item)
+                world.set_block(start + Vec3(x, y, 0), item)
+                world.set_block(start + Vec3(x, y, size), item)
+        world.set_block(start + Vec3(x, y, z), item)
+
+    diff_time = datetime.now() - start_time
+
+    logging.warning(f"tower took {diff_time.total_seconds()} seconds")
