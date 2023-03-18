@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import Dict, Optional
+from typing import Dict, List, Optional
 
 from mcipc.rcon.exceptions import NoPlayerFound
 from mcipc.rcon.item import Item
@@ -112,7 +112,7 @@ class Iwb:
         return self._players[name]
 
     @property
-    def players(self) -> Dict[str, Player]:
+    def players(self) -> List[str]:
         """
         Get a list of the names of players being monitored.
         """
@@ -205,6 +205,8 @@ class Iwb:
                 f"    position: {player.pos}\n"
                 f"    facing: {player.facing}\n"
             )
+        if len(self._players.items()) == 0:
+            report += "  no players\n"
 
         return report.format(o=self)
 

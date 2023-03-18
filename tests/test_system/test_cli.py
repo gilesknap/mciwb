@@ -24,7 +24,7 @@ def test_repr(tmp_path: Path, minecraft_container, minecraft_client, minecraft_p
         "shell", "--test", "--server", HOST, "--port", RCON_PORT, "--passwd", RCON_P
     )
 
-    assert "no player selected" in result.stdout
+    assert "no players" in result.stdout
 
     result = run_cli(
         "shell",
