@@ -105,6 +105,19 @@ class Iwb:
 
         return client
 
+    def get_player(self, name: str) -> Player:
+        """
+        Get the player object for the given player name.
+        """
+        return self._players[name]
+
+    @property
+    def players(self) -> Dict[str, Player]:
+        """
+        Get a list of the names of players being monitored.
+        """
+        return list(self._players.keys())
+
     def add_player(self, name: str, me=True):
         """
         Add a player to the world object. This provides monitoring of the
@@ -186,14 +199,12 @@ class Iwb:
                 "  copy buffer size: {o.copier.size}\n"
                 "  paste point: {o.copier.paste_pos}\n"
             )
-        if self.player is not None:
+        for name, player in self._players.items():
             report += (
-                "  player: {o.player.name}\n"
-                "  player position: {o.player.pos}\n"
-                "  player facing: {o.player.facing}\n"
+                f"  player: {name}\n"
+                f"    position: {player.pos}\n"
+                f"    facing: {player.facing}\n"
             )
-        else:
-            report += "  no player selected\n"
 
         return report.format(o=self)
 
