@@ -9,7 +9,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>Run static analysis using mypy &#8212; mciwb 0.8.6.dev11+g3ca7f44 documentation</title>
+    <title>Comparison with Minecraft Education Edition &#8212; mciwb 0.8.6.dev11+g3ca7f44 documentation</title>
   
   
   
@@ -47,7 +47,7 @@
     <script src="../../_static/clipboard.min.js"></script>
     <script src="../../_static/copybutton.js"></script>
     <script src="../../_static/design-tabs.js"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'developer/how-to/static-analysis';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'user/explanations/mcee';</script>
     <script>
         DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://gilesknap.github.io/mciwb/switcher.json';
         DOCUMENTATION_OPTIONS.theme_switcher_version_match = 'dev';
@@ -55,8 +55,8 @@
     <link rel="shortcut icon" href="../../_static/logo.png"/>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Run linting using pre-commit" href="lint.html" />
-    <link rel="prev" title="Run the tests using pytest" href="run-tests.html" />
+    <link rel="next" title="Finding Things" href="../reference/index.html" />
+    <link rel="prev" title="MCIPC Client object" href="mcipc.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -146,15 +146,15 @@
   </p>
   <ul class="bd-navbar-elements navbar-nav">
     
-                    <li class="nav-item">
-                      <a class="nav-link nav-internal" href="../../user/index.html">
+                    <li class="nav-item current active">
+                      <a class="nav-link nav-internal" href="../index.html">
                         User Guide
                       </a>
                     </li>
                 
 
-                    <li class="nav-item current active">
-                      <a class="nav-link nav-internal" href="../index.html">
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../developer/index.html">
                         Developer Guide
                       </a>
                     </li>
@@ -286,15 +286,15 @@ document.write(`
   </p>
   <ul class="bd-navbar-elements navbar-nav">
     
-                    <li class="nav-item">
-                      <a class="nav-link nav-internal" href="../../user/index.html">
+                    <li class="nav-item current active">
+                      <a class="nav-link nav-internal" href="../index.html">
                         User Guide
                       </a>
                     </li>
                 
 
-                    <li class="nav-item current active">
-                      <a class="nav-link nav-internal" href="../index.html">
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../developer/index.html">
                         Developer Guide
                       </a>
                     </li>
@@ -379,32 +379,44 @@ document.write(`
   <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
   <div class="bd-toc-item navbar-nav"><p aria-level="2" class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/dev-install.html">Developer install</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/00-prereq.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/01-setup.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/02-orientation.html">Orientation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/03-variables.html">Python Variables</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/04-loops.html">Loops</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/05-functions.html">Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/05a-modules.html">Modules and Packages</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/06-if-then.html">If - Else</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/07-lists.html">Lists</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/08-classes.html">Classes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/09-dictionaries.html">Dictionaries</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">How-to Guides</span></p>
-<ul class="current nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="contribute.html">Contributing to the project</a></li>
-<li class="toctree-l1"><a class="reference internal" href="build-docs.html">Build the docs using sphinx</a></li>
-<li class="toctree-l1"><a class="reference internal" href="run-tests.html">Run the tests using pytest</a></li>
-<li class="toctree-l1 current active"><a class="current reference internal" href="#">Run static analysis using mypy</a></li>
-<li class="toctree-l1"><a class="reference internal" href="lint.html">Run linting using pre-commit</a></li>
-<li class="toctree-l1"><a class="reference internal" href="update-tools.html">Update the tools</a></li>
-<li class="toctree-l1"><a class="reference internal" href="make-release.html">Make a release</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pin-requirements.html">Pinning Requirements</a></li>
-<li class="toctree-l1"><a class="reference internal" href="test-container.html">Container Local Build and Test</a></li>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../how-to/startup.html">Setup for each Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../how-to/completion.html">Command Completion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../how-to/extensions.html">VSCode Extensions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../how-to/troubleshooting.html">Troubleshooting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../how-to/backup.html">Backup and Restore</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../how-to/wsl2.html">Windows Subsystem for Linux</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../how-to/coordinates.html">Discovering the Coordinates of a Block</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../how-to/run-container.html">Run in a container</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Explanations</span></p>
-<ul class="nav bd-sidenav">
-<li class="toctree-l1 has-children"><a class="reference internal" href="../explanations/decisions.html">Architectural Decision Records</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="../explanations/decisions/0001-record-architecture-decisions.html">1. Record architecture decisions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../explanations/decisions/0002-switched-to-pip-skeleton.html">2. Adopt python3-pip-skeleton for project structure</a></li>
-</ul>
-</li>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="docs-structure.html">About the documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="scope.html">Variable Scope</a></li>
+<li class="toctree-l1"><a class="reference internal" href="server-config.html">Minecraft Server Config</a></li>
+<li class="toctree-l1"><a class="reference internal" href="coordinates.html">Minecraft’s Coordinate System</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mcipc.html">MCIPC Client object</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Comparison with Minecraft Education Edition</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Reference</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="../reference/standards.html">Standards</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../reference/contributing.html">Contributing to the project</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/index.html">Finding Things</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/api.html">MCIWB API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/demo.html">Demo Code</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../genindex.html">Index</a></li>
 </ul>
 </div>
 </nav></div>
@@ -443,9 +455,9 @@ document.write(`
       </a>
     </li>
     
-    <li class="breadcrumb-item"><a href="../index.html" class="nav-link">Developer Guide</a></li>
+    <li class="breadcrumb-item"><a href="../index.html" class="nav-link">User Guide</a></li>
     
-    <li class="breadcrumb-item active" aria-current="page">Run static analysis using mypy</li>
+    <li class="breadcrumb-item active" aria-current="page">Comparison with Minecraft Education Edition</li>
   </ul>
 </nav>
 </div>
@@ -462,14 +474,33 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article" role="main">
                   
-  <section id="run-static-analysis-using-mypy">
-<h1>Run static analysis using mypy<a class="headerlink" href="#run-static-analysis-using-mypy" title="Permalink to this heading">#</a></h1>
-<p>Static type analysis is done with <a class="reference external" href="http://mypy-lang.org/">mypy</a>. It checks type definition in source
-files without running them, and highlights potential issues where types do not
-match. You can run it with:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ tox -e mypy
+  <section id="comparison-with-minecraft-education-edition">
+<span id="mcee"></span><h1>Comparison with Minecraft Education Edition<a class="headerlink" href="#comparison-with-minecraft-education-edition" title="Permalink to this heading">#</a></h1>
+<section id="introduction">
+<h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this heading">#</a></h2>
+<p>Minecraft Education Edition (MC EE) is a version of Minecraft that is designed
+for use in schools. It provides an in game editor for making python or scratch
+code to create in and interact with Minecraft worlds.</p>
+<p>When I started working on MCIWB, I took a brief look at MC EE. But dismissed it
+as out of date and not well supported. That was a mistake. The Hacker News
+discussion <a class="reference external" href="https://news.ycombinator.com/item?id=35166874#35195105">here</a>
+encouraged me to take another look.</p>
+<p>This page details my findings on investigating MC EE in more depth and
+discusses the differences between MC EE and MCIWB.</p>
+<p>TODO - Work in Progress</p>
+</section>
+<section id="mcwib-perf-results">
+<h2>MCWIB perf Results<a class="headerlink" href="#mcwib-perf-results" title="Permalink to this heading">#</a></h2>
+<p>Results for tower function in MCIWB:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">In</span> <span class="p">[</span><span class="mi">4</span><span class="p">]:</span> <span class="kn">from</span> <span class="nn">demo.shapes</span> <span class="kn">import</span> <span class="n">tower</span>
+
+<span class="n">In</span> <span class="p">[</span><span class="mi">5</span><span class="p">]:</span> <span class="n">start</span><span class="o">=</span> <span class="n">Vec3</span><span class="p">(</span><span class="mi">632</span><span class="p">,</span> <span class="mi">73</span><span class="p">,</span> <span class="o">-</span><span class="mi">1724</span><span class="p">)</span>
+
+<span class="n">In</span> <span class="p">[</span><span class="mi">6</span><span class="p">]:</span> <span class="n">tower</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="n">Item</span><span class="o">.</span><span class="n">AIR</span><span class="p">)</span>
+<span class="n">WARNING</span><span class="p">:</span><span class="n">root</span><span class="p">:</span><span class="n">tower</span> <span class="n">took</span> <span class="mf">0.141305</span> <span class="n">seconds</span>
 </pre></div>
 </div>
+</section>
 </section>
 
 
@@ -481,20 +512,20 @@ match. You can run it with:</p>
                   <!-- Previous / next buttons -->
 <div class="prev-next-area">
     <a class="left-prev"
-       href="run-tests.html"
+       href="mcipc.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Run the tests using pytest</p>
+        <p class="prev-next-title">MCIPC Client object</p>
       </div>
     </a>
     <a class="right-next"
-       href="lint.html"
+       href="../reference/index.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Run linting using pre-commit</p>
+        <p class="prev-next-title">Finding Things</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -508,9 +539,20 @@ match. You can run it with:</p>
                 <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
 
   <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#introduction">Introduction</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mcwib-perf-results">MCWIB perf Results</a></li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
   
   <div class="tocsection editthispage">
-    <a href="https://github.com/gilesknap/mciwb/edit/dev/docs/developer/how-to/static-analysis.rst">
+    <a href="https://github.com/gilesknap/mciwb/edit/dev/docs/user/explanations/mcee.rst">
       <i class="fa-solid fa-pencil"></i>
       
       
@@ -524,7 +566,7 @@ match. You can run it with:</p>
 
   <div class="sidebar-secondary-item">
   <div class="tocsection sourcelink">
-    <a href="../../_sources/developer/how-to/static-analysis.rst.txt">
+    <a href="../../_sources/user/explanations/mcee.rst.txt">
       <i class="fa-solid fa-file-lines"></i> Show Source
     </a>
   </div>

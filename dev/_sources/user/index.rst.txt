@@ -59,6 +59,7 @@ side-bar.
             explanations/server-config
             explanations/coordinates
             explanations/mcipc
+            explanations/mcee
 
 
         +++
