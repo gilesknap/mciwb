@@ -9,7 +9,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>MCIWB API &#8212; mciwb 0.8.6.dev7+gd21acfb documentation</title>
+    <title>MCIWB API &#8212; mciwb 0.8.6.dev8+g8ef62f2 documentation</title>
   
   
   
@@ -566,6 +566,18 @@ backup will be named using the current date and time.</p>
 <span class="sig-name descname"><span class="pre">connect</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Client</span></span></span><a class="reference internal" href="../../_modules/mciwb/iwb.html#Iwb.connect"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.iwb.Iwb.connect" title="Permalink to this definition">#</a></dt>
 <dd><p>Makes a connection to the Minecraft Server. Can be called again
 if the connection is lost e.g. due to server reboot.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mciwb.iwb.Iwb.get_player">
+<span class="sig-name descname"><span class="pre">get_player</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#mciwb.player.Player" title="mciwb.player.Player"><span class="pre">Player</span></a></span></span><a class="reference internal" href="../../_modules/mciwb/iwb.html#Iwb.get_player"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.iwb.Iwb.get_player" title="Permalink to this definition">#</a></dt>
+<dd><p>Get the player object for the given player name.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mciwb.iwb.Iwb.players">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">players</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.11)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#mciwb.player.Player" title="mciwb.player.Player"><span class="pre">Player</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#mciwb.iwb.Iwb.players" title="Permalink to this definition">#</a></dt>
+<dd><p>Get a list of the names of players being monitored.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -1161,6 +1173,8 @@ to <a class="reference internal" href="#mciwb.threads.new_thread" title="mciwb.t
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#mciwb.iwb.Iwb.debug"><code class="docutils literal notranslate"><span class="pre">Iwb.debug()</span></code></a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#mciwb.iwb.Iwb.backup"><code class="docutils literal notranslate"><span class="pre">Iwb.backup()</span></code></a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#mciwb.iwb.Iwb.connect"><code class="docutils literal notranslate"><span class="pre">Iwb.connect()</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#mciwb.iwb.Iwb.get_player"><code class="docutils literal notranslate"><span class="pre">Iwb.get_player()</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#mciwb.iwb.Iwb.players"><code class="docutils literal notranslate"><span class="pre">Iwb.players</span></code></a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#mciwb.iwb.Iwb.add_player"><code class="docutils literal notranslate"><span class="pre">Iwb.add_player()</span></code></a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#mciwb.iwb.Iwb.set_block"><code class="docutils literal notranslate"><span class="pre">Iwb.set_block()</span></code></a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#mciwb.iwb.Iwb.get_block"><code class="docutils literal notranslate"><span class="pre">Iwb.get_block()</span></code></a></li>
