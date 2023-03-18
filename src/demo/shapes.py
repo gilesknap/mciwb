@@ -74,3 +74,23 @@ def pyramid(start: Vec3, size: int, item=Item.COBBLESTONE, **kwargs):
         row_size -= 2
         if row_size <= 0:
             break
+
+
+# Minecraft Education Edition Equivalent
+
+# def tower(start, size, height, item):
+#     start = world(0, 4, 0)
+#     for y in range(height):
+#         for x in range(size):
+#             for z in range(size):
+#                 blocks.place(item, start.add(pos(0,y,z)))
+#                 blocks.place(item, start.add(pos(size,y,z)))
+#                 blocks.place(item, start.add(pos(x,y,0)))
+#                 blocks.place(item, start.add(pos(x,y,size)))
+#         blocks.place(item, start.add(pos(x,y,z)))
+
+# tower(world(0, 4, 0), 9, 10, COBBLESTONE)
+
+
+def tower(start: Vec3, size: int, height, int, item=Item.COBBLESTONE):
+    pass
