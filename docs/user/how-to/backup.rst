@@ -15,7 +15,7 @@ Backups of mciwb-server
 
 Backups provide a way to save our world to a file when we are happy with it.
 Then we are protected from loosing our work if we make a programming error.
-When things go wrong we can just restore back to a previous version of the 
+When things go wrong we can just restore back to a previous version of the
 world.
 
 To backup the world type this at the Python Prompt::
@@ -24,7 +24,7 @@ To backup the world type this at the Python Prompt::
 
 This will create a backup with a name that is the current date and time. You
 can also specify a name if you want. Let's do that now::
-    
+
     world.backup('my-first-backup')
 
 It is better not to use spaces in backup names so I used dash to separate
@@ -34,11 +34,15 @@ Now lets do a restore. You can first have your player dig a hole in our
 flat area, this is to make a change that we don't want to keep.
 Then exit the Python Prompt using 'Ctrl+D'. Now we are back
 at the ``bash`` prompt and we can look in the backups folder to see our
-list of backups e.g::
+list of backups e.g
 
-    
-    (.venv) [giles@ws1 mciwb]$ ls $HOME/mciwb-backups
-    22-07-13.06.26.01.zip  22-07-13.06.34.06.zip  flat-area-backup.zip
+This command::
+
+    ls $HOME/mciwb-backups
+
+Shows my backup files like this::
+
+    22-07-13.06.26.01.zip  22-07-13.06.34.06.zip  my-first-backup.zip
 
 You backups are stored in a folder called $HOME/mciwb-backups and ``ls`` is
 a terminal command that lists the contents of that folder.
@@ -49,7 +53,10 @@ see the ``flat-area-backup.zip`` file that we named explicitly.
 
 Now you can restore from backup with the following command::
 
-    (.venv) [giles@ws1 mciwb]$ mciwb restore flat-area-backup
+    mciwb restore flat-area-backup
+
+The output should look something like this::
+
     INFO:   Stopping Minecraft Server mciwb-server ...
     INFO:   Restored /home/giles/mciwb-server/world from /home/giles/mciwb-backups/flat-area-backup.zip
     INFO:   Launching existing Minecraft server in /home/giles/mciwb-server
@@ -57,8 +64,7 @@ Now you can restore from backup with the following command::
     INFO:   waiting for server to come online ...
     INFO:   Server mciwb-server is online on port 20101
 
-    (.venv) [giles@ws1 mciwb]$ 
-    
+
 The ``mciwb restore``
 command can be given the name of the backup to restore or if you specify no
 name it will restore the most recent backup.
