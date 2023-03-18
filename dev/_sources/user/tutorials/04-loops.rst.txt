@@ -148,7 +148,7 @@ Try the following code in your Python Terminal:
     for y in range(4):
         # left side
         world.set_block(pos + Direction.UP * y, Item.OBSIDIAN)
-        # top row
+        # right side
         world.set_block(pos + Direction.UP * y + Direction.EAST * 3 , Item.OBSIDIAN)
 
     c = get_client()

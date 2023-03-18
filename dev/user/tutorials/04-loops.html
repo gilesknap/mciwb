@@ -9,7 +9,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>Loops &#8212; mciwb 0.8.6.dev11+g3ca7f44 documentation</title>
+    <title>Loops &#8212; mciwb 0.8.6.dev12+g182b66e documentation</title>
   
   
   
@@ -594,7 +594,7 @@ Try the following code in your Python Terminal:</p>
 <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">):</span>
     <span class="c1"># left side</span>
     <span class="n">world</span><span class="o">.</span><span class="n">set_block</span><span class="p">(</span><span class="n">pos</span> <span class="o">+</span> <span class="n">Direction</span><span class="o">.</span><span class="n">UP</span> <span class="o">*</span> <span class="n">y</span><span class="p">,</span> <span class="n">Item</span><span class="o">.</span><span class="n">OBSIDIAN</span><span class="p">)</span>
-    <span class="c1"># top row</span>
+    <span class="c1"># right side</span>
     <span class="n">world</span><span class="o">.</span><span class="n">set_block</span><span class="p">(</span><span class="n">pos</span> <span class="o">+</span> <span class="n">Direction</span><span class="o">.</span><span class="n">UP</span> <span class="o">*</span> <span class="n">y</span> <span class="o">+</span> <span class="n">Direction</span><span class="o">.</span><span class="n">EAST</span> <span class="o">*</span> <span class="mi">3</span> <span class="p">,</span> <span class="n">Item</span><span class="o">.</span><span class="n">OBSIDIAN</span><span class="p">)</span>
 
 <span class="n">c</span> <span class="o">=</span> <span class="n">get_client</span><span class="p">()</span>
