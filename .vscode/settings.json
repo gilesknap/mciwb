@@ -19,6 +19,7 @@
         "arange",
         "arcname",
         "copyblock",
+        "datetime",
         "dtype",
         "excalidraw",
         "fname",
