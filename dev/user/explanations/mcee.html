@@ -9,7 +9,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>Comparison with Minecraft Education Edition &#8212; mciwb 0.8.6.dev13+gbf8858e documentation</title>
+    <title>Comparison with Minecraft Education Edition &#8212; mciwb 0.8.6.dev14+geb36be8 documentation</title>
   
   
   
@@ -482,28 +482,157 @@ document.write(`
 <span id="mcee"></span><h1>Comparison with Minecraft Education Edition<a class="headerlink" href="#comparison-with-minecraft-education-edition" title="Permalink to this heading">#</a></h1>
 <section id="introduction">
 <h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this heading">#</a></h2>
-<p>Minecraft Education Edition (MC EE) is a version of Minecraft that is designed
-for use in schools. It provides an in game editor for making python or scratch
-code to create in and interact with Minecraft worlds.</p>
+<p>Minecraft Education Edition (MC EE) is a separate
+version of Minecraft that is designed
+for use in schools. It provides an in game editor for making python,
+javascript or scratch code to create in and interact with Minecraft worlds.</p>
 <p>When I started working on MCIWB, I took a brief look at MC EE. But dismissed it
 as out of date and not well supported. That was a mistake. The Hacker News
 discussion <a class="reference external" href="https://news.ycombinator.com/item?id=35166874#35195105">here</a>
 encouraged me to take another look.</p>
 <p>This page details my findings on investigating MC EE in more depth and
 discusses the differences between MC EE and MCIWB.</p>
-<p>TODO - Work in Progress</p>
 </section>
-<section id="mcwib-perf-results">
-<h2>MCWIB perf Results<a class="headerlink" href="#mcwib-perf-results" title="Permalink to this heading">#</a></h2>
-<p>Results for tower function in MCIWB:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">In</span> <span class="p">[</span><span class="mi">4</span><span class="p">]:</span> <span class="kn">from</span> <span class="nn">demo.shapes</span> <span class="kn">import</span> <span class="n">tower</span>
+<section id="minecraft-education-edition">
+<h2>Minecraft Education Edition<a class="headerlink" href="#minecraft-education-edition" title="Permalink to this heading">#</a></h2>
+<p>The main reason for dismissing MC EE was that it was a paid subscription only
+available to schools. However I found that I was able to quite easily get a
+“commercial” license for around £10 per year. This is good value for money
+given the amount of content that is available. See the <code class="docutils literal notranslate"><span class="pre">DIRECT</span> <span class="pre">PURCHASE</span></code> option
+at <a class="reference external" href="https://education.minecraft.net/en-us/licensing">https://education.minecraft.net/en-us/licensing</a>.</p>
+<p>Once you have the license there is a whole raft of education content
+available, not just coding. The lessons run inside of the Minecraft worlds
+in which you can explore and interact with the content. Here is a link
+to the lessons available
+<a class="reference external" href="https://education.minecraft.net/en-us/resources/explore-lessons">https://education.minecraft.net/en-us/resources/explore-lessons</a>.</p>
+<p>I spent some time inside <code class="docutils literal notranslate"><span class="pre">HOUR</span> <span class="pre">OF</span> <span class="pre">CODE</span> <span class="pre">2021</span> <span class="pre">(TIMECRAFT)</span></code> and it does
+introduce Python concepts in a pretty engaging mini game. I was disappointed
+that the world did not use the latest vscode based editor and did encounter
+a significant bug in the 2nd lesson that made it not work. I’m under the
+impression that there is some work to do to update the lessons to work with
+Microsoft’s latest changes to the game engine.</p>
+<p>My impression is that Microsoft are interested in the product and putting
+effort into supporting it, so I thinks the issues above will get resolved.
+I base this on:</p>
+<ul class="simple">
+<li><p>There are frequent
+<a class="reference external" href="https://educommunity.minecraft.net/hc/en-us/articles/360047556451-Minecraft-Education-Change-Log">recent releases</a>
+of the product</p></li>
+<li><p>The in game editor has been updated to use Microsoft’s popular developer tool
+vscode</p></li>
+</ul>
+</section>
+<section id="minecraft-interactive-world-builder">
+<h2>Minecraft Interactive World Builder<a class="headerlink" href="#minecraft-interactive-world-builder" title="Permalink to this heading">#</a></h2>
+<p>MCIWB is a Free Open Source project that uses Minecraft’s RCON interface too
+send admin commands to a Minecraft Server. It therefore works with the most
+recent version of Minecraft and is automatically compatible with new
+releases of Minecraft. The Admin commands are pretty powerful and allow a
+similar level of control to MC EE.</p>
+<p>It is a single developer project at present but I’m open to contributions and
+would like to get a bit of a community going around it.</p>
+<p>Is there a place for MCIWB when the MC EE is available? I’d argue yes, See
+my summary of advantages of each below.</p>
+</section>
+<section id="mc-ee-advantages">
+<h2>MC EE Advantages<a class="headerlink" href="#mc-ee-advantages" title="Permalink to this heading">#</a></h2>
+<ul class="simple">
+<li><p>It is a complete product with a lot of content and lessons available with
+support from a major software vendor.</p></li>
+<li><p>It is very low barrier to entry, install and run one app. Hit C and you
+are writing Python code.</p></li>
+<li><p>There are lots of pre created examples and tutorials here
+<a class="reference external" href="https://minecraft.makecode.com/">https://minecraft.makecode.com/</a></p></li>
+<li><p>For some children it will be what they are learning at school already.</p></li>
+</ul>
+</section>
+<section id="mciwb-advantages">
+<h2>MCIWB Advantages<a class="headerlink" href="#mciwb-advantages" title="Permalink to this heading">#</a></h2>
+<ul class="simple">
+<li><p>It is &gt;500 times faster to execute code inside the game than MC EE.</p></li>
+<li><p>It is Free and Open Source.</p></li>
+<li><p>It is cross platform, runs on Linux and Mac and Windows. MC EE is Windows only.</p></li>
+<li><p>You get to use and learn standard developer tools such as vscode</p></li>
+<li><p>It uses the latest version of Python and can access all the standard libraries
+and PyPi packages. MC EE uses an in game Python engine that does not appear
+to have the standard libraries available.</p></li>
+<li><p>It works against any Minecraft Server, not just the MC EE server. This means
+you can combine it with server mods for unlimited options (currently Java only
+but Bedrock support could be added easily).</p></li>
+<li><p>You can create complex projects with multiple modules when you get advanced.
+MC EE is limited to a single file per project.</p></li>
+<li><p>You get an Interactive Python prompt to do immediate commands in as well as
+the ability to write modules and import them. This has ipython command
+line completion to help learn the commands.</p></li>
+</ul>
+</section>
+<section id="performance-results">
+<h2>Performance Results<a class="headerlink" href="#performance-results" title="Permalink to this heading">#</a></h2>
+<p>A headline difference is code execution speed. Microsoft could perhaps
+fix this in the future.</p>
+<p>For the performance test I made a tower in both MCIWB and MC EE. The code
+places individual blocks and is not the most efficient way to do it in either
+system, but demonstrates how fast loops and world updates run.</p>
+<section id="mc-ee-tower-build-code">
+<h3>MC EE Tower Build code<a class="headerlink" href="#mc-ee-tower-build-code" title="Permalink to this heading">#</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">tower</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
+<span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">height</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">size</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">z</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">size</span><span class="p">):</span>
+            <span class="n">blocks</span><span class="o">.</span><span class="n">place</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">start</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pos</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">z</span><span class="p">)))</span>
+            <span class="n">blocks</span><span class="o">.</span><span class="n">place</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">start</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pos</span><span class="p">(</span><span class="n">size</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">z</span><span class="p">)))</span>
+            <span class="n">blocks</span><span class="o">.</span><span class="n">place</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">start</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pos</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="mi">0</span><span class="p">)))</span>
+            <span class="n">blocks</span><span class="o">.</span><span class="n">place</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">start</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pos</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">size</span><span class="p">)))</span>
+    <span class="n">blocks</span><span class="o">.</span><span class="n">place</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">start</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pos</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">z</span><span class="p">)))</span>
 
-<span class="n">In</span> <span class="p">[</span><span class="mi">5</span><span class="p">]:</span> <span class="n">start</span><span class="o">=</span> <span class="n">Vec3</span><span class="p">(</span><span class="mi">632</span><span class="p">,</span> <span class="mi">73</span><span class="p">,</span> <span class="o">-</span><span class="mi">1724</span><span class="p">)</span>
-
-<span class="n">In</span> <span class="p">[</span><span class="mi">6</span><span class="p">]:</span> <span class="n">tower</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="n">Item</span><span class="o">.</span><span class="n">AIR</span><span class="p">)</span>
-<span class="n">WARNING</span><span class="p">:</span><span class="n">root</span><span class="p">:</span><span class="n">tower</span> <span class="n">took</span> <span class="mf">0.141305</span> <span class="n">seconds</span>
+<span class="n">tower</span><span class="p">(</span><span class="n">world</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="n">COBBLESTONE</span><span class="p">)</span>
 </pre></div>
 </div>
+<p>To build a 9 by 9 block tower 10 blocks high in MC EE took over 80 seconds.
+I could not do an accurate timing because the standard libraries for time
+are not available.</p>
+<iframe width="780" height="558" src="https://www.youtube.com/embed/DaizMyMxnhg" title="Minecraft Education Edition Tower Build" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></section>
+<section id="mciwb-tower-build-code">
+<h3>MCIWB Tower Build code<a class="headerlink" href="#mciwb-tower-build-code" title="Permalink to this heading">#</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+
+<span class="kn">from</span> <span class="nn">mciwb.imports</span> <span class="kn">import</span> <span class="n">Direction</span><span class="p">,</span> <span class="n">Item</span><span class="p">,</span> <span class="n">Vec3</span><span class="p">,</span> <span class="n">get_world</span>
+
+<span class="k">def</span> <span class="nf">tower</span><span class="p">(</span><span class="n">start</span><span class="p">:</span> <span class="n">Vec3</span><span class="p">,</span> <span class="n">size</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">height</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">item</span><span class="o">=</span><span class="n">Item</span><span class="o">.</span><span class="n">COBBLESTONE</span><span class="p">):</span>
+    <span class="n">world</span> <span class="o">=</span> <span class="n">get_world</span><span class="p">()</span>
+
+    <span class="n">start_time</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+
+    <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">height</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">size</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">z</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">size</span><span class="p">):</span>
+                <span class="n">world</span><span class="o">.</span><span class="n">set_block</span><span class="p">(</span><span class="n">start</span> <span class="o">+</span> <span class="n">Vec3</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">),</span> <span class="n">item</span><span class="p">)</span>
+                <span class="n">world</span><span class="o">.</span><span class="n">set_block</span><span class="p">(</span><span class="n">start</span> <span class="o">+</span> <span class="n">Vec3</span><span class="p">(</span><span class="n">size</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">),</span> <span class="n">item</span><span class="p">)</span>
+                <span class="n">world</span><span class="o">.</span><span class="n">set_block</span><span class="p">(</span><span class="n">start</span> <span class="o">+</span> <span class="n">Vec3</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">item</span><span class="p">)</span>
+                <span class="n">world</span><span class="o">.</span><span class="n">set_block</span><span class="p">(</span><span class="n">start</span> <span class="o">+</span> <span class="n">Vec3</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">size</span><span class="p">),</span> <span class="n">item</span><span class="p">)</span>
+        <span class="n">world</span><span class="o">.</span><span class="n">set_block</span><span class="p">(</span><span class="n">start</span> <span class="o">+</span> <span class="n">Vec3</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">),</span> <span class="n">item</span><span class="p">)</span>
+
+    <span class="n">diff_time</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span> <span class="o">-</span> <span class="n">start_time</span>
+
+    <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;tower took </span><span class="si">{</span><span class="n">diff_time</span><span class="o">.</span><span class="n">total_seconds</span><span class="p">()</span><span class="si">}</span><span class="s2"> seconds&quot;</span><span class="p">)</span>
+
+<span class="n">tower</span><span class="p">(</span><span class="n">Vec3</span><span class="p">(</span><span class="mi">632</span><span class="p">,</span> <span class="mi">73</span><span class="p">,</span> <span class="o">-</span><span class="mi">1724</span><span class="p">),</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="n">Item</span><span class="o">.</span><span class="n">COBBLESTONE</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>To build a 9 by 9 block tower 10 blocks high in MCIWB took 0.14 seconds.
+That is more than 550 times faster than MC EE.</p>
+<iframe width="780" height="680" src="https://www.youtube.com/embed/Pbmkct4KNqU" title="MCIWB Tower Build" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></section>
+</section>
+<section id="another-alternative">
+<h2>Another Alternative<a class="headerlink" href="#another-alternative" title="Permalink to this heading">#</a></h2>
+<p>If you prefer the MC EE python API and don’t want to pay for a license then
+there is <a class="github reference external" href="https://github.com/zhuowei/RaspberryJuice">zhuowei/RaspberryJuice</a>. This uses the Java server
+mod Bukkit to create a similar API to EE.</p>
+<p>This would also have the advantage that you get to use a real version of
+Python and your choice of developer tools.</p>
+<p>I’ve not tried this so if anyone knows more details then please let me know
+about it in an Issue or Pull Request.</p>
 </section>
 </section>
 
@@ -549,7 +678,16 @@ discusses the differences between MC EE and MCIWB.</p>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#introduction">Introduction</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mcwib-perf-results">MCWIB perf Results</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#minecraft-education-edition">Minecraft Education Edition</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#minecraft-interactive-world-builder">Minecraft Interactive World Builder</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mc-ee-advantages">MC EE Advantages</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mciwb-advantages">MCIWB Advantages</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#performance-results">Performance Results</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mc-ee-tower-build-code">MC EE Tower Build code</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mciwb-tower-build-code">MCIWB Tower Build code</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#another-alternative">Another Alternative</a></li>
 </ul>
   </nav></div>
 
