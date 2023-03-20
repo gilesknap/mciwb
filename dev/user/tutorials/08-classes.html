@@ -9,7 +9,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>Classes &#8212; mciwb 0.8.6.dev14+geb36be8 documentation</title>
+    <title>Classes &#8212; mciwb 0.8.6.dev15+gec673cd documentation</title>
   
   
   
@@ -480,7 +480,35 @@ document.write(`
                   
   <section id="classes">
 <h1>Classes<a class="headerlink" href="#classes" title="Permalink to this heading">#</a></h1>
-<p>TODO: Introduce classes and demonstrate building all of the buildings
+<p>In Python, a class is a blueprint for creating objects. It defines a set of attributes and methods that the objects of the class will have.</p>
+<p>Here’s an example of a simple class:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Person</span><span class="p">:</span>
+   <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">age</span><span class="p">):</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">age</span> <span class="o">=</span> <span class="n">age</span>
+
+   <span class="k">def</span> <span class="nf">say_hello</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+      <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Hello, my name is </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> and I am </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">age</span><span class="si">}</span><span class="s2"> years old.&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This class defines a <code class="docutils literal notranslate"><span class="pre">Person</span></code> object with a <code class="docutils literal notranslate"><span class="pre">name</span></code> and an <code class="docutils literal notranslate"><span class="pre">age</span></code> attribute, and a <code class="docutils literal notranslate"><span class="pre">say_hello()</span></code> method that prints a greeting.</p>
+<p>You can create an instance of a class by calling the class as if it were a function, passing in any required arguments. Here’s an example:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">person1</span> <span class="o">=</span> <span class="n">Person</span><span class="p">(</span><span class="s2">&quot;Alice&quot;</span><span class="p">,</span> <span class="mi">25</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This creates a <code class="docutils literal notranslate"><span class="pre">Person</span></code> object named <code class="docutils literal notranslate"><span class="pre">person1</span></code> with a <code class="docutils literal notranslate"><span class="pre">name</span></code> of <code class="docutils literal notranslate"><span class="pre">&quot;Alice&quot;</span></code> and an <code class="docutils literal notranslate"><span class="pre">age</span></code> of <code class="docutils literal notranslate"><span class="pre">25</span></code>.</p>
+<p>You can access the attributes of an object using the dot notation. Here’s an example:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">person1</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This will output <code class="docutils literal notranslate"><span class="pre">&quot;Alice&quot;</span></code>.</p>
+<p>You can call the methods of an object using the dot notation as well. Here’s an example:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">person1</span><span class="o">.</span><span class="n">say_hello</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>This will output <code class="docutils literal notranslate"><span class="pre">&quot;Hello,</span> <span class="pre">my</span> <span class="pre">name</span> <span class="pre">is</span> <span class="pre">Alice</span> <span class="pre">and</span> <span class="pre">I</span> <span class="pre">am</span> <span class="pre">25</span> <span class="pre">years</span> <span class="pre">old.&quot;</span></code>.</p>
+<p>I hope this helps! Let me know if you have any other questions.</p>
+<p>TODO: elaborate on classes and demonstrate building all of the buildings
 inside the castle walls with this code:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">mciwb.imports</span> <span class="kn">import</span> <span class="n">Direction</span><span class="p">,</span> <span class="n">Item</span><span class="p">,</span> <span class="n">Wall</span><span class="p">,</span> <span class="n">get_client</span><span class="p">,</span> <span class="n">get_world</span>
 

@@ -9,7 +9,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>Lists &#8212; mciwb 0.8.6.dev14+geb36be8 documentation</title>
+    <title>Lists &#8212; mciwb 0.8.6.dev15+gec673cd documentation</title>
   
   
   
@@ -480,7 +480,36 @@ document.write(`
                   
   <section id="lists">
 <h1>Lists<a class="headerlink" href="#lists" title="Permalink to this heading">#</a></h1>
-<p>TODO: Introduce Python lists and demonstrate by building castle walls around
+<p>Python lists are used to store a collection of items. They are ordered, changeable,
+and allow duplicate values. You can create a list by enclosing items in square
+brackets [], separated by commas. Here’s an example:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">fruits</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;apple&quot;</span><span class="p">,</span> <span class="s2">&quot;banana&quot;</span><span class="p">,</span> <span class="s2">&quot;cherry&quot;</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>You can access the items of a list by referring to its index number. The index starts at 0 for the first item, 1 for the second item, and so on. Here’s an example:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">fruits</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>This will output <code class="docutils literal notranslate"><span class="pre">banana</span></code>.</p>
+<p>You can also change the value of a specific item by referring to its index number.
+Here’s an example:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">fruits</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;kiwi&quot;</span>
+</pre></div>
+</div>
+<p>This will change the second item of the <code class="docutils literal notranslate"><span class="pre">fruits</span></code> list to <code class="docutils literal notranslate"><span class="pre">kiwi</span></code>.</p>
+<p>You can add an item to the end of a list using the append() method. Here’s
+an example:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">fruits</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;orange&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This will add <code class="docutils literal notranslate"><span class="pre">orange</span></code> to the end of the <code class="docutils literal notranslate"><span class="pre">fruits</span></code> list.</p>
+<p>You can remove an item from a list using the remove() method.
+Here’s an example:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">fruits</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="s2">&quot;banana&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This will remove <code class="docutils literal notranslate"><span class="pre">banana</span></code> from the fruits list.</p>
+<p>TODO: Build on the above until we demonstrate by building castle walls around
 our village using this code:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">demo.gate</span> <span class="kn">import</span> <span class="n">disable_gate</span><span class="p">,</span> <span class="n">make_gate</span>
 <span class="kn">from</span> <span class="nn">mciwb.imports</span> <span class="kn">import</span> <span class="n">Item</span><span class="p">,</span> <span class="n">Vec3</span><span class="p">,</span> <span class="n">Wall</span>
