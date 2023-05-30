@@ -43,7 +43,7 @@ class Utils:
         ]
 
         nbt = ["half=lower"] + common_nbt
-        # doors with wont replace doors with different nbt so need to clear first
+        # doors wont replace doors with different nbt so need to clear first
         self.world.set_block(pos, Item.AIR)
         self.world.set_block(pos, door_type, nbt=nbt)
         nbt = ["half=upper"] + common_nbt
