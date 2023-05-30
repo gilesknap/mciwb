@@ -16,8 +16,7 @@ dependencies = [
     "typer==0.7.0",
     "mcwb>=0.2.3",
     "ipython==8.10.0",
-    "docker==6.0.1",
-    "requests<2.2.29",
+    "docker>=6",
 ]
 dynamic = ["version"]
 license.file = "LICENSE"
