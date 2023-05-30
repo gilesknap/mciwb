@@ -40,5 +40,10 @@
         "tracebacklimit",
         "typecheck"
     ],
-    "esbonio.sphinx.confDir": "${workspaceFolder}/docs"
+    "esbonio.sphinx.confDir": "${workspaceFolder}/docs",
+    "workbench.colorCustomizations": {
+        "activityBar.background": "#0B1C88",
+        "titleBar.activeBackground": "#1027BE",
+        "titleBar.activeForeground": "#FAFBFF"
+    }
 }

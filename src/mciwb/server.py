@@ -65,7 +65,7 @@ class MinecraftServer:
         self.keep = keep
         self.test = test
 
-    def wait_server(self):
+    def wait_server(self: "MinecraftServer"):
         """
         Wait until the server is ready to accept rcon connections
         """

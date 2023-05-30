@@ -17,6 +17,7 @@ from mciwb.player import Player, PlayerNotInWorld
 from mciwb.server import HOST, def_port
 from mciwb.signs import Signs
 from mciwb.threads import get_client, set_client
+from mciwb.utils import Utils
 
 world: "Iwb" = None  # type: ignore
 
@@ -49,6 +50,7 @@ class Iwb:
 
         """
         Iwb.the_world = self
+        self.utils = Utils(self)
 
         self._server: str = server
         self._port: int = port
@@ -74,6 +76,8 @@ class Iwb:
         """
         Enable/disable debug log. Enabling this will also enable
         full Traceback log.
+
+        :param enable: True to enable debug log, False to disable
         """
         init_logging(debug=enable)
 
@@ -81,6 +85,8 @@ class Iwb:
         """
         Backup the Minecraft world to a file. If no name is given then the
         backup will be named using the current date and time.
+
+        :param name: the name of the backup file
         """
         if self._backup is None:
             log.warning("no backup available")
@@ -108,6 +114,8 @@ class Iwb:
     def get_player(self, name: str) -> Player:
         """
         Get the player object for the given player name.
+
+        :param name: the name of the player
         """
         return self._players[name]
 
@@ -131,6 +139,9 @@ class Iwb:
         All players are available using::
 
             Iwb.the_world._players
+
+        :param name: the name of the player
+        :param me: if True, set this player as the default player
         """
         try:
             player = Player(name)
@@ -154,15 +165,36 @@ class Iwb:
     def stop(self):
         Monitor.stop_all()
 
-    def set_block(self, pos: Vec3, block: Item, facing: Optional[Vec3] = None):
+    def set_block(
+        self,
+        pos: Vec3,
+        block: Item,
+        facing: Optional[Vec3] = None,
+        nbt: Optional[List[str]] = None,
+    ):
         """
-        Sets a block in the world
+        Places a block in the world
+
+        :param pos: the position to place the block
+        :param block: the type of block
+        :param facing: the direction the block should face (if applicable)
+        :param nbt: a list of NBT tags to apply to the block
+
+        nbt examples:
+
+        Placing a top half of a door, open, with hinge on the left:
+
+        nbt=["half=upper", "hinge=left", "open=true"]
+
+        TODO at present the nbt are free form strings. In the spirit of mcwb
+        we should provide a set of types that represent the NBT tags and
+        provide a way to convert them to strings (but that is a large task)
         """
         client = get_client()
 
         pos = Vec3(*pos)
         int_pos = pos.with_ints()
-        nbt = []
+        nbt = nbt or []
 
         if facing:
             nbt.append(f"""facing={Direction.name(facing)}""")
@@ -180,6 +212,8 @@ class Iwb:
     def get_block(self, pos: Vec3) -> Item:
         """
         Gets a block in the world
+
+        :param pos: the position to get the block from
         """
         client = get_client()
 
@@ -214,6 +248,14 @@ class Iwb:
         """
         Save a Volume of blocks to a file. The volume can be specified in
         the *vol* parameter or alternatively defaults to the current copy buffer.
+
+        The file is saved in the mcwb format which is a JSON file containing
+        a 3d array of Item objects.
+
+        The file can be loaded into a world using the `load` method.
+
+        :param filename: the name of the file to save to
+        :param vol: the volume to save
         """
         if not vol:
             vol = self.copier.to_volume()
@@ -231,6 +273,15 @@ class Iwb:
         Load a saved set of blocks into a location. The location can be
         specified in argument *position* or alternatively defaults
         to the copy buffer start position.
+
+        The blocks are loaded from a file in the mcwb format which is a
+        JSON file containing a 3d array of Item objects.
+
+        The blocks are loaded into the world using the Blocks class.
+
+        :param filename: the name of the file to load from
+        :param position: the position to load the blocks to
+        :param anchor: the anchor point for the blocks
         """
         if not position:
             position = self.copier.start_pos
@@ -246,6 +297,8 @@ class Iwb:
     def cmd(self, cmd: str) -> str:
         """
         Run any arbitrary Minecraft console command on the server.
+
+        :param cmd: the command to run
         """
         encoding = "utf-8"
         client = get_client()
