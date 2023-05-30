@@ -277,7 +277,7 @@ class Iwb:
         The blocks are loaded from a file in the mcwb format which is a
         JSON file containing a 3d array of Item objects.
 
-        The blocks are loaded into the world using the `Blocks` class.
+        The blocks are loaded into the world using the Blocks class.
 
         :param filename: the name of the file to load from
         :param position: the position to load the blocks to
