@@ -34,11 +34,11 @@ class Utils:
             raise ValueError("door_type must be a door")
 
         hinge = "right" if right_hinge else "left"
-        open = "true" if open else "false"
+        open_str = "true" if open else "false"
 
         common_nbt = [
             f"hinge={hinge}",
-            f"open={open}",
+            f"open={open_str}",
             f"facing={Direction.name(facing)}",
         ]
 
