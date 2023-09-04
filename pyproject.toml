@@ -15,7 +15,7 @@ dependencies = [
     "numpy==1.23.5",
     "typer==0.7.0",
     "mcwb>=0.2.3",
-    "ipython==8.14.0",
+    "ipython==8.15.0",
     "docker>=6",
 ]
 dynamic = ["version"]
