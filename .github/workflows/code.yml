@@ -150,7 +150,7 @@ jobs:
         uses: docker/setup-buildx-action@v2
 
       - name: Build runtime image
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v5
         with:
           build-args: |
             PIP_OPTIONS=-r lockfiles/requirements.txt dist/*.whl
