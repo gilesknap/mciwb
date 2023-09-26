@@ -24,7 +24,7 @@ def parse_nbt(s_nbt_text: str) -> object:
     - distinction between float, double types (suffixes of f,d)
     - distinction between SNBT and raw JSON (enclosed in single quotes)
 
-    See https://minecraft.fandom.com/wiki/NBT_format
+    See https://minecraft.wiki/w/NBT_format
     """
     try:
         text = preamble_re.sub(r"\1", s_nbt_text)

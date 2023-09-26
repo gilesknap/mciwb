@@ -66,7 +66,7 @@ as follows:
     - Moving South increases your Z coordinate, so North decreases Z
 
 The minecraft Wiki has a useful diagram of the coordinate system, see
-https://minecraft.fandom.com/wiki/Coordinates.
+https://minecraft.wiki/w/Coordinates.
 
 If you consider the coordinate X=0, Y=0, Z=0 to be the centre of the world
 then our player's position is 653 blocks to the East of the centre, 72 blocks

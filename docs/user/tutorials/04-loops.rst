@@ -6,7 +6,7 @@ Introduction
 
 For this tutorial we are going to write code that will create a Nether
 Portal. If you don't know about Nether Portals, you can read about them
-here: https://minecraft.fandom.com/wiki/Nether_portal.
+here: https://minecraft.wiki/w/Nether_portal.
 
 A Nether Portal requires a minimum of 14 blocks. Now we could use a similar
 approach as that for the iron golem in the previous tutorial. But that would
