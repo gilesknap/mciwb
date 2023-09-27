@@ -210,7 +210,7 @@ Yay! You can paste again to create another one.
 
     Say hello to the Iron Golem, your first Python creation!
     
-(See "Creation" in this article https://minecraft.fandom.com/wiki/Iron_Golem
+(See "Creation" in this article https://minecraft.wiki/w/Iron_Golem
 if you don't know about making iron golems)
 
 How does this work? We use ``set_block`` to place all the necessary blocks
