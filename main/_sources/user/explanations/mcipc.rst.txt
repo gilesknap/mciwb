@@ -16,7 +16,7 @@ the underlying Python project that we use to communicate with the Minecraft.
 Minecraft provides a remote control mechanism called RCON that gives you
 exactly the same set of admin commands that you may be familiar with if you 
 have player a lot of Minecraft. Those commands are documented here
-https://minecraft.fandom.com/wiki/Commands and let you do pretty much
+https://minecraft.wiki/w/Commands and let you do pretty much
 anything in the world.
 
 Note that due to tab completion in Interactive Python it is quite easy to

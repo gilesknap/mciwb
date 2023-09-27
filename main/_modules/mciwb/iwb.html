@@ -1,5 +1,4 @@
 
-
 <!DOCTYPE html>
 
 
@@ -8,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>mciwb.iwb &#8212; mciwb 0.8.7.dev4+gb6e0ecc documentation</title>
+    <title>mciwb.iwb &#8212; mciwb 0.8.7.dev6+g61ec67e documentation</title>
   
   
   
@@ -18,35 +17,38 @@
   </script>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../../_static/styles/theme.css?digest=e353d410970836974a52" rel="stylesheet" />
-<link href="../../_static/styles/bootstrap.css?digest=e353d410970836974a52" rel="stylesheet" />
-<link href="../../_static/styles/pydata-sphinx-theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+  <link href="../../_static/styles/theme.css?digest=ac02cc09edc035673794" rel="stylesheet" />
+<link href="../../_static/styles/bootstrap.css?digest=ac02cc09edc035673794" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=ac02cc09edc035673794" rel="stylesheet" />
 
   
-  <link href="../../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=e353d410970836974a52" rel="stylesheet" />
+  <link href="../../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=ac02cc09edc035673794" rel="stylesheet" />
   <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
 
-    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=eafc0fe6" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=e353d410970836974a52" />
-<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52" />
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=ac02cc09edc035673794" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=ac02cc09edc035673794" />
+  <script src="../../_static/vendor/fontawesome/6.1.2/js/all.min.js?digest=ac02cc09edc035673794"></script>
 
-    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-    <script src="../../_static/doctools.js"></script>
-    <script src="../../_static/sphinx_highlight.js"></script>
-    <script src="../../_static/clipboard.min.js"></script>
-    <script src="../../_static/copybutton.js"></script>
-    <script src="../../_static/design-tabs.js"></script>
+    <script src="../../_static/documentation_options.js?v=2c1c3404"></script>
+    <script src="../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=30646c52"></script>
+    <script src="../../_static/design-tabs.js?v=36754332"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = '_modules/mciwb/iwb';</script>
     <script>
+        DOCUMENTATION_OPTIONS.theme_version = '0.14.1';
         DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://gilesknap.github.io/mciwb/switcher.json';
         DOCUMENTATION_OPTIONS.theme_switcher_version_match = 'main';
+        DOCUMENTATION_OPTIONS.show_version_warning_banner = false;
         </script>
     <link rel="icon" href="../../_static/logo.png"/>
     <link rel="index" title="Index" href="../../genindex.html" />
@@ -61,6 +63,15 @@
   
   
   <a class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>
+    Back to top
+  </button>
+
   
   <input type="checkbox"
           class="sidebar-toggle"
@@ -101,7 +112,8 @@
     <span class="fa-solid fa-bars"></span>
   </label>
   
-  <div class="navbar-header-items__start">
+  
+  <div class="col-lg-3 navbar-header-items__start">
     
       <div class="navbar-item">
   
@@ -125,7 +137,6 @@
 </a></div>
     
   </div>
-  
   
   <div class="col-lg-9 navbar-header-items">
     
@@ -170,23 +181,25 @@
       
         <div class="navbar-item navbar-persistent--container">
           
-<script>
-document.write(`
-  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <script>
+ document.write(`
+   <button class="btn navbar-btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
     <i class="fa-solid fa-magnifying-glass"></i>
-  </button>
-`);
-</script>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script>
         </div>
       
       
         <div class="navbar-item">
 <script>
 document.write(`
-  <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
-    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
-    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
-    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
+  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
   </button>
 `);
 </script></div>
@@ -202,8 +215,8 @@ document.write(`
           
           
           
-          <a href="https://github.com/gilesknap/mciwb" title="GitHub" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fa-brands fa-square-github"></i></span>
-            <label class="sr-only">GitHub</label></a>
+          <a href="https://github.com/gilesknap/mciwb" title="GitHub" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i></span>
+            <span class="sr-only">GitHub</span></a>
         </li>
         <li class="nav-item">
           
@@ -214,8 +227,8 @@ document.write(`
           
           
           
-          <a href="https://pypi.org/project/mciwb" title="PyPI" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fas fa-cube"></i></span>
-            <label class="sr-only">PyPI</label></a>
+          <a href="https://pypi.org/project/mciwb" title="PyPI" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fas fa-cube fa-lg" aria-hidden="true"></i></span>
+            <span class="sr-only">PyPI</span></a>
         </li>
 </ul></div>
       
@@ -223,11 +236,11 @@ document.write(`
 <script>
 document.write(`
   <div class="version-switcher__container dropdown">
-    <button type="button" class="version-switcher__button btn btn-sm navbar-btn dropdown-toggle" data-bs-toggle="dropdown">
-      main  <!-- this text may get changed later by javascript -->
+    <button id="versionswitcherbutton" type="button" role="button" class="version-switcher__button btn btn-sm navbar-btn dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="listbox" aria-controls="versionswitcherlist" aria-label="Version switcher list">
+      Choose version  <!-- this text may get changed later by javascript -->
       <span class="caret"></span>
     </button>
-    <div class="version-switcher__menu dropdown-menu list-group-flush py-0">
+    <div id="versionswitcherlist" class="version-switcher__menu dropdown-menu list-group-flush py-0" role="listbox" aria-labelledby="versionswitcherbutton">
     <!-- dropdown will be populated by javascript on page load -->
     </div>
   </div>
@@ -240,13 +253,15 @@ document.write(`
   
   
     <div class="navbar-persistent--mobile">
-<script>
-document.write(`
-  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <script>
+ document.write(`
+   <button class="btn navbar-btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
     <i class="fa-solid fa-magnifying-glass"></i>
-  </button>
-`);
-</script>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script>
     </div>
   
 
@@ -308,10 +323,10 @@ document.write(`
           <div class="navbar-item">
 <script>
 document.write(`
-  <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
-    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
-    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
-    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
+  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
   </button>
 `);
 </script></div>
@@ -327,8 +342,8 @@ document.write(`
           
           
           
-          <a href="https://github.com/gilesknap/mciwb" title="GitHub" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fa-brands fa-square-github"></i></span>
-            <label class="sr-only">GitHub</label></a>
+          <a href="https://github.com/gilesknap/mciwb" title="GitHub" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i></span>
+            <span class="sr-only">GitHub</span></a>
         </li>
         <li class="nav-item">
           
@@ -339,8 +354,8 @@ document.write(`
           
           
           
-          <a href="https://pypi.org/project/mciwb" title="PyPI" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fas fa-cube"></i></span>
-            <label class="sr-only">PyPI</label></a>
+          <a href="https://pypi.org/project/mciwb" title="PyPI" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fas fa-cube fa-lg" aria-hidden="true"></i></span>
+            <span class="sr-only">PyPI</span></a>
         </li>
 </ul></div>
         
@@ -348,11 +363,11 @@ document.write(`
 <script>
 document.write(`
   <div class="version-switcher__container dropdown">
-    <button type="button" class="version-switcher__button btn btn-sm navbar-btn dropdown-toggle" data-bs-toggle="dropdown">
-      main  <!-- this text may get changed later by javascript -->
+    <button id="versionswitcherbutton" type="button" role="button" class="version-switcher__button btn btn-sm navbar-btn dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="listbox" aria-controls="versionswitcherlist" aria-label="Version switcher list">
+      Choose version  <!-- this text may get changed later by javascript -->
       <span class="caret"></span>
     </button>
-    <div class="version-switcher__menu dropdown-menu list-group-flush py-0">
+    <div id="versionswitcherlist" class="version-switcher__menu dropdown-menu list-group-flush py-0" role="listbox" aria-labelledby="versionswitcherbutton">
     <!-- dropdown will be populated by javascript on page load -->
     </div>
   </div>
@@ -387,8 +402,8 @@ document.write(`
 
 
 
-<nav aria-label="Breadcrumbs">
-  <ul class="bd-breadcrumbs" role="navigation" aria-label="Breadcrumb">
+<nav aria-label="Breadcrumb">
+  <ul class="bd-breadcrumbs">
     
     <li class="breadcrumb-item breadcrumb-home">
       <a href="../../index.html" class="nav-link" aria-label="Home">
@@ -444,7 +459,9 @@ document.write(`
     <span class="k">return</span> <span class="n">Iwb</span><span class="o">.</span><span class="n">the_world</span>
 
 
-<div class="viewcode-block" id="Iwb"><a class="viewcode-back" href="../../user/reference/api.html#mciwb.iwb.Iwb">[docs]</a><span class="k">class</span> <span class="nc">Iwb</span><span class="p">:</span>
+<div class="viewcode-block" id="Iwb">
+<a class="viewcode-back" href="../../user/reference/api.html#mciwb.iwb.Iwb">[docs]</a>
+<span class="k">class</span> <span class="nc">Iwb</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Interactive World Builder class. Provides a very simple interface for</span>
 <span class="sd">    interactive functions for use in an IPython shell.</span>
@@ -490,7 +507,9 @@ document.write(`
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_backup</span> <span class="o">=</span> <span class="kc">None</span>
 
-<div class="viewcode-block" id="Iwb.debug"><a class="viewcode-back" href="../../user/reference/api.html#mciwb.iwb.Iwb.debug">[docs]</a>    <span class="k">def</span> <span class="nf">debug</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">enable</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="Iwb.debug">
+<a class="viewcode-back" href="../../user/reference/api.html#mciwb.iwb.Iwb.debug">[docs]</a>
+    <span class="k">def</span> <span class="nf">debug</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">enable</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Enable/disable debug log. Enabling this will also enable</span>
 <span class="sd">        full Traceback log.</span>
@@ -499,7 +518,10 @@ document.write(`
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">init_logging</span><span class="p">(</span><span class="n">debug</span><span class="o">=</span><span class="n">enable</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Iwb.backup"><a class="viewcode-back" href="../../user/reference/api.html#mciwb.iwb.Iwb.backup">[docs]</a>    <span class="k">def</span> <span class="nf">backup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+
+<div class="viewcode-block" id="Iwb.backup">
+<a class="viewcode-back" href="../../user/reference/api.html#mciwb.iwb.Iwb.backup">[docs]</a>
+    <span class="k">def</span> <span class="nf">backup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Backup the Minecraft world to a file. If no name is given then the</span>
 <span class="sd">        backup will be named using the current date and time.</span>
@@ -511,7 +533,10 @@ document.write(`
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_backup</span><span class="o">.</span><span class="n">backup</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Iwb.connect"><a class="viewcode-back" href="../../user/reference/api.html#mciwb.iwb.Iwb.connect">[docs]</a>    <span class="k">def</span> <span class="nf">connect</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Client</span><span class="p">:</span>
+
+<div class="viewcode-block" id="Iwb.connect">
+<a class="viewcode-back" href="../../user/reference/api.html#mciwb.iwb.Iwb.connect">[docs]</a>
+    <span class="k">def</span> <span class="nf">connect</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Client</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Makes a connection to the Minecraft Server. Can be called again</span>
 <span class="sd">        if the connection is lost e.g. due to server reboot.</span>
@@ -529,13 +554,17 @@ document.write(`
 
         <span class="k">return</span> <span class="n">client</span></div>
 
-<div class="viewcode-block" id="Iwb.get_player"><a class="viewcode-back" href="../../user/reference/api.html#mciwb.iwb.Iwb.get_player">[docs]</a>    <span class="k">def</span> <span class="nf">get_player</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Player</span><span class="p">:</span>
+
+<div class="viewcode-block" id="Iwb.get_player">
+<a class="viewcode-back" href="../../user/reference/api.html#mciwb.iwb.Iwb.get_player">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_player</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Player</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the player object for the given player name.</span>
 
 <span class="sd">        :param name: the name of the player</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_players</span><span class="p">[</span><span class="n">name</span><span class="p">]</span></div>
+
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">players</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
@@ -544,7 +573,9 @@ document.write(`
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_players</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
 
-<div class="viewcode-block" id="Iwb.add_player"><a class="viewcode-back" href="../../user/reference/api.html#mciwb.iwb.Iwb.add_player">[docs]</a>    <span class="k">def</span> <span class="nf">add_player</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">me</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="Iwb.add_player">
+<a class="viewcode-back" href="../../user/reference/api.html#mciwb.iwb.Iwb.add_player">[docs]</a>
+    <span class="k">def</span> <span class="nf">add_player</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">me</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Add a player to the world object. This provides monitoring of the</span>
 <span class="sd">        player&#39;s position and handles the player&#39;s placing of action signs.</span>
@@ -580,10 +611,13 @@ document.write(`
 
         <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Monitoring player </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2"> enabled for sign commands&quot;</span><span class="p">)</span></div>
 
+
     <span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">Monitor</span><span class="o">.</span><span class="n">stop_all</span><span class="p">()</span>
 
-<div class="viewcode-block" id="Iwb.set_block"><a class="viewcode-back" href="../../user/reference/api.html#mciwb.iwb.Iwb.set_block">[docs]</a>    <span class="k">def</span> <span class="nf">set_block</span><span class="p">(</span>
+<div class="viewcode-block" id="Iwb.set_block">
+<a class="viewcode-back" href="../../user/reference/api.html#mciwb.iwb.Iwb.set_block">[docs]</a>
+    <span class="k">def</span> <span class="nf">set_block</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">pos</span><span class="p">:</span> <span class="n">Vec3</span><span class="p">,</span>
         <span class="n">block</span><span class="p">:</span> <span class="n">Item</span><span class="p">,</span>
@@ -627,7 +661,10 @@ document.write(`
         <span class="p">):</span>
             <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">result</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Iwb.get_block"><a class="viewcode-back" href="../../user/reference/api.html#mciwb.iwb.Iwb.get_block">[docs]</a>    <span class="k">def</span> <span class="nf">get_block</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pos</span><span class="p">:</span> <span class="n">Vec3</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Item</span><span class="p">:</span>
+
+<div class="viewcode-block" id="Iwb.get_block">
+<a class="viewcode-back" href="../../user/reference/api.html#mciwb.iwb.Iwb.get_block">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_block</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pos</span><span class="p">:</span> <span class="n">Vec3</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Item</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Gets a block in the world</span>
 
@@ -641,6 +678,7 @@ document.write(`
         <span class="n">blocks</span> <span class="o">=</span> <span class="n">grab</span><span class="p">(</span><span class="n">client</span><span class="p">,</span> <span class="n">grab_volume</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">blocks</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span></div>
+
 
     <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="n">report</span> <span class="o">=</span> <span class="s2">&quot;Minecraft Interactive World Builder status:</span><span class="se">\n</span><span class="s2">&quot;</span>
@@ -662,7 +700,9 @@ document.write(`
 
         <span class="k">return</span> <span class="n">report</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">o</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
 
-<div class="viewcode-block" id="Iwb.save"><a class="viewcode-back" href="../../user/reference/api.html#mciwb.iwb.Iwb.save">[docs]</a>    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">vol</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Volume</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="Iwb.save">
+<a class="viewcode-back" href="../../user/reference/api.html#mciwb.iwb.Iwb.save">[docs]</a>
+    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">vol</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Volume</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Save a Volume of blocks to a file. The volume can be specified in</span>
 <span class="sd">        the *vol* parameter or alternatively defaults to the current copy buffer.</span>
@@ -681,7 +721,10 @@ document.write(`
         <span class="n">blocks</span> <span class="o">=</span> <span class="n">grab</span><span class="p">(</span><span class="n">get_client</span><span class="p">(),</span> <span class="n">vol</span><span class="p">)</span>
         <span class="n">save_items</span><span class="p">(</span><span class="n">blocks</span><span class="p">,</span> <span class="n">Path</span><span class="p">(</span><span class="n">filename</span><span class="p">))</span></div>
 
-<div class="viewcode-block" id="Iwb.load"><a class="viewcode-back" href="../../user/reference/api.html#mciwb.iwb.Iwb.load">[docs]</a>    <span class="k">def</span> <span class="nf">load</span><span class="p">(</span>
+
+<div class="viewcode-block" id="Iwb.load">
+<a class="viewcode-back" href="../../user/reference/api.html#mciwb.iwb.Iwb.load">[docs]</a>
+    <span class="k">def</span> <span class="nf">load</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">position</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Vec3</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -712,7 +755,10 @@ document.write(`
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">copier</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">copier</span><span class="o">.</span><span class="n">apply_volume</span><span class="p">(</span><span class="n">blocks</span><span class="o">.</span><span class="n">volume</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Iwb.cmd"><a class="viewcode-back" href="../../user/reference/api.html#mciwb.iwb.Iwb.cmd">[docs]</a>    <span class="k">def</span> <span class="nf">cmd</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cmd</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+
+<div class="viewcode-block" id="Iwb.cmd">
+<a class="viewcode-back" href="../../user/reference/api.html#mciwb.iwb.Iwb.cmd">[docs]</a>
+    <span class="k">def</span> <span class="nf">cmd</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cmd</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Run any arbitrary Minecraft console command on the server.</span>
 
@@ -726,23 +772,21 @@ document.write(`
         <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">id</span> <span class="o">!=</span> <span class="n">request</span><span class="o">.</span><span class="n">id</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">SessionTimeout</span><span class="p">()</span>
 
-        <span class="k">return</span> <span class="n">response</span><span class="o">.</span><span class="n">payload</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">encoding</span><span class="p">)</span></div></div>
+        <span class="k">return</span> <span class="n">response</span><span class="o">.</span><span class="n">payload</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">encoding</span><span class="p">)</span></div>
+</div>
+
 </pre></div>
 
                 </article>
               
               
               
-                <footer class="bd-footer-article">
-                  
-<div class="footer-article-items footer-article__inner">
-  
-    <div class="footer-article-item"><!-- Previous / next buttons -->
+              
+              
+                <footer class="prev-next-footer">
+                  <!-- Previous / next buttons -->
 <div class="prev-next-area">
-</div></div>
-  
 </div>
-
                 </footer>
               
             </div>
@@ -760,17 +804,18 @@ document.write(`
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="../../_static/scripts/bootstrap.js?digest=e353d410970836974a52"></script>
-<script src="../../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52"></script>
+  <script src="../../_static/scripts/bootstrap.js?digest=ac02cc09edc035673794"></script>
+<script src="../../_static/scripts/pydata-sphinx-theme.js?digest=ac02cc09edc035673794"></script>
 
   <footer class="bd-footer">
 <div class="bd-footer__inner bd-page-width">
   
   
+  
     <div class="footer-items__end">
       
         <div class="footer-item"><p class="theme-version">
-  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.13.3.
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.14.1.
 </p></div>
       
     </div>

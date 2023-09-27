@@ -1,5 +1,4 @@
 
-
 <!DOCTYPE html>
 
 
@@ -7,9 +6,9 @@
 
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>MCIWB API &#8212; mciwb 0.8.7.dev4+gb6e0ecc documentation</title>
+    <title>MCIWB API &#8212; mciwb 0.8.7.dev6+g61ec67e documentation</title>
   
   
   
@@ -19,35 +18,38 @@
   </script>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../../_static/styles/theme.css?digest=e353d410970836974a52" rel="stylesheet" />
-<link href="../../_static/styles/bootstrap.css?digest=e353d410970836974a52" rel="stylesheet" />
-<link href="../../_static/styles/pydata-sphinx-theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+  <link href="../../_static/styles/theme.css?digest=ac02cc09edc035673794" rel="stylesheet" />
+<link href="../../_static/styles/bootstrap.css?digest=ac02cc09edc035673794" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=ac02cc09edc035673794" rel="stylesheet" />
 
   
-  <link href="../../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=e353d410970836974a52" rel="stylesheet" />
+  <link href="../../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=ac02cc09edc035673794" rel="stylesheet" />
   <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
 
-    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=eafc0fe6" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=e353d410970836974a52" />
-<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52" />
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=ac02cc09edc035673794" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=ac02cc09edc035673794" />
+  <script src="../../_static/vendor/fontawesome/6.1.2/js/all.min.js?digest=ac02cc09edc035673794"></script>
 
-    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-    <script src="../../_static/doctools.js"></script>
-    <script src="../../_static/sphinx_highlight.js"></script>
-    <script src="../../_static/clipboard.min.js"></script>
-    <script src="../../_static/copybutton.js"></script>
-    <script src="../../_static/design-tabs.js"></script>
+    <script src="../../_static/documentation_options.js?v=2c1c3404"></script>
+    <script src="../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=30646c52"></script>
+    <script src="../../_static/design-tabs.js?v=36754332"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'user/reference/api';</script>
     <script>
+        DOCUMENTATION_OPTIONS.theme_version = '0.14.1';
         DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://gilesknap.github.io/mciwb/switcher.json';
         DOCUMENTATION_OPTIONS.theme_switcher_version_match = 'main';
+        DOCUMENTATION_OPTIONS.show_version_warning_banner = false;
         </script>
     <link rel="icon" href="../../_static/logo.png"/>
     <link rel="index" title="Index" href="../../genindex.html" />
@@ -64,6 +66,15 @@
   
   
   <a class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>
+    Back to top
+  </button>
+
   
   <input type="checkbox"
           class="sidebar-toggle"
@@ -104,7 +115,8 @@
     <span class="fa-solid fa-bars"></span>
   </label>
   
-  <div class="navbar-header-items__start">
+  
+  <div class="col-lg-3 navbar-header-items__start">
     
       <div class="navbar-item">
   
@@ -128,7 +140,6 @@
 </a></div>
     
   </div>
-  
   
   <div class="col-lg-9 navbar-header-items">
     
@@ -173,23 +184,25 @@
       
         <div class="navbar-item navbar-persistent--container">
           
-<script>
-document.write(`
-  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <script>
+ document.write(`
+   <button class="btn navbar-btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
     <i class="fa-solid fa-magnifying-glass"></i>
-  </button>
-`);
-</script>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script>
         </div>
       
       
         <div class="navbar-item">
 <script>
 document.write(`
-  <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
-    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
-    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
-    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
+  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
   </button>
 `);
 </script></div>
@@ -205,8 +218,8 @@ document.write(`
           
           
           
-          <a href="https://github.com/gilesknap/mciwb" title="GitHub" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fa-brands fa-square-github"></i></span>
-            <label class="sr-only">GitHub</label></a>
+          <a href="https://github.com/gilesknap/mciwb" title="GitHub" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i></span>
+            <span class="sr-only">GitHub</span></a>
         </li>
         <li class="nav-item">
           
@@ -217,8 +230,8 @@ document.write(`
           
           
           
-          <a href="https://pypi.org/project/mciwb" title="PyPI" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fas fa-cube"></i></span>
-            <label class="sr-only">PyPI</label></a>
+          <a href="https://pypi.org/project/mciwb" title="PyPI" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fas fa-cube fa-lg" aria-hidden="true"></i></span>
+            <span class="sr-only">PyPI</span></a>
         </li>
 </ul></div>
       
@@ -226,11 +239,11 @@ document.write(`
 <script>
 document.write(`
   <div class="version-switcher__container dropdown">
-    <button type="button" class="version-switcher__button btn btn-sm navbar-btn dropdown-toggle" data-bs-toggle="dropdown">
-      main  <!-- this text may get changed later by javascript -->
+    <button id="versionswitcherbutton" type="button" role="button" class="version-switcher__button btn btn-sm navbar-btn dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="listbox" aria-controls="versionswitcherlist" aria-label="Version switcher list">
+      Choose version  <!-- this text may get changed later by javascript -->
       <span class="caret"></span>
     </button>
-    <div class="version-switcher__menu dropdown-menu list-group-flush py-0">
+    <div id="versionswitcherlist" class="version-switcher__menu dropdown-menu list-group-flush py-0" role="listbox" aria-labelledby="versionswitcherbutton">
     <!-- dropdown will be populated by javascript on page load -->
     </div>
   </div>
@@ -243,18 +256,20 @@ document.write(`
   
   
     <div class="navbar-persistent--mobile">
-<script>
-document.write(`
-  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <script>
+ document.write(`
+   <button class="btn navbar-btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
     <i class="fa-solid fa-magnifying-glass"></i>
-  </button>
-`);
-</script>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script>
     </div>
   
 
   
-    <label class="sidebar-toggle secondary-toggle" for="__secondary">
+    <label class="sidebar-toggle secondary-toggle" for="__secondary" tabindex="0">
       <span class="fa-solid fa-outdent"></span>
     </label>
   
@@ -315,10 +330,10 @@ document.write(`
           <div class="navbar-item">
 <script>
 document.write(`
-  <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
-    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
-    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
-    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
+  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
   </button>
 `);
 </script></div>
@@ -334,8 +349,8 @@ document.write(`
           
           
           
-          <a href="https://github.com/gilesknap/mciwb" title="GitHub" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fa-brands fa-square-github"></i></span>
-            <label class="sr-only">GitHub</label></a>
+          <a href="https://github.com/gilesknap/mciwb" title="GitHub" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i></span>
+            <span class="sr-only">GitHub</span></a>
         </li>
         <li class="nav-item">
           
@@ -346,8 +361,8 @@ document.write(`
           
           
           
-          <a href="https://pypi.org/project/mciwb" title="PyPI" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fas fa-cube"></i></span>
-            <label class="sr-only">PyPI</label></a>
+          <a href="https://pypi.org/project/mciwb" title="PyPI" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fas fa-cube fa-lg" aria-hidden="true"></i></span>
+            <span class="sr-only">PyPI</span></a>
         </li>
 </ul></div>
         
@@ -355,11 +370,11 @@ document.write(`
 <script>
 document.write(`
   <div class="version-switcher__container dropdown">
-    <button type="button" class="version-switcher__button btn btn-sm navbar-btn dropdown-toggle" data-bs-toggle="dropdown">
-      main  <!-- this text may get changed later by javascript -->
+    <button id="versionswitcherbutton" type="button" role="button" class="version-switcher__button btn btn-sm navbar-btn dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="listbox" aria-controls="versionswitcherlist" aria-label="Version switcher list">
+      Choose version  <!-- this text may get changed later by javascript -->
       <span class="caret"></span>
     </button>
-    <div class="version-switcher__menu dropdown-menu list-group-flush py-0">
+    <div id="versionswitcherlist" class="version-switcher__menu dropdown-menu list-group-flush py-0" role="listbox" aria-labelledby="versionswitcherbutton">
     <!-- dropdown will be populated by javascript on page load -->
     </div>
   </div>
@@ -447,8 +462,8 @@ document.write(`
 
 
 
-<nav aria-label="Breadcrumbs">
-  <ul class="bd-breadcrumbs" role="navigation" aria-label="Breadcrumb">
+<nav aria-label="Breadcrumb">
+  <ul class="bd-breadcrumbs">
     
     <li class="breadcrumb-item breadcrumb-home">
       <a href="../../index.html" class="nav-link" aria-label="Home">
@@ -476,12 +491,12 @@ document.write(`
                 <article class="bd-article" role="main">
                   
   <section id="mciwb-api">
-<h1>MCIWB API<a class="headerlink" href="#mciwb-api" title="Permalink to this heading">#</a></h1>
+<h1>MCIWB API<a class="headerlink" href="#mciwb-api" title="Link to this heading">#</a></h1>
 <p>This is the public API reference for MCIWB</p>
 <p>MCIWB is built upon further libraries.
 The dependencies look like this:</p>
 <table class="table" id="id1">
-<caption><span class="caption-text">Libraries</span><a class="headerlink" href="#id1" title="Permalink to this table">#</a></caption>
+<caption><span class="caption-text">Libraries</span><a class="headerlink" href="#id1" title="Link to this table">#</a></caption>
 <colgroup>
 <col style="width: 9.5%" />
 <col style="width: 23.8%" />
@@ -513,18 +528,18 @@ The dependencies look like this:</p>
 </tbody>
 </table>
 <section id="mciwb">
-<h2><code class="docutils literal notranslate"><span class="pre">mciwb</span></code><a class="headerlink" href="#mciwb" title="Permalink to this heading">#</a></h2>
+<h2><code class="docutils literal notranslate"><span class="pre">mciwb</span></code><a class="headerlink" href="#mciwb" title="Link to this heading">#</a></h2>
 <dl class="py data">
 <dt class="sig sig-object py" id="mciwb.__version__">
-<span class="sig-prename descclassname"><span class="pre">mciwb.</span></span><span class="sig-name descname"><span class="pre">__version__</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></em><a class="headerlink" href="#mciwb.__version__" title="Permalink to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">mciwb.</span></span><span class="sig-name descname"><span class="pre">__version__</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></em><a class="headerlink" href="#mciwb.__version__" title="Link to this definition">#</a></dt>
 <dd><p>Version number as calculated by <a class="github reference external" href="https://github.com/pypa/setuptools_scm">pypa/setuptools_scm</a></p>
 </dd></dl>
 
 <section id="module-mciwb.iwb">
-<span id="mciwb-iwb"></span><h3><code class="docutils literal notranslate"><span class="pre">mciwb.iwb</span></code><a class="headerlink" href="#module-mciwb.iwb" title="Permalink to this heading">#</a></h3>
+<span id="mciwb-iwb"></span><h3><code class="docutils literal notranslate"><span class="pre">mciwb.iwb</span></code><a class="headerlink" href="#module-mciwb.iwb" title="Link to this heading">#</a></h3>
 <dl class="py class">
 <dt class="sig sig-object py" id="mciwb.iwb.Iwb">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mciwb.iwb.</span></span><span class="sig-name descname"><span class="pre">Iwb</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">server</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">port</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">passwd</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mciwb/iwb.html#Iwb"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.iwb.Iwb" title="Permalink to this definition">#</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mciwb.iwb.</span></span><span class="sig-name descname"><span class="pre">Iwb</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">server</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">port</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">passwd</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mciwb/iwb.html#Iwb"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.iwb.Iwb" title="Link to this definition">#</a></dt>
 <dd><p>Interactive World Builder class. Provides a very simple interface for
 interactive functions for use in an IPython shell.</p>
 <dl class="field-list simple">
@@ -551,7 +566,7 @@ interactive functions for use in an IPython shell.</p>
 </dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="mciwb.iwb.Iwb.debug">
-<span class="sig-name descname"><span class="pre">debug</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">enable</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mciwb/iwb.html#Iwb.debug"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.iwb.Iwb.debug" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">debug</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">enable</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mciwb/iwb.html#Iwb.debug"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.iwb.Iwb.debug" title="Link to this definition">#</a></dt>
 <dd><p>Enable/disable debug log. Enabling this will also enable
 full Traceback log.</p>
 <dl class="field-list simple">
@@ -563,7 +578,7 @@ full Traceback log.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mciwb.iwb.Iwb.backup">
-<span class="sig-name descname"><span class="pre">backup</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../../_modules/mciwb/iwb.html#Iwb.backup"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.iwb.Iwb.backup" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">backup</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../../_modules/mciwb/iwb.html#Iwb.backup"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.iwb.Iwb.backup" title="Link to this definition">#</a></dt>
 <dd><p>Backup the Minecraft world to a file. If no name is given then the
 backup will be named using the current date and time.</p>
 <dl class="field-list simple">
@@ -575,14 +590,14 @@ backup will be named using the current date and time.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mciwb.iwb.Iwb.connect">
-<span class="sig-name descname"><span class="pre">connect</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Client</span></span></span><a class="reference internal" href="../../_modules/mciwb/iwb.html#Iwb.connect"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.iwb.Iwb.connect" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">connect</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Client</span></span></span><a class="reference internal" href="../../_modules/mciwb/iwb.html#Iwb.connect"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.iwb.Iwb.connect" title="Link to this definition">#</a></dt>
 <dd><p>Makes a connection to the Minecraft Server. Can be called again
 if the connection is lost e.g. due to server reboot.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mciwb.iwb.Iwb.get_player">
-<span class="sig-name descname"><span class="pre">get_player</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#mciwb.player.Player" title="mciwb.player.Player"><span class="pre">Player</span></a></span></span><a class="reference internal" href="../../_modules/mciwb/iwb.html#Iwb.get_player"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.iwb.Iwb.get_player" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">get_player</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#mciwb.player.Player" title="mciwb.player.Player"><span class="pre">Player</span></a></span></span><a class="reference internal" href="../../_modules/mciwb/iwb.html#Iwb.get_player"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.iwb.Iwb.get_player" title="Link to this definition">#</a></dt>
 <dd><p>Get the player object for the given player name.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -593,13 +608,13 @@ if the connection is lost e.g. due to server reboot.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="mciwb.iwb.Iwb.players">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">players</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.11)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#mciwb.iwb.Iwb.players" title="Permalink to this definition">#</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">players</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.11)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#mciwb.iwb.Iwb.players" title="Link to this definition">#</a></dt>
 <dd><p>Get a list of the names of players being monitored.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mciwb.iwb.Iwb.add_player">
-<span class="sig-name descname"><span class="pre">add_player</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">me</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mciwb/iwb.html#Iwb.add_player"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.iwb.Iwb.add_player" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">add_player</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">me</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mciwb/iwb.html#Iwb.add_player"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.iwb.Iwb.add_player" title="Link to this definition">#</a></dt>
 <dd><p>Add a player to the world object. This provides monitoring of the
 player’s position and handles the player’s placing of action signs.</p>
 <p>If me is True then the player will be set as the current default
@@ -623,7 +638,7 @@ player. The default player is available using:</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mciwb.iwb.Iwb.set_block">
-<span class="sig-name descname"><span class="pre">set_block</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pos</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Vec3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">block</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Item</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">facing</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Vec3</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nbt</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.11)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mciwb/iwb.html#Iwb.set_block"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.iwb.Iwb.set_block" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">set_block</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pos</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Vec3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">block</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Item</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">facing</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Vec3</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nbt</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.11)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mciwb/iwb.html#Iwb.set_block"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.iwb.Iwb.set_block" title="Link to this definition">#</a></dt>
 <dd><p>Places a block in the world</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -645,7 +660,7 @@ provide a way to convert them to strings (but that is a large task)</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mciwb.iwb.Iwb.get_block">
-<span class="sig-name descname"><span class="pre">get_block</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pos</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Vec3</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Item</span></span></span><a class="reference internal" href="../../_modules/mciwb/iwb.html#Iwb.get_block"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.iwb.Iwb.get_block" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">get_block</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pos</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Vec3</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Item</span></span></span><a class="reference internal" href="../../_modules/mciwb/iwb.html#Iwb.get_block"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.iwb.Iwb.get_block" title="Link to this definition">#</a></dt>
 <dd><p>Gets a block in the world</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -656,7 +671,7 @@ provide a way to convert them to strings (but that is a large task)</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mciwb.iwb.Iwb.save">
-<span class="sig-name descname"><span class="pre">save</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">vol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Volume</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mciwb/iwb.html#Iwb.save"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.iwb.Iwb.save" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">save</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">vol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Volume</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mciwb/iwb.html#Iwb.save"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.iwb.Iwb.save" title="Link to this definition">#</a></dt>
 <dd><p>Save a Volume of blocks to a file. The volume can be specified in
 the <em>vol</em> parameter or alternatively defaults to the current copy buffer.</p>
 <p>The file is saved in the mcwb format which is a JSON file containing
@@ -674,7 +689,7 @@ a 3d array of Item objects.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mciwb.iwb.Iwb.load">
-<span class="sig-name descname"><span class="pre">load</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">position</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Vec3</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">anchor</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Anchor3</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Anchor3.BOTTOM_SW</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mciwb/iwb.html#Iwb.load"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.iwb.Iwb.load" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">load</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">position</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Vec3</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">anchor</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Anchor3</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Anchor3.BOTTOM_SW</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mciwb/iwb.html#Iwb.load"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.iwb.Iwb.load" title="Link to this definition">#</a></dt>
 <dd><p>Load a saved set of blocks into a location. The location can be
 specified in argument <em>position</em> or alternatively defaults
 to the copy buffer start position.</p>
@@ -694,7 +709,7 @@ JSON file containing a 3d array of Item objects.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mciwb.iwb.Iwb.cmd">
-<span class="sig-name descname"><span class="pre">cmd</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cmd</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></span><a class="reference internal" href="../../_modules/mciwb/iwb.html#Iwb.cmd"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.iwb.Iwb.cmd" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">cmd</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cmd</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></span><a class="reference internal" href="../../_modules/mciwb/iwb.html#Iwb.cmd"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.iwb.Iwb.cmd" title="Link to this definition">#</a></dt>
 <dd><p>Run any arbitrary Minecraft console command on the server.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -707,35 +722,35 @@ JSON file containing a 3d array of Item objects.</p>
 
 </section>
 <section id="module-mciwb.player">
-<span id="mciwb-player"></span><h3><code class="docutils literal notranslate"><span class="pre">mciwb.player</span></code><a class="headerlink" href="#module-mciwb.player" title="Permalink to this heading">#</a></h3>
+<span id="mciwb-player"></span><h3><code class="docutils literal notranslate"><span class="pre">mciwb.player</span></code><a class="headerlink" href="#module-mciwb.player" title="Link to this heading">#</a></h3>
 <p>Represent a player in the world and provide functions for monitoring their
 state</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="mciwb.player.Player">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mciwb.player.</span></span><span class="sig-name descname"><span class="pre">Player</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mciwb/player.html#Player"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.player.Player" title="Permalink to this definition">#</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mciwb.player.</span></span><span class="sig-name descname"><span class="pre">Player</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mciwb/player.html#Player"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.player.Player" title="Link to this definition">#</a></dt>
 <dd><p>Represent a player in the world and provide functions for monitoring their
 position and direction they are facing.</p>
 <dl class="py property">
 <dt class="sig sig-object py" id="mciwb.player.Player.inventory">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">inventory</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.11)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#mciwb.player.Player.inventory" title="Permalink to this definition">#</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">inventory</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.11)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#mciwb.player.Player.inventory" title="Link to this definition">#</a></dt>
 <dd><p>Get the player’s inventory</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="mciwb.player.Player.pos_f">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">pos_f</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Vec3</span></em><a class="headerlink" href="#mciwb.player.Player.pos_f" title="Permalink to this definition">#</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">pos_f</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Vec3</span></em><a class="headerlink" href="#mciwb.player.Player.pos_f" title="Link to this definition">#</a></dt>
 <dd><p>Return the player’s precise position</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="mciwb.player.Player.pos">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">pos</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Vec3</span></em><a class="headerlink" href="#mciwb.player.Player.pos" title="Permalink to this definition">#</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">pos</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Vec3</span></em><a class="headerlink" href="#mciwb.player.Player.pos" title="Link to this definition">#</a></dt>
 <dd><p>Return the player’s block position</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="mciwb.player.Player.facing">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">facing</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Vec3</span></em><a class="headerlink" href="#mciwb.player.Player.facing" title="Permalink to this definition">#</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">facing</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Vec3</span></em><a class="headerlink" href="#mciwb.player.Player.facing" title="Link to this definition">#</a></dt>
 <dd><p>Return the player’s facing direction</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
@@ -750,13 +765,13 @@ WEST = Vec3(-1, 0, 0)</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="mciwb.player.Player.rotation">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">rotation</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.11)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><span class="pre">float</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#mciwb.player.Player.rotation" title="Permalink to this definition">#</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">rotation</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.11)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><span class="pre">float</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#mciwb.player.Player.rotation" title="Link to this definition">#</a></dt>
 <dd><p>Get the player’s rotation in degrees</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mciwb.player.Player.player_in">
-<span class="sig-name descname"><span class="pre">player_in</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">volume</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Volume</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span></span><a class="reference internal" href="../../_modules/mciwb/player.html#Player.player_in"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.player.Player.player_in" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">player_in</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">volume</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Volume</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span></span><a class="reference internal" href="../../_modules/mciwb/player.html#Player.player_in"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.player.Player.player_in" title="Link to this definition">#</a></dt>
 <dd><p>Check if the player is inside the Volume</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -767,7 +782,7 @@ WEST = Vec3(-1, 0, 0)</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mciwb.player.Player.players_in">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">players_in</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">volume</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Volume</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.11)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#mciwb.player.Player" title="mciwb.player.Player"><span class="pre">Player</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../_modules/mciwb/player.html#Player.players_in"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.player.Player.players_in" title="Permalink to this definition">#</a></dt>
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">players_in</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">volume</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Volume</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.11)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#mciwb.player.Player" title="mciwb.player.Player"><span class="pre">Player</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../_modules/mciwb/player.html#Player.players_in"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.player.Player.players_in" title="Link to this definition">#</a></dt>
 <dd><p>return a list of player names whose position is inside the Volume</p>
 </dd></dl>
 
@@ -775,11 +790,11 @@ WEST = Vec3(-1, 0, 0)</p>
 
 </section>
 <section id="module-mciwb.server">
-<span id="mciwb-server"></span><h3><code class="docutils literal notranslate"><span class="pre">mciwb.server</span></code><a class="headerlink" href="#module-mciwb.server" title="Permalink to this heading">#</a></h3>
+<span id="mciwb-server"></span><h3><code class="docutils literal notranslate"><span class="pre">mciwb.server</span></code><a class="headerlink" href="#module-mciwb.server" title="Link to this heading">#</a></h3>
 <p>Functions for launching and controlling a Minecraft server in a Docker container.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="mciwb.server.MinecraftServer">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mciwb.server.</span></span><span class="sig-name descname"><span class="pre">MinecraftServer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">rcon</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">password</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">server_folder</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.11)"><span class="pre">Path</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">world_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">backup_folder</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.11)"><span class="pre">Path</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keep</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mciwb/server.html#MinecraftServer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.server.MinecraftServer" title="Permalink to this definition">#</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mciwb.server.</span></span><span class="sig-name descname"><span class="pre">MinecraftServer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">rcon</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">password</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">server_folder</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.11)"><span class="pre">Path</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">world_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">backup_folder</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.11)"><span class="pre">Path</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keep</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mciwb/server.html#MinecraftServer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.server.MinecraftServer" title="Link to this definition">#</a></dt>
 <dd><p>Create an monitor Minecraft servers on the local machine using Docker</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -798,25 +813,25 @@ WEST = Vec3(-1, 0, 0)</p>
 spin up the container.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="mciwb.server.MinecraftServer.wait_server">
-<span class="sig-name descname"><span class="pre">wait_server</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mciwb/server.html#MinecraftServer.wait_server"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.server.MinecraftServer.wait_server" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">wait_server</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mciwb/server.html#MinecraftServer.wait_server"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.server.MinecraftServer.wait_server" title="Link to this definition">#</a></dt>
 <dd><p>Wait until the server is ready to accept rcon connections</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mciwb.server.MinecraftServer.stop">
-<span class="sig-name descname"><span class="pre">stop</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mciwb/server.html#MinecraftServer.stop"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.server.MinecraftServer.stop" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">stop</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mciwb/server.html#MinecraftServer.stop"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.server.MinecraftServer.stop" title="Link to this definition">#</a></dt>
 <dd><p>Stop the minecraft server</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mciwb.server.MinecraftServer.start">
-<span class="sig-name descname"><span class="pre">start</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mciwb/server.html#MinecraftServer.start"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.server.MinecraftServer.start" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">start</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mciwb/server.html#MinecraftServer.start"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.server.MinecraftServer.start" title="Link to this definition">#</a></dt>
 <dd><p>Start the minecraft server</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mciwb.server.MinecraftServer.remove">
-<span class="sig-name descname"><span class="pre">remove</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">force</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mciwb/server.html#MinecraftServer.remove"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.server.MinecraftServer.remove" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">remove</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">force</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mciwb/server.html#MinecraftServer.remove"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.server.MinecraftServer.remove" title="Link to this definition">#</a></dt>
 <dd><p>Remove a minecraft server container</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -827,7 +842,7 @@ spin up the container.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mciwb.server.MinecraftServer.create">
-<span class="sig-name descname"><span class="pre">create</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">world_zip</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">force</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../../_modules/mciwb/server.html#MinecraftServer.create"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.server.MinecraftServer.create" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">create</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">world_zip</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">force</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../../_modules/mciwb/server.html#MinecraftServer.create"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.server.MinecraftServer.create" title="Link to this definition">#</a></dt>
 <dd><p>Spin up a minecraft server in a container</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -842,7 +857,7 @@ provided, a new world will be created.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mciwb.server.MinecraftServer.stop_named">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">stop_named</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mciwb/server.html#MinecraftServer.stop_named"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.server.MinecraftServer.stop_named" title="Permalink to this definition">#</a></dt>
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">stop_named</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mciwb/server.html#MinecraftServer.stop_named"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.server.MinecraftServer.stop_named" title="Link to this definition">#</a></dt>
 <dd><p>Stop a minecraft server by name</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -855,12 +870,12 @@ provided, a new world will be created.</p></li>
 
 </section>
 <section id="module-mciwb.monitor">
-<span id="mciwb-monitor"></span><h3><code class="docutils literal notranslate"><span class="pre">mciwb.monitor</span></code><a class="headerlink" href="#module-mciwb.monitor" title="Permalink to this heading">#</a></h3>
+<span id="mciwb-monitor"></span><h3><code class="docutils literal notranslate"><span class="pre">mciwb.monitor</span></code><a class="headerlink" href="#module-mciwb.monitor" title="Link to this heading">#</a></h3>
 <p>Thread functions for running any background tasks. Primarily used for
 monitoring the state of objects in Minecraft.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="mciwb.monitor.Monitor">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mciwb.monitor.</span></span><span class="sig-name descname"><span class="pre">Monitor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.11)"><span class="pre">Callable</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.11)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">once</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">poll_rate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mciwb/monitor.html#Monitor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.monitor.Monitor" title="Permalink to this definition">#</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mciwb.monitor.</span></span><span class="sig-name descname"><span class="pre">Monitor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.11)"><span class="pre">Callable</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.11)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">once</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">poll_rate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mciwb/monitor.html#Monitor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.monitor.Monitor" title="Link to this definition">#</a></dt>
 <dd><p>”
 A class to provide threads for monitoring. Each thread maintains a
 list of functions to call repeatedly.</p>
@@ -883,13 +898,13 @@ background operation</p></li>
 </dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="mciwb.monitor.Monitor.start_poller">
-<span class="sig-name descname"><span class="pre">start_poller</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mciwb/monitor.html#Monitor.start_poller"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.monitor.Monitor.start_poller" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">start_poller</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mciwb/monitor.html#Monitor.start_poller"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.monitor.Monitor.start_poller" title="Link to this definition">#</a></dt>
 <dd><p>Begin polling the functions in the pollers list</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mciwb.monitor.Monitor.add_poller_func">
-<span class="sig-name descname"><span class="pre">add_poller_func</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.11)"><span class="pre">Callable</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.11)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">()</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mciwb/monitor.html#Monitor.add_poller_func"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.monitor.Monitor.add_poller_func" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">add_poller_func</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.11)"><span class="pre">Callable</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.11)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">()</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mciwb/monitor.html#Monitor.add_poller_func"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.monitor.Monitor.add_poller_func" title="Link to this definition">#</a></dt>
 <dd><p>Add a function to the pollers list</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -903,7 +918,7 @@ background operation</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mciwb.monitor.Monitor.remove_poller_func">
-<span class="sig-name descname"><span class="pre">remove_poller_func</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.11)"><span class="pre">Callable</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mciwb/monitor.html#Monitor.remove_poller_func"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.monitor.Monitor.remove_poller_func" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">remove_poller_func</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.11)"><span class="pre">Callable</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mciwb/monitor.html#Monitor.remove_poller_func"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.monitor.Monitor.remove_poller_func" title="Link to this definition">#</a></dt>
 <dd><p>Remove a function from the pollers list</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -914,7 +929,7 @@ background operation</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mciwb.monitor.Monitor.stop_all">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">stop_all</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mciwb/monitor.html#Monitor.stop_all"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.monitor.Monitor.stop_all" title="Permalink to this definition">#</a></dt>
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">stop_all</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mciwb/monitor.html#Monitor.stop_all"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.monitor.Monitor.stop_all" title="Link to this definition">#</a></dt>
 <dd><p>Stop all instances of Monitor and tidy up. Call this before exiting
 the program otherwise Python will wait on the background threads
 indefinitely.</p>
@@ -922,13 +937,13 @@ indefinitely.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mciwb.monitor.Monitor.stop">
-<span class="sig-name descname"><span class="pre">stop</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mciwb/monitor.html#Monitor.stop"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.monitor.Monitor.stop" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">stop</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mciwb/monitor.html#Monitor.stop"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.monitor.Monitor.stop" title="Link to this definition">#</a></dt>
 <dd><p>Stop this instance of Monitor</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mciwb.monitor.Monitor.stop_named">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">stop_named</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mciwb/monitor.html#Monitor.stop_named"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.monitor.Monitor.stop_named" title="Permalink to this definition">#</a></dt>
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">stop_named</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mciwb/monitor.html#Monitor.stop_named"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.monitor.Monitor.stop_named" title="Link to this definition">#</a></dt>
 <dd><p>Stop a named instance of Monitor</p>
 </dd></dl>
 
@@ -936,14 +951,14 @@ indefinitely.</p>
 
 </section>
 <section id="module-mciwb.backup">
-<span id="mciwb-backup"></span><h3><code class="docutils literal notranslate"><span class="pre">mciwb.backup</span></code><a class="headerlink" href="#module-mciwb.backup" title="Permalink to this heading">#</a></h3>
+<span id="mciwb-backup"></span><h3><code class="docutils literal notranslate"><span class="pre">mciwb.backup</span></code><a class="headerlink" href="#module-mciwb.backup" title="Link to this heading">#</a></h3>
 </section>
 <section id="module-mciwb.signs">
-<span id="mciwb-signs"></span><h3><code class="docutils literal notranslate"><span class="pre">mciwb.signs</span></code><a class="headerlink" href="#module-mciwb.signs" title="Permalink to this heading">#</a></h3>
+<span id="mciwb-signs"></span><h3><code class="docutils literal notranslate"><span class="pre">mciwb.signs</span></code><a class="headerlink" href="#module-mciwb.signs" title="Link to this heading">#</a></h3>
 <p>Add an interactive capability through the placing of command signs in the world</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="mciwb.signs.Signs">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mciwb.signs.</span></span><span class="sig-name descname"><span class="pre">Signs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">player</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#mciwb.player.Player" title="mciwb.player.Player"><span class="pre">Player</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mciwb/signs.html#Signs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.signs.Signs" title="Permalink to this definition">#</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mciwb.signs.</span></span><span class="sig-name descname"><span class="pre">Signs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">player</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#mciwb.player.Player" title="mciwb.player.Player"><span class="pre">Player</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mciwb/signs.html#Signs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.signs.Signs" title="Link to this definition">#</a></dt>
 <dd><p>Monitor the world for signs placed by a player. Perform an action based
 on the text of the sign.</p>
 <p>Each sign object can be used to monitor the placing of signs by a single
@@ -956,7 +971,7 @@ functions. That way the user code can manage state within the object
 providing those functions.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="mciwb.signs.Signs.do_action">
-<span class="sig-name descname"><span class="pre">do_action</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">command</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Vec3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">block_pos</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Vec3</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mciwb/signs.html#Signs.do_action"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.signs.Signs.do_action" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">do_action</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">command</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Vec3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">block_pos</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Vec3</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mciwb/signs.html#Signs.do_action"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.signs.Signs.do_action" title="Link to this definition">#</a></dt>
 <dd><p>Perform an action based on the text of the sign. The action is to
 call the callback function that is configured for this sign text.</p>
 <dl class="field-list simple">
@@ -973,7 +988,7 @@ cleared if the sign is used</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mciwb.signs.Signs.add_sign">
-<span class="sig-name descname"><span class="pre">add_sign</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">function</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.11)"><span class="pre">Callable</span></a><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">Vec3</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mciwb/signs.html#Signs.add_sign"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.signs.Signs.add_sign" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">add_sign</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">function</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.11)"><span class="pre">Callable</span></a><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">Vec3</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mciwb/signs.html#Signs.add_sign"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.signs.Signs.add_sign" title="Link to this definition">#</a></dt>
 <dd><p>Add a new sign type with its action callback function</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -987,7 +1002,7 @@ cleared if the sign is used</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mciwb.signs.Signs.remove_sign">
-<span class="sig-name descname"><span class="pre">remove_sign</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mciwb/signs.html#Signs.remove_sign"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.signs.Signs.remove_sign" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">remove_sign</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mciwb/signs.html#Signs.remove_sign"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.signs.Signs.remove_sign" title="Link to this definition">#</a></dt>
 <dd><p>Stop monitoring for a sign with the given name</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -998,7 +1013,7 @@ cleared if the sign is used</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mciwb.signs.Signs.give_signs">
-<span class="sig-name descname"><span class="pre">give_signs</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mciwb/signs.html#Signs.give_signs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.signs.Signs.give_signs" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">give_signs</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mciwb/signs.html#Signs.give_signs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.signs.Signs.give_signs" title="Link to this definition">#</a></dt>
 <dd><p>Give player one of each command sign in our commands list</p>
 <p>Check first if the player has the sign already</p>
 </dd></dl>
@@ -1007,28 +1022,28 @@ cleared if the sign is used</p></li>
 
 </section>
 <section id="module-mciwb.copier">
-<span id="mciwb-copier"></span><h3><code class="docutils literal notranslate"><span class="pre">mciwb.copier</span></code><a class="headerlink" href="#module-mciwb.copier" title="Permalink to this heading">#</a></h3>
+<span id="mciwb-copier"></span><h3><code class="docutils literal notranslate"><span class="pre">mciwb.copier</span></code><a class="headerlink" href="#module-mciwb.copier" title="Link to this heading">#</a></h3>
 <p>Provide copy and paste actions on Volumes of blocks</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="mciwb.copier.CopyPaste">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mciwb.copier.</span></span><span class="sig-name descname"><span class="pre">CopyPaste</span></span><a class="reference internal" href="../../_modules/mciwb/copier.html#CopyPaste"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.copier.CopyPaste" title="Permalink to this definition">#</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mciwb.copier.</span></span><span class="sig-name descname"><span class="pre">CopyPaste</span></span><a class="reference internal" href="../../_modules/mciwb/copier.html#CopyPaste"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.copier.CopyPaste" title="Link to this definition">#</a></dt>
 <dd><p>Provides an interactive way to use copy and paste commands within a
 Minecraft world.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="mciwb.copier.CopyPaste.to_volume">
-<span class="sig-name descname"><span class="pre">to_volume</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Volume</span></span></span><a class="reference internal" href="../../_modules/mciwb/copier.html#CopyPaste.to_volume"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.copier.CopyPaste.to_volume" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">to_volume</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Volume</span></span></span><a class="reference internal" href="../../_modules/mciwb/copier.html#CopyPaste.to_volume"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.copier.CopyPaste.to_volume" title="Link to this definition">#</a></dt>
 <dd><p>Converts the copy buffer location and dimensions to a Volume</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mciwb.copier.CopyPaste.apply_volume">
-<span class="sig-name descname"><span class="pre">apply_volume</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Volume</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mciwb/copier.html#CopyPaste.apply_volume"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.copier.CopyPaste.apply_volume" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">apply_volume</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Volume</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mciwb/copier.html#CopyPaste.apply_volume"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.copier.CopyPaste.apply_volume" title="Link to this definition">#</a></dt>
 <dd><p>Use a Volume to set the copy buffer location and dimensions</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mciwb.copier.CopyPaste.get_commands">
-<span class="sig-name descname"><span class="pre">get_commands</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mciwb/copier.html#CopyPaste.get_commands"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.copier.CopyPaste.get_commands" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">get_commands</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mciwb/copier.html#CopyPaste.get_commands"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.copier.CopyPaste.get_commands" title="Link to this definition">#</a></dt>
 <dd><p>return a list of command names and the callback functions they
 represent. For use in setting up a <a class="reference internal" href="#mciwb.signs.Signs" title="mciwb.signs.Signs"><code class="xref any py py-class docutils literal notranslate"><span class="pre">Signs</span></code></a> object that can be
 used to interactively call the copy paste functions.</p>
@@ -1036,7 +1051,7 @@ used to interactively call the copy paste functions.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mciwb.copier.CopyPaste.select">
-<span class="sig-name descname"><span class="pre">select</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pos</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Vec3</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mciwb/copier.html#CopyPaste.select"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.copier.CopyPaste.select" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">select</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pos</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Vec3</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mciwb/copier.html#CopyPaste.select"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.copier.CopyPaste.select" title="Link to this definition">#</a></dt>
 <dd><p>Select a new copy buffer start point in the world.
 The previous start point becomes the stop point
 (i.e. opposite corner of the paste buffer)</p>
@@ -1044,20 +1059,20 @@ The previous start point becomes the stop point
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mciwb.copier.CopyPaste.paste">
-<span class="sig-name descname"><span class="pre">paste</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pos</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Vec3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">force</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mciwb/copier.html#CopyPaste.paste"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.copier.CopyPaste.paste" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">paste</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pos</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Vec3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">force</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mciwb/copier.html#CopyPaste.paste"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.copier.CopyPaste.paste" title="Link to this definition">#</a></dt>
 <dd><p>Copy the contents of past buffer to pos</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mciwb.copier.CopyPaste.paste_safe">
-<span class="sig-name descname"><span class="pre">paste_safe</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pos</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Vec3</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mciwb/copier.html#CopyPaste.paste_safe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.copier.CopyPaste.paste_safe" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">paste_safe</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pos</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Vec3</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mciwb/copier.html#CopyPaste.paste_safe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.copier.CopyPaste.paste_safe" title="Link to this definition">#</a></dt>
 <dd><p>Paste the contents of the paste buffer to pos, but only if the
 paste buffer does not overlap with the target area</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mciwb.copier.CopyPaste.fill">
-<span class="sig-name descname"><span class="pre">fill</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pos</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Vec3</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Vec3(x=0,</span> <span class="pre">y=0,</span> <span class="pre">z=0)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">item</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Item</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Item.AIR</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mciwb/copier.html#CopyPaste.fill"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.copier.CopyPaste.fill" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">fill</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pos</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Vec3</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">(0,</span> <span class="pre">0,</span> <span class="pre">0)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">item</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Item</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Item.AIR</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mciwb/copier.html#CopyPaste.fill"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.copier.CopyPaste.fill" title="Link to this definition">#</a></dt>
 <dd><p>fill the paste buffer offset by pos with Air or a specified block</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -1071,20 +1086,20 @@ paste buffer does not overlap with the target area</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mciwb.copier.CopyPaste.clear">
-<span class="sig-name descname"><span class="pre">clear</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">_</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Vec3</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Vec3(x=0,</span> <span class="pre">y=0,</span> <span class="pre">z=0)</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mciwb/copier.html#CopyPaste.clear"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.copier.CopyPaste.clear" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">clear</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">_</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Vec3</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">(0,</span> <span class="pre">0,</span> <span class="pre">0)</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mciwb/copier.html#CopyPaste.clear"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.copier.CopyPaste.clear" title="Link to this definition">#</a></dt>
 <dd><p>Clear the blocks in the current paste buffer</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mciwb.copier.CopyPaste.expand_to">
-<span class="sig-name descname"><span class="pre">expand_to</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pos</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Vec3</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mciwb/copier.html#CopyPaste.expand_to"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.copier.CopyPaste.expand_to" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">expand_to</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pos</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Vec3</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mciwb/copier.html#CopyPaste.expand_to"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.copier.CopyPaste.expand_to" title="Link to this definition">#</a></dt>
 <dd><p>expand one or more of the dimensions of the copy buffer by moving
 the faces outwards to the specified point</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mciwb.copier.CopyPaste.expand">
-<span class="sig-name descname"><span class="pre">expand</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mciwb/copier.html#CopyPaste.expand"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.copier.CopyPaste.expand" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">expand</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mciwb/copier.html#CopyPaste.expand"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.copier.CopyPaste.expand" title="Link to this definition">#</a></dt>
 <dd><p>expand one or more of the dimensions of the copy buffer by relative
 amounts</p>
 </dd></dl>
@@ -1093,16 +1108,16 @@ amounts</p>
 
 </section>
 <section id="module-mciwb.switch">
-<span id="mciwb-switch"></span><h3><code class="docutils literal notranslate"><span class="pre">mciwb.switch</span></code><a class="headerlink" href="#module-mciwb.switch" title="Permalink to this heading">#</a></h3>
+<span id="mciwb-switch"></span><h3><code class="docutils literal notranslate"><span class="pre">mciwb.switch</span></code><a class="headerlink" href="#module-mciwb.switch" title="Link to this heading">#</a></h3>
 <dl class="py data">
 <dt class="sig sig-object py" id="mciwb.switch.item_types">
-<span class="sig-prename descclassname"><span class="pre">mciwb.switch.</span></span><span class="sig-name descname"><span class="pre">item_types</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'BUTTON':</span> <span class="pre">'[face=floor,</span> <span class="pre">facing=north]',</span> <span class="pre">'LEVER':</span> <span class="pre">'[face=floor,</span> <span class="pre">facing=north]',</span> <span class="pre">'PRESSURE_PLATE':</span> <span class="pre">'[]',</span> <span class="pre">'TRIPWIRE_HOOK':</span> <span class="pre">'[]'}</span></em><a class="headerlink" href="#mciwb.switch.item_types" title="Permalink to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">mciwb.switch.</span></span><span class="sig-name descname"><span class="pre">item_types</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'BUTTON':</span> <span class="pre">'[face=floor,</span> <span class="pre">facing=north]',</span> <span class="pre">'LEVER':</span> <span class="pre">'[face=floor,</span> <span class="pre">facing=north]',</span> <span class="pre">'PRESSURE_PLATE':</span> <span class="pre">'[]',</span> <span class="pre">'TRIPWIRE_HOOK':</span> <span class="pre">'[]'}</span></em><a class="headerlink" href="#mciwb.switch.item_types" title="Link to this definition">#</a></dt>
 <dd><p>supported switch types and the properties to set on them</p>
 </dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="mciwb.switch.Switch">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mciwb.switch.</span></span><span class="sig-name descname"><span class="pre">Switch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">position</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Vec3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">item</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Item</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">callback</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.11)"><span class="pre">Callable</span></a><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#mciwb.switch.Switch" title="mciwb.switch.Switch"><span class="pre">Switch</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mciwb/switch.html#Switch"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.switch.Switch" title="Permalink to this definition">#</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mciwb.switch.</span></span><span class="sig-name descname"><span class="pre">Switch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">position</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Vec3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">item</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Item</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">callback</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.11)"><span class="pre">Callable</span></a><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#mciwb.switch.Switch" title="mciwb.switch.Switch"><span class="pre">Switch</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mciwb/switch.html#Switch"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.switch.Switch" title="Link to this definition">#</a></dt>
 <dd><p>Defines a class for representing a lever, button or any other activator
 in the world. Implements monitoring of the switch’s state with callbacks.</p>
 <dl class="field-list simple">
@@ -1132,25 +1147,25 @@ in the world. Implements monitoring of the switch’s state with callbacks.</p>
 </dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="mciwb.switch.Switch.remove_named">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">remove_named</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mciwb/switch.html#Switch.remove_named"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.switch.Switch.remove_named" title="Permalink to this definition">#</a></dt>
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">remove_named</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mciwb/switch.html#Switch.remove_named"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.switch.Switch.remove_named" title="Link to this definition">#</a></dt>
 <dd><p>Remove a switch by name.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mciwb.switch.Switch.remove">
-<span class="sig-name descname"><span class="pre">remove</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mciwb/switch.html#Switch.remove"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.switch.Switch.remove" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">remove</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mciwb/switch.html#Switch.remove"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.switch.Switch.remove" title="Link to this definition">#</a></dt>
 <dd><p>Remove the switch from the world. Clean up the monitor.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mciwb.switch.Switch.stop">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">stop</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mciwb/switch.html#Switch.stop"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.switch.Switch.stop" title="Permalink to this definition">#</a></dt>
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">stop</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mciwb/switch.html#Switch.stop"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.switch.Switch.stop" title="Link to this definition">#</a></dt>
 <dd><p>Stop monitoring the state of all switches.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mciwb.switch.Switch.check_state">
-<span class="sig-name descname"><span class="pre">check_state</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span></span><a class="reference internal" href="../../_modules/mciwb/switch.html#Switch.check_state"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.switch.Switch.check_state" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">check_state</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span></span><a class="reference internal" href="../../_modules/mciwb/switch.html#Switch.check_state"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.switch.Switch.check_state" title="Link to this definition">#</a></dt>
 <dd><p>Test the state of one of the switch’s properties.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -1164,33 +1179,33 @@ in the world. Implements monitoring of the switch’s state with callbacks.</p>
 
 </section>
 <section id="module-mciwb.threads">
-<span id="mciwb-threads"></span><h3><code class="docutils literal notranslate"><span class="pre">mciwb.threads</span></code><a class="headerlink" href="#module-mciwb.threads" title="Permalink to this heading">#</a></h3>
+<span id="mciwb-threads"></span><h3><code class="docutils literal notranslate"><span class="pre">mciwb.threads</span></code><a class="headerlink" href="#module-mciwb.threads" title="Link to this heading">#</a></h3>
 <p>Functions to manage threads.</p>
 <p>Each thread maintains its own Client object for parallel execution of Minecraft
 Server functions. The 1st Client object is created on the main thread and then
 passed to new_thread.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="mciwb.threads.new_thread">
-<span class="sig-prename descclassname"><span class="pre">mciwb.threads.</span></span><span class="sig-name descname"><span class="pre">new_thread</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">client</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Client</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/threading.html#threading.Thread" title="(in Python v3.11)"><span class="pre">Thread</span></a></span></span><a class="reference internal" href="../../_modules/mciwb/threads.html#new_thread"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.threads.new_thread" title="Permalink to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">mciwb.threads.</span></span><span class="sig-name descname"><span class="pre">new_thread</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">client</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Client</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/threading.html#threading.Thread" title="(in Python v3.11)"><span class="pre">Thread</span></a></span></span><a class="reference internal" href="../../_modules/mciwb/threads.html#new_thread"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.threads.new_thread" title="Link to this definition">#</a></dt>
 <dd><p>Create a thread with its own RCON Client connection stored in thread local storage</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="mciwb.threads.set_client">
-<span class="sig-prename descclassname"><span class="pre">mciwb.threads.</span></span><span class="sig-name descname"><span class="pre">set_client</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">client</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Client</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../../_modules/mciwb/threads.html#set_client"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.threads.set_client" title="Permalink to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">mciwb.threads.</span></span><span class="sig-name descname"><span class="pre">set_client</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">client</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Client</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../../_modules/mciwb/threads.html#set_client"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.threads.set_client" title="Link to this definition">#</a></dt>
 <dd><p>Set the client for this thread. Use this when the client object has been
 created outside of <a class="reference internal" href="#mciwb.threads.new_thread" title="mciwb.threads.new_thread"><code class="xref any py py-func docutils literal notranslate"><span class="pre">new_thread</span></code></a>.</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="mciwb.threads.get_client">
-<span class="sig-prename descclassname"><span class="pre">mciwb.threads.</span></span><span class="sig-name descname"><span class="pre">get_client</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Client</span></span></span><a class="reference internal" href="../../_modules/mciwb/threads.html#get_client"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.threads.get_client" title="Permalink to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">mciwb.threads.</span></span><span class="sig-name descname"><span class="pre">get_client</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Client</span></span></span><a class="reference internal" href="../../_modules/mciwb/threads.html#get_client"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.threads.get_client" title="Link to this definition">#</a></dt>
 <dd><p>retrieve the client for the current thread</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="mciwb.threads.get_thread_name">
-<span class="sig-prename descclassname"><span class="pre">mciwb.threads.</span></span><span class="sig-name descname"><span class="pre">get_thread_name</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></span><a class="reference internal" href="../../_modules/mciwb/threads.html#get_thread_name"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.threads.get_thread_name" title="Permalink to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">mciwb.threads.</span></span><span class="sig-name descname"><span class="pre">get_thread_name</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></span><a class="reference internal" href="../../_modules/mciwb/threads.html#get_thread_name"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.threads.get_thread_name" title="Link to this definition">#</a></dt>
 <dd><p>retrieve the name of the current thread. This is the name that was passed
 to <a class="reference internal" href="#mciwb.threads.new_thread" title="mciwb.threads.new_thread"><code class="xref any py py-func docutils literal notranslate"><span class="pre">new_thread</span></code></a>.</p>
 </dd></dl>
@@ -1204,11 +1219,10 @@ to <a class="reference internal" href="#mciwb.threads.new_thread" title="mciwb.t
               
               
               
-                <footer class="bd-footer-article">
-                  
-<div class="footer-article-items footer-article__inner">
-  
-    <div class="footer-article-item"><!-- Previous / next buttons -->
+              
+              
+                <footer class="prev-next-footer">
+                  <!-- Previous / next buttons -->
 <div class="prev-next-area">
     <a class="left-prev"
        href="index.html"
@@ -1228,10 +1242,7 @@ to <a class="reference internal" href="#mciwb.threads.new_thread" title="mciwb.t
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
-</div></div>
-  
 </div>
-
                 </footer>
               
             </div>
@@ -1388,17 +1399,18 @@ to <a class="reference internal" href="#mciwb.threads.new_thread" title="mciwb.t
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="../../_static/scripts/bootstrap.js?digest=e353d410970836974a52"></script>
-<script src="../../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52"></script>
+  <script src="../../_static/scripts/bootstrap.js?digest=ac02cc09edc035673794"></script>
+<script src="../../_static/scripts/pydata-sphinx-theme.js?digest=ac02cc09edc035673794"></script>
 
   <footer class="bd-footer">
 <div class="bd-footer__inner bd-page-width">
   
   
+  
     <div class="footer-items__end">
       
         <div class="footer-item"><p class="theme-version">
-  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.13.3.
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.14.1.
 </p></div>
       
     </div>
