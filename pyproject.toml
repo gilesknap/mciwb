@@ -12,7 +12,7 @@ classifiers = [
 ]
 description = "Minecraft Interactive world builder"
 dependencies = [
-    "numpy==1.23.5",
+    "numpy==1.26.2",
     "typer==0.7.0",
     "mcwb>=0.2.3",
     "ipython==8.14.0",
