@@ -1,6 +1,7 @@
 """
 Define a castle gateway with portcullis
 """
+
 from time import sleep
 
 from mciwb.imports import Direction, FillMode, Item, Switch, Vec3, get_client, get_world
