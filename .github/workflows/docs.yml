@@ -3,6 +3,9 @@ name: Docs CI
 on:
   push:
   pull_request:
+env:
+  # The target python version, which must match the Dockerfile version
+  CONTAINER_PYTHON: "3.11"
 
 jobs:
   docs:
