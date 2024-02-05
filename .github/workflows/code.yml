@@ -22,6 +22,7 @@ jobs:
         with:
           requirements_file: requirements-dev-3.x.txt
           install_options: -e .[dev]
+          python_version: ${{env.CONTAINER_PYTHON}}
 
       - name: Lint
         run: tox -e pre-commit,mypy
