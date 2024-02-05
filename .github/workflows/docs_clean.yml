@@ -25,6 +25,11 @@ jobs:
         with:
           ref: gh-pages
 
+      - name: Setup python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{env.CONTAINER_PYTHON}}
+
       - name: removing documentation for branch ${{ github.event.ref }}
         if: ${{ github.event_name != 'workflow_dispatch' }}
         run: echo "REF_NAME=${{ github.event.ref }}" >> $GITHUB_ENV

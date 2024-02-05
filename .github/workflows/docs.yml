@@ -32,7 +32,8 @@ jobs:
         with:
           requirements_file: requirements-dev-3.x.txt
           install_options: -e .[dev]
-
+          python-version: ${{env.CONTAINER_PYTHON}}
+          
       - name: Build docs
         run: tox -e docs
 

@@ -22,6 +22,7 @@ jobs:
         with:
           requirements_file: requirements-dev-3.x.txt
           install_options: -e .[dev]
+          python-version: ${{env.CONTAINER_PYTHON}}
 
       - name: Check links
         run: tox -e docs build -- -b linkcheck
