@@ -1,3 +1,4 @@
+import os
 import tempfile
 from pathlib import Path
 from shutil import copytree
@@ -41,7 +42,7 @@ def test_repr(tmp_path: Path, minecraft_container, minecraft_client, minecraft_p
 
     assert "player: georgeTest" in result.stdout
 
-
+@pytest.mark.skipif(os.getenv("GITHUB_ACTIONS") == "true", reason="Permissions error in GH Actions")
 def test_backup(tmp_path):
     checks = ["ERROR", "WARNING"]
 
