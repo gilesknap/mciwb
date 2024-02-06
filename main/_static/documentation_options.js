@@ -1,5 +1,5 @@
 const DOCUMENTATION_OPTIONS = {
-    VERSION: '0.8.7.dev6+g61ec67e',
+    VERSION: '0.8.7.dev18+g2fb91af',
     LANGUAGE: 'en',
     COLLAPSE_INDEX: false,
     BUILDER: 'html',
@@ -7,7 +7,7 @@ const DOCUMENTATION_OPTIONS = {
     LINK_SUFFIX: '.html',
     HAS_SOURCE: true,
     SOURCELINK_SUFFIX: '.txt',
-    NAVIGATION_WITH_KEYS: true,
+    NAVIGATION_WITH_KEYS: false,
     SHOW_SEARCH_SUMMARY: true,
     ENABLE_SEARCH_SHORTCUTS: true,
 };
