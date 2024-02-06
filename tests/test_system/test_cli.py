@@ -3,6 +3,7 @@ import tempfile
 from pathlib import Path
 from shutil import copytree
 
+import pytest
 from typer.testing import CliRunner
 
 from mciwb.__main__ import cli
