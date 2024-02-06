@@ -10,6 +10,9 @@ on:
         description: "documentation version to DELETE"
         required: true
         type: string
+env:
+  # The target python version, which must match the Dockerfile version
+  CONTAINER_PYTHON: "3.11"
 
 jobs:
   remove:
@@ -21,6 +24,11 @@ jobs:
         uses: actions/checkout@v3
         with:
           ref: gh-pages
+
+      - name: Setup python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{env.CONTAINER_PYTHON}}
 
       - name: removing documentation for branch ${{ github.event.ref }}
         if: ${{ github.event_name != 'workflow_dispatch' }}

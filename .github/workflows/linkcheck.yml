@@ -5,6 +5,9 @@ on:
   schedule:
     # Run weekly to check URL links still resolve
     - cron: "0 8 * * WED"
+env:
+  # The target python version, which must match the Dockerfile version
+  CONTAINER_PYTHON: "3.11"
 
 jobs:
   docs:
@@ -19,6 +22,8 @@ jobs:
         with:
           requirements_file: requirements-dev-3.x.txt
           install_options: -e .[dev]
+          python_version: ${{env.CONTAINER_PYTHON}}
+          lockfiles_artifact_name: lockfiles-lintcheck
 
       - name: Check links
         run: tox -e docs build -- -b linkcheck

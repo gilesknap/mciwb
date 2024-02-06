@@ -3,6 +3,9 @@ name: Docs CI
 on:
   push:
   pull_request:
+env:
+  # The target python version, which must match the Dockerfile version
+  CONTAINER_PYTHON: "3.11"
 
 jobs:
   docs:
@@ -29,6 +32,8 @@ jobs:
         with:
           requirements_file: requirements-dev-3.x.txt
           install_options: -e .[dev]
+          python_version: ${{env.CONTAINER_PYTHON}}
+          lockfiles_artifact_name: lockfiles-docs
 
       - name: Build docs
         run: tox -e docs

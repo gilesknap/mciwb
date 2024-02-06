@@ -2,7 +2,6 @@
 System tests for the Copy class
 """
 
-
 from time import sleep
 
 from mciwb.imports import Direction, Item, Iwb, Player, get_client
@@ -28,7 +27,11 @@ def test_world_player_signs(mciwb_world: Iwb, minecraft_player: Player):
     """
     verify printing of the world object
     """
-    sp = 'minecraft:oak_sign{{Text1:\'{{"text":"' "{0}" """"}}'}}"""
+
+    sp = (
+        'minecraft:oak_sign{{front_text:{{messages:[\'{{"text":"{0}"}}\','
+        '\'{{"text":""}}\',\'{{"text":""}}\',\'{{"text":""}}\']}}}}'
+    )
 
     client = get_client()
     # place some action signs in the world and verify they are actioned

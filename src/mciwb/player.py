@@ -2,6 +2,7 @@
 Represent a player in the world and provide functions for monitoring their
 state
 """
+
 import math
 import re
 from time import sleep

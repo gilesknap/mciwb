@@ -1,6 +1,7 @@
 """
 Add an interactive capability through the placing of command signs in the world
 """
+
 import re
 from time import sleep
 from typing import Callable, Dict
@@ -32,10 +33,11 @@ class Signs:
     providing those functions.
     """
 
-    _re_sign_text = re.compile(r"""Text1: '{"text":"([^"]*)"}'""")
+    _re_sign_text = re.compile("""front_text.*messages: \\['"([^"]*)"',""")
     _re_sign_entity = (
         """minecraft:oak_sign{{"""
-        """BlockEntityTag:{{Text1:'{{"text":"{0}"}}'}},"""
+        """BlockEntityTag:{{front_text:{{"""
+        """messages:['["{0}"]','[""]','[""]','[""]']}}}},"""
         """display:{{Name:'{{"text":"{0}"}}'}}"""
         """}}"""
     )

@@ -22,6 +22,8 @@ jobs:
         with:
           requirements_file: requirements-dev-3.x.txt
           install_options: -e .[dev]
+          python_version: ${{env.CONTAINER_PYTHON}}
+          lockfiles_artifact_name: lockfiles-lint
 
       - name: Lint
         run: tox -e pre-commit,mypy
@@ -58,6 +60,7 @@ jobs:
           python_version: ${{ matrix.python }}
           requirements_file: requirements-test-${{ matrix.os }}-${{ matrix.python }}.txt
           install_options: ${{ matrix.install }}
+          lockfiles_artifact_name: lockfiles-${{ matrix.os }}-${{ matrix.python }}
 
       - name: List dependency tree
         run: pipdeptree
@@ -88,7 +91,7 @@ jobs:
           pipx run build
 
       - name: Upload sdist and wheel as artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: dist
           path: dist
@@ -102,6 +105,7 @@ jobs:
           python_version: ${{env.CONTAINER_PYTHON}}
           requirements_file: requirements.txt
           install_options: dist/*.whl
+          lockfiles_artifact_name: lockfiles
 
       - name: Test module --version works using the installed wheel
         # If more than one module in src/ replace with module name to test
@@ -124,7 +128,7 @@ jobs:
         run: echo IMAGE_REPOSITORY=ghcr.io/$(tr '[:upper:]' '[:lower:]' <<< "${{ github.repository }}") >> $GITHUB_ENV
 
       - name: Download wheel and lockfiles
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           path: artifacts/
 
@@ -177,7 +181,7 @@ jobs:
       HAS_PYPI_TOKEN: ${{ secrets.PYPI_TOKEN != '' }}
 
     steps:
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v4
 
       - name: Fixup blank lockfiles
         # Github release artifacts can't be blank
