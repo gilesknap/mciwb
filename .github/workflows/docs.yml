@@ -33,7 +33,8 @@ jobs:
           requirements_file: requirements-dev-3.x.txt
           install_options: -e .[dev]
           python_version: ${{env.CONTAINER_PYTHON}}
-          
+          lockfiles_artifact_name: lockfiles-docs
+
       - name: Build docs
         run: tox -e docs
 

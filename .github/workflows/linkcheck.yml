@@ -23,6 +23,7 @@ jobs:
           requirements_file: requirements-dev-3.x.txt
           install_options: -e .[dev]
           python_version: ${{env.CONTAINER_PYTHON}}
+          lockfiles_artifact_name: lockfiles-lintcheck
 
       - name: Check links
         run: tox -e docs build -- -b linkcheck

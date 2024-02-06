@@ -10,6 +10,9 @@ inputs:
   python_version:
     description: Python version to install
     default: "3.x"
+  lockfiles_artifact_name:
+    description: Lockfiles artifact name
+    default: "lockfiles"
 
 runs:
   using: composite
@@ -36,9 +39,9 @@ runs:
       shell: bash
 
     - name: Upload lockfiles
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
-        name: lockfiles
+        name: ${{ lockfiles_artifact_name }}
         path: lockfiles
 
     # This eliminates the class of problems where the requirements being given no

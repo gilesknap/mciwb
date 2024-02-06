@@ -23,6 +23,7 @@ jobs:
           requirements_file: requirements-dev-3.x.txt
           install_options: -e .[dev]
           python_version: ${{env.CONTAINER_PYTHON}}
+          lockfiles_artifact_name: lockfiles-lint
 
       - name: Lint
         run: tox -e pre-commit,mypy
@@ -59,6 +60,7 @@ jobs:
           python_version: ${{ matrix.python }}
           requirements_file: requirements-test-${{ matrix.os }}-${{ matrix.python }}.txt
           install_options: ${{ matrix.install }}
+          lockfiles_artifact_name: lockfiles-${{ matrix.os }}-${{ matrix.python }}
 
       - name: List dependency tree
         run: pipdeptree
@@ -103,6 +105,7 @@ jobs:
           python_version: ${{env.CONTAINER_PYTHON}}
           requirements_file: requirements.txt
           install_options: dist/*.whl
+          lockfiles_artifact_name: lockfiles
 
       - name: Test module --version works using the installed wheel
         # If more than one module in src/ replace with module name to test
