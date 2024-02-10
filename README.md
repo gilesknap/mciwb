@@ -15,7 +15,7 @@ Minecraft worlds with interactive Python features.
 
 Source          | <https://github.com/gilesknap/mciwb>
 :---:           | :---:
-PyPI            | `pip install mciwb`
+PyPI            | pip install mciwb
 Documentation   | <https://gilesknap.github.io/mciwb>
 Releases        | <https://github.com/gilesknap/mciwb/releases>
 
@@ -35,16 +35,8 @@ Example Build
 The pagoda and castle with working portcullis were all created programmatically
 with Python and the current version of MCIWB.
 
-TODO: embed video github Md style
+https://github.com/gilesknap/mciwb/assets/964827/026b3551-f514-403a-bebe-8d168c7170b0
 
-
-<!-- .. figure:: https://gilesknap.github.io/mciwb/main/_images/castle.png
-   :alt: castle
-   :align: center
-   :width: 600px
-   :target: https://photos.app.goo.gl/utFt6KadWbdabR8x6
-
-   Example Build - **Click for Video** -->
 
 Goals
 -----
@@ -74,7 +66,7 @@ Builder.
 Credits
 -------
 
-This project would not be possible without `mcipc <https://github.com/conqp/mcipc/>`_,
+This project would not be possible without [mcipc](https://github.com/conqp/mcipc/),
 which provides the client library for Minecraft RCON.
 
 <!-- README only content. Anything below this line won't be included in index.md -->
