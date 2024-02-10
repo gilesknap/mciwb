@@ -66,6 +66,7 @@ filterwarnings = [
     # its difficult to ensure all sockets are closed in tests so ignore
     "ignore:.*socket.*:ResourceWarning",
     "ignore::DeprecationWarning",
+    "ignore::UserWarning",
 ]
 # Doctest python code in docs, python code in src docstrings, test functions in tests
 testpaths = "docs src tests"
@@ -101,6 +102,7 @@ allowlist_externals =
     pyright
     sphinx-build
     sphinx-autobuild
+    ipython
 commands =
     pytest: pytest --cov=mciwb --cov-report term --cov-report xml:cov.xml {posargs}
     pyright: pyright src tests {posargs}
