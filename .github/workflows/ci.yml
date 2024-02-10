@@ -21,7 +21,7 @@ jobs:
     strategy:
       matrix:
         runs-on: ["ubuntu-latest"] # can add windows-latest, macos-latest
-        python-version: ["3.8", "3.9", "3.10", "3.11"]
+        python-version: ["3.10", "3.11", "3.12"]
         include:
           # Include one that runs in the dev environment
           - runs-on: "ubuntu-latest"
@@ -50,7 +50,7 @@ jobs:
     needs: check
     if: needs.check.outputs.branch-pr == ''
     uses: ./.github/workflows/_dist.yml
-  
+
   pypi:
     if: github.ref_type == 'tag'
     needs: dist
@@ -59,7 +59,7 @@ jobs:
       id-token: write
     secrets:
       PYPI_TOKEN: ${{ secrets.PYPI_TOKEN }}
-  
+
   release:
     if: github.ref_type == 'tag'
     needs: [dist, docs]
