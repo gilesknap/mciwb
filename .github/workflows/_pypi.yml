@@ -1,0 +1,22 @@
+on:
+  workflow_call:
+    secrets:
+        PYPI_TOKEN:
+          required: true
+
+jobs:
+  upload:
+    runs-on: ubuntu-latest
+    environment: release
+
+    steps:
+      - name: Download dist artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist
+
+      - name: Publish to PyPI using trusted publishing
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          password: ${{ secrets.PYPI_TOKEN }}

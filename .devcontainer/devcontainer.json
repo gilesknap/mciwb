@@ -3,52 +3,44 @@
     "name": "Python 3 Developer Container",
     "build": {
         "dockerfile": "../Dockerfile",
-        "target": "build",
-        // Only upgrade pip, we will install the project below
-        "args": {
-            "PIP_OPTIONS": "--upgrade pip"
-        }
+        "target": "developer"
     },
     "remoteEnv": {
+        // Allow X11 apps to run inside the container
         "DISPLAY": "${localEnv:DISPLAY}"
-    },
-    // Add the URLs of features you want added when the container is built.
-    "features": {
-        "ghcr.io/devcontainers/features/common-utils:1": {
-            "username": "none",
-            "upgradePackages": false
-        }
-    },
-    // Set *default* container specific settings.json values on container create.
-    "settings": {
-        "python.defaultInterpreterPath": "/venv/bin/python"
     },
     "customizations": {
         "vscode": {
+            // Set *default* container specific settings.json values on container create.
+            "settings": {
+                "python.defaultInterpreterPath": "/venv/bin/python"
+            },
             // Add the IDs of extensions you want installed when the container is created.
             "extensions": [
                 "ms-python.python",
+                "github.vscode-github-actions",
                 "tamasfe.even-better-toml",
                 "redhat.vscode-yaml",
-                "ryanluker.vscode-coverage-gutters"
+                "ryanluker.vscode-coverage-gutters",
+                "charliermarsh.ruff",
+                "ms-azuretools.vscode-docker"
             ]
         }
     },
-    // Make sure the files we are mapping into the container exist on the host
-    "initializeCommand": "bash -c 'for i in $HOME/.inputrc; do [ -f $i ] || touch $i; done'",
+    "features": {
+        // Some default things like git config
+        "ghcr.io/devcontainers/features/common-utils:2": {
+            "upgradePackages": false
+        }
+    },
     "runArgs": [
+        // Allow the container to access the host X11 display and EPICS CA
         "--net=host",
+        // Make sure SELinux does not disable with access to host filesystems like tmp
         "--security-opt=label=disable"
     ],
-    "mounts": [
-        "source=${localEnv:HOME}/.ssh,target=/root/.ssh,type=bind",
-        "source=${localEnv:HOME}/.inputrc,target=/root/.inputrc,type=bind",
-        // map in home directory - not strictly necessary but useful
-        "source=${localEnv:HOME},target=${localEnv:HOME},type=bind,consistency=cached"
-    ],
-    // make the workspace folder the same inside and outside of the container
-    "workspaceMount": "source=${localWorkspaceFolder},target=${localWorkspaceFolder},type=bind",
-    "workspaceFolder": "${localWorkspaceFolder}",
+    // Mount the parent as /workspaces so we can pip install peers as editable
+    "workspaceMount": "source=${localWorkspaceFolder}/..,target=/workspaces,type=bind",
     // After the container is created, install the python project in editable form
-    "postCreateCommand": "pip install -e '.[dev]'"
+    "postCreateCommand": "pip install $([ -f dev-requirements.txt ] && echo '-c dev-requirements.txt') -e '.[dev]' && pre-commit install"
 }

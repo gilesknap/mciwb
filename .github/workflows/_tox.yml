@@ -1,0 +1,22 @@
+on:
+  workflow_call:
+    inputs:
+      tox:
+        type: string
+        description: What to run under tox
+        required: true
+
+
+jobs:
+  run:
+    runs-on: "ubuntu-latest"
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install python packages
+        uses: ./.github/actions/install_requirements
+
+      - name: Run tox
+        run: tox -e ${{ inputs.tox }}

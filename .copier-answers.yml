@@ -1,0 +1,14 @@
+# Changes here will be overwritten by Copier
+_commit: 1.0.2-87-g16b7b0e
+_src_path: gh:DiamondLightSource/python-copier-template
+author_email: gilesknap@gmail.com
+author_name: Giles Knap
+component_owner: ''
+description: Minecraft interactive world builder
+distribution_name: mciwb
+docker: true
+docs_type: sphinx
+git_platform: github.com
+github_org: gilesknap
+package_name: mciwb
+repo_name: mciwb

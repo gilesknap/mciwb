@@ -1,0 +1,36 @@
+on:
+  workflow_call:
+
+jobs:
+  build:
+    runs-on: "ubuntu-latest"
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          # Need this to get version number from last tag
+          fetch-depth: 0
+
+      - name: Build sdist and wheel
+        run: >
+          export SOURCE_DATE_EPOCH=$(git log -1 --pretty=%ct) &&
+          pipx run build
+
+      - name: Upload sdist and wheel as artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist
+
+      - name: Check for packaging errors
+        run: pipx run twine check --strict dist/*
+
+      - name: Install produced wheel
+        uses: ./.github/actions/install_requirements
+        with:
+          pip-install: dist/*.whl
+
+      - name: Test module --version works using the installed wheel
+        # If more than one module in src/ replace with module name to test
+        run: python -m $(ls --hide='*.egg-info' src | head -1) --version

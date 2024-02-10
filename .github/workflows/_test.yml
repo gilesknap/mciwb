@@ -1,0 +1,62 @@
+on:
+  workflow_call:
+    inputs:
+      python-version:
+        type: string
+        description: The version of python to install
+        required: true
+      runs-on:
+        type: string
+        description: The runner to run this job on
+        required: true
+    secrets:
+      CODECOV_TOKEN:
+        required: true
+
+env:
+  # https://github.com/pytest-dev/pytest/issues/2042
+  PY_IGNORE_IMPORTMISMATCH: "1"
+
+jobs:
+  run:
+    runs-on: ${{ inputs.runs-on }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          # Need this to get version number from last tag
+          fetch-depth: 0
+
+      - if: inputs.python-version == 'dev'
+        name: Install dev versions of python packages
+        uses: ./.github/actions/install_requirements
+
+      - if: inputs.python-version == 'dev'
+        name: Write the requirements as an artifact
+        run: pip freeze --exclude-editable > /tmp/dev-requirements.txt
+
+      - if: inputs.python-version == 'dev'
+        name: Upload dev-requirements.txt
+        uses: actions/upload-artifact@v4
+        with:
+          name: dev-requirements
+          path: /tmp/dev-requirements.txt
+
+      - if: inputs.python-version != 'dev'
+        name: Install latest versions of python packages
+        uses: ./.github/actions/install_requirements
+        with:
+          python-version: ${{ inputs.python-version }}
+          pip-install: ".[dev]"
+
+      - name: Run tests
+        run: tox -e pytest
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v4
+        with:
+          name: ${{ inputs.python-version }}/${{ inputs.runs-on }}
+          files: cov.xml
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
