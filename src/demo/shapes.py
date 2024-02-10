@@ -97,6 +97,7 @@ def tower(start: Vec3, size: int, height: int, item=Item.COBBLESTONE):
 
     start_time = datetime.now()
 
+    z = x = 0
     for y in range(height):
         for x in range(size):
             for z in range(size):

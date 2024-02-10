@@ -62,7 +62,7 @@ class MinecraftServer:
         self.backup_folder = backup_folder or backup_folder_default
         self.world = self.server_folder / "world"
         self.world_type = world_type
-        self.container = None
+        self.container: Container | None = None
         self.keep = keep
         self.test = test
 
@@ -134,7 +134,7 @@ class MinecraftServer:
         if self.container and (not self.keep or force):
             log.info(f"Removing Minecraft Server {self.name} ...")
             self.stop()
-            self.container.remove()
+            self.container.remove()  # noqa
 
     def create(self, world_zip=None, force=False) -> None:
         """
@@ -226,6 +226,7 @@ class MinecraftServer:
             security_opt=["label=disable"],
         )
 
+        assert isinstance(container, Container)
         self.container = container
 
         self.wait_server()

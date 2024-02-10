@@ -23,7 +23,7 @@ def enable_explosions(power=1):
 
         if "Arrow has" in result:
             nbt = parse_nbt(result)
-            pos = Vec3(*nbt["Pos"]).with_ints()
+            pos = Vec3(*nbt["Pos"]).with_ints()  # type: ignore
 
             c.kill(f"@e[{arrow_entity}, {vec2params(pos)}]")
             for i in range(power):

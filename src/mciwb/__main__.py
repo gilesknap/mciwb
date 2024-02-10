@@ -1,9 +1,7 @@
-from __future__ import annotations
-
 import sys
 from pathlib import Path
+from typing import Optional
 
-import traitlets
 import typer
 from IPython.terminal.embed import InteractiveShellEmbed
 
@@ -37,7 +35,10 @@ def version_callback(value: bool):
 
 @cli.callback()
 def main(
-    version: bool | None = typer.Option(
+    # this should be 'bool | None' but I'm getting
+    # RuntimeError: Type not yet supported: bool | None
+    # despited Python 3.10 - TODO investigate
+    version: Optional[bool] = typer.Option(  # noqa: UP007
         None,
         "--version",
         callback=version_callback,
@@ -85,14 +86,7 @@ def shell(
 
     log.info("######### Starting Interactive Session ##########\n")
 
-    # This is due to warn_venv not working properly with tox
-    # pytest inside the venv works properly but tox fails due to the warning
-    if test:
-        c = traitlets.config.get_config()
-        c.InteractiveShellEmbed.warn_venv = False
-        shell = InteractiveShellEmbed.instance(config=c)
-    else:
-        shell = InteractiveShellEmbed.instance()
+    shell = InteractiveShellEmbed.instance()
     # Prepare IPython shell with auto-reload so user code edits work immediately
     shell.run_line_magic("load_ext", "autoreload")
     shell.run_line_magic("autoreload", "2")

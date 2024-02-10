@@ -8,6 +8,7 @@ import re
 from re import Match, Pattern
 from time import sleep
 
+from mcipc.rcon.types import Rotation
 from mcwb.types import Direction, Vec3
 from mcwb.volume import Volume
 
@@ -98,12 +99,13 @@ class Player:
         return Direction.cardinals[index]
 
     @property
-    def rotation(self) -> tuple[float, float]:
+    def rotation(self) -> Rotation:
         """
         Get the player's rotation in degrees
         """
         match = self._get_entity_data("Rotation", regex_rot)
-        return float(match.group(1)), float(match.group(2))
+        # TODO how to coerce this?
+        return float(match.group(1)), float(match.group(2))  # type: ignore
 
     def player_in(self, volume: Volume) -> bool:
         """
