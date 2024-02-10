@@ -1,6 +1,3 @@
-from importlib.metadata import version
-
-__version__ = version("mciwb")
-del version
+from ._version import __version__
 
 __all__ = ["__version__"]

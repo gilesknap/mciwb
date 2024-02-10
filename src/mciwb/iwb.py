@@ -1,5 +1,4 @@
 from pathlib import Path
-from typing import Dict, List, Optional
 
 from mcipc.rcon.exceptions import NoPlayerFound
 from mcipc.rcon.item import Item
@@ -62,13 +61,13 @@ class Iwb:
         self.copier: CopyPaste = None  # type: ignore
         self.signs: Signs = None  # type: ignore
 
-        self._players: Dict[str, Player] = {}
-        self._copiers: Dict[str, CopyPaste] = {}
+        self._players: dict[str, Player] = {}
+        self._copiers: dict[str, CopyPaste] = {}
 
         # if we are using the default server created by mciwb then we know
         # where the folders are for doing backups
         if server == HOST and port == def_port:
-            self._backup: Optional[Backup] = Backup()
+            self._backup: Backup | None = Backup()
         else:
             self._backup = None
 
@@ -120,7 +119,7 @@ class Iwb:
         return self._players[name]
 
     @property
-    def players(self) -> List[str]:
+    def players(self) -> list[str]:
         """
         Get a list of the names of players being monitored.
         """
@@ -169,8 +168,8 @@ class Iwb:
         self,
         pos: Vec3,
         block: Item,
-        facing: Optional[Vec3] = None,
-        nbt: Optional[List[str]] = None,
+        facing: Vec3 | None = None,
+        nbt: list[str] | None = None,
     ):
         """
         Places a block in the world
@@ -244,7 +243,7 @@ class Iwb:
 
         return report.format(o=self)
 
-    def save(self, filename: str, vol: Optional[Volume] = None):
+    def save(self, filename: str, vol: Volume | None = None):
         """
         Save a Volume of blocks to a file. The volume can be specified in
         the *vol* parameter or alternatively defaults to the current copy buffer.
@@ -266,7 +265,7 @@ class Iwb:
     def load(
         self,
         filename: str,
-        position: Optional[Vec3] = None,
+        position: Vec3 | None = None,
         anchor: Anchor3 = Anchor3.BOTTOM_SW,
     ):
         """

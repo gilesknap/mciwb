@@ -14,7 +14,7 @@ class SampleCube:
         top_profile = [blue_row, red_row, red_row]
         middle_profile = [blue_row, hollow_row, red_row]
         bottom_profile = [blue_row, blue_row, red_row]
-        self.cube: Cuboid = [top_profile, middle_profile, bottom_profile]
+        self.cube: Cuboid = [top_profile, middle_profile, bottom_profile]  # type: ignore
         self.size = Vec3(2, 2, 2)
         # TODO does Volume's use of size need review?
         self.volume_size = Vec3(3, 3, 3)

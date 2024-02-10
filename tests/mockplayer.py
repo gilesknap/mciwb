@@ -1,5 +1,3 @@
-from typing import List
-
 from mciwb.imports import Direction, Vec3, Volume
 from tests.conftest import ENTITY_NAME
 from tests.mockclient import MockClient
@@ -24,7 +22,7 @@ class MockPlayer:
         return volume.inside(self.pos)
 
     @classmethod
-    def players_in(cls, volume: Volume) -> List["MockPlayer"]:
+    def players_in(cls, volume: Volume) -> list["MockPlayer"]:
         """
         return a list of player names whose position is inside the volume
         """

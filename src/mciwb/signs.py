@@ -3,8 +3,8 @@ Add an interactive capability through the placing of command signs in the world
 """
 
 import re
+from collections.abc import Callable
 from time import sleep
-from typing import Callable, Dict
 
 from mcwb.types import Item, Vec3
 
@@ -47,7 +47,7 @@ class Signs:
     def __init__(self, player: Player):
         self.player = player
         self.copy = CopyPaste()
-        self.signs: Dict[str, CallbackPosFunction] = self.copy.get_commands()
+        self.signs: dict[str, CallbackPosFunction] = self.copy.get_commands()
 
     def _get_target_block(self, pos: Vec3, facing: Vec3) -> Vec3:
         """
@@ -134,5 +134,5 @@ class Signs:
         client = get_client()
         inventory = self.player.inventory
         for command in self.signs:
-            if not self._sign_match.format(command) in inventory:
+            if self._sign_match.format(command) not in inventory:
                 client.give(self.player.name, self._re_sign_entity.format(command))

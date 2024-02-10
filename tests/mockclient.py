@@ -70,13 +70,13 @@ class MockClient:
         v_stop = v_start + vol.size
         d_stop = dest + vol.size
 
-        self.world[dest.x : d_stop.x, dest.y : d_stop.y, dest.z : d_stop.z] = (
-            self.world[
-                v_start.x : v_stop.x,
-                v_start.y : v_stop.y,
-                v_start.z : v_stop.z,
-            ]
-        )
+        self.world[
+            dest.x : d_stop.x, dest.y : d_stop.y, dest.z : d_stop.z
+        ] = self.world[
+            v_start.x : v_stop.x,
+            v_start.y : v_stop.y,
+            v_start.z : v_stop.z,
+        ]
         return f"cloned {v_start} : {v_stop} to {dest}"
 
     @property

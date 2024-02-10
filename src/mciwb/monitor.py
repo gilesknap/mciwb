@@ -3,8 +3,9 @@ Thread functions for running any background tasks. Primarily used for
 monitoring the state of objects in Minecraft.
 """
 
+from collections.abc import Callable
 from time import sleep
-from typing import Any, Callable, List, Tuple, Union
+from typing import Any
 
 from rcon.exceptions import SessionTimeout
 
@@ -36,12 +37,12 @@ class Monitor:
     """
 
     monitor_num = 0
-    monitors: List["Monitor"] = []
+    monitors: list["Monitor"] = []
 
     def __init__(
         self,
-        func: Union[None, CallbackFunction] = None,
-        params: Tuple[Any, ...] = (),
+        func: None | CallbackFunction = None,
+        params: tuple[Any, ...] = (),
         once=False,
         name=None,
         poll_rate=0.2,
@@ -53,7 +54,7 @@ class Monitor:
 
         # pollers is a list of functions, param tuples. It may be initialized
         # with a single function passed in func, params
-        self.pollers: List[Tuple[CallbackFunction, Tuple[Any, ...]]] = (
+        self.pollers: list[tuple[CallbackFunction, tuple[Any, ...]]] = (
             [] if func is None else [(func, params)]
         )
 
@@ -111,7 +112,7 @@ class Monitor:
         if not self.once:
             log.info(f"Monitor {self.name} stopped")
 
-    def add_poller_func(self, func: CallbackFunction, params: Tuple[Any, ...] = ()):
+    def add_poller_func(self, func: CallbackFunction, params: tuple[Any, ...] = ()):
         """
         Add a function to the pollers list
 
@@ -128,7 +129,7 @@ class Monitor:
 
         :param func: function to remove
         """
-        for i, t in enumerate(self.pollers):
+        for _i, t in enumerate(self.pollers):
             f, params = t
             if f == func:
                 self.pollers.remove(t)

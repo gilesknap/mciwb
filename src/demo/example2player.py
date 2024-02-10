@@ -8,7 +8,7 @@ from mciwb.nbt import parse_nbt
 
 def get_player_pos(name: str, wait: float):
     with Client("nuc2", port=30555, passwd="spider") as client:
-        for i in range(100):
+        for _i in range(100):
             x = client.data.get(entity="@p", path="Pos")
             print(name, parse_nbt(x))
             sleep(wait)
@@ -17,19 +17,25 @@ def get_player_pos(name: str, wait: float):
 def get_player_pos2(name: str, wait: float):
     client = Client("nuc2", port=30555, passwd="spider")
     client.connect(True)
-    for i in range(100):
+    for _i in range(100):
         x = client.data.get(entity="@p", path="Pos")
         print(name, parse_nbt(x))
         sleep(wait)
 
 
-client = Client("nuc2", port=30555, passwd="spider")
-client.connect(True)
+global client
+
+
+def main():
+    global client
+    client = Client("nuc2", port=30555, passwd="spider")
+    client.connect(True)
 
 
 def get_player_pos3(name: str, wait: float):
     # share the connection between threads
-    for i in range(100):
+    global client
+    for _i in range(100):
         x = client.data.get(entity="@p", path="Pos")
         print(name, parse_nbt(x))
         sleep(wait)

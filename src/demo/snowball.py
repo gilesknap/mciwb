@@ -47,7 +47,7 @@ def track_snowball(entity: str, result: str):
     c = get_client()
 
     # track for 20 secs only
-    for i in range(200):
+    for _i in range(200):
         sleep(0.1)
         last_result = result
         result = c.data.get(entity=entity)

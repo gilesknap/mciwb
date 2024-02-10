@@ -5,9 +5,10 @@ state
 
 import math
 import re
+from re import Match, Pattern
 from time import sleep
-from typing import List, Match, Pattern, Tuple
 
+from mcipc.rcon.types import Rotation
 from mcwb.types import Direction, Vec3
 from mcwb.volume import Volume
 
@@ -57,7 +58,7 @@ class Player:
         raise PlayerNotInWorld(f"player {self.name} left")
 
     @property
-    def inventory(self) -> List[str]:
+    def inventory(self) -> list[str]:
         """
         Get the player's inventory
         """
@@ -98,12 +99,13 @@ class Player:
         return Direction.cardinals[index]
 
     @property
-    def rotation(self) -> Tuple[float, float]:
+    def rotation(self) -> Rotation:
         """
         Get the player's rotation in degrees
         """
         match = self._get_entity_data("Rotation", regex_rot)
-        return float(match.group(1)), float(match.group(2))
+        # TODO how to coerce this?
+        return float(match.group(1)), float(match.group(2))  # type: ignore
 
     def player_in(self, volume: Volume) -> bool:
         """
@@ -114,7 +116,7 @@ class Player:
         return volume.inside(self.pos)
 
     @classmethod
-    def players_in(cls, volume: Volume) -> List["Player"]:
+    def players_in(cls, volume: Volume) -> list["Player"]:
         """
         return a list of player names whose position is inside the Volume
         """

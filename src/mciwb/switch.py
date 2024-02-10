@@ -1,4 +1,4 @@
-from typing import Callable, List
+from collections.abc import Callable
 
 from mcipc.rcon.enumerations import Item, SetblockMode
 from mcwb.types import Vec3
@@ -44,7 +44,7 @@ class Switch:
     :ivar monitor: the `Monitor` object for the switch
     """
 
-    switches: List["Switch"] = []
+    switches: list["Switch"] = []
 
     next_id: int = 0
 

@@ -1,4 +1,4 @@
-from typing import Any, List, Optional
+from typing import Any
 
 import numpy as np
 from mcipc.rcon.enumerations import SetblockMode
@@ -12,12 +12,10 @@ from mciwb.threads import get_client
 
 
 class Wall:
-    def __init__(
-        self, height=None, item=Item.STONE, profile: Optional[List[Any]] = None
-    ):
+    def __init__(self, height=None, item=Item.STONE, profile: list[Any] | None = None):
         self._start: Vec3 = None  # type: ignore
         self._end: Vec3 = None  # type: ignore
-        self.height: Optional[int] = height
+        self.height: int | None = height
 
         if profile is None:
             # default profile is just a single column of stone
@@ -36,7 +34,7 @@ class Wall:
     def set_end(self, pos: Vec3):
         self._end = pos + Direction.UP
 
-    def draw(self, end: Optional[Vec3] = None):
+    def draw(self, end: Vec3 | None = None):
         self._end = end + Direction.UP if end else self._end
         # start at the same height as the new end
         self._start = Vec3(self._start.x, self._end.y, self._start.z)
@@ -67,7 +65,7 @@ class Wall:
             "wall_dir {wall_dir} step_dir {step_dir}"
         )
 
-        for section in range(sections):
+        for _section in range(sections):
             end = begin + wall_dir * wall_section_len
             self._render_section(begin, wall_section_len, wall_dir)
             begin = end + step_dir
@@ -81,21 +79,21 @@ class Wall:
             f" to {begin + wall_dir * length}"
         )
 
-        for column in range(int(length) + 1):
+        for _column in range(int(length) + 1):
             profile = self.profile[self.profile_idx]
             self._render_column(base, profile, col_dir)
 
             base = base + wall_dir
             self.profile_idx = (self.profile_idx + 1) % self.profile_idx_limit
 
-    def _render_column(self, base: Vec3, profile: List[Any], direction: Vec3):
+    def _render_column(self, base: Vec3, profile: list[Any], direction: Vec3):
         c = get_client()
         height = self.height or len(profile)
         for level in range(height):
             level_profile = profile[(height - level - 1) % len(profile)]
-            if not isinstance(level_profile, List):
+            if not isinstance(level_profile, list):
                 level_profile = [level_profile]
-            for i, item in enumerate(level_profile):
+            for i, _item in enumerate(level_profile):
                 pos = base.with_ints() + Direction.UP * level + direction * i
                 c.setblock(pos, level_profile[i], mode=SetblockMode.REPLACE)
 
@@ -114,7 +112,7 @@ class WallMaker:
     start = "start_wall"
     end = "end_wall"
 
-    def __init__(self, wall: Optional[Wall] = None):
+    def __init__(self, wall: Wall | None = None):
         self.wall = wall or Wall()
         signs = get_world().signs
         signs.add_sign(self.start, self.wall.set_start)

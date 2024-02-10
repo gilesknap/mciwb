@@ -1,0 +1,27 @@
+on:
+  workflow_call:
+    outputs:
+      branch-pr:
+        description: The PR number if the branch is in one
+        value: ${{ jobs.pr.outputs.branch-pr }}
+
+jobs:
+  pr:
+    runs-on: "ubuntu-latest"
+    outputs:
+      branch-pr: ${{ steps.script.outputs.result }}
+    steps:
+      - uses: actions/github-script@v7
+        id: script
+        if: github.event_name == 'push'
+        with:
+          script: |
+            const prs = await github.rest.pulls.list({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              head: context.repo.owner + ':${{ github.ref_name }}'
+            })
+            if (prs.data.length) {
+              console.log(`::notice ::Skipping CI on branch push as it is already run in PR #${prs.data[0]["number"]}`)
+              return prs.data[0]["number"]
+            }

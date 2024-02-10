@@ -1,2 +1,0 @@
-.. include:: ../../../.github/CONTRIBUTING.rst
-    

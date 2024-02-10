@@ -17,7 +17,7 @@ class Utils:
         self,
         pos: Vec3,
         door_type: Item,
-        facing: Direction = Direction.NORTH,
+        facing: Direction = Direction.NORTH,  # type: ignore
         open: bool = False,
         right_hinge: bool = False,
     ):
@@ -39,7 +39,7 @@ class Utils:
         common_nbt = [
             f"hinge={hinge}",
             f"open={open_str}",
-            f"facing={Direction.name(facing)}",
+            f"facing={Direction.name(facing)}",  # type: ignore
         ]
 
         nbt = ["half=lower"] + common_nbt

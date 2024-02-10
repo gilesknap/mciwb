@@ -1,0 +1,68 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  check:
+    uses: ./.github/workflows/_check.yml
+
+  lint:
+    needs: check
+    if: needs.check.outputs.branch-pr == ''
+    uses: ./.github/workflows/_tox.yml
+    with:
+      tox: pre-commit,pyright
+
+  test:
+    needs: check
+    if: needs.check.outputs.branch-pr == ''
+    strategy:
+      matrix:
+        runs-on: ["ubuntu-latest"] # can add windows-latest, macos-latest
+        python-version: ["3.10", "3.11", "3.12"]
+        include:
+          # Include one that runs in the dev environment
+          - runs-on: "ubuntu-latest"
+            python-version: "dev"
+      fail-fast: false
+    uses: ./.github/workflows/_test.yml
+    with:
+      runs-on: ${{ matrix.runs-on }}
+      python-version: ${{ matrix.python-version }}
+    secrets:
+      CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+
+  container:
+    needs: check
+    if: needs.check.outputs.branch-pr == ''
+    uses: ./.github/workflows/_container.yml
+    permissions:
+      packages: write
+
+  docs:
+    needs: check
+    if: needs.check.outputs.branch-pr == ''
+    uses: ./.github/workflows/_docs.yml
+
+  dist:
+    needs: check
+    if: needs.check.outputs.branch-pr == ''
+    uses: ./.github/workflows/_dist.yml
+
+  pypi:
+    if: github.ref_type == 'tag'
+    needs: dist
+    uses: ./.github/workflows/_pypi.yml
+    permissions:
+      id-token: write
+    secrets:
+      PYPI_TOKEN: ${{ secrets.PYPI_TOKEN }}
+
+  release:
+    if: github.ref_type == 'tag'
+    needs: [dist, docs]
+    uses: ./.github/workflows/_release.yml
+    permissions:
+      contents: write

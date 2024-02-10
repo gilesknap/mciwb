@@ -1,61 +1,34 @@
 name: Install requirements
-description: Run pip install with requirements and upload resulting requirements
+description: Install a version of python then call pip install and report what was installed
 inputs:
-  requirements_file:
-    description: Name of requirements file to use and upload
-    required: true
-  install_options:
+  python-version:
+    description: Python version to install, default is from Dockerfile
+    default: "dev"
+  pip-install:
     description: Parameters to pass to pip install
-    required: true
-  python_version:
-    description: Python version to install
-    default: "3.x"
-  lockfiles_artifact_name:
-    description: Lockfiles artifact name
-    default: "lockfiles"
+    default: "$([ -f dev-requirements.txt ] && echo '-c dev-requirements.txt') -e .[dev]"
 
 runs:
   using: composite
-
   steps:
-    - name: Setup python
-      uses: actions/setup-python@v4
-      with:
-        python-version: ${{ inputs.python_version }}
-
-    - name: Pip install
+    - name: Get version of python
       run: |
-        touch ${{ inputs.requirements_file }}
-        # -c uses requirements.txt as constraints, see 'Validate requirements file'
-        pip install -c ${{ inputs.requirements_file }} ${{ inputs.install_options }}
-      shell: bash
-
-    - name: Create lockfile
-      run: |
-        mkdir -p lockfiles
-        pip freeze --exclude-editable > lockfiles/${{ inputs.requirements_file }}
-        # delete the self referencing line and make sure it isn't blank
-        sed -i '/file:/d' lockfiles/${{ inputs.requirements_file }}
-      shell: bash
-
-    - name: Upload lockfiles
-      uses: actions/upload-artifact@v4
-      with:
-        name: ${{ inputs.lockfiles_artifact_name }}
-        path: lockfiles
-
-    # This eliminates the class of problems where the requirements being given no
-    # longer match what the packages themselves dictate. E.g. In the rare instance
-    # where I install some-package which used to depend on vulnerable-dependency
-    # but now uses good-dependency (despite being nominally the same version)
-    # pip will install both if given a requirements file with -r
-    - name: If requirements file exists, check it matches pip installed packages
-      run: |
-        if [ -s ${{ inputs.requirements_file }} ]; then
-          if ! diff -u ${{ inputs.requirements_file }} lockfiles/${{ inputs.requirements_file }}; then
-            echo "Error: ${{ inputs.requirements_file }} need the above changes to be exhaustive"
-            exit 1
-          fi
+        PYTHON_VERSION="${{ inputs.python-version }}"
+        if [ $PYTHON_VERSION == "dev" ]; then
+          PYTHON_VERSION=$(sed -n "s/ARG PYTHON_VERSION=//p" Dockerfile)
         fi
+        echo "PYTHON_VERSION=$PYTHON_VERSION" >> "$GITHUB_ENV"
       shell: bash
 
+    - name: Setup python
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+
+    - name: Install packages
+      run: pip install ${{ inputs.pip-install }}
+      shell: bash
+
+    - name: Report what was installed
+      run: pip freeze
+      shell: bash

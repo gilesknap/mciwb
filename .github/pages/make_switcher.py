@@ -3,28 +3,27 @@ import logging
 from argparse import ArgumentParser
 from pathlib import Path
 from subprocess import CalledProcessError, check_output
-from typing import List, Optional
 
 
-def report_output(stdout: bytes, label: str) -> List[str]:
+def report_output(stdout: bytes, label: str) -> list[str]:
     ret = stdout.decode().strip().split("\n")
     print(f"{label}: {ret}")
     return ret
 
 
-def get_branch_contents(ref: str) -> List[str]:
+def get_branch_contents(ref: str) -> list[str]:
     """Get the list of directories in a branch."""
     stdout = check_output(["git", "ls-tree", "-d", "--name-only", ref])
     return report_output(stdout, "Branch contents")
 
 
-def get_sorted_tags_list() -> List[str]:
+def get_sorted_tags_list() -> list[str]:
     """Get a list of sorted tags in descending order from the repository."""
     stdout = check_output(["git", "tag", "-l", "--sort=-v:refname"])
     return report_output(stdout, "Tags list")
 
 
-def get_versions(ref: str, add: Optional[str], remove: Optional[str]) -> List[str]:
+def get_versions(ref: str, add: str | None) -> list[str]:
     """Generate the file containing the list of all GitHub Pages builds."""
     # Get the directories (i.e. builds) from the GitHub Pages branch
     try:
@@ -36,15 +35,12 @@ def get_versions(ref: str, add: Optional[str], remove: Optional[str]) -> List[st
     # Add and remove from the list of builds
     if add:
         builds.add(add)
-    if remove:
-        assert remove in builds, f"Build '{remove}' not in {sorted(builds)}"
-        builds.remove(remove)
 
     # Get a sorted list of tags
     tags = get_sorted_tags_list()
 
     # Make the sorted versions list from main branches and tags
-    versions: List[str] = []
+    versions: list[str] = []
     for version in ["master", "main"] + tags:
         if version in builds:
             versions.append(version)
@@ -59,25 +55,21 @@ def get_versions(ref: str, add: Optional[str], remove: Optional[str]) -> List[st
 def write_json(path: Path, repository: str, versions: str):
     org, repo_name = repository.split("/")
     struct = [
-        dict(version=version, url=f"https://{org}.github.io/{repo_name}/{version}/")
+        {"version": version, "url": f"https://{org}.github.io/{repo_name}/{version}/"}
         for version in versions
     ]
     text = json.dumps(struct, indent=2)
     print(f"JSON switcher:\n{text}")
-    path.write_text(text)
+    path.write_text(text, encoding="utf-8")
 
 
 def main(args=None):
     parser = ArgumentParser(
-        description="Make a versions.txt file from gh-pages directories"
+        description="Make a versions.json file from gh-pages directories"
     )
     parser.add_argument(
         "--add",
         help="Add this directory to the list of existing directories",
-    )
-    parser.add_argument(
-        "--remove",
-        help="Remove this directory from the list of existing directories",
     )
     parser.add_argument(
         "repository",
@@ -91,7 +83,7 @@ def main(args=None):
     args = parser.parse_args(args)
 
     # Write the versions file
-    versions = get_versions("origin/gh-pages", args.add, args.remove)
+    versions = get_versions("origin/gh-pages", args.add)
     write_json(args.output, args.repository, versions)
 
 

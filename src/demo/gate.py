@@ -26,10 +26,11 @@ def portcullis(position, close, width=4, height=6):
         sleep(0.5)
 
 
-def make_gate(position=Vec3(x=623, y=73, z=-1660)):
+def make_gate(position=None):
     """
     Create a castle gate with working portcullis
     """
+    position = position or Vec3(x=623, y=73, z=-1660)
 
     def open_close(switch):
         portcullis(position, switch.powered)
