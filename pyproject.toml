@@ -14,7 +14,7 @@ classifiers = [
     "Programming Language :: Python :: 3.11",
 ]
 description = "Minecraft Interactive world builder"
-dependencies = ["numpy", "typer", "mcwb>=0.2.3", "ipython", "docker>=6"]
+dependencies = ["numpy", "typer", "mcwb>=0.2.4b1", "ipython", "docker>=6"]
 dynamic = ["version"]
 license.file = "LICENSE"
 readme = "README.md"
