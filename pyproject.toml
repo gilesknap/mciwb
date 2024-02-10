@@ -7,14 +7,18 @@ name = "mciwb"
 classifiers = [
     "Development Status :: 3 - Alpha",
     "License :: OSI Approved :: Apache Software License",
-    "Programming Language :: Python :: 3.7",
-    "Programming Language :: Python :: 3.8",
-    "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
 ]
 description = "Minecraft Interactive world builder"
-dependencies = ["numpy", "typer", "mcwb>=0.2.4b1", "ipython", "docker>=6"]
+dependencies = [
+    "numpy",
+    "typer",
+    "mcwb@git+https://github.com/mcipc-tools/mcwb@fixes-2024#egg=mcwb",
+    "ipython",
+    "docker>=6",
+]
 dynamic = ["version"]
 license.file = "LICENSE"
 readme = "README.md"
