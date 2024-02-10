@@ -1,13 +1,17 @@
 on:
   workflow_call:
     secrets:
-        PYPI_TOKEN:
-          required: true
+      PYPI_TOKEN:
+        required: true
 
 jobs:
   upload:
     runs-on: ubuntu-latest
     environment: release
+    permissions:
+      # this permission is mandatory for trusted publishing To PyPI
+      id-token: write
+      contents: write
 
     steps:
       - name: Download dist artifact
@@ -18,5 +22,3 @@ jobs:
 
       - name: Publish to PyPI using trusted publishing
         uses: pypa/gh-action-pypi-publish@release/v1
-        with:
-          password: ${{ secrets.PYPI_TOKEN }}
