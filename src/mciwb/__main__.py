@@ -2,6 +2,7 @@ import sys
 from pathlib import Path
 from typing import Optional
 
+import traitlets
 import typer
 from IPython.terminal.embed import InteractiveShellEmbed
 
@@ -85,8 +86,14 @@ def shell(
         exit(1)
 
     log.info("######### Starting Interactive Session ##########\n")
-
-    shell = InteractiveShellEmbed.instance()
+    # This is due to warn_venv not working properly with tox
+    # pytest inside the venv works properly but tox fails due to the warning
+    if test:
+        c = traitlets.config.get_config()
+        c.InteractiveShellEmbed.warn_venv = False
+        shell = InteractiveShellEmbed.instance(config=c)
+    else:
+        shell = InteractiveShellEmbed.instance()
     # Prepare IPython shell with auto-reload so user code edits work immediately
     shell.run_line_magic("load_ext", "autoreload")
     shell.run_line_magic("autoreload", "2")
