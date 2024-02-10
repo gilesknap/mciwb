@@ -1,63 +1,442 @@
-<!DOCTYPE html>
-<html class="writer-html5" lang="en" >
-<head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Installation &mdash; mciwb 0.7.2.dev20+g9114be6 documentation</title>
-      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
-      <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
-      <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
-    <link rel="shortcut icon" href="../_static/logo.png"/>
-  <!--[if lt IE 9]>
-    <script src="../_static/js/html5shiv.min.js"></script>
-  <![endif]-->
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Installation &#8212; mciwb 0.9.0b2.dev2+g1723afa documentation</title>
   
-        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-        <script src="../_static/jquery.js"></script>
-        <script src="../_static/underscore.js"></script>
-        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="../_static/doctools.js"></script>
-    <script src="../_static/js/theme.js"></script>
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+
+  
+  <link href="../_static/vendor/fontawesome/6.5.1/css/all.min.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.1/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.1/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.1/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8d27b9dea8ad943066ae" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8d27b9dea8ad943066ae" />
+  <script src="../_static/vendor/fontawesome/6.5.1/js/all.min.js?digest=8d27b9dea8ad943066ae"></script>
+
+    <script src="../_static/documentation_options.js?v=1ba7b5af"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=30646c52"></script>
+    <script src="../_static/design-tabs.js?v=36754332"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'tutorials/01-setup';</script>
+    <script>
+        DOCUMENTATION_OPTIONS.theme_version = '0.15.2';
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://gilesknap.github.io/mciwb/switcher.json';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = 'main';
+        DOCUMENTATION_OPTIONS.show_version_warning_banner = false;
+        </script>
+    <link rel="icon" href="../_static/dls-logo.svg"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Orientation" href="02-orientation.html" />
-    <link rel="prev" title="Introduction" href="00-prereq.html" /> 
-</head>
+    <link rel="prev" title="Introduction" href="00-prereq.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
 
-<body class="wy-body-for-nav"> 
-  <div class="wy-grid-for-nav">
-    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
-      <div class="wy-side-scroll">
-        <div class="wy-side-nav-search"  style="background: rgb(7, 43, 93)" >
-            <a href="../index.html" class="icon icon-home"> mciwb
-            <img src="../_static/logo.png" class="logo" alt="Logo"/>
-          </a>
-              <div class="version">
-                main
-              </div>
-<div role="search">
-  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
-    <input type="hidden" name="check_keywords" value="yes" />
-    <input type="hidden" name="area" value="default" />
-  </form>
+  
+  
+  <a id="pst-skip-link" class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>
+    Back to top
+  </button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar">
+<div class="bd-header__inner bd-page-width">
+  <label class="sidebar-toggle primary-toggle" for="__primary">
+    <span class="fa-solid fa-bars"></span>
+  </label>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/dls-logo.svg" class="logo__image only-light" alt=""/>
+    <script>document.write(`<img src="../_static/dls-logo.svg" class="logo__image only-dark" alt=""/>`);</script>
+  
+  
+    <p class="title logo__title">mciwb</p>
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav class="navbar-nav">
+  <ul class="bd-navbar-elements navbar-nav">
+    
+                    <li class="nav-item current active">
+                      <a class="nav-link nav-internal" href="../tutorials.html">
+                        Tutorials
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../how-to.html">
+                        How-to Guides
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../explanations.html">
+                        Explanations
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../reference.html">
+                        Reference
+                      </a>
+                    </li>
+                
+
+                <li class="nav-item">
+                  <a class="nav-link nav-external" href="https://github.com/gilesknap/mciwb/releases">
+                    Release Notes
+                  </a>
+                </li>
+                
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+ <script>
+ document.write(`
+   <button class="btn navbar-btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
+  </button>
+`);
+</script></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links navbar-nav"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/gilesknap/mciwb" title="GitHub" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i></span>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://pypi.org/project/mciwb" title="PyPI" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fas fa-cube fa-lg" aria-hidden="true"></i></span>
+            <span class="sr-only">PyPI</span></a>
+        </li>
+</ul></div>
+      
+        <div class="navbar-item">
+<script>
+document.write(`
+  <div class="version-switcher__container dropdown">
+    <button id="pst-version-switcher-button-2"
+      type="button"
+      class="version-switcher__button btn btn-sm navbar-btn dropdown-toggle"
+      data-bs-toggle="dropdown"
+      aria-haspopup="listbox"
+      aria-controls="pst-version-switcher-list-2"
+      aria-label="Version switcher list"
+    >
+      Choose version  <!-- this text may get changed later by javascript -->
+      <span class="caret"></span>
+    </button>
+    <div id="pst-version-switcher-list-2"
+      class="version-switcher__menu dropdown-menu list-group-flush py-0"
+      role="listbox" aria-labelledby="pst-version-switcher-button-2">
+      <!-- dropdown will be populated by javascript on page load -->
+    </div>
+  </div>
+`);
+</script></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+ <script>
+ document.write(`
+   <button class="btn navbar-btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script>
+    </div>
+  
+
+  
+    <label class="sidebar-toggle secondary-toggle" for="__secondary" tabindex="0">
+      <span class="fa-solid fa-outdent"></span>
+    </label>
+  
 </div>
-        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
-<ul class="current">
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          <div class="navbar-item">
+<nav class="navbar-nav">
+  <ul class="bd-navbar-elements navbar-nav">
+    
+                    <li class="nav-item current active">
+                      <a class="nav-link nav-internal" href="../tutorials.html">
+                        Tutorials
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../how-to.html">
+                        How-to Guides
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../explanations.html">
+                        Explanations
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../reference.html">
+                        Reference
+                      </a>
+                    </li>
+                
+
+                <li class="nav-item">
+                  <a class="nav-link nav-external" href="https://github.com/gilesknap/mciwb/releases">
+                    Release Notes
+                  </a>
+                </li>
+                
+  </ul>
+</nav></div>
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
+  </button>
+`);
+</script></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links navbar-nav"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/gilesknap/mciwb" title="GitHub" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i></span>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://pypi.org/project/mciwb" title="PyPI" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fas fa-cube fa-lg" aria-hidden="true"></i></span>
+            <span class="sr-only">PyPI</span></a>
+        </li>
+</ul></div>
+        
+          <div class="navbar-item">
+<script>
+document.write(`
+  <div class="version-switcher__container dropdown">
+    <button id="pst-version-switcher-button-3"
+      type="button"
+      class="version-switcher__button btn btn-sm navbar-btn dropdown-toggle"
+      data-bs-toggle="dropdown"
+      aria-haspopup="listbox"
+      aria-controls="pst-version-switcher-list-3"
+      aria-label="Version switcher list"
+    >
+      Choose version  <!-- this text may get changed later by javascript -->
+      <span class="caret"></span>
+    </button>
+    <div id="pst-version-switcher-list-3"
+      class="version-switcher__menu dropdown-menu list-group-flush py-0"
+      role="listbox" aria-labelledby="pst-version-switcher-button-3">
+      <!-- dropdown will be populated by javascript on page load -->
+    </div>
+  </div>
+`);
+</script></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="00-prereq.html">Introduction</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Installation</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#introduction">Introduction</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#the-minecraft-java-client">The Minecraft Java Client</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#docker-desktop">Docker Desktop</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#visual-studio-code">Visual Studio Code</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#command-line">Command Line</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#python">Python</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#minecraft-interactive-world-builder-library">Minecraft Interactive World Builder library</a></li>
-</ul>
-</li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="02-orientation.html">Orientation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="03-variables.html">Python Variables</a></li>
 <li class="toctree-l1"><a class="reference internal" href="04-loops.html">Loops</a></li>
@@ -67,62 +446,72 @@
 <li class="toctree-l1"><a class="reference internal" href="07-lists.html">Lists</a></li>
 <li class="toctree-l1"><a class="reference internal" href="08-classes.html">Classes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="09-dictionaries.html">Dictionaries</a></li>
+<li class="toctree-l1"><a class="reference internal" href="10-threading.html">Running Code in the Background</a></li>
+<li class="toctree-l1"><a class="reference internal" href="11-switches.html">Levers and Switches</a></li>
+<li class="toctree-l1"><a class="reference internal" href="12-signs.html">Action Signs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="13-structures.html">Moving Structures</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">How-to Guides</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../how-to/startup.html">Setup for each Tutorial</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../how-to/completion.html">Command Completion</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../how-to/extensions.html">VSCode Extensions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../how-to/troubleshooting.html">Troubleshooting</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../how-to/backup.html">Backup and Restore</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../how-to/wsl2.html">Windows Subsystem for Linux</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../how-to/coordinates.html">Discovering the Coordinates of a Block</a></li>
-</ul>
-<p class="caption" role="heading"><span class="caption-text">Explanations</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../explain/scope.html">Variable Scope</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../explain/server-config.html">Minecraft Server Config</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../explain/coordinates.html">Minecraft’s Coordinate System</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../explain/mcipc.html">MCIPC Client object</a></li>
-</ul>
-<p class="caption" role="heading"><span class="caption-text">Reference</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../reference/index.html">Finding Things</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../reference/contributing.html">Contributing</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../reference/api.html">MCIWB API</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../reference/demo.html">Demo Code</a></li>
-<li class="toctree-l1"><a class="reference external" href="https://github.com/gilesknap/mciwb/releases">Releases</a></li>
-<li class="toctree-l1"><a class="reference external" href="genindex.html#http://">Index</a></li>
-</ul>
-
-        </div>
-      </div>
-    </nav>
-
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: rgb(7, 43, 93)" >
-          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../index.html">mciwb</a>
-      </nav>
-
-      <div class="wy-nav-content">
-        <div class="rst-content">
-          <div role="navigation" aria-label="Page navigation">
-  <ul class="wy-breadcrumbs">
-      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
-      <li>Installation</li>
-      <li class="wy-breadcrumbs-aside">
-            <a href="../_sources/tutorials/01-setup.rst.txt" rel="nofollow"> View page source</a>
-      </li>
-  </ul>
-  <hr/>
 </div>
-          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
-           <div itemprop="articleBody">
-             
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+
+
+<nav aria-label="Breadcrumb">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../tutorials.html" class="nav-link">Tutorials</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page">Installation</li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
   <section id="installation">
-<h1>Installation<a class="headerlink" href="#installation" title="Permalink to this heading"></a></h1>
+<h1>Installation<a class="headerlink" href="#installation" title="Link to this heading">#</a></h1>
 <section id="introduction">
-<h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this heading"></a></h2>
+<h2>Introduction<a class="headerlink" href="#introduction" title="Link to this heading">#</a></h2>
 <p>For the first tutorial we are going to prepare your computer for the rest
 of the tutorials. To do so we need to install the following software:</p>
 <ul class="simple">
@@ -145,7 +534,7 @@ require prior knowledge.</p>
 </div>
 </section>
 <section id="the-minecraft-java-client">
-<h2>The Minecraft Java Client<a class="headerlink" href="#the-minecraft-java-client" title="Permalink to this heading"></a></h2>
+<h2>The Minecraft Java Client<a class="headerlink" href="#the-minecraft-java-client" title="Link to this heading">#</a></h2>
 <p>If you already have the Minecraft Java Client installed proceed to <a class="reference internal" href="#docker"><span class="std std-ref">Docker Desktop</span></a>.</p>
 <p>You will need to purchase a license for Minecraft from Microsoft.</p>
 <p>Go to this site to buy your copy, if you do not already have one:</p>
@@ -171,7 +560,7 @@ later tutorial.</p>
 <a class="reference internal image-reference" href="../_images/launcher.png"><img alt="Minecraft Launcher" class="align-center" src="../_images/launcher.png" style="width: 700px;" /></a>
 </section>
 <section id="docker-desktop">
-<span id="docker"></span><h2>Docker Desktop<a class="headerlink" href="#docker-desktop" title="Permalink to this heading"></a></h2>
+<span id="docker"></span><h2>Docker Desktop<a class="headerlink" href="#docker-desktop" title="Link to this heading">#</a></h2>
 <p>Docker is a tool that allows you to run your Minecraft Server in a container.
 This makes it easy to run and avoids having to manually install and
 maintain the server code.
@@ -197,7 +586,7 @@ and tick the option
 <code class="docutils literal notranslate"><span class="pre">Start</span> <span class="pre">Docker</span> <span class="pre">Desktop</span> <span class="pre">when</span> <span class="pre">you</span> <span class="pre">log</span> <span class="pre">in</span></code>.</p>
 </section>
 <section id="visual-studio-code">
-<span id="vscode"></span><h2>Visual Studio Code<a class="headerlink" href="#visual-studio-code" title="Permalink to this heading"></a></h2>
+<span id="vscode"></span><h2>Visual Studio Code<a class="headerlink" href="#visual-studio-code" title="Link to this heading">#</a></h2>
 <p>This is the tool we will use to edit our Python code. If you are already
 a developer then you can use your preferred IDE instead. The tutorials
 will use Visual Studio Code, so if you are new to programming this is
@@ -209,7 +598,7 @@ a recommended install.</p>
 </div></blockquote>
 </section>
 <section id="command-line">
-<h2>Command Line<a class="headerlink" href="#command-line" title="Permalink to this heading"></a></h2>
+<h2>Command Line<a class="headerlink" href="#command-line" title="Link to this heading">#</a></h2>
 <p>From now on we are going to start using the command line. You are free to use
 whatever terminal program you like, however I recommend that you use the
 integrated terminal inside of Visual Studio Code.</p>
@@ -263,25 +652,38 @@ commands. I will supply an appendix for other OSes in future.</p>
 </div>
 </section>
 <section id="python">
-<h2>Python<a class="headerlink" href="#python" title="Permalink to this heading"></a></h2>
+<h2>Python<a class="headerlink" href="#python" title="Link to this heading">#</a></h2>
 <p>The Python Programming Language is also free and open-source.</p>
-<p>This is essential for working with MCIWB. On Linux you will likely already
-have it installed. Note that this project has been tested with
-Python 3.9 and 3.10 but other versions may also be OK.</p>
-<p>These commands will install the necessary packages to make Python 3.9
+<p>This is essential for working with MCIWB.
+Python 3.10 because the underlying RCON library requires it. This is the
+latest version of Python at the time of writing.</p>
+<p>These commands will install the necessary packages to make Python 3.10
 available on your system:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">apt</span> <span class="n">update</span>
-<span class="n">sudo</span> <span class="n">apt</span> <span class="n">install</span> <span class="o">-</span><span class="n">y</span> <span class="n">python3</span><span class="mf">.9</span>
-<span class="n">sudo</span> <span class="n">apt</span> <span class="n">install</span> <span class="o">-</span><span class="n">y</span> <span class="n">python3</span><span class="mf">.9</span><span class="o">-</span><span class="n">venv</span>
+<span class="n">sudo</span> <span class="n">apt</span> <span class="n">install</span> <span class="o">-</span><span class="n">y</span> <span class="n">python3</span><span class="mf">.10</span>
+<span class="n">sudo</span> <span class="n">apt</span> <span class="n">install</span> <span class="o">-</span><span class="n">y</span> <span class="n">python3</span><span class="mf">.10</span><span class="o">-</span><span class="n">venv</span>
 <span class="n">sudo</span> <span class="n">apt</span> <span class="n">install</span> <span class="o">-</span><span class="n">y</span> <span class="n">python3</span><span class="o">-</span><span class="n">pip</span>
 </pre></div>
 </div>
+<p>If you have an older version of Ubuntu it may not have Python 3.10 available.
+In this case you need to use the <code class="docutils literal notranslate"><span class="pre">deadsnakes</span></code> PPA to get the latest version as
+follows:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">apt</span> <span class="n">install</span> <span class="o">-</span><span class="n">y</span> <span class="n">software</span><span class="o">-</span><span class="n">properties</span><span class="o">-</span><span class="n">common</span>
+<span class="n">sudo</span> <span class="n">add</span><span class="o">-</span><span class="n">apt</span><span class="o">-</span><span class="n">repository</span> <span class="n">ppa</span><span class="p">:</span><span class="n">deadsnakes</span><span class="o">/</span><span class="n">ppa</span>
+<span class="n">sudo</span> <span class="n">apt</span> <span class="n">install</span> <span class="o">-</span><span class="n">y</span> <span class="n">python3</span><span class="mf">.10</span>
+<span class="n">sudo</span> <span class="n">apt</span> <span class="n">install</span> <span class="o">-</span><span class="n">y</span> <span class="n">python3</span><span class="mf">.10</span><span class="o">-</span><span class="n">venv</span>
+<span class="n">sudo</span> <span class="n">apt</span> <span class="n">install</span> <span class="o">-</span><span class="n">y</span> <span class="n">python3</span><span class="o">-</span><span class="n">pip</span>
+</pre></div>
+</div>
+</section>
+<section id="virtual-environment">
+<h2>Virtual Environment<a class="headerlink" href="#virtual-environment" title="Link to this heading">#</a></h2>
 <p>We are going to create a <strong>Virtual Environment</strong> for our Python packages to
 install in. This is a way to keep the packages you install (like mciwb)
 separate from the packages you install for other projects.</p>
 <p>First create the Virtual Environment by typing (note the leading “.”
 in the folder name “.venv”):</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python3</span><span class="mf">.9</span> <span class="o">-</span><span class="n">m</span> <span class="n">venv</span> <span class="o">.</span><span class="n">venv</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python3</span><span class="mf">.10</span> <span class="o">-</span><span class="n">m</span> <span class="n">venv</span> <span class="o">.</span><span class="n">venv</span>
 </pre></div>
 </div>
 <p>Then activate it by typing the following. This command will need to be
@@ -291,12 +693,12 @@ repeated each time you restart your terminal or open a new terminal:</p>
 </div>
 <p>Note you can tell you have an active <strong>Virtual Environment</strong> because
 your terminal prompt will change to have a leading (.venv) like this:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(.venv) giles@gkwin:~/my_world$
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(.venv) $
 </pre></div>
 </div>
 </section>
 <section id="minecraft-interactive-world-builder-library">
-<h2>Minecraft Interactive World Builder library<a class="headerlink" href="#minecraft-interactive-world-builder-library" title="Permalink to this heading"></a></h2>
+<h2>Minecraft Interactive World Builder library<a class="headerlink" href="#minecraft-interactive-world-builder-library" title="Link to this heading">#</a></h2>
 <p>The final component is MCIWB itself. This needs to be added to the
 Python environment we already made above. Again, this is free open open-source
 software.</p>
@@ -329,60 +731,119 @@ You can now proceed to the next tutorial.</p>
 </section>
 
 
-           </div>
-          </div>
-          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="00-prereq.html" class="btn btn-neutral float-left" title="Introduction" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="02-orientation.html" class="btn btn-neutral float-right" title="Orientation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-    </div>
-
-  <hr/>
-
-  <div role="contentinfo">
-    <p></p>
-  </div>
-
-   
-
-</footer>
-        </div>
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="00-prereq.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Introduction</p>
       </div>
-    </section>
+    </a>
+    <a class="right-next"
+       href="02-orientation.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Orientation</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
   </div>
-  <script>
-      jQuery(function () {
-          SphinxRtdTheme.Navigation.enable(true);
-      });
-  </script>
-   
-  <div id="other-versions-div" class="rst-versions" data-toggle="rst-versions" role="note" aria-label="Versions" style="visibility: hidden">
-    <span class="rst-current-version" data-toggle="rst-current-version">
-      <span class="fa fa-book"> Other Versions</span>
-      main
-      <span class="fa fa-caret-down"></span>
-    </span>
-    <div class="rst-other-versions">
-      <dl id="other-versions-dl"/>
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#introduction">Introduction</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-minecraft-java-client">The Minecraft Java Client</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#docker-desktop">Docker Desktop</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#visual-studio-code">Visual Studio Code</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#command-line">Command Line</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#python">Python</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#virtual-environment">Virtual Environment</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#minecraft-interactive-world-builder-library">Minecraft Interactive World Builder library</a></li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+
+  
+  <div class="tocsection editthispage">
+    <a href="https://github.com/gilesknap/mciwb/edit/main/docs/tutorials/01-setup.rst">
+      <i class="fa-solid fa-pencil"></i>
+      
+      
+        
+          Edit on GitHub
+        
+      
+    </a>
+  </div>
+</div>
+
+  <div class="sidebar-secondary-item">
+
+  <div class="tocsection sourcelink">
+    <a href="../_sources/tutorials/01-setup.rst.txt">
+      <i class="fa-solid fa-file-lines"></i> Show Source
+    </a>
+  </div>
+</div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
     </div>
   </div>
-  <script>
-    function addVersion(name) {
-      var dd = document.createElement("dd");
-      var a = document.createElement("a");
-      a.href = "../../" + name;
-      a.innerText = name;
-      dd.appendChild(a);
-      document.getElementById('other-versions-dl').appendChild(dd);
-    }
-    // Get versions.txt and add a version for each line
-    fetch("../../versions.txt").then(response => {
-      if (response.ok) {
-        document.getElementById('other-versions-div').style.visibility = "visible";
-        return response.text().then(text => text.split(/\r?\n/).forEach(addVersion))
-      }
-    });
-  </script>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/bootstrap.js?digest=8d27b9dea8ad943066ae"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=8d27b9dea8ad943066ae"></script>
 
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.15.2.
+</p></div>
+      
+    </div>
+  
+</div>
 
-</body>
+  </footer>
+  </body>
 </html>

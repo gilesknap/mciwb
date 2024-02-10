@@ -63,7 +63,7 @@ quite nice scenery.
 
 If you have not played Minecraft before then take some time to familiarize 
 yourself with the controls and game play. You may find 
-`this wiki <https://minecraft.fandom.com/wiki/Tutorials/Beginner%27s_guide>`_
+`this wiki <https://minecraft.wiki/w/Tutorials/Beginner%27s_guide>`_
 useful if you are a beginner. When you are really to move on type the 
 command ``/kill`` to return to the spawn point.
 
