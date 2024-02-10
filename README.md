@@ -5,10 +5,13 @@
 
 # mciwb
 
-Minecraft interactive world builder
+Minecraft Interactive World Builder
+===================================
 
-This is where you should write a short paragraph that describes what your module does,
-how it does it, and why people should use it.
+This project is intended as a fun way to learn the Python Programming Language.
+
+Experienced Python programmers can also use this library to create
+Minecraft worlds with interactive Python features.
 
 Source          | <https://github.com/gilesknap/mciwb>
 :---:           | :---:
@@ -16,21 +19,63 @@ PyPI            | `pip install mciwb`
 Documentation   | <https://gilesknap.github.io/mciwb>
 Releases        | <https://github.com/gilesknap/mciwb/releases>
 
-This is where you should put some images or code snippets that illustrate
-some relevant examples. If it is a library then you might put some
-introductory code here:
 
-```python
-from mciwb import __version__
+Quick Start
+-----------
 
-print(f"Hello mciwb {__version__}")
-```
+To get started learning Python, see
+[Introduction](https://gilesknap.github.io/mciwb/main/user/tutorials/00-prereq.html)
 
-Or if it is a commandline tool then you might put some example commands here:
+For existing Python developers, see
+[API documentation](https://gilesknap.github.io/mciwb/main/user/reference/api.html)
 
-```
-python -m mciwb --version
-```
+Example Build
+-------------
+
+The pagoda and castle with working portcullis were all created programmatically
+with Python and the current version of MCIWB.
+
+TODO: embed video github Md style
+
+
+<!-- .. figure:: https://gilesknap.github.io/mciwb/main/_images/castle.png
+   :alt: castle
+   :align: center
+   :width: 600px
+   :target: https://photos.app.goo.gl/utFt6KadWbdabR8x6
+
+   Example Build - **Click for Video** -->
+
+Goals
+-----
+
+Minecraft Interactive World Builder's goals are:
+
+ - Use Python to create anything inside of Minecraft worlds.
+ - Call Python code when events occur inside the world.
+ - Use an iPython prompt to interact with the world by typing Python commands
+ - Have your player inside the world execute Python code by placing command
+   signs or activating switches/levers with Python actions.
+
+All instructions on how to set up a Minecraft Server and the Python developer
+environment are included. There are step by step tutorials to
+introduce Python Programming and the features of Minecraft Interactive World
+Builder.
+
+.. note::
+
+    This is a work in progress. There are now enough tutorials to learn the
+    fundamentals of Python and enough functionality to have some fun
+    interacting with Minecraft from Python code.
+
+    I will continue to expand the tutorials and add more features to the
+    library.
+
+Credits
+-------
+
+This project would not be possible without `mcipc <https://github.com/conqp/mcipc/>`_,
+which provides the client library for Minecraft RCON.
 
 <!-- README only content. Anything below this line won't be included in index.md -->
 
