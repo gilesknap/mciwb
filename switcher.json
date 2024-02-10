@@ -68,6 +68,10 @@
     "url": "https://gilesknap.github.io/mciwb/containers/"
   },
   {
+    "version": "copier-template",
+    "url": "https://gilesknap.github.io/mciwb/copier-template/"
+  },
+  {
     "version": "dev",
     "url": "https://gilesknap.github.io/mciwb/dev/"
   },
