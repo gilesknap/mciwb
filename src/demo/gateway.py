@@ -57,7 +57,9 @@ def gateway(position, width, height):
     c.fill(w_front, e_back_top, Item.AIR)
 
 
-def make_gate(position=Vec3(x=621, y=72, z=-1662), width=4, height=6, length=25):
+def make_gate(position=None, width=4, height=6, length=25):
+    position = position or Vec3(x=621, y=72, z=-1662)
+
     def open_close(switch):
         o = switch.powered
         Monitor(func=portcullis, params=(position, o, width, height), once=True)

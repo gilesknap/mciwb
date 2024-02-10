@@ -5,8 +5,8 @@ state
 
 import math
 import re
+from re import Match, Pattern
 from time import sleep
-from typing import List, Match, Pattern, Tuple
 
 from mcwb.types import Direction, Vec3
 from mcwb.volume import Volume
@@ -57,7 +57,7 @@ class Player:
         raise PlayerNotInWorld(f"player {self.name} left")
 
     @property
-    def inventory(self) -> List[str]:
+    def inventory(self) -> list[str]:
         """
         Get the player's inventory
         """
@@ -98,7 +98,7 @@ class Player:
         return Direction.cardinals[index]
 
     @property
-    def rotation(self) -> Tuple[float, float]:
+    def rotation(self) -> tuple[float, float]:
         """
         Get the player's rotation in degrees
         """
@@ -114,7 +114,7 @@ class Player:
         return volume.inside(self.pos)
 
     @classmethod
-    def players_in(cls, volume: Volume) -> List["Player"]:
+    def players_in(cls, volume: Volume) -> list["Player"]:
         """
         return a list of player names whose position is inside the Volume
         """
