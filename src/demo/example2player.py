@@ -23,18 +23,12 @@ def get_player_pos2(name: str, wait: float):
         sleep(wait)
 
 
-global client
-
-
-def main():
-    global client
-    client = Client("nuc2", port=30555, passwd="spider")
-    client.connect(True)
+client = Client("nuc2", port=30555, passwd="spider")
+client.connect(True)
 
 
 def get_player_pos3(name: str, wait: float):
     # share the connection between threads
-    global client
     for _i in range(100):
         x = client.data.get(entity="@p", path="Pos")
         print(name, parse_nbt(x))

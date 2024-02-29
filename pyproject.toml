@@ -71,6 +71,7 @@ testpaths = "docs src tests"
 
 [tool.coverage.run]
 data_file = "/tmp/mciwb.coverage"
+omit = ["src/demo/*"]
 
 [tool.coverage.paths]
 # Tests are run from installed location, map back to the src directory
@@ -83,12 +84,6 @@ legacy_tox_ini = """
 [tox]
 skipsdist=True
 
-# TODO this absolutely does not work - need to discover how to pass the correct
-# settings to coverage when invoked by tox
-# (adding ---cov-config=tox.ini does not help)
-# WE don't really want coverage of the demos - but I have failed to turn it off
-[coverage:run]
-omit = src/demo/*
 
 [testenv:{pre-commit,pyright,pytest,docs}]
 # Don't create a virtualenv for the command, requires tox-direct plugin
