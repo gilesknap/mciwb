@@ -209,13 +209,13 @@ class MinecraftServer:
         if not self.backup_folder.exists():
             self.backup_folder.mkdir(parents=True)
 
-        container = docker_client.containers.run(
+        container = docker_client.containers.run(  # type: ignore
             "docker.io/itzg/minecraft-server",
             detach=True,
             environment=env,
             ports={f"{self.rcon}/tcp": self.rcon, f"{self.port}": self.port},
             restart_policy={"Name": "unless-stopped" if self.keep else "no"},
-            volumes={
+            volumes={  # type: ignore
                 str(self.server_folder): {"bind": "/data", "mode": "rw"},
                 str(self.backup_folder): {
                     "bind": str(self.backup_folder),

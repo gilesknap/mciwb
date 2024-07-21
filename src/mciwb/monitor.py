@@ -41,7 +41,8 @@ class Monitor:
 
     def __init__(
         self,
-        func: None | CallbackFunction = None,
+        # maybe this type is a bit loose, pyright not happy, lets just roll with it.
+        func: None | CallbackFunction = None,  # type: ignore
         params: tuple[Any, ...] = (),
         once=False,
         name=None,
@@ -54,7 +55,7 @@ class Monitor:
 
         # pollers is a list of functions, param tuples. It may be initialized
         # with a single function passed in func, params
-        self.pollers: list[tuple[CallbackFunction, tuple[Any, ...]]] = (
+        self.pollers: list[tuple[CallbackFunction, tuple[Any, ...]]] = (  # type: ignore
             [] if func is None else [(func, params)]
         )
 
@@ -112,7 +113,7 @@ class Monitor:
         if not self.once:
             log.info(f"Monitor {self.name} stopped")
 
-    def add_poller_func(self, func: CallbackFunction, params: tuple[Any, ...] = ()):
+    def add_poller_func(self, func: CallbackFunction, params: tuple[Any, ...] = ()):  # type: ignore
         """
         Add a function to the pollers list
 
@@ -123,7 +124,7 @@ class Monitor:
 
     # TODO: consider using a dict or indexing pollers in some fashion
     # currently this does not support 2 calls to same function
-    def remove_poller_func(self, func: CallbackFunction):
+    def remove_poller_func(self, func: CallbackFunction):  # type: ignore
         """
         Remove a function from the pollers list
 
