@@ -1,0 +1,843 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Python Variables &#8212; mciwb 0.9.1 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=fd3f3429" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=87e54e7c" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="../_static/documentation_options.js?v=9dc39874"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=30646c52"></script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'tutorials/03-variables';</script>
+    <script>
+        DOCUMENTATION_OPTIONS.theme_version = '0.15.4';
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://gilesknap.github.io/mciwb/switcher.json';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '0.9.1';
+        DOCUMENTATION_OPTIONS.show_version_warning_banner = false;
+        </script>
+    <link rel="icon" href="../_static/dls-logo.svg"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Loops" href="04-loops.html" />
+    <link rel="prev" title="Orientation" href="02-orientation.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/dls-logo.svg" class="logo__image only-light" alt=""/>
+    <script>document.write(`<img src="../_static/dls-logo.svg" class="logo__image only-dark" alt=""/>`);</script>
+  
+  
+    <p class="title logo__title">mciwb</p>
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../tutorials.html">
+    Tutorials
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../how-to.html">
+    How-to Guides
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../explanations.html">
+    Explanations
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../reference.html">
+    Reference
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://github.com/gilesknap/mciwb/releases">
+    Release Notes
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/gilesknap/mciwb" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://pypi.org/project/mciwb" title="PyPI" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fas fa-cube fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">PyPI</span></a>
+        </li>
+</ul></div>
+      
+        <div class="navbar-item">
+<script>
+document.write(`
+  <div class="version-switcher__container dropdown">
+    <button id="pst-version-switcher-button-2"
+      type="button"
+      class="version-switcher__button btn btn-sm dropdown-toggle"
+      data-bs-toggle="dropdown"
+      aria-haspopup="listbox"
+      aria-controls="pst-version-switcher-list-2"
+      aria-label="Version switcher list"
+    >
+      Choose version  <!-- this text may get changed later by javascript -->
+      <span class="caret"></span>
+    </button>
+    <div id="pst-version-switcher-list-2"
+      class="version-switcher__menu dropdown-menu list-group-flush py-0"
+      role="listbox" aria-labelledby="pst-version-switcher-button-2">
+      <!-- dropdown will be populated by javascript on page load -->
+    </div>
+  </div>
+`);
+</script></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../tutorials.html">
+    Tutorials
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../how-to.html">
+    How-to Guides
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../explanations.html">
+    Explanations
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../reference.html">
+    Reference
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://github.com/gilesknap/mciwb/releases">
+    Release Notes
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/gilesknap/mciwb" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://pypi.org/project/mciwb" title="PyPI" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fas fa-cube fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">PyPI</span></a>
+        </li>
+</ul></div>
+        
+          <div class="navbar-item">
+<script>
+document.write(`
+  <div class="version-switcher__container dropdown">
+    <button id="pst-version-switcher-button-3"
+      type="button"
+      class="version-switcher__button btn btn-sm dropdown-toggle"
+      data-bs-toggle="dropdown"
+      aria-haspopup="listbox"
+      aria-controls="pst-version-switcher-list-3"
+      aria-label="Version switcher list"
+    >
+      Choose version  <!-- this text may get changed later by javascript -->
+      <span class="caret"></span>
+    </button>
+    <div id="pst-version-switcher-list-3"
+      class="version-switcher__menu dropdown-menu list-group-flush py-0"
+      role="listbox" aria-labelledby="pst-version-switcher-button-3">
+      <!-- dropdown will be populated by javascript on page load -->
+    </div>
+  </div>
+`);
+</script></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="00-prereq.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="01-setup.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="02-orientation.html">Orientation</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Python Variables</a></li>
+<li class="toctree-l1"><a class="reference internal" href="04-loops.html">Loops</a></li>
+<li class="toctree-l1"><a class="reference internal" href="05-functions.html">Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="05a-modules.html">Modules and Packages</a></li>
+<li class="toctree-l1"><a class="reference internal" href="06-if-then.html">If - Else</a></li>
+<li class="toctree-l1"><a class="reference internal" href="07-lists.html">Lists</a></li>
+<li class="toctree-l1"><a class="reference internal" href="08-classes.html">Classes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="09-dictionaries.html">Dictionaries</a></li>
+<li class="toctree-l1"><a class="reference internal" href="10-threading.html">Running Code in the Background</a></li>
+<li class="toctree-l1"><a class="reference internal" href="11-switches.html">Levers and Switches</a></li>
+<li class="toctree-l1"><a class="reference internal" href="12-signs.html">Action Signs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="13-structures.html">Moving Structures</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../tutorials.html" class="nav-link">Tutorials</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page">Python Variables</li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="python-variables">
+<h1>Python Variables<a class="headerlink" href="#python-variables" title="Link to this heading">#</a></h1>
+<section id="introduction">
+<h2>Introduction<a class="headerlink" href="#introduction" title="Link to this heading">#</a></h2>
+<p>We now have everything set up ready to start learning some Python!</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>There are many other
+excellent Python beginner’s tutorials available for free on the internet,
+such as:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><a class="reference external" href="https://www.w3schools.com/python/default.asp">https://www.w3schools.com/python/default.asp</a></p></li>
+<li><p><a class="reference external" href="https://python.land/python-tutorial">https://python.land/python-tutorial</a></p></li>
+</ul>
+</div></blockquote>
+<p>My tutorials are going to focus on quickly getting into interacting with the
+world of Minecraft. We won’t be going into programming theory
+in detail.</p>
+<p>Therefore, a tutorial like w3schools will
+be needed to fill in the background if you want a deeper understanding
+of the language.</p>
+</div>
+<p>Follow along with these tutorials by having both your Minecraft client and
+your VSCode windows visible on your screen. You should try out the Python
+commands shown here and feel free to experiment.</p>
+<p>Each time you come back to work on these tutorials you can get yourself
+ready to go by following <a class="reference internal" href="../how-to/startup.html#startup"><span class="std std-ref">Setup for each Tutorial</span></a>.</p>
+</section>
+<section id="variables-types-and-operators">
+<h2>Variables, Types and Operators<a class="headerlink" href="#variables-types-and-operators" title="Link to this heading">#</a></h2>
+<p>Variables provide a place to hold some bit of data for use inside of a
+computer program. They have the following properties:</p>
+<ul class="simple">
+<li><p>Name: a name that is used to identify the variable.</p></li>
+<li><p>Value: the data that the variable holds.</p></li>
+<li><p>Type: the type of data that the variable holds.</p></li>
+<li><p>Scope: in which parts of the code this variable is available.</p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><strong>Scope</strong> is a moderately advanced concept which you
+can ignore for the moment. Advanced topics like this will be covered
+in the <code class="docutils literal notranslate"><span class="pre">explanations</span></code> section. I suggest skipping anything in the
+explanations section on your first read through the tutorials and
+then come back later when you have a better understanding of the
+fundamentals.</p>
+</div>
+<p>Operators are used to make changes to variables. For example the <code class="docutils literal notranslate"><span class="pre">=</span></code> operator
+assigns a value to a variable, and the <code class="docutils literal notranslate"><span class="pre">+</span></code> operator adds two variables
+together.</p>
+<p>In Python we can easily create a variable
+using assignment. This table below shows some Python assignment commands using
+the <code class="docutils literal notranslate"><span class="pre">=</span></code> operator.</p>
+<div class="pst-scrollable-table-container"><table class="table" id="id1">
+<caption><span class="caption-text">examples of creating variables in Python</span><a class="headerlink" href="#id1" title="Link to this table">#</a></caption>
+<colgroup>
+<col style="width: 32.3%" />
+<col style="width: 16.1%" />
+<col style="width: 12.9%" />
+<col style="width: 38.7%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Command</p></th>
+<th class="head"><p>Name</p></th>
+<th class="head"><p>Value</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>birth_year = 1964</p></td>
+<td><p>birth_year</p></td>
+<td><p>1964</p></td>
+<td><p>int (a whole number)</p></td>
+</tr>
+<tr class="row-odd"><td><p>my_height = 1.94</p></td>
+<td><p>my_height</p></td>
+<td><p>1.94</p></td>
+<td><p>float (a decimal number)</p></td>
+</tr>
+<tr class="row-even"><td><p>my_name = “giles”</p></td>
+<td><p>my_name</p></td>
+<td><p>“giles”</p></td>
+<td><p>str (a string of characters)</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Note that Python can automatically work out what type of variable you are
+creating. e.g. it recognizes that using quotes means I want a string of
+characters. This
+<a class="reference external" href="https://www.w3schools.com/python/python_variables.asp">w3schools variables page</a>
+has further examples.</p>
+</section>
+<section id="trying-out-variables">
+<h2>Trying out Variables<a class="headerlink" href="#trying-out-variables" title="Link to this heading">#</a></h2>
+<p>Try out the commands below by typing them into the <strong>iPython</strong> prompt in your
+VSCode terminal window. Note that input [4] just asks <strong>iPython</strong> to show
+the values of the 3 variables you created:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">In</span> <span class="p">[</span><span class="mi">1</span><span class="p">]:</span> <span class="n">birth_year</span> <span class="o">=</span> <span class="mi">1964</span>
+
+<span class="n">In</span> <span class="p">[</span><span class="mi">2</span><span class="p">]:</span> <span class="n">my_height</span> <span class="o">=</span> <span class="mf">1.94</span>
+
+<span class="n">In</span> <span class="p">[</span><span class="mi">3</span><span class="p">]:</span> <span class="n">my_name</span> <span class="o">=</span> <span class="s2">&quot;giles&quot;</span>
+
+<span class="n">In</span> <span class="p">[</span><span class="mi">4</span><span class="p">]:</span> <span class="n">birth_year</span><span class="p">,</span> <span class="n">my_height</span><span class="p">,</span> <span class="n">my_name</span>
+<span class="n">Out</span><span class="p">[</span><span class="mi">4</span><span class="p">]:</span> <span class="p">(</span><span class="mi">1964</span><span class="p">,</span> <span class="mf">1.94</span><span class="p">,</span> <span class="s1">&#39;giles&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Let’s try another operator <code class="docutils literal notranslate"><span class="pre">-</span></code> or minus. This operator subtracts the value of
+one variable from another. It behaves just like <code class="docutils literal notranslate"><span class="pre">-</span></code> in basic arithmetic.
+Try out the commands below:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">In</span> <span class="p">[</span><span class="mi">6</span><span class="p">]:</span> <span class="n">age</span> <span class="o">=</span> <span class="mi">2022</span> <span class="o">-</span> <span class="n">birth_year</span>
+
+<span class="n">In</span> <span class="p">[</span><span class="mi">7</span><span class="p">]:</span> <span class="n">age</span>
+<span class="n">Out</span><span class="p">[</span><span class="mi">7</span><span class="p">]:</span> <span class="mi">58</span>
+</pre></div>
+</div>
+<p>This makes a calculation from the value 2022 and the value of the variable
+<code class="docutils literal notranslate"><span class="pre">birth_year</span></code> and assigned it to variable <code class="docutils literal notranslate"><span class="pre">age</span></code>.
+Interactive Python will always print the value returned by the last
+command you input, so in Out[7] <code class="docutils literal notranslate"><span class="pre">age</span></code> evaluates to 58.</p>
+</section>
+<section id="variables-in-minecraft">
+<span id="mc-variables"></span><h2>Variables in Minecraft<a class="headerlink" href="#variables-in-minecraft" title="Link to this heading">#</a></h2>
+<p>MCIWB provides some built in variables that you can use. The most important
+is called <code class="docutils literal notranslate"><span class="pre">world</span></code> and it is your entry point into many of the functions
+provided by the library.</p>
+<p><code class="docutils literal notranslate"><span class="pre">world</span></code> is a special type of variable called an <code class="docutils literal notranslate"><span class="pre">object</span></code> which can
+have many values stored in its <code class="docutils literal notranslate"><span class="pre">properties</span></code>.
+Objects can also have <code class="docutils literal notranslate"><span class="pre">methods</span></code> which execute code.</p>
+<p>One property of <code class="docutils literal notranslate"><span class="pre">world</span></code> is <code class="docutils literal notranslate"><span class="pre">player</span></code>. <code class="docutils literal notranslate"><span class="pre">player</span></code> is also an object and it
+has a property called <code class="docutils literal notranslate"><span class="pre">pos</span></code> which holds the player’s current position.</p>
+<p>You can access the player’s location like this:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">In</span> <span class="p">[</span><span class="mi">10</span><span class="p">]:</span> <span class="n">world</span><span class="o">.</span><span class="n">player</span><span class="o">.</span><span class="n">pos</span>
+<span class="n">Out</span><span class="p">[</span><span class="mi">10</span><span class="p">]:</span> <span class="n">Vec3</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="mi">633</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mi">73</span><span class="p">,</span> <span class="n">z</span><span class="o">=-</span><span class="mi">1665</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">out[10]</span></code> shows the player’s current position is x=633, y=73, z=-1665.</p>
+<p>Try moving your player around and see how the position changes by repeating
+the above command.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>You will notice that the position is reported as a type of variable
+called Vec3.</p>
+<p>Vec3  holds the Minecraft coordinates that you may be
+familiar with if you have used e.g. the teleport command.</p>
+<p>For advanced detail on what this all means see <a class="reference internal" href="../explanations/coordinates.html#coordinates"><span class="std std-ref">Minecraft’s Coordinate System</span></a>.</p>
+</div>
+<p>An example of a <code class="docutils literal notranslate"><span class="pre">method</span></code> on <code class="docutils literal notranslate"><span class="pre">world</span></code> is <code class="docutils literal notranslate"><span class="pre">set_block</span></code> which will place
+a block in a particular position.</p>
+<p>Make sure your player is standing
+on the flat area of sand and execute the set_block method like this:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">pos</span> <span class="o">=</span> <span class="n">world</span><span class="o">.</span><span class="n">player</span><span class="o">.</span><span class="n">pos</span>
+<span class="n">world</span><span class="o">.</span><span class="n">set_block</span><span class="p">(</span><span class="n">pos</span><span class="p">,</span> <span class="n">Item</span><span class="o">.</span><span class="n">IRON_BLOCK</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Your player should have been bumped out of their position and if you turn
+around you will see an iron block.</p>
+<p>What you did here was assign your
+player’s position to the variable <code class="docutils literal notranslate"><span class="pre">pos</span></code> and then called the <code class="docutils literal notranslate"><span class="pre">set_block</span></code>
+method on <code class="docutils literal notranslate"><span class="pre">world</span></code>. You told <code class="docutils literal notranslate"><span class="pre">set_block</span></code> to use pos for the position and
+IRON_BLOCK for the block to place.</p>
+<p><code class="docutils literal notranslate"><span class="pre">Item</span></code> is another built-in variable that you can use. It is a list of all the
+types of blocks in Minecraft. If you type <code class="docutils literal notranslate"><span class="pre">Item.IR</span></code> in <strong>iPython</strong> and then
+hit <code class="docutils literal notranslate"><span class="pre">Tab</span></code> you will see a list of all the items in Minecraft that begin with
+<strong>IR</strong>. See <a class="reference internal" href="../how-to/completion.html#completion"><span class="std std-ref">Command Completion</span></a> for more details.</p>
+</section>
+<section id="iron-golem">
+<span id="golem"></span><h2>Iron Golem<a class="headerlink" href="#iron-golem" title="Link to this heading">#</a></h2>
+<p>OK, let’s make an iron golem! Copy and paste the following Python code commands
+into the Python terminal:</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>To copy and paste code from this page to your terminal:</p>
+<ul class="simple">
+<li><p>Drag the mouse to highlight the code you want to Copy</p></li>
+<li><p>right click the highlight and click <code class="docutils literal notranslate"><span class="pre">Copy</span></code> to copy the
+code to the clipboard</p></li>
+<li><p>right click in your Python Terminal and choose <code class="docutils literal notranslate"><span class="pre">Paste</span></code></p></li>
+</ul>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">world</span><span class="o">.</span><span class="n">set_block</span><span class="p">(</span><span class="n">pos</span><span class="p">,</span> <span class="n">Item</span><span class="o">.</span><span class="n">IRON_BLOCK</span><span class="p">)</span>
+<span class="n">arms</span> <span class="o">=</span> <span class="n">pos</span> <span class="o">+</span> <span class="n">Direction</span><span class="o">.</span><span class="n">UP</span>
+<span class="n">world</span><span class="o">.</span><span class="n">set_block</span><span class="p">(</span><span class="n">arms</span><span class="p">,</span> <span class="n">Item</span><span class="o">.</span><span class="n">IRON_BLOCK</span><span class="p">)</span>
+<span class="n">world</span><span class="o">.</span><span class="n">set_block</span><span class="p">(</span><span class="n">arms</span> <span class="o">+</span> <span class="n">Direction</span><span class="o">.</span><span class="n">EAST</span><span class="p">,</span> <span class="n">Item</span><span class="o">.</span><span class="n">IRON_BLOCK</span><span class="p">)</span>
+<span class="n">world</span><span class="o">.</span><span class="n">set_block</span><span class="p">(</span><span class="n">arms</span> <span class="o">+</span> <span class="n">Direction</span><span class="o">.</span><span class="n">WEST</span><span class="p">,</span> <span class="n">Item</span><span class="o">.</span><span class="n">IRON_BLOCK</span><span class="p">)</span>
+<span class="n">world</span><span class="o">.</span><span class="n">set_block</span><span class="p">(</span><span class="n">arms</span> <span class="o">+</span> <span class="n">Direction</span><span class="o">.</span><span class="n">UP</span><span class="p">,</span> <span class="n">Item</span><span class="o">.</span><span class="n">CARVED_PUMPKIN</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Yay! You can paste again to create another one.</p>
+<figure class="align-center" id="id2">
+<a class="reference internal image-reference" href="../_images/golem.png"><img alt="golem" src="../_images/golem.png" style="width: 800px;" />
+</a>
+<figcaption>
+<p><span class="caption-text">Say hello to the Iron Golem, your first Python creation!</span><a class="headerlink" href="#id2" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<p>(See “Creation” in this article <a class="reference external" href="https://minecraft.wiki/w/Iron_Golem">https://minecraft.wiki/w/Iron_Golem</a>
+if you don’t know about making iron golems)</p>
+<p>How does this work? We use <code class="docutils literal notranslate"><span class="pre">set_block</span></code> to place all the necessary blocks
+in the world. We use the variables <code class="docutils literal notranslate"><span class="pre">pos</span></code> (which we set earlier) and <code class="docutils literal notranslate"><span class="pre">arms</span></code>
+to control where those blocks are placed.</p>
+<p><code class="docutils literal notranslate"><span class="pre">Direction</span></code> provides values that will move a position by one block in a
+particular direction when added/subtracted to/from that position. Note that we
+are using the operator <code class="docutils literal notranslate"><span class="pre">+</span></code> and that it can add more than just numbers.</p>
+<p>So, first we place the golem’s feet at <code class="docutils literal notranslate"><span class="pre">pos</span></code>.
+Then we move UP one block from the position <code class="docutils literal notranslate"><span class="pre">pos</span></code> to the arm level of
+the golem and save  that position in <code class="docutils literal notranslate"><span class="pre">arms</span></code>. Now we can step EAST
+and WEST from <code class="docutils literal notranslate"><span class="pre">arms</span></code> to make the arms. Finally we step UP to make the head.</p>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="02-orientation.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Orientation</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="04-loops.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Loops</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#introduction">Introduction</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#variables-types-and-operators">Variables, Types and Operators</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#trying-out-variables">Trying out Variables</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#variables-in-minecraft">Variables in Minecraft</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#iron-golem">Iron Golem</a></li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+
+  
+  <div class="tocsection editthispage">
+    <a href="https://github.com/gilesknap/mciwb/edit/0.9.1/docs/tutorials/03-variables.rst">
+      <i class="fa-solid fa-pencil"></i>
+      
+      
+        
+          Edit on GitHub
+        
+      
+    </a>
+  </div>
+</div>
+
+  <div class="sidebar-secondary-item">
+
+  <div class="tocsection sourcelink">
+    <a href="../_sources/tutorials/03-variables.rst.txt">
+      <i class="fa-solid fa-file-lines"></i> Show Source
+    </a>
+  </div>
+</div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.15.4.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>
