@@ -35,11 +35,13 @@ class Signs:
 
     _re_sign_text = re.compile("""front_text.*messages: \\['"([^"]*)"',""")
     _re_sign_entity = (
-        """minecraft:oak_sign{{"""
-        """BlockEntityTag:{{front_text:{{"""
-        """messages:['["{0}"]','[""]','[""]','[""]']}}}},"""
-        """display:{{Name:'{{"text":"{0}"}}'}}"""
+        """minecraft:oak_sign["""
+        """block_entity_data={{"""
+        """id:oak_sign,front_text:{{"""
+        """messages:['["{0}"]','[""]','[""]','[""]']"""
         """}}"""
+        """}},"""
+        """minecraft:item_name="{0}"]"""
     )
 
     _wall_sign = "minecraft:oak_wall_sign"
