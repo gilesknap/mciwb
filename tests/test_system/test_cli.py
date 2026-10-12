@@ -54,8 +54,13 @@ def test_backup(caplog: pytest.LogCaptureFixture):
 
         marker = world / "mciwb-marker.txt"
         marker.write_text("before backup")
-        run_cli("backup", *folders, "--backup-name", "test")
+        run_cli("backup", *folders, "--port", port, "--backup-name", "test", "--debug")
         assert (backup_folder / "test.zip").exists()
+        # the backup asked the running test server to flush the world to disk
+        saves = [
+            r.getMessage() for r in caplog.records if "save_all:" in r.getMessage()
+        ]
+        assert saves and "Saved the game" in saves[-1], saves
 
         marker.write_text("after backup")
         extra = world / "mciwb-extra.txt"
