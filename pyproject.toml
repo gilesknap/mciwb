@@ -67,10 +67,19 @@ filterwarnings = [
 ]
 # Doctest python code in docs, python code in src docstrings, test functions in tests
 testpaths = "docs src tests"
+markers = [
+    "system: needs a docker daemon to run a Minecraft server (tests/test_system)",
+]
 
 [tool.coverage.run]
 patch = ["subprocess"]
 data_file = "/tmp/mciwb.coverage"
+concurrency = ["thread"]
+# the demo scripts are examples, not library code
+omit = ["tests/*", "src/demo/*"]
+
+[tool.coverage.report]
+exclude_also = ["def __repr__", "if self\\.debug", "raise NotImplementedError"]
 
 [tool.coverage.paths]
 # Tests are run from installed location, map back to the src directory

@@ -16,6 +16,7 @@ jobs:
       tox: pre-commit,type-checking
 
   test:
+    # unit tests only: these need no docker daemon
     strategy:
       matrix:
         runs-on: ["ubuntu-latest"] # can add windows-latest, macos-latest
@@ -25,6 +26,16 @@ jobs:
     with:
       runs-on: ${{ matrix.runs-on }}
       python-version: ${{ matrix.python-version }}
+      pytest-args: -m "not system"
+
+  system-test:
+    # system tests launch a Minecraft server in docker (provided by the
+    # ubuntu runners), so run them once with the default python version
+    uses: ./.github/workflows/_test.yml
+    with:
+      runs-on: ubuntu-latest
+      pytest-args: -m system
+      name: system
 
   container:
     needs: test
@@ -45,14 +56,14 @@ jobs:
     uses: ./.github/workflows/_dist.yml
 
   pypi:
-    needs: [dist, test]
+    needs: [dist, test, system-test]
     if: github.ref_type == 'tag'
     uses: ./.github/workflows/_pypi.yml
     permissions:
       id-token: write
 
   release:
-    needs: [dist, test, docs]
+    needs: [dist, test, system-test, docs]
     if: github.ref_type == 'tag'
     uses: ./.github/workflows/_release.yml
     permissions:

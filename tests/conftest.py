@@ -4,6 +4,7 @@ from pathlib import Path
 from tempfile import gettempdir
 from time import sleep
 
+import docker
 import pytest
 from docker.models.containers import Container
 from mcipc.rcon.enumerations import Item
@@ -31,6 +32,36 @@ logging.basicConfig(
     level=logging.DEBUG,
     format="%(levelname)s: %(funcName)s - %(message)s (%(pathname)s:%(lineno)d)",
 )
+
+SYSTEM_TESTS = Path(__file__).parent / "test_system"
+
+
+def _docker_available() -> bool:
+    try:
+        docker.from_env().ping()
+    except Exception:
+        return False
+    return True
+
+
+def pytest_collection_modifyitems(config: pytest.Config, items: list[pytest.Item]):
+    """
+    Mark everything under tests/test_system as a 'system' test.
+
+    System tests launch a real Minecraft server in a docker container. When no
+    docker daemon is reachable they are skipped, except under CI where a missing
+    docker daemon must be reported as a failure rather than hidden.
+
+    Run just the unit tests with: pytest -m "not system"
+    """
+    system_items = [i for i in items if SYSTEM_TESTS in i.path.parents]
+    for item in system_items:
+        item.add_marker(pytest.mark.system)
+
+    if system_items and "CI" not in os.environ and not _docker_available():
+        skip = pytest.mark.skip(reason="no docker daemon available for system tests")
+        for item in system_items:
+            item.add_marker(skip)
 
 
 @pytest.fixture(scope="session")

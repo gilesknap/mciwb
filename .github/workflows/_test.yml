@@ -9,6 +9,14 @@ on:
         type: string
         description: The runner to run this job on
         required: true
+      pytest-args:
+        type: string
+        description: Extra arguments to pass to pytest, e.g. to select tests by marker
+        default: ""
+      name:
+        type: string
+        description: Label for this test run, used to name the coverage upload
+        default: ""
 
 env:
   # https://github.com/pytest-dev/pytest/issues/2042
@@ -18,6 +26,8 @@ env:
 jobs:
   run:
     runs-on: ${{ inputs.runs-on }}
+    # system tests download and launch a Minecraft server so allow plenty of time
+    timeout-minutes: 30
 
     steps:
       - name: Checkout
@@ -30,10 +40,10 @@ jobs:
         uses: astral-sh/setup-uv@v10.0.0
 
       - name: Run tests
-        run: uv run --locked tox -e tests
+        run: uv run --locked tox -e tests -- ${{ inputs.pytest-args }}
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v7
         with:
-          name: ${{ inputs.python-version }}/${{ inputs.runs-on }}
+          name: ${{ inputs.name || inputs.python-version }}/${{ inputs.runs-on }}
           files: cov.xml

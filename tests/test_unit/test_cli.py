@@ -1,11 +1,8 @@
 import sys
 from subprocess import check_output
 
-from typer.testing import CliRunner
 
 from mciwb import __version__
-
-runner = CliRunner()
 
 
 def test_cli_version():
