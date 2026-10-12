@@ -22,7 +22,7 @@ from .player import Player, PlayerNotInWorldError
 from .server import MinecraftServer
 from .signs import Signs
 from .switch import Switch
-from .threads import get_client, new_thread, set_client
+from .threads import Client, get_client, new_thread, set_client
 from .wall import Wall, WallMaker
 
 __all__ = [
@@ -37,6 +37,7 @@ __all__ = [
     "WallMaker",
     "Switch",
     "Monitor",
+    "Client",
     "get_client",
     "set_client",
     "new_thread",

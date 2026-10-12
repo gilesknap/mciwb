@@ -9,9 +9,29 @@ passed to new_thread.
 import threading
 from collections.abc import Callable
 
-from mcipc.rcon.je.client import Client
+from mcipc.rcon.je.client import Client as _McipcClient
 
 thread_local = threading.local()
+
+# the Minecraft server collects the output of every RCON connection in one
+# shared buffer, which it clears before each command and reads after it. Two
+# connections running commands at the same time therefore receive each other's
+# output, or none at all. This lock lets only one command run at a time.
+_rcon_lock = threading.RLock()
+
+
+class Client(_McipcClient):
+    """
+    An RCON client for Minecraft Java Edition that is safe to use alongside
+    the clients of other threads in this process.
+
+    Each command waits for any command running on another connection to
+    complete, so that the server returns the output of this command only.
+    """
+
+    def run(self, command: str, *arguments: str) -> str:
+        with _rcon_lock:
+            return super().run(command, *arguments)
 
 
 def _enter_thread(client: Client, target: Callable[[], None], name: str) -> None:

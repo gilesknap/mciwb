@@ -6,7 +6,6 @@ Minecraft world
 from pathlib import Path
 
 from mcipc.rcon.exceptions import NoPlayerFound
-from mcipc.rcon.je import Client
 from mcwb import Anchor3, Blocks, Direction, Item, Vec3, Volume
 from mcwb.itemlists import grab, load_items, save_items
 from rcon.exceptions import SessionTimeout
@@ -18,7 +17,7 @@ from mciwb.monitor import Monitor
 from mciwb.player import Player, PlayerNotInWorldError
 from mciwb.server import HOST, def_pass, def_port
 from mciwb.signs import Signs
-from mciwb.threads import get_client, set_client
+from mciwb.threads import Client, get_client, set_client
 
 
 def get_world() -> "Iwb":

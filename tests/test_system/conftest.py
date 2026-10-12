@@ -1,7 +1,6 @@
 import pytest
-from mcipc.rcon.je import Client
 
-from mciwb.threads import get_client, set_client
+from mciwb.threads import Client, get_client, set_client
 from tests.mockclient import MockClient
 
 

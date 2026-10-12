@@ -9,11 +9,11 @@ from time import monotonic, sleep
 
 from docker import from_env
 from docker.models.containers import Container
-from mcipc.rcon.je.client import Client
 from mcwb import Vec3
 from rcon.exceptions import WrongPassword
 
 from mciwb.logging import log
+from mciwb.threads import Client
 
 HOST = "localhost"
 

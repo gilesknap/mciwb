@@ -7,14 +7,13 @@ from time import sleep
 import docker
 import pytest
 from docker.models.containers import Container
-from mcipc.rcon.je import Client
 from mcwb.types import Vec3
 
 from mciwb.iwb import Iwb
 from mciwb.monitor import Monitor
 from mciwb.player import Player, PlayerNotInWorldError
 from mciwb.server import HOST, MinecraftServer
-from mciwb.threads import get_client, set_client, thread_local
+from mciwb.threads import Client, get_client, set_client, thread_local
 from tests.mockclient import MockClient
 
 KEEP_SERVER = "MCIWB_KEEP_SERVER" in os.environ

@@ -9,7 +9,6 @@ IPython session has all of these names already imported, and user modules
 """
 
 from mcipc.rcon.enumerations import FillMode, SetblockMode
-from mcipc.rcon.je import Client
 from mcwb import Anchor3, Blocks, Cuboid, Item, Vec3, Volume
 from mcwb.api import make_tunnel, polygon
 from mcwb.itemlists import grab, load_items, save_items
@@ -22,7 +21,7 @@ from mciwb.nbt import parse_nbt
 from mciwb.player import Player
 from mciwb.signs import Signs
 from mciwb.switch import Switch
-from mciwb.threads import get_client
+from mciwb.threads import Client, get_client
 from mciwb.wall import Wall, WallMaker
 
 __all__ = [
