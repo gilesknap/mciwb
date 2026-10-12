@@ -128,7 +128,7 @@ in to X , Y, Z in that order::
 You can use a Vec3 to ask for information about a block in the world e.g.::
     
     In [3]: world.get_block(Vec3(x=646, y=72, z=-1638))
-    Out[3]: <Item.CACTUS: 'cactus'>
+    Out[3]: <Item.CACTUS: 'minecraft:cactus'>
 
 Also you can get the location of things, like the player::
 
@@ -139,7 +139,7 @@ You can combine the above two commands and find out what type of block the
 player is standing on::
 
     In [5]: world.get_block(world.player.pos + Direction.DOWN)
-    Out[5]: <Item.SAND: 'sand'>
+    Out[5]: <Item.SAND: 'minecraft:sand'>
 
 Note the use of addition of the Direction.DOWN to get the block below the
 player's feet.
