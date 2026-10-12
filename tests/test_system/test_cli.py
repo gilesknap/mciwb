@@ -1,12 +1,12 @@
 import logging
-from pathlib import Path
+import shutil
 
 import pytest
 from typer.testing import CliRunner
 
 from mciwb.__main__ import cli
 from mciwb.threads import Client
-from tests.conftest import HOST, RCON_P, RCON_PORT
+from tests.conftest import HOST, RCON_P, RCON_PORT, servers_folder
 
 runner = CliRunner()
 
@@ -31,12 +31,16 @@ def test_repr(minecraft_player):
     assert "player: georgeTest" in result.stdout
 
 
-def test_backup(tmp_path: Path, caplog: pytest.LogCaptureFixture):
+def test_backup(caplog: pytest.LogCaptureFixture):
     """start a server, back it up, change it, restore it and stop it"""
     server_name = "mciwb-test-backup"
     port = 20200
-    server_folder = tmp_path / "server"
-    backup_folder = tmp_path / "backups"
+    # podman resolves bind mounts on its host, so use servers_folder which is
+    # at the same path in the devcontainer and on its host
+    test_folder = servers_folder / server_name
+    shutil.rmtree(test_folder, ignore_errors=True)
+    server_folder = test_folder / "server"
+    backup_folder = test_folder / "backups"
     world = server_folder / "world"
     common = ["--server-name", server_name, "--port", port]
     folders = ["--folder", server_folder, "--backup-folder", backup_folder]

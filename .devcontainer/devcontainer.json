@@ -16,7 +16,9 @@
         "UV_PROJECT_ENVIRONMENT": "/cache/venv-for${localWorkspaceFolder}",
         // Do the equivalent of "activate" the venv so we don't have to "uv run" everything
         "VIRTUAL_ENV": "/cache/venv-for${localWorkspaceFolder}",
-        "PATH": "/cache/venv-for${localWorkspaceFolder}/bin:${containerEnv:PATH}"
+        "PATH": "/cache/venv-for${localWorkspaceFolder}/bin:${containerEnv:PATH}",
+        // Use the host's rootless podman service, mounted below, for mciwb servers
+        "CONTAINER_HOST": "unix:///run/podman/podman.sock"
     },
     "customizations": {
         "vscode": {
@@ -38,13 +40,13 @@
                 "tamasfe.even-better-toml",
                 "redhat.vscode-yaml",
                 "ryanluker.vscode-coverage-gutters",
-                "charliermarsh.ruff",
-                "ms-azuretools.vscode-docker"
+                "charliermarsh.ruff"
             ]
         }
     },
-    // Create the config folder for the bash-config feature and uv cache
-    "initializeCommand": "mkdir -p ${localEnv:HOME}/.config/terminal-config",
+    // Create the config folder for the bash-config feature and uv cache,
+    // the system tests' server folder, and the host's podman socket
+    "initializeCommand": "mkdir -p ${localEnv:HOME}/.config/terminal-config /tmp/test-mc-servers && (systemctl --user start podman.socket || true)",
     "runArgs": [
         // Allow the container to access the host X11 display and EPICS CA
         "--net=host",
@@ -56,6 +58,19 @@
         {
             "source": "${localEnv:HOME}/.config/terminal-config",
             "target": "/user-terminal-config",
+            "type": "bind"
+        },
+        // The host's rootless podman socket, so that mciwb can start servers
+        {
+            "source": "${localEnv:XDG_RUNTIME_DIR}/podman/podman.sock",
+            "target": "/run/podman/podman.sock",
+            "type": "bind"
+        },
+        // Podman resolves bind mount paths on the host, so server folders must
+        // be at the same path on the host and in here: the system tests use this
+        {
+            "source": "/tmp/test-mc-servers",
+            "target": "/tmp/test-mc-servers",
             "type": "bind"
         },
         // Keep a persistent cross container cache for uv, pre-commit, and the venvs
