@@ -268,6 +268,8 @@ class MinecraftServer:
                             f"Minecraft Server '{self.name}' "
                             f"already running on port {self.port}"
                         )
+                        # it may still be booting, e.g. just after a reboot
+                        self.wait_server()
                     else:
                         self.start()
                     return

@@ -141,6 +141,20 @@ def test_create_existing(
     assert "already exists" not in caplog.text
 
 
+def test_create_existing_running(podman: MagicMock, tmp_path: Path):
+    """A running container may still be booting, so wait for it"""
+    container = existing_container(podman, tmp_path)
+    container.status = "running"
+    waited = []
+    with pytest.MonkeyPatch.context() as mp:
+        mp.setattr(MinecraftServer, "wait_server", lambda self: waited.append(self))
+        MinecraftServer("test", 20100, "pass", tmp_path, "normal").create()
+
+    container.start.assert_not_called()
+    podman.containers.run.assert_not_called()
+    assert len(waited) == 1
+
+
 def test_create_existing_other_settings(
     podman: MagicMock, tmp_path: Path, caplog: pytest.LogCaptureFixture
 ):
