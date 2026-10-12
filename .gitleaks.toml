@@ -1,0 +1,19 @@
+# This allow-list is limited to YAML/YML files to cut down SealedSecrets false positives.
+# All gitleaks default rules still apply everywhere (useDefault = true).
+# To broaden this allow-list to all files, comment out the 'paths' line below.
+
+[extend]
+useDefault = true
+
+[[rules]]
+id = "generic-api-key"
+
+# Pattern-only allowlist for long Ag… tokens in YAML 
+[[rules.allowlists]]
+condition = "AND"
+regexes = [
+  # Boundary-safe Ag… token without lookarounds (RE2-safe)
+  '''(?:^|[^A-Za-z0-9+/=])(Ag[A-Za-z0-9+/]{500,}={0,2})(?:[^A-Za-z0-9+/=]|$)'''
+]
+# Limit to YAML only for now. Comment this out if you want it to apply everywhere.
+paths = ['''(?i).*\.ya?ml$''']

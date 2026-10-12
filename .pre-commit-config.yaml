@@ -1,17 +1,19 @@
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.5.0
+    rev: v6.0.0
     hooks:
       - id: check-added-large-files
+        exclude: ^uv.lock
       - id: check-yaml
       - id: check-merge-conflict
+      - id: end-of-file-fixer
 
   - repo: local
     hooks:
       - id: ruff
         name: lint with ruff
         language: system
-        entry: ruff check --force-exclude
+        entry: ruff check --force-exclude --fix
         types: [python]
         require_serial: true
 
@@ -21,3 +23,15 @@ repos:
         entry: ruff format --force-exclude
         types: [python]
         require_serial: true
+
+      - id: uv-sync
+        name: update uv.lock and venv
+        pass_filenames: false
+        language: system
+        entry: uv sync
+        files: ^(uv\.lock|pyproject\.toml)$
+
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.30.1
+    hooks:
+      - id: gitleaks

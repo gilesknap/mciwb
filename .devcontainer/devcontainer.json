@@ -7,13 +7,29 @@
     },
     "remoteEnv": {
         // Allow X11 apps to run inside the container
-        "DISPLAY": "${localEnv:DISPLAY}"
+        "DISPLAY": "${localEnv:DISPLAY}",
+        // Put things that allow it in the persistent cache
+        "PRE_COMMIT_HOME": "/cache/pre-commit",
+        "UV_CACHE_DIR": "/cache/uv",
+        "UV_PYTHON_CACHE_DIR": "/cache/uv-python",
+        // Make a venv that is specific for this workspace path as the cache is shared
+        "UV_PROJECT_ENVIRONMENT": "/cache/venv-for${localWorkspaceFolder}",
+        // Do the equivalent of "activate" the venv so we don't have to "uv run" everything
+        "VIRTUAL_ENV": "/cache/venv-for${localWorkspaceFolder}",
+        "PATH": "/cache/venv-for${localWorkspaceFolder}/bin:${containerEnv:PATH}"
     },
     "customizations": {
         "vscode": {
             // Set *default* container specific settings.json values on container create.
             "settings": {
-                "python.defaultInterpreterPath": "/venv/bin/python"
+                // Use the container's python by default
+                "python.defaultInterpreterPath": "/cache/venv-for${localWorkspaceFolder}/bin/python",
+                // Don't activate the venv as it is already in the PATH
+                "python.terminal.activateEnvInCurrentTerminal": false,
+                "python.terminal.activateEnvironment": false,
+                // Workaround to prevent garbled python REPL in the terminal
+                // https://github.com/microsoft/vscode-python/issues/25505
+                "python.terminal.shellIntegration.enabled": false
             },
             // Add the IDs of extensions you want installed when the container is created.
             "extensions": [
@@ -27,20 +43,30 @@
             ]
         }
     },
-    "features": {
-        // Some default things like git config
-        "ghcr.io/devcontainers/features/common-utils:2": {
-            "upgradePackages": false
-        }
-    },
+    // Create the config folder for the bash-config feature and uv cache
+    "initializeCommand": "mkdir -p ${localEnv:HOME}/.config/terminal-config",
     "runArgs": [
         // Allow the container to access the host X11 display and EPICS CA
         "--net=host",
         // Make sure SELinux does not disable with access to host filesystems like tmp
         "--security-opt=label=disable"
     ],
+    "mounts": [
+        // Mount in the user terminal config folder so it can be edited
+        {
+            "source": "${localEnv:HOME}/.config/terminal-config",
+            "target": "/user-terminal-config",
+            "type": "bind"
+        },
+        // Keep a persistent cross container cache for uv, pre-commit, and the venvs
+        {
+            "source": "devcontainer-shared-cache",
+            "target": "/cache",
+            "type": "volume"
+        }
+    ],
     // Mount the parent as /workspaces so we can pip install peers as editable
     "workspaceMount": "source=${localWorkspaceFolder}/..,target=/workspaces,type=bind",
-    // After the container is created, install the python project in editable form
-    "postCreateCommand": "pip install $([ -f dev-requirements.txt ] && echo '-c dev-requirements.txt') -e '.[dev]' && pre-commit install"
+    // After the container is created, recreate the venv then make pre-commit first run faster
+    "postCreateCommand": "uv venv --clear && uv sync && pre-commit install --install-hooks"
 }

@@ -1,7 +1,7 @@
 [![CI](https://github.com/gilesknap/mciwb/actions/workflows/ci.yml/badge.svg)](https://github.com/gilesknap/mciwb/actions/workflows/ci.yml)
 [![Coverage](https://codecov.io/gh/gilesknap/mciwb/branch/main/graph/badge.svg)](https://codecov.io/gh/gilesknap/mciwb)
 [![PyPI](https://img.shields.io/pypi/v/mciwb.svg)](https://pypi.org/project/mciwb)
-[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://www.apache.org/licenses/LICENSE-2.0)
 
 # mciwb
 
@@ -13,9 +13,11 @@ This project is intended as a fun way to learn the Python Programming Language.
 Experienced Python programmers can also use this library to create
 Minecraft worlds with interactive Python features.
 
-Source          | <https://github.com/gilesknap/mciwb>
+What            | Where
 :---:           | :---:
-PyPI            | pip install mciwb
+Source          | <https://github.com/gilesknap/mciwb>
+PyPI            | `pip install mciwb`
+Docker          | `docker run ghcr.io/gilesknap/mciwb:latest`
 Documentation   | <https://gilesknap.github.io/mciwb>
 Releases        | <https://github.com/gilesknap/mciwb/releases>
 

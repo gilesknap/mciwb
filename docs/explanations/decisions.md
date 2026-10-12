@@ -1,14 +1,6 @@
-% This Source Code Form is subject to the terms of the Mozilla Public
-
-% License, v. 2.0. If a copy of the MPL was not distributed with this
-
-% file, You can obtain one at http://mozilla.org/MPL/2.0/.
-
 # Architectural Decision Records
 
-We record major architectural decisions in Architecture Decision Records (ADRs),
-as [described by Michael Nygard](http://thinkrelevance.com/blog/2011/11/15/documenting-architecture-decisions).
-Below is the list of our current ADRs.
+Architectural decisions are made throughout a project's lifetime. As a way of keeping track of these decisions, we record these decisions in Architecture Decision Records (ADRs) listed below.
 
 ```{toctree}
 :glob: true
@@ -16,3 +8,5 @@ Below is the list of our current ADRs.
 
 decisions/*
 ```
+
+For more information on ADRs see this [blog by Michael Nygard](http://thinkrelevance.com/blog/2011/11/15/documenting-architecture-decisions).

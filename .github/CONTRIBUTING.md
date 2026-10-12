@@ -23,5 +23,5 @@ same or is improved by a pull request!
 It is recommended that developers use a [vscode devcontainer](https://code.visualstudio.com/docs/devcontainers/containers). This repository contains configuration to set up a containerized development environment that suits its own needs.
 
 This project was created using the [Diamond Light Source Copier Template](https://github.com/DiamondLightSource/python-copier-template) for Python projects.
-The template's [Developer Guide](https://diamondlightsource.github.io/python-copier-template) contains detailed information on setting up a development environment, running the tests and what standards the code and documentation
-should follow.
+
+For more information on common tasks like setting up a developer environment, running the tests, and setting a pre-commit hook, see the template's [How-to guides](https://diamondlightsource.github.io/python-copier-template/5.4.0/how-to.html).
