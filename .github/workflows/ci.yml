@@ -38,11 +38,12 @@ jobs:
       name: system
 
   container:
-    needs: test
+    # only publish an image once the system tests have passed too
+    needs: [test, system-test]
     if: always()
     uses: ./.github/workflows/_container.yml
     with:
-      publish: ${{ needs.test.result == 'success' }}
+      publish: ${{ needs.test.result == 'success' && needs.system-test.result == 'success' }}
     permissions:
       contents: read
       packages: write
