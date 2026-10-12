@@ -267,6 +267,10 @@ def _rcon_client(port: int, password: str) -> Client | None:
     except Exception as e:
         log.debug(f"no server on {HOST}:{port}: {e!r}")
     else:
+        # the timeout is only for the probe: save-all flush on a large world
+        # can take longer, so wait for commands as long as they need (rcon
+        # types the timeout as float, but the socket accepts None)
+        client.timeout = None  # pyright: ignore[reportAttributeAccessIssue]
         return client
     client.close()
     return None
