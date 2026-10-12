@@ -5,8 +5,7 @@
 
 # mciwb
 
-Minecraft Interactive World Builder
-===================================
+Minecraft Interactive World Builder.
 
 This project is intended as a fun way to learn the Python Programming Language.
 
@@ -22,17 +21,15 @@ Documentation   | <https://gilesknap.github.io/mciwb>
 Releases        | <https://github.com/gilesknap/mciwb/releases>
 
 
-Quick Start
------------
+## Quick Start
 
 To get started learning Python, see
-[Introduction](https://gilesknap.github.io/mciwb/main/user/tutorials/00-prereq.html)
+[Introduction](https://gilesknap.github.io/mciwb/main/tutorials/00-prereq.html)
 
 For existing Python developers, see
-[API documentation](https://gilesknap.github.io/mciwb/main/user/reference/api.html)
+[API documentation](https://gilesknap.github.io/mciwb/main/_api/mciwb.html)
 
-Example Build
--------------
+## Example Build
 
 The pagoda and castle with working portcullis were all created programmatically
 with Python and the current version of MCIWB.
@@ -40,8 +37,7 @@ with Python and the current version of MCIWB.
 https://github.com/gilesknap/mciwb/assets/964827/026b3551-f514-403a-bebe-8d168c7170b0
 
 
-Goals
------
+## Goals
 
 Minecraft Interactive World Builder's goals are:
 
@@ -56,17 +52,11 @@ environment are included. There are step by step tutorials to
 introduce Python Programming and the features of Minecraft Interactive World
 Builder.
 
-.. note::
+**Note:** this is a work in progress. There are now enough tutorials to learn
+the fundamentals of Python and enough functionality to have some fun
+interacting with Minecraft from Python code.
 
-    This is a work in progress. There are now enough tutorials to learn the
-    fundamentals of Python and enough functionality to have some fun
-    interacting with Minecraft from Python code.
-
-    I will continue to expand the tutorials and add more features to the
-    library.
-
-Credits
--------
+## Credits
 
 This project would not be possible without [mcipc](https://github.com/conqp/mcipc/),
 which provides the client library for Minecraft RCON.
