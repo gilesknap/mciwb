@@ -1,10 +1,16 @@
+"""
+The mciwb command line interface
+"""
+
+import runpy
 import sys
 from pathlib import Path
+from typing import Annotated
 
 import typer
 from IPython.terminal.embed import InteractiveShellEmbed
 
-from mciwb import __version__
+from mciwb import __version__, imports
 from mciwb.backup import Backup
 
 # these are imported only for use in iPython without needing a manual import
@@ -42,7 +48,6 @@ def main(
         is_eager=True,
         help="Print the version of mciwb and exit",
     ),
-    debug: bool = False,
 ):
     """Minecraft Interactive World Builder"""
 
@@ -64,22 +69,7 @@ def shell(
 
     sys.path.append(".")
 
-    world = None
-
-    try:
-        world = Iwb(server, port, passwd)
-
-        if player:
-            world.add_player(player)
-    except ConnectionRefusedError:
-        log.error("Could not connect to server")
-        exit(1)
-    except Exception:
-        if world:
-            world.stop()
-        log.error("Failed to start world")
-        log.debug("", exc_info=True)
-        exit(1)
+    world = _connect(server, port, passwd, player)
 
     log.info("######### Starting Interactive Session ##########\n")
 
@@ -101,6 +91,60 @@ def shell(
 
     # Terminate all threads after interactive session exits
     world.stop()
+
+
+def _connect(server: str, port: int, passwd: str, player: str) -> Iwb:
+    """Connect to the server and optionally add a player, or exit on failure"""
+    world = None
+    try:
+        world = Iwb(server, port, passwd)
+
+        if player:
+            world.add_player(player)
+    except ConnectionRefusedError:
+        log.error(f"Could not connect to server {server}:{port}")
+        raise typer.Exit(1) from None
+    except Exception:
+        if world:
+            world.stop()
+        log.error("Failed to start world")
+        log.debug("", exc_info=True)
+        raise typer.Exit(1) from None
+    return world
+
+
+@cli.command()
+def run(
+    script: Annotated[Path, typer.Argument(help="the Python script to run")],
+    server: str = HOST,
+    port: int = def_port,
+    passwd: str = def_pass,
+    player: str = "",
+    debug: bool = False,
+):
+    """
+    Run a Python build script against your Minecraft server, then exit.
+
+    The script runs with the same names available as in `mciwb shell`: a
+    `world` object connected to the server, plus everything in mciwb.imports
+    (Item, Vec3, Direction, polygon ...). Background monitors are stopped
+    when the script ends.
+    """
+    init_logging(debug)
+
+    if not script.is_file():
+        log.error(f"{script} not found")
+        raise typer.Exit(1)
+    # let the script import modules that sit beside it
+    sys.path.insert(0, str(script.resolve().parent))
+
+    world = _connect(server, port, passwd, player)
+    namespace = {name: getattr(imports, name) for name in imports.__all__}
+    namespace["world"] = world
+    try:
+        runpy.run_path(str(script), init_globals=namespace, run_name="__main__")
+    finally:
+        world.stop()
 
 
 @cli.command()
@@ -126,7 +170,7 @@ def start(
     if folder.exists():
         if not folder.is_dir():
             log.error(f"{folder} is not a directory")
-            exit(1)
+            raise typer.Exit(1)
         else:
             log.info(f"Launching existing Minecraft server in {folder}")
     else:
@@ -175,23 +219,38 @@ def backup(
 
 @cli.command()
 def restore(
-    backup_name: str = typer.Argument(""),
+    backup_name: str = typer.Argument("", help="defaults to the latest backup"),
     debug: bool = False,
     folder: Path = default_server_folder,
     backup_folder: Path = backup_folder_default,
     server_name: str = server_name,
     port: int = def_port,
+    password: str = def_pass,
+    world_type: str = def_world_type,
+    minecraft_version: str = MINECRAFT_VERSION,
+    keep_old: bool = typer.Option(
+        False, help="keep the replaced world folder as <folder>/world-old"
+    ),
 ):
     """
     Stop the minecraft server. Restore from backup and restart.
+
+    Use the same options that you gave to `mciwb start`.
     """
     init_logging(debug)
 
-    stop(server_name=server_name)
+    stop(server_name=server_name, debug=debug)
     backup = Backup(world_folder=folder / "world", backup_folder=backup_folder)
-    backup.restore(name=backup_name)
+    backup.restore(name=backup_name, backup=keep_old)
     start(
-        folder=folder, port=port, server_name=server_name, backup_folder=backup_folder
+        password=password,
+        world_type=world_type,
+        server_name=server_name,
+        folder=folder,
+        backup_folder=backup_folder,
+        port=port,
+        minecraft_version=minecraft_version,
+        debug=debug,
     )
 
 
