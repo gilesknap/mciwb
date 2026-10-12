@@ -18,6 +18,7 @@ from mciwb.imports import (
     WallMaker,
     get_world,
 )
+from mciwb.monitor import Monitor
 from tests.conftest import ENTITY_NAME
 from tests.mockclient import MockClient
 
@@ -97,14 +98,74 @@ def test_add_player_not_a_real_player(
     still monitored for sign commands
     """
 
-    def give(target: str, item: str):
-        raise NoPlayerFound("No player was found")
+    def give(self, target: str, item: str):
+        raise NoPlayerFound()
 
-    monkeypatch.setattr(mock_client, "give", give)
+    # patch the class, as Iwb uses its own MockClient
+    monkeypatch.setattr(MockClient, "give", give)
     world.add_player(ENTITY_NAME)
 
     assert world.players == [ENTITY_NAME]
     assert world.player is world.get_player(ENTITY_NAME)
+
+
+def test_add_player_not_found_warning(
+    world: Iwb,
+    mock_client: MockClient,
+    monkeypatch: pytest.MonkeyPatch,
+    caplog: pytest.LogCaptureFixture,
+):
+    """mcipc's NoPlayerFound has no message, so the warning supplies a reason"""
+
+    def give(self, target: str, item: str):
+        raise NoPlayerFound()
+
+    # patch the class, as Iwb uses its own MockClient
+    monkeypatch.setattr(MockClient, "give", give)
+    world.add_player("bob", setup=False)
+
+    assert (
+        "could not set up or give signs to bob, player not found in the world"
+        in caplog.text
+    )
+
+
+@pytest.fixture()
+def default_world(
+    mock_client: MockClient, monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+):
+    """An Iwb that thinks it is connected to the default mciwb server"""
+    monkeypatch.setattr(mciwb.iwb, "Client", MockClient)
+    monkeypatch.setattr(mciwb.iwb, "def_port", mock_client.port)
+    monkeypatch.setattr(mciwb.iwb, "default_server_folder", tmp_path / "server")
+    monkeypatch.setattr(mciwb.iwb, "backup_folder_default", tmp_path / "backups")
+
+    def make() -> Iwb:
+        return Iwb(mock_client.host, mock_client.port, "pass")
+
+    yield make
+    Monitor.stop_all()
+
+
+def test_backup_no_world(default_world, caplog: pytest.LogCaptureFixture):
+    """With no world in the default server folder, backups are disabled"""
+    world = default_world()
+    assert "backups disabled" in caplog.text
+
+    caplog.clear()
+    world.backup()
+    assert "no backup available" in caplog.text
+
+
+def test_backup_default_server(default_world, tmp_path: Path):
+    world_folder = tmp_path / "server" / "world"
+    world_folder.mkdir(parents=True)
+    (world_folder / "level.dat").write_text("level")
+
+    world = default_world()
+    world.backup(name="saved")
+
+    assert (tmp_path / "backups" / "saved.zip").exists()
 
 
 def test_save_load(world: Iwb, mock_client: MockClient, tmp_path: Path):

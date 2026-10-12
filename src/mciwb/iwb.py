@@ -14,8 +14,14 @@ from mciwb.backup import Backup
 from mciwb.copier import CopyPaste
 from mciwb.logging import init_logging, log
 from mciwb.monitor import Monitor
-from mciwb.player import Player, PlayerNotInWorldError
-from mciwb.server import HOST, def_pass, def_port
+from mciwb.player import Player
+from mciwb.server import (
+    HOST,
+    backup_folder_default,
+    def_pass,
+    def_port,
+    default_server_folder,
+)
 from mciwb.signs import Signs
 from mciwb.threads import Client, get_client, set_client
 
@@ -78,11 +84,15 @@ class Iwb:
         # where the folders are for doing backups
         self._backup: Backup | None = None
         if server == HOST and port == def_port:
-            try:
-                self._backup = Backup()
-            except ValueError as e:
+            world_folder = default_server_folder / "world"
+            if (world_folder / "level.dat").exists():
+                self._backup = Backup(world_folder, backup_folder_default)
+            else:
                 # e.g. the server's folder is elsewhere, or not yet saved
-                log.warning(f"backups disabled: {e}")
+                log.warning(
+                    f"backups disabled: {world_folder} does not look like "
+                    "a minecraft world"
+                )
 
     def debug(self, enable: bool = True):
         """
@@ -172,10 +182,19 @@ class Iwb:
             if setup:
                 player.setup()
             signs.give_signs()
-        except (PlayerNotInWorldError, SessionTimeout, NoPlayerFound) as e:
-            # e.g. a named entity standing in for a player (as in the tests)
-            # cannot be made an operator or be given items
-            log.warning("could not set up or give signs to %s, %s", name, e)
+        except NoPlayerFound:
+            # e.g. a misspelt player name, or a named entity standing in for
+            # a player (as in the tests), which cannot be given items.
+            # NoPlayerFound has no message of its own, so supply one
+            log.warning(
+                "could not set up or give signs to %s, player not found in the world",
+                name,
+            )
+        except SessionTimeout:
+            log.warning(
+                "could not set up or give signs to %s, the server did not respond",
+                name,
+            )
         else:
             log.info(f"Monitoring player {name} enabled for sign commands")
 

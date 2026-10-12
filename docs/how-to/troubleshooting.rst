@@ -26,7 +26,7 @@ Problems with Player Connection
 
 If you see messages like these::
 
-    WARNING: could not set up or give signs to <player>, player <player> left
+    WARNING: could not set up or give signs to <player>, player not found in the world
     WARNING: player <player> left, <player> will retry
 
 This means MCIWB could not find your player in the world. It is worth
