@@ -81,13 +81,34 @@ def pack_indices(indices: np.ndarray, palette_size: int) -> np.ndarray:
     return np.array(longs, dtype=np.uint64).view(np.int64)
 
 
+def palette_entry(state: str) -> dict:
+    """
+    The palette compound of a block state string such as
+    ``minecraft:oak_stairs[facing=east,half=top]``, as Minecraft 26.3 writes it
+    """
+    name, _, props = state.partition("[")
+    if not props:
+        return {"id": name}
+    pairs = (prop.split("=") for prop in props.rstrip("]").split(","))
+    return {"id": name, "properties": dict(pairs)}
+
+
 def section(sy: int, blocks: dict[tuple[int, int, int], str]) -> dict:
-    """a chunk section with blocks keyed by (x, y, z) within the section"""
+    """
+    A chunk section with blocks keyed by (x, y, z) within the section. Blocks
+    are block state strings, with or without properties. Like Minecraft 26.3,
+    the palette is a list of strings when every block has its default state
+    (written here as no properties), otherwise a list of compounds
+    """
     palette = [AIR] + sorted(set(blocks.values()) - {AIR})
     indices = np.zeros((16, 16, 16), dtype=np.int64)  # [y][z][x]
     for (x, y, z), name in blocks.items():
         indices[y, z, x] = palette.index(name)
-    states: dict[str, Any] = {"palette": [{"Name": name} for name in palette]}
+    if any("[" in state for state in palette):
+        entries: list = [palette_entry(state) for state in palette]
+    else:
+        entries = palette
+    states: dict[str, Any] = {"palette": entries}
     if len(palette) > 1:
         states["data"] = pack_indices(indices, len(palette))
     return {

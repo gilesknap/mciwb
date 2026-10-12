@@ -4,7 +4,7 @@ from pathlib import Path
 import numpy as np
 import pytest
 
-from mciwb.anvil import read_nbt, read_world_blocks, region_folder
+from mciwb.anvil import RegionFile, read_nbt, read_world_blocks, region_folder
 from mciwb.imports import Vec3, Volume
 from tests.anvil_writer import chunk_nbt, write_nbt, write_region, write_world
 
@@ -160,35 +160,67 @@ def test_nether(tmp_path: Path):
 
 
 @pytest.mark.parametrize(
-    "entry, name",
+    "entry",
     [
-        ({"Name": "minecraft:stone"}, "minecraft:stone"),
-        ({"Name": "minecraft:oak_stairs", "Properties": {"facing": "east"}}, None),
-        ("minecraft:oak_stairs[facing=east]", "minecraft:oak_stairs"),
-        ("granite", "minecraft:granite"),
+        # Minecraft 26.3 and later
+        {"id": "minecraft:oak_stairs", "properties": {"facing": "east"}},
+        {"id": "minecraft:oak_stairs"},
+        {"": "minecraft:oak_stairs"},
+        "minecraft:oak_stairs",
+        "minecraft:oak_stairs[facing=east]",
+        "oak_stairs",
+        # before 26.3
+        {"Name": "minecraft:oak_stairs", "Properties": {"facing": "east"}},
+        {"Name": "minecraft:oak_stairs"},
     ],
 )
-def test_palette_entries(tmp_path: Path, entry, name: str | None):
-    """palette entries may be compounds or block state strings"""
+def test_palette_entries(tmp_path: Path, entry):
+    """palette entries may be compounds in each format, or block state strings"""
     nbt = chunk_nbt(0, 0, {(1, 1, 1): "minecraft:stone"})
-    air = "minecraft:air" if isinstance(entry, str) else {"Name": "minecraft:air"}
+    air = "minecraft:air" if isinstance(entry, str) else {"id": "minecraft:air"}
     nbt["sections"][-1]["block_states"]["palette"] = [air, entry]
     folder = tmp_path / "world" / "region"
     folder.mkdir(parents=True)
     write_region(folder / "r.0.0.mca", {(0, 0): nbt})
 
     grid = read(tmp_path / "world", Vec3(1, 1, 1), Vec3(1, 1, 1))
-    assert grid[Vec3(1, 1, 1)] == (name or "minecraft:oak_stairs")
+    assert grid[Vec3(1, 1, 1)] == "minecraft:oak_stairs"
 
 
-def test_bad_palette_entry(tmp_path: Path):
+def test_block_states(tmp_path: Path):
+    """a section with blocks in non default states has a compound palette"""
+    blocks = {
+        (1, 1, 1): "minecraft:oak_stairs[facing=east]",
+        (2, 1, 1): "minecraft:oak_log[axis=x]",
+        (3, 1, 1): "minecraft:stone",
+        (1, 2, 1): "minecraft:oak_door[facing=south,half=upper]",
+    }
+    world = write_world(tmp_path / "world", blocks)
+    nbt = RegionFile(region_folder(world) / "r.0.0.mca").chunk(0, 0)
+    assert nbt is not None
+    palette = nbt["sections"][-1]["block_states"]["palette"]
+    assert {"id": "minecraft:oak_stairs", "properties": {"facing": "east"}} in palette
+    assert {"id": "minecraft:stone"} in palette
+
+    grid = read(world, Vec3(1, 1, 1), Vec3(3, 2, 1))
+    assert grid[Vec3(1, 1, 1)] == "minecraft:oak_stairs"
+    assert grid[Vec3(2, 1, 1)] == "minecraft:oak_log"
+    assert grid[Vec3(3, 1, 1)] == "minecraft:stone"
+    assert grid[Vec3(1, 2, 1)] == "minecraft:oak_door"
+
+
+@pytest.mark.parametrize(
+    "entry, match",
+    [(7, "7"), ({"properties": {"facing": "east"}}, "{'properties'")],
+)
+def test_bad_palette_entry(tmp_path: Path, entry, match: str):
     nbt = chunk_nbt(0, 0, {(1, 1, 1): "minecraft:stone"})
-    nbt["sections"][-1]["block_states"]["palette"] = [7, 8]
+    nbt["sections"][-1]["block_states"]["palette"] = [entry, entry]
     folder = tmp_path / "world" / "region"
     folder.mkdir(parents=True)
     write_region(folder / "r.0.0.mca", {(0, 0): nbt})
 
-    with pytest.raises(ValueError, match="unexpected block palette entry 7"):
+    with pytest.raises(ValueError, match=f"unexpected block palette entry {match}"):
         read(tmp_path / "world", Vec3(1, 1, 1), Vec3(1, 1, 1))
 
 

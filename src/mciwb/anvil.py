@@ -220,14 +220,20 @@ def _unpack_indices(data: np.ndarray | None, palette_size: int) -> np.ndarray:
 
 def _palette_name(entry: Any) -> str:
     """
-    The block name of a block state palette entry: a compound with a Name
-    (and Properties), or a block state string such as
+    The block name of a block state palette entry. Minecraft 26.3 and later
+    write a compound with an ``id`` (and ``properties`` unless it is the
+    default state), a compound with only an empty key and the block id, or,
+    when every block in the section is in its default state, a block state
+    string. Earlier releases write a compound with a ``Name`` (and
+    ``Properties``). Strings may carry a state, e.g.
     ``minecraft:oak_stairs[facing=east]``
     """
-    if isinstance(entry, dict) and "Name" in entry:
-        return block_name(entry["Name"])
     if isinstance(entry, str):
         return block_name(entry)
+    if isinstance(entry, dict):
+        for key in ("id", "Name", ""):
+            if isinstance(entry.get(key), str):
+                return block_name(entry[key])
     raise ValueError(f"unexpected block palette entry {entry!r}")
 
 

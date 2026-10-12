@@ -25,7 +25,8 @@ SCALE = 4
 def build(client: Client) -> None:
     """
     A hollow stone brick hut with a red wool roof, a gold block inside and a
-    glass window in the middle of its east wall, on a lime concrete floor at
+    glass window in the middle of its east wall, oak stairs facing east and an
+    oak log lying east-west in two corners, on a lime concrete floor at
     y -61. Not grass, which turns to dirt under the hut while the test runs
     """
     client.fill(LOW + Vec3(0, 1, 0), HIGH, Item.AIR)
@@ -35,6 +36,9 @@ def build(client: Client) -> None:
     client.fill(Vec3(-29, -56, -29), Vec3(-25, -56, -25), Item.RED_WOOL)
     client.setblock(Vec3(-27, -60, -27), Item.GOLD_BLOCK)
     client.setblock(Vec3(-25, -59, -27), Item.GLASS)
+    # blocks in non default states give their sections a palette of compounds
+    client.setblock(Vec3(-28, -60, -28), f"{Item.OAK_STAIRS}[facing=east]")
+    client.setblock(Vec3(-26, -60, -26), f"{Item.OAK_LOG}[axis=x]")
 
 
 def report(text: str) -> None:
@@ -59,6 +63,8 @@ def test_render(minecraft_container: MinecraftServer, minecraft_client: Client):
     assert grid[Vec3(-27, -60, -27)] == "minecraft:gold_block"
     assert grid[Vec3(-25, -59, -27)] == "minecraft:glass"
     assert grid[Vec3(-27, -59, -27)] == "minecraft:air"
+    assert grid[Vec3(-28, -60, -28)] == "minecraft:oak_stairs"
+    assert grid[Vec3(-26, -60, -26)] == "minecraft:oak_log"
     counts = grid.counts()
     assert counts["minecraft:red_wool"] == 25
     assert counts["minecraft:stone_bricks"] == 16 * 4 - 1
