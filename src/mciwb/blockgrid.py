@@ -43,7 +43,7 @@ class BlockGrid:
     :ivar origin: the world position of the block at index [0, 0, 0], the
         lowest (north west bottom) corner of the region
     :ivar ids: integer array of shape (size x, size y, size z), indexed
-        ``ids[x][y][z]`` like a `mcwb.Cuboid`
+        ``ids[x][y][z]`` like a ``mcwb.Cuboid``
     :ivar names: the namespaced block id for each index in *ids*, e.g.
         ``"minecraft:stone"``
     """
@@ -60,8 +60,8 @@ class BlockGrid:
     @classmethod
     def from_blocks(cls, blocks: Iterable, origin: Vec3) -> BlockGrid:
         """
-        Make a grid from a 3D array of block names or `mcwb.Item`, indexed
-        ``[x][y][z]``, such as the `mcwb.Cuboid` returned by ``grab``
+        Make a grid from a 3D array of block names or ``mcwb.Item``, indexed
+        ``[x][y][z]``, such as the ``mcwb.Cuboid`` returned by ``grab``
 
         :param blocks: a nested list or numpy array of blocks
         :param origin: the world position of blocks[0][0][0]
@@ -87,7 +87,7 @@ class BlockGrid:
 
     @property
     def volume(self) -> Volume:
-        """the region as a `mcwb.Volume`"""
+        """the region as a ``mcwb.Volume``"""
         return Volume.from_corners(self.origin, self.end)
 
     def __getitem__(self, pos: Vec3) -> str:

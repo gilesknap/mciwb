@@ -51,7 +51,7 @@ class Iwb:
     :ivar copier: `CopyPaste` object for the above player.
     :ivar signs: The `Signs` object for the above player.
     :ivar world_folder: The server's world folder, if it is on this machine.
-        `scan` and `render` read blocks from its files, which is much faster
+        ``scan`` and ``render`` read blocks from its files, which is much faster
         than over RCON. Set for the default server of ``mciwb start``.
     """
 
@@ -395,7 +395,7 @@ class Iwb:
     def scan(self, start: Vec3, end: Vec3) -> BlockGrid:
         """
         Read the blocks between two opposite corners of a region, from the
-        world's files if `world_folder` is set, otherwise over RCON.
+        world's files if ``world_folder`` is set, otherwise over RCON.
 
         :param start: a corner of the region
         :param end: the opposite corner of the region
@@ -416,7 +416,7 @@ class Iwb:
     ) -> BlockGrid:
         """
         Render the region between two opposite corners to a PNG image, to
-        see what a build looks like. See `mciwb.render` for the views.
+        see what a build looks like. See `render_howto` for the views.
 
         :param start: a corner of the region
         :param end: the opposite corner of the region

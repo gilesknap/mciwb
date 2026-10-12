@@ -65,6 +65,46 @@ finally:
     world.stop()                   # stop background threads
 ```
 
+## Seeing what you built: build, render, check
+
+You cannot see the game, so render the region you built to a PNG and read
+the image. Do this after each build step, and fix what looks wrong:
+
+```bash
+mciwb run hut.py                                     # 1. build
+mciwb render 620 72 -1670 645 90 -1645 \
+    --view top --view iso --view south --output hut.png  # 2. render X Y Z X Y Z
+mciwb render --centre 632 80 -1658 --size 26 18 26   #    or a centre and size
+```
+
+3. Read the PNG. Each view is titled and labelled with world coordinates
+   (the label is centred on its row or column of blocks), so you can relate
+   any pixel to a block position. `top` is a plan view with north up and x
+   across. `north`/`south`/`east`/`west` are elevations seen from that side.
+   `iso` is a 3D view from the south east (`iso_ne`, `iso_nw` and `iso_sw`
+   look from the other corners). The pale blue background is air. Glass,
+   water, torches, fences etc. are drawn see-through.
+4. Check the facts in code rather than by eye. In a script:
+
+```python
+grid = world.render(a, b, "hut.png", views=["top", "iso"])  # or world.scan(a, b)
+print(grid.counts())          # {'minecraft:stone_bricks': 412, ...}, no air
+assert grid[a + Vec3(2, 1, 2)] == "minecraft:gold_block"
+```
+
+- Blocks are read from the world's region files after `save-all flush`, which
+  is fast (0.06 s for 3.5 million blocks on the CI server). This works when the world
+  folder is on this machine: `~/mciwb-server/world` for `mciwb start`, or
+  give `--folder`. Otherwise (or with `--rcon`) blocks are read over RCON one
+  at a time, which is slow and capped at 32768 blocks.
+- Pass the same `--port`/`--password` as `mciwb start`.
+- Each view is about 512 px across by default (`--scale` sets pixels per
+  block). Keep the whole image under about 1500 px wide, or you will see a
+  scaled-down copy: render one or two views at a time for large regions.
+- Colours are averages (no textures), and block states are not drawn (stairs
+  and slabs look like full blocks). `mciwb.palette.set_colour` changes a
+  colour.
+
 ## Conventions
 
 - Coordinates are `Vec3(x, y, z)`; Y is up. `Direction.NORTH` is (0, 0, -1),

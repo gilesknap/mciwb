@@ -156,7 +156,7 @@ def render(
         512 pixels across
     :param labels: add a title, axis labels and grid lines with world
         coordinates
-    :param palette: block colours, defaults to `mciwb.palette.default_palette`
+    :param palette: block colours, defaults to ``mciwb.palette.default_palette``
 
     :returns: a Pillow image: call its ``save("file.png")`` method to save it
     """
