@@ -180,6 +180,9 @@ foundation. See docs/how-to/builders.rst.
   `landing` (default: the stairs' full block). Same-height points make a path.
   The path may pass over itself (spiral, switchback): every pass is built,
   and `support` stops above the headroom (max(clearance, 2)) of a lower pass.
+  At a corner that climbs, the middle and outside of a wide stairway climb 1
+  per block but the inside is too steep: make wide corners level for a few
+  blocks either side if every lane must be walkable.
 - `road(points, block=DIRT_PATH, width=3, border=None, clearance=2)`: lays the
   road on the ground (point y ignored), replacing the top ground block.
 - `ground_height(x, z, heightmap)`, `ground_heights(columns, heightmap)`: y of

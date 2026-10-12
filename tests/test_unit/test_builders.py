@@ -437,6 +437,42 @@ def test_wide_stairway_with_support(mock_client: MockClient):
         assert state(Vec3(x, 5, 3)) == "minecraft:dirt"
 
 
+def built_heights(client: MockClient, x: int, z: int) -> list[int]:
+    """the heights of the blocks in a column of the mock world"""
+    return [
+        y for y in range(-10, 30) if client.state_at(Vec3(x, y, z)) != "minecraft:air"
+    ]
+
+
+@pytest.mark.parametrize("width", [1, 2, 3, 4])
+@pytest.mark.parametrize(
+    "points",
+    [
+        # 1:1 round a corner, turning right then left
+        [Vec3(0, 0, 0), Vec3(3, 3, 0), Vec3(3, 6, 3), Vec3(0, 9, 3)],
+        # 1:1 turning left
+        [Vec3(0, 0, 0), Vec3(4, 4, 0), Vec3(4, 8, -4)],
+        # a level run in to a corner, then 1:1
+        [Vec3(0, 0, 0), Vec3(4, 2, 0), Vec3(4, 6, 4)],
+        # 1:1 down round a corner
+        [Vec3(0, 8, 0), Vec3(4, 4, 0), Vec3(4, 0, 4)],
+    ],
+)
+def test_wide_stairway_corners_climb_one_at_a_time(
+    mock_client: MockClient, points: list[Vec3], width: int
+):
+    # the middle of a wide stairway is walkable round a corner that climbs
+    stairway(points, Item.OAK_STAIRS, width=width)
+    steps = trace_path(points)
+    heights = []
+    for step in steps:
+        column = built_heights(mock_client, int(step.pos.x), int(step.pos.z))
+        assert column == [step.pos.y], step.pos
+        heights.append(column[0])
+    for a, b in zip(heights, heights[1:], strict=False):
+        assert abs(b - a) <= 1, heights
+
+
 def test_stairway_over_itself(mock_client: MockClient):
     # a spiral that passes over its own start: every step is built
     points = [
@@ -471,6 +507,10 @@ def test_wide_stairway_over_itself_with_support(mock_client: MockClient):
     ]
     stairway(points, Item.OAK_STAIRS, width=3, support=Item.COBBLESTONE)
     state = mock_client.state_at
+    # the middle climbs one block at a time from the last corner
+    assert state(Vec3(4, 8, 1)) == "minecraft:oak_planks"
+    assert state(Vec3(3, 9, 1)) == stairs("west")
+    assert state(Vec3(2, 10, 1)) == stairs("west")
     for z in (0, 1, 2):
         # the lower pass, and the upper pass above it at the same (x, z)
         assert state(Vec3(1, 1, z)) == stairs("east")

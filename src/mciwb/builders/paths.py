@@ -5,8 +5,12 @@ A path is a polyline: a list of points, where each straight section runs
 along x or along z (not diagonally). Turn corners by adding a point at the
 corner. The path is the line of blocks that people walk on top of, and it is
 *width* blocks wide, centred on the line (an even width has its extra block
-on the right, looking along the path). Wide paths turn corners best where
-they are level for a few blocks either side of the corner.
+on the right, looking along the path).
+
+The middle and the outside of a wide path climb one block at a time round a
+corner, but the inside of the corner is shorter, so it climbs too steeply
+to walk up. For a wide stairway that is easy to walk all the way across,
+make it level for a few blocks either side of each corner.
 
 Each function returns the bounding box (a ``Volume``) of the blocks it placed.
 """
@@ -52,9 +56,9 @@ def trace_path(points: Sequence[Vec3]) -> list[PathStep]:
     The blocks along the middle of a path through *points*, with the
     heights of the blocks spread evenly between the heights of the points.
 
-    In a section that climbs (or descends) by less than its length, the first
-    block (last, when descending) after each point stays level, so that a
-    corner is a landing.
+    In a section that climbs (or descends) by less than its length, the last
+    block before each point (the first block after it, when descending)
+    stays level, so that a corner is a landing.
 
     :raises ValueError: if a section is diagonal, or climbs more than one
         block for each block along
@@ -106,10 +110,10 @@ def _spread(steps: list[PathStep], width: int) -> dict[tuple[int, int], list[int
     the steps whose blocks are in that column. Corners get a square of the
     corner step.
 
-    Where the rows of nearby steps overlap at a corner, the earlier step
-    wins. A path that comes back over a column later on (a spiral, a
-    switchback) gets a block for each pass, unless the passes are at the
-    same height.
+    Where the rows of nearby steps overlap at a corner, each step keeps
+    its own middle block, and otherwise the earlier step wins. A path that
+    comes back over a column later on (a spiral, a switchback) gets a block
+    for each pass, unless the passes are at the same height.
     """
     offsets = _offsets(width)
     cells: dict[tuple[int, int], list[int]] = {}
@@ -121,13 +125,17 @@ def _spread(steps: list[PathStep], width: int) -> dict[tuple[int, int], list[int
             return
         owners.append(i)
 
-    corners = []
-    for i, step in enumerate(steps):
-        for o in offsets:
+    # every step keeps its own middle block, so the middle of the path climbs
+    # one block at a time round a corner, even where the row of the corner
+    # step crosses the middle of the steps after it. Then the rest of each
+    # row, then the corners
+    for o in sorted(offsets, key=abs):
+        for i, step in enumerate(steps):
             pos = step.pos + _right(step.direction) * o
             claim(int(pos.x), int(pos.z), i)
-        if i + 1 < len(steps) and steps[i + 1].direction != step.direction:
-            corners.append(i)
+    corners = [
+        i for i in range(len(steps) - 1) if steps[i + 1].direction != steps[i].direction
+    ]
     for i in corners:
         # fill the gap on the outside of the corner
         pos = steps[i].pos

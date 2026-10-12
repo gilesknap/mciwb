@@ -126,6 +126,11 @@ height give a level path. ``support`` fills the space under the stairway and
              Item.STONE_BRICK_STAIRS, width=3, support=Item.STONE_BRICKS,
              clearance=3)
 
+Round a corner that climbs, the middle and the outside of a wide stairway
+climb one block at a time, but the inside of the corner is shorter and too
+steep to walk up. To make every part of a wide stairway easy to walk, keep it
+level for a few blocks either side of each corner.
+
 A stairway can pass over itself, like a spiral staircase round a tower or a
 switchback: every pass is built, and ``support`` under a higher pass stops
 above the headroom of the pass below it (``clearance``, or at least 2
