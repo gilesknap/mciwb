@@ -157,12 +157,7 @@ class Iwb:
         :param me: if True, set this player as the default player
         :param setup: if True, make the player an operator in creative mode
         """
-        try:
-            player = Player(name)
-        except PlayerNotInWorldError as e:
-            log.error("player %s is not in the world, %s", name, e)
-            return
-
+        player = Player(name)
         self._players[name] = player
         signs = Signs(player)
         Monitor(signs.poll, name=name)

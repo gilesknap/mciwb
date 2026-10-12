@@ -24,12 +24,16 @@ check that ``CONTAINER_HOST`` is set as described in `podman`.
 Problems with Player Connection
 -------------------------------
 
-If you see a message like this::
+If you see messages like these::
 
-    ERROR:        failed to give signs to player, player <player> left
+    WARNING: could not set up or give signs to <player>, player <player> left
+    WARNING: player <player> left, <player> will retry
 
-This means MCIWB could not find your player. It is worth checking that you 
-have your player name correct. 
+This means MCIWB could not find your player in the world. It is worth
+checking that you have your player name correct. MCIWB keeps looking for the
+player, so if they join later, give them the action signs with::
+
+    world.signs.give_signs()
 
 TODO good way to look for your name.
 
