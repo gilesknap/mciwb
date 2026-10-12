@@ -1,5 +1,4 @@
-from mcipc.rcon.item import Item
-from mcwb import Blocks, Volume
+from mcwb import Blocks, Item, Volume
 from mcwb.itemlists import grab
 from mcwb.types import Anchor3, Cuboid, Vec3
 
@@ -18,8 +17,6 @@ class SampleCube:
         self.size = Vec3(2, 2, 2)
         # TODO does Volume's use of size need review?
         self.volume_size = Vec3(3, 3, 3)
-
-        self.air = (((Item.AIR,) * 3) * 3) * 3
 
     def create(self, pos: Vec3, anchor: Anchor3 = Anchor3.BOTTOM_NW):
         """

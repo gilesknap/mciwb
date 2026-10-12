@@ -6,7 +6,7 @@ import re
 from collections.abc import Callable
 from time import sleep
 
-from mcwb.types import Item, Vec3
+from mcwb import Item, Vec3
 
 from mciwb.copier import CopyPaste
 from mciwb.logging import log
@@ -33,18 +33,26 @@ class Signs:
     providing those functions.
     """
 
-    _re_sign_text = re.compile("""front_text.*messages: \\['"([^"]*)"',""")
-    _re_sign_entity = (
-        """minecraft:oak_sign["""
-        """block_entity_data={{"""
-        """id:oak_sign,front_text:{{"""
-        """messages:['["{0}"]','[""]','[""]','[""]']"""
-        """}}"""
-        """}},"""
-        """minecraft:item_name="{0}"]"""
+    # The NBT path of the first line of text on the front of a sign
+    _sign_text_path = "front_text.messages[0]"
+    # Extract the text from the response to 'data get block <pos> <path>'.
+    # Sign text is stored as an SNBT text component: either a plain string
+    # e.g. "select" or a compound e.g. {text: "select"} (Minecraft 1.21.5+)
+    _re_sign_text = re.compile(r'block data: (?:\{.*\btext: )?"([^"]*)"')
+    # An oak sign item that places a sign with the text already written on it
+    # (the block entity type of all wooden signs is minecraft:sign)
+    _sign_item = (
+        "minecraft:oak_sign["
+        "block_entity_data={{"
+        'id:"minecraft:sign",front_text:{{messages:["{0}","","",""]}}'
+        "}},"
+        'minecraft:item_name="{0}"]'
     )
+    # A standing oak sign block with text, for use with setblock
+    _sign_block = 'minecraft:oak_sign{{front_text:{{messages:["{0}","","",""]}}}}'
 
-    _wall_sign = "minecraft:oak_wall_sign"
+    # the block tag that matches wall signs of every wood type
+    _wall_sign = "#minecraft:wall_signs"
 
     def __init__(self, player: Player):
         self.player = player
@@ -67,7 +75,7 @@ class Signs:
 
         return pos
 
-    def _poll(self):
+    def poll(self):
         """
         check if a sign has been placed in front of the player
         1 to 4 blocks away and take action based on sign text
@@ -81,7 +89,7 @@ class Signs:
                 sleep(0)  # don't hog the connection
                 pos = player_pos + facing * distance
                 block_pos = pos.with_ints() + Vec3(0, height, 0)
-                data = client.data.get(block=block_pos)
+                data = client.data.get(block=block_pos, path=self._sign_text_path)
                 match = self._re_sign_text.search(data)
                 if match:
                     text = match.group(1)
@@ -125,7 +133,28 @@ class Signs:
         if name in self.signs:
             del self.signs[name]
 
-    _sign_match = '{{"text":"{}"}}'
+    # how a command sign item appears in the player's Inventory data
+    _sign_match = '"minecraft:item_name": "{}"'
+
+    @classmethod
+    def sign_block(cls, text: str) -> str:
+        """
+        Return the block state and NBT for a standing oak sign with the given
+        text. For use with setblock, e.g. to place a command sign from code.
+
+        :param text: the text for the first line of the sign
+        """
+        return cls._sign_block.format(text)
+
+    @classmethod
+    def sign_item(cls, text: str) -> str:
+        """
+        Return the item stack for an oak sign that is placed with the given
+        text already written on it. For use with the give command.
+
+        :param text: the text for the first line of the sign
+        """
+        return cls._sign_item.format(text)
 
     def give_signs(self):
         """
@@ -137,4 +166,4 @@ class Signs:
         inventory = self.player.inventory
         for command in self.signs:
             if self._sign_match.format(command) not in inventory:
-                client.give(self.player.name, self._re_sign_entity.format(command))
+                client.give(self.player.name, self.sign_item(command))

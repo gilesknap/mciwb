@@ -1,11 +1,17 @@
+"""
+The mciwb command line interface
+"""
+
+import runpy
 import sys
 from pathlib import Path
-from typing import Optional
+from typing import Annotated
 
 import typer
 from IPython.terminal.embed import InteractiveShellEmbed
+from rcon.exceptions import WrongPassword
 
-from mciwb import __version__
+from mciwb import __version__, imports
 from mciwb.backup import Backup
 
 # these are imported only for use in iPython without needing a manual import
@@ -15,7 +21,9 @@ from mciwb.iwb import Iwb
 from mciwb.logging import exception_handler, init_logging, log
 from mciwb.server import (
     HOST,
+    MINECRAFT_VERSION,
     MinecraftServer,
+    PodmanNotAvailableError,
     backup_folder_default,
     def_pass,
     def_port,
@@ -23,6 +31,7 @@ from mciwb.server import (
     default_server_folder,
     server_name,
 )
+from mciwb.threads import Client, set_client
 
 cli = typer.Typer(add_completion=False)
 
@@ -35,17 +44,13 @@ def version_callback(value: bool):
 
 @cli.callback()
 def main(
-    # this should be 'bool | None' but I'm getting
-    # RuntimeError: Type not yet supported: bool | None
-    # despited Python 3.10 - TODO investigate
-    version: Optional[bool] = typer.Option(  # noqa: UP007
+    version: bool | None = typer.Option(
         None,
         "--version",
         callback=version_callback,
         is_eager=True,
-        help="Print the version of ibek and exit",
+        help="Print the version of mciwb and exit",
     ),
-    debug: bool = False,
 ):
     """Minecraft Interactive World Builder"""
 
@@ -67,22 +72,7 @@ def shell(
 
     sys.path.append(".")
 
-    world = None
-
-    try:
-        world = Iwb(server, port, passwd)
-
-        if player:
-            world.add_player(player)
-    except ConnectionRefusedError:
-        log.error("Could not connect to server")
-        exit(1)
-    except Exception:
-        if world:
-            world.stop()
-        log.error("Failed to start world")
-        log.debug("", exc_info=True)
-        exit(1)
+    world = _connect(server, port, passwd, player)
 
     log.info("######### Starting Interactive Session ##########\n")
 
@@ -92,7 +82,8 @@ def shell(
     shell.run_line_magic("autoreload", "2")
     # Also suppress traceback to avoid intimidating novice programmers
     ipython = shell.get_ipython()
-    ipython._showtraceback = exception_handler  # type: ignore
+    # monkey patch IPython's private traceback hook
+    ipython._showtraceback = exception_handler  # type: ignore # noqa: SLF001
 
     if test:
         # for testing just report the world object state
@@ -105,35 +96,113 @@ def shell(
     world.stop()
 
 
+def _connect(server: str, port: int, passwd: str, player: str) -> Iwb:
+    """Connect to the server and optionally add a player, or exit on failure"""
+    world = None
+    try:
+        world = Iwb(server, port, passwd)
+
+        if player:
+            world.add_player(player)
+    except ConnectionRefusedError:
+        log.error(f"Could not connect to server {server}:{port}")
+        raise typer.Exit(1) from None
+    except WrongPassword:
+        log.error(f"Wrong RCON password for server {server}:{port}")
+        raise typer.Exit(1) from None
+    except Exception:
+        if world:
+            world.stop()
+        log.error("Failed to start world")
+        log.debug("", exc_info=True)
+        raise typer.Exit(1) from None
+    return world
+
+
+@cli.command()
+def run(
+    script: Annotated[Path, typer.Argument(help="the Python script to run")],
+    server: str = HOST,
+    port: int = def_port,
+    passwd: str = def_pass,
+    player: str = "",
+    debug: bool = False,
+):
+    """
+    Run a Python build script against your Minecraft server, then exit.
+
+    The script runs with the same names available as in `mciwb shell`: a
+    `world` object connected to the server, plus everything in mciwb.imports
+    (Item, Vec3, Direction, polygon ...). Background monitors are stopped
+    when the script ends.
+    """
+    init_logging(debug)
+
+    if not script.is_file():
+        log.error(f"{script} not found")
+        raise typer.Exit(1)
+    # let the script import modules that sit beside it
+    sys.path.insert(0, str(script.resolve().parent))
+
+    world = _connect(server, port, passwd, player)
+    namespace = {name: getattr(imports, name) for name in imports.__all__}
+    namespace["world"] = world
+    try:
+        runpy.run_path(str(script), init_globals=namespace, run_name="__main__")
+    finally:
+        world.stop()
+
+
 @cli.command()
 def start(
     password: str = def_pass,
     world_type: str = def_world_type,
     server_name: str = server_name,
     folder: Path = default_server_folder,
-    backup_folder: Path = backup_folder_default,
     port: int = def_port,
+    minecraft_version: str = MINECRAFT_VERSION,
     debug: bool = False,
 ):
     """
     Start a minecraft server in the background. Default options automatically
-    work with `mciwb shell`
+    work with `mciwb shell`.
+
+    The server runs the Minecraft Java Edition release given by
+    --minecraft-version. Your Minecraft client must use the same release.
+
+    If the server's container already exists, it is started with the
+    settings that it was created with. Run `mciwb stop` first to change them.
     """
     init_logging(debug)
 
     if folder.exists():
         if not folder.is_dir():
             log.error(f"{folder} is not a directory")
-            exit(1)
+            raise typer.Exit(1)
         else:
             log.info(f"Launching existing Minecraft server in {folder}")
     else:
         log.info(f"Creating new Minecraft server in {folder}")
 
     server = MinecraftServer(
-        server_name, port, password, folder, world_type, backup_folder=backup_folder
+        server_name,
+        port,
+        password,
+        folder,
+        world_type,
+        version=minecraft_version,
     )
-    server.create()
+    try:
+        server.create()
+    except PodmanNotAvailableError as e:
+        log.error(e)
+        raise typer.Exit(1) from e
+    except WrongPassword:
+        log.error(
+            f"Minecraft Server '{server_name}' rejected the RCON password. "
+            f"Check rcon.password in {server.server_folder}/server.properties."
+        )
+        raise typer.Exit(1) from None
 
 
 @cli.command()
@@ -142,12 +211,15 @@ def stop(
     debug: bool = False,
 ):
     """
-    Start a minecraft server in the background. Default options automatically
-    work with `mciwb shell`
+    Stop the minecraft server started by `mciwb start`.
     """
     init_logging(debug)
 
-    MinecraftServer.stop_named(server_name)
+    try:
+        MinecraftServer.stop_named(server_name)
+    except PodmanNotAvailableError as e:
+        log.error(e)
+        raise typer.Exit(1) from e
 
 
 @cli.command()
@@ -155,36 +227,95 @@ def backup(
     folder: Path = default_server_folder,
     backup_name: str = "",
     backup_folder: Path = backup_folder_default,
+    port: int = def_port,
+    password: str = def_pass,
     debug: bool = False,
 ):
     """
     Backup the current state of the world.
+
+    If the server is running, it saves the world to disk and pauses saving
+    while the backup is made. Use the --port and --password that you gave to
+    `mciwb start`.
     """
     init_logging(debug)
 
     backup = Backup(world_folder=folder / "world", backup_folder=backup_folder)
-    backup.backup(running=False, name=backup_name)
+    client = _rcon_client(port, password)
+    try:
+        if client:
+            set_client(client)
+        backup.backup(running=client is not None, name=backup_name)
+    except ValueError as e:
+        log.error(e)
+        raise typer.Exit(1) from None
+    finally:
+        if client:
+            client.close()
+
+
+def _rcon_client(port: int, password: str) -> Client | None:
+    """Connect to a running server, or return None if there is none"""
+    client = Client(HOST, port, passwd=password, timeout=10)
+    try:
+        client.connect(True)
+    except WrongPassword:
+        log.warning(
+            f"Wrong RCON password for server {HOST}:{port}, so the world is "
+            "copied without asking the server to save it first"
+        )
+    except Exception as e:
+        log.debug(f"no server on {HOST}:{port}: {e!r}")
+    else:
+        # the timeout is only for the probe: save-all flush on a large world
+        # can take longer, so wait for commands as long as they need (rcon
+        # types the timeout as float, but the socket accepts None)
+        client.timeout = None  # pyright: ignore[reportAttributeAccessIssue]
+        return client
+    client.close()
+    return None
 
 
 @cli.command()
 def restore(
-    backup_name: str = typer.Argument(""),
+    backup_name: str = typer.Argument("", help="defaults to the latest backup"),
     debug: bool = False,
     folder: Path = default_server_folder,
     backup_folder: Path = backup_folder_default,
     server_name: str = server_name,
     port: int = def_port,
+    password: str = def_pass,
+    world_type: str = def_world_type,
+    minecraft_version: str = MINECRAFT_VERSION,
+    keep_old: bool = typer.Option(
+        False, help="keep the replaced world folder as <folder>/world-old"
+    ),
 ):
     """
     Stop the minecraft server. Restore from backup and restart.
+
+    Use the same options that you gave to `mciwb start`.
     """
     init_logging(debug)
 
-    stop(server_name=server_name)
     backup = Backup(world_folder=folder / "world", backup_folder=backup_folder)
-    backup.restore(name=backup_name)
+    # check the backup exists before taking the server down
+    try:
+        rfile = backup.find(backup_name)
+    except ValueError as e:
+        log.error(e)
+        raise typer.Exit(1) from None
+
+    stop(server_name=server_name, debug=debug)
+    backup.restore(name=rfile.name, backup=keep_old)
     start(
-        folder=folder, port=port, server_name=server_name, backup_folder=backup_folder
+        password=password,
+        world_type=world_type,
+        server_name=server_name,
+        folder=folder,
+        port=port,
+        minecraft_version=minecraft_version,
+        debug=debug,
     )
 
 

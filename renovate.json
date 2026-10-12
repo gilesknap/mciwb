@@ -1,0 +1,52 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:recommended"
+  ],
+  "lockFileMaintenance": {
+    "description": "Keep uv.lock up to date, merging if tests pass",
+    "enabled": true,
+    "automerge": true
+  },
+  "packageRules": [
+    {
+      "description": "Disable python version as that is managed by python-copier-template",
+      "matchManagers": [
+        "pyenv"
+      ],
+      "enabled": false
+    },
+    {
+      "description": "Disable github actions that are managed by python-copier-template",
+      "matchPackageNames": [
+        "actions/checkout",
+        "astral-sh/setup-uv",
+        "actions/upload-artifact",
+        "actions/download-artifact",
+        "softprops/action-gh-release",
+        "codecov/codecov-action",
+        "docker/setup-buildx-action",
+        "docker/login-action",
+        "docker/build-push-action",
+        "docker/metadata-action",
+        "pypa/gh-action-pypi-publish",
+        "peaceiris/actions-gh-pages"
+      ],
+      "matchManagers": [
+        "github-actions"
+      ],
+      "enabled": false
+    },
+    {
+      "description": "Disable Dockerfile base images that are managed by python-copier-template",
+      "matchManagers": [
+        "dockerfile"
+      ],
+      "matchDepNames": [
+        "ubuntu",
+        "ghcr.io/diamondlightsource/ubuntu-devcontainer"
+      ],
+      "enabled": false
+    }
+  ]
+}

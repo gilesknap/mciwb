@@ -3,60 +3,63 @@ on:
     inputs:
       python-version:
         type: string
-        description: The version of python to install
-        required: true
+        description: The version of python to install, default is from .python-version file
+        default: ""
       runs-on:
         type: string
         description: The runner to run this job on
         required: true
-    secrets:
-      CODECOV_TOKEN:
-        required: true
+      pytest-args:
+        type: string
+        description: Extra arguments to pass to pytest, e.g. to select tests by marker
+        default: ""
+      name:
+        type: string
+        description: Label for this test run, used to name the coverage upload
+        default: ""
+      podman:
+        type: boolean
+        description: Start a rootless Podman service for tests that run containers
+        default: false
 
 env:
   # https://github.com/pytest-dev/pytest/issues/2042
   PY_IGNORE_IMPORTMISMATCH: "1"
+  UV_PYTHON: ${{ inputs.python-version }}
 
 jobs:
   run:
     runs-on: ${{ inputs.runs-on }}
+    # system tests download and launch a Minecraft server so allow plenty of time
+    timeout-minutes: 30
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           # Need this to get version number from last tag
           fetch-depth: 0
 
-      - if: inputs.python-version == 'dev'
-        name: Install dev versions of python packages
-        uses: ./.github/actions/install_requirements
+      - name: Install uv
+        uses: astral-sh/setup-uv@v10.0.0
 
-      - if: inputs.python-version == 'dev'
-        name: Write the requirements as an artifact
-        run: pip freeze --exclude-editable > /tmp/dev-requirements.txt
-
-      - if: inputs.python-version == 'dev'
-        name: Upload dev-requirements.txt
-        uses: actions/upload-artifact@v4
-        with:
-          name: dev-requirements
-          path: /tmp/dev-requirements.txt
-
-      - if: inputs.python-version != 'dev'
-        name: Install latest versions of python packages
-        uses: ./.github/actions/install_requirements
-        with:
-          python-version: ${{ inputs.python-version }}
-          pip-install: ".[dev]"
+      - name: Start the Podman service
+        if: inputs.podman
+        run: |
+          sock="${XDG_RUNTIME_DIR:-/run/user/$(id -u)}/podman/podman.sock"
+          if ! systemctl --user start podman.socket; then
+            mkdir -p "$(dirname "$sock")"
+            nohup podman system service --time=0 "unix://$sock" > /tmp/podman.log 2>&1 &
+          fi
+          for _ in $(seq 30); do [ -S "$sock" ] && break; sleep 1; done
+          podman --remote --url "unix://$sock" version
+          echo "CONTAINER_HOST=unix://$sock" >> "$GITHUB_ENV"
 
       - name: Run tests
-        run: tox -e pytest
+        run: uv run --locked tox -e tests -- ${{ inputs.pytest-args }}
 
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v5
+        uses: codecov/codecov-action@v7
         with:
-          name: ${{ inputs.python-version }}/${{ inputs.runs-on }}
+          name: ${{ inputs.name || inputs.python-version }}/${{ inputs.runs-on }}
           files: cov.xml
-        env:
-          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}

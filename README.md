@@ -1,45 +1,62 @@
 [![CI](https://github.com/gilesknap/mciwb/actions/workflows/ci.yml/badge.svg)](https://github.com/gilesknap/mciwb/actions/workflows/ci.yml)
 [![Coverage](https://codecov.io/gh/gilesknap/mciwb/branch/main/graph/badge.svg)](https://codecov.io/gh/gilesknap/mciwb)
 [![PyPI](https://img.shields.io/pypi/v/mciwb.svg)](https://pypi.org/project/mciwb)
-[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://www.apache.org/licenses/LICENSE-2.0)
 
 # mciwb
 
-Minecraft Interactive World Builder
-===================================
+Minecraft Interactive World Builder.
 
 This project is intended as a fun way to learn the Python Programming Language.
 
 Experienced Python programmers can also use this library to create
 Minecraft worlds with interactive Python features.
 
-Source          | <https://github.com/gilesknap/mciwb>
+What            | Where
 :---:           | :---:
-PyPI            | pip install mciwb
+Source          | <https://github.com/gilesknap/mciwb>
+Install         | `pip install git+https://github.com/gilesknap/mciwb.git`
+Container       | `podman run --rm -it --network host ghcr.io/gilesknap/mciwb:latest shell`
 Documentation   | <https://gilesknap.github.io/mciwb>
 Releases        | <https://github.com/gilesknap/mciwb/releases>
 
 
-Quick Start
------------
+## Quick Start
 
 To get started learning Python, see
-[Introduction](https://gilesknap.github.io/mciwb/main/user/tutorials/00-prereq.html)
+[Introduction](https://gilesknap.github.io/mciwb/main/tutorials/00-prereq.html)
 
 For existing Python developers, see
-[API documentation](https://gilesknap.github.io/mciwb/main/user/reference/api.html)
+[API documentation](https://gilesknap.github.io/mciwb/main/_api/mciwb.html)
 
-Example Build
--------------
+In short: start a local Minecraft server and build in it from a script:
+
+```bash
+mciwb start            # a Minecraft 26.3 server in podman, on localhost
+mciwb run build.py     # run a build script, or `mciwb shell` for IPython
+```
+
+where `build.py` uses the `world` object and the names from `mciwb.imports`:
+
+```python
+pos = Vec3(632, 73, -1658)
+world.set_block(pos, Item.GOLD_BLOCK)
+polygon(get_client(), pos + Direction.EAST * 10, height=5, diameter=7)
+```
+
+## Example Build
 
 The pagoda and castle with working portcullis were all created programmatically
 with Python and the current version of MCIWB.
 
 https://github.com/gilesknap/mciwb/assets/964827/026b3551-f514-403a-bebe-8d168c7170b0
 
+An earlier video shows the castle being built; the source code for the village
+is in [src/mciwb/demo/village.py](https://github.com/gilesknap/mciwb/blob/main/src/mciwb/demo/village.py).
 
-Goals
------
+https://user-images.githubusercontent.com/964827/225131152-677da86e-a6b5-44c2-baf1-8da2eb4e221b.mov
+
+## Goals
 
 Minecraft Interactive World Builder's goals are:
 
@@ -54,17 +71,11 @@ environment are included. There are step by step tutorials to
 introduce Python Programming and the features of Minecraft Interactive World
 Builder.
 
-.. note::
+**Note:** this is a work in progress. There are now enough tutorials to learn
+the fundamentals of Python and enough functionality to have some fun
+interacting with Minecraft from Python code.
 
-    This is a work in progress. There are now enough tutorials to learn the
-    fundamentals of Python and enough functionality to have some fun
-    interacting with Minecraft from Python code.
-
-    I will continue to expand the tutorials and add more features to the
-    library.
-
-Credits
--------
+## Credits
 
 This project would not be possible without [mcipc](https://github.com/conqp/mcipc/),
 which provides the client library for Minecraft RCON.

@@ -3,8 +3,7 @@ Provide copy and paste actions on Volumes of blocks
 """
 
 from mcipc.rcon.enumerations import CloneMode, MaskMode
-from mcipc.rcon.item import Item
-from mcwb import Vec3, Volume
+from mcwb import Item, Vec3, Volume
 
 from mciwb.logging import log
 from mciwb.threads import get_client
@@ -34,11 +33,11 @@ class CopyPaste:
 
     def apply_volume(self, vol: Volume):
         """
-        Use a Volume to set the copy buffer location and dimensions
+        Use a Volume to set the copy buffer location and dimensions.
+        The paste point is set to the start of the Volume.
         """
-        self._set_paste(vol.end)
-        self._set_paste(vol.start)
-        self.paste_pos = vol.start
+        self.select(vol.end)
+        self.select(vol.start)
 
     def get_commands(self):
         """

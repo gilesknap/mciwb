@@ -8,7 +8,7 @@ For the first tutorial we are going to prepare your computer for the rest
 of the tutorials. To do so we need to install the following software:
 
 - The Minecraft Java Client (with Minecraft account purchase)
-- Docker Desktop
+- Podman
 - Visual Studio Code
 - Python
 - Minecraft Interactive World Builder Python package
@@ -29,7 +29,7 @@ of the tutorials. To do so we need to install the following software:
 The Minecraft Java Client
 -------------------------
 
-If you already have the Minecraft Java Client installed proceed to `docker`.
+If you already have the Minecraft Java Client installed proceed to `podman`.
 
 You will need to purchase a license for Minecraft from Microsoft.
 
@@ -61,37 +61,78 @@ later tutorial.
     :width: 700px
     :align: center
 
-.. _docker:
+.. _podman:
 
-Docker Desktop
---------------
+Podman
+------
 
-Docker is a tool that allows you to run your Minecraft Server in a container.
+Podman is a tool that allows you to run your Minecraft Server in a container.
 This makes it easy to run and avoids having to manually install and
 maintain the server code.
 You do not need to understand too much about this since MCIWB will automatically
-use docker on your behalf.
+use podman on your behalf.
 
-The easiest way to install Docker is to use Docker Desktop which is free to
-use for individuals.
+MCIWB talks to Podman through its service socket, so as well as installing
+Podman you need to switch that service on once.
+
+Linux:
+    Install podman with your package manager, e.g. on Ubuntu::
+
+        sudo apt install podman
+
+    Then switch on the Podman service for your user. It starts again
+    automatically each time you log in::
+
+        systemctl --user enable --now podman.socket
+
+    To have your Minecraft server start again after a reboot, also enable::
+
+        systemctl --user enable podman-restart.service
+
+    Install instructions for other Linux distributions are here:
+    https://podman.io/docs/installation#installing-on-linux
 
 Windows:
-    Docker Desktop requires WSL2 and a linux distribution to go with it.
-    So you should first install WSL2 and Ubuntu 22.04 LTS from here
-    - https://apps.microsoft.com/store/detail/ubuntu-2204-lts/9PN20MSR04DW
+    On Windows MCIWB runs inside the Windows Subsystem for Linux (WSL2), with
+    Ubuntu. Install WSL2 and Ubuntu 24.04 LTS (or later) by typing
+    this into a Windows PowerShell or Command Prompt::
 
-All Platforms:
-    Instructions for Docker Desktop installation for all platforms are here:
-    - https://docs.docker.com/get-docker/
+        wsl --install -d Ubuntu-24.04
 
-For mciwb to work you will need Docker Desktop to be running before you
-start Visual Studio Code. So start it from the start menu before moving to
-the next step.
+    Then open the Ubuntu terminal from the start menu and follow the Linux
+    instructions above to install Podman inside Ubuntu.
 
-To make things easier next time you could go into settings (accessed
-via the cog icon in the title bar of the Docker Desktop main window)
-and tick the option
-``Start Docker Desktop when you log in``.
+    ``systemctl --user`` needs systemd to be enabled in WSL. Recent versions
+    of WSL enable it by default for Ubuntu. If ``systemctl`` reports that
+    systemd is not running, add these lines to the file ``/etc/wsl.conf`` in
+    Ubuntu (e.g. with ``sudo nano /etc/wsl.conf``)::
+
+        [boot]
+        systemd=true
+
+    Then restart WSL by typing ``wsl --shutdown`` into a Windows PowerShell or
+    Command Prompt, and open the Ubuntu terminal again.
+
+    (Podman Desktop https://podman-desktop.io is an alternative that runs
+    Podman in its own WSL2 machine, but installing Podman inside your Ubuntu
+    is simpler for MCIWB.)
+
+MacOS:
+    Install Podman Desktop from https://podman-desktop.io and use it to
+    create and start a Podman machine (a small Linux virtual machine that
+    runs your containers). Or, with Homebrew::
+
+        brew install podman
+        podman machine init
+        podman machine start
+
+    MCIWB needs to know where the Podman machine's socket is. Add this line
+    to the file ``~/.zshrc`` so that it is set in every new terminal::
+
+        export CONTAINER_HOST=unix://$(podman machine inspect --format '{{.ConnectionInfo.PodmanSocket.Path}}')
+
+    The Podman machine must be running before you use MCIWB: start it from
+    Podman Desktop, or with ``podman machine start``.
 
 
 .. _vscode:
@@ -193,28 +234,20 @@ Python
 ------
 
 The Python Programming Language is also free and open-source.
+MCIWB needs Python 3.11 or later.
 
-This is essential for working with MCIWB.
-Python 3.10 because the underlying RCON library requires it. This is the
-latest version of Python at the time of writing.
+We will use a tool called **uv** to install Python and to manage the Python
+packages that we use. Type this command to install uv::
 
-These commands will install the necessary packages to make Python 3.10
-available on your system::
+    curl -LsSf https://astral.sh/uv/install.sh | sh
 
-    sudo apt update
-    sudo apt install -y python3.10
-    sudo apt install -y python3.10-venv
-    sudo apt install -y python3-pip
+Then close your terminal and open a new one, so that the ``uv`` command is
+found. You can check it is working by typing::
 
-If you have an older version of Ubuntu it may not have Python 3.10 available.
-In this case you need to use the ``deadsnakes`` PPA to get the latest version as
-follows::
+    uv --version
 
-    sudo apt install -y software-properties-common
-    sudo add-apt-repository ppa:deadsnakes/ppa
-    sudo apt install -y python3.10
-    sudo apt install -y python3.10-venv
-    sudo apt install -y python3-pip
+You do not need to install Python separately, uv downloads the right
+version for you in the next step.
 
 Virtual Environment
 -------------------
@@ -226,7 +259,8 @@ separate from the packages you install for other projects.
 First create the Virtual Environment by typing (note the leading "."
 in the folder name ".venv")::
 
-    python3.10 -m venv .venv
+    cd $HOME/my_world
+    uv venv --python 3.13 .venv
 
 Then activate it by typing the following. This command will need to be
 repeated each time you restart your terminal or open a new terminal::
@@ -260,10 +294,15 @@ created the folder ``$HOME/my_world`` earlier and this is where we will store
 all of the work we do with MCIWB.
 
 Everything is all set up ready so the following simple command will get
-mciwb from the Python Package Index (PyPi) and install it into the
-**Virtual Environment**::
+mciwb and install it into the **Virtual Environment**::
 
-    pip install mciwb
+    uv pip install git+https://github.com/gilesknap/mciwb.git
+
+.. note::
+
+    This installs the latest mciwb from GitHub. Once the version that
+    supports Minecraft 26.x is published to the Python Package Index (PyPI)
+    you will be able to use ``uv pip install mciwb`` instead.
 
 Assuming all is well you should be able to verify everything is working
 by typing the following::
@@ -272,4 +311,3 @@ by typing the following::
 
 That's all the hard bits done and they only need to be done once.
 You can now proceed to the next tutorial.
-

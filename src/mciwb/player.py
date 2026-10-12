@@ -21,23 +21,32 @@ regex_angle = re.compile(float_reg)
 regex_rot = re.compile(r"\[(-?\d+.?\d*)f, *(-?\d+.?\d*)f\]")
 
 
-class PlayerNotInWorld(Exception):
-    pass
+class PlayerNotInWorldError(Exception):
+    """The player (or named entity) could not be found in the world."""
 
 
 class Player:
     """
     Represent a player in the world and provide functions for monitoring their
     position and direction they are facing.
+
+    Creating a Player only reads from the world. Call `setup` to make the
+    player an operator in creative mode (`Iwb.add_player` does this).
+
+    :param name: the name of the player, or the CustomName of any other entity
     """
 
     def __init__(self, name: str) -> None:
         self.name = name
+
+    def setup(self) -> None:
+        """
+        Make the player an operator in creative mode, so that they can use
+        command signs and build freely.
+        """
         client = get_client()
-        # make sure the player is an operator in creative mode (but not in test mode)
-        if self.name != "georgeTest":
-            client.op(name)
-            client.gamemode("creative", name)
+        client.op(self.name)
+        client.gamemode("creative", self.name)
 
     def _get_entity_data(self, path: str, regex: Pattern[str]) -> Match[str]:
         """
@@ -55,7 +64,7 @@ class Player:
                 log.debug(f"{self.name} not found: {data}")
             sleep(0.1)
 
-        raise PlayerNotInWorld(f"player {self.name} left")
+        raise PlayerNotInWorldError(f"player {self.name} left")
 
     @property
     def inventory(self) -> list[str]:
@@ -96,7 +105,7 @@ class Player:
         angle = float(match.group(1))
 
         index = int(((math.floor(angle) + 45) % 360) / 90)
-        return Direction.cardinals[index]
+        return Direction.cardinals()[index]
 
     @property
     def rotation(self) -> Rotation:
@@ -116,7 +125,7 @@ class Player:
         return volume.inside(self.pos)
 
     @classmethod
-    def players_in(cls, volume: Volume) -> list["Player"]:
+    def players_in(cls, volume: Volume) -> list[str]:
         """
         return a list of player names whose position is inside the Volume
         """
@@ -130,6 +139,6 @@ class Player:
                 pos = Player(name).pos
                 if volume.inside(pos, 2):
                     players.append(name)
-            except ValueError:
+            except PlayerNotInWorldError:
                 pass  # players are sometimes missing temporarily
         return players

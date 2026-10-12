@@ -45,4 +45,3 @@ The important thing about ``get_client()`` is it will always deliver you a
 separate client object per thread of execution. If it did not do so then
 the communication to RCON would get tangled up between threads and fail to
 work.
-

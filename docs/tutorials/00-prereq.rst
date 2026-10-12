@@ -28,4 +28,3 @@ https://github.com/gilesknap/mciwb/issues
 When you are ready click ``Next`` to begin.
 
 Happy programming!
-

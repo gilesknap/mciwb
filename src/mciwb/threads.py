@@ -7,17 +7,37 @@ passed to new_thread.
 """
 
 import threading
+from collections.abc import Callable
 
-from mcipc.rcon.je.client import Client
+from mcipc.rcon.je.client import Client as _McipcClient
 
 thread_local = threading.local()
 
+# the Minecraft server collects the output of every RCON connection in one
+# shared buffer, which it clears before each command and reads after it. Two
+# connections running commands at the same time therefore receive each other's
+# output, or none at all. This lock lets only one command run at a time.
+_rcon_lock = threading.RLock()
 
-def _enter_thread(client, target, name):
+
+class Client(_McipcClient):
+    """
+    An RCON client for Minecraft Java Edition that is safe to use alongside
+    the clients of other threads in this process.
+
+    Each command waits for any command running on another connection to
+    complete, so that the server returns the output of this command only.
+    """
+
+    def run(self, command: str, *arguments: str) -> str:
+        with _rcon_lock:
+            return super().run(command, *arguments)
+
+
+def _enter_thread(client: Client, target: Callable[[], None], name: str) -> None:
+    thread_local.name = name
     # make new client connection for this thread
     # Note use of type(client). When testing the type may be MockClient
-    # TODO would prefer to use a context for client here as the cleanup
-    # works - but it gets an error running under PyTest (huh?)
     new_client = type(client)(client.host, client.port, passwd=client.passwd)
     new_client.connect(True)
     set_client(new_client)
@@ -25,16 +45,27 @@ def _enter_thread(client, target, name):
     target()
 
 
-def new_thread(client: Client, target, name: str) -> threading.Thread:
+def new_thread(
+    client: Client, target: Callable[[], None], name: str
+) -> threading.Thread:
     """
-    Create a thread with its own RCON Client connection stored in thread local storage
-    """
+    Create a thread with its own RCON Client connection stored in thread local
+    storage.
 
+    The thread is a daemon thread so that it can never keep the Python
+    interpreter alive on exit. Use `Monitor.stop_all` to stop threads cleanly.
+
+    :param client: the client whose connection details the new thread copies
+    :param target: the function to run in the new thread
+    :param name: the name of the new thread
+    """
     # Start a new thread and use _enter_thread to set it up with a new RCON client
-    new_thread = threading.Thread(target=_enter_thread, args=(client, target, name))
-    new_thread.start()
+    thread = threading.Thread(
+        target=_enter_thread, args=(client, target, name), name=name, daemon=True
+    )
+    thread.start()
 
-    return new_thread
+    return thread
 
 
 def set_client(client: Client) -> None:
@@ -48,14 +79,17 @@ def set_client(client: Client) -> None:
 
 def get_client() -> Client:
     """
-    retrieve the client for the current thread
+    Retrieve the client for the current thread.
+
+    Every thread needs its own RCON connection. Threads created with
+    `new_thread` (e.g. by `Monitor`) get one automatically.
     """
     return thread_local.client
 
 
 def get_thread_name() -> str:
     """
-    retrieve the name of the current thread. This is the name that was passed
-    to `new_thread`.
+    Retrieve the name of the current thread. This is the name that was passed
+    to `new_thread`, or the Python thread name for other threads.
     """
-    return thread_local.name
+    return getattr(thread_local, "name", threading.current_thread().name)

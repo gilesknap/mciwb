@@ -1,0 +1,25 @@
+# Files to leave out of the container build context. .dockerignore is a
+# symlink to this file. Keep .git: setuptools_scm needs it for the version.
+
+# local environments
+.venv*
+venv*
+
+# build artifacts
+build/
+dist/
+lockfiles/
+*.egg-info/
+**/__pycache__/
+**/_version.py
+
+# caches, test and docs output
+.mypy_cache/
+.pytest_cache/
+.ruff_cache/
+.tox/
+.coverage*
+cov.xml
+htmlcov/
+docs/_build/
+docs/_api/

@@ -225,4 +225,3 @@ So, first we place the golem's feet at ``pos``.
 Then we move UP one block from the position ``pos`` to the arm level of 
 the golem and save  that position in ``arms``. Now we can step EAST
 and WEST from ``arms`` to make the arms. Finally we step UP to make the head.
-

@@ -1,5 +1,5 @@
 [build-system]
-requires = ["setuptools>=64", "setuptools_scm[toml]>=6.2"]
+requires = ["setuptools>=64", "setuptools_scm[toml]>=8"]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -7,33 +7,45 @@ name = "mciwb"
 classifiers = [
     "Development Status :: 3 - Alpha",
     "License :: OSI Approved :: Apache Software License",
-    "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
 ]
 description = "Minecraft Interactive world builder"
-dependencies = ["numpy", "typer", "mcwb==0.3.0b2", "ipython", "docker>=6"]
+dependencies = [
+    "numpy",
+    "typer",
+    # TODO: switch to a released mcwb (>0.3.0) once gilesknap/mcwb#1 is merged
+    # and published. This commit adds mcwb.Item for current Minecraft blocks
+    # and get_block support for blocks without a loot table (e.g. air).
+    "mcwb @ git+https://github.com/gilesknap/mcwb@254e7bdf2c542231a6358fa74c7be784887ba501",
+    # mcipc (RCON client + command wrappers) and rcon are unmaintained but work on
+    # Python 3.11-3.14 and Minecraft 26.x; pinned to the last known-good releases.
+    "mcipc==2.4.2",
+    "rcon==2.4.9",
+    "ipython",
+    "podman>=5.5",
+]
 dynamic = ["version"]
 license.file = "LICENSE"
 readme = "README.md"
-requires-python = ">=3.10"
+requires-python = ">=3.11"
 
-[project.optional-dependencies]
+[dependency-groups]
 dev = [
-    "copier",
     "myst-parser",
-    "pipdeptree",
     "pre-commit",
     "pydata-sphinx-theme>=0.12",
     "pyright",
     "pytest",
     "pytest-cov",
+    "pytest-timeout>=2.4.0",
     "ruff",
     "sphinx-autobuild",
     "sphinx-copybutton",
     "sphinx-design",
-    "tox-direct",
-    "types-mock",
+    "tox-uv",
 ]
 
 [project.scripts]
@@ -46,11 +58,11 @@ GitHub = "https://github.com/gilesknap/mciwb"
 email = "gilesknap@gmail.com"
 name = "Giles Knap"
 
-
 [tool.setuptools_scm]
-write_to = "src/mciwb/_version.py"
+version_file = "src/mciwb/_version.py"
 
 [tool.pyright]
+typeCheckingMode = "standard"
 reportMissingImports = false # Ignore missing stubs in imported modules
 
 [tool.pytest.ini_options]
@@ -63,60 +75,134 @@ filterwarnings = [
     "error",
     # its difficult to ensure all sockets are closed in tests so ignore
     "ignore:.*socket.*:ResourceWarning",
-    "ignore::DeprecationWarning",
-    "ignore::UserWarning",
+    # only ignore deprecations raised inside third party libraries, so that
+    # deprecations in mciwb's own code still fail the tests
+    "ignore::DeprecationWarning:podman.*",
+    # IPython warns when VIRTUAL_ENV is not the running interpreter's (e.g. tox)
+    "ignore:Attempting to work in a virtualenv:UserWarning",
 ]
+# fail a hung test (e.g. waiting on a Minecraft server) with a traceback,
+# rather than hanging until the CI job times out
+timeout = 600
 # Doctest python code in docs, python code in src docstrings, test functions in tests
 testpaths = "docs src tests"
+markers = [
+    "system: needs a podman service to run a Minecraft server (tests/test_system)",
+]
 
 [tool.coverage.run]
+patch = ["subprocess"]
 data_file = "/tmp/mciwb.coverage"
+concurrency = ["thread"]
+# the demo scripts are examples, not library code
+omit = ["tests/*", "src/mciwb/demo/*"]
+
+[tool.coverage.report]
+exclude_also = ["def __repr__", "if self\\.debug", "raise NotImplementedError"]
 
 [tool.coverage.paths]
 # Tests are run from installed location, map back to the src directory
 source = ["src", "**/site-packages/"]
 
-# tox must currently be configured via an embedded ini string
-# See: https://github.com/tox-dev/tox/issues/999
 [tool.tox]
-legacy_tox_ini = """
-[tox]
-skipsdist=True
+skipsdist = true
+# envs to runs automatically with tox -p
+env_list = ["pre-commit", "type-checking", "tests", "docs"]
 
-# TODO this absolutely does not work - need to discover how to pass the correct
-# settings to coverage when invoked by tox
-# (adding ---cov-config=tox.ini does not help)
-# WE don't really want coverage of the demos - but I have failed to turn it off
-[coverage:run]
-omit = src/demo/*
+[tool.tox.env_run_base]
+# Pass all environment variables to the test environments
+passenv = ["*"]
 
-[testenv:{pre-commit,pyright,pytest,docs}]
-# Don't create a virtualenv for the command, requires tox-direct plugin
-direct = True
-passenv = *
-allowlist_externals =
-    pytest
-    pre-commit
-    pyright
-    sphinx-build
-    sphinx-autobuild
-    ipython
-commands =
-    pytest: pytest --cov=mciwb --cov-report term --cov-report xml:cov.xml {posargs}
-    pyright: pyright src tests {posargs}
-    pre-commit: pre-commit run --all-files {posargs}
-    docs: sphinx-{posargs:build -EW --keep-going} -T docs build/html
-"""
+[tool.tox.env.pre-commit]
+description = "Run pre-commit on all files"
+commands = [
+    [
+        "pre-commit",
+        "run",
+        "--all-files",
+        "--show-diff-on-failure",
+        { replace = "posargs", default = [
+        ], extend = true },
+    ],
+]
+
+[tool.tox.env.type-checking]
+description = "Run pyright"
+commands = [
+    [
+        "pyright",
+        "--pythonpath",
+        "{env:VIRTUAL_ENV}/bin/python",
+        "src",
+        "tests",
+        { replace = "posargs", default = [
+        ], extend = true },
+    ],
+]
+
+[tool.tox.env.tests]
+description = "Run tests with coverage"
+commands = [
+    [
+        "pytest",
+        "--cov=mciwb",
+        "--cov-report",
+        "term",
+        "--cov-report",
+        "xml:cov.xml",
+        { replace = "posargs", default = [
+        ], extend = true },
+    ],
+]
+
+[tool.tox.env.docs]
+description = "Run docs build with clean environment"
+commands = [
+    [
+        "sphinx-build",
+        "--fresh-env",
+        "--show-traceback",
+        "--fail-on-warning",
+        "--keep-going",
+        "docs",
+        "build/html",
+        { replace = "posargs", default = [
+        ], extend = true },
+    ],
+]
+
+[tool.tox.env.docs-autobuild]
+description = "Run docs with autobuild on change"
+commands = [
+    [
+        "sphinx-autobuild",
+        "--show-traceback",
+        "--watch",
+        "README.md",
+        "docs",
+        "build/html",
+        { replace = "posargs", default = [
+        ], extend = true },
+    ],
+]
 
 [tool.ruff]
 src = ["src", "tests"]
 line-length = 88
 lint.select = [
-    "B",  # flake8-bugbear - https://docs.astral.sh/ruff/rules/#flake8-bugbear-b
-    "C4", # flake8-comprehensions - https://docs.astral.sh/ruff/rules/#flake8-comprehensions-c4
-    "E",  # pycodestyle errors - https://docs.astral.sh/ruff/rules/#error-e
-    "F",  # pyflakes rules - https://docs.astral.sh/ruff/rules/#pyflakes-f
-    "W",  # pycodestyle warnings - https://docs.astral.sh/ruff/rules/#warning-w
-    "I",  # isort - https://docs.astral.sh/ruff/rules/#isort-i
-    "UP", # pyupgrade - https://docs.astral.sh/ruff/rules/#pyupgrade-up
+    "B",   # flake8-bugbear - https://docs.astral.sh/ruff/rules/#flake8-bugbear-b
+    "C4",  # flake8-comprehensions - https://docs.astral.sh/ruff/rules/#flake8-comprehensions-c4
+    "E",   # pycodestyle errors - https://docs.astral.sh/ruff/rules/#error-e
+    "F",   # pyflakes rules - https://docs.astral.sh/ruff/rules/#pyflakes-f
+    "N",   # pep8-naming - https://docs.astral.sh/ruff/rules/#pep8-naming-n
+    "W",   # pycodestyle warnings - https://docs.astral.sh/ruff/rules/#warning-w
+    "I",   # isort - https://docs.astral.sh/ruff/rules/#isort-i
+    "UP",  # pyupgrade - https://docs.astral.sh/ruff/rules/#pyupgrade-up
+    "SLF", # self - https://docs.astral.sh/ruff/settings/#lintflake8-self
 ]
+
+[tool.ruff.lint.per-file-ignores]
+# By default, private member access is allowed in tests
+# See https://github.com/DiamondLightSource/python-copier-template/issues/154
+# Remove this line to forbid private member access in tests
+"tests/**/*" = ["SLF001"]

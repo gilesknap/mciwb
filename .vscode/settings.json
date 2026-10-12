@@ -5,6 +5,7 @@
     "editor.codeActionsOnSave": {
         "source.organizeImports": "explicit"
     },
+    "files.insertFinalNewline": true,
     "[python]": {
         "editor.defaultFormatter": "charliermarsh.ruff",
     },
