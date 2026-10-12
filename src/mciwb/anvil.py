@@ -26,7 +26,7 @@ from typing import Any
 import numpy as np
 from mcwb import Volume
 
-from mciwb.blockgrid import AIR, BlockGrid
+from mciwb.blockgrid import AIR, BlockGrid, block_name
 from mciwb.logging import log
 
 # the folders that hold each dimension's region files, newest layout first
@@ -218,6 +218,19 @@ def _unpack_indices(data: np.ndarray | None, palette_size: int) -> np.ndarray:
     return values[:SECTION_BLOCKS].astype(np.int64)
 
 
+def _palette_name(entry: Any) -> str:
+    """
+    The block name of a block state palette entry: a compound with a Name
+    (and Properties), or a block state string such as
+    ``minecraft:oak_stairs[facing=east]``
+    """
+    if isinstance(entry, dict) and "Name" in entry:
+        return block_name(entry["Name"])
+    if isinstance(entry, str):
+        return block_name(entry)
+    raise ValueError(f"unexpected block palette entry {entry!r}")
+
+
 def read_world_blocks(
     world_folder: Path, vol: Volume, dimension: str = "overworld"
 ) -> BlockGrid:
@@ -269,7 +282,7 @@ def read_world_blocks(
                 if states is None or y0 > y1:
                     continue
                 palette = [
-                    index.setdefault(entry["Name"], len(index))
+                    index.setdefault(_palette_name(entry), len(index))
                     for entry in states["palette"]
                 ]
                 local = _unpack_indices(states.get("data"), len(palette))

@@ -159,6 +159,39 @@ def test_nether(tmp_path: Path):
     assert grid[Vec3(1, 2, 3)] == "minecraft:netherrack"
 
 
+@pytest.mark.parametrize(
+    "entry, name",
+    [
+        ({"Name": "minecraft:stone"}, "minecraft:stone"),
+        ({"Name": "minecraft:oak_stairs", "Properties": {"facing": "east"}}, None),
+        ("minecraft:oak_stairs[facing=east]", "minecraft:oak_stairs"),
+        ("granite", "minecraft:granite"),
+    ],
+)
+def test_palette_entries(tmp_path: Path, entry, name: str | None):
+    """palette entries may be compounds or block state strings"""
+    nbt = chunk_nbt(0, 0, {(1, 1, 1): "minecraft:stone"})
+    air = "minecraft:air" if isinstance(entry, str) else {"Name": "minecraft:air"}
+    nbt["sections"][-1]["block_states"]["palette"] = [air, entry]
+    folder = tmp_path / "world" / "region"
+    folder.mkdir(parents=True)
+    write_region(folder / "r.0.0.mca", {(0, 0): nbt})
+
+    grid = read(tmp_path / "world", Vec3(1, 1, 1), Vec3(1, 1, 1))
+    assert grid[Vec3(1, 1, 1)] == (name or "minecraft:oak_stairs")
+
+
+def test_bad_palette_entry(tmp_path: Path):
+    nbt = chunk_nbt(0, 0, {(1, 1, 1): "minecraft:stone"})
+    nbt["sections"][-1]["block_states"]["palette"] = [7, 8]
+    folder = tmp_path / "world" / "region"
+    folder.mkdir(parents=True)
+    write_region(folder / "r.0.0.mca", {(0, 0): nbt})
+
+    with pytest.raises(ValueError, match="unexpected block palette entry 7"):
+        read(tmp_path / "world", Vec3(1, 1, 1), Vec3(1, 1, 1))
+
+
 def test_chunk_without_block_states(tmp_path: Path):
     """sections with only biomes (e.g. above the world) read as air"""
     nbt = chunk_nbt(0, 0, {(1, 1, 1): "minecraft:stone"})
