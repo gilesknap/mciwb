@@ -81,4 +81,3 @@ command that you typed earlier::
 and then hit enter. This saves some typing. You'll find that most command line
 tools have recall and editing of previous commands, including **iPython**.
 This is one of the reasons that a command line interface is a good thing!
-

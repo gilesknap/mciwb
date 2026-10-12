@@ -50,4 +50,3 @@ our village using this code:
 
 .. literalinclude :: ../../src/demo/walls.py
    :language: python
-

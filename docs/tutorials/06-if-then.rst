@@ -320,4 +320,3 @@ you would need to click on the ``blocks`` folder to expand it.
    :width: 900px
 
    Viewing files in the VSCode explorer
-
