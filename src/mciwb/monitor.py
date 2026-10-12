@@ -3,9 +3,10 @@ Thread functions for running any background tasks. Primarily used for
 monitoring the state of objects in Minecraft.
 """
 
+import threading
 from collections.abc import Callable
 from time import sleep
-from typing import Any
+from typing import Any, ClassVar
 
 from rcon.exceptions import SessionTimeout
 
@@ -14,40 +15,45 @@ from mciwb.player import PlayerNotInWorldError
 from mciwb.threads import get_client, get_thread_name, new_thread
 
 # supports any function arguments
-CallbackFunction = Callable
+CallbackFunction = Callable[..., Any]
 
 
 class Monitor:
-    """ "
+    """
     A class to provide threads for monitoring. Each thread maintains a
     list of functions to call repeatedly.
 
     Each thread has its own Client object for parallel
     execution of Minecraft server functions.
 
-    :param name: name of the thread
     :param func: a function to call in the Monitor thread
     :param params: parameters to pass to the above function. Note that
         *func* and *params* can be None, () in which case you must use
         `add_poller_func` to add functions to be called.
-    :param poll_rate: rate at which to poll the functions
     :param once: if True, stop polling after first poll - use for a single
                 background operation
+    :param name: name of the thread
+    :param poll_rate: rate at which to poll the functions
     :param start: if True, start the thread immediately
     """
 
     monitor_num = 0
-    monitors: list["Monitor"] = []
+    monitors: ClassVar[list["Monitor"]] = []
+    # protects the monitors list, which the monitor threads also modify
+    _lock = threading.Lock()
+
+    # seconds to wait before polling again after the player has gone missing
+    # (e.g. while they respawn, change dimension or briefly disconnect)
+    player_missing_backoff = 5.0
 
     def __init__(
         self,
-        # maybe this type is a bit loose, pyright not happy, lets just roll with it.
-        func: None | CallbackFunction = None,  # type: ignore
+        func: CallbackFunction | None = None,
         params: tuple[Any, ...] = (),
-        once=False,
-        name=None,
-        poll_rate=0.2,
-        start=True,
+        once: bool = False,
+        name: str | None = None,
+        poll_rate: float = 0.2,
+        start: bool = True,
     ) -> None:
         if name is None:
             name = f"Monitor{Monitor.monitor_num}"
@@ -55,14 +61,14 @@ class Monitor:
 
         # pollers is a list of functions, param tuples. It may be initialized
         # with a single function passed in func, params
-        self.pollers: list[tuple[CallbackFunction, tuple[Any, ...]]] = (  # type: ignore
+        self.pollers: list[tuple[CallbackFunction, tuple[Any, ...]]] = (
             [] if func is None else [(func, params)]
         )
 
         self.name = name
         self.once = once
         self.poll_rate = poll_rate
-        self.poll_thread = None
+        self.poll_thread: threading.Thread | None = None
         self._polling = False
 
         if start:
@@ -74,9 +80,11 @@ class Monitor:
         """
         if self.poll_thread is None:
             log.debug(f"starting polling thread {self.name}")
-            self.poll_thread = new_thread(get_client(), self._poller, self.name)
-            self.monitors.append(self)
+            # set up state before the thread starts, it may run immediately
             self._polling = True
+            with self._lock:
+                self.monitors.append(self)
+            self.poll_thread = new_thread(get_client(), self._poller, self.name)
 
     def _poller(self):
         """
@@ -85,7 +93,7 @@ class Monitor:
 
         while self._polling:
             try:
-                for func, params in self.pollers:
+                for func, params in list(self.pollers):
                     func(*params)
                 sleep(self.poll_rate)
             except BrokenPipeError:
@@ -97,8 +105,9 @@ class Monitor:
             except SessionTimeout:
                 log.warning(f"Connection timeout in {get_thread_name()}")
             except PlayerNotInWorldError as e:
-                log.warning(e)
-                self._polling = False
+                # the player may come back, so keep polling but slow down
+                log.warning(f"{e}, {get_thread_name()} will retry")
+                sleep(self.player_missing_backoff)
             except BaseException:
                 # report any other exception and continue polling
                 log.error(f"Error in {get_thread_name()}", exc_info=True)
@@ -106,14 +115,18 @@ class Monitor:
             if self.once:
                 self._polling = False
 
-        if self in self.monitors:
-            self.monitors.remove(self)
+        self._remove()
         self.poll_thread = None
         self.pollers = []
         if not self.once:
             log.info(f"Monitor {self.name} stopped")
 
-    def add_poller_func(self, func: CallbackFunction, params: tuple[Any, ...] = ()):  # type: ignore
+    def _remove(self):
+        with self._lock:
+            if self in self.monitors:
+                self.monitors.remove(self)
+
+    def add_poller_func(self, func: CallbackFunction, params: tuple[Any, ...] = ()):
         """
         Add a function to the pollers list
 
@@ -124,14 +137,14 @@ class Monitor:
 
     # TODO: consider using a dict or indexing pollers in some fashion
     # currently this does not support 2 calls to same function
-    def remove_poller_func(self, func: CallbackFunction):  # type: ignore
+    def remove_poller_func(self, func: CallbackFunction):
         """
         Remove a function from the pollers list
 
         :param func: function to remove
         """
-        for _i, t in enumerate(self.pollers):
-            f, params = t
+        for t in self.pollers:
+            f, _params = t
             if f == func:
                 self.pollers.remove(t)
                 break
@@ -139,17 +152,23 @@ class Monitor:
             log.error("removing unknown poller function")
 
     @classmethod
-    def stop_all(cls):
+    def stop_all(cls, timeout: float = 5.0):
         """
         Stop all instances of Monitor and tidy up. Call this before exiting
-        the program otherwise Python will wait on the background threads
-        indefinitely.
+        the program so that background work is finished cleanly.
+
+        :param timeout: seconds to wait for each thread to finish
         """
-        if cls.monitors is not None:
-            for monitor in cls.monitors:
-                monitor.stop()
+        with cls._lock:
+            monitors = list(cls.monitors)
             cls.monitors.clear()
-            log.info("Stopped all monitoring threads")
+        for monitor in monitors:
+            monitor.stop()
+        for monitor in monitors:
+            thread = monitor.poll_thread
+            if thread is not None and thread is not threading.current_thread():
+                thread.join(timeout)
+        log.info("Stopped all monitoring threads")
 
     def stop(self):
         """
@@ -162,16 +181,15 @@ class Monitor:
         """
         Stop a named instance of Monitor
         """
-        for monitor in cls.monitors:
-            if monitor.name == name:
-                monitor.stop()
-                cls.monitors.remove(monitor)
-                break
+        with cls._lock:
+            matches = [m for m in cls.monitors if m.name == name]
+        for monitor in matches:
+            monitor.stop()
+            monitor._remove()  # noqa: SLF001
 
     def __del__(self):
         self.stop()
 
     def __repr__(self):
-        # TODO work out how to show the class of the bound method
-        func_list = [f.__name__ for f, p in self.pollers]
-        return f"{self.name} polling {func_list} at {self.poll_rate})"
+        func_list = [getattr(f, "__qualname__", repr(f)) for f, _ in self.pollers]
+        return f"{self.name} polling {func_list} at {self.poll_rate}"
