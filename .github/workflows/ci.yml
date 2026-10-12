@@ -16,7 +16,7 @@ jobs:
       tox: pre-commit,type-checking
 
   test:
-    # unit tests only: these need no docker daemon
+    # unit tests only: these need no podman service
     strategy:
       matrix:
         runs-on: ["ubuntu-latest"] # can add windows-latest, macos-latest
@@ -29,13 +29,14 @@ jobs:
       pytest-args: -m "not system"
 
   system-test:
-    # system tests launch a Minecraft server in docker (provided by the
+    # system tests launch a Minecraft server in podman (provided by the
     # ubuntu runners), so run them once with the default python version
     uses: ./.github/workflows/_test.yml
     with:
       runs-on: ubuntu-latest
       pytest-args: -m system
       name: system
+      podman: true
 
   container:
     # only publish an image once the system tests have passed too
