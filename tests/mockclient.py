@@ -4,6 +4,7 @@ This mocks a world of 100 blocks square with origin in the middle.
 """
 
 from math import floor
+from typing import Any
 
 import numpy as np
 from mcipc.rcon.enumerations import CloneMode, MaskMode
@@ -17,23 +18,56 @@ class MockClient:
     A mock version of the RCON client for unit testing.
     """
 
+    # the state of each mock server, keyed by (host, port). Every MockClient
+    # connected to the same server shares it, just like real RCON clients
+    # share one Minecraft world. This lets Monitor threads, which make their
+    # own client, see the world that the test set up.
+    _servers: dict[tuple[str, int], dict[str, Any]] = {}
+
     def __init__(self, host, port, passwd=None):
-        # create an empty mock world full of air
-        self.world = np.full((100, 100, 100), Item.AIR, dtype=Item)
-        # note that numpy will wrap around indexes so this world has
-        # ability to index from -50 to 50 in each dimension
         self.host = host
         self.port = port
         self.passwd = passwd
-
         self.connected = False
-        # the text of signs in the mock world, keyed by block position
-        self.signs: dict[tuple[int, int, int], str] = {}
-        # the rotation of the mock player 'georgeTest' (yaw, pitch)
-        self.rotation = (0.0, 0.0)
-        # record of all items given to players
-        self.given: list[tuple[str, str]] = []
-        self.gamerules: dict[str, bool | int] = {}
+
+        state = self._servers.setdefault((host, port), {})
+        if not state:
+            # create an empty mock world full of air
+            # note that numpy will wrap around indexes so this world has
+            # ability to index from -50 to 50 in each dimension
+            state["world"] = np.full((100, 100, 100), Item.AIR, dtype=Item)
+            # the block states (e.g. "powered=true") of blocks, keyed by position
+            state["states"] = {}
+            # the text of signs in the mock world, keyed by block position
+            state["signs"] = {}
+            # the rotation of the mock player 'georgeTest' (yaw, pitch)
+            state["rotation"] = (0.0, 0.0)
+            # record of all items given to players
+            state["given"] = []
+            state["gamerules"] = {}
+            # record of all commands sent with run(), say(), save_*() etc.
+            state["commands"] = []
+        self._state = state
+
+    @classmethod
+    def reset(cls):
+        """Forget the state of every mock server"""
+        cls._servers.clear()
+
+    world = property(lambda self: self._state["world"])
+    states = property(lambda self: self._state["states"])
+    signs = property(lambda self: self._state["signs"])
+    given = property(lambda self: self._state["given"])
+    gamerules = property(lambda self: self._state["gamerules"])
+    commands = property(lambda self: self._state["commands"])
+
+    @property
+    def rotation(self) -> tuple[float, float]:
+        return self._state["rotation"]
+
+    @rotation.setter
+    def rotation(self, value: tuple[float, float]):
+        self._state["rotation"] = value
 
     # The responses below mimic those of a Minecraft 26.3 server
 
@@ -58,11 +92,17 @@ class MockClient:
         self.given.append((target, item))
         return f"Gave 1 [{item}] to {target}"
 
-    def setblock(self, pos: Vec3, block: Item):
+    def setblock(self, pos: Vec3, block: Item | str, mode=None):
         """set the block at position in the world"""
-        self.world[int(pos.x), int(pos.y), int(pos.z)] = block
+        key = (int(pos.x), int(pos.y), int(pos.z))
+        # split e.g. 'minecraft:oak_door[half=lower]' into item and state
+        name, _, state = str(block).partition("[")
+        name = name.split("{")[0]
+        self.world[key] = Item(name)
+        self.states[key] = state.rstrip("]")
+        return f"Changed the block at {key[0]}, {key[1]}, {key[2]}"
 
-    def fill(self, start: Vec3, end: Vec3, block: Item):
+    def fill(self, start: Vec3, end: Vec3, block: Item, mode=None, **_kwargs):
         block = Item(block)  # ensure enum
         self.world[
             floor(start.x) : floor(end.x),
@@ -189,7 +229,7 @@ class MockClient:
 
         class If:
             def block(self, pos: Vec3, block: str):
-                return Run(str(parent.getblock(pos)) == str(block))
+                return Run(parent.matches(pos, str(block)))
 
         class Execute:
             if_ = If()
@@ -204,6 +244,51 @@ class MockClient:
         """place a sign with text on its front at position in the world"""
         self.setblock(pos, block)
         self.signs[(int(pos.x), int(pos.y), int(pos.z))] = text
+
+    def matches(self, pos: Vec3, block: str) -> bool:
+        """
+        Test the block at pos as 'execute if block' does. Supports the
+        #minecraft:wall_signs tag and block states e.g. lever[powered=true]
+        """
+        actual = str(self.getblock(pos))
+        if block == "#minecraft:wall_signs":
+            return actual.endswith("_wall_sign")
+        name, _, state = block.partition("[")
+        if actual != str(Item(name)):
+            return False
+        key = (int(pos.x), int(pos.y), int(pos.z))
+        actual_states = dict(
+            s.split("=")
+            for s in self.states.get(key, "").replace(" ", "").split(",")
+            if s
+        )
+        for wanted in state.rstrip("]").replace(" ", "").split(","):
+            if wanted:
+                prop, value = wanted.split("=")
+                # treat states that were not set as false e.g. powered=false
+                if actual_states.get(prop, "false") != value:
+                    return False
+        return True
+
+    def say(self, message: str) -> str:
+        self.commands.append(f"say {message}")
+        return ""
+
+    def save_off(self) -> str:
+        self.commands.append("save-off")
+        return "Automatic saving is now disabled"
+
+    def save_all(self, flush: bool = False) -> str:
+        self.commands.append("save-all flush" if flush else "save-all")
+        return "Saved the game"
+
+    def save_on(self) -> str:
+        self.commands.append("save-on")
+        return "Automatic saving is now enabled"
+
+    def run(self, command: str, *args: str) -> str:
+        self.commands.append(" ".join((command, *args)))
+        return f"ran {command}"
 
     def getblock(self, pos: Vec3) -> Item:
         """return the block at position in the world"""

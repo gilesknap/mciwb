@@ -11,9 +11,10 @@ from mcipc.rcon.je import Client
 from mcwb.types import Vec3
 
 from mciwb.iwb import Iwb
+from mciwb.monitor import Monitor
 from mciwb.player import Player, PlayerNotInWorldError
 from mciwb.server import HOST, MinecraftServer
-from mciwb.threads import get_client, set_client
+from mciwb.threads import get_client, set_client, thread_local
 from tests.mockclient import MockClient
 
 KEEP_SERVER = "MCIWB_KEEP_SERVER" in os.environ
@@ -43,6 +44,8 @@ def _docker_available() -> bool:
     return True
 
 
+# tryfirst: the marker must be added before pytest's own -m deselection runs
+@pytest.hookimpl(tryfirst=True)
 def pytest_collection_modifyitems(config: pytest.Config, items: list[pytest.Item]):
     """
     Mark everything under tests/test_system as a 'system' test.
@@ -117,7 +120,8 @@ def minecraft_client(minecraft_container: Container):
     # attach the new client to the current thread
     set_client(client)
 
-    # ensure that the chunks near 0,0,0 are loaded
+    # put the world spawn at the test entity. Note this does not keep chunks
+    # loaded, MinecraftServer._settings forceloads the chunks used in tests
     client.setworldspawn(ENTITY_POS)
     # don't announce every rcon command
     client.gamerule("send_command_feedback", False)
@@ -127,6 +131,11 @@ def minecraft_client(minecraft_container: Container):
 
 @pytest.fixture()
 def minecraft_player():
+    """
+    A named armor stand that stands in for a player. Uses the client of the
+    current thread: a MockClient in unit tests, the test server in system
+    tests (see tests/test_system/conftest.py)
+    """
     client = get_client()
 
     # remove any stand left over from a previous test
@@ -160,13 +169,32 @@ def mciwb_world(
     request.addfinalizer(stop_thread)
 
     world = Iwb(HOST, RCON_PORT, passwd=RCON_P)
-    world.add_player(ENTITY_NAME)
+    # the test entity is an armor stand, so skip op and gamemode
+    world.add_player(ENTITY_NAME, setup=False)
 
     return world
 
 
 @pytest.fixture()
 def mock_client():
+    """
+    Use a MockClient with an empty mock world for the current thread, and
+    restore the previous client afterwards
+    """
+    previous = getattr(thread_local, "client", None)
+    MockClient.reset()
     client = MockClient("localhost", 20400, "pass")
     set_client(client)  # type: ignore
-    return client
+    yield client
+    MockClient.reset()
+    if previous is None:
+        del thread_local.client
+    else:
+        set_client(previous)
+
+
+@pytest.fixture(autouse=True)
+def stop_monitors():
+    """Make sure no test leaves Monitor threads running"""
+    yield
+    Monitor.stop_all()
