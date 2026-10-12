@@ -1,22 +1,15 @@
 """
-System tests for the Copy class
+Unit tests for the CopyPaste class
 """
 
 import logging
 
 from mcwb import Item
 from mcwb.types import Anchor3, Vec3
+from mcwb.volume import Volume
 
 from mciwb.copier import CopyPaste
 from tests.cube import SampleCube
-
-# TODO unit test version of this
-# def test_world_reporting(mciwb_world: Iwb):
-#     """
-#     verify printing of the world object
-#     """
-
-#     assert f"player: {ENTITY_NAME}" in mciwb_world.__repr__()
 
 
 def test_copy_anchors(mock_client):
@@ -104,3 +97,14 @@ def test_clear(mock_client):
     copier.clear()
 
     assert mock_client.getblock(Vec3(0, 0, 0)) == Item.AIR
+
+
+def test_apply_volume(mock_client):
+    copier = CopyPaste()
+    copier.select(Vec3(-5, -5, -5))
+
+    copier.apply_volume(Volume.from_corners(Vec3(3, 2, 1), Vec3(1, 2, 3)))
+
+    assert copier.to_volume().start == Vec3(1, 2, 1)
+    assert copier.to_volume().end == Vec3(3, 2, 3)
+    assert copier.paste_pos == Vec3(1, 2, 1)

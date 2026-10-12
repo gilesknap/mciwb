@@ -103,12 +103,16 @@ class MockClient:
         return f"Changed the block at {key[0]}, {key[1]}, {key[2]}"
 
     def fill(self, start: Vec3, end: Vec3, block: Item, mode=None, **_kwargs):
+        """fill a volume, including both corners, like the Minecraft command"""
         block = Item(block)  # ensure enum
-        self.world[
-            floor(start.x) : floor(end.x),
-            floor(start.y) : floor(end.y),
-            floor(start.z) : floor(end.z),
-        ] = block
+        lo = [floor(min(a, b)) for a, b in zip(start, end, strict=True)]
+        hi = [floor(max(a, b)) + 1 for a, b in zip(start, end, strict=True)]
+        self.world[lo[0] : hi[0], lo[1] : hi[1], lo[2] : hi[2]] = block
+        for key in [
+            k for k in self.states if all(lo[i] <= k[i] < hi[i] for i in range(3))
+        ]:
+            del self.states[key]
+        return f"Successfully filled {np.prod(np.subtract(hi, lo))} block(s)"
 
     def clone(
         self,

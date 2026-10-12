@@ -39,12 +39,12 @@ dev = [
     "pyright",
     "pytest",
     "pytest-cov",
+    "pytest-timeout>=2.4.0",
     "ruff",
     "sphinx-autobuild",
     "sphinx-copybutton",
     "sphinx-design",
     "tox-uv",
-    "types-mock",
 ]
 
 [project.scripts]
@@ -74,9 +74,13 @@ filterwarnings = [
     "error",
     # its difficult to ensure all sockets are closed in tests so ignore
     "ignore:.*socket.*:ResourceWarning",
-    "ignore::DeprecationWarning",
-    "ignore::UserWarning",
+    # only ignore deprecations raised inside third party libraries, so that
+    # deprecations in mciwb's own code still fail the tests
+    "ignore::DeprecationWarning:docker.*",
 ]
+# fail a hung test (e.g. waiting on a Minecraft server) with a traceback,
+# rather than hanging until the CI job times out
+timeout = 600
 # Doctest python code in docs, python code in src docstrings, test functions in tests
 testpaths = "docs src tests"
 markers = [

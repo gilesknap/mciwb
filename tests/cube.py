@@ -18,8 +18,6 @@ class SampleCube:
         # TODO does Volume's use of size need review?
         self.volume_size = Vec3(3, 3, 3)
 
-        self.air = (((Item.AIR,) * 3) * 3) * 3
-
     def create(self, pos: Vec3, anchor: Anchor3 = Anchor3.BOTTOM_NW):
         """
         create a set of blocks in the world at pos

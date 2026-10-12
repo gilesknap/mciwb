@@ -45,11 +45,15 @@ def test_run_missing_script(tmp_path: Path):
 
 
 def test_shell_test_mode(mock_iwb: MockClient):
-    result = runner.invoke(
-        cli, ["shell", "--test", "--server", "localhost", "--port", "20400"]
-    )
+    args = ["shell", "--test", "--server", "localhost", "--port", "20400"]
+    result = runner.invoke(cli, args)
     assert result.exit_code == 0, result.output
     assert "no players" in result.output
+
+    # a second shell in the same process reuses the IPython instance
+    result = runner.invoke(cli, [*args, "--player", "georgeTest"])
+    assert result.exit_code == 0, result.output
+    assert "player: georgeTest" in result.output
 
 
 def test_restore_passes_options(monkeypatch: pytest.MonkeyPatch, tmp_path: Path):
