@@ -101,8 +101,8 @@ PyPI rejects direct URL dependencies, so before the next mciwb release:
 2. Replace the git dependency with `mcwb>=<new version>` and run `uv lock`.
 3. Set the repository variable `PUBLISH_PYPI` to `true` (Settings > Secrets
    and variables > Actions > Variables). Until then the `pypi` job in
-   `.github/workflows/ci.yml` is skipped on tags, so a tag still makes a
-   GitHub release and container image but publishes nothing to PyPI.
+   `.github/workflows/ci.yml` is skipped on tags: a tag whose CI passes still
+   makes a GitHub release and container image, but publishes nothing to PyPI.
 
 To try local mcwb changes, run `uv pip install -e ../mcwb` in the mciwb venv
 (and `uv sync` afterwards to return to the pinned commit).
