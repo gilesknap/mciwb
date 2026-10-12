@@ -36,6 +36,10 @@ with Python and the current version of MCIWB.
 
 https://github.com/gilesknap/mciwb/assets/964827/026b3551-f514-403a-bebe-8d168c7170b0
 
+An earlier video shows the castle being built; the source code for the village
+is in [src/demo/village.py](https://github.com/gilesknap/mciwb/blob/main/src/demo/village.py).
+
+https://user-images.githubusercontent.com/964827/225131152-677da86e-a6b5-44c2-baf1-8da2eb4e221b.mov
 
 ## Goals
 
