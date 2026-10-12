@@ -233,3 +233,23 @@ def test_scan_default_server(default_world, mock_client: MockClient, tmp_path: P
 
     assert grid[Vec3(1, 2, 3)] == "minecraft:gold_block"
     assert "save-all flush" in mock_client.commands
+
+
+def test_scan_mciwb_server_other_port(
+    default_world, mock_client: MockClient, monkeypatch: pytest.MonkeyPatch, tmp_path
+):
+    """mciwb start --port N still uses the default folder: find it by its port"""
+    monkeypatch.setattr(mciwb.iwb, "def_port", mock_client.port + 100)
+    world_folder = write_world(
+        tmp_path / "server" / "world", {(1, 2, 3): "minecraft:gold_block"}
+    )
+    assert default_world().world_folder is None
+
+    properties = tmp_path / "server" / "server.properties"
+    properties.write_text(f"motd=hi\nrcon.port={mock_client.port}\n")
+    world = default_world()
+    assert world.world_folder == world_folder
+
+    grid = world.scan(Vec3(0, 2, 3), Vec3(2, 2, 3))
+    assert grid[Vec3(1, 2, 3)] == "minecraft:gold_block"
+    assert "save-all flush" in mock_client.commands

@@ -98,6 +98,11 @@ assert grid[a + Vec3(2, 1, 2)] == "minecraft:gold_block"
   give `--folder`. Otherwise (or with `--rcon`) blocks are read over RCON one
   at a time, which is slow and capped at 32768 blocks.
 - Pass the same `--port`/`--password` as `mciwb start`.
+- In a script, `world.scan`/`world.render` read the files of
+  `world.world_folder`. It is found for the server of `mciwb start` (any
+  `--port`) when its `--folder` is the default; otherwise it is `None` and
+  blocks are read over RCON, so set it:
+  `world.world_folder = pathlib.Path("/my/server/world")`.
 - By default each view is about 512 px across, shrunk if needed to keep the
   whole image under 1500 px wide: wider images are scaled down before you see
   them. Small regions render smaller (at most 16 px per block). Three views

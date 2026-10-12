@@ -29,6 +29,22 @@ from mciwb.signs import Signs
 from mciwb.threads import Client, get_client, set_client
 
 
+def _rcon_port(server_folder: Path) -> int | None:
+    """The RCON port in a server folder's server.properties, if there is one"""
+    try:
+        lines = (server_folder / "server.properties").read_text().splitlines()
+    except OSError:
+        return None
+    for line in lines:
+        key, _, value = line.partition("=")
+        if key.strip() == "rcon.port":
+            try:
+                return int(value)
+            except ValueError:
+                return None
+    return None
+
+
 def get_world() -> "Iwb":
     """
     Return the current `Iwb` world object, i.e. the most recently created one.
@@ -52,7 +68,9 @@ class Iwb:
     :ivar signs: The `Signs` object for the above player.
     :ivar world_folder: The server's world folder, if it is on this machine.
         ``scan`` and ``render`` read blocks from its files, which is much faster
-        than over RCON. Set for the default server of ``mciwb start``.
+        than over RCON. Set for the server of ``mciwb start`` when it uses
+        the default ``--folder``: for another folder, set it yourself, e.g.
+        ``world.world_folder = Path("/my/server/world")``.
     """
 
     the_world: "Iwb" = None  # type: ignore
@@ -86,11 +104,13 @@ class Iwb:
         self._players: dict[str, Player] = {}
         self._copiers: dict[str, CopyPaste] = {}
 
-        # if we are using the default server created by mciwb then we know
-        # where the folders are for doing backups
+        # if we are using the server created by mciwb start (with its default
+        # folder) then we know where the folders are for doing backups
         self._backup: Backup | None = None
         self.world_folder: Path | None = None
-        if server == HOST and port == def_port:
+        if server == HOST and (
+            port == def_port or _rcon_port(default_server_folder) == port
+        ):
             world_folder = default_server_folder / "world"
             if (world_folder / "level.dat").exists():
                 self._backup = Backup(world_folder, backup_folder_default)

@@ -98,6 +98,13 @@ _AXIS_NAMES = "xyz"
 _TOP, _SOUTH, _EAST = 1.0, 0.8, 0.62
 
 
+# how to read the world files rather than ask over RCON
+_WORLD_FOLDER_HINT = (
+    "to read the world files, set world.world_folder in a script, or give "
+    "mciwb render the --folder of mciwb start (without --rcon)"
+)
+
+
 def scan(
     vol: Volume,
     world_folder: Path | None = None,
@@ -132,14 +139,18 @@ def scan(
             "no world folder" if world_folder is None else f"no world in {world_folder}"
         )
         raise ValueError(f"cannot read blocks: {where} and no server to ask over RCON")
-    if world_folder is not None:
-        log.info(f"{world_folder} is not a world, so reading blocks over RCON")
     blocks = vol.size.volume
     if blocks > max_rcon_blocks:
         raise ValueError(
             f"{vol.size.i_tuple} is {blocks} blocks: too many to read over RCON "
-            f"(max {max_rcon_blocks}). Read the world folder instead, or pick "
-            "a smaller region"
+            f"(max {max_rcon_blocks}). Pick a smaller region, or {_WORLD_FOLDER_HINT}"
+        )
+    if world_folder is not None:
+        log.info(f"{world_folder} is not a world, so reading blocks over RCON")
+    else:
+        log.info(
+            f"reading {blocks} blocks over RCON one at a time, which is slow: "
+            f"{_WORLD_FOLDER_HINT}"
         )
     return grab_blocks(client, vol)
 

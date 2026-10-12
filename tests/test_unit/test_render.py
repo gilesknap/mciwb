@@ -1,3 +1,4 @@
+import logging
 from pathlib import Path
 
 import numpy as np
@@ -245,7 +246,10 @@ def test_scan_world_files(tmp_path: Path, mock_client: MockClient):
     assert grid[Vec3(1, 2, 3)] == "minecraft:gold_block"
 
 
-def test_scan_rcon(tmp_path: Path, mock_client: MockClient):
+def test_scan_rcon(
+    tmp_path: Path, mock_client: MockClient, caplog: pytest.LogCaptureFixture
+):
+    caplog.set_level(logging.INFO, logger="mciwb")
     mock_client.setblock(Vec3(1, 2, 3), Item.GOLD_BLOCK)
     vol = Volume.from_corners(Vec3(0, 2, 3), Vec3(2, 2, 3))
 
@@ -253,8 +257,11 @@ def test_scan_rcon(tmp_path: Path, mock_client: MockClient):
     for folder in (None, tmp_path):
         grid = scan(vol, folder, mock_client)  # type: ignore
         assert grid[Vec3(1, 2, 3)] == "minecraft:gold_block"
+    # say so, and how to read the world files instead
+    assert "reading 3 blocks over RCON one at a time" in caplog.text
+    assert "set world.world_folder" in caplog.text
 
-    with pytest.raises(ValueError, match="too many"):
+    with pytest.raises(ValueError, match="too many.*world.world_folder"):
         scan(vol, None, mock_client, max_rcon_blocks=2)  # type: ignore
     with pytest.raises(ValueError, match="no world in"):
         scan(vol, tmp_path)

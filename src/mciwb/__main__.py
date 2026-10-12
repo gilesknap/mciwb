@@ -243,7 +243,12 @@ def backup(
     init_logging(debug)
 
     backup = Backup(world_folder=folder / "world", backup_folder=backup_folder)
-    client = _rcon_client(port, password)
+    client, wrong_password = _rcon_client(port, password)
+    if wrong_password:
+        log.warning(
+            f"wrong RCON password for {HOST}:{port}: copying the world files "
+            "without asking the server to save them first"
+        )
     try:
         if client:
             set_client(client)
@@ -256,16 +261,18 @@ def backup(
             client.close()
 
 
-def _rcon_client(port: int, password: str) -> Client | None:
-    """Connect to a running server, or return None if there is none"""
+def _rcon_client(port: int, password: str) -> tuple[Client | None, bool]:
+    """
+    Connect to a running server. Return the client, or None if there is no
+    server or the password is wrong, and whether the password was wrong (for
+    the caller to report: there is a server, but it was not asked to save)
+    """
     client = Client(HOST, port, passwd=password, timeout=10)
     try:
         client.connect(True)
     except WrongPassword:
-        log.warning(
-            f"Wrong RCON password for server {HOST}:{port}, so the world files "
-            "are read without asking the server to save them first"
-        )
+        client.close()
+        return None, True
     except Exception as e:
         log.debug(f"no server on {HOST}:{port}: {e!r}")
     else:
@@ -273,9 +280,9 @@ def _rcon_client(port: int, password: str) -> Client | None:
         # can take longer, so wait for commands as long as they need (rcon
         # types the timeout as float, but the socket accepts None)
         client.timeout = None  # pyright: ignore[reportAttributeAccessIssue]
-        return client
+        return client, False
     client.close()
-    return None
+    return None, False
 
 
 @cli.command()
@@ -386,16 +393,22 @@ def render_cmd(
         log.error(e)
         raise typer.Exit(1) from None
 
-    client = _rcon_client(port, password)
+    client, wrong_password = _rcon_client(port, password)
     world_folder = None if rcon else folder / "world"
     if client is None and world_folder and (world_folder / "level.dat").exists():
         # unlike backup, render expects a running server: without one the
         # world files may be minutes behind what was just built
+        if wrong_password:
+            problem, options = "wrong RCON password for", "--password"
+        else:
+            problem, options = "no server on", "--port/--password"
         log.warning(
-            f"no server on {HOST}:{port}: reading the world files without "
+            f"{problem} {HOST}:{port}: reading the world files without "
             "asking the server to save, so recent changes may be missing; "
-            "pass the --port/--password of mciwb start"
+            f"pass the {options} of mciwb start"
         )
+    elif wrong_password:
+        log.warning(f"wrong RCON password for {HOST}:{port}")
     try:
         grid = scan(vol, world_folder, client)
     except ValueError as e:

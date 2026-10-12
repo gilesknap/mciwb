@@ -108,6 +108,16 @@ just as for ``mciwb backup``. Chunks that have never been generated read as
 air. Only block names are read: block states, such as which way stairs face,
 are not.
 
+In a script, ``world.scan`` and ``world.render`` read the world files of
+``world.world_folder``. mciwb sets it for the server of ``mciwb start``,
+whatever its ``--port``, when it uses the default ``--folder``
+(``~/mciwb-server``). Otherwise it is ``None`` and the blocks are read over
+RCON, so set it yourself::
+
+    from pathlib import Path
+
+    world.world_folder = Path("/my/server/world")
+
 Limits and timings
 ------------------
 

@@ -11,6 +11,7 @@ import numpy as np
 from mcwb import Item, Vec3, Volume
 
 from mciwb.blockgrid import grab_blocks
+from mciwb.iwb import _rcon_port
 from mciwb.palette import BLOCK_COLOURS, DYE_COLOURS
 from mciwb.render import render_view, scan
 from mciwb.server import MinecraftServer
@@ -113,3 +114,11 @@ def test_scan_speed(minecraft_container: MinecraftServer, minecraft_client: Clie
     start = monotonic()
     grab_blocks(minecraft_client, vol)
     report(f"grab {vol.size.volume} blocks over RCON: {monotonic() - start:.2f}s")
+
+
+def test_world_folder_found_by_port(minecraft_container: MinecraftServer):
+    """
+    Iwb finds the world folder of a server started on a non default port by
+    the rcon.port that the server writes to its server.properties
+    """
+    assert _rcon_port(minecraft_container.server_folder) == minecraft_container.rcon

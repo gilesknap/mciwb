@@ -186,7 +186,9 @@ def test_backup_stopped_server(
 
 
 def test_backup_not_a_world(monkeypatch: pytest.MonkeyPatch, tmp_path: Path):
-    monkeypatch.setattr(mciwb.__main__, "_rcon_client", lambda port, password: None)
+    monkeypatch.setattr(
+        mciwb.__main__, "_rcon_client", lambda port, password: (None, False)
+    )
 
     result = runner.invoke(cli, backup_args(tmp_path))
 
@@ -245,11 +247,28 @@ def test_render_rcon(
     assert image.getpixel((7, 7)) == BLOCK_COLOURS["gold_block"]
 
 
+@pytest.mark.parametrize(
+    "error, problem, options",
+    [
+        (ConnectionRefusedError, "no server on", "--port/--password"),
+        (WrongPassword, "wrong RCON password for", "--password of"),
+    ],
+)
 def test_render_no_server(
-    monkeypatch: pytest.MonkeyPatch, tmp_path: Path, caplog: pytest.LogCaptureFixture
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+    caplog: pytest.LogCaptureFixture,
+    error: type,
+    problem: str,
+    options: str,
 ):
     """with no server, render reads the world files but warns they may be stale"""
-    monkeypatch.setattr(mciwb.__main__, "_rcon_client", lambda port, password: None)
+
+    class Unreachable(MockClient):
+        def connect(self, retry=True):
+            raise error()
+
+    monkeypatch.setattr(mciwb.__main__, "Client", Unreachable)
     write_world(tmp_path / "server" / "world", {(1, -2, 3): "minecraft:gold_block"})
 
     args = ["0", "-3", "2", "2", "-1", "4", "--port", "20499"]
@@ -258,9 +277,10 @@ def test_render_no_server(
     assert result.exit_code == 0, (result.output, result.exception)
     assert (tmp_path / "render.png").exists()
     warnings = [r.getMessage() for r in caplog.records if r.levelname == "WARNING"]
-    assert len(warnings) == 1
-    assert "no server on" in warnings[0] and ":20499" in warnings[0]
+    assert len(warnings) == 1, warnings
+    assert warnings[0].startswith(f"{problem} localhost:20499:")
     assert "recent changes may be missing" in warnings[0]
+    assert f"pass the {options}" in warnings[0]
 
 
 @pytest.mark.parametrize(
@@ -278,7 +298,9 @@ def test_render_no_server(
 def test_render_errors(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path, args: list[str]
 ):
-    monkeypatch.setattr(mciwb.__main__, "_rcon_client", lambda port, password: None)
+    monkeypatch.setattr(
+        mciwb.__main__, "_rcon_client", lambda port, password: (None, False)
+    )
 
     result = runner.invoke(cli, render_args(tmp_path, *args))
 
