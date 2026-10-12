@@ -102,6 +102,17 @@ Windows:
     Then open the Ubuntu terminal from the start menu and follow the Linux
     instructions above to install Podman inside Ubuntu.
 
+    ``systemctl --user`` needs systemd to be enabled in WSL. Recent versions
+    of WSL enable it by default for Ubuntu. If ``systemctl`` reports that
+    systemd is not running, add these lines to the file ``/etc/wsl.conf`` in
+    Ubuntu (e.g. with ``sudo nano /etc/wsl.conf``)::
+
+        [boot]
+        systemd=true
+
+    Then restart WSL by typing ``wsl --shutdown`` into a Windows PowerShell or
+    Command Prompt, and open the Ubuntu terminal again.
+
     (Podman Desktop https://podman-desktop.io is an alternative that runs
     Podman in its own WSL2 machine, but installing Podman inside your Ubuntu
     is simpler for MCIWB.)

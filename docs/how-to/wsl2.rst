@@ -22,6 +22,12 @@ the tutorials look exactly the same for Windows, Linux and MacOS.
 The linux command line in Ubuntu Linux inside WSL2 is called ``bash`` and 
 is easier to use than Windows equivalents.
 
+The Podman service is started with ``systemctl --user``, which needs systemd
+to be enabled in WSL2. Recent versions of WSL2 enable it by default for
+Ubuntu. If not, add ``[boot]`` and ``systemd=true`` on two lines in the file
+``/etc/wsl.conf`` in Ubuntu, then run ``wsl --shutdown`` in a Windows CMD
+window and open Ubuntu again (see `podman`).
+
 Adding the WSL2 extension
 -------------------------
 
