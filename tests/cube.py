@@ -1,5 +1,4 @@
-from mcipc.rcon.item import Item
-from mcwb import Blocks, Volume
+from mcwb import Blocks, Item, Volume
 from mcwb.itemlists import grab
 from mcwb.types import Anchor3, Cuboid, Vec3
 

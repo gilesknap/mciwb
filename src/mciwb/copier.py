@@ -3,8 +3,7 @@ Provide copy and paste actions on Volumes of blocks
 """
 
 from mcipc.rcon.enumerations import CloneMode, MaskMode
-from mcipc.rcon.item import Item
-from mcwb import Vec3, Volume
+from mcwb import Item, Vec3, Volume
 
 from mciwb.logging import log
 from mciwb.threads import get_client

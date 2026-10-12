@@ -6,7 +6,7 @@ import re
 from collections.abc import Callable
 from time import sleep
 
-from mcwb.types import Item, Vec3
+from mcwb import Item, Vec3
 
 from mciwb.copier import CopyPaste
 from mciwb.logging import log

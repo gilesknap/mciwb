@@ -5,8 +5,7 @@
     Under Construction ...
 """
 
-from mcipc.rcon.item import Item
-from mcwb import Direction, Vec3
+from mcwb import Direction, Item, Vec3
 
 
 class Utils:

@@ -1,6 +1,7 @@
 from collections.abc import Callable
 
-from mcipc.rcon.enumerations import Item, SetblockMode
+from mcipc.rcon.enumerations import SetblockMode
+from mcwb import Item
 from mcwb.types import Vec3
 
 from mciwb.logging import log

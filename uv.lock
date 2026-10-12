@@ -716,9 +716,11 @@ source = { editable = "." }
 dependencies = [
     { name = "docker" },
     { name = "ipython" },
+    { name = "mcipc" },
     { name = "mcwb" },
     { name = "numpy", version = "2.4.6", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.12'" },
     { name = "numpy", version = "2.5.4", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.12'" },
+    { name = "rcon" },
     { name = "typer" },
 ]
 
@@ -742,8 +744,10 @@ dev = [
 requires-dist = [
     { name = "docker", specifier = ">=6" },
     { name = "ipython" },
-    { name = "mcwb", specifier = "==0.3.0b2" },
+    { name = "mcipc", specifier = "==2.4.2" },
+    { name = "mcwb", git = "https://github.com/gilesknap/mcwb?rev=9f469a0a49f30618fd08ea440348a79a8ab66d69" },
     { name = "numpy" },
+    { name = "rcon", specifier = "==2.4.9" },
     { name = "typer" },
 ]
 
@@ -765,17 +769,13 @@ dev = [
 
 [[package]]
 name = "mcwb"
-version = "0.3.0b2"
-source = { registry = "https://pypi.org/simple" }
+version = "0.1.dev152+g9f469a0a4"
+source = { git = "https://github.com/gilesknap/mcwb?rev=9f469a0a49f30618fd08ea440348a79a8ab66d69#9f469a0a49f30618fd08ea440348a79a8ab66d69" }
 dependencies = [
     { name = "mcipc" },
     { name = "numpy", version = "2.4.6", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.12'" },
     { name = "numpy", version = "2.5.4", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.12'" },
     { name = "rcon" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/63/23/381d0aae7de665838dab6810c3a6b954a7769618fc342cfe3d79622d16e5/mcwb-0.3.0b2.tar.gz", hash = "sha256:5f93f4a947806b197dbb6da1e6d0aac077140df8536d2db3dbbdda2b6fe3c5f1", size = 72692, upload-time = "2024-02-10T13:46:40.458Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/dd/4b/5391b36c72ad0e744aa073cc9b98cc68f37131257ef71ec621ba7f1d994c/mcwb-0.3.0b2-py3-none-any.whl", hash = "sha256:e43dbee6d487576d05c64a06425ffec7db6f212acbfae9f8c8c3bd9a250c4fa0", size = 39096, upload-time = "2024-02-10T13:46:37.765Z" },
 ]
 
 [[package]]

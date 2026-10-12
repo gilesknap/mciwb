@@ -1,9 +1,8 @@
 from pathlib import Path
 
 from mcipc.rcon.exceptions import NoPlayerFound
-from mcipc.rcon.item import Item
 from mcipc.rcon.je import Client
-from mcwb import Anchor3, Blocks, Direction, Vec3, Volume
+from mcwb import Anchor3, Blocks, Direction, Item, Vec3, Volume
 from mcwb.itemlists import grab, load_items, save_items
 from rcon.exceptions import SessionTimeout
 from rcon.source.proto import Packet

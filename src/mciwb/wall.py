@@ -2,8 +2,7 @@ from typing import Any
 
 import numpy as np
 from mcipc.rcon.enumerations import SetblockMode
-from mcipc.rcon.item import Item
-from mcwb import Vec3
+from mcwb import Item, Vec3
 from mcwb.types import Direction
 
 from mciwb.iwb import get_world
@@ -98,13 +97,13 @@ class Wall:
 
     def _rot_left(self, direction: Vec3) -> Vec3:
         # TODO this function should be a member of Direction in mcwb
-        index = Direction.cardinals.index(direction)
-        return Direction.cardinals[(index - 1) % 4]
+        index = Direction.cardinals().index(direction)
+        return Direction.cardinals()[(index - 1) % 4]
 
     def _rot_right(self, direction: Vec3) -> Vec3:
         # TODO this function should be a member of Direction in mcwb
-        index = Direction.cardinals.index(direction)
-        return Direction.cardinals[(index + 1) % 4]
+        index = Direction.cardinals().index(direction)
+        return Direction.cardinals()[(index + 1) % 4]
 
 
 class WallMaker:

@@ -1,4 +1,4 @@
-from mcipc.rcon.enumerations import Item
+from mcwb import Item
 from mcwb.api import polygon
 from mcwb.types import Direction, Vec3
 

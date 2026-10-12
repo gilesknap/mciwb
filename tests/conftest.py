@@ -7,8 +7,8 @@ from time import sleep
 import docker
 import pytest
 from docker.models.containers import Container
-from mcipc.rcon.enumerations import Item
 from mcipc.rcon.je import Client
+from mcwb import Item
 from mcwb.types import Vec3
 
 from mciwb.iwb import Iwb

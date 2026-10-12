@@ -100,7 +100,7 @@ class Player:
         angle = float(match.group(1))
 
         index = int(((math.floor(angle) + 45) % 360) / 90)
-        return Direction.cardinals[index]
+        return Direction.cardinals()[index]
 
     @property
     def rotation(self) -> Rotation:

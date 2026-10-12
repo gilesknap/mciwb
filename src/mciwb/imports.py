@@ -9,9 +9,9 @@ user modules (and modules in demo package) can import everything with
     from mciwb.imports import ... ...
 """
 
-from mcipc.rcon.enumerations import FillMode, Item, SetblockMode
+from mcipc.rcon.enumerations import FillMode, SetblockMode
 from mcipc.rcon.je import Client
-from mcwb import Anchor3, Blocks, Cuboid, Vec3, Volume
+from mcwb import Anchor3, Blocks, Cuboid, Item, Vec3, Volume
 from mcwb.api import make_tunnel, polygon
 from mcwb.itemlists import grab, load_items, save_items
 from mcwb.types import Direction, Planes3d

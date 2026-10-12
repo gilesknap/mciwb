@@ -72,7 +72,7 @@ nitpick_ignore = [
     ("py:class", "'id'"),
     ("py:class", "typing_extensions.Literal"),
     ("py:class", "mcwb.types.Vec3"),
-    ("py:class", "mcipc.rcon.item.Item"),
+    ("py:class", "mcwb.item.Item"),
 ]
 
 # Both the class’ and the __init__ method’s docstring are concatenated and

@@ -4,7 +4,7 @@ System tests for the Copy class
 
 import logging
 
-from mcipc.rcon.item import Item
+from mcwb import Item
 from mcwb.types import Anchor3, Vec3
 
 from mciwb.copier import CopyPaste
