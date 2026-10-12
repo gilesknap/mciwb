@@ -87,6 +87,7 @@ _ORTHO_VIEWS = {
 # south east, the viewpoint that the iso renderer draws
 _ISO_VIEWS = {"iso": 0, "iso_se": 0, "iso_ne": 1, "iso_nw": 2, "iso_sw": 3}
 
+#: the names of the views that `render` can draw
 VIEWS = (*_ORTHO_VIEWS, *_ISO_VIEWS)
 _AXIS_NAMES = "xyz"
 

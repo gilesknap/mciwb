@@ -75,7 +75,7 @@ block name) and count with ``grid.counts()``. This is a quick way to check
 that a build contains what it should.
 
 For other servers, or to draw the same blocks several ways, use the functions
-`mciwb.scan` and `mciwb.render` directly::
+`mciwb.render.scan` and `mciwb.render.render` directly::
 
     from mciwb.render import render, scan
 

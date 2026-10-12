@@ -232,3 +232,14 @@ def test_scan_rcon(tmp_path: Path, mock_client: MockClient):
         scan(vol, tmp_path)
     with pytest.raises(ValueError, match="no world folder"):
         scan(vol)
+
+
+def test_render_module_not_shadowed():
+    """``import mciwb.render`` gives the module, not the render function"""
+    import importlib
+
+    import mciwb.render as module
+
+    assert module.scan is scan and module.render is render
+    package = importlib.import_module("mciwb")
+    assert package.render is module
