@@ -75,7 +75,7 @@ releases).
 mciwb builds on [mcwb](https://github.com/gilesknap/mcwb). Until an mcwb
 release contains `mcwb.Item` and the `get_block` fix for blocks without a loot
 table, `pyproject.toml` pins mcwb as a git dependency on a commit SHA (see
-[ADR 0003](../docs/explanations/decisions/0003-keep-mcipc-use-mcwb-item.md)).
+[ADR 0003](https://github.com/gilesknap/mciwb/blob/main/docs/explanations/decisions/0003-keep-mcipc-use-mcwb-item.md)).
 PyPI rejects direct URL dependencies, so before the next mciwb release:
 
 1. Release mcwb (from mcipc-tools/mcwb, which publishes to PyPI).
