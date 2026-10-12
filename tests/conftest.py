@@ -4,15 +4,13 @@ from pathlib import Path
 from tempfile import gettempdir
 from time import sleep
 
-import docker
 import pytest
-from docker.models.containers import Container
 from mcwb.types import Vec3
 
 from mciwb.iwb import Iwb
 from mciwb.monitor import Monitor
 from mciwb.player import Player, PlayerNotInWorldError
-from mciwb.server import HOST, MinecraftServer
+from mciwb.server import HOST, MinecraftServer, podman_client
 from mciwb.threads import Client, get_client, set_client, thread_local
 from tests.mockclient import MockClient
 
@@ -35,9 +33,9 @@ logging.basicConfig(
 SYSTEM_TESTS = Path(__file__).parent / "test_system"
 
 
-def _docker_available() -> bool:
+def _podman_available() -> bool:
     try:
-        docker.from_env().ping()
+        podman_client().close()
     except Exception:
         return False
     return True
@@ -49,9 +47,9 @@ def pytest_collection_modifyitems(config: pytest.Config, items: list[pytest.Item
     """
     Mark everything under tests/test_system as a 'system' test.
 
-    System tests launch a real Minecraft server in a docker container. When no
-    docker daemon is reachable they are skipped, except under CI where a missing
-    docker daemon must be reported as a failure rather than hidden.
+    System tests launch a real Minecraft server in a podman container. When no
+    podman service is reachable they are skipped, except under CI where a
+    missing podman service must be reported as a failure rather than hidden.
 
     Run just the unit tests with: pytest -m "not system"
     """
@@ -59,8 +57,8 @@ def pytest_collection_modifyitems(config: pytest.Config, items: list[pytest.Item
     for item in system_items:
         item.add_marker(pytest.mark.system)
 
-    if system_items and "CI" not in os.environ and not _docker_available():
-        skip = pytest.mark.skip(reason="no docker daemon available for system tests")
+    if system_items and "CI" not in os.environ and not _podman_available():
+        skip = pytest.mark.skip(reason="no podman service available for system tests")
         for item in system_items:
             item.add_marker(skip)
 
@@ -110,7 +108,7 @@ def client_connect():
 
 
 @pytest.fixture(scope="session")
-def minecraft_client(minecraft_container: Container):
+def minecraft_client(minecraft_container: MinecraftServer):
     """
     return an rcon connection to the test server
     """

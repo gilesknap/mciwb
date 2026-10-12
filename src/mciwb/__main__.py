@@ -22,6 +22,7 @@ from mciwb.server import (
     HOST,
     MINECRAFT_VERSION,
     MinecraftServer,
+    PodmanNotAvailableError,
     backup_folder_default,
     def_pass,
     def_port,
@@ -185,7 +186,11 @@ def start(
         backup_folder=backup_folder,
         version=minecraft_version,
     )
-    server.create()
+    try:
+        server.create()
+    except PodmanNotAvailableError as e:
+        log.error(e)
+        raise typer.Exit(1) from e
 
 
 @cli.command()
@@ -198,7 +203,11 @@ def stop(
     """
     init_logging(debug)
 
-    MinecraftServer.stop_named(server_name)
+    try:
+        MinecraftServer.stop_named(server_name)
+    except PodmanNotAvailableError as e:
+        log.error(e)
+        raise typer.Exit(1) from e
 
 
 @cli.command()

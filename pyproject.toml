@@ -25,7 +25,7 @@ dependencies = [
     "mcipc==2.4.2",
     "rcon==2.4.9",
     "ipython",
-    "docker>=6",
+    "podman>=5",
 ]
 dynamic = ["version"]
 license.file = "LICENSE"
@@ -77,7 +77,7 @@ filterwarnings = [
     "ignore:.*socket.*:ResourceWarning",
     # only ignore deprecations raised inside third party libraries, so that
     # deprecations in mciwb's own code still fail the tests
-    "ignore::DeprecationWarning:docker.*",
+    "ignore::DeprecationWarning:podman.*",
     # IPython warns when VIRTUAL_ENV is not the running interpreter's (e.g. tox)
     "ignore:Attempting to work in a virtualenv:UserWarning",
 ]
@@ -87,7 +87,7 @@ timeout = 600
 # Doctest python code in docs, python code in src docstrings, test functions in tests
 testpaths = "docs src tests"
 markers = [
-    "system: needs a docker daemon to run a Minecraft server (tests/test_system)",
+    "system: needs a podman service to run a Minecraft server (tests/test_system)",
 ]
 
 [tool.coverage.run]
