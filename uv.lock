@@ -745,7 +745,7 @@ requires-dist = [
     { name = "docker", specifier = ">=6" },
     { name = "ipython" },
     { name = "mcipc", specifier = "==2.4.2" },
-    { name = "mcwb", git = "https://github.com/gilesknap/mcwb?rev=9f469a0a49f30618fd08ea440348a79a8ab66d69" },
+    { name = "mcwb", git = "https://github.com/gilesknap/mcwb?rev=254e7bdf2c542231a6358fa74c7be784887ba501" },
     { name = "numpy" },
     { name = "rcon", specifier = "==2.4.9" },
     { name = "typer" },
@@ -769,8 +769,8 @@ dev = [
 
 [[package]]
 name = "mcwb"
-version = "0.1.dev152+g9f469a0a4"
-source = { git = "https://github.com/gilesknap/mcwb?rev=9f469a0a49f30618fd08ea440348a79a8ab66d69#9f469a0a49f30618fd08ea440348a79a8ab66d69" }
+version = "0.1.dev153+g254e7bdf2"
+source = { git = "https://github.com/gilesknap/mcwb?rev=254e7bdf2c542231a6358fa74c7be784887ba501#254e7bdf2c542231a6358fa74c7be784887ba501" }
 dependencies = [
     { name = "mcipc" },
     { name = "numpy", version = "2.4.6", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.12'" },
