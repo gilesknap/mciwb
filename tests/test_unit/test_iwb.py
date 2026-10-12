@@ -5,6 +5,7 @@ Unit tests for the Iwb world object, connected to a MockClient
 from pathlib import Path
 
 import pytest
+from mcipc.rcon.exceptions import NoPlayerFound
 
 import mciwb.iwb
 from mciwb.imports import (
@@ -86,6 +87,24 @@ def test_add_player(world: Iwb, mock_client: MockClient):
     assert {target for target, _ in mock_client.given} == {ENTITY_NAME}
     assert f"player: {ENTITY_NAME}" in repr(world)
     assert "position: Vec3(x=0, y=-60, z=0)" in repr(world)
+
+
+def test_add_player_not_a_real_player(
+    world: Iwb, mock_client: MockClient, monkeypatch: pytest.MonkeyPatch
+):
+    """
+    a named entity standing in for a player cannot be given items, but is
+    still monitored for sign commands
+    """
+
+    def give(target: str, item: str):
+        raise NoPlayerFound("No player was found")
+
+    monkeypatch.setattr(mock_client, "give", give)
+    world.add_player(ENTITY_NAME)
+
+    assert world.players == [ENTITY_NAME]
+    assert world.player is world.get_player(ENTITY_NAME)
 
 
 def test_save_load(world: Iwb, mock_client: MockClient, tmp_path: Path):

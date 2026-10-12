@@ -159,24 +159,30 @@ class Iwb:
         """
         try:
             player = Player(name)
+        except PlayerNotInWorldError as e:
+            log.error("player %s is not in the world, %s", name, e)
+            return
+
+        self._players[name] = player
+        signs = Signs(player)
+        Monitor(signs.poll, name=name)
+        self._copiers[name] = signs.copy
+
+        if me or self.player is None:
+            self.player = player
+            self.copier = signs.copy
+            self.signs = signs
+
+        try:
             if setup:
                 player.setup()
-            self._players[name] = player
-
-            signs = Signs(player)
-            Monitor(signs.poll, name=name)
-            self._copiers[name] = signs.copy
-
-            if me or self.player is None:
-                self.player = player
-                self.copier = signs.copy
-                self.signs = signs
-
             signs.give_signs()
-            log.info(f"Monitoring player {name} enabled for sign commands")
         except (PlayerNotInWorldError, SessionTimeout, NoPlayerFound) as e:
-            # during tests this will fail as there is no real player
-            log.error("failed to give signs to player, %s", e)
+            # e.g. a named entity standing in for a player (as in the tests)
+            # cannot be made an operator or be given items
+            log.warning("could not set up or give signs to %s, %s", name, e)
+        else:
+            log.info(f"Monitoring player {name} enabled for sign commands")
 
     def stop(self):
         """
