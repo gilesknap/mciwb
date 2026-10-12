@@ -2,10 +2,10 @@ import logging
 from pathlib import Path
 
 import pytest
-from mcipc.rcon.je import Client
 from typer.testing import CliRunner
 
 from mciwb.__main__ import cli
+from mciwb.threads import Client
 from tests.conftest import HOST, RCON_P, RCON_PORT
 
 runner = CliRunner()
@@ -61,7 +61,7 @@ def test_backup(tmp_path: Path, caplog: pytest.LogCaptureFixture):
         assert not extra.exists()
         # the restarted server responds over RCON
         with Client(HOST, port, passwd="default_pass") as client:
-            assert "Seed" in client.seed()
+            assert isinstance(client.seed, int)
     finally:
         run_cli("stop", "--server-name", server_name)
 
