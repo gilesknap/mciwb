@@ -78,7 +78,7 @@ class Signs:
     def poll(self):
         """
         check if a sign has been placed in front of the player
-        1 to 4 blocks away and take action based on sign text
+        1 to 3 blocks away and take action based on sign text
         """
         client = get_client()
 
