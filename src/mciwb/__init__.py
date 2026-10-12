@@ -14,11 +14,14 @@ imported from ``mciwb.imports``.
 
 from ._version import __version__
 from .backup import Backup
+from .blockgrid import BlockGrid
 from .copier import CopyPaste
 from .iwb import Iwb, get_world
 from .monitor import Monitor
 from .nbt import parse_nbt
+from .palette import Palette
 from .player import Player, PlayerNotInWorldError
+from .render import render, scan
 from .server import MinecraftServer
 from .signs import Signs
 from .switch import Switch
@@ -44,4 +47,8 @@ __all__ = [
     "parse_nbt",
     "Backup",
     "MinecraftServer",
+    "BlockGrid",
+    "Palette",
+    "render",
+    "scan",
 ]

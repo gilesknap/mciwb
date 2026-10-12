@@ -9,6 +9,7 @@ from typing import Annotated
 
 import typer
 from IPython.terminal.embed import InteractiveShellEmbed
+from mcwb import Vec3, Volume
 from rcon.exceptions import WrongPassword
 
 from mciwb import __version__, imports
@@ -19,6 +20,7 @@ from mciwb.backup import Backup
 from mciwb.imports import *  # noqa: F401, F403
 from mciwb.iwb import Iwb
 from mciwb.logging import exception_handler, init_logging, log
+from mciwb.render import VIEWS, render, scan
 from mciwb.server import (
     HOST,
     MINECRAFT_VERSION,
@@ -317,6 +319,106 @@ def restore(
         minecraft_version=minecraft_version,
         debug=debug,
     )
+
+
+@cli.command(
+    "render",
+    # let corners have negative coordinates, e.g. 632 73 -1658
+    context_settings={"ignore_unknown_options": True},
+)
+def render_cmd(
+    corners: Annotated[
+        list[int] | None,
+        typer.Argument(
+            help="two opposite corners of the region: X1 Y1 Z1 X2 Y2 Z2",
+            show_default=False,
+        ),
+    ] = None,
+    centre: Annotated[
+        tuple[int, int, int] | None,
+        typer.Option(help="the centre of the region, with --size", show_default=False),
+    ] = None,
+    size: Annotated[
+        tuple[int, int, int] | None,
+        typer.Option(help="the size of the region in blocks, with --centre"),
+    ] = None,
+    view: Annotated[
+        list[str] | None,
+        typer.Option(help=f"repeat for several views: {', '.join(VIEWS)}"),
+    ] = None,
+    output: Annotated[Path, typer.Option(help="the PNG file to write")] = Path(
+        "render.png"
+    ),
+    scale: Annotated[
+        int | None, typer.Option(help="pixels per block (default: automatic)")
+    ] = None,
+    labels: Annotated[
+        bool, typer.Option(help="add titles and world coordinate labels")
+    ] = True,
+    folder: Annotated[
+        Path, typer.Option(help="the server folder, as for mciwb start")
+    ] = default_server_folder,
+    rcon: Annotated[
+        bool, typer.Option(help="read blocks over RCON, not from the world files")
+    ] = False,
+    port: int = def_port,
+    password: str = def_pass,
+    debug: bool = False,
+):
+    """
+    Render a region of the world to a PNG image, to see what you built.
+
+    Give the region as two corners, or as --centre and --size. Blocks are
+    read from the world files in --folder (after asking a running server to
+    save), or over RCON one block at a time (with --rcon, or when --folder
+    has no world): use the --port and --password that you gave to
+    `mciwb start`.
+    """
+    init_logging(debug)
+
+    try:
+        vol = _region(corners, centre, size)
+        views = view or ["top", "iso"]
+        unknown = [v for v in views if v not in VIEWS]
+        if unknown:
+            raise ValueError(f"unknown view {unknown[0]}, use {', '.join(VIEWS)}")
+    except ValueError as e:
+        log.error(e)
+        raise typer.Exit(1) from None
+
+    client = _rcon_client(port, password)
+    world_folder = None if rcon else folder / "world"
+    try:
+        grid = scan(vol, world_folder, client)
+    except ValueError as e:
+        log.error(e)
+        raise typer.Exit(1) from None
+    finally:
+        if client:
+            client.close()
+
+    render(grid, views, scale, labels).save(output)
+    log.info(f"rendered {', '.join(views)} of {vol.start} to {vol.end} to {output}")
+
+
+def _region(
+    corners: list[int] | None,
+    centre: tuple[int, int, int] | None,
+    size: tuple[int, int, int] | None,
+) -> Volume:
+    """the region given to mciwb render, as corners or centre and size"""
+    if corners:
+        if len(corners) != 6 or centre or size:
+            raise ValueError(
+                "give two corners X1 Y1 Z1 X2 Y2 Z2, or --centre and --size"
+            )
+        return Volume.from_corners(Vec3(*corners[:3]), Vec3(*corners[3:]))
+    if centre is None or size is None:
+        raise ValueError("give two corners X1 Y1 Z1 X2 Y2 Z2, or --centre and --size")
+    if min(size) < 1:
+        raise ValueError(f"--size must be at least 1 in each direction, not {size}")
+    start = Vec3(*centre) - Vec3(*size) // 2
+    return Volume.from_corners(start, start + Vec3(*size) - 1)
 
 
 if __name__ == "__main__":
