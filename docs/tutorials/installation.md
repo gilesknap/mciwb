@@ -9,10 +9,20 @@ typing into a terminal:
 $ python3 --version
 ```
 
+If you do not have a suitable Python, [uv](https://docs.astral.sh/uv/) can
+install one for you (`uv venv --python 3.13` below does so automatically).
+
 ## Create a virtual environment
 
 It is recommended that you install into a “virtual environment” so this
 installation will not interfere with any existing Python software:
+
+```
+$ uv venv --python 3.13 /path/to/venv
+$ source /path/to/venv/bin/activate
+```
+
+or without uv:
 
 ```
 $ python3 -m venv /path/to/venv
@@ -21,18 +31,19 @@ $ source /path/to/venv/bin/activate
 
 ## Installing the library
 
-You can now use `pip` to install the library and its dependencies:
+Install the library and its dependencies from GitHub:
 
 ```
-$ python3 -m pip install mciwb
+$ uv pip install git+https://github.com/gilesknap/mciwb.git
 ```
 
-If you require a feature that is not currently released you can also install
-from github:
+(or `python3 -m pip install git+https://github.com/gilesknap/mciwb.git`
+without uv).
 
-```
-$ python3 -m pip install git+https://github.com/gilesknap/mciwb.git
-```
+:::{note}
+The releases on PyPI (`pip install mciwb`) predate support for Minecraft 26.x.
+Until a new release is published, install from GitHub as above.
+:::
 
 The library should now be installed and the commandline interface on your path.
 You can check the version that has been installed by typing:

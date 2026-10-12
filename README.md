@@ -15,8 +15,8 @@ Minecraft worlds with interactive Python features.
 What            | Where
 :---:           | :---:
 Source          | <https://github.com/gilesknap/mciwb>
-PyPI            | `pip install mciwb`
-Docker          | `docker run ghcr.io/gilesknap/mciwb:latest`
+Install         | `pip install git+https://github.com/gilesknap/mciwb.git`
+Docker          | `docker run --rm -it --network host ghcr.io/gilesknap/mciwb:latest shell`
 Documentation   | <https://gilesknap.github.io/mciwb>
 Releases        | <https://github.com/gilesknap/mciwb/releases>
 
@@ -28,6 +28,21 @@ To get started learning Python, see
 
 For existing Python developers, see
 [API documentation](https://gilesknap.github.io/mciwb/main/_api/mciwb.html)
+
+In short: start a local Minecraft server and build in it from a script:
+
+```bash
+mciwb start            # a Minecraft 26.3 server in docker, on localhost
+mciwb run build.py     # run a build script, or `mciwb shell` for IPython
+```
+
+where `build.py` uses the `world` object and the names from `mciwb.imports`:
+
+```python
+pos = Vec3(632, 73, -1658)
+world.set_block(pos, Item.GOLD_BLOCK)
+polygon(get_client(), pos + Direction.EAST * 10, height=5, diameter=7)
+```
 
 ## Example Build
 

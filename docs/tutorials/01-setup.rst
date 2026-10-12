@@ -77,8 +77,10 @@ use for individuals.
 
 Windows:
     Docker Desktop requires WSL2 and a linux distribution to go with it.
-    So you should first install WSL2 and Ubuntu 22.04 LTS from here
-    - https://apps.microsoft.com/store/detail/ubuntu-2204-lts/9PN20MSR04DW
+    So you should first install WSL2 and Ubuntu 24.04 LTS (or later) by typing
+    this into a Windows PowerShell or Command Prompt::
+
+        wsl --install -d Ubuntu-24.04
 
 All Platforms:
     Instructions for Docker Desktop installation for all platforms are here:
@@ -193,28 +195,20 @@ Python
 ------
 
 The Python Programming Language is also free and open-source.
+MCIWB needs Python 3.11 or later.
 
-This is essential for working with MCIWB.
-Python 3.10 because the underlying RCON library requires it. This is the
-latest version of Python at the time of writing.
+We will use a tool called **uv** to install Python and to manage the Python
+packages that we use. Type this command to install uv::
 
-These commands will install the necessary packages to make Python 3.10
-available on your system::
+    curl -LsSf https://astral.sh/uv/install.sh | sh
 
-    sudo apt update
-    sudo apt install -y python3.10
-    sudo apt install -y python3.10-venv
-    sudo apt install -y python3-pip
+Then close your terminal and open a new one, so that the ``uv`` command is
+found. You can check it is working by typing::
 
-If you have an older version of Ubuntu it may not have Python 3.10 available.
-In this case you need to use the ``deadsnakes`` PPA to get the latest version as
-follows::
+    uv --version
 
-    sudo apt install -y software-properties-common
-    sudo add-apt-repository ppa:deadsnakes/ppa
-    sudo apt install -y python3.10
-    sudo apt install -y python3.10-venv
-    sudo apt install -y python3-pip
+You do not need to install Python separately, uv downloads the right
+version for you in the next step.
 
 Virtual Environment
 -------------------
@@ -226,7 +220,8 @@ separate from the packages you install for other projects.
 First create the Virtual Environment by typing (note the leading "."
 in the folder name ".venv")::
 
-    python3.10 -m venv .venv
+    cd $HOME/my_world
+    uv venv --python 3.13 .venv
 
 Then activate it by typing the following. This command will need to be
 repeated each time you restart your terminal or open a new terminal::
@@ -260,10 +255,15 @@ created the folder ``$HOME/my_world`` earlier and this is where we will store
 all of the work we do with MCIWB.
 
 Everything is all set up ready so the following simple command will get
-mciwb from the Python Package Index (PyPi) and install it into the
-**Virtual Environment**::
+mciwb and install it into the **Virtual Environment**::
 
-    pip install mciwb
+    uv pip install git+https://github.com/gilesknap/mciwb.git
+
+.. note::
+
+    This installs the latest mciwb from GitHub. Once the version that
+    supports Minecraft 26.x is published to the Python Package Index (PyPI)
+    you will be able to use ``uv pip install mciwb`` instead.
 
 Assuming all is well you should be able to verify everything is working
 by typing the following::

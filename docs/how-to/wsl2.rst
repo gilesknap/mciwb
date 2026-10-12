@@ -15,7 +15,7 @@ CMD window in Administrator  mode and run the following commands:
 
 ``wsl --install``
 
-``wsl --set-version Ubuntu-22.04 2``
+``wsl --set-version Ubuntu-24.04 2``
 
 WSL2 is a Linux distribution that runs inside of Windows. It allows us to make
 the tutorials look exactly the same for Windows, Linux and MacOS. 
