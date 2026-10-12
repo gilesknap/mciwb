@@ -77,3 +77,24 @@ def test_restore_passes_options(monkeypatch: pytest.MonkeyPatch, tmp_path: Path)
     assert restored == [("b1", False)]
     assert calls["start"]["password"] == "secret"
     assert calls["start"]["minecraft_version"] == "26.1"
+
+
+def test_restore_missing_world(monkeypatch: pytest.MonkeyPatch, tmp_path: Path):
+    """restore recreates a world folder that has been deleted"""
+    monkeypatch.setattr(mciwb.__main__, "stop", lambda **kw: None)
+    monkeypatch.setattr(mciwb.__main__, "start", lambda **kw: None)
+    world = tmp_path / "server" / "world"
+    world.mkdir(parents=True)
+    (world / "level.dat").write_text("level")
+    backups = tmp_path / "backups"
+    mciwb.__main__.Backup(world, backups).backup(name="b1", running=False)
+    (world / "level.dat").unlink()
+
+    result = runner.invoke(
+        cli,
+        ["restore", "b1", "--folder", str(tmp_path / "server")]
+        + ["--backup-folder", str(backups)],
+    )
+
+    assert result.exit_code == 0, (result.output, result.exception)
+    assert (world / "level.dat").read_text() == "level"
