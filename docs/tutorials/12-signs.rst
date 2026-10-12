@@ -43,7 +43,7 @@ You can also place an action sign from code, which is useful for testing:
 
 .. code-block:: python
 
-    get_client().setblock(world.player.pos + Direction.SOUTH, Signs.sign_block("pagoda"))
+    get_client().setblock(world.player.pos + world.player.facing, Signs.sign_block("pagoda"))
 
 Building Walls with Signs
 -------------------------
