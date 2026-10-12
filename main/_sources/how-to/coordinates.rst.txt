@@ -16,14 +16,14 @@ this:
 
 .. code-block:: python
 
-   build_pagoda(player.world.position)
+   build_pagoda(world.player.pos)
 
 It might also be good to use a variable to store your player's position. Then
 you can walk away from it and turn around to see the pagoda build.
 
 .. code-block:: python
 
-    pos = player.world.pos
+    pos = world.player.pos
     # now walk away and turn around
     build_pagoda(pos)
 
@@ -56,13 +56,13 @@ copy buffer start and end is by tying ``world`` e.g.::
     In [10]: world
     Out[10]: 
     Minecraft Interactive World Builder status:
-    copy buffer start: Vec3(x=620, y=71, z=-1623)
-    copy buffer stop: Vec3(x=621, y=71, z=-1626)
-    copy buffer size: Vec3(x=1, y=0, z=-3)
-    paste point: Vec3(x=620, y=71, z=-1623)
-    player: TransformerScorn
-    player position: Vec3(x=620, y=72, z=-1625)
-    player facing: Vec3(x=0, y=0, z=-1)
+      copy buffer start: Vec3(x=620, y=71, z=-1623)
+      copy buffer stop: Vec3(x=621, y=71, z=-1626)
+      copy buffer size: Vec3(x=1, y=0, z=-3)
+      paste point: Vec3(x=620, y=71, z=-1623)
+      player: TransformerScorn
+        position: Vec3(x=620, y=72, z=-1625)
+        facing: Vec3(x=0, y=0, z=-1)
 
     In [11]: 
 

@@ -37,7 +37,14 @@ Minecraft client that we started in Tutorial 01 or relaunch
 "Minecraft Launcher" from the start menu.
 
 Make sure "Minecraft Java Edition" is selected on the left and click
-"Play". 
+"Play".
+
+.. note::
+
+    The client must run the same Minecraft release as the server, which is
+    release 26.3. If the Launcher's "Latest release" is newer than this
+    then see `minecraft_version` for how to choose the right release.
+
 
 Now choose the "Multiplayer" option and click "Add Server". You will
 see a screen like this:

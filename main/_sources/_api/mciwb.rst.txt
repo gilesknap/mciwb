@@ -1,0 +1,53 @@
+﻿``mciwb``
+=========
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+
+.. automodule:: mciwb
+    :members:
+
+    
+    
+    
+
+    
+    
+    .. rubric:: Members
+
+    .. autosummary::
+        :nosignatures:
+    
+        Iwb
+        get_world
+        Player
+        PlayerNotInWorldError
+        CopyPaste
+        Signs
+        Wall
+        WallMaker
+        Switch
+        Monitor
+        Client
+        get_client
+        set_client
+        new_thread
+        parse_nbt
+        Backup
+        MinecraftServer
+    
+    

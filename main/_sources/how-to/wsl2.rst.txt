@@ -6,21 +6,27 @@ Windows Subsystem for Linux
 Instructions for Windows users to connect VSCode to the Windows Subsystem for 
 Linux.
 
-Windows Subsystem for Linux 2 (or WSL2) should already have been 
+Windows Subsystem for Linux 2 (or WSL2) should already have been
 installed as part
-of the Docker Desktop install that was done in `docker`. 
+of the Podman install that was done in `podman`.
 
 To make sure the correct version of WSL2 is installed you can open a
 CMD window in Administrator  mode and run the following commands:
 
 ``wsl --install``
 
-``wsl --set-version Ubuntu-22.04 2``
+``wsl --set-version Ubuntu-24.04 2``
 
 WSL2 is a Linux distribution that runs inside of Windows. It allows us to make
 the tutorials look exactly the same for Windows, Linux and MacOS. 
 The linux command line in Ubuntu Linux inside WSL2 is called ``bash`` and 
 is easier to use than Windows equivalents.
+
+The Podman service is started with ``systemctl --user``, which needs systemd
+to be enabled in WSL2. Recent versions of WSL2 enable it by default for
+Ubuntu. If not, add ``[boot]`` and ``systemd=true`` on two lines in the file
+``/etc/wsl.conf`` in Ubuntu, then run ``wsl --shutdown`` in a Windows CMD
+window and open Ubuntu again (see `podman`).
 
 Adding the WSL2 extension
 -------------------------

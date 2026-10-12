@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 
 
@@ -7,86 +6,84 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>mciwb.server &#8212; mciwb 0.8.7.dev18+g2fb91af documentation</title>
+    <title>mciwb.server &#8212; mciwb 0.9.2.dev54+g0d4dd0756 documentation</title>
   
   
   
   <script data-cfasync="false">
     document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
-    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
   </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../../_static/styles/theme.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
-<link href="../../_static/styles/bootstrap.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
-<link href="../../_static/styles/pydata-sphinx-theme.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+  <link href="../../_static/styles/theme.css?digest=18bd87630a240e9c25be" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=18bd87630a240e9c25be" rel="stylesheet" />
 
-  
-  <link href="../../_static/vendor/fontawesome/6.5.1/css/all.min.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
-  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.1/webfonts/fa-solid-900.woff2" />
-<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.1/webfonts/fa-brands-400.woff2" />
-<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.1/webfonts/fa-regular-400.woff2" />
-
-    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
-    <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=eafc0fe6" />
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=4ae1632d" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
-    <link rel="stylesheet" type="text/css" href="../../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
   
+  <!-- So that users can add custom icons -->
+  <script defer src="../../_static/scripts/fontawesome.js?digest=18bd87630a240e9c25be"></script>
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=8d27b9dea8ad943066ae" />
-<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=8d27b9dea8ad943066ae" />
-  <script src="../../_static/vendor/fontawesome/6.5.1/js/all.min.js?digest=8d27b9dea8ad943066ae"></script>
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be" />
 
-    <script src="../../_static/documentation_options.js?v=c551e5a1"></script>
-    <script src="../../_static/doctools.js?v=888ff710"></script>
-    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/documentation_options.js?v=41282005"></script>
+    <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../../_static/copybutton.js?v=30646c52"></script>
-    <script src="../../_static/design-tabs.js?v=36754332"></script>
+    <script src="../../_static/design-tabs.js?v=f930bc37"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = '_modules/mciwb/server';</script>
     <script>
-        DOCUMENTATION_OPTIONS.theme_version = '0.15.2';
+        DOCUMENTATION_OPTIONS.theme_version = '0.23.0';
         DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://gilesknap.github.io/mciwb/switcher.json';
         DOCUMENTATION_OPTIONS.theme_switcher_version_match = 'main';
-        DOCUMENTATION_OPTIONS.show_version_warning_banner = false;
+        DOCUMENTATION_OPTIONS.show_version_warning_banner =
+            false;
         </script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
     <link rel="icon" href="../../_static/logo.png"/>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="color-scheme" content="light dark"/>
   <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="main" />
+  
+    
+    <script src="../../_static/searchtools.js"></script>
+    <script src="../../_static/language_data.js"></script>
+    <script src="../../searchindex.js"></script>
+  
   </head>
+  <body data-default-mode="">
   
   
-  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
 
-  
-  
-  <a id="pst-skip-link" class="skip-link" href="#main-content">Skip to main content</a>
   
   <div id="pst-scroll-pixel-helper"></div>
   
   <button type="button" class="btn rounded-pill" id="pst-back-to-top">
-    <i class="fa-solid fa-arrow-up"></i>
-    Back to top
-  </button>
-
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
   
-  <input type="checkbox"
-          class="sidebar-toggle"
-          name="__primary"
-          id="__primary"/>
-  <label class="overlay overlay-primary" for="__primary"></label>
   
-  <input type="checkbox"
-          class="sidebar-toggle"
-          name="__secondary"
-          id="__secondary"/>
-  <label class="overlay overlay-secondary" for="__secondary"></label>
   
-  <div class="search-button__wrapper">
-    <div class="search-button__overlay"></div>
-    <div class="search-button__search-container">
+  
+  <dialog id="pst-search-dialog">
+    
 <form class="bd-search d-flex align-items-center"
       action="../../search.html"
       method="get">
@@ -94,7 +91,6 @@
   <input type="search"
          class="form-control"
          name="q"
-         id="search-input"
          placeholder="Search the docs ..."
          aria-label="Search the docs ..."
          autocomplete="off"
@@ -102,20 +98,27 @@
          autocapitalize="off"
          spellcheck="false"/>
   <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
-</form></div>
-  </div>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
   
-    <header class="bd-header navbar navbar-expand-lg bd-navbar">
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
 <div class="bd-header__inner bd-page-width">
-  <label class="sidebar-toggle primary-toggle" for="__primary">
+  <button type="button" class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
     <span class="fa-solid fa-bars"></span>
-  </label>
+  </button>
   
   
   <div class="col-lg-3 navbar-header-items__start">
     
       <div class="navbar-item">
 
+  
+    
   
 
 <a class="navbar-brand logo" href="../../index.html">
@@ -130,7 +133,7 @@
     
     
     <img src="../../_static/logo.png" class="logo__image only-light" alt=""/>
-    <script>document.write(`<img src="../../_static/logo.png" class="logo__image only-dark" alt=""/>`);</script>
+    <img src="../../_static/logo.png" class="logo__image only-dark pst-js-only" alt=""/>
   
   
     <p class="title logo__title">mciwb</p>
@@ -144,29 +147,36 @@
     <div class="me-auto navbar-header-items__center">
       
         <div class="navbar-item">
-<nav class="navbar-nav">
+<nav>
   <ul class="bd-navbar-elements navbar-nav">
     
-                    <li class="nav-item">
-                      <a class="nav-link nav-internal" href="../../user/index.html">
-                        User Guide
-                      </a>
-                    </li>
-                
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../tutorials.html">
+    Tutorials
+  </a>
+</li>
 
-                    <li class="nav-item">
-                      <a class="nav-link nav-internal" href="../../developer/index.html">
-                        Developer Guide
-                      </a>
-                    </li>
-                
 
-                <li class="nav-item">
-                  <a class="nav-link nav-external" href="https://github.com/gilesknap/mciwb/releases">
-                    Release Notes
-                  </a>
-                </li>
-                
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../how-to.html">
+    How-to Guides
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../explanations.html">
+    Explanations
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../reference.html">
+    Reference
+  </a>
+</li>
+
   </ul>
 </nav></div>
       
@@ -178,31 +188,30 @@
         <div class="navbar-item navbar-persistent--container">
           
 
- <script>
- document.write(`
-   <button class="btn navbar-btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
-    <i class="fa-solid fa-magnifying-glass"></i>
-    <span class="search-button__default-text">Search</span>
-    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
-   </button>
- `);
- </script>
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
         </div>
       
       
         <div class="navbar-item">
 
-<script>
-document.write(`
-  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
-    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
-    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
-    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button type="button" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
   </button>
-`);
-</script></div>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
       
-        <div class="navbar-item"><ul class="navbar-icon-links navbar-nav"
+        <div class="navbar-item"><ul class="navbar-icon-links"
     aria-label="Icon Links">
         <li class="nav-item">
           
@@ -213,8 +222,7 @@ document.write(`
           
           
           
-          <a href="https://github.com/gilesknap/mciwb" title="GitHub" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i></span>
-            <span class="sr-only">GitHub</span></a>
+          <a href="https://github.com/gilesknap/mciwb" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
         </li>
         <li class="nav-item">
           
@@ -225,34 +233,29 @@ document.write(`
           
           
           
-          <a href="https://pypi.org/project/mciwb" title="PyPI" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fas fa-cube fa-lg" aria-hidden="true"></i></span>
-            <span class="sr-only">PyPI</span></a>
+          <a href="https://pypi.org/project/mciwb" title="PyPI" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fas fa-cube fa-lg" aria-hidden="true"></i><span class="visually-hidden">PyPI</span></a>
         </li>
 </ul></div>
       
         <div class="navbar-item">
-<script>
-document.write(`
-  <div class="version-switcher__container dropdown">
-    <button id="pst-version-switcher-button-2"
-      type="button"
-      class="version-switcher__button btn btn-sm navbar-btn dropdown-toggle"
-      data-bs-toggle="dropdown"
-      aria-haspopup="listbox"
-      aria-controls="pst-version-switcher-list-2"
-      aria-label="Version switcher list"
-    >
-      Choose version  <!-- this text may get changed later by javascript -->
-      <span class="caret"></span>
-    </button>
-    <div id="pst-version-switcher-list-2"
-      class="version-switcher__menu dropdown-menu list-group-flush py-0"
-      role="listbox" aria-labelledby="pst-version-switcher-button-2">
-      <!-- dropdown will be populated by javascript on page load -->
-    </div>
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-2"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-2"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-2"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-2">
+    <!-- dropdown will be populated by javascript on page load -->
   </div>
-`);
-</script></div>
+</div></div>
       
     </div>
     
@@ -261,15 +264,11 @@ document.write(`
   
     <div class="navbar-persistent--mobile">
 
- <script>
- document.write(`
-   <button class="btn navbar-btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
-    <i class="fa-solid fa-magnifying-glass"></i>
-    <span class="search-button__default-text">Search</span>
-    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
-   </button>
- `);
- </script>
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
     </div>
   
 
@@ -286,7 +285,8 @@ document.write(`
       
         
       
-      <div class="bd-sidebar-primary bd-sidebar hide-on-wide">
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar hide-on-wide">
         
 
   
@@ -295,32 +295,42 @@ document.write(`
     
       <div class="sidebar-header-items__center">
         
-          <div class="navbar-item">
-<nav class="navbar-nav">
+          
+          
+            <div class="navbar-item">
+<nav>
   <ul class="bd-navbar-elements navbar-nav">
     
-                    <li class="nav-item">
-                      <a class="nav-link nav-internal" href="../../user/index.html">
-                        User Guide
-                      </a>
-                    </li>
-                
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../tutorials.html">
+    Tutorials
+  </a>
+</li>
 
-                    <li class="nav-item">
-                      <a class="nav-link nav-internal" href="../../developer/index.html">
-                        Developer Guide
-                      </a>
-                    </li>
-                
 
-                <li class="nav-item">
-                  <a class="nav-link nav-external" href="https://github.com/gilesknap/mciwb/releases">
-                    Release Notes
-                  </a>
-                </li>
-                
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../how-to.html">
+    How-to Guides
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../explanations.html">
+    Explanations
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../reference.html">
+    Reference
+  </a>
+</li>
+
   </ul>
 </nav></div>
+          
         
       </div>
     
@@ -330,17 +340,20 @@ document.write(`
         
           <div class="navbar-item">
 
-<script>
-document.write(`
-  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
-    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
-    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
-    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button type="button" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
   </button>
-`);
-</script></div>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
         
-          <div class="navbar-item"><ul class="navbar-icon-links navbar-nav"
+          <div class="navbar-item"><ul class="navbar-icon-links"
     aria-label="Icon Links">
         <li class="nav-item">
           
@@ -351,8 +364,7 @@ document.write(`
           
           
           
-          <a href="https://github.com/gilesknap/mciwb" title="GitHub" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i></span>
-            <span class="sr-only">GitHub</span></a>
+          <a href="https://github.com/gilesknap/mciwb" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
         </li>
         <li class="nav-item">
           
@@ -363,34 +375,29 @@ document.write(`
           
           
           
-          <a href="https://pypi.org/project/mciwb" title="PyPI" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fas fa-cube fa-lg" aria-hidden="true"></i></span>
-            <span class="sr-only">PyPI</span></a>
+          <a href="https://pypi.org/project/mciwb" title="PyPI" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fas fa-cube fa-lg" aria-hidden="true"></i><span class="visually-hidden">PyPI</span></a>
         </li>
 </ul></div>
         
           <div class="navbar-item">
-<script>
-document.write(`
-  <div class="version-switcher__container dropdown">
-    <button id="pst-version-switcher-button-3"
-      type="button"
-      class="version-switcher__button btn btn-sm navbar-btn dropdown-toggle"
-      data-bs-toggle="dropdown"
-      aria-haspopup="listbox"
-      aria-controls="pst-version-switcher-list-3"
-      aria-label="Version switcher list"
-    >
-      Choose version  <!-- this text may get changed later by javascript -->
-      <span class="caret"></span>
-    </button>
-    <div id="pst-version-switcher-list-3"
-      class="version-switcher__menu dropdown-menu list-group-flush py-0"
-      role="listbox" aria-labelledby="pst-version-switcher-button-3">
-      <!-- dropdown will be populated by javascript on page load -->
-    </div>
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-3"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-3"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-3"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-3">
+    <!-- dropdown will be populated by javascript on page load -->
   </div>
-`);
-</script></div>
+</div></div>
         
       </div>
     
@@ -398,29 +405,32 @@ document.write(`
   
   
   <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
   </div>
-  
-  <div id="rtd-footer-container"></div>
 
 
       </div>
       
-      <main id="main-content" class="bd-main">
+      <main id="main-content" class="bd-main" role="main">
         
         
           <div class="bd-content">
             <div class="bd-article-container">
               
-              <div class="bd-header-article">
+              <div class="bd-header-article d-print-none">
 <div class="header-article-items header-article__inner">
   
     <div class="header-article-items__start">
       
         <div class="header-article-item">
 
-
-
-<nav aria-label="Breadcrumb">
+<nav aria-label="Breadcrumb" class="d-print-none">
   <ul class="bd-breadcrumbs">
     
     <li class="breadcrumb-item breadcrumb-home">
@@ -431,7 +441,7 @@ document.write(`
     
     <li class="breadcrumb-item"><a href="../index.html" class="nav-link">Module code</a></li>
     
-    <li class="breadcrumb-item active" aria-current="page">mciwb.server</li>
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">mciwb.server</span></li>
   </ul>
 </nav>
 </div>
@@ -449,223 +459,395 @@ document.write(`
                 <article class="bd-article">
                   
   <h1>Source code for mciwb.server</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">Functions for launching and controlling a Minecraft server in a Docker container.</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span></span><span class="sd">"""</span>
+<span class="sd">Functions for launching and controlling a Minecraft server in a Podman container.</span>
 
-<span class="kn">import</span> <span class="nn">shutil</span>
-<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
-<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
-<span class="kn">from</span> <span class="nn">time</span> <span class="kn">import</span> <span class="n">sleep</span>
+<span class="sd">mciwb talks to the Podman service over its REST API socket, see</span>
+<span class="sd">`podman_client` for how the socket is found.</span>
+<span class="sd">"""</span>
 
-<span class="kn">from</span> <span class="nn">docker</span> <span class="kn">import</span> <span class="n">from_env</span>
-<span class="kn">from</span> <span class="nn">docker.models.containers</span> <span class="kn">import</span> <span class="n">Container</span>
-<span class="kn">from</span> <span class="nn">mcipc.rcon.je.client</span> <span class="kn">import</span> <span class="n">Client</span>
-<span class="kn">from</span> <span class="nn">mcwb</span> <span class="kn">import</span> <span class="n">Vec3</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">shutil</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">time</span><span class="w"> </span><span class="kn">import</span> <span class="n">monotonic</span><span class="p">,</span> <span class="n">sleep</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span>
 
-<span class="kn">from</span> <span class="nn">mciwb.logging</span> <span class="kn">import</span> <span class="n">log</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mcwb</span><span class="w"> </span><span class="kn">import</span> <span class="n">Vec3</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">podman</span><span class="w"> </span><span class="kn">import</span> <span class="n">PodmanClient</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">podman.domain.containers</span><span class="w"> </span><span class="kn">import</span> <span class="n">Container</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">rcon.exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="n">WrongPassword</span>
 
-<span class="n">HOST</span> <span class="o">=</span> <span class="s2">&quot;localhost&quot;</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mciwb.logging</span><span class="w"> </span><span class="kn">import</span> <span class="n">log</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mciwb.threads</span><span class="w"> </span><span class="kn">import</span> <span class="n">Client</span>
 
-<span class="c1"># the default locally mapped backup folder for minecraft data</span>
-<span class="n">backup_folder_default</span> <span class="o">=</span> <span class="n">Path</span><span class="o">.</span><span class="n">home</span><span class="p">()</span> <span class="o">/</span> <span class="s2">&quot;mciwb-backups&quot;</span>
-<span class="n">server_name</span> <span class="o">=</span> <span class="s2">&quot;mciwb-server&quot;</span>
+<span class="n">HOST</span> <span class="o">=</span> <span class="s2">"localhost"</span>
+
+<span class="c1"># the default folder for backups of the server's world</span>
+<span class="n">backup_folder_default</span> <span class="o">=</span> <span class="n">Path</span><span class="o">.</span><span class="n">home</span><span class="p">()</span> <span class="o">/</span> <span class="s2">"mciwb-backups"</span>
+<span class="n">server_name</span> <span class="o">=</span> <span class="s2">"mciwb-server"</span>
 <span class="n">default_server_folder</span> <span class="o">=</span> <span class="n">Path</span><span class="o">.</span><span class="n">home</span><span class="p">()</span> <span class="o">/</span> <span class="n">server_name</span>
 
-<span class="n">def_pass</span> <span class="o">=</span> <span class="s2">&quot;default_pass&quot;</span>
+<span class="c1"># The Minecraft Java Edition release that mciwb servers run. Keep this in step</span>
+<span class="c1"># with mcwb.MINECRAFT_VERSION, the release that mcwb.Item is generated from.</span>
+<span class="n">MINECRAFT_VERSION</span> <span class="o">=</span> <span class="s2">"26.3"</span>
+<span class="c1"># itzg/minecraft-server image, pinned for reproducibility. Minecraft 26.x</span>
+<span class="c1"># needs Java 25, hence the java25 variant.</span>
+<span class="n">SERVER_IMAGE</span> <span class="o">=</span> <span class="s2">"docker.io/itzg/minecraft-server:2026.10.0-java25"</span>
+
+<span class="c1"># the socket of a rootful podman service, used when there is no rootless one</span>
+<span class="n">ROOTFUL_SOCKET</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s2">"/run/podman/podman.sock"</span><span class="p">)</span>
+<span class="c1"># the uid and gid that the itzg/minecraft-server image runs the server as</span>
+<span class="n">IMAGE_UID</span> <span class="o">=</span> <span class="mi">1000</span>
+
+<span class="c1"># container states that mean the server may still come up</span>
+<span class="n">STARTING_STATES</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"configured"</span><span class="p">,</span> <span class="s2">"created"</span><span class="p">,</span> <span class="s2">"initialized"</span><span class="p">,</span> <span class="s2">"running"</span><span class="p">,</span> <span class="s2">"restarting"</span><span class="p">)</span>
+
+<span class="n">def_pass</span> <span class="o">=</span> <span class="s2">"default_pass"</span>
 <span class="n">def_port</span> <span class="o">=</span> <span class="mi">20100</span>
-<span class="n">def_world_type</span> <span class="o">=</span> <span class="s2">&quot;normal&quot;</span>
+<span class="n">def_world_type</span> <span class="o">=</span> <span class="s2">"normal"</span>
+<span class="c1"># seconds to wait for a server to save and shut down before it is killed</span>
+<span class="n">stop_timeout</span> <span class="o">=</span> <span class="mi">60</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">PodmanNotAvailableError</span><span class="p">(</span><span class="ne">RuntimeError</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    No Podman service is reachable to run the Minecraft server in</span>
+<span class="sd">    """</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">container_host</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Find the URL of the Podman service socket. In order of preference:</span>
+
+<span class="sd">    - the ``CONTAINER_HOST`` environment variable</span>
+<span class="sd">    - the rootless socket ``$XDG_RUNTIME_DIR/podman/podman.sock``</span>
+<span class="sd">    - the rootful socket ``/run/podman/podman.sock``</span>
+
+<span class="sd">    :raises PodmanNotAvailableError: if no socket is found</span>
+<span class="sd">    """</span>
+    <span class="n">host</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"CONTAINER_HOST"</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">host</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">host</span>
+
+    <span class="n">sockets</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">runtime_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"XDG_RUNTIME_DIR"</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">runtime_dir</span><span class="p">:</span>
+        <span class="n">sockets</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">runtime_dir</span><span class="p">)</span> <span class="o">/</span> <span class="s2">"podman"</span> <span class="o">/</span> <span class="s2">"podman.sock"</span><span class="p">)</span>
+    <span class="n">sockets</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ROOTFUL_SOCKET</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">socket</span> <span class="ow">in</span> <span class="n">sockets</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">socket</span><span class="o">.</span><span class="n">is_socket</span><span class="p">():</span>
+            <span class="k">return</span> <span class="sa">f</span><span class="s2">"unix://</span><span class="si">{</span><span class="n">socket</span><span class="si">}</span><span class="s2">"</span>
+
+    <span class="k">raise</span> <span class="n">PodmanNotAvailableError</span><span class="p">(</span>
+        <span class="s2">"No Podman socket found (looked for CONTAINER_HOST, then "</span>
+        <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="s1">', '</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">s</span><span class="p">)</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">s</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">sockets</span><span class="p">)</span><span class="si">}</span><span class="s2">).</span><span class="se">\n</span><span class="s2">"</span>
+        <span class="s2">"Start the Podman service with:</span><span class="se">\n</span><span class="s2">"</span>
+        <span class="s2">"    systemctl --user enable --now podman.socket"</span>
+    <span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">podman_client</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">PodmanClient</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Connect to the Podman service, see `container_host`</span>
+
+<span class="sd">    :raises PodmanNotAvailableError: if the service does not respond</span>
+<span class="sd">    """</span>
+    <span class="n">url</span> <span class="o">=</span> <span class="n">container_host</span><span class="p">()</span>
+    <span class="n">client</span> <span class="o">=</span> <span class="n">PodmanClient</span><span class="p">(</span><span class="n">base_url</span><span class="o">=</span><span class="n">url</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">client</span><span class="o">.</span><span class="n">ping</span><span class="p">()</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">client</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="k">raise</span> <span class="n">PodmanNotAvailableError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">"Podman service at </span><span class="si">{</span><span class="n">url</span><span class="si">}</span><span class="s2"> is not responding (</span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">).</span><span class="se">\n</span><span class="s2">"</span>
+            <span class="s2">"Start the Podman service with:</span><span class="se">\n</span><span class="s2">"</span>
+            <span class="s2">"    systemctl --user enable --now podman.socket"</span>
+        <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">e</span>
+    <span class="k">return</span> <span class="n">client</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_is_rootless</span><span class="p">(</span><span class="n">client</span><span class="p">:</span> <span class="n">PodmanClient</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="n">client</span><span class="o">.</span><span class="n">info</span><span class="p">()[</span><span class="s2">"host"</span><span class="p">][</span><span class="s2">"security"</span><span class="p">][</span><span class="s2">"rootless"</span><span class="p">])</span>
 
 
 <div class="viewcode-block" id="MinecraftServer">
-<a class="viewcode-back" href="../../user/reference/api.html#mciwb.server.MinecraftServer">[docs]</a>
-<span class="k">class</span> <span class="nc">MinecraftServer</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Create an monitor Minecraft servers on the local machine using Docker</span>
+<a class="viewcode-back" href="../../_api/mciwb.html#mciwb.MinecraftServer">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">MinecraftServer</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Create and monitor Minecraft servers on the local machine using Podman</span>
 
 <span class="sd">    :param name: the name of the server</span>
 <span class="sd">    :param rcon: the rcon port for the server</span>
 <span class="sd">    :param password: the rcon password for the server</span>
 <span class="sd">    :param server_folder: the folder to store the server files in</span>
-<span class="sd">    :param world_type: the type of world to create</span>
-<span class="sd">    :param keep: keep the server running after tests</span>
-<span class="sd">    :param test: run the server in test mode</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    :param world_type: the type of world to create (a world preset such as</span>
+<span class="sd">        "normal" or "flat")</span>
+<span class="sd">    :param keep: keep the server running: the container has the "always"</span>
+<span class="sd">        restart policy, so podman-restart.service restarts it after a reboot,</span>
+<span class="sd">        and `remove` does nothing unless forced</span>
+<span class="sd">    :param test: run the server in test mode (a flat world without structures</span>
+<span class="sd">        or mobs, regenerated by each `create`)</span>
+<span class="sd">    :param version: the Minecraft Java Edition release to run. Note that</span>
+<span class="sd">        an existing world is upgraded if it is opened with a newer release</span>
+<span class="sd">    """</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">rcon</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
         <span class="n">password</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">server_folder</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span>
         <span class="n">world_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-        <span class="n">backup_folder</span><span class="p">:</span> <span class="n">Path</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>  <span class="c1"># type: ignore</span>
         <span class="n">keep</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-        <span class="n">test</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">test</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">version</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">MINECRAFT_VERSION</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Create a `MinecraftServer` object only. Use `create` to</span>
 <span class="sd">        spin up the container.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">rcon</span> <span class="o">=</span> <span class="n">rcon</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">port</span> <span class="o">=</span> <span class="n">rcon</span> <span class="o">+</span> <span class="mi">1</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">password</span> <span class="o">=</span> <span class="n">password</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">server_folder</span> <span class="o">=</span> <span class="n">server_folder</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">backup_folder</span> <span class="o">=</span> <span class="n">backup_folder</span> <span class="ow">or</span> <span class="n">backup_folder_default</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">world</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">server_folder</span> <span class="o">/</span> <span class="s2">&quot;world&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">world</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">server_folder</span> <span class="o">/</span> <span class="s2">"world"</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">world_type</span> <span class="o">=</span> <span class="n">world_type</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">container</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">container</span><span class="p">:</span> <span class="n">Container</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">keep</span> <span class="o">=</span> <span class="n">keep</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">test</span> <span class="o">=</span> <span class="n">test</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">version</span> <span class="o">=</span> <span class="n">version</span>
+
+    <span class="c1"># how long to wait for a server to start: a new world or a world upgrade</span>
+    <span class="c1"># to a new Minecraft release can take minutes</span>
+    <span class="n">start_timeout</span> <span class="o">=</span> <span class="mf">300.0</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_logs_tail</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lines</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">50</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">container</span><span class="p">,</span> <span class="n">Container</span><span class="p">)</span>
+        <span class="n">logs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">container</span><span class="o">.</span><span class="n">logs</span><span class="p">(</span><span class="n">tail</span><span class="o">=</span><span class="n">lines</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">logs</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">):</span>
+            <span class="c1"># without stream=True podman returns an iterator of log lines</span>
+            <span class="n">logs</span> <span class="o">=</span> <span class="sa">b</span><span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">logs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">logs</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">"utf-8"</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="s2">"replace"</span><span class="p">)</span>
 
 <div class="viewcode-block" id="MinecraftServer.wait_server">
-<a class="viewcode-back" href="../../user/reference/api.html#mciwb.server.MinecraftServer.wait_server">[docs]</a>
-    <span class="k">def</span> <span class="nf">wait_server</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="s2">&quot;MinecraftServer&quot;</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<a class="viewcode-back" href="../../_api/mciwb.html#mciwb.MinecraftServer.wait_server">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">wait_server</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Wait until the server is ready to accept rcon connections</span>
-<span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="n">start_time</span><span class="p">:</span> <span class="n">datetime</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
-        <span class="n">timeout</span> <span class="o">=</span> <span class="mi">200</span>
-
+<span class="sd">        :raises RuntimeError: if the container stops, or the server does not</span>
+<span class="sd">            accept connections within ``start_timeout`` seconds. The error</span>
+<span class="sd">            includes the end of the server log.</span>
+<span class="sd">        """</span>
         <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">container</span><span class="p">,</span> <span class="n">Container</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">container</span><span class="o">.</span><span class="n">reload</span><span class="p">()</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">container</span><span class="o">.</span><span class="n">status</span> <span class="o">!=</span> <span class="s2">&quot;running&quot;</span><span class="p">:</span>
-            <span class="n">logs</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">container</span><span class="o">.</span><span class="n">logs</span><span class="p">())</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;\n&quot;</span><span class="p">))</span>
-            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;minecraft server failed to start</span><span class="se">\n\n</span><span class="si">{</span><span class="n">logs</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"waiting for server to come online ..."</span><span class="p">)</span>
+        <span class="n">deadline</span> <span class="o">=</span> <span class="n">monotonic</span><span class="p">()</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">start_timeout</span>
+        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">container</span><span class="o">.</span><span class="n">reload</span><span class="p">()</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">container</span><span class="o">.</span><span class="n">status</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">STARTING_STATES</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">"minecraft server </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> failed to start "</span>
+                    <span class="sa">f</span><span class="s2">"(status </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">container</span><span class="o">.</span><span class="n">status</span><span class="si">}</span><span class="s2">)</span><span class="se">\n\n</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_logs_tail</span><span class="p">()</span><span class="si">}</span><span class="s2">"</span>
+                <span class="p">)</span>
 
-        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;waiting for server to come online ...&quot;</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">block</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">container</span><span class="o">.</span><span class="n">logs</span><span class="p">(</span><span class="n">stream</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-            <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">block</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
-            <span class="k">if</span> <span class="sa">b</span><span class="s2">&quot;RCON running&quot;</span> <span class="ow">in</span> <span class="n">block</span><span class="p">:</span>
-                <span class="k">break</span>
-            <span class="n">elapsed</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span> <span class="o">-</span> <span class="n">start_time</span>
-            <span class="k">if</span> <span class="n">elapsed</span><span class="o">.</span><span class="n">total_seconds</span><span class="p">()</span> <span class="o">&gt;</span> <span class="n">timeout</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Timeout Starting minecraft&quot;</span><span class="p">)</span>
-
-        <span class="c1"># wait until a connection is available</span>
-        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">):</span>
+            <span class="c1"># RCON is the last thing to come up, so wait until it connects</span>
+            <span class="n">client</span> <span class="o">=</span> <span class="n">Client</span><span class="p">(</span><span class="n">HOST</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">rcon</span><span class="p">,</span> <span class="n">passwd</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">password</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
             <span class="k">try</span><span class="p">:</span>
-                <span class="k">with</span> <span class="n">Client</span><span class="p">(</span><span class="n">HOST</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">rcon</span><span class="p">,</span> <span class="n">passwd</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">password</span><span class="p">):</span>
-                    <span class="k">pass</span>
+                <span class="n">client</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
                 <span class="k">break</span>
-            <span class="k">except</span> <span class="ne">ConnectionRefusedError</span><span class="p">:</span>
-                <span class="n">sleep</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Timeout Starting minecraft&quot;</span><span class="p">)</span>
-        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Server </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> is online on port </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">port</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+            <span class="k">except</span> <span class="n">WrongPassword</span><span class="p">:</span>
+                <span class="k">raise</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="c1"># e.g. refused, or reset by the port forwarder until RCON listens</span>
+                <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">"waiting for RCON: </span><span class="si">{</span><span class="n">e</span><span class="si">!r}</span><span class="s2">"</span><span class="p">)</span>
+            <span class="k">finally</span><span class="p">:</span>
+                <span class="n">client</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+            <span class="k">if</span> <span class="n">monotonic</span><span class="p">()</span> <span class="o">&gt;</span> <span class="n">deadline</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">"Timeout starting minecraft server </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="se">\n\n</span><span class="s2">"</span>
+                    <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_logs_tail</span><span class="p">()</span><span class="si">}</span><span class="s2">"</span>
+                <span class="p">)</span>
+            <span class="n">sleep</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+
+        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Server </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> is online on port </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">port</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="MinecraftServer.stop">
-<a class="viewcode-back" href="../../user/reference/api.html#mciwb.server.MinecraftServer.stop">[docs]</a>
-    <span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<a class="viewcode-back" href="../../_api/mciwb.html#mciwb.MinecraftServer.stop">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Stop the minecraft server</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">container</span><span class="p">,</span> <span class="n">Container</span><span class="p">)</span>
-        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Stopping Minecraft Server </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> ...&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">container</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Stopping Minecraft Server </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> ..."</span><span class="p">)</span>
+        <span class="c1"># allow time for the server to save the world before it is killed</span>
+        <span class="c1"># (ignore a container that is already stopped)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">container</span><span class="o">.</span><span class="n">stop</span><span class="p">(</span><span class="n">timeout</span><span class="o">=</span><span class="n">stop_timeout</span><span class="p">,</span> <span class="n">ignore</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">container</span><span class="o">.</span><span class="n">wait</span><span class="p">()</span>
 
-        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Stopped Minecraft Server </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> ...&quot;</span><span class="p">)</span></div>
+        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Stopped Minecraft Server </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> ..."</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="MinecraftServer.start">
-<a class="viewcode-back" href="../../user/reference/api.html#mciwb.server.MinecraftServer.start">[docs]</a>
-    <span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<a class="viewcode-back" href="../../_api/mciwb.html#mciwb.MinecraftServer.start">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Start the minecraft server</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">container</span><span class="p">,</span> <span class="n">Container</span><span class="p">)</span>
-        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Starting Minecraft Server </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> on port </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">port</span><span class="si">}</span><span class="s2">...&quot;</span><span class="p">)</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Starting Minecraft Server </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> on port </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">port</span><span class="si">}</span><span class="s2">..."</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">container</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">wait_server</span><span class="p">()</span>
-        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Started Minecraft Server </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> ...&quot;</span><span class="p">)</span></div>
+        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Started Minecraft Server </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> ..."</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="MinecraftServer.remove">
-<a class="viewcode-back" href="../../user/reference/api.html#mciwb.server.MinecraftServer.remove">[docs]</a>
-    <span class="k">def</span> <span class="nf">remove</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<a class="viewcode-back" href="../../_api/mciwb.html#mciwb.MinecraftServer.remove">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">remove</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Remove a minecraft server container</span>
 
 <span class="sd">        :param force: force the removal of the container</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># set env var MCIWB_KEEP_SERVER to keep server alive for faster</span>
-        <span class="c1"># repeated tests and viewing the world with a minecraft client</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">container</span> <span class="ow">and</span> <span class="p">(</span><span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">keep</span> <span class="ow">or</span> <span class="n">force</span><span class="p">):</span>
-            <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Removing Minecraft Server </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> ...&quot;</span><span class="p">)</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Removing Minecraft Server </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> ..."</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">container</span><span class="o">.</span><span class="n">remove</span><span class="p">()</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">container</span><span class="o">.</span><span class="n">remove</span><span class="p">()</span>  <span class="c1"># noqa</span></div>
 
 
 <div class="viewcode-block" id="MinecraftServer.create">
-<a class="viewcode-back" href="../../user/reference/api.html#mciwb.server.MinecraftServer.create">[docs]</a>
-    <span class="k">def</span> <span class="nf">create</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">world_zip</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Spin up a minecraft server in a container</span>
+<a class="viewcode-back" href="../../_api/mciwb.html#mciwb.MinecraftServer.create">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">create</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">force</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""</span>
+<span class="sd">        Spin up a minecraft server in a container, creating a new world if</span>
+<span class="sd">        the server folder has none.</span>
 
-<span class="sd">        :param world_zip: the zip file to use as the world data. If None is</span>
-<span class="sd">            provided, a new world will be created.</span>
+<span class="sd">        If the container already exists it is reused (and started if it is</span>
+<span class="sd">        stopped) with the settings that it was created with. Use *force*, or</span>
+<span class="sd">        ``mciwb stop``, to recreate it with new settings.</span>
+
 <span class="sd">        :param force: force the server to be removed if it already exists</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-
-        <span class="c1"># create and launch minecraft container once per session</span>
-        <span class="n">docker_client</span> <span class="o">=</span> <span class="n">from_env</span><span class="p">()</span>
-
-        <span class="k">for</span> <span class="n">container</span> <span class="ow">in</span> <span class="n">docker_client</span><span class="o">.</span><span class="n">containers</span><span class="o">.</span><span class="n">list</span><span class="p">(</span><span class="nb">all</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-            <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">container</span><span class="p">,</span> <span class="n">Container</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">container</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">:</span>
+<span class="sd">        """</span>
+        <span class="k">with</span> <span class="n">podman_client</span><span class="p">()</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">client</span><span class="o">.</span><span class="n">containers</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">):</span>
+                <span class="n">container</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">containers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">container</span> <span class="o">=</span> <span class="n">container</span>
                 <span class="k">if</span> <span class="n">force</span><span class="p">:</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">force</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-                    <span class="k">break</span>
-                <span class="k">if</span> <span class="n">container</span><span class="o">.</span><span class="n">status</span> <span class="o">==</span> <span class="s2">&quot;running&quot;</span><span class="p">:</span>
-                    <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-                        <span class="sa">f</span><span class="s2">&quot;Minecraft Server &#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39; &quot;</span>
-                        <span class="sa">f</span><span class="s2">&quot;already running on port </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">port</span><span class="si">}</span><span class="s2">&quot;</span>
-                    <span class="p">)</span>
-                    <span class="k">return</span>
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_reuse_settings</span><span class="p">(</span><span class="n">container</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">container</span><span class="o">.</span><span class="n">status</span> <span class="o">==</span> <span class="s2">"running"</span><span class="p">:</span>
+                        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                            <span class="sa">f</span><span class="s2">"Minecraft Server '</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">' "</span>
+                            <span class="sa">f</span><span class="s2">"already running on port </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">port</span><span class="si">}</span><span class="s2">"</span>
+                        <span class="p">)</span>
+                        <span class="c1"># it may still be booting, e.g. just after a reboot</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">wait_server</span><span class="p">()</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
                     <span class="k">return</span>
 
-        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Launching Minecraft Server &#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39; on port </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">port</span><span class="si">}</span><span class="s2"> ...&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_run</span><span class="p">(</span><span class="n">client</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">wait_server</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_settings</span><span class="p">()</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_reuse_settings</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">container</span><span class="p">:</span> <span class="n">Container</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""</span>
+<span class="sd">        Adopt the RCON port and password of an existing container, warning</span>
+<span class="sd">        about any settings that differ from those requested</span>
+<span class="sd">        """</span>
+        <span class="n">env</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+            <span class="n">e</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">"="</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">container</span><span class="o">.</span><span class="n">attrs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"Config"</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"Env"</span><span class="p">)</span> <span class="ow">or</span> <span class="p">[]</span>
+        <span class="p">)</span>
+        <span class="n">mounts</span> <span class="o">=</span> <span class="n">container</span><span class="o">.</span><span class="n">attrs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"Mounts"</span><span class="p">)</span> <span class="ow">or</span> <span class="p">[]</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="n">m</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"Source"</span><span class="p">)</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">mounts</span> <span class="k">if</span> <span class="n">m</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"Destination"</span><span class="p">)</span> <span class="o">==</span> <span class="s2">"/data"</span><span class="p">]</span>
+
+        <span class="n">ignored</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">rcon</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"RCON_PORT"</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">rcon</span> <span class="ow">and</span> <span class="nb">int</span><span class="p">(</span><span class="n">rcon</span><span class="p">)</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rcon</span><span class="p">:</span>
+            <span class="n">ignored</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">"port </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">rcon</span><span class="si">}</span><span class="s2"> (using </span><span class="si">{</span><span class="n">rcon</span><span class="si">}</span><span class="s2">)"</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">rcon</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">rcon</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">port</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rcon</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="n">password</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"RCON_PASSWORD"</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">password</span> <span class="ow">and</span> <span class="n">password</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">password</span><span class="p">:</span>
+            <span class="n">ignored</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">"password (using the existing one)"</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">password</span> <span class="o">=</span> <span class="n">password</span>
+        <span class="n">version</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"VERSION"</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">version</span> <span class="ow">and</span> <span class="n">version</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">version</span><span class="p">:</span>
+            <span class="n">ignored</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">"minecraft version </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">version</span><span class="si">}</span><span class="s2"> (using </span><span class="si">{</span><span class="n">version</span><span class="si">}</span><span class="s2">)"</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">version</span> <span class="o">=</span> <span class="n">version</span>
+        <span class="k">if</span> <span class="n">data</span> <span class="ow">and</span> <span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">and</span> <span class="n">Path</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">!=</span> <span class="n">Path</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">server_folder</span><span class="p">)</span><span class="o">.</span><span class="n">resolve</span><span class="p">():</span>
+            <span class="n">ignored</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">"folder </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">server_folder</span><span class="si">}</span><span class="s2"> (using </span><span class="si">{</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">)"</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">server_folder</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">world</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">server_folder</span> <span class="o">/</span> <span class="s2">"world"</span>
+
+        <span class="k">if</span> <span class="n">ignored</span><span class="p">:</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">"Minecraft Server '</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">' already exists, so its settings "</span>
+                <span class="sa">f</span><span class="s2">"are reused, ignoring: </span><span class="si">{</span><span class="s1">'; '</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">ignored</span><span class="p">)</span><span class="si">}</span><span class="s2">. "</span>
+                <span class="sa">f</span><span class="s2">"Run 'mciwb stop --server-name </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">' first to "</span>
+                <span class="s2">"recreate it with new settings."</span>
+            <span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">client</span><span class="p">:</span> <span class="n">PodmanClient</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""</span>
+<span class="sd">        Create and start the server container</span>
+<span class="sd">        """</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Launching Minecraft Server '</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">' on port </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">port</span><span class="si">}</span><span class="s2"> ..."</span><span class="p">)</span>
 
         <span class="n">env</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s2">&quot;EULA&quot;</span><span class="p">:</span> <span class="s2">&quot;TRUE&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;SERVER_PORT&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">port</span><span class="p">,</span>
-            <span class="s2">&quot;RCON_PORT&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">rcon</span><span class="p">,</span>
-            <span class="s2">&quot;ENABLE_RCON&quot;</span><span class="p">:</span> <span class="s2">&quot;true&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;RCON_PASSWORD&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">password</span><span class="p">,</span>
-            <span class="s2">&quot;SEED&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
-            <span class="s2">&quot;LEVEL_TYPE&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">world_type</span><span class="p">,</span>
-            <span class="s2">&quot;MODE&quot;</span><span class="p">:</span> <span class="s2">&quot;creative&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;SPAWN_PROTECTION&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+            <span class="s2">"EULA"</span><span class="p">:</span> <span class="s2">"TRUE"</span><span class="p">,</span>
+            <span class="s2">"VERSION"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">version</span><span class="p">,</span>
+            <span class="s2">"SERVER_PORT"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">port</span><span class="p">,</span>
+            <span class="s2">"RCON_PORT"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">rcon</span><span class="p">,</span>
+            <span class="s2">"ENABLE_RCON"</span><span class="p">:</span> <span class="s2">"true"</span><span class="p">,</span>
+            <span class="s2">"RCON_PASSWORD"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">password</span><span class="p">,</span>
+            <span class="s2">"SEED"</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+            <span class="s2">"LEVEL_TYPE"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">world_type</span><span class="p">,</span>
+            <span class="s2">"MODE"</span><span class="p">:</span> <span class="s2">"creative"</span><span class="p">,</span>
+            <span class="s2">"SPAWN_PROTECTION"</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+            <span class="c1"># keep ticking with no players online so that scripted builds</span>
+            <span class="c1"># behave (e.g. falling blocks, flowing water) and the items</span>
+            <span class="c1"># dropped by mcwb.get_block fall out of the world</span>
+            <span class="s2">"PAUSE_WHEN_EMPTY_SECONDS"</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
         <span class="p">}</span>
+
+        <span class="c1"># files in the server folder must belong to the current user, so that</span>
+        <span class="c1"># they can be backed up, restored and deleted without root</span>
+        <span class="k">if</span> <span class="n">_is_rootless</span><span class="p">(</span><span class="n">client</span><span class="p">):</span>
+            <span class="c1"># map the current user to the uid that the image runs the server</span>
+            <span class="c1"># as (the image's default UID and GID)</span>
+            <span class="c1"># (the equivalent of --userns=keep-id:uid=1000,gid=1000)</span>
+            <span class="n">keep_id</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"nsmode"</span><span class="p">:</span> <span class="s2">"keep-id"</span><span class="p">,</span> <span class="s2">"value"</span><span class="p">:</span> <span class="sa">f</span><span class="s2">"uid=</span><span class="si">{</span><span class="n">IMAGE_UID</span><span class="si">}</span><span class="s2">,gid=</span><span class="si">{</span><span class="n">IMAGE_UID</span><span class="si">}</span><span class="s2">"</span><span class="p">}</span>
+            <span class="n">userns</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"userns_mode"</span><span class="p">:</span> <span class="n">keep_id</span><span class="p">}</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># no user namespace: ask the image to run the server as the</span>
+            <span class="c1"># current user</span>
+            <span class="n">userns</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="n">env</span><span class="p">[</span><span class="s2">"UID"</span><span class="p">]</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getuid</span><span class="p">()</span>
+            <span class="n">env</span><span class="p">[</span><span class="s2">"GID"</span><span class="p">]</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getgid</span><span class="p">()</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">test</span><span class="p">:</span>
             <span class="n">env</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
                 <span class="p">{</span>
-                    <span class="s2">&quot;GENERATE_STRUCTURES&quot;</span><span class="p">:</span> <span class="s2">&quot;false&quot;</span><span class="p">,</span>
-                    <span class="s2">&quot;SPAWN_ANIMALS&quot;</span><span class="p">:</span> <span class="s2">&quot;false&quot;</span><span class="p">,</span>
-                    <span class="s2">&quot;SPAWN_MONSTERS&quot;</span><span class="p">:</span> <span class="s2">&quot;false&quot;</span><span class="p">,</span>
-                    <span class="s2">&quot;SPAWN_NPCS&quot;</span><span class="p">:</span> <span class="s2">&quot;false&quot;</span><span class="p">,</span>
-                    <span class="s2">&quot;VIEW_DISTANCE&quot;</span><span class="p">:</span> <span class="s2">&quot; 5&quot;</span><span class="p">,</span>
-                    <span class="s2">&quot;LEVEL_TYPE&quot;</span><span class="p">:</span> <span class="s2">&quot;FLAT&quot;</span><span class="p">,</span>
-                    <span class="s2">&quot;FORCE_WORLD_COPY&quot;</span><span class="p">:</span> <span class="s2">&quot;TRUE&quot;</span><span class="p">,</span>
+                    <span class="s2">"GENERATE_STRUCTURES"</span><span class="p">:</span> <span class="s2">"false"</span><span class="p">,</span>
+                    <span class="s2">"VIEW_DISTANCE"</span><span class="p">:</span> <span class="s2">"5"</span><span class="p">,</span>
+                    <span class="s2">"LEVEL_TYPE"</span><span class="p">:</span> <span class="s2">"flat"</span><span class="p">,</span>
+                    <span class="s2">"FORCE_WORLD_COPY"</span><span class="p">:</span> <span class="s2">"TRUE"</span><span class="p">,</span>
                 <span class="p">}</span>
             <span class="p">)</span>
 
             <span class="c1"># offline mode disables OPS so dont use it if we are keeping the server</span>
             <span class="c1"># for local testing. But normally for running CI we want this option.</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">keep</span><span class="p">:</span>
-                <span class="n">env</span><span class="p">[</span><span class="s2">&quot;ONLINE_MODE&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;FALSE&quot;</span>
-
-        <span class="k">if</span> <span class="n">world_zip</span><span class="p">:</span>
-            <span class="n">env</span><span class="p">[</span><span class="s2">&quot;WORLD&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">world_zip</span><span class="p">)</span>
+                <span class="n">env</span><span class="p">[</span><span class="s2">"ONLINE_MODE"</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"FALSE"</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">server_folder</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">server_folder</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -673,65 +855,61 @@ document.write(`
             <span class="n">shutil</span><span class="o">.</span><span class="n">rmtree</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">server_folder</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">server_folder</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">backup_folder</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">backup_folder</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-
-        <span class="n">container</span> <span class="o">=</span> <span class="n">docker_client</span><span class="o">.</span><span class="n">containers</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
-            <span class="s2">&quot;docker.io/itzg/minecraft-server&quot;</span><span class="p">,</span>
+        <span class="n">container</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">containers</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
+            <span class="n">SERVER_IMAGE</span><span class="p">,</span>
             <span class="n">detach</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-            <span class="n">environment</span><span class="o">=</span><span class="n">env</span><span class="p">,</span>
-            <span class="n">ports</span><span class="o">=</span><span class="p">{</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">rcon</span><span class="si">}</span><span class="s2">/tcp&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">rcon</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">port</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">port</span><span class="p">},</span>
-            <span class="n">restart_policy</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;Name&quot;</span><span class="p">:</span> <span class="s2">&quot;unless-stopped&quot;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">keep</span> <span class="k">else</span> <span class="s2">&quot;no&quot;</span><span class="p">},</span>
+            <span class="c1"># the podman API only accepts string values</span>
+            <span class="n">environment</span><span class="o">=</span><span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">env</span><span class="o">.</span><span class="n">items</span><span class="p">()},</span>
+            <span class="n">ports</span><span class="o">=</span><span class="p">{</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">rcon</span><span class="si">}</span><span class="s2">/tcp"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">rcon</span><span class="p">,</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">port</span><span class="si">}</span><span class="s2">/tcp"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">port</span><span class="p">},</span>
+            <span class="n">restart_policy</span><span class="o">=</span><span class="p">{</span><span class="s2">"Name"</span><span class="p">:</span> <span class="s2">"always"</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">keep</span> <span class="k">else</span> <span class="s2">"no"</span><span class="p">},</span>
             <span class="n">volumes</span><span class="o">=</span><span class="p">{</span>
-                <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">server_folder</span><span class="p">):</span> <span class="p">{</span><span class="s2">&quot;bind&quot;</span><span class="p">:</span> <span class="s2">&quot;/data&quot;</span><span class="p">,</span> <span class="s2">&quot;mode&quot;</span><span class="p">:</span> <span class="s2">&quot;rw&quot;</span><span class="p">},</span>
-                <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">backup_folder</span><span class="p">):</span> <span class="p">{</span>
-                    <span class="s2">&quot;bind&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">backup_folder</span><span class="p">),</span>
-                    <span class="s2">&quot;mode&quot;</span><span class="p">:</span> <span class="s2">&quot;rw&quot;</span><span class="p">,</span>
-                <span class="p">},</span>
+                <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">server_folder</span><span class="p">):</span> <span class="p">{</span><span class="s2">"bind"</span><span class="p">:</span> <span class="s2">"/data"</span><span class="p">,</span> <span class="s2">"mode"</span><span class="p">:</span> <span class="s2">"rw"</span><span class="p">},</span>
             <span class="p">},</span>
             <span class="n">name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
-            <span class="n">security_opt</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;label=disable&quot;</span><span class="p">],</span>
+            <span class="c1"># let the server use the bind mounts on SELinux hosts</span>
+            <span class="n">security_opt</span><span class="o">=</span><span class="p">[</span><span class="s2">"disable"</span><span class="p">],</span>
+            <span class="o">**</span><span class="n">userns</span><span class="p">,</span>
         <span class="p">)</span>
 
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">container</span><span class="p">,</span> <span class="n">Container</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">container</span> <span class="o">=</span> <span class="n">container</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">wait_server</span><span class="p">()</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">_settings</span><span class="p">()</span></div>
-
-
-    <span class="k">def</span> <span class="nf">_settings</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_settings</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Some default settings for the server that this class creates</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">with</span> <span class="n">Client</span><span class="p">(</span><span class="n">HOST</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">rcon</span><span class="p">,</span> <span class="n">passwd</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">password</span><span class="p">)</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
-            <span class="c1"># make sure the local chunk around world centre is loaded</span>
-            <span class="c1"># this is because the getblock trick needs 0,0,0 in the world</span>
-            <span class="n">client</span><span class="o">.</span><span class="n">forceload</span><span class="o">.</span><span class="n">add</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
-
-            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">test</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">test</span><span class="p">:</span>
+                <span class="c1"># keep the chunks around the world origin loaded, so that the</span>
+                <span class="c1"># system tests can build there with no players online</span>
+                <span class="n">client</span><span class="o">.</span><span class="n">forceload</span><span class="o">.</span><span class="n">add</span><span class="p">((</span><span class="o">-</span><span class="mi">48</span><span class="p">,</span> <span class="o">-</span><span class="mi">48</span><span class="p">),</span> <span class="p">(</span><span class="mi">47</span><span class="p">,</span> <span class="mi">47</span><span class="p">))</span>
+                <span class="c1"># the spawn-animals/monsters/npcs server properties no longer</span>
+                <span class="c1"># exist, this game rule controls natural mob spawning instead</span>
+                <span class="n">client</span><span class="o">.</span><span class="n">gamerule</span><span class="p">(</span><span class="s2">"spawn_mobs"</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># keep the chunk at the world origin loaded</span>
+                <span class="n">client</span><span class="o">.</span><span class="n">forceload</span><span class="o">.</span><span class="n">add</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
                 <span class="c1"># a nice starting point for the tutorials in seed 0 world</span>
                 <span class="n">client</span><span class="o">.</span><span class="n">setworldspawn</span><span class="p">(</span><span class="n">Vec3</span><span class="p">(</span><span class="mi">632</span><span class="p">,</span> <span class="mi">73</span><span class="p">,</span> <span class="o">-</span><span class="mi">1658</span><span class="p">))</span>
 
 <div class="viewcode-block" id="MinecraftServer.stop_named">
-<a class="viewcode-back" href="../../user/reference/api.html#mciwb.server.MinecraftServer.stop_named">[docs]</a>
+<a class="viewcode-back" href="../../_api/mciwb.html#mciwb.MinecraftServer.stop_named">[docs]</a>
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">stop_named</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">stop_named</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Stop a minecraft server by name</span>
 
 <span class="sd">        :param name: the name of the server to stop</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">docker_client</span> <span class="o">=</span> <span class="n">from_env</span><span class="p">()</span>
-        <span class="k">for</span> <span class="n">container</span> <span class="ow">in</span> <span class="n">docker_client</span><span class="o">.</span><span class="n">containers</span><span class="o">.</span><span class="n">list</span><span class="p">(</span><span class="nb">all</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-            <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">container</span><span class="p">,</span> <span class="n">Container</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">container</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="n">name</span><span class="p">:</span>
-                <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Stopping Minecraft Server </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2"> ...&quot;</span><span class="p">)</span>
-                <span class="n">container</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
-                <span class="n">container</span><span class="o">.</span><span class="n">wait</span><span class="p">()</span>
-                <span class="n">container</span><span class="o">.</span><span class="n">remove</span><span class="p">()</span>
+<span class="sd">        """</span>
+        <span class="k">with</span> <span class="n">podman_client</span><span class="p">()</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">client</span><span class="o">.</span><span class="n">containers</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+                <span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Minecraft Server '</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">' not found"</span><span class="p">)</span>
                 <span class="k">return</span>
-        <span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Minecraft Server &#39;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39; not found&quot;</span><span class="p">)</span></div>
+            <span class="n">container</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">containers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Stopping Minecraft Server </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2"> ..."</span><span class="p">)</span>
+            <span class="n">container</span><span class="o">.</span><span class="n">stop</span><span class="p">(</span><span class="n">timeout</span><span class="o">=</span><span class="n">stop_timeout</span><span class="p">,</span> <span class="n">ignore</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">container</span><span class="o">.</span><span class="n">wait</span><span class="p">()</span>
+            <span class="n">container</span><span class="o">.</span><span class="n">remove</span><span class="p">()</span></div>
 </div>
 
 </pre></div>
@@ -742,7 +920,7 @@ document.write(`
               
               
               
-                <footer class="prev-next-footer">
+                <footer class="prev-next-footer d-print-none">
                   
 <div class="prev-next-area">
 </div>
@@ -751,8 +929,6 @@ document.write(`
             </div>
             
             
-              
-                <div class="bd-sidebar-secondary bd-toc"></div>
               
             
           </div>
@@ -765,8 +941,8 @@ document.write(`
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="../../_static/scripts/bootstrap.js?digest=8d27b9dea8ad943066ae"></script>
-<script src="../../_static/scripts/pydata-sphinx-theme.js?digest=8d27b9dea8ad943066ae"></script>
+  <script defer src="../../_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be"></script>
+<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be"></script>
 
   <footer class="bd-footer">
 <div class="bd-footer__inner bd-page-width">
@@ -777,7 +953,8 @@ document.write(`
       
         <div class="footer-item">
 <p class="theme-version">
-  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.15.2.
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.23.0.
 </p></div>
       
     </div>
