@@ -20,8 +20,6 @@ class Backup:
 
     :param world_folder: the world folder of the server (containing level.dat)
     :param backup_folder: the folder to save backup zip files in
-
-    :raises ValueError: if *world_folder* is not a Minecraft world
     """
 
     re_valid_filename = re.compile(r"[^-a-zA-Z0-9_.]+")
@@ -33,9 +31,6 @@ class Backup:
     ):
         self.world_folder = Path(world_folder)
         self.backup_folder = Path(backup_folder)
-
-        if not (self.world_folder / "level.dat").exists():
-            raise ValueError(f"{world_folder} does not look like a minecraft world")
         self.backup_folder.mkdir(parents=True, exist_ok=True)
 
     def backup(self, name: str | None = None, running: bool = True) -> Path:
@@ -49,25 +44,33 @@ class Backup:
             This needs an RCON client for the current thread (see `get_client`)
 
         :returns: the path of the backup file
+
+        :raises ValueError: if the world folder is not a Minecraft world
         """
+        if not (self.world_folder / "level.dat").exists():
+            raise ValueError(
+                f"{self.world_folder} does not look like a minecraft world"
+            )
+
         fname = name or datetime.strftime(datetime.now(), "%y-%m-%d.%H.%M.%S.zip")
         fname = self.re_valid_filename.sub("_", fname)
         if not fname.endswith(".zip"):
             fname += ".zip"
 
-        if running:
-            client = get_client()
-            client.say(f"Preparing to backup to {fname}")
-            result = client.save_off()
-            log.debug("save_off: " + result)
-
-            # flush makes the save synchronous, so the world is complete on disk
-            result = client.save_all(flush=True)
-            log.debug("save_all: " + result)
-            client.say("Backing up ...")
-
         file = self.backup_folder / fname
         try:
+            if running:
+                client = get_client()
+                client.say(f"Preparing to backup to {fname}")
+                result = client.save_off()
+                log.debug("save_off: " + result)
+
+                # flush makes the save synchronous, so the world is complete
+                # on disk
+                result = client.save_all(flush=True)
+                log.debug("save_all: " + result)
+                client.say("Backing up ...")
+
             world_files = self.world_folder.glob("**/*")
             world_files = [f for f in world_files if not f.suffix == ".lock"]
             with ZipFile(file, "w", compression=ZIP_DEFLATED) as zip_file:

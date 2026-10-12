@@ -1,3 +1,4 @@
+import shutil
 from pathlib import Path
 from zipfile import ZipFile
 
@@ -18,8 +19,20 @@ def world_folder(tmp_path: Path) -> Path:
 
 
 def test_not_a_world(tmp_path: Path):
-    with pytest.raises(ValueError):
-        Backup(tmp_path, tmp_path / "backups")
+    backup = Backup(tmp_path, tmp_path / "backups")
+    with pytest.raises(ValueError, match="does not look like a minecraft world"):
+        backup.backup(running=False)
+
+
+def test_restore_missing_world(world_folder: Path, tmp_path: Path):
+    """A deleted world can be restored from a backup"""
+    backup = Backup(world_folder, tmp_path / "backups")
+    backup.backup(name="saved", running=False)
+    shutil.rmtree(world_folder)
+
+    Backup(world_folder, tmp_path / "backups").restore("saved")
+
+    assert (world_folder / "level.dat").read_text() == "level"
 
 
 def test_backup_restore(world_folder: Path, tmp_path: Path):
@@ -75,3 +88,24 @@ def test_backup_running(mock_client: MockClient, world_folder: Path, tmp_path: P
 
     saves = [c for c in mock_client.commands if not c.startswith("say")]
     assert saves == ["save-off", "save-all flush", "save-on"]
+
+
+def test_backup_running_failure_turns_saving_on(
+    mock_client: MockClient,
+    world_folder: Path,
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+):
+    """Autosave is turned back on even if the save before the backup fails"""
+
+    def fail(flush: bool = False) -> str:
+        raise TimeoutError("save-all timed out")
+
+    monkeypatch.setattr(mock_client, "save_all", fail)
+    backup = Backup(world_folder, tmp_path / "backups")
+
+    with pytest.raises(TimeoutError):
+        backup.backup(name="running")
+
+    saves = [c for c in mock_client.commands if not c.startswith("say")]
+    assert saves == ["save-off", "save-on"]
