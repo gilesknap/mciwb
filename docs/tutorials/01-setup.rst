@@ -8,7 +8,7 @@ For the first tutorial we are going to prepare your computer for the rest
 of the tutorials. To do so we need to install the following software:
 
 - The Minecraft Java Client (with Minecraft account purchase)
-- Docker Desktop
+- Podman
 - Visual Studio Code
 - Python
 - Minecraft Interactive World Builder Python package
@@ -29,7 +29,7 @@ of the tutorials. To do so we need to install the following software:
 The Minecraft Java Client
 -------------------------
 
-If you already have the Minecraft Java Client installed proceed to `docker`.
+If you already have the Minecraft Java Client installed proceed to `podman`.
 
 You will need to purchase a license for Minecraft from Microsoft.
 
@@ -61,39 +61,67 @@ later tutorial.
     :width: 700px
     :align: center
 
-.. _docker:
+.. _podman:
 
-Docker Desktop
---------------
+Podman
+------
 
-Docker is a tool that allows you to run your Minecraft Server in a container.
+Podman is a tool that allows you to run your Minecraft Server in a container.
 This makes it easy to run and avoids having to manually install and
 maintain the server code.
 You do not need to understand too much about this since MCIWB will automatically
-use docker on your behalf.
+use podman on your behalf.
 
-The easiest way to install Docker is to use Docker Desktop which is free to
-use for individuals.
+MCIWB talks to Podman through its service socket, so as well as installing
+Podman you need to switch that service on once.
+
+Linux:
+    Install podman with your package manager, e.g. on Ubuntu::
+
+        sudo apt install podman
+
+    Then switch on the Podman service for your user. It starts again
+    automatically each time you log in::
+
+        systemctl --user enable --now podman.socket
+
+    To have your Minecraft server start again after a reboot, also enable::
+
+        systemctl --user enable podman-restart.service
+
+    Install instructions for other Linux distributions are here:
+    https://podman.io/docs/installation#installing-on-linux
 
 Windows:
-    Docker Desktop requires WSL2 and a linux distribution to go with it.
-    So you should first install WSL2 and Ubuntu 24.04 LTS (or later) by typing
+    On Windows MCIWB runs inside the Windows Subsystem for Linux (WSL2), with
+    Ubuntu. Install WSL2 and Ubuntu 24.04 LTS (or later) by typing
     this into a Windows PowerShell or Command Prompt::
 
         wsl --install -d Ubuntu-24.04
 
-All Platforms:
-    Instructions for Docker Desktop installation for all platforms are here:
-    - https://docs.docker.com/get-docker/
+    Then open the Ubuntu terminal from the start menu and follow the Linux
+    instructions above to install Podman inside Ubuntu.
 
-For mciwb to work you will need Docker Desktop to be running before you
-start Visual Studio Code. So start it from the start menu before moving to
-the next step.
+    (Podman Desktop https://podman-desktop.io is an alternative that runs
+    Podman in its own WSL2 machine, but installing Podman inside your Ubuntu
+    is simpler for MCIWB.)
 
-To make things easier next time you could go into settings (accessed
-via the cog icon in the title bar of the Docker Desktop main window)
-and tick the option
-``Start Docker Desktop when you log in``.
+MacOS:
+    Install Podman Desktop from https://podman-desktop.io and use it to
+    create and start a Podman machine (a small Linux virtual machine that
+    runs your containers). Or, with Homebrew::
+
+        brew install podman
+        podman machine init
+        podman machine start
+
+    MCIWB needs to know where the Podman machine's socket is. Add this line
+    to the file ``~/.zshrc`` so that it is set in every new terminal::
+
+        export CONTAINER_HOST=unix://$(podman machine inspect --format '{{.ConnectionInfo.PodmanSocket.Path}}')
+
+    The Podman machine must be running before you use MCIWB: start it from
+    Podman Desktop, or with ``podman machine start``.
 
 
 .. _vscode:

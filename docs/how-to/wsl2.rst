@@ -6,9 +6,9 @@ Windows Subsystem for Linux
 Instructions for Windows users to connect VSCode to the Windows Subsystem for 
 Linux.
 
-Windows Subsystem for Linux 2 (or WSL2) should already have been 
+Windows Subsystem for Linux 2 (or WSL2) should already have been
 installed as part
-of the Docker Desktop install that was done in `docker`. 
+of the Podman install that was done in `podman`.
 
 To make sure the correct version of WSL2 is installed you can open a
 CMD window in Administrator  mode and run the following commands:

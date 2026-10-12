@@ -16,7 +16,7 @@ What            | Where
 :---:           | :---:
 Source          | <https://github.com/gilesknap/mciwb>
 Install         | `pip install git+https://github.com/gilesknap/mciwb.git`
-Docker          | `docker run --rm -it --network host ghcr.io/gilesknap/mciwb:latest shell`
+Container       | `podman run --rm -it --network host ghcr.io/gilesknap/mciwb:latest shell`
 Documentation   | <https://gilesknap.github.io/mciwb>
 Releases        | <https://github.com/gilesknap/mciwb/releases>
 
@@ -32,7 +32,7 @@ For existing Python developers, see
 In short: start a local Minecraft server and build in it from a script:
 
 ```bash
-mciwb start            # a Minecraft 26.3 server in docker, on localhost
+mciwb start            # a Minecraft 26.3 server in podman, on localhost
 mciwb run build.py     # run a build script, or `mciwb shell` for IPython
 ```
 

@@ -35,8 +35,8 @@ environment and run the checks with:
 uv sync                          # create .venv with all dev dependencies
 uv run ruff check src tests      # lint (or: uv run tox -e pre-commit)
 uv run pyright src tests         # type check
-uv run pytest -m "not system"    # unit tests, no docker needed
-uv run pytest                    # unit and system tests, needs docker
+uv run pytest -m "not system"    # unit tests, no podman needed
+uv run pytest                    # unit and system tests, needs podman
 uv run tox -e docs               # build the docs into build/html
 ```
 
@@ -44,11 +44,31 @@ The tests come in two sets:
 
 - `tests/test_unit` use a `MockClient` (tests/mockclient.py) that mimics
   the responses of a Minecraft server. They run anywhere.
-- `tests/test_system` start a real Minecraft server in a docker container
+- `tests/test_system` start a real Minecraft server in a podman container
   (RCON port 20401, plus 20200 for the CLI backup test). They are skipped
-  when no docker daemon is available, except under CI (`CI` set) where a
-  missing docker daemon is an error. The first run downloads the server
+  when no podman service is reachable, except under CI (`CI` set) where a
+  missing podman service is an error. The first run downloads the server
   image and Minecraft, so allow a few minutes.
+
+mciwb talks to the Podman service socket: `CONTAINER_HOST` if set, else the
+rootless `$XDG_RUNTIME_DIR/podman/podman.sock`, else the rootful
+`/run/podman/podman.sock`. Enable the rootless socket on your host with:
+
+```bash
+systemctl --user enable --now podman.socket
+```
+
+The devcontainer mounts that socket as `/run/podman/podman.sock` and sets
+`CONTAINER_HOST`, so the system tests also run from inside it. Podman
+resolves bind mount paths on the host, not in the devcontainer, so the
+servers' folders must be at the same path in both: the devcontainer mounts
+`/tmp/test-mc-servers` for the system tests. To run `mciwb start` from
+inside the devcontainer, put `--folder` and `--backup-folder` under
+`/tmp/test-mc-servers` too.
+
+Under rootless podman the server runs as the image's uid 1000, which mciwb
+maps to your host user (`--userns=keep-id:uid=1000,gid=1000`), so the files
+in the server folder stay yours.
 
 Set `MCIWB_KEEP_SERVER=1` to keep the test server running between test runs,
 which makes repeated system test runs much faster, and lets you join the

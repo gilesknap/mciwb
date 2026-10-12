@@ -11,16 +11,21 @@ Edition world from Python, over RCON. It is built on
 uv sync                          # create .venv with the dev dependencies
 uv run ruff check src tests      # lint (uv run ruff format to format)
 uv run pyright src tests         # type check
-uv run pytest -m "not system"    # unit tests, no docker needed
-uv run pytest                    # plus system tests: need a docker daemon
+uv run pytest -m "not system"    # unit tests, no podman needed
+uv run pytest                    # plus system tests: need a podman service
 uv run tox -e docs               # docs build, warnings are errors
 ```
 
 - Unit tests use `tests/mockclient.py`, a fake RCON client with a 100^3 mock
   world. MockClients with the same host/port share one world, so Monitor
   threads see it too. Extend it when you use new client commands.
-- System tests (`tests/test_system`) start a real server in docker on RCON
+- System tests (`tests/test_system`) start a real server in podman on RCON
   port 20401. Set `MCIWB_KEEP_SERVER=1` to keep it between runs.
+- mciwb finds the Podman socket from `CONTAINER_HOST`, then
+  `$XDG_RUNTIME_DIR/podman/podman.sock`, then `/run/podman/podman.sock`
+  (`podman_client` in `src/mciwb/server.py`). Podman resolves bind mount
+  paths on its host, so from the devcontainer only folders mounted at the
+  same path work: the system tests use `/tmp/test-mc-servers`.
 - The Minecraft release (`MINECRAFT_VERSION`, `SERVER_IMAGE` in
   `src/mciwb/server.py`) must match `mcwb.MINECRAFT_VERSION`, the release that
   `mcwb.Item` was generated from. A unit test checks this.
@@ -28,7 +33,7 @@ uv run tox -e docs               # docs build, warnings are errors
 
 ## Building something
 
-Start a server (Minecraft 26.3 in docker, RCON on localhost:20100) with
+Start a server (Minecraft 26.3 in podman, RCON on localhost:20100) with
 `mciwb start`. Then either run a script, or use `mciwb shell` for IPython:
 
 ```bash

@@ -8,10 +8,18 @@ Minecraft Server wont start
 
 If you see this error::
 
-    docker.errors.DockerException: Error while fetching server API version: ('Connection aborted.', FileNotFoundError(2, 'No such file or directory'))
+    ERROR:  No Podman socket found (looked for CONTAINER_HOST, then /run/user/1000/podman/podman.sock, /run/podman/podman.sock).
+    Start the Podman service with:
+        systemctl --user enable --now podman.socket
 
-This implies that the docker engine is not running. Use the start
-menu to launch Docker Desktop and retry once it is running.
+or this one::
+
+    ERROR:  Podman service at unix:///run/user/1000/podman/podman.sock is not responding
+
+This implies that the Podman service is not running. On Linux and Windows
+(WSL2), start it with the command in the message and retry. On MacOS, start
+the Podman machine from Podman Desktop (or with ``podman machine start``) and
+check that ``CONTAINER_HOST`` is set as described in `podman`.
 
 Problems with Player Connection
 -------------------------------
@@ -31,4 +39,4 @@ Minecraft Server Logs
 You can also get the logs from the attempted start of the server with this 
 command on the Terminal::
 
-    docker logs mciwb-server
+    podman logs mciwb-server

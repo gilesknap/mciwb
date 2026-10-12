@@ -23,15 +23,18 @@ again. The short description of what you need to do is:
 Full Startup Description
 ------------------------
 
-The short version assumes that Minecraft Server and Docker Desktop have 
+The short version assumes that the Podman service and Minecraft Server have
 automatically started and that VSCode reopens the previous session.
 
 Here is the long version in case any of the above are not true:
 
 - turn on your computer and log in
-- start Docker Desktop from the start menu
+- make sure Podman is running (see `podman`)
 
-  - (this can be configured to start automatically at login)
+  - Linux and Windows (WSL2): ``systemctl --user enable --now podman.socket``
+    starts it, and keeps it starting automatically at login
+  - MacOS: start the Podman machine from Podman Desktop, or with
+    ``podman machine start``
 
 - start VSCode from the start menu
 
