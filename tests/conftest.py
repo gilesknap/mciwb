@@ -8,11 +8,10 @@ import docker
 import pytest
 from docker.models.containers import Container
 from mcipc.rcon.je import Client
-from mcwb import Item
 from mcwb.types import Vec3
 
 from mciwb.iwb import Iwb
-from mciwb.player import Player
+from mciwb.player import Player, PlayerNotInWorldError
 from mciwb.server import HOST, MinecraftServer
 from mciwb.threads import get_client, set_client
 from tests.mockclient import MockClient
@@ -121,12 +120,7 @@ def minecraft_client(minecraft_container: Container):
     # ensure that the chunks near 0,0,0 are loaded
     client.setworldspawn(ENTITY_POS)
     # don't announce every rcon command
-    client.gamerule("sendCommandFeedback", False)
-
-    # make sure that the grab function entities that are created as a side
-    # effect will drop into the void
-    # TODO in 1.19 the bottom of the world is at -64 so need a fix for that!
-    client.setblock((0, 0, 0), Item.AIR.value)
+    client.gamerule("send_command_feedback", False)
 
     return client
 
@@ -135,14 +129,18 @@ def minecraft_client(minecraft_container: Container):
 def minecraft_player():
     client = get_client()
 
-    # summon a fixed position, named entity as a substitute for a player
-    res = client.summon("armor_stand", ENTITY_POS, {"CustomName": f'"{ENTITY_NAME}"'})
+    # remove any stand left over from a previous test
+    client.kill(f"@e[name={ENTITY_NAME}]")
+    # summon a fixed position, named entity as a substitute for a player.
+    # CustomName is an SNBT text component, a plain string is a literal name
+    res = client.summon("armor_stand", ENTITY_POS, {"CustomName": ENTITY_NAME})
     logging.info(res)
 
     for _ in range(10):
         try:
             player = Player(ENTITY_NAME)
-        except ValueError:
+            player.pos  # noqa: B018 - check that the entity can be found
+        except PlayerNotInWorldError:
             sleep(1)
         else:
             break

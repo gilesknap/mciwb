@@ -5,6 +5,7 @@ System tests for the Copy class
 from time import sleep
 
 from mciwb.imports import Direction, Item, Iwb, Player, get_client
+from mciwb.signs import Signs
 from tests.conftest import ENTITY_NAME
 
 
@@ -25,19 +26,14 @@ def test_world_reporting(mciwb_world: Iwb):
 
 def test_world_player_signs(mciwb_world: Iwb, minecraft_player: Player):
     """
-    verify printing of the world object
+    verify that placing select/expand/paste signs copies blocks
     """
-
-    sp = (
-        'minecraft:oak_sign{{front_text:{{messages:[\'{{"text":"{0}"}}\','
-        '\'{{"text":""}}\',\'{{"text":""}}\',\'{{"text":""}}\']}}}}'
-    )
 
     client = get_client()
     # place some action signs in the world and verify they are actioned
-    select = sp.format("select")
-    extend = sp.format("expand")
-    paste = sp.format("paste")
+    select = Signs.sign_block("select")
+    extend = Signs.sign_block("expand")
+    paste = Signs.sign_block("paste")
 
     sleep(1)
     p = minecraft_player.pos

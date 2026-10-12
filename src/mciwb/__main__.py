@@ -14,6 +14,7 @@ from mciwb.iwb import Iwb
 from mciwb.logging import exception_handler, init_logging, log
 from mciwb.server import (
     HOST,
+    MINECRAFT_VERSION,
     MinecraftServer,
     backup_folder_default,
     def_pass,
@@ -110,11 +111,15 @@ def start(
     folder: Path = default_server_folder,
     backup_folder: Path = backup_folder_default,
     port: int = def_port,
+    minecraft_version: str = MINECRAFT_VERSION,
     debug: bool = False,
 ):
     """
     Start a minecraft server in the background. Default options automatically
-    work with `mciwb shell`
+    work with `mciwb shell`.
+
+    The server runs the Minecraft Java Edition release given by
+    --minecraft-version. Your Minecraft client must use the same release.
     """
     init_logging(debug)
 
@@ -128,7 +133,13 @@ def start(
         log.info(f"Creating new Minecraft server in {folder}")
 
     server = MinecraftServer(
-        server_name, port, password, folder, world_type, backup_folder=backup_folder
+        server_name,
+        port,
+        password,
+        folder,
+        world_type,
+        backup_folder=backup_folder,
+        version=minecraft_version,
     )
     server.create()
 

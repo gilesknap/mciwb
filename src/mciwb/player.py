@@ -120,7 +120,7 @@ class Player:
         return volume.inside(self.pos)
 
     @classmethod
-    def players_in(cls, volume: Volume) -> list["Player"]:
+    def players_in(cls, volume: Volume) -> list[str]:
         """
         return a list of player names whose position is inside the Volume
         """
@@ -134,6 +134,6 @@ class Player:
                 pos = Player(name).pos
                 if volume.inside(pos, 2):
                     players.append(name)
-            except ValueError:
+            except PlayerNotInWorldError:
                 pass  # players are sometimes missing temporarily
         return players

@@ -105,7 +105,7 @@ class Iwb:
 
         log.info(f"Connected to {self._server} on {self._port}")
         # don't announce every rcon command
-        client.gamerule("sendCommandFeedback", False)
+        client.gamerule("send_command_feedback", False)
 
         return client
 
@@ -203,7 +203,7 @@ class Iwb:
 
         # 'Could not set the block' is not an error - it means it was already set
         if not any(
-            x in result for x in ["Changed the block", "Could not set the block", ""]
+            x in result for x in ["Changed the block", "Could not set the block"]
         ):
             log.error(result)
 

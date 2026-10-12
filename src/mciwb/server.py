@@ -21,6 +21,13 @@ backup_folder_default = Path.home() / "mciwb-backups"
 server_name = "mciwb-server"
 default_server_folder = Path.home() / server_name
 
+# The Minecraft Java Edition release that mciwb servers run. Keep this in step
+# with mcwb.MINECRAFT_VERSION, the release that mcwb.Item is generated from.
+MINECRAFT_VERSION = "26.3"
+# itzg/minecraft-server image, pinned for reproducibility. Minecraft 26.x
+# needs Java 25, hence the java25 variant.
+SERVER_IMAGE = "docker.io/itzg/minecraft-server:2026.10.0-java25"
+
 def_pass = "default_pass"
 def_port = 20100
 def_world_type = "normal"
@@ -34,9 +41,13 @@ class MinecraftServer:
     :param rcon: the rcon port for the server
     :param password: the rcon password for the server
     :param server_folder: the folder to store the server files in
-    :param world_type: the type of world to create
+    :param world_type: the type of world to create (a world preset such as
+        "normal" or "flat")
+    :param backup_folder: the folder to store backups in
     :param keep: keep the server running after tests
     :param test: run the server in test mode
+    :param version: the Minecraft Java Edition release to run. Note that
+        an existing world is upgraded if it is opened with a newer release
     """
 
     def __init__(
@@ -49,6 +60,7 @@ class MinecraftServer:
         backup_folder: Path = None,  # type: ignore
         keep: bool = True,
         test=False,
+        version: str = MINECRAFT_VERSION,
     ) -> None:
         """
         Create a `MinecraftServer` object only. Use `create` to
@@ -65,6 +77,7 @@ class MinecraftServer:
         self.container: Container | None = None
         self.keep = keep
         self.test = test
+        self.version = version
 
     def wait_server(self: "MinecraftServer"):
         """
@@ -169,6 +182,7 @@ class MinecraftServer:
 
         env = {
             "EULA": "TRUE",
+            "VERSION": self.version,
             "SERVER_PORT": self.port,
             "RCON_PORT": self.rcon,
             "ENABLE_RCON": "true",
@@ -177,17 +191,18 @@ class MinecraftServer:
             "LEVEL_TYPE": self.world_type,
             "MODE": "creative",
             "SPAWN_PROTECTION": 0,
+            # keep ticking with no players online so that scripted builds
+            # behave (e.g. falling blocks, flowing water) and the items
+            # dropped by mcwb.get_block fall out of the world
+            "PAUSE_WHEN_EMPTY_SECONDS": 0,
         }
 
         if self.test:
             env.update(
                 {
                     "GENERATE_STRUCTURES": "false",
-                    "SPAWN_ANIMALS": "false",
-                    "SPAWN_MONSTERS": "false",
-                    "SPAWN_NPCS": "false",
-                    "VIEW_DISTANCE": " 5",
-                    "LEVEL_TYPE": "FLAT",
+                    "VIEW_DISTANCE": "5",
+                    "LEVEL_TYPE": "flat",
                     "FORCE_WORLD_COPY": "TRUE",
                 }
             )
@@ -210,7 +225,7 @@ class MinecraftServer:
             self.backup_folder.mkdir(parents=True)
 
         container = docker_client.containers.run(  # type: ignore
-            "docker.io/itzg/minecraft-server",
+            SERVER_IMAGE,
             detach=True,
             environment=env,
             ports={f"{self.rcon}/tcp": self.rcon, f"{self.port}": self.port},
@@ -239,11 +254,15 @@ class MinecraftServer:
         Some default settings for the server that this class creates
         """
         with Client(HOST, self.rcon, passwd=self.password) as client:
-            # make sure the local chunk around world centre is loaded
-            # this is because the getblock trick needs 0,0,0 in the world
+            # keep the chunk at the world origin loaded, so commands that
+            # target it (e.g. in the system tests) work with no players online
             client.forceload.add((0, 0), (0, 0))
 
-            if not self.test:
+            if self.test:
+                # the spawn-animals/monsters/npcs server properties no longer
+                # exist, this game rule controls natural mob spawning instead
+                client.gamerule("spawn_mobs", False)
+            else:
                 # a nice starting point for the tutorials in seed 0 world
                 client.setworldspawn(Vec3(632, 73, -1658))
 
