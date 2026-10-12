@@ -245,6 +245,24 @@ def test_render_rcon(
     assert image.getpixel((7, 7)) == BLOCK_COLOURS["gold_block"]
 
 
+def test_render_no_server(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path, caplog: pytest.LogCaptureFixture
+):
+    """with no server, render reads the world files but warns they may be stale"""
+    monkeypatch.setattr(mciwb.__main__, "_rcon_client", lambda port, password: None)
+    write_world(tmp_path / "server" / "world", {(1, -2, 3): "minecraft:gold_block"})
+
+    args = ["0", "-3", "2", "2", "-1", "4", "--port", "20499"]
+    result = runner.invoke(cli, render_args(tmp_path, *args))
+
+    assert result.exit_code == 0, (result.output, result.exception)
+    assert (tmp_path / "render.png").exists()
+    warnings = [r.getMessage() for r in caplog.records if r.levelname == "WARNING"]
+    assert len(warnings) == 1
+    assert "no server on" in warnings[0] and ":20499" in warnings[0]
+    assert "recent changes may be missing" in warnings[0]
+
+
 @pytest.mark.parametrize(
     "args",
     [

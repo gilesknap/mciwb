@@ -263,8 +263,8 @@ def _rcon_client(port: int, password: str) -> Client | None:
         client.connect(True)
     except WrongPassword:
         log.warning(
-            f"Wrong RCON password for server {HOST}:{port}, so the world is "
-            "copied without asking the server to save it first"
+            f"Wrong RCON password for server {HOST}:{port}, so the world files "
+            "are read without asking the server to save them first"
         )
     except Exception as e:
         log.debug(f"no server on {HOST}:{port}: {e!r}")
@@ -388,6 +388,14 @@ def render_cmd(
 
     client = _rcon_client(port, password)
     world_folder = None if rcon else folder / "world"
+    if client is None and world_folder and (world_folder / "level.dat").exists():
+        # unlike backup, render expects a running server: without one the
+        # world files may be minutes behind what was just built
+        log.warning(
+            f"no server on {HOST}:{port}: reading the world files without "
+            "asking the server to save, so recent changes may be missing; "
+            "pass the --port/--password of mciwb start"
+        )
     try:
         grid = scan(vol, world_folder, client)
     except ValueError as e:
