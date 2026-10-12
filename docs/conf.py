@@ -73,6 +73,11 @@ nitpick_ignore = [
     ("py:class", "typing_extensions.Literal"),
     ("py:class", "mcwb.types.Vec3"),
     ("py:class", "mcwb.item.Item"),
+    # types from libraries that do not publish Sphinx inventories
+    ("py:class", "mcwb.volume.Volume"),
+    ("py:class", "mcwb.types.Anchor3"),
+    ("py:class", "mcipc.rcon.je.client.Client"),
+    ("py:exc", "SessionTimeout"),
 ]
 
 # Both the class’ and the __init__ method’s docstring are concatenated and
@@ -189,5 +194,5 @@ html_show_sphinx = False
 html_show_copyright = False
 
 # Logo
-html_logo = "images/dls-logo.svg"
+html_logo = "images/logo.png"
 html_favicon = html_logo

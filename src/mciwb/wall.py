@@ -24,7 +24,7 @@ class Wall:
 
     - the profile is a list of columns
     - each column is a list of blocks, from the top of the column down
-    - each block is an `Item`, or a list of Items to make the wall more than
+    - each block is an ``Item``, or a list of Items to make the wall more than
       one block thick (extending to the right of the direction of drawing)
 
     If the column is shorter than *height* it is repeated to fill the height.

@@ -18,3 +18,14 @@ def test_wall_rotation():
     assert wall._rot_left(Direction.NORTH) == Direction.WEST
     assert wall._rot_right(Direction.NORTH) == Direction.EAST
     assert wall._rot_right(Direction.EAST) == Direction.SOUTH
+
+
+def test_public_api():
+    """the API reference docs are generated from these __all__ lists"""
+    import mciwb
+    import mciwb.imports
+
+    for module in (mciwb, mciwb.imports):
+        assert all(hasattr(module, name) for name in module.__all__)
+    assert {"Iwb", "Player", "Wall", "Monitor", "Switch"} <= set(mciwb.__all__)
+    assert {"Vec3", "Item", "Direction", "polygon"} <= set(mciwb.imports.__all__)

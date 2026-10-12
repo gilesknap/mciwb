@@ -28,7 +28,7 @@ class Switch:
     in the world. Implements monitoring of the switch's state with callbacks.
 
     :param position: the position of the switch in the world
-    :param item: the item type of the switch (must be one of `item_types`)
+    :param item: the item type of the switch (must be one of ``item_types``)
     :param callback: the callback to call when the switch's state changes
     :param name: the name of the switch (defaults to "switch" + id)
 

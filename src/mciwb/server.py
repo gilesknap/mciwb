@@ -97,7 +97,7 @@ class MinecraftServer:
         Wait until the server is ready to accept rcon connections
 
         :raises RuntimeError: if the container stops, or the server does not
-            accept connections within `start_timeout` seconds. The error
+            accept connections within ``start_timeout`` seconds. The error
             includes the end of the server log.
         """
         assert isinstance(self.container, Container)

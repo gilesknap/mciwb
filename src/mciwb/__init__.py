@@ -2,8 +2,9 @@
 Minecraft Interactive World Builder: build in a Minecraft world from Python.
 
 The main entry point is `Iwb`, which connects to a Minecraft server. The
-building blocks (`Vec3`, `Item`, `Direction`, `Volume`, `polygon` etc.) come
-from the mcwb library, and are all available from `mciwb.imports`.
+building blocks (``Vec3``, ``Item``, ``Direction``, ``Volume``, ``polygon``
+etc.) come from the mcwb library. These and the classes below can all be
+imported from ``mciwb.imports``.
 
 .. data:: __version__
     :type: str
