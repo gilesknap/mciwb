@@ -278,15 +278,16 @@ class MinecraftServer:
         Some default settings for the server that this class creates
         """
         with Client(HOST, self.rcon, passwd=self.password) as client:
-            # keep the chunk at the world origin loaded, so commands that
-            # target it (e.g. in the system tests) work with no players online
-            client.forceload.add((0, 0), (0, 0))
-
             if self.test:
+                # keep the chunks around the world origin loaded, so that the
+                # system tests can build there with no players online
+                client.forceload.add((-48, -48), (47, 47))
                 # the spawn-animals/monsters/npcs server properties no longer
                 # exist, this game rule controls natural mob spawning instead
                 client.gamerule("spawn_mobs", False)
             else:
+                # keep the chunk at the world origin loaded
+                client.forceload.add((0, 0), (0, 0))
                 # a nice starting point for the tutorials in seed 0 world
                 client.setworldspawn(Vec3(632, 73, -1658))
 

@@ -1,9 +1,8 @@
-import os
-import tempfile
+import logging
 from pathlib import Path
-from shutil import copytree
 
 import pytest
+from mcipc.rcon.je import Client
 from typer.testing import CliRunner
 
 from mciwb.__main__ import cli
@@ -14,82 +13,61 @@ runner = CliRunner()
 
 def run_cli(*args):
     result = runner.invoke(cli, [str(x) for x in args])
-    if result.exception:
+    if result.exception and not isinstance(result.exception, SystemExit):
         raise result.exception
-    assert result.exit_code == 0, result
+    assert result.exit_code == 0, result.output
     return result
 
 
-def test_repr(tmp_path: Path, minecraft_container, minecraft_client, minecraft_player):
+def test_repr(minecraft_player):
     """launch the cli in test mode and connect to the test server"""
-    result = run_cli(
-        "shell", "--test", "--server", HOST, "--port", RCON_PORT, "--passwd", RCON_P
-    )
+    args = ["shell", "--test", "--server", HOST, "--port", RCON_PORT]
+    result = run_cli(*args, "--passwd", RCON_P)
 
     assert "no players" in result.stdout
 
-    result = run_cli(
-        "shell",
-        "--test",
-        "--server",
-        HOST,
-        "--port",
-        RCON_PORT,
-        "--passwd",
-        RCON_P,
-        "--player",
-        "georgeTest",
-    )
+    result = run_cli(*args, "--passwd", RCON_P, "--player", "georgeTest")
 
     assert "player: georgeTest" in result.stdout
 
 
-@pytest.mark.skipif(
-    os.getenv("GITHUB_ACTIONS") == "true", reason="Permissions error in GH Actions"
-)
-def test_backup(tmp_path):
-    checks = ["ERROR", "WARNING"]
+def test_backup(tmp_path: Path, caplog: pytest.LogCaptureFixture):
+    """start a server, back it up, change it, restore it and stop it"""
+    server_name = "mciwb-test-backup"
+    port = 20200
+    server_folder = tmp_path / "server"
+    backup_folder = tmp_path / "backups"
+    world = server_folder / "world"
+    common = ["--server-name", server_name, "--port", port]
+    folders = ["--folder", server_folder, "--backup-folder", backup_folder]
 
-    server_folder = Path(tempfile.gettempdir()) / "test-backup-server"
-    server_folder2 = Path(tempfile.gettempdir()) / "test-backup-server2"
-    backup_folder = Path(tempfile.gettempdir()) / "test-backup-backup"
-    backup_folder_tmp = Path(tempfile.gettempdir()) / "test-backup-backup"
+    try:
+        run_cli("start", *common, *folders, "--world-type", "flat")
+        assert (world / "level.dat").exists()
 
-    result = run_cli(
-        "start",
-        "--folder",
-        server_folder,
-        "--server-name",
-        "test",
-        "--port",
-        "20200",
-        "--backup-folder",
-        backup_folder_tmp,
-    )
-    assert not any(err in result.stdout for err in checks)
+        marker = world / "mciwb-marker.txt"
+        marker.write_text("before backup")
+        run_cli("backup", *folders, "--backup-name", "test")
+        assert (backup_folder / "test.zip").exists()
 
-    result = run_cli(
-        "backup",
-        "--folder",
-        server_folder,
-        "--backup-folder",
-        backup_folder,
-    )
-    assert not any(err in result.stdout for err in checks)
+        marker.write_text("after backup")
+        extra = world / "mciwb-extra.txt"
+        extra.write_text("created after backup")
 
-    copytree(server_folder, server_folder2, dirs_exist_ok=True)
-    result = run_cli(
-        "restore",
-        "--folder",
-        server_folder2,
-        "--server-name",
-        "test",
-        "--port",
-        "20200",
-        "--backup-folder",
-        backup_folder,
-    )
-    assert not any(err in result.stdout for err in checks)
+        run_cli("restore", "test", *common, *folders, "--world-type", "flat")
 
-    result = run_cli("stop", "--server-name", "test")
-    assert not any(err in result.stdout for err in checks)
+        assert (world / "level.dat").exists()
+        assert marker.read_text() == "before backup"
+        assert not extra.exists()
+        # the restarted server responds over RCON
+        with Client(HOST, port, passwd="default_pass") as client:
+            assert "Seed" in client.seed()
+    finally:
+        run_cli("stop", "--server-name", server_name)
+
+    problems = [
+        r
+        for r in caplog.records
+        if r.name.startswith("mciwb") and r.levelno >= logging.WARNING
+    ]
+    assert problems == []
