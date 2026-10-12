@@ -154,7 +154,6 @@ def start(
     world_type: str = def_world_type,
     server_name: str = server_name,
     folder: Path = default_server_folder,
-    backup_folder: Path = backup_folder_default,
     port: int = def_port,
     minecraft_version: str = MINECRAFT_VERSION,
     debug: bool = False,
@@ -183,7 +182,6 @@ def start(
         password,
         folder,
         world_type,
-        backup_folder=backup_folder,
         version=minecraft_version,
     )
     try:
@@ -256,7 +254,6 @@ def restore(
         world_type=world_type,
         server_name=server_name,
         folder=folder,
-        backup_folder=backup_folder,
         port=port,
         minecraft_version=minecraft_version,
         debug=debug,

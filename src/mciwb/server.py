@@ -21,7 +21,7 @@ from mciwb.threads import Client
 
 HOST = "localhost"
 
-# the default locally mapped backup folder for minecraft data
+# the default folder for backups of the server's world
 backup_folder_default = Path.home() / "mciwb-backups"
 server_name = "mciwb-server"
 default_server_folder = Path.home() / server_name
@@ -120,7 +120,6 @@ class MinecraftServer:
     :param server_folder: the folder to store the server files in
     :param world_type: the type of world to create (a world preset such as
         "normal" or "flat")
-    :param backup_folder: the folder to store backups in
     :param keep: keep the server running: the container has the "always"
         restart policy, so podman-restart.service restarts it after a reboot,
         and `remove` does nothing unless forced
@@ -137,7 +136,6 @@ class MinecraftServer:
         password: str,
         server_folder: Path,
         world_type: str,
-        backup_folder: Path | None = None,
         keep: bool = True,
         test: bool = False,
         version: str = MINECRAFT_VERSION,
@@ -151,7 +149,6 @@ class MinecraftServer:
         self.name = name
         self.password = password
         self.server_folder = server_folder
-        self.backup_folder = backup_folder or backup_folder_default
         self.world = self.server_folder / "world"
         self.world_type = world_type
         self.container: Container | None = None
@@ -247,12 +244,11 @@ class MinecraftServer:
             self.stop()
             self.container.remove()  # noqa
 
-    def create(self, world_zip: str | None = None, force: bool = False) -> None:
+    def create(self, force: bool = False) -> None:
         """
-        Spin up a minecraft server in a container
+        Spin up a minecraft server in a container, creating a new world if
+        the server folder has none.
 
-        :param world_zip: the zip file to use as the world data. If None is
-            provided, a new world will be created.
         :param force: force the server to be removed if it already exists
         """
 
@@ -323,17 +319,11 @@ class MinecraftServer:
             if not self.keep:
                 env["ONLINE_MODE"] = "FALSE"
 
-        if world_zip:
-            env["WORLD"] = str(world_zip)
-
         if not self.server_folder.exists():
             self.server_folder.mkdir(parents=True)
         elif self.test:
             shutil.rmtree(self.server_folder)
             self.server_folder.mkdir(parents=True)
-
-        if not self.backup_folder.exists():
-            self.backup_folder.mkdir(parents=True)
 
         container = client.containers.run(
             SERVER_IMAGE,
@@ -344,10 +334,6 @@ class MinecraftServer:
             restart_policy={"Name": "always" if self.keep else "no"},
             volumes={
                 str(self.server_folder): {"bind": "/data", "mode": "rw"},
-                str(self.backup_folder): {
-                    "bind": str(self.backup_folder),
-                    "mode": "rw",
-                },
             },
             name=self.name,
             # let the server use the bind mounts on SELinux hosts

@@ -22,7 +22,6 @@ ENTITY_NAME = "georgeTest"
 ENTITY_POS = Vec3(0, -60, 0)
 
 test_server_name = "mciwb-test-server"
-test_backup_name = "mciwb-backup-server"
 # podman resolves bind mount paths on its host, so the devcontainer mounts this
 # folder at the same path as on its host (see .devcontainer/devcontainer.json)
 servers_folder = Path(gettempdir()) / "test-mc-servers"
@@ -81,7 +80,6 @@ def minecraft_container(request: pytest.FixtureRequest):
         keep=KEEP_SERVER,
         world_type="flat",
         server_folder=servers_folder / test_server_name,
-        backup_folder=servers_folder / test_backup_name,
         test=True,
     )
     # register the clean up first, so that a server that fails to start is

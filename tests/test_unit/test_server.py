@@ -45,7 +45,6 @@ def test_create(podman: MagicMock, tmp_path: Path, keep: bool):
         "secret",
         tmp_path / "server",
         "flat",
-        backup_folder=tmp_path / "backups",
         keep=keep,
     )
     server.create()
@@ -63,8 +62,9 @@ def test_create(podman: MagicMock, tmp_path: Path, keep: bool):
     assert all(isinstance(v, str) for v in env.values())
     assert kwargs["ports"] == {"20100/tcp": 20100, "20101/tcp": 20101}
     assert kwargs["restart_policy"] == {"Name": "always" if keep else "no"}
-    assert str(tmp_path / "server") in kwargs["volumes"]
-    assert (tmp_path / "backups").is_dir()
+    assert kwargs["volumes"] == {
+        str(tmp_path / "server"): {"bind": "/data", "mode": "rw"}
+    }
 
 
 def test_create_rootless(podman: MagicMock, tmp_path: Path):

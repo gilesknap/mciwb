@@ -63,8 +63,7 @@ The devcontainer mounts that socket as `/run/podman/podman.sock` and sets
 resolves bind mount paths on the host, not in the devcontainer, so the
 servers' folders must be at the same path in both: the devcontainer mounts
 `/tmp/test-mc-servers` for the system tests. To run `mciwb start` from
-inside the devcontainer, put `--folder` and `--backup-folder` under
-`/tmp/test-mc-servers` too.
+inside the devcontainer, put `--folder` under `/tmp/test-mc-servers` too.
 
 Under rootless podman the server runs as the image's uid 1000, which mciwb
 maps to your host user (`--userns=keep-id:uid=1000,gid=1000`), so the files

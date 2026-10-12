@@ -47,7 +47,7 @@ def test_backup(caplog: pytest.LogCaptureFixture):
     folders = ["--folder", server_folder, "--backup-folder", backup_folder]
 
     try:
-        run_cli("start", *common, *folders, "--world-type", "flat")
+        run_cli("start", *common, "--folder", server_folder, "--world-type", "flat")
         assert (world / "level.dat").exists()
         # the server's files belong to the current user, not a podman subuid
         assert (world / "level.dat").stat().st_uid == os.getuid()
