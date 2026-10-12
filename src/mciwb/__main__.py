@@ -9,6 +9,7 @@ from typing import Annotated
 
 import typer
 from IPython.terminal.embed import InteractiveShellEmbed
+from rcon.exceptions import WrongPassword
 
 from mciwb import __version__, imports
 from mciwb.backup import Backup
@@ -105,6 +106,9 @@ def _connect(server: str, port: int, passwd: str, player: str) -> Iwb:
     except ConnectionRefusedError:
         log.error(f"Could not connect to server {server}:{port}")
         raise typer.Exit(1) from None
+    except WrongPassword:
+        log.error(f"Wrong RCON password for server {server}:{port}")
+        raise typer.Exit(1) from None
     except Exception:
         if world:
             world.stop()
@@ -164,6 +168,9 @@ def start(
 
     The server runs the Minecraft Java Edition release given by
     --minecraft-version. Your Minecraft client must use the same release.
+
+    If the server's container already exists, it is started with the
+    settings that it was created with. Run `mciwb stop` first to change them.
     """
     init_logging(debug)
 
@@ -189,6 +196,12 @@ def start(
     except PodmanNotAvailableError as e:
         log.error(e)
         raise typer.Exit(1) from e
+    except WrongPassword:
+        log.error(
+            f"Minecraft Server '{server_name}' rejected the RCON password. "
+            f"Check rcon.password in {server.server_folder}/server.properties."
+        )
+        raise typer.Exit(1) from None
 
 
 @cli.command()

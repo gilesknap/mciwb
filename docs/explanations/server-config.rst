@@ -16,6 +16,12 @@ Perform the following to pick up the changes::
     mciwb stop
     mciwb start
 
+The options of ``mciwb start`` (``--port``, ``--password``, ``--folder`` and
+``--minecraft-version``) only take effect when it creates the server
+container. ``mciwb stop`` removes the container, so while it exists
+``mciwb start`` starts it with the settings it was created with, and warns
+about any options that differ. Run ``mciwb stop`` first to change them.
+
 .. _minecraft_version:
 
 Minecraft version

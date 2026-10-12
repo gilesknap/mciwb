@@ -3,6 +3,7 @@ from pathlib import Path
 from subprocess import check_output
 
 import pytest
+from rcon.exceptions import WrongPassword
 from typer.testing import CliRunner
 
 import mciwb.__main__
@@ -98,3 +99,15 @@ def test_restore_missing_world(monkeypatch: pytest.MonkeyPatch, tmp_path: Path):
 
     assert result.exit_code == 0, (result.output, result.exception)
     assert (world / "level.dat").read_text() == "level"
+
+
+def test_start_wrong_password(monkeypatch: pytest.MonkeyPatch, tmp_path: Path):
+    def create(self):
+        raise WrongPassword()
+
+    monkeypatch.setattr(mciwb.__main__.MinecraftServer, "create", create)
+
+    result = runner.invoke(cli, ["start", "--folder", str(tmp_path / "server")])
+
+    assert result.exit_code == 1
+    assert isinstance(result.exception, SystemExit)

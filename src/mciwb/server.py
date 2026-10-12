@@ -249,27 +249,77 @@ class MinecraftServer:
         Spin up a minecraft server in a container, creating a new world if
         the server folder has none.
 
+        If the container already exists it is reused (and started if it is
+        stopped) with the settings that it was created with. Use *force*, or
+        ``mciwb stop``, to recreate it with new settings.
+
         :param force: force the server to be removed if it already exists
         """
+        with podman_client() as client:
+            if client.containers.exists(self.name):
+                container = client.containers.get(self.name)
+                self.container = container
+                if force:
+                    self.remove(force=True)
+                else:
+                    self._reuse_settings(container)
+                    if container.status == "running":
+                        log.info(
+                            f"Minecraft Server '{self.name}' "
+                            f"already running on port {self.port}"
+                        )
+                    else:
+                        self.start()
+                    return
 
-        # create and launch minecraft container once per session
-        client = podman_client()
+            self._run(client)
 
-        if client.containers.exists(self.name):
-            container = client.containers.get(self.name)
-            self.container = container
-            if force:
-                self.remove(force=True)
-            elif container.status == "running":
-                log.info(
-                    f"Minecraft Server '{self.name}' "
-                    f"already running on port {self.port}"
-                )
-                return
-            else:
-                self.start()
-                return
+        self.wait_server()
 
+        self._settings()
+
+    def _reuse_settings(self, container: Container) -> None:
+        """
+        Adopt the RCON port and password of an existing container, warning
+        about any settings that differ from those requested
+        """
+        env = dict(
+            e.split("=", 1) for e in container.attrs.get("Config", {}).get("Env") or []
+        )
+        mounts = container.attrs.get("Mounts") or []
+        data = [m.get("Source") for m in mounts if m.get("Destination") == "/data"]
+
+        ignored = []
+        rcon = env.get("RCON_PORT")
+        if rcon and int(rcon) != self.rcon:
+            ignored.append(f"port {self.rcon} (using {rcon})")
+            self.rcon = int(rcon)
+            self.port = self.rcon + 1
+        password = env.get("RCON_PASSWORD")
+        if password and password != self.password:
+            ignored.append("password (using the existing one)")
+            self.password = password
+        version = env.get("VERSION")
+        if version and version != self.version:
+            ignored.append(f"minecraft version {self.version} (using {version})")
+            self.version = version
+        if data and data[0] and Path(data[0]) != Path(self.server_folder).resolve():
+            ignored.append(f"folder {self.server_folder} (using {data[0]})")
+            self.server_folder = Path(data[0])
+            self.world = self.server_folder / "world"
+
+        if ignored:
+            log.warning(
+                f"Minecraft Server '{self.name}' already exists, so its settings "
+                f"are reused, ignoring: {'; '.join(ignored)}. "
+                f"Run 'mciwb stop --server-name {self.name}' first to "
+                "recreate it with new settings."
+            )
+
+    def _run(self, client: PodmanClient) -> None:
+        """
+        Create and start the server container
+        """
         log.info(f"Launching Minecraft Server '{self.name}' on port {self.port} ...")
 
         env = {
@@ -344,10 +394,6 @@ class MinecraftServer:
         assert isinstance(container, Container)
         self.container = container
 
-        self.wait_server()
-
-        self._settings()
-
     def _settings(self):
         """
         Some default settings for the server that this class creates
@@ -373,12 +419,12 @@ class MinecraftServer:
 
         :param name: the name of the server to stop
         """
-        client = podman_client()
-        if not client.containers.exists(name):
-            log.warning(f"Minecraft Server '{name}' not found")
-            return
-        container = client.containers.get(name)
-        log.info(f"Stopping Minecraft Server {name} ...")
-        container.stop(timeout=stop_timeout, ignore=True)
-        container.wait()
-        container.remove()
+        with podman_client() as client:
+            if not client.containers.exists(name):
+                log.warning(f"Minecraft Server '{name}' not found")
+                return
+            container = client.containers.get(name)
+            log.info(f"Stopping Minecraft Server {name} ...")
+            container.stop(timeout=stop_timeout, ignore=True)
+            container.wait()
+            container.remove()

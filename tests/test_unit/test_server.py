@@ -31,6 +31,8 @@ def podman(monkeypatch: pytest.MonkeyPatch) -> MagicMock:
     client.containers.exists.return_value = False
     client.containers.run.return_value = MagicMock(spec=Container)
     client.info.return_value = rootless_info(True)
+    # podman_client() is used as a context manager
+    client.__enter__.return_value = client
     monkeypatch.setattr(mciwb.server, "podman_client", lambda: client)
     monkeypatch.setattr(MinecraftServer, "wait_server", lambda self: None)
     monkeypatch.setattr(MinecraftServer, "_settings", lambda self: None)
@@ -65,6 +67,8 @@ def test_create(podman: MagicMock, tmp_path: Path, keep: bool):
     assert kwargs["volumes"] == {
         str(tmp_path / "server"): {"bind": "/data", "mode": "rw"}
     }
+    # the client is closed
+    podman.__exit__.assert_called_once()
 
 
 def test_create_rootless(podman: MagicMock, tmp_path: Path):
@@ -102,18 +106,57 @@ def test_create_test_server(podman: MagicMock, tmp_path: Path):
     assert not (folder / "world").exists()
 
 
-def test_create_existing(podman: MagicMock, tmp_path: Path):
+def existing_container(
+    podman: MagicMock, folder: Path, port: int = 20100, password: str = "pass"
+) -> MagicMock:
+    """Make podman report an existing, stopped server container"""
     container = MagicMock(spec=Container)
     container.name = "test"
     container.status = "exited"
+    container.attrs = {
+        "Config": {
+            "Env": [
+                f"RCON_PORT={port}",
+                f"RCON_PASSWORD={password}",
+                f"VERSION={MINECRAFT_VERSION}",
+            ]
+        },
+        "Mounts": [{"Source": str(folder), "Destination": "/data"}],
+    }
     podman.containers.exists.return_value = True
     podman.containers.get.return_value = container
+    return container
+
+
+def test_create_existing(
+    podman: MagicMock, tmp_path: Path, caplog: pytest.LogCaptureFixture
+):
+    container = existing_container(podman, tmp_path)
 
     server = MinecraftServer("test", 20100, "pass", tmp_path, "normal")
     server.create()
 
     container.start.assert_called_once()
     podman.containers.run.assert_not_called()
+    assert "already exists" not in caplog.text
+
+
+def test_create_existing_other_settings(
+    podman: MagicMock, tmp_path: Path, caplog: pytest.LogCaptureFixture
+):
+    """An existing container's settings are used, with a warning"""
+    existing_container(podman, tmp_path / "old", port=20300, password="hunter2")
+
+    server = MinecraftServer("test", 20100, "new", tmp_path / "new", "normal")
+    server.create()
+
+    assert (server.rcon, server.port) == (20300, 20301)
+    assert server.password == "hunter2"
+    assert server.server_folder == tmp_path / "old"
+    assert "already exists, so its settings are reused" in caplog.text
+    assert "port 20100 (using 20300)" in caplog.text
+    # the password is not logged
+    assert "hunter2" not in caplog.text
 
 
 def test_wait_server_exited(tmp_path: Path):
@@ -140,10 +183,8 @@ def test_wait_server_timeout(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
 
 
 def test_create_force(podman: MagicMock, tmp_path: Path):
-    container = MagicMock(spec=Container)
+    container = existing_container(podman, tmp_path)
     container.status = "running"
-    podman.containers.exists.return_value = True
-    podman.containers.get.return_value = container
 
     server = MinecraftServer("test", 20100, "pass", tmp_path, "normal")
     server.create(force=True)
