@@ -42,7 +42,6 @@ class Switch:
     :ivar next_id: the next id to assign to a switch
     :ivar on: the state to check for a powered switch
     :ivar off: the state to check for an un-powered switch
-    :ivar monitor: the `Monitor` object for the switch
     """
 
     switches: list["Switch"] = []
@@ -61,7 +60,6 @@ class Switch:
         Switch.next_id += 1
         self.id = Switch.next_id
         self.name = name if name else f"switch{self.id}"
-        Switch.switches.append(self)
         self.powered = False
 
         for key, val in item_types.items():
@@ -82,13 +80,14 @@ class Switch:
         log.info(f"Created switch {self.name}, id {self.id} at {position}")
 
         self.monitor = Monitor(self._poll, name=self.name)
+        Switch.switches.append(self)
 
     @classmethod
     def remove_named(cls, name: str):
         """
         Remove a switch by name.
         """
-        for switch in cls.switches:
+        for switch in list(cls.switches):
             if switch.name == name:
                 switch.remove()
         # fail silently if the switch isn't found
@@ -106,10 +105,11 @@ class Switch:
     @classmethod
     def stop(cls):
         """
-        Stop monitoring the state of all switches.
+        Stop monitoring the state of all switches. The switches stay in the
+        world but their callbacks are no longer called.
         """
-        # TODO this does nothing currently?
-        cls.monitoring = False
+        for switch in cls.switches:
+            switch.monitor.stop()
 
     def check_state(self, state: str) -> bool:
         """
@@ -119,12 +119,7 @@ class Switch:
             *self.on* or *self.off*
         """
         res = get_client().execute.if_.block(self.pos, state).run("seed")
-        if "Seed" in res:
-            result = True
-        else:
-            result = False
-
-        return result
+        return "Seed" in res
 
     def _poll(self):
         if self.powered:
