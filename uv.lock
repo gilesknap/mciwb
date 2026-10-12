@@ -732,7 +732,7 @@ requires-dist = [
     { name = "mcipc", specifier = "==2.4.2" },
     { name = "mcwb", git = "https://github.com/gilesknap/mcwb?rev=254e7bdf2c542231a6358fa74c7be784887ba501" },
     { name = "numpy" },
-    { name = "podman", specifier = ">=5" },
+    { name = "podman", specifier = ">=5.5" },
     { name = "rcon", specifier = "==2.4.9" },
     { name = "typer" },
 ]

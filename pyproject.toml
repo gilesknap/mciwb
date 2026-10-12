@@ -25,7 +25,7 @@ dependencies = [
     "mcipc==2.4.2",
     "rcon==2.4.9",
     "ipython",
-    "podman>=5",
+    "podman>=5.5",
 ]
 dynamic = ["version"]
 license.file = "LICENSE"
