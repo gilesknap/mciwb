@@ -40,6 +40,10 @@ Start a server (Minecraft 26.3 in podman, RCON on localhost:20100) with
 mciwb run build.py --player NAME   # NAME is optional: a player in the world
 ```
 
+`mciwb backup [--backup-name NAME]` zips the world to `~/mciwb-backups`
+(flushing it first over RCON if the server is running) and `mciwb restore
+[NAME]` restores it; give both the `--port`/`--password` used with `mciwb start`.
+
 `mciwb run` and `mciwb shell` provide `world` (an `Iwb`) plus every name in
 `mciwb.imports`. A standalone script does the setup itself:
 

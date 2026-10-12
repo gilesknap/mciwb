@@ -30,6 +30,28 @@ can also specify a name if you want. Let's do that now::
 It is better not to use spaces in backup names so I used dash to separate
 the words.
 
+You can also make a backup from the ``bash`` prompt, without the Python
+Prompt::
+
+    mciwb backup --backup-name my-second-backup
+
+Leave out ``--backup-name`` to name the backup with the current date and time.
+If the server is running, ``mciwb backup`` connects to it over RCON, tells it
+to save the whole world to disk (``save-all flush``) and pauses saving until
+the backup is complete, so the backup is consistent. If the server is not
+running, the world folder is simply copied.
+
+``mciwb backup`` looks for the server on port 20100 with the password
+``default_pass``, the defaults of ``mciwb start``. If you started your
+server with a different ``--port`` or ``--password``, give the same options
+to ``mciwb backup``::
+
+    mciwb backup --port 20101 --password my_password
+
+If the password is wrong, ``mciwb backup`` warns you and copies the world
+without asking the server to save it first. Use ``--folder`` and
+``--backup-folder`` if your server or backups are not in the default folders.
+
 Now lets do a restore. You can first have your player dig a hole in our
 flat area, this is to make a change that we don't want to keep.
 Then exit the Python Prompt using 'Ctrl+D'. Now we are back
