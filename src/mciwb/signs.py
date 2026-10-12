@@ -51,7 +51,8 @@ class Signs:
     # A standing oak sign block with text, for use with setblock
     _sign_block = 'minecraft:oak_sign{{front_text:{{messages:["{0}","","",""]}}}}'
 
-    _wall_sign = "minecraft:oak_wall_sign"
+    # the block tag that matches wall signs of every wood type
+    _wall_sign = "#minecraft:wall_signs"
 
     def __init__(self, player: Player):
         self.player = player

@@ -25,23 +25,28 @@ class PlayerNotInWorldError(Exception):
     """The player (or named entity) could not be found in the world."""
 
 
-# backward compatible alias for the old name
-PlayerNotInWorld = PlayerNotInWorldError
-
-
 class Player:
     """
     Represent a player in the world and provide functions for monitoring their
     position and direction they are facing.
+
+    Creating a Player only reads from the world. Call `setup` to make the
+    player an operator in creative mode (`Iwb.add_player` does this).
+
+    :param name: the name of the player, or the CustomName of any other entity
     """
 
     def __init__(self, name: str) -> None:
         self.name = name
+
+    def setup(self) -> None:
+        """
+        Make the player an operator in creative mode, so that they can use
+        command signs and build freely.
+        """
         client = get_client()
-        # make sure the player is an operator in creative mode (but not in test mode)
-        if self.name != "georgeTest":
-            client.op(name)
-            client.gamemode("creative", name)
+        client.op(self.name)
+        client.gamemode("creative", self.name)
 
     def _get_entity_data(self, path: str, regex: Pattern[str]) -> Match[str]:
         """
