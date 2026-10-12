@@ -1,4 +1,5 @@
 import logging
+import os
 import shutil
 
 import pytest
@@ -48,6 +49,8 @@ def test_backup(caplog: pytest.LogCaptureFixture):
     try:
         run_cli("start", *common, *folders, "--world-type", "flat")
         assert (world / "level.dat").exists()
+        # the server's files belong to the current user, not a podman subuid
+        assert (world / "level.dat").stat().st_uid == os.getuid()
 
         marker = world / "mciwb-marker.txt"
         marker.write_text("before backup")
