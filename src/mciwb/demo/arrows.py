@@ -9,7 +9,6 @@ from mciwb.imports import (
     Vec3,
     get_client,
     parse_nbt,
-    vec2params,
 )
 
 exploding = "exploding_arrows"
@@ -25,7 +24,7 @@ def enable_explosions(power=1):
             nbt = parse_nbt(result)
             pos = Vec3(*nbt["Pos"]).with_ints()  # type: ignore
 
-            c.kill(f"@e[{arrow_entity}, {vec2params(pos)}]")
+            c.kill(f"@e[{arrow_entity}, x={pos.x}, y={pos.y}, z={pos.z}]")
             for i in range(power):
                 c.summon(str(Item.TNT), pos + Direction.UP * (i - power // 2))
                 c.summon(str(Item.TNT), pos + Direction.EAST * (i - power // 2))

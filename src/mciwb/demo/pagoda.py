@@ -1,3 +1,9 @@
+"""
+Build a pagoda with ``polygon`` and fill commands.
+
+Usage: ``build_pagoda(world.player.pos, width=20)``
+"""
+
 from mciwb.imports import Direction, FillMode, Item, get_client, polygon
 
 

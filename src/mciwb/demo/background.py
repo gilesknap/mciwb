@@ -3,7 +3,7 @@ Demonstrate the use of Monitor to set up a number of background threads to
 monitor the world and respond to player movement.
 """
 
-from demo.shapes import pyramid
+from mciwb.demo.shapes import pyramid
 from mciwb.imports import Direction, Item, Monitor, Vec3, get_world
 
 

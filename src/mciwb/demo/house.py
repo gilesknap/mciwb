@@ -1,3 +1,9 @@
+"""
+Build houses with ``Wall`` profiles and command signs.
+
+Usage: ``House()`` gives the player a "house" sign. Place it to build a house.
+"""
+
 from mciwb.imports import Direction, Item, Wall, get_client, get_world
 
 

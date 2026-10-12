@@ -1,3 +1,9 @@
+"""
+Clear the area where ``mciwb.demo.village.make_village`` builds the village.
+
+Usage: ``clear()``
+"""
+
 from mciwb.imports import FillMode, Item, Vec3, get_client, polygon
 
 

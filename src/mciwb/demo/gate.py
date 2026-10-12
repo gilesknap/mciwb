@@ -2,9 +2,13 @@
 Define a castle gateway with portcullis
 """
 
+from pathlib import Path
 from time import sleep
 
 from mciwb.imports import Direction, FillMode, Item, Switch, Vec3, get_client, get_world
+
+# the folder of saved blocks next to this file
+blocks = Path(__file__).parent / "blocks"
 
 
 def portcullis(position, close, width=4, height=6):
@@ -36,7 +40,7 @@ def make_gate(position=None):
         portcullis(position, switch.powered)
 
     gate_pos = position + Direction.SOUTH + Direction.WEST * 2
-    get_world().load("blocks/gate.json", gate_pos)
+    get_world().load(blocks / "gate.json", gate_pos)
     Switch(gate_pos, Item.LEVER, open_close, name="portcullis")
 
 

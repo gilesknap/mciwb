@@ -124,15 +124,15 @@ will provide. You will be free to edit the gate to look how you would like it
 and then save it back over the original file (see `saving`).
 
 The following commands need to be executed in a bash shell. They will
-create a folder called blocks and download my sample ``gate.json`` file
-into that folder
+create a folder called blocks in your ``buildings`` package and download my
+sample ``gate.json`` file into that folder
 
 .. code-block:: bash
 
-    cd $HOME/my_world
+    cd $HOME/my_world/buildings
     mkdir blocks
     cd blocks
-    wget https://raw.githubusercontent.com/gilesknap/mciwb/main/blocks/gate.json
+    wget https://raw.githubusercontent.com/gilesknap/mciwb/main/src/mciwb/demo/blocks/gate.json
 
 For the moment we don't need to look inside the gate.json file. Just know that
 you can save and load a volume of blocks in the world to and from a file.
@@ -149,7 +149,7 @@ Here is a reminder of how to do that using your bash prompt:
 
 Paste this code into gate.py and save it.
 
-.. literalinclude :: ../../src/demo/gate.py
+.. literalinclude :: ../../src/mciwb/demo/gate.py
    :language: python
 
 Note that the ``build_gate`` function has a default value for position. I

@@ -88,7 +88,7 @@ patch = ["subprocess"]
 data_file = "/tmp/mciwb.coverage"
 concurrency = ["thread"]
 # the demo scripts are examples, not library code
-omit = ["tests/*", "src/demo/*"]
+omit = ["tests/*", "src/mciwb/demo/*"]
 
 [tool.coverage.report]
 exclude_also = ["def __repr__", "if self\\.debug", "raise NotImplementedError"]

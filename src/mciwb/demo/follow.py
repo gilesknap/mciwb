@@ -1,4 +1,10 @@
-from demo.shapes import pyramid
+"""
+A pyramid of carved pumpkins that turns to face the player as they move.
+
+Usage: ``SpookyPyramid(Vec3(0, 5, 0)).go()`` then ``.stop()``
+"""
+
+from mciwb.demo.shapes import pyramid
 from mciwb.imports import Direction, Item, Monitor, Vec3, get_world
 
 

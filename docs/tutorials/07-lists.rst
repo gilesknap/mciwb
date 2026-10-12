@@ -48,5 +48,5 @@ This will remove ``banana`` from the fruits list.
 TODO: Build on the above until we demonstrate by building castle walls around
 our village using this code:
 
-.. literalinclude :: ../../src/demo/walls.py
+.. literalinclude :: ../../src/mciwb/demo/walls.py
    :language: python

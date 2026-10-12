@@ -1,4 +1,10 @@
-from demo.gate import disable_gate, make_gate
+"""
+Build castle walls with crenellations using a ``Wall`` profile, plus a gate.
+
+Usage: ``make_walls()``
+"""
+
+from mciwb.demo.gate import disable_gate, make_gate
 from mciwb.imports import Item, Vec3, Wall
 
 battlements_profile = [

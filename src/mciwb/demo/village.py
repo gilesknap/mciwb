@@ -1,12 +1,26 @@
-from demo.house import House
-from demo.pagoda import build_pagoda
-from demo.walls import make_walls
+"""
+Build a castle village with walls, a gate, houses and a pagoda.
+
+This brings together most of the other demos, and builds near the spawn
+point of the seed 0 world created by ``mciwb start``.
+
+Usage: ``make_village()``
+"""
+
+from pathlib import Path
+
+from mciwb.demo.house import House
+from mciwb.demo.pagoda import build_pagoda
+from mciwb.demo.walls import make_walls
 from mciwb.imports import Anchor3, FillMode, Item, Vec3, get_client, get_world, polygon
+
+# the folder of saved blocks next to this file
+blocks = Path(__file__).parent / "blocks"
 
 
 def make_village():
     # flatten the ground by loading our ground file
-    get_world().load("blocks/ground.json", Vec3(610, 72, -1673), Anchor3.BOTTOM_NW)
+    get_world().load(blocks / "ground.json", Vec3(610, 72, -1673), Anchor3.BOTTOM_NW)
 
     # clear an area to build the village
     polygon(
