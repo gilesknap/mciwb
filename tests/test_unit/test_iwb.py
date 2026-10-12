@@ -260,3 +260,19 @@ def test_scan_mciwb_server_other_port(
     grid = world.scan(Vec3(0, 2, 3), Vec3(2, 2, 3))
     assert grid[Vec3(1, 2, 3)] == "minecraft:gold_block"
     assert "save-all flush" in mock_client.commands
+
+
+def test_save_load_schematic(world: Iwb, mock_client: MockClient, tmp_path: Path):
+    file = tmp_path / "blocks.schem"
+    stairs = "minecraft:oak_stairs[facing=east,half=bottom,shape=straight]"
+    mock_client.setblock(Vec3(0, 0, 0), stairs)
+    mock_client.setblock(Vec3(1, 1, 1), Item.GLASS)
+    world.save(file, Volume.from_corners(Vec3(0, 0, 0), Vec3(1, 1, 1)))
+
+    world.add_player(ENTITY_NAME)
+    world.load(file, Vec3(10, 0, 0), Anchor3.BOTTOM_NW)
+
+    assert mock_client.state_at(Vec3(10, 0, 0)) == stairs
+    assert mock_client.getblock(Vec3(11, 1, 1)) == Item.GLASS
+    vol = world.copier.to_volume()
+    assert (vol.start, vol.end) == (Vec3(10, 0, 0), Vec3(11, 1, 1))

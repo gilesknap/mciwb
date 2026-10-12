@@ -1,6 +1,6 @@
 """
-Higher level building blocks: roofs, arches, columns, stairways, roads and
-foundations that follow the terrain.
+Higher level building blocks: roofs, arches, columns, stairways, roads,
+foundations that follow the terrain, and Sponge schematic files.
 
 They all build with the RCON client of the current thread (``get_client``),
 take ``Vec3`` positions and blocks as ``Item``, block state strings or
@@ -23,6 +23,7 @@ from mciwb.builders.blockstate import (
 from mciwb.builders.paths import PathStep, road, stairway, trace_path
 from mciwb.builders.placer import BuildError, Placer
 from mciwb.builders.roofs import flat_roof, gable_roof, hip_roof
+from mciwb.builders.schematic import DATA_VERSION, Schematic
 from mciwb.builders.terrain import (
     Heightmap,
     foundation,
@@ -31,12 +32,14 @@ from mciwb.builders.terrain import (
 )
 
 __all__ = [
+    "DATA_VERSION",
     "Block",
     "BlockState",
     "BuildError",
     "Heightmap",
     "PathStep",
     "Placer",
+    "Schematic",
     "arch",
     "arch_profile",
     "column",
