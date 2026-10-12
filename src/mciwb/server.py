@@ -214,7 +214,8 @@ class MinecraftServer:
             detach=True,
             environment=env,
             ports={f"{self.rcon}/tcp": self.rcon, f"{self.port}": self.port},
-            restart_policy={"Name": "unless-stopped" if self.keep else "no"},
+            # typeshed's docker stubs omit the valid "unless-stopped" and "no"
+            restart_policy={"Name": "unless-stopped" if self.keep else "no"},  # pyright: ignore[reportArgumentType]
             volumes={  # type: ignore
                 str(self.server_folder): {"bind": "/data", "mode": "rw"},
                 str(self.backup_folder): {

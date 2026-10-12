@@ -1,6 +1,5 @@
 import sys
 from pathlib import Path
-from typing import Optional
 
 import typer
 from IPython.terminal.embed import InteractiveShellEmbed
@@ -35,15 +34,12 @@ def version_callback(value: bool):
 
 @cli.callback()
 def main(
-    # this should be 'bool | None' but I'm getting
-    # RuntimeError: Type not yet supported: bool | None
-    # despited Python 3.10 - TODO investigate
-    version: Optional[bool] = typer.Option(  # noqa: UP007
+    version: bool | None = typer.Option(
         None,
         "--version",
         callback=version_callback,
         is_eager=True,
-        help="Print the version of ibek and exit",
+        help="Print the version of mciwb and exit",
     ),
     debug: bool = False,
 ):
@@ -92,7 +88,8 @@ def shell(
     shell.run_line_magic("autoreload", "2")
     # Also suppress traceback to avoid intimidating novice programmers
     ipython = shell.get_ipython()
-    ipython._showtraceback = exception_handler  # type: ignore
+    # monkey patch IPython's private traceback hook
+    ipython._showtraceback = exception_handler  # type: ignore # noqa: SLF001
 
     if test:
         # for testing just report the world object state
@@ -142,8 +139,7 @@ def stop(
     debug: bool = False,
 ):
     """
-    Start a minecraft server in the background. Default options automatically
-    work with `mciwb shell`
+    Stop the minecraft server started by `mciwb start`.
     """
     init_logging(debug)
 

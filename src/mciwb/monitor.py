@@ -10,7 +10,7 @@ from typing import Any
 from rcon.exceptions import SessionTimeout
 
 from mciwb.logging import log
-from mciwb.player import PlayerNotInWorld
+from mciwb.player import PlayerNotInWorldError
 from mciwb.threads import get_client, get_thread_name, new_thread
 
 # supports any function arguments
@@ -96,7 +96,7 @@ class Monitor:
                 self._polling = False
             except SessionTimeout:
                 log.warning(f"Connection timeout in {get_thread_name()}")
-            except PlayerNotInWorld as e:
+            except PlayerNotInWorldError as e:
                 log.warning(e)
                 self._polling = False
             except BaseException:

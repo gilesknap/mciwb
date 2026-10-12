@@ -75,8 +75,7 @@ class Wall:
         base = begin
 
         log.debug(
-            f"render section len {length} from {begin}"
-            f" to {begin + wall_dir * length}"
+            f"render section len {length} from {begin} to {begin + wall_dir * length}"
         )
 
         for _column in range(int(length) + 1):

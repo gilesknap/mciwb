@@ -21,8 +21,12 @@ regex_angle = re.compile(float_reg)
 regex_rot = re.compile(r"\[(-?\d+.?\d*)f, *(-?\d+.?\d*)f\]")
 
 
-class PlayerNotInWorld(Exception):
-    pass
+class PlayerNotInWorldError(Exception):
+    """The player (or named entity) could not be found in the world."""
+
+
+# backward compatible alias for the old name
+PlayerNotInWorld = PlayerNotInWorldError
 
 
 class Player:
@@ -55,7 +59,7 @@ class Player:
                 log.debug(f"{self.name} not found: {data}")
             sleep(0.1)
 
-        raise PlayerNotInWorld(f"player {self.name} left")
+        raise PlayerNotInWorldError(f"player {self.name} left")
 
     @property
     def inventory(self) -> list[str]:

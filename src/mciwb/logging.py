@@ -14,7 +14,7 @@ def init_logging(debug: bool):
     if debug:
         log.setLevel(logging.DEBUG)
         formatter = logging.Formatter(
-            "%(levelname)s: %(pathname)s:%(lineno)d %(funcName)s " "\n\t%(message)s"
+            "%(levelname)s: %(pathname)s:%(lineno)d %(funcName)s \n\t%(message)s"
         )
     else:
         log.setLevel(logging.INFO)

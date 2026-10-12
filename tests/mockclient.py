@@ -43,7 +43,7 @@ class MockClient:
 
     def setblock(self, pos: Vec3, block: Item):
         """set the block at position in the world"""
-        self.world[pos.x, pos.y, pos.z] = block
+        self.world[int(pos.x), int(pos.y), int(pos.z)] = block
 
     def fill(self, start: Vec3, end: Vec3, block: Item):
         block = Item(block)  # ensure enum
@@ -88,15 +88,15 @@ class MockClient:
         """
         parent = self
 
-        class spawn_cls:
+        class SpawnCls:
             def spawn(self, dump):
-                class mine_cls:
+                class MineCls:
                     def mine(self, pos: Vec3):
                         return str(parent.getblock(pos))
 
-                return mine_cls()
+                return MineCls()
 
-        return spawn_cls()
+        return SpawnCls()
 
     def summon(self, entity_type, pos: Vec3, properties):
         """
@@ -107,16 +107,16 @@ class MockClient:
 
     @property
     def players(self):
-        class players_cls:
+        class PlayersCls:
             @property
             def players(self):
                 return [Player("georgeTest")]
 
-        return players_cls()
+        return PlayersCls()
 
     @property
     def data(self):
-        class get_cls:
+        class GetCls:
             def get(self, entity: str, path: str):
                 if path == "Pos":
                     return "[0.0d, -60.0d, 0.0d]"
@@ -125,7 +125,7 @@ class MockClient:
                 else:
                     return ""
 
-        return get_cls()
+        return GetCls()
 
     ###########################################################################
     # the following are additional functions for use in tests #################

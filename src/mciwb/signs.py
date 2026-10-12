@@ -67,7 +67,7 @@ class Signs:
 
         return pos
 
-    def _poll(self):
+    def poll(self):
         """
         check if a sign has been placed in front of the player
         1 to 4 blocks away and take action based on sign text

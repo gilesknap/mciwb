@@ -12,7 +12,7 @@ from mciwb.backup import Backup
 from mciwb.copier import CopyPaste
 from mciwb.logging import init_logging, log
 from mciwb.monitor import Monitor
-from mciwb.player import Player, PlayerNotInWorld
+from mciwb.player import Player, PlayerNotInWorldError
 from mciwb.server import HOST, def_port
 from mciwb.signs import Signs
 from mciwb.threads import get_client, set_client
@@ -147,7 +147,7 @@ class Iwb:
             self._players[name] = player
 
             self.signs = Signs(player)
-            Monitor(self.signs._poll, name=name)
+            Monitor(self.signs.poll, name=name)
             self._copiers[name] = self.signs.copy
 
             if me:
@@ -155,7 +155,7 @@ class Iwb:
                 self.copier = self.signs.copy
 
             self.signs.give_signs()
-        except (PlayerNotInWorld, SessionTimeout, NoPlayerFound) as e:
+        except (PlayerNotInWorldError, SessionTimeout, NoPlayerFound) as e:
             # during tests this will fail as there is no real player
             log.error("failed to give signs to player, %s", e)
 

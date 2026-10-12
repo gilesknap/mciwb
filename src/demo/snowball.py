@@ -23,8 +23,8 @@ def uuid_str(nbt: dict):
     # TODO replace parse_nbt with a class that handles all conversions
     uuid_str = (
         f"UUID:"
-        f'[I; {nbt["UUID"][0]}, {nbt["UUID"][1]},'
-        f' {nbt["UUID"][2]}, {nbt["UUID"][3]}]'
+        f"[I; {nbt['UUID'][0]}, {nbt['UUID'][1]},"
+        f" {nbt['UUID'][2]}, {nbt['UUID'][3]}]"
     )
     return uuid_str
 

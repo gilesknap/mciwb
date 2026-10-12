@@ -1,7 +1,6 @@
 import sys
 from subprocess import check_output
 
-
 from mciwb import __version__
 
 
