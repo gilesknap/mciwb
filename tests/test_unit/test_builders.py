@@ -514,3 +514,12 @@ def test_foundation_max_depth(mock_client: MockClient):
     volume = foundation(Vec3(0, 10, 0), Vec3(1, 10, 1), max_depth=3)
     assert (volume.start, volume.end) == (Vec3(0, 8, 0), Vec3(1, 10, 1))
     assert mock_client.block_commands == ["fill 0 8 0 1 10 1 minecraft:cobblestone"]
+
+
+def test_imports_reexports_all_builders():
+    """CLAUDE.md and the docs promise every builders name is in mciwb.imports."""
+    from mciwb import builders, imports
+
+    assert set(builders.__all__) <= set(imports.__all__)
+    for name in builders.__all__:
+        assert getattr(imports, name) is getattr(builders, name)
