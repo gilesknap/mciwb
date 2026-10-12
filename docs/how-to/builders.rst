@@ -126,6 +126,15 @@ height give a level path. ``support`` fills the space under the stairway and
              Item.STONE_BRICK_STAIRS, width=3, support=Item.STONE_BRICKS,
              clearance=3)
 
+A stairway can pass over itself, like a spiral staircase round a tower or a
+switchback: every pass is built, and ``support`` under a higher pass stops
+above the headroom of the pass below it (``clearance``, or at least 2
+blocks)::
+
+    stairway([Vec3(0, 64, 0), Vec3(6, 67, 0), Vec3(6, 70, 6),
+              Vec3(0, 73, 6), Vec3(0, 76, 0), Vec3(6, 79, 0)],
+             Item.OAK_STAIRS)
+
 `mciwb.builders.road` ignores the heights of its points and lays the road
 on the ground, replacing the top block of each column, with an optional
 ``border``. The ground is the highest block in the column (see below), so

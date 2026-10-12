@@ -100,19 +100,32 @@ def _right(direction: Vec3) -> Vec3:
     return Vec3(-direction.z, 0, direction.x)
 
 
-def _spread(steps: list[PathStep], width: int) -> dict[tuple[int, int], int]:
+def _spread(steps: list[PathStep], width: int) -> dict[tuple[int, int], list[int]]:
     """
-    Widen the path: map each (x, z) of the widened path to the index of the
-    step that it belongs to. Corners get a square of the corner step.
+    Widen the path: map each (x, z) of the widened path to the indices of
+    the steps whose blocks are in that column. Corners get a square of the
+    corner step.
+
+    Where the rows of nearby steps overlap at a corner, the earlier step
+    wins. A path that comes back over a column later on (a spiral, a
+    switchback) gets a block for each pass, unless the passes are at the
+    same height.
     """
     offsets = _offsets(width)
-    cells: dict[tuple[int, int], int] = {}
+    cells: dict[tuple[int, int], list[int]] = {}
+
+    def claim(x: int, z: int, i: int) -> None:
+        owners = cells.setdefault((x, z), [])
+        y = steps[i].pos.y
+        if any(abs(i - j) <= width or steps[j].pos.y == y for j in owners):
+            return
+        owners.append(i)
+
     corners = []
     for i, step in enumerate(steps):
         for o in offsets:
             pos = step.pos + _right(step.direction) * o
-            # where a corner makes rows overlap, the earlier row wins
-            cells.setdefault((int(pos.x), int(pos.z)), i)
+            claim(int(pos.x), int(pos.z), i)
         if i + 1 < len(steps) and steps[i + 1].direction != step.direction:
             corners.append(i)
     for i in corners:
@@ -120,7 +133,7 @@ def _spread(steps: list[PathStep], width: int) -> dict[tuple[int, int], int]:
         pos = steps[i].pos
         for a in offsets:
             for b in offsets:
-                cells.setdefault((int(pos.x) + a, int(pos.z) + b), i)
+                claim(int(pos.x) + a, int(pos.z) + b, i)
     return cells
 
 
@@ -144,6 +157,10 @@ def stairway(
     up), elsewhere a level *landing* block. So ``points`` at the same height
     give a level path.
 
+    The path may pass over itself, as in a spiral staircase round a tower
+    or a switchback: each pass gets its own blocks. Choose the points so
+    that there is headroom between one pass and the next one above it.
+
     For example, from (0, 64, 0) east to (4, 66, 0)::
 
                       ◢ #    y = 66: stairs, then a landing at the end
@@ -156,7 +173,9 @@ def stairway(
         matching *stairs* e.g. ``Item.STONE_BRICKS``
     :param width: the width of the stairway
     :param support: if given, fill the space under the stairway with this
-        block, down to the height of its lowest block (only replacing air)
+        block, down to the height of its lowest block (only replacing air).
+        Where the stairway passes over itself, the support stops above the
+        headroom of the pass below
     :param clearance: set this many blocks above the walkway to air, to
         make headroom through the terrain
     :returns: the bounding box of the stairway
@@ -182,20 +201,39 @@ def stairway(
 
     cells = _spread(steps, width)
     blocks: dict[int, dict[tuple[int, int], str | None]] = {}  # y -> cells
-    for (x, z), i in cells.items():
-        blocks.setdefault(int(steps[i].pos.y), {})[(x, z)] = facing.get(i)
+    for (x, z), owners in cells.items():
+        for i in owners:
+            blocks.setdefault(int(steps[i].pos.y), {})[(x, z)] = facing.get(i)
 
     placer = Placer()
-    lowest = min(blocks)
-    for y, layer in sorted(blocks.items()):
-        if clearance > 0:
+    if clearance > 0:
+        for y, layer in sorted(blocks.items()):
             for ax, az, bx, bz in rectangles(layer):
                 placer.fill(Vec3(ax, y + 1, az), Vec3(bx, y + clearance, bz), Item.AIR)
-        if support is not None and y > lowest:
-            for ax, az, bx, bz in rectangles(layer):
-                placer.fill(
-                    Vec3(ax, lowest, az), Vec3(bx, y - 1, bz), support, FillMode.KEEP
-                )
+    if support is not None:
+        # support each block down to the lowest block of the stairway, or,
+        # where the stairway passes under itself, down to just above the
+        # headroom of the pass below
+        headroom = max(clearance, 2)
+        lowest = min(blocks)
+        for y, layer in sorted(blocks.items()):
+            by_bottom: dict[int, list[tuple[int, int]]] = {}
+            for x, z in layer:
+                below = [
+                    int(steps[i].pos.y) for i in cells[(x, z)] if steps[i].pos.y < y
+                ]
+                bottom = max(below) + headroom + 1 if below else lowest
+                by_bottom.setdefault(bottom, []).append((x, z))
+            for bottom, columns in by_bottom.items():
+                if bottom > y - 1:
+                    continue
+                for ax, az, bx, bz in rectangles(columns):
+                    placer.fill(
+                        Vec3(ax, bottom, az),
+                        Vec3(bx, y - 1, bz),
+                        support,
+                        FillMode.KEEP,
+                    )
     for y, layer in sorted(blocks.items()):
         stair_cells = {pos: f for pos, f in layer.items() if f is not None}
         shapes = stair_shapes(stair_cells)

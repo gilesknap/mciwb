@@ -437,6 +437,53 @@ def test_wide_stairway_with_support(mock_client: MockClient):
         assert state(Vec3(x, 5, 3)) == "minecraft:dirt"
 
 
+def test_stairway_over_itself(mock_client: MockClient):
+    # a spiral that passes over its own start: every step is built
+    points = [
+        Vec3(0, 0, 0),
+        Vec3(6, 3, 0),
+        Vec3(6, 6, 6),
+        Vec3(0, 9, 6),
+        Vec3(0, 12, 0),
+        Vec3(6, 15, 0),
+    ]
+    volume = stairway(points, Item.OAK_STAIRS)
+    assert (volume.start, volume.end) == (Vec3(0, 0, 0), Vec3(6, 15, 6))
+    state = mock_client.state_at
+    steps = trace_path(points)
+    for step in steps:
+        assert state(step.pos) != "minecraft:air", step.pos
+    assert state(Vec3(0, 12, 0)) == "minecraft:oak_planks"
+    assert state(Vec3(1, 13, 0)) == stairs("east")
+    assert state(Vec3(0, 0, 0)) == "minecraft:oak_planks"
+    assert state(Vec3(1, 1, 0)) == stairs("east")
+
+
+def test_wide_stairway_over_itself_with_support(mock_client: MockClient):
+    # a switchback 3 wide: east, a level turn, then back west above it
+    points = [
+        Vec3(0, 0, 1),
+        Vec3(8, 8, 1),
+        Vec3(8, 8, 4),
+        Vec3(4, 8, 4),
+        Vec3(4, 8, 1),
+        Vec3(0, 12, 1),
+    ]
+    stairway(points, Item.OAK_STAIRS, width=3, support=Item.COBBLESTONE)
+    state = mock_client.state_at
+    for z in (0, 1, 2):
+        # the lower pass, and the upper pass above it at the same (x, z)
+        assert state(Vec3(1, 1, z)) == stairs("east")
+        assert state(Vec3(1, 11, z)) == stairs("west")
+        # support stops 2 blocks above the lower pass
+        assert state(Vec3(1, 2, z)) == "minecraft:air"
+        assert state(Vec3(1, 3, z)) == "minecraft:air"
+        assert state(Vec3(1, 4, z)) == "minecraft:cobblestone"
+        assert state(Vec3(1, 10, z)) == "minecraft:cobblestone"
+        # support down to the bottom where there is no pass below
+        assert state(Vec3(8, 0, z)) == "minecraft:cobblestone"
+
+
 def test_road(mock_client: MockClient):
     # a step in the ground at x >= 5
     mock_client.fill(Vec3(0, -10, 0), Vec3(9, 0, 9), Item.GRASS_BLOCK)

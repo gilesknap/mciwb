@@ -178,6 +178,8 @@ foundation. See docs/how-to/builders.rst.
   clearance=0)`: points are walkway blocks; sections run along x or z and
   climb at most 1 per block; stairs face up the slope, level parts are
   `landing` (default: the stairs' full block). Same-height points make a path.
+  The path may pass over itself (spiral, switchback): every pass is built,
+  and `support` stops above the headroom (max(clearance, 2)) of a lower pass.
 - `road(points, block=DIRT_PATH, width=3, border=None, clearance=2)`: lays the
   road on the ground (point y ignored), replacing the top ground block.
 - `ground_height(x, z, heightmap)`, `ground_heights(columns, heightmap)`: y of
