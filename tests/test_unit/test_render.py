@@ -8,7 +8,18 @@ from PIL import Image
 from mciwb.blockgrid import BlockGrid, block_name, grab_blocks
 from mciwb.imports import Item, Vec3, Volume
 from mciwb.palette import BLOCK_COLOURS, GLASS_ALPHA, Palette
-from mciwb.render import BACKGROUND, VIEWS, auto_scale, render, render_view, scan
+from mciwb.render import (
+    BACKGROUND,
+    CANVAS,
+    PAD,
+    VIEWS,
+    _text_height,
+    _text_width,
+    auto_scale,
+    render,
+    render_view,
+    scan,
+)
 from tests.anvil_writer import write_world
 from tests.mockclient import MockClient
 
@@ -175,6 +186,15 @@ def test_render_layout():
     assert both.width > labelled.width
     every = render(grid, VIEWS, scale=SCALE)
     assert every.height > both.height
+
+    # the header is not cut off when the panels are narrower than it
+    tiny = render(make_grid((1, 1, 1), {(0, 0, 0): "stone"}), ["top"], scale=SCALE)
+    header = "x 100..100  y 60..60  z -20..-20  (1 x 1 x 1 blocks)"
+    assert tiny.width >= _text_width(header) + 2 * PAD
+    # ink in the columns of the closing bracket, the header's last character
+    right = PAD + _text_width(header)
+    bracket = np.asarray(tiny)[PAD : PAD + _text_height(), right - 4 : right]
+    assert (bracket != CANVAS).any()
 
     with pytest.raises(ValueError, match="unknown view"):
         render(grid, ["sideways"])

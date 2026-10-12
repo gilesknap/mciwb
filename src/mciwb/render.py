@@ -238,9 +238,9 @@ def _layout(grid: BlockGrid, panels: list[Image.Image], labels: bool) -> Image.I
             f"({grid.size.x} x {grid.size.y} x {grid.size.z} blocks)"
         )
     top = _text_height() + 2 * PAD if header else PAD
-    image = Image.new(
-        "RGB", (max(widths), top + sum(heights) + PAD * len(rows)), CANVAS
-    )
+    # a small region's panels can be narrower than the header
+    width = max(*widths, _text_width(header) + 2 * PAD if header else 0)
+    image = Image.new("RGB", (width, top + sum(heights) + PAD * len(rows)), CANVAS)
     draw = ImageDraw.Draw(image)
     if header:
         draw.text((PAD, PAD), header, fill=INK, font=_font())
