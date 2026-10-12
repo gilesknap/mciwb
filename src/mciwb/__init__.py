@@ -4,7 +4,8 @@ Minecraft Interactive World Builder: build in a Minecraft world from Python.
 The main entry point is `Iwb`, which connects to a Minecraft server. The
 building blocks (``Vec3``, ``Item``, ``Direction``, ``Volume``, ``polygon``
 etc.) come from the mcwb library. These and the classes below can all be
-imported from ``mciwb.imports``.
+imported from ``mciwb.imports``. :py:mod:`mciwb.builders` has higher level building
+blocks: roofs, arches, stairways, foundations and schematic files.
 
 Read and draw regions with ``scan`` and ``render`` from the :py:mod:`mciwb.render`
 module (or ``mciwb.imports``). They are not imported here, where a function
@@ -16,7 +17,7 @@ called ``render`` would hide the ``mciwb.render`` module.
     Version number as calculated by https://github.com/pypa/setuptools_scm
 """
 
-from . import render
+from . import builders, render
 from ._version import __version__
 from .backup import Backup
 from .blockgrid import BlockGrid
@@ -54,4 +55,5 @@ __all__ = [
     "BlockGrid",
     "Palette",
     "render",
+    "builders",
 ]

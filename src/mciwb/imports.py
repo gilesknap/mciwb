@@ -15,6 +15,21 @@ from mcwb.itemlists import grab, load_items, save_items
 from mcwb.types import Direction, Planes3d
 
 from mciwb.blockgrid import BlockGrid
+from mciwb.builders import (
+    BlockState,
+    BuildError,
+    Heightmap,
+    Placer,
+    arch,
+    column,
+    flat_roof,
+    foundation,
+    gable_roof,
+    ground_height,
+    hip_roof,
+    road,
+    stairway,
+)
 from mciwb.copier import CopyPaste
 from mciwb.iwb import Iwb, get_world
 from mciwb.monitor import Monitor
@@ -29,15 +44,19 @@ from mciwb.wall import Wall, WallMaker
 __all__ = [
     "Anchor3",
     "BlockGrid",
+    "BlockState",
     "Blocks",
+    "BuildError",
     "Client",
     "CopyPaste",
     "Cuboid",
     "Direction",
     "FillMode",
+    "Heightmap",
     "Item",
     "Iwb",
     "Monitor",
+    "Placer",
     "Planes3d",
     "Player",
     "SetblockMode",
@@ -47,14 +66,23 @@ __all__ = [
     "Volume",
     "Wall",
     "WallMaker",
+    "arch",
+    "column",
+    "flat_roof",
+    "foundation",
+    "gable_roof",
     "get_client",
     "get_world",
     "grab",
+    "ground_height",
+    "hip_roof",
     "load_items",
     "make_tunnel",
     "parse_nbt",
     "polygon",
     "render",
+    "road",
     "save_items",
     "scan",
+    "stairway",
 ]
