@@ -98,9 +98,12 @@ assert grid[a + Vec3(2, 1, 2)] == "minecraft:gold_block"
   give `--folder`. Otherwise (or with `--rcon`) blocks are read over RCON one
   at a time, which is slow and capped at 32768 blocks.
 - Pass the same `--port`/`--password` as `mciwb start`.
-- Each view is about 512 px across by default (`--scale` sets pixels per
-  block). Keep the whole image under about 1500 px wide, or you will see a
-  scaled-down copy: render one or two views at a time for large regions.
+- By default each view is about 512 px across, shrunk if needed to keep the
+  whole image under 1500 px wide: wider images are scaled down before you see
+  them. Small regions render smaller (at most 16 px per block). Three views
+  fit in one row; for a closer look at a large region, render fewer views or
+  a smaller region. `--scale` sets one pixels-per-block for every view, with
+  no width limit.
 - Colours are averages (no textures), and block states are not drawn (stairs
   and slabs look like full blocks). `mciwb.palette.set_colour` changes a
   colour.

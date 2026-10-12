@@ -34,7 +34,10 @@ is drawn:
 ``--output``
     The PNG file to write.
 ``--scale``
-    Pixels per block. By default each view is about 512 pixels across.
+    Pixels per block, for every view. By default each view has its own
+    scale, chosen to make it about 512 pixels across (at most 16 pixels per
+    block), and shrunk if needed to keep the whole image under 1500 pixels
+    wide.
 ``--no-labels``
     Leave out the titles, coordinate labels and grid lines.
 
@@ -153,9 +156,10 @@ blocks) took 2.6 s, about 0.6 ms per block. At that rate the RCON limit of
 A region takes 2 bytes of memory per block, so 100 million blocks need about
 200 MB. The isometric view is the slowest, because it draws each visible block
 face in Python. For an AI agent, keep images below about 1500 pixels across:
-larger images are scaled down before the model sees them. One build, or a
-region up to about 100 blocks across, gives clear images with the automatic
-scale.
+larger images are scaled down before the model sees them. The automatic scale
+keeps images within this width; an explicit ``--scale`` does not.
+One build, or a region up to about 100 blocks across, gives clear images
+with the automatic scale: beyond that, each block is too few pixels to read.
 
 Colours
 -------

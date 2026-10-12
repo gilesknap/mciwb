@@ -193,7 +193,35 @@ def test_labels_large_region():
 
 def test_auto_scale():
     assert auto_scale(make_grid((10, 10, 10))) == 16
-    assert auto_scale(make_grid((64, 1, 1))) == 8
+    assert auto_scale(make_grid((64, 1, 1)), "top") == 8
+    # a top view shows x and z, so a tall tower still gets a large scale
+    assert auto_scale(make_grid((20, 200, 20)), "top") == 16
+    assert auto_scale(make_grid((20, 200, 20)), "south") == 2
+    # an iso view is x + z blocks across
+    assert auto_scale(make_grid((64, 1, 64)), "iso") == 4
+    # with no view, a scale that suits every view
+    assert auto_scale(make_grid((64, 1, 1))) == 7
+    with pytest.raises(ValueError, match="unknown view"):
+        auto_scale(make_grid(), "sideways")
+
+
+@pytest.mark.parametrize("size", [(32, 18, 32), (40, 18, 40), (50, 20, 50)])
+def test_auto_scale_image_width(size):
+    """each view is about 512 pixels, and the whole image under 1500"""
+    grid = make_grid(size, {(0, 0, 0): "stone"})
+    for view in ("top", "iso"):
+        panel = render_view(grid, view, labels=False)
+        assert 400 <= panel.width <= 520, view
+    for views in (["top", "iso"], ["top", "iso", "south"], VIEWS):
+        image = render(grid, views)
+        assert image.width <= 1500, views
+        # but the views are not shrunk more than they need to be
+        assert image.width > 1000, views
+
+
+def test_scale_zero():
+    with pytest.raises(ValueError, match="scale"):
+        render(make_grid(), ["top"], scale=0)
 
 
 def test_palette_argument():

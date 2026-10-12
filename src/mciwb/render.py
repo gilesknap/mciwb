@@ -52,6 +52,9 @@ MAX_RCON_BLOCKS = 32768
 # the auto scale aims for views about this many pixels across
 TARGET_PIXELS = 512
 MAX_SCALE = 16
+# the auto scale shrinks views to keep the whole image within this width:
+# models see a scaled down copy of wider images
+MAX_IMAGE_PIXELS = 1500
 FONT_SIZE = 12
 PAD = 6
 # how much darker the furthest blocks of a top view or elevation are
@@ -153,8 +156,9 @@ def render(
 
     :param grid: the blocks, from `scan`
     :param views: the views to draw, see the module documentation
-    :param scale: pixels per block, by default chosen to make each view about
-        512 pixels across
+    :param scale: pixels per block for every view. By default each view gets
+        its own scale, chosen to make it about 512 pixels across, or smaller
+        if needed to keep the image under 1500 pixels wide
     :param labels: add a title, axis labels and grid lines with world
         coordinates
     :param palette: block colours, defaults to ``mciwb.palette.default_palette``
@@ -163,11 +167,54 @@ def render(
     """
     if not views:
         raise ValueError("no views requested")
-    panels = [render_view(grid, view, scale, labels, palette) for view in views]
+    if scale is not None:
+        panels = [render_view(grid, v, scale, labels, palette) for v in views]
+        return _layout(grid, panels, labels)
+
+    # each view at its own automatic scale, smaller if the image is too wide
+    scales = [auto_scale(grid, v) for v in views]
+    panels = [
+        render_view(grid, v, s, labels, palette)
+        for v, s in zip(views, scales, strict=True)
+    ]
+    image = _layout(grid, panels, labels)
+    columns = _columns(len(panels))
+    while image.width > MAX_IMAGE_PIXELS:
+        # the widest row: its labels and padding stay the same size as the
+        # scale changes, so shrink the blocks to fit in the space left
+        row = max(
+            (
+                range(i, min(i + columns, len(panels)))
+                for i in range(0, len(panels), columns)
+            ),
+            key=lambda r: sum(panels[i].width for i in r),
+        )
+        blocks = sum(_view_size(grid, views[i])[0] * scales[i] for i in row)
+        fixed = image.width - blocks
+        factor = max(MAX_IMAGE_PIXELS - fixed, 0) / blocks
+        smaller = [max(1, min(s - 1, int(s * factor))) for s in scales]
+        if smaller == scales:
+            break
+        panels = [
+            p if s == old else render_view(grid, v, s, labels, palette)
+            for v, p, s, old in zip(views, panels, smaller, scales, strict=True)
+        ]
+        scales = smaller
+        image = _layout(grid, panels, labels)
+    return image
+
+
+def _columns(panels: int) -> int:
+    """the number of panels in each row of the image"""
+    return panels if panels <= 3 else 2 if panels == 4 else 3
+
+
+def _layout(grid: BlockGrid, panels: list[Image.Image], labels: bool) -> Image.Image:
+    """Arrange the panels in rows of up to three under a header"""
     if len(panels) == 1 and not labels:
         return panels[0]
 
-    columns = len(panels) if len(panels) <= 3 else 2 if len(panels) == 4 else 3
+    columns = _columns(len(panels))
     rows = [panels[i : i + columns] for i in range(0, len(panels), columns)]
     widths = [sum(p.width for p in row) + PAD * (len(row) + 1) for row in rows]
     heights = [max(p.height for p in row) for row in rows]
@@ -209,7 +256,8 @@ def render_view(
     :raises ValueError: if the view is not one of `VIEWS`
     """
     palette = palette or default_palette
-    scale = scale or auto_scale(grid)
+    if scale is None:
+        scale = auto_scale(grid, view)
     if scale < 1:
         raise ValueError(f"scale must be at least 1, not {scale}")
     colours = np.array([palette.colour(n) for n in grid.names], dtype=np.float32)
@@ -221,9 +269,28 @@ def render_view(
     raise ValueError(f"unknown view {view}, use one of {', '.join(VIEWS)}")
 
 
-def auto_scale(grid: BlockGrid) -> int:
-    """the pixels per block that make views about 512 pixels across"""
-    return max(1, min(MAX_SCALE, TARGET_PIXELS // max(grid.ids.shape)))
+def auto_scale(grid: BlockGrid, view: str | None = None) -> int:
+    """
+    The pixels per block that make *view* about 512 pixels across and no more
+    than 512 pixels high, or that do so for every view if *view* is None
+    """
+    if view is None:
+        blocks = max(max(_view_size(grid, v)) for v in ("top", "south", "iso"))
+    else:
+        blocks = max(_view_size(grid, view))
+    return max(1, min(MAX_SCALE, TARGET_PIXELS // blocks))
+
+
+def _view_size(grid: BlockGrid, view: str) -> tuple[int, int]:
+    """The width and height of a view in blocks, without its labels"""
+    sx, sy, sz = grid.ids.shape
+    if view in _ORTHO_VIEWS:
+        rows, cols, _ = _ORTHO_VIEWS[view].axes
+        return grid.ids.shape[cols], grid.ids.shape[rows]
+    if view in _ISO_VIEWS:
+        # turning about y keeps x + z the same
+        return sx + sz, (sx + sz + 1) // 2 + sy
+    raise ValueError(f"unknown view {view}, use one of {', '.join(VIEWS)}")
 
 
 # ----------------------------------------------------------------------------
