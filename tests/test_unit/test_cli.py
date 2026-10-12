@@ -64,6 +64,9 @@ def test_restore_passes_options(monkeypatch: pytest.MonkeyPatch, tmp_path: Path)
     restored = []
     monkeypatch.setattr(mciwb.__main__.Backup, "__init__", lambda self, **kw: None)
     monkeypatch.setattr(
+        mciwb.__main__.Backup, "find", lambda self, name: Path(f"{name}.zip")
+    )
+    monkeypatch.setattr(
         mciwb.__main__.Backup,
         "restore",
         lambda self, name, backup: restored.append((name, backup)),
@@ -75,7 +78,7 @@ def test_restore_passes_options(monkeypatch: pytest.MonkeyPatch, tmp_path: Path)
     )
 
     assert result.exit_code == 0, (result.output, result.exception)
-    assert restored == [("b1", False)]
+    assert restored == [("b1.zip", False)]
     assert calls["start"]["password"] == "secret"
     assert calls["start"]["minecraft_version"] == "26.1"
 
@@ -99,6 +102,93 @@ def test_restore_missing_world(monkeypatch: pytest.MonkeyPatch, tmp_path: Path):
 
     assert result.exit_code == 0, (result.output, result.exception)
     assert (world / "level.dat").read_text() == "level"
+
+
+@pytest.mark.parametrize("name", ["missing", ""])
+def test_restore_missing_backup(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path, name: str
+):
+    """A missing backup is reported before the server is stopped"""
+    calls = []
+    monkeypatch.setattr(mciwb.__main__, "stop", lambda **kw: calls.append("stop"))
+    monkeypatch.setattr(mciwb.__main__, "start", lambda **kw: calls.append("start"))
+
+    result = runner.invoke(
+        cli,
+        ["restore", name, "--folder", str(tmp_path / "server")]
+        + ["--backup-folder", str(tmp_path / "backups")],
+    )
+
+    assert result.exit_code == 1
+    assert isinstance(result.exception, SystemExit)
+    assert calls == []
+
+
+@pytest.fixture()
+def world(tmp_path: Path) -> Path:
+    world = tmp_path / "server" / "world"
+    world.mkdir(parents=True)
+    (world / "level.dat").write_text("level")
+    return world
+
+
+def backup_args(tmp_path: Path) -> list[str]:
+    return ["backup", "--folder", str(tmp_path / "server")] + [
+        "--backup-folder",
+        str(tmp_path / "backups"),
+        "--backup-name",
+        "b1",
+    ]
+
+
+def test_backup_running_server(
+    mock_client: MockClient,
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+    world: Path,
+):
+    """A running server saves the world and pauses saving during the backup"""
+    monkeypatch.setattr(mciwb.__main__, "Client", MockClient)
+
+    port = str(mock_client.port)
+    result = runner.invoke(cli, [*backup_args(tmp_path), "--port", port])
+
+    assert result.exit_code == 0, (result.output, result.exception)
+    assert (tmp_path / "backups" / "b1.zip").exists()
+    saves = [c for c in mock_client.commands if not c.startswith("say")]
+    assert saves == ["save-off", "save-all flush", "save-on"]
+
+
+@pytest.mark.parametrize("error", [ConnectionRefusedError, WrongPassword])
+def test_backup_stopped_server(
+    mock_client: MockClient,
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+    world: Path,
+    error: type,
+):
+    """With no usable server the world is copied as it is"""
+
+    class Unreachable(MockClient):
+        def connect(self, retry=True):
+            raise error()
+
+    monkeypatch.setattr(mciwb.__main__, "Client", Unreachable)
+
+    result = runner.invoke(cli, backup_args(tmp_path))
+
+    assert result.exit_code == 0, (result.output, result.exception)
+    assert (tmp_path / "backups" / "b1.zip").exists()
+    assert mock_client.commands == []
+
+
+def test_backup_not_a_world(monkeypatch: pytest.MonkeyPatch, tmp_path: Path):
+    monkeypatch.setattr(mciwb.__main__, "_rcon_client", lambda port, password: None)
+
+    result = runner.invoke(cli, backup_args(tmp_path))
+
+    assert result.exit_code == 1
+    assert isinstance(result.exception, SystemExit)
 
 
 def test_start_wrong_password(monkeypatch: pytest.MonkeyPatch, tmp_path: Path):

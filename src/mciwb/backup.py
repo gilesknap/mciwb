@@ -94,6 +94,25 @@ class Backup:
             raise ValueError(f"no backups found in {self.backup_folder}")
         return ordered[0]
 
+    def find(self, name: str | None = None) -> Path:
+        """
+        Find a backup file
+
+        :param name: the name of the backup file, defaults to the latest backup
+
+        :returns: the path of the backup file
+
+        :raises ValueError: if the backup file does not exist
+        """
+        if not name:
+            return self._get_latest_zip()
+        if not name.endswith(".zip"):
+            name += ".zip"
+        rfile = self.backup_folder / self.re_valid_filename.sub("_", name)
+        if not rfile.exists():
+            raise ValueError(f"backup {rfile} not found")
+        return rfile
+
     def restore(self, name: str | None = None, backup: bool = False) -> None:
         """
         Restore the world folder from a backup. The server must be stopped.
@@ -107,14 +126,7 @@ class Backup:
         :raises ValueError: if the backup file does not exist
         """
 
-        if not name:
-            rfile = self._get_latest_zip()
-        else:
-            if not name.endswith(".zip"):
-                name += ".zip"
-            rfile = self.backup_folder / self.re_valid_filename.sub("_", name)
-        if not rfile.exists():
-            raise ValueError(f"{rfile} not found")
+        rfile = self.find(name)
 
         # clear out the current world so that the restore is faithful: files
         # created after the backup was taken must not survive

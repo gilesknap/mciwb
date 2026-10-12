@@ -24,7 +24,7 @@ class MockClient:
     # own client, see the world that the test set up.
     _servers: dict[tuple[str, int], dict[str, Any]] = {}
 
-    def __init__(self, host, port, passwd=None):
+    def __init__(self, host, port, passwd=None, timeout=None):
         self.host = host
         self.port = port
         self.passwd = passwd
@@ -83,6 +83,9 @@ class MockClient:
 
     def connect(self, retry=True):
         self.connected = True
+
+    def close(self):
+        self.connected = False
 
     def gamerule(self, rule: str, value: bool | int):
         self.gamerules[rule] = value

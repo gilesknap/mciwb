@@ -31,6 +31,7 @@ from mciwb.server import (
     default_server_folder,
     server_name,
 )
+from mciwb.threads import Client, set_client
 
 cli = typer.Typer(add_completion=False)
 
@@ -226,15 +227,49 @@ def backup(
     folder: Path = default_server_folder,
     backup_name: str = "",
     backup_folder: Path = backup_folder_default,
+    port: int = def_port,
+    password: str = def_pass,
     debug: bool = False,
 ):
     """
     Backup the current state of the world.
+
+    If the server is running, it saves the world to disk and pauses saving
+    while the backup is made. Use the --port and --password that you gave to
+    `mciwb start`.
     """
     init_logging(debug)
 
     backup = Backup(world_folder=folder / "world", backup_folder=backup_folder)
-    backup.backup(running=False, name=backup_name)
+    client = _rcon_client(port, password)
+    try:
+        if client:
+            set_client(client)
+        backup.backup(running=client is not None, name=backup_name)
+    except ValueError as e:
+        log.error(e)
+        raise typer.Exit(1) from None
+    finally:
+        if client:
+            client.close()
+
+
+def _rcon_client(port: int, password: str) -> Client | None:
+    """Connect to a running server, or return None if there is none"""
+    client = Client(HOST, port, passwd=password, timeout=10)
+    try:
+        client.connect(True)
+    except WrongPassword:
+        log.warning(
+            f"Wrong RCON password for server {HOST}:{port}, so the world is "
+            "copied without asking the server to save it first"
+        )
+    except Exception as e:
+        log.debug(f"no server on {HOST}:{port}: {e!r}")
+    else:
+        return client
+    client.close()
+    return None
 
 
 @cli.command()
@@ -259,9 +294,16 @@ def restore(
     """
     init_logging(debug)
 
-    stop(server_name=server_name, debug=debug)
     backup = Backup(world_folder=folder / "world", backup_folder=backup_folder)
-    backup.restore(name=backup_name, backup=keep_old)
+    # check the backup exists before taking the server down
+    try:
+        rfile = backup.find(backup_name)
+    except ValueError as e:
+        log.error(e)
+        raise typer.Exit(1) from None
+
+    stop(server_name=server_name, debug=debug)
+    backup.restore(name=rfile.name, backup=keep_old)
     start(
         password=password,
         world_type=world_type,
