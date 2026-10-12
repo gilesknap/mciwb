@@ -137,11 +137,16 @@ def _spread(steps: list[PathStep], width: int) -> dict[tuple[int, int], list[int
         i for i in range(len(steps) - 1) if steps[i + 1].direction != steps[i].direction
     ]
     for i in corners:
-        # fill the gap on the outside of the corner
+        # fill the gap on the outside of the corner: the square spanned by
+        # the rows of the sections either side, so that an even width keeps
+        # its extra block on the right of both sections
         pos = steps[i].pos
+        right_in = _right(steps[i].direction)
+        right_out = _right(steps[i + 1].direction)
         for a in offsets:
             for b in offsets:
-                claim(int(pos.x) + a, int(pos.z) + b, i)
+                p = pos + right_in * a + right_out * b
+                claim(int(p.x), int(p.z), i)
     return cells
 
 

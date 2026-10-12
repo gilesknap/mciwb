@@ -473,6 +473,88 @@ def test_wide_stairway_corners_climb_one_at_a_time(
         assert abs(b - a) <= 1, heights
 
 
+def built_footprint(client: MockClient, y: int = 0) -> set[tuple[int, int]]:
+    """the (x, z) of the blocks at height *y* in the mock world"""
+    return {
+        (x, z)
+        for x in range(-20, 21)
+        for z in range(-20, 21)
+        if client.state_at(Vec3(x, y, z)) != "minecraft:air"
+    }
+
+
+COMPASS = {
+    "N": Vec3(0, 0, -1),
+    "E": Vec3(1, 0, 0),
+    "S": Vec3(0, 0, 1),
+    "W": Vec3(-1, 0, 0),
+}
+# the 8 right angle turns e.g. ("S", "E") for south then east
+TURNS = [
+    (a, b)
+    for a in COMPASS
+    for b in COMPASS
+    if COMPASS[a].x * COMPASS[b].x + COMPASS[a].z * COMPASS[b].z == 0
+]
+
+
+@pytest.mark.parametrize("width", [1, 2, 3, 4, 5])
+@pytest.mark.parametrize("turn", TURNS, ids=lambda t: "".join(t))
+def test_wide_path_corner_footprint(
+    mock_client: MockClient, turn: tuple[str, str], width: int
+):
+    # a level path round a corner covers both sections' rows and the square
+    # outside the corner that they span, and nothing else
+    d_in, d_out = COMPASS[turn[0]], COMPASS[turn[1]]
+    corner = d_in * 4
+    stairway([Vec3(0, 0, 0), corner, corner + d_out * 4], Item.OAK_STAIRS, width=width)
+
+    def right(d: Vec3) -> Vec3:
+        return Vec3(-d.z, 0, d.x)
+
+    offsets = range(-((width - 1) // 2), width // 2 + 1)
+    expected = set()
+    for start, d in ((Vec3(0, 0, 0), d_in), (corner, d_out)):
+        for k in range(5):
+            for o in offsets:
+                p = start + d * k + right(d) * o
+                expected.add((int(p.x), int(p.z)))
+    rows = [corner + right(d) * o for d in (d_in, d_out) for o in offsets]
+    xs, zs = [int(p.x) for p in rows], [int(p.z) for p in rows]
+    for x in range(min(xs), max(xs) + 1):
+        for z in range(min(zs), max(zs) + 1):
+            expected.add((x, z))
+    assert built_footprint(mock_client) == expected
+
+
+def cells(xs: range, zs: range) -> set[tuple[int, int]]:
+    return {(x, z) for x in xs for z in zs}
+
+
+@pytest.mark.parametrize(
+    "points, footprint",
+    [
+        # south then east: the extra block is to the west, then to the south,
+        # and the corner square fills the outside corner at (-1, 5)
+        (
+            [Vec3(0, 0, 0), Vec3(0, 0, 4), Vec3(4, 0, 4)],
+            cells(range(-1, 1), range(0, 4)) | cells(range(-1, 5), range(4, 6)),
+        ),
+        # west then south: the extra block is to the north, then to the west,
+        # and the corner square fills the outside corner at (-5, -1)
+        (
+            [Vec3(0, 0, 0), Vec3(-4, 0, 0), Vec3(-4, 0, 4)],
+            cells(range(-5, 1), range(-1, 1)) | cells(range(-5, -3), range(1, 5)),
+        ),
+    ],
+)
+def test_two_wide_path_corner(
+    mock_client: MockClient, points: list[Vec3], footprint: set[tuple[int, int]]
+):
+    stairway(points, Item.OAK_STAIRS, width=2)
+    assert built_footprint(mock_client) == footprint
+
+
 def test_stairway_over_itself(mock_client: MockClient):
     # a spiral that passes over its own start: every step is built
     points = [
