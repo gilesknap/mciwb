@@ -59,7 +59,11 @@ jobs:
 
   pypi:
     needs: [dist, test, system-test]
-    if: github.ref_type == 'tag'
+    # PyPI rejects the git (direct URL) mcwb dependency, so publishing is off
+    # until mcwb is released and pinned from PyPI (see ADR 0003 and
+    # CONTRIBUTING.md). To re-enable, set the repository variable
+    # PUBLISH_PYPI to 'true' (Settings > Secrets and variables > Actions).
+    if: github.ref_type == 'tag' && vars.PUBLISH_PYPI == 'true'
     uses: ./.github/workflows/_pypi.yml
     permissions:
       id-token: write
