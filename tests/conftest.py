@@ -84,9 +84,11 @@ def minecraft_container(request: pytest.FixtureRequest):
         backup_folder=servers_folder / test_backup_name,
         test=True,
     )
+    # register the clean up first, so that a server that fails to start is
+    # removed too (remove does nothing if there is no container)
+    request.addfinalizer(mc.remove)
     mc.create()
 
-    request.addfinalizer(mc.remove)
     return mc
 
 
