@@ -25,10 +25,11 @@ SCALE = 4
 def build(client: Client) -> None:
     """
     A hollow stone brick hut with a red wool roof, a gold block inside and a
-    glass window in the middle of its east wall, standing on the flat grass
-    at y -61
+    glass window in the middle of its east wall, on a lime concrete floor at
+    y -61. Not grass, which turns to dirt under the hut while the test runs
     """
     client.fill(LOW + Vec3(0, 1, 0), HIGH, Item.AIR)
+    client.fill(LOW, Vec3(HIGH.x, LOW.y, HIGH.z), Item.LIME_CONCRETE)
     client.fill(Vec3(-29, -60, -29), Vec3(-25, -57, -25), Item.STONE_BRICKS)
     client.fill(Vec3(-28, -60, -28), Vec3(-26, -57, -26), Item.AIR)
     client.fill(Vec3(-29, -56, -29), Vec3(-25, -56, -25), Item.RED_WOOL)
@@ -61,22 +62,26 @@ def test_render(minecraft_container: MinecraftServer, minecraft_client: Client):
     counts = grid.counts()
     assert counts["minecraft:red_wool"] == 25
     assert counts["minecraft:stone_bricks"] == 16 * 4 - 1
-    assert counts["minecraft:grass_block"] == 49
+    assert counts["minecraft:lime_concrete"] == 49
 
     # the world files agree with the server, block for block
     start = monotonic()
     by_rcon = grab_blocks(client, vol)
     report(f"grab {vol.size.volume} blocks over RCON: {monotonic() - start:.2f}s")
-    assert np.array_equal(grid.to_names(), by_rcon.to_names())
+    differ = np.argwhere(grid.to_names() != by_rcon.to_names())
+    assert not differ.size, [
+        (tuple(grid.origin + Vec3(*d)), grid.names[grid.ids[tuple(d)]])
+        for d in differ[:10]
+    ]
 
-    # the plan shows the roof, with the grass around it
+    # the plan shows the roof, with the floor around it
     top = render_view(grid, "top", SCALE, labels=False)
     roof = top.getpixel((3 * SCALE + 1, 3 * SCALE + 1))
     assert isinstance(roof, tuple)
     assert roof[:3] == DYE_COLOURS["red"]
-    grass = top.getpixel((1, 1))
-    assert isinstance(grass, tuple)
-    assert grass[1] > grass[0] and grass[1] > grass[2]
+    floor = top.getpixel((1, 1))
+    assert isinstance(floor, tuple)
+    assert floor[1] > floor[0] and floor[1] > floor[2]
 
     # the east side shows the window: stone bricks seen through glass
     east = render_view(grid, "east", SCALE, labels=False)
