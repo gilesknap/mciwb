@@ -69,3 +69,17 @@ The Minecraft release is set in three places that must agree:
 After upgrading, run the system tests, and check the server responses that
 `tests/mockclient.py` mimics (sign and entity data formats change between
 releases).
+
+## The mcwb dependency
+
+mciwb builds on [mcwb](https://github.com/gilesknap/mcwb). Until an mcwb
+release contains `mcwb.Item` and the `get_block` fix for blocks without a loot
+table, `pyproject.toml` pins mcwb as a git dependency on a commit SHA (see
+[ADR 0003](../docs/explanations/decisions/0003-keep-mcipc-use-mcwb-item.md)).
+PyPI rejects direct URL dependencies, so before the next mciwb release:
+
+1. Release mcwb (from mcipc-tools/mcwb, which publishes to PyPI).
+2. Replace the git dependency with `mcwb>=<new version>` and run `uv lock`.
+
+To try local mcwb changes, run `uv pip install -e ../mcwb` in the mciwb venv
+(and `uv sync` afterwards to return to the pinned commit).
