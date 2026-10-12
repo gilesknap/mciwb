@@ -48,7 +48,7 @@ code.
 A package is simply a folder (directory) that contains python modules.
 
 We are going to create a package called ``buildings`` with a single module
-to start with called ``build_pagoda``. Type the following commands at the
+to start with called ``pagoda``. Type the following commands at the
 bash prompt::
 
     cd $HOME/my_world
@@ -97,7 +97,7 @@ Import
 
 .. code-block:: python
 
-   from mciwb.imports import Direction, Item, get_client, polygon
+   from mciwb.imports import Direction, FillMode, Item, get_client, polygon
 
 ``import`` allows us to access code from other modules.
 
@@ -116,7 +116,8 @@ construction because the ``polygon`` function has done all that for you!
 
 So, ``Direction`` and
 ``Item`` are already familiar, we have previously used them in
-**iPython** without needing to import them.
+**iPython** without needing to import them (``FillMode`` is new, we
+explain it below).
 But we need to import them here because we are
 writing a new module called ``pagoda`` (in the file pagoda.py).
 ``import`` is the command to share
@@ -201,6 +202,7 @@ each successive ``level`` is 4 blocks above the previous ``level``.
         diameter=floor_width,
         sides=4,
         item=item,
+        mode=FillMode.REPLACE,
     )
 
 To create the walls we call polygon with these parameters:
@@ -216,7 +218,7 @@ To create the walls we call polygon with these parameters:
         the number of sides of the polygon, we use 4, making a square
     item is set to item(which was passed to ``build_pagoda``):
         the blocks to use for the polygon, defaulted to GOLD_BLOCK
-    mode is set to FIllMode.REPLACE
+    mode is set to FillMode.REPLACE:
         this means that all pagoda blocks replace existing blocks. You
         could also use FillMode.KEEP which only places blocks if the current
         block is Item.AIR.

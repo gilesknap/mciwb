@@ -152,7 +152,7 @@ Paste this code into gate.py and save it.
 .. literalinclude :: ../../src/mciwb/demo/gate.py
    :language: python
 
-Note that the ``build_gate`` function has a default value for position. I
+Note that the ``make_gate`` function has a default value for position. I
 chose this as a likely entrance point to the village (we will add a
 drawbridge later!). If you want to change this you can pass a different
 position to the make_gate function. For help in choosing position coordinates
@@ -193,16 +193,18 @@ and one step SOUTH (back if you are looking North).
 Next we load in the file we downloaded earlier. This uses the world function
 ``load``. In order to get the world object inside of a module we use
 the get_world(). Because we need world only once I did not bother to
-assign it to a variable, see the equivalent approaches below.
+assign it to a variable, see the equivalent approaches below. ``blocks`` is
+the path of the ``blocks`` folder next to ``gate.py`` (set at the top of the
+module) and ``gate_pos`` is the corner of the gate that we just calculated.
 
 .. code-block:: python
 
     # using a variable to do world.load()
     w = get_world()
-    w.load("gate.json")
+    w.load(blocks / "gate.json", gate_pos)
 
     # A shortcut to do the same thing
-    get_world().load("gate.json")
+    get_world().load(blocks / "gate.json", gate_pos)
 
 When loading blocks into the world with ``world.load`` the position always
 specifies the bottom left SOUTH WEST corner of the blocks. Thus if you
