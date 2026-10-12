@@ -26,6 +26,7 @@ dependencies = [
     "rcon==2.4.9",
     "ipython",
     "podman>=5.5",
+    "pillow>=12.3.0",
 ]
 dynamic = ["version"]
 license.file = "LICENSE"
