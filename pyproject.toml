@@ -77,6 +77,8 @@ filterwarnings = [
     # only ignore deprecations raised inside third party libraries, so that
     # deprecations in mciwb's own code still fail the tests
     "ignore::DeprecationWarning:docker.*",
+    # IPython warns when VIRTUAL_ENV is not the running interpreter's (e.g. tox)
+    "ignore:Attempting to work in a virtualenv:UserWarning",
 ]
 # fail a hung test (e.g. waiting on a Minecraft server) with a traceback,
 # rather than hanging until the CI job times out

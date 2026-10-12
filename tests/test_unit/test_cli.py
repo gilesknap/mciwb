@@ -35,7 +35,7 @@ def test_run(mock_iwb: MockClient, tmp_path: Path):
         cli, ["run", str(script), "--server", "localhost", "--port", "20400"]
     )
 
-    assert result.exit_code == 0, result.output
+    assert result.exit_code == 0, (result.output, result.exception)
     assert mock_iwb.getblock(Vec3(1, 2, 3)) == Item.GOLD_BLOCK
 
 
@@ -47,12 +47,12 @@ def test_run_missing_script(tmp_path: Path):
 def test_shell_test_mode(mock_iwb: MockClient):
     args = ["shell", "--test", "--server", "localhost", "--port", "20400"]
     result = runner.invoke(cli, args)
-    assert result.exit_code == 0, result.output
+    assert result.exit_code == 0, (result.output, result.exception)
     assert "no players" in result.output
 
     # a second shell in the same process reuses the IPython instance
     result = runner.invoke(cli, [*args, "--player", "georgeTest"])
-    assert result.exit_code == 0, result.output
+    assert result.exit_code == 0, (result.output, result.exception)
     assert "player: georgeTest" in result.output
 
 
@@ -73,7 +73,7 @@ def test_restore_passes_options(monkeypatch: pytest.MonkeyPatch, tmp_path: Path)
         ["restore", "b1", "--password", "secret", "--minecraft-version", "26.1"],
     )
 
-    assert result.exit_code == 0, result.output
+    assert result.exit_code == 0, (result.output, result.exception)
     assert restored == [("b1", False)]
     assert calls["start"]["password"] == "secret"
     assert calls["start"]["minecraft_version"] == "26.1"
