@@ -20,8 +20,20 @@ on castle2's layout, then castle2's own:
   castle's walls (stray cats and iron golems, which villages bring, are
   removed first).
 
-``CHECKS=seats,pens`` runs only some of them (castle, seats, houses, pens,
-people).
+- every bee hive's tagged bees, in the hive or out of it;
+- gate: the main gate's fence gates (main_gate) closed and walled either
+  side, so the villagers stay in, with room to open them from both sides;
+  the well's gate closed;
+- reach: over RCON (castle's flood fill needs the world files), the places
+  visitors got stuck: the well's bubble column comes up beside its gate
+  onto the bailey, and every tower's stair or ladder (and the keep's) comes
+  out on its top floor with headroom;
+- strays: the untagged golems, cats, bees, villagers and wild animals of
+  the pens' kinds in the site, listed with where they are, before they are
+  removed (an untagged villager inside the walls fails it).
+
+``CHECKS=seats,pens`` runs only some of them (strays, castle, seats,
+houses, pens, people, gate, reach).
 Refuses to run while a player is within 200 blocks of the site, unless
 FORCE=1. Exits non-zero if any check fails.
 """
@@ -29,6 +41,7 @@ FORCE=1. Exits non-zero if any check fails.
 from __future__ import annotations
 
 import os
+import re
 import sys
 from pathlib import Path
 
@@ -39,10 +52,11 @@ import build_castle2  # noqa: E402, F401  (adds castle2's stages to castle's)
 import build_castle  # noqa: E402
 import build_outer  # noqa: E402
 import castle_lib as L  # noqa: E402
+import reach  # noqa: E402
 import verify_castle as VC  # noqa: E402
 from record_build import dry_run  # noqa: E402
 
-from castle2_layout import TAG, V  # noqa: E402
+from castle2_layout import TAG, TOWER_LEVELS, V  # noqa: E402
 
 from mciwb.imports import Vec3  # noqa: E402
 
@@ -195,6 +209,175 @@ def pens() -> None:
             f"animals inside {found} of {counts}",
             not gaps and found == counts,
         )
+    bees()
+
+
+def bees() -> None:
+    """the bee hives' bees, tagged: in their hives (block data) or out"""
+    import pens as P
+    from castle2_layout import BEEHIVES, YU
+
+    home = 0
+    for x, z in BEEHIVES:
+        p = V(x, YU, z)
+        r = VC.c(
+            f'execute if data block {p.x} {p.y} {p.z} bees[{{entity_data:{{Tags:["{TAG}"]}}}}]'
+        )
+        m = re.search(r"[Cc]ount: (\d+)", r)
+        home += int(m.group(1)) if m else 0
+    out = VC.count(f"type=minecraft:bee,tag={TAG}")
+    want = P.BEES_PER_HIVE * len(BEEHIVES)
+    check(
+        f"bee hives: {want} tagged bees ({home} in their hives, {out} out)",
+        home + out == want,
+    )
+
+
+# ---------------------------------------------------------------- the gate
+
+
+def gate_checks() -> None:
+    """the main gate closed to villagers by fence gates (main_gate), which
+    a visitor opens from either side; the well's gate closed too"""
+    import main_gate
+    from castle2_layout import GATE_X1, GATE_X2, WELL_GATE
+
+    c = main_gate.cells()
+    up = Vec3(0, 1, 0)
+    open_ = [
+        g for g in c["gates"] if not is_block(g, "#minecraft:fence_gates[open=false]")
+    ]
+    shut = [g for g in c["gates"] if VC.rcon_kind(g + up) not in reach.PASS]
+    z = c["gates"][0].z - castle2_layout.ORIGIN.z
+    flanks = [V(x, y, z) for x in (GATE_X1 - 1, GATE_X2 + 1) for y in (0, 1)]
+    gaps = [p for p in flanks if VC.rcon_kind(p) in reach.PASS]
+    check(
+        f"main gate: {len(c['gates'])} fence gates across the passage, closed"
+        f" (open: {[g.x for g in open_]}), walled either side (gaps {gaps})",
+        not open_ and not gaps,
+    )
+    sides = {
+        side: [p for p in c[side] if not stand(p)] for side in ("inside", "outside")
+    }
+    check(
+        "main gate: a visitor can reach the fence gates from both sides and"
+        f" walk through (no room at {sides}, no headroom over {shut})",
+        not sides["inside"] and not sides["outside"] and not shut,
+    )
+    gx, gz = WELL_GATE
+    check(
+        "well: its gate closed (villagers stay out of the well)",
+        is_block(V(gx, 0, gz), "#minecraft:fence_gates[open=false]"),
+    )
+
+
+def stand(p: Vec3) -> bool:
+    """room for a visitor at p (feet and head), with a floor under them"""
+    up = Vec3(0, 1, 0)
+    return (
+        VC.rcon_kind(p) in reach.PASS
+        and VC.rcon_kind(p + up) in reach.PASS
+        and VC.rcon_kind(p - up) in reach.FLOOR
+    )
+
+
+# ---------------------------------------------------------------- ways out
+
+
+def reach_checks() -> None:
+    """what castle's file-based reach check would find, over RCON for the
+    places visitors got stuck: out of the well at the top of its bubble
+    column, and onto each tower's top floor (and the keep's roof) at the
+    top of its stair or ladder"""
+    from build_inner import F3, FR
+    from castle2_layout import WELL, WELL_GATE
+
+    from mciwb.builders.paths import trace_path
+
+    up = Vec3(0, 1, 0)
+    wx, wz = WELL
+    gx, gz = WELL_GATE
+    beyond = V(2 * gx - wx, 0, 2 * gz - wz)
+    top = V(wx, -1, wz)
+    check(
+        "reach: the well's bubble column comes up to the open air, beside a"
+        " gate in the rim that opens onto the bailey",
+        VC.rcon_kind(top) == reach.SWIM
+        and VC.rcon_kind(top + up) in reach.PASS
+        and VC.rcon_kind(top + up * 2) in reach.PASS
+        and VC.rcon_kind(V(gx, 0, gz)) == reach.DOOR
+        and VC.rcon_kind(V(gx, 1, gz)) in reach.PASS
+        and VC.rcon_kind(V(gx, -1, gz)) in reach.FLOOR
+        and stand(beyond),
+    )
+    bad = reach.stair_top_problems(VC.rcon_kind)
+    check(
+        f"reach: every tower's stair or ladder ({len(TOWER_LEVELS)} towers) comes"
+        " out on its top floor"
+        f" with headroom{' (' + '; '.join(bad) + ')' if bad else ''}",
+        not bad,
+    )
+    # the keep's stair hall: its top flight (2 wide) up through the roof
+    shut = []
+    for x in (75, 76):
+        steps = trace_path([V(x, F3, 29), V(x, FR, 38)])
+        for s in steps[-5:]:
+            feet = s.pos + up
+            height = 2 if s is steps[-1] else 3
+            if not all(
+                VC.rcon_kind(feet + up * h) in reach.PASS for h in range(height)
+            ):
+                shut.append((feet.x, feet.y, feet.z))
+    off = steps[-1].pos + up + steps[-1].direction
+    check(
+        "reach: the keep's stair comes out on the roof terrace with headroom"
+        f"{f' (none at {shut})' if shut else ''}",
+        not shut and stand(off),
+    )
+
+
+# ---------------------------------------------------------------- strays
+
+
+def _positions(selector: str) -> list[str]:
+    """where the entities a selector matches are, read over RCON"""
+    r = VC.c(f"execute as @e[{selector}] run data get entity @s Pos")
+    return [
+        f"{float(x):.0f} {float(y):.0f} {float(z):.0f}"
+        for x, y, z in re.findall(r"\[(-?[\d.]+)d, (-?[\d.]+)d, (-?[\d.]+)d\]", r)
+    ]
+
+
+def strays() -> None:
+    """
+    The untagged creatures in the site, listed with where they are, before
+    people.kill_strays removes them: iron golems and cats (which villages
+    bring), bees, and wild animals of the kinds the pens keep. These only
+    get listed: they wander in from outside, and are not the castle's
+    fault. An untagged villager inside the walls fails the check: castle2's
+    villagers are all tagged and cannot breed, so one is someone else's
+    villager let in, or one of ours that lost its tags.
+    """
+    import people as P
+
+    a, b = castle2_layout.site_box()
+    site = L.box_selector(a, b)
+    found = []
+    for kind in (*P.STRAY_KINDS, *castle2_layout.pen_animals()):
+        where = _positions(f"type=minecraft:{kind},tag=!{TAG},{site}")
+        if where:
+            found.append(f"{kind} at {', '.join(where[:6])}")
+    check(
+        "strays (listed, not counted against the castle): "
+        + ("; ".join(found) if found else "none"),
+        True,
+    )
+    walls = L.box_selector(V(0, -20, 0), V(castle2_layout.W - 1, 80, castle2_layout.ZS))
+    villagers = _positions(f"type=minecraft:villager,tag=!{TAG},{walls}")
+    check(
+        f"strays: no untagged villager inside the walls (found {villagers})",
+        not villagers,
+    )
 
 
 def people_checks() -> None:
@@ -230,6 +413,19 @@ def people_checks() -> None:
     )
 
 
+# the groups of checks, in order (CHECKS=... picks some)
+GROUPS = {
+    "strays": strays,
+    "castle": VC.checks,
+    "seats": seats,
+    "houses": houses,
+    "pens": pens,
+    "people": people_checks,
+    "gate": gate_checks,
+    "reach": reach_checks,
+}
+
+
 def main() -> None:
     a, b = castle2_layout.site_box()
     near = L.players_near(a, b, 200)
@@ -241,6 +437,9 @@ def main() -> None:
     try:
         import people as P
 
+        wanted = os.environ.get("CHECKS", ",".join(GROUPS)).split(",")
+        if "strays" in wanted:
+            strays()  # listed before they go
         P.kill_strays()  # the cats and golems a village brings: not ours
         # castle's seat check knows castle's seats: castle2 furnishes the
         # rooms its own way, so give it castle2's (local) seats instead
@@ -250,15 +449,8 @@ def main() -> None:
             (p.x - o.x, p.z - o.z, p.x - o.x, p.z - o.z, p.y - o.y, faces)
             for p, faces in seat_cells()
         ]
-        wanted = os.environ.get("CHECKS", "castle,seats,houses,pens,people").split(",")
-        for name, func in (
-            ("castle", VC.checks),
-            ("seats", seats),
-            ("houses", houses),
-            ("pens", pens),
-            ("people", people_checks),
-        ):
-            if name in wanted:
+        for name, func in GROUPS.items():
+            if name in wanted and name != "strays":
                 func()
     finally:
         VC.c("kill @e[tag=castle_verify]")

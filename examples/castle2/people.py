@@ -261,9 +261,13 @@ def people() -> str:
     return f"{sum(counts().values())} people and creatures"
 
 
+STRAY_KINDS = ("cat", "iron_golem", "bee")
+
+
 def kill_strays() -> None:
     """the cats and iron golems that villages bring, and wild animals of
-    the kinds the castle keeps that have wandered into the site: not ours"""
+    the kinds the castle keeps (bees too) that have wandered into the
+    site: not ours (verify_castle2 lists them first)"""
     a, b = C.site_box()
-    for kind in ("cat", "iron_golem", *C.pen_animals()):
+    for kind in (*STRAY_KINDS, *C.pen_animals()):
         L.cmd(f"kill @e[type=minecraft:{kind},tag=!{L.TAG},{L.box_selector(a, b)}]")
