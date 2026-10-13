@@ -15,6 +15,7 @@ import random
 import castle_lib as L
 from castle2_layout import BEEHIVES, GARDEN, PEN_LANE, PENS, YU, V
 
+from mciwb.builders.placer import BuildError
 from mciwb.imports import Vec3
 
 FENCE = "minecraft:spruce_fence"
@@ -227,11 +228,11 @@ def beehives() -> None:
     for x, z in BEEHIVES:
         L.set_block(V(x, YU - 1, z), "minecraft:oak_log")
         try:
-            L.set_nbt(
+            L.set_block(
                 V(x, YU, z),
                 f"minecraft:beehive[facing=south,honey_level=5]{{bees:[{bee},{bee}]}}",
             )
-        except RuntimeError as e:  # an empty hive is better than none
+        except BuildError as e:  # an empty hive is better than none
             print(f"   bees not accepted ({e}): an empty hive")
             L.set_block(V(x, YU, z), "minecraft:beehive[facing=south,honey_level=5]")
         L.set_block(V(x, YU, z + 1), "minecraft:cornflower")

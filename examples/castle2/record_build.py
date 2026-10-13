@@ -130,6 +130,8 @@ class Recorder:
         self.world = world
         self.commands: list[str] = []
         self.host, self.port, self.passwd = "fake", 0, ""
+        # the entities summoned and not killed since: (type, tags)
+        self.entities: list[tuple[str, set[str]]] = []
 
     def setblock(self, pos, block, mode=None) -> str:
         x, y, z = _ints(pos)
@@ -150,25 +152,58 @@ class Recorder:
         # the ground readings' marker tags are random
         self.commands.append(re.sub(r"mciwb_[0-9a-f]{8}", "mciwb_TAG", command))
         if command.startswith("summon"):
+            kinds = [command.split()[1].split(":")[-1]]
+            kinds += re.findall(r'Passengers:\[\{id:"minecraft:(\w+)"', command)
+            tags = set(
+                re.findall(
+                    r'"([^"]+)"',
+                    (re.search(r"Tags:\[([^\]]*)\]", command) or ["", " "])[1],
+                )
+            )
+            for kind in kinds:
+                self.entities.append((kind, tags))
             return "Summoned new entity"
         if m := re.match(r"execute positioned (\S+) 0 (\S+) positioned over", command):
             x, z = int(float(m.group(1))), int(float(m.group(2)))
             if " run tp " in command:
-                return f"Teleported Marker to {x}.5, {ground(x, z) + 1}.0, {z}.5"
+                return f"Teleported Marker to {x}.0, {ground(x, z) + 1}.0, {z}.0"
             return "Test failed"
         if m := re.match(r"setblock (\S+) (\S+) (\S+) (.*)", command):
             self.world.setblock(_ints([m.group(1), m.group(2), m.group(3)]), m.group(4))
             return "Changed the block"
         if command.startswith("execute if entity"):
-            return "Test passed, count: 1000"
+            n = len(self._selected(command))
+            return f"Test passed. Count: {n}" if n else "Test failed"
         if command.startswith("execute if block"):
             # air is everywhere the build asks; nothing else is
             return "Test passed" if command.endswith("minecraft:air") else "Test failed"
         if command == "list":
             return "There are 0 of a max of 20 players online: "
         if command.startswith("kill"):
-            return "No entity was found"
+            gone = self._selected(command)
+            self.entities = [e for e in self.entities if e not in gone]
+            return f"Killed {len(gone)} entities" if gone else "No entity was found"
         return ""
+
+    def _selected(self, command: str) -> list[tuple[str, set[str]]]:
+        """the summoned entities an @e[...] selector picks, by its type= and
+        tag= (a box or other filter is taken to include them all)"""
+        sel = re.search(r"@e\[([^\]]*)\]", command)
+        if not sel:
+            return []
+        want_type = re.search(r"type=minecraft:(\w+)", sel.group(1))
+        tags = re.findall(r"tag=([^,\]]+)", sel.group(1))
+        out = []
+        for e in self.entities:
+            kind, etags = e
+            if want_type and kind != want_type.group(1):
+                continue
+            if any(t.startswith("!") and t[1:] in etags for t in tags):
+                continue
+            if any(not t.startswith("!") and t not in etags for t in tags):
+                continue
+            out.append(e)
+        return out
 
     def connect(self, retry=True) -> None:
         pass

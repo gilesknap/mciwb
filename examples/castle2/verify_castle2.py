@@ -64,15 +64,24 @@ FOCUS = (
 TABLES = ("#minecraft:slabs[type=top]",)
 
 
+_seat_cells: list[tuple[Vec3, str]] = []
+
+
 def seat_cells() -> list[tuple[Vec3, str]]:
     """every seat cell the build places and keeps (a later block may
-    replace one, as the hall's aisle carpet does), and the way its sitter
-    looks: learnt by running the build's stages against a fake client"""
-    L.SEATS.clear()
+    replace one), and the way its sitter looks: learnt by running the
+    build's stages against a fake client (once)"""
+    if not _seat_cells:
+        _seat_cells.extend(_learn_seats())
+    return _seat_cells
+
+
+def _learn_seats() -> list[tuple[Vec3, str]]:
+    L.PLACED_SEATS.clear()
     stages = [f for name, f in build_castle.STAGES.items() if name != "earthworks"]
     rec = dry_run(*stages, box=castle2_layout.site_box())
     cells = []
-    for a, b, faces in L.SEATS:
+    for a, b, faces in L.PLACED_SEATS:
         for x in range(min(a.x, b.x), max(a.x, b.x) + 1):
             for y in range(min(a.y, b.y), max(a.y, b.y) + 1):
                 for z in range(min(a.z, b.z), max(a.z, b.z) + 1):
@@ -86,7 +95,7 @@ def seat_cells() -> list[tuple[Vec3, str]]:
 
 def seat_problem(p: Vec3, faces: str) -> str:
     """what is wrong with the seat at p, or empty"""
-    back = L.OPPOSITE[faces]
+    back = castle2_layout.OPPOSITE[faces]
     if not is_block(p, f"#minecraft:stairs[facing={back},half=bottom]"):
         return "not a stair with its back behind the sitter"
     d = STEP[faces]
@@ -233,6 +242,14 @@ def main() -> None:
         import people as P
 
         P.kill_strays()  # the cats and golems a village brings: not ours
+        # castle's seat check knows castle's seats: castle2 furnishes the
+        # rooms its own way, so give it castle2's (local) seats instead
+        o = castle2_layout.ORIGIN
+        castle2_layout.SEATS.clear()
+        castle2_layout.SEATS["castle2's seats"] = [
+            (p.x - o.x, p.z - o.z, p.x - o.x, p.z - o.z, p.y - o.y, faces)
+            for p, faces in seat_cells()
+        ]
         wanted = os.environ.get("CHECKS", "castle,seats,houses,pens,people").split(",")
         for name, func in (
             ("castle", VC.checks),
