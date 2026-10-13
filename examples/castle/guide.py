@@ -19,6 +19,7 @@ from castle_layout import (  # noqa: E402
     BANNER,
     BRIDGE_END,
     CELL_DOOR,
+    CELL_LEVER,
     CHAPEL,
     CRYPT_DOOR,
     ENGINE,
@@ -72,7 +73,9 @@ def main() -> None:
     main_gate = local_gate(MAIN_GATE)
     middle_gate = local_gate(MIDDLE_GATE)
     lib = L.hidden_door_cells(V(*LIBRARY_DOOR), E, S)
-    cell = L.hidden_door_cells(V(*CELL_DOOR), Wd, S, trigger="lever", lever_b=-3)
+    cell = L.hidden_door_cells(
+        V(*CELL_DOOR), Wd, S, trigger="lever", lever_b=CELL_LEVER
+    )
     crypt = L.hidden_door_cells(V(*CRYPT_DOOR), Wd, S, trigger="lever", lever_b=-1)
     px, py, pz, depth = PIT_TRAP
     pit = L.pit_trap_cells(*V(px, py, pz), depth, travel=1)

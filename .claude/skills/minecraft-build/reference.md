@@ -53,6 +53,12 @@ world.cmd("time set day")  # any console command, without the /
   `Direction` (`NORTH` -z, `SOUTH` +z, `EAST` +x, `WEST` -x). Stairs face
   the way you walk up them. Slabs take `nbt=["type=top"]`, logs
   `nbt=["axis=x"]`, lanterns `nbt=["hanging=true"]`.
+- Thin panels: a closed door's panel and an open trapdoor's lie against
+  the edge of their block opposite their `facing`; iron bars, glass panes
+  and fences stand in the middle of the block. To make a door flush with a
+  grille beside it, use open iron trapdoors with the door's facing. An iron
+  trapdoor follows its redstone power, so a lever or button touching it
+  closes it when the power goes.
 - Vec3 arithmetic: `pos + Direction.UP * 3`, `a - b`, `pos.with_ints()`.
   `Direction.cardinals()` lists the four compass directions.
 

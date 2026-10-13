@@ -111,14 +111,18 @@ for each that gives the positions of its parts, used by the build and by
   in the end wall of a corridor.
 - **The engine**: eight hoppers pass amethyst shards round a ring; twelve
   comparators chase lamps, a piston and note blocks.
-- **Cell doors** (`castle_lib.cell`): each dungeon cell's iron door stands
-  in the line of its bars, flush with the corridor face, in a brick frame
-  that carries a stone button on both sides, so nobody gets shut in.
+- **Cell doors** (`castle_lib.cell`): each dungeon cell's front is a
+  grille of two open iron trapdoors beside an iron door, both panels on the
+  corridor edge of the front (iron bars would stand mid-block, a quarter
+  block behind the door), and a brick frame that carries a stone button on
+  both sides, so nobody gets shut in.
 
 `verify_castle.py` toggles each of them over RCON and reads the result
 back (the arrow trap by its dispensers' stock going down: an arrow that
 hits the armour stand on the wire breaks it and vanishes; each cell door
-by powering its frame), checks that the levers, buttons, torches and
+by setting a redstone block in place of its frame, a stand-in for a button
+press, since a button placed with `setblock` does not update its
+neighbours), checks that the levers, buttons, torches and
 banners are mounted on solid blocks and that every roofed tower's banner
 hangs in the open beside its top, then checks the passages, the treasure,
 the teleport targets of the guide, the road to spawn and its signpost, and

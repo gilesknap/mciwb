@@ -25,6 +25,7 @@ from castle_layout import (
     BANNER,
     BANNER2,
     CELL_DOOR,
+    CELL_LEVER,
     CELL_ROWS,
     CHAPEL,
     CRYPT_DOOR,
@@ -35,6 +36,7 @@ from castle_layout import (
     NAME,
     ORIGIN,
     PIT_TRAP,
+    STABLES,
     UD,
     VAULT,
     VAULT_Y,
@@ -645,7 +647,7 @@ def bailey_buildings() -> None:
     # paths first: from the gate to the grand stair, and across to the buildings
     L.fill(V(XG - 2, -1, UD + YU + 1), V(XG + 2, -1, ZS - 9), "minecraft:dirt_path")
     L.fill(V(XG - 1, -1, UD + YU + 1), V(XG + 1, -1, ZS - 9), L.ANDESITE)
-    L.fill(V(17, -1, 104), V(103, -1, 106), "minecraft:dirt_path")
+    L.fill(V(STABLES[2] + 1, -1, 104), V(103, -1, 106), "minecraft:dirt_path")
     stables()
     smithy()
     barracks()
@@ -673,16 +675,18 @@ def bailey_buildings() -> None:
 
 
 def stables() -> None:
-    x1, z1, x2, z2 = 3, 92, 15, 122
+    x1, z1, x2, z2 = STABLES
     L.fill(V(x1, -1, z1), V(x2, -1, z2), "minecraft:coarse_dirt")
     L.fill(V(x1, 4, z1), V(x2, 4, z2), "minecraft:dark_oak_slab[type=bottom]")
     L.fill(V(x1, 4, z1), V(x2, 4, z1), L.PLANKS)
     L.fill(V(x1, 4, z2), V(x2, 4, z2), L.PLANKS)
+    # the back wall, up to the roof: the tower's lane is behind it
+    L.fill(V(x1, 0, z1), V(x1, 3, z2), L.PLANKS)
     for z in range(z1, z2 + 1, 5):
         L.fill(V(x2, 0, z), V(x2, 3, z), "minecraft:stripped_dark_oak_log")
         if z not in (z1, z2):  # fences between the stalls, two high: a horse
             # on the hay or the cauldron beside them could step over one
-            L.fill(V(x1, 0, z), V(x2 - 1, 1, z), "minecraft:dark_oak_fence")
+            L.fill(V(x1 + 1, 0, z), V(x2 - 1, 1, z), "minecraft:dark_oak_fence")
         if z < z2:  # a fence and a gate across each stall's front: the horses stay in
             L.fill(V(x2, 0, z + 1), V(x2, 0, z + 4), "minecraft:dark_oak_fence")
             L.set_block(V(x2, 0, z + 2), "minecraft:dark_oak_fence_gate[facing=east]")
@@ -690,8 +694,8 @@ def stables() -> None:
     L.fill(V(x1, 0, z1), V(x2 - 1, 2, z1), L.PLANKS)
     L.fill(V(x1, 0, z2), V(x2 - 1, 2, z2), L.PLANKS)
     for z in range(z1 + 2, z2, 5):
-        L.fill(V(x1, 0, z), V(x1 + 1, 0, z + 1), "minecraft:hay_block")
-        L.set_block(V(x1 + 2, 0, z + 2), "minecraft:water_cauldron[level=3]")
+        L.fill(V(x1 + 1, 0, z), V(x1 + 2, 0, z + 1), "minecraft:hay_block")
+        L.set_block(V(x1 + 3, 0, z + 2), "minecraft:water_cauldron[level=3]")
         mob("horse", V(x1 + 6, 0, z + 1))
     L.sign(V(x2 + 1, 1, 107), "oak_sign[rotation=4]", "Stables")
 
@@ -894,12 +898,14 @@ def dungeons() -> None:
         L.set_block(V(x, y + 2, 137), f"{L.SOUL_LANTERN}[hanging=true]")
     L.set_block(V(88, y, 136), "minecraft:water_cauldron[level=1]")
     # the secret in the last cell: a lever opens the end wall of the corridor
-    # onto a hidden chamber (x 66..68, z 134..139), lined with brick, which
+    # onto a hidden chamber (x 66..68, z 133..139), lined with brick, which
     # opens onto the well tunnel at x 65
     L.fill(V(WELL_TUNNEL_X + 1, y - 2, 132), V(69, y + 4, 141), L.BRICK)
-    L.hidden_door(V(*CELL_DOOR), Wd, S, trigger="lever", material=L.BRICK, lever_b=-3)
+    L.hidden_door(
+        V(*CELL_DOOR), Wd, S, trigger="lever", material=L.BRICK, lever_b=CELL_LEVER
+    )
     L.sign(
-        V(66, y + 1, 134),  # clear of the lever's dust line at x 67
+        V(66, y + 1, 133),  # clear of the lever's dust line at x 67
         "dark_oak_wall_sign[facing=south]",
         "The prisoners",
         "dug this.",

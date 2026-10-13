@@ -35,6 +35,7 @@ from castle_layout import (  # noqa: E402
     ARROW_TRAP,
     BRIDGE_END,
     CELL_DOOR,
+    CELL_LEVER,
     CELL_ROWS,
     CHAPEL,
     CRYPT_DOOR,
@@ -376,20 +377,43 @@ def engine() -> None:
     )
 
 
+# the edge of its block that a closed door's or an open trapdoor's panel
+# lies against, by its facing: the edge opposite the facing
+PANEL_EDGE = {"north": "south", "south": "north", "east": "west", "west": "east"}
+
+
+def facing_of(p: Vec3, block: str, state: str) -> str:
+    """the facing of the block at p if it is ``block[state]``, else empty"""
+    for f in PANEL_EDGE:
+        if is_block(p, f"{block}[{state},facing={f}]"):
+            return f
+    return ""
+
+
 def cells() -> None:
-    """every dungeon cell: door in the front's plane, buttons on both sides
-    attached to the frame, and power at the frame opens the door"""
+    """every dungeon cell: the door's closed panel and the grille's open
+    trapdoor panels on the same (corridor) edge of the front, buttons on
+    both sides attached to the frame, and power at the frame opens the door"""
     y = DUNGEON_Y
     for zc, zdoor, into, xs in CELL_ROWS:
         for x in xs:
             c_ = L.cell_cells(*V(x, y, zc), zdoor + ORIGIN.z, into)
-            door, bars, frame = c_["door"], c_["bars"], c_["frame"]
+            door, grille, frame = c_["door"], c_["grille"], c_["frame"]
             name = f"cell {x},{zc}"
+            # the panels' edges, read from the blocks' own state
+            edges = {
+                PANEL_EDGE.get(facing_of(p, "minecraft:iron_door", "open=false"), "-")
+                for p in door
+            } | {
+                PANEL_EDGE.get(
+                    facing_of(p, "minecraft:iron_trapdoor", "open=true"), "-"
+                )
+                for p in grille
+            }
             check(
-                f"{name}: iron door in the line of the bars, closed",
-                all(is_block(p, "minecraft:iron_door[open=false]") for p in door)
-                and all(is_block(p, L.BARS) for p in bars)
-                and all(p.z == door[0].z for p in bars + frame),
+                f"{name}: closed iron door flush with the open trapdoor grille, both on the {c_['corridor']} edge (found {sorted(edges)})",
+                edges == {c_["corridor"]}
+                and all(p.z == door[0].z for p in grille + frame),
             )
             check(
                 f"{name}: a button on each side, attached to the solid frame",
@@ -417,8 +441,11 @@ def cells() -> None:
                     )
                 advance(10)
             check(
-                f"{name}: closes again",
-                all(is_block(p, "minecraft:iron_door[open=false]") for p in door),
+                f"{name}: closes again, the grille still open",
+                all(is_block(p, "minecraft:iron_door[open=false]") for p in door)
+                and all(
+                    is_block(p, "minecraft:iron_trapdoor[open=true]") for p in grille
+                ),
             )
 
 
@@ -430,7 +457,7 @@ def mounts() -> None:
     gx1, gz1, gx2, gz2 = GATEHOUSE
     up = Vec3(0, 1, 0)
     pairs: list[tuple[Vec3, str, Vec3]] = []  # (block, what, its support)
-    for base, lever_b in ((V(*CELL_DOOR), -3), (V(*CRYPT_DOOR), -1)):
+    for base, lever_b in ((V(*CELL_DOOR), CELL_LEVER), (V(*CRYPT_DOOR), -1)):
         d = L.hidden_door_cells(base, Wd, S, trigger="lever", lever_b=lever_b)
         pairs.append((d["trigger"], "minecraft:lever", d["trigger"] + Wd))
         pairs.append(
@@ -490,6 +517,7 @@ def banners() -> None:
             is_block(p, "#minecraft:banners")
             and not is_block(Vec3(p.x - 1, p.y, p.z), L.AIR)
             and is_block(p + Vec3(1, 0, 0), L.AIR)
+            and is_block(p - Vec3(0, 1, 0), L.AIR)  # where its cloth hangs
         ):
             bad.append((p.x, p.y, p.z))
     check(
@@ -692,7 +720,7 @@ def main() -> None:
             ),
         )
         library()
-        lever_door("cell block", V(*CELL_DOOR), -3, L.BRICK)
+        lever_door("cell block", V(*CELL_DOOR), CELL_LEVER, L.BRICK)
         lever_door("crypt", V(*CRYPT_DOOR), -1, L.DARK_BRICK)
         traps()
         passages()

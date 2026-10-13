@@ -384,9 +384,10 @@ def curtain(
 
 def cone_banner(cx: int, cz: int, r: int, y_top: int) -> Vec3:
     """where a roofed tower's banner hangs: beside the top step of its cone
-    (the apex is at y_top + 2 * (r + 1); the banner is two below, on the
-    east face of the top step)"""
-    return Vec3(cx + 1, y_top + 2 * (r + 1) - 2, cz)
+    (the apex is at y_top + 2 * (r + 1); the banner is one below, on the
+    east face of the top step's upper block, so that its cloth hangs beside
+    the top step's lower block, clear of the step below)"""
+    return Vec3(cx + 1, y_top + 2 * (r + 1) - 1, cz)
 
 
 def spiral_points(cx: int, cz: int, y1: int, y2: int, rad: int = 2) -> list[Vec3]:
@@ -526,9 +527,13 @@ def round_tower(
         ledges = [(y_top + 1, r + 1)] + [
             (lv + 2, rr) for lv, rr in steps[1::2] if rr > 0
         ]
+        flag = cone_banner(cx, cz, r, y_top) if banner else None
         for stand, step_r in ledges:
             for dx, dz in ((step_r, 0), (-step_r, 0), (0, step_r), (0, -step_r)):
-                set_block(Vec3(cx + dx, stand, cz + dz), f"{LANTERN}[hanging=false]")
+                q = Vec3(cx + dx, stand, cz + dz)
+                if flag is not None and q == flag - Vec3(0, 1, 0):
+                    continue  # the banner's cloth hangs here; the others light it
+                set_block(q, f"{LANTERN}[hanging=false]")
         if banner:
             set_block(
                 cone_banner(cx, cz, r, y_top),
@@ -640,16 +645,25 @@ def _facing(d: Vec3) -> str:
 def cell_cells(x: int, y: int, zc: int, zdoor: int, into: int) -> dict:
     """
     The parts of a dungeon cell (see `cell`): the iron door in the cell's
-    front at ``x+1``, the bars beside it at ``x``, the brick frame at ``x+2``
-    that carries a stone button on each side (so nobody is shut in), and
-    which block each button is attached to.
+    front at ``x+1``, the grille of two open iron trapdoors beside it at
+    ``x``, the brick frame at ``x+2`` that carries a stone button on each
+    side (so nobody is shut in), and which block each button is attached to.
+
+    ``facing`` is the door's and the trapdoors' facing: towards the cell.
+    A closed door's panel and an open trapdoor's panel both lie against the
+    edge of their block opposite their facing, so with the same facing the
+    two panels are one flush plane on the corridor edge (``corridor``) of
+    the front. Iron bars would stand in the middle of the block instead, a
+    quarter of a block behind the door.
     """
     corridor = "south" if into > 0 else "north"
     inside = "north" if into > 0 else "south"
     frame = [Vec3(x + 2, y, zdoor), Vec3(x + 2, y + 1, zdoor)]
     return {
         "door": [Vec3(x + 1, y, zdoor), Vec3(x + 1, y + 1, zdoor)],
-        "bars": [Vec3(x, y, zdoor), Vec3(x, y + 1, zdoor)],
+        "grille": [Vec3(x, y, zdoor), Vec3(x, y + 1, zdoor)],
+        "facing": inside,
+        "corridor": corridor,
         "frame": frame,
         # (button position, its facing, the block it is attached to)
         "buttons": [
@@ -663,25 +677,25 @@ def cell_cells(x: int, y: int, zc: int, zdoor: int, into: int) -> dict:
 def cell(x: int, y: int, zc: int, zdoor: int, into: int) -> dict:
     """
     A dungeon cell, 3 wide from ``x``, with its 3-deep interior from ``zc``
-    and its front at ``zdoor`` (people stand at ``y``): bars, an iron door
-    whose closed panel is flush with the corridor face of the front, and a
-    brick frame with a stone button on each side of it, each attached to
-    the frame and powering it, so that the door opens from either side.
+    and its front at ``zdoor`` (people stand at ``y``): a grille of open
+    iron trapdoors and an iron door, their panels flush on the corridor
+    edge of the front, and a brick frame with a stone button on each side
+    of it, each attached to the frame and powering it, so that the door
+    opens from either side. Nothing that gives power may touch the grille:
+    an iron trapdoor follows its power, and closes when the power goes.
     """
     p = placer()
     c = cell_cells(x, y, zc, zdoor, into)
+    f = c["facing"]
     p.fill(Vec3(x, y, zc), Vec3(x + 2, y + 1, zc + 2), AIR)
-    for q in c["bars"]:
-        p.setblock(q, BARS)
+    for q, half in zip(c["grille"], ("bottom", "top"), strict=True):
+        p.setblock(q, f"minecraft:iron_trapdoor[facing={f},half={half},open=true]")
     for q in c["frame"]:
         p.setblock(q, BRICK)
-    # a door's closed panel lies against the edge opposite its facing: face
-    # it into the cell, and the panel is on the corridor side
-    facing = "north" if into > 0 else "south"
-    p.setblock(c["door"][0], f"minecraft:iron_door[facing={facing},half=lower]")
-    p.setblock(c["door"][1], f"minecraft:iron_door[facing={facing},half=upper]")
-    for q, f, _ in c["buttons"]:
-        p.setblock(q, f"minecraft:stone_button[face=wall,facing={f}]")
+    p.setblock(c["door"][0], f"minecraft:iron_door[facing={f},half=lower]")
+    p.setblock(c["door"][1], f"minecraft:iron_door[facing={f},half=upper]")
+    for q, bf, _ in c["buttons"]:
+        p.setblock(q, f"minecraft:stone_button[face=wall,facing={bf}]")
     return c
 
 

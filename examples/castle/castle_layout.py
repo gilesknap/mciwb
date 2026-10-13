@@ -101,13 +101,20 @@ MIDDLE_GATE = (GATE_X1, GATE_X2, UD - 2, YU)
 LIBRARY_DOOR = (58, YU + 10, 16)  # base; u east, v south, bookshelf trigger
 LIBRARY_LADDER = (60, 16)  # the shaft from its hidden space down to the vault
 CRYPT_DOOR = (71, 8, 23)  # base; u west, v south, lever at -1
-CELL_DOOR = (69, -8, 137)  # base; u west, v south, lever at -3
+CELL_DOOR = (69, -8, 137)  # base; u west, v south, lever at CELL_LEVER
+# the cell door's lever: in the middle of the first north cell's west wall,
+# clear of that cell's grille (a lever beside an iron trapdoor powers it)
+CELL_LEVER = -4
 PIT_TRAP = (95, -8, 127, 7)  # corridor x, standing level, first trapdoor z, depth
 ARROW_TRAP = (94, 96, -15, 118, 108)  # x1, x2, standing level, wire z, dispenser z
 WELL = (60, 105)
+# the stables, x1, z1, x2, z2 (the stall fronts face east at x2): clear of
+# the west mid-wall tower (centre x 3, z 105, radius 5), with a lane at x 9
+# between them that its ground door opens onto
+STABLES = (10, 92, 21, 122)
 DUNGEON_Y = -8  # the dungeon's standing level
-# the two rows of cells: interior z, the z of the cell front (bars, door and
-# its frame), +1 if the corridor is south of the front, -1 if north, and the
+# the two rows of cells: interior z, the z of the cell front (grille, door
+# and its frame), +1 if the corridor is south of the front, -1 if north, and the
 # west x of each cell (3 wide). The south row starts a cell further east:
 # the hidden door's pilaster at the corridor's west end takes that space
 CELL_ROWS = ((132, 135, 1, range(70, 87, 4)), (140, 139, -1, range(74, 87, 4)))
