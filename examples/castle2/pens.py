@@ -221,16 +221,30 @@ def allotments() -> None:
         L.set_block(V(x, 2, z1 + 1), L.LANTERN)
 
 
+BEES_PER_HIVE = 2
+
+
+def bee_data() -> str:
+    """a bee in a hive's block data: tagged as the stage's summons are (so
+    that verify counts it, and a rebuild of the stage removes it when it is
+    out of its hive) and persistent; it keeps its tags when it flies out"""
+    tags = f'Tags:["{L.TAG}","{L.TAG}.{L.STAGE}"]'
+    return (
+        f'{{entity_data:{{id:"minecraft:bee",{tags},{L.PERSIST}}},'
+        "min_ticks_in_hive:600,ticks_in_hive:0}"
+    )
+
+
 def beehives() -> None:
-    """hives with bees in them by the upper ward's garden (bees inside a
-    hive are not entities, so nothing to count)"""
-    bee = '{entity_data:{id:"minecraft:bee"},min_ticks_in_hive:600,ticks_in_hive:0}'
+    """hives with bees in them by the upper ward's garden (a bee in its
+    hive is block data, not an entity: verify counts both)"""
+    bees = ",".join([bee_data()] * BEES_PER_HIVE)
     for x, z in BEEHIVES:
         L.set_block(V(x, YU - 1, z), "minecraft:oak_log")
         try:
             L.set_block(
                 V(x, YU, z),
-                f"minecraft:beehive[facing=south,honey_level=5]{{bees:[{bee},{bee}]}}",
+                f"minecraft:beehive[facing=south,honey_level=5]{{bees:[{bees}]}}",
             )
         except BuildError as e:  # an empty hive is better than none
             print(f"   bees not accepted ({e}): an empty hive")

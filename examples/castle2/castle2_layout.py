@@ -3,8 +3,10 @@ Castle 2: Castle Fable (``examples/castle``) with a lower bailey twice as
 deep, filled with a village. Import this module before any of castle's: it
 sets castle2's defaults in the environment (the bailey's depth, the site,
 the name and the banner colour), puts ``examples/castle`` on the import
-path, and then re-exports everything in ``castle_layout``, so that castle's
-modules and castle2's see the same layout::
+path, and then re-exports ``castle_layout``'s names, so that castle's
+modules and castle2's see the same layout (the names castle2 uses are
+imported explicitly below; any other castle_layout name is passed through
+by ``__getattr__``)::
 
     import castle2_layout  # first
     import build_inner     # castle's, laid out for castle2
@@ -45,13 +47,54 @@ _early = sys.modules.get("castle_layout")
 if _early is not None and str(_early.LD) != os.environ["BAILEY_DEPTH"]:
     raise SystemExit("import castle2_layout before castle's modules")
 
-from castle_layout import *  # noqa: E402, F403
-from castle_layout import LD, UD, ZS, V, layout_problems  # noqa: E402
+import castle_layout  # noqa: E402
+from castle_layout import (  # noqa: E402, F401  (re-exported for castle2's modules)
+    ALCH,
+    BANNER,
+    BANNER2,
+    BARRACKS,
+    CELL_ROWS,
+    CHAPEL,
+    DUNGEON_Y,
+    GATE_X1,
+    GATE_X2,
+    GATE_Z,
+    GATEHOUSE,
+    KEEP,
+    KEEP_ROOF,
+    LD,
+    NAME,
+    OPPOSITE,
+    ORIGIN,
+    PATHS,
+    SEATS,
+    SMITHY,
+    SPAWN,
+    STABLES,
+    SUMMONED,
+    TAG,
+    TELEPORTS,
+    TOWER_LEVELS,
+    UD,
+    VAULT_Y,
+    WALL_H,
+    WELL,
+    WELL_GATE,
+    YU,
+    ZS,
+    V,
+    W,
+    layout_problems,
+    site_box,
+)
 
-# ---- the bailey's three parts, north to south (local z)
-NORTH = (UD, UD + 55)  # barracks, stables, smithy, well and the cross paths
-VILLAGE = (UD + 55, ZS - 36)  # the village round its market square
-SOUTH = (ZS - 36, ZS)  # pens and paddocks, the market stalls by the gate
+
+def __getattr__(name: str):
+    """any other name of castle_layout's"""
+    try:
+        return getattr(castle_layout, name)
+    except AttributeError:
+        raise AttributeError(f"module 'castle2_layout' has no {name!r}") from None
 
 
 def castle2_problems() -> list[str]:
@@ -491,7 +534,7 @@ def _tavern_door() -> tuple[int, int, int]:
 
 # castle2's places for visitors, added to castle's (castle's verify checks
 # each lands on a floor with head room, and the guide lists them)
-TELEPORTS.update(  # noqa: F405
+TELEPORTS.update(
     {
         "the market square, by the cross": (55, 0, 152),
         "the tavern's door": _tavern_door(),

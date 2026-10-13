@@ -21,7 +21,7 @@ from __future__ import annotations
 
 import castle2_layout as C
 import castle_lib as L
-from castle2_layout import KEEP, KEEP_ROOF, SQUARE, WALL_H, YU, ZS, V
+from castle2_layout import KEEP, KEEP_ROOF, WALL_H, YU, ZS, V
 
 from mciwb.imports import Vec3
 
@@ -147,7 +147,6 @@ CASTLE_PEOPLE = [
     ("jailer", (93, -8, 137), "east", True, "nitwit", "Grimsby the Jailer", None),
 ]
 # the mobile people and creatures round the square (local block positions)
-SX1, SZ1, SX2, SZ2 = SQUARE
 WANDERERS = [(48, 150), (72, 150), (47, 163), (73, 163), (56, 160), (64, 150)]
 CHILDREN = [(50, 160), (70, 161), (55, 149)]
 CATS = [(46, 158), (74, 152)]
@@ -261,9 +260,13 @@ def people() -> str:
     return f"{sum(counts().values())} people and creatures"
 
 
+STRAY_KINDS = ("cat", "iron_golem", "bee")
+
+
 def kill_strays() -> None:
     """the cats and iron golems that villages bring, and wild animals of
-    the kinds the castle keeps that have wandered into the site: not ours"""
+    the kinds the castle keeps (bees too) that have wandered into the
+    site: not ours (verify_castle2 lists them first)"""
     a, b = C.site_box()
-    for kind in ("cat", "iron_golem", *C.pen_animals()):
+    for kind in (*STRAY_KINDS, *C.pen_animals()):
         L.cmd(f"kill @e[type=minecraft:{kind},tag=!{L.TAG},{L.box_selector(a, b)}]")

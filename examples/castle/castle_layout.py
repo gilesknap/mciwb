@@ -124,6 +124,7 @@ CELL_LEVER = -4
 PIT_TRAP = (95, -8, 127, 7)
 ARROW_TRAP = (94, 96, -15, 118, 108)  # x1, x2, standing level, wire z, dispenser z
 WELL = (60, 105)
+WELL_GATE = (WELL[0], WELL[1] + 1)  # the fence gate in the well's rim, south
 # ---- the lower bailey's buildings and features, x1, z1, x2, z2 (local).
 # Each keeps clear of the bailey's round towers (BAILEY_TOWERS), with room
 # for a tower's ground door: `layout_problems` checks it before a build.
@@ -411,6 +412,41 @@ TOWER_DOORS = {
         XG, (KEEP[1] + KEEP[3]) // 2, 3, 2, [(KEEP_ROOF, _S, 0)]
     ),
     "alchemist's tower": (*ALCH, 6, 2, [(YU, _S, 0)]),
+}  # fmt: skip
+
+# each round tower's levels (local): its foot, its floors' standing levels,
+# its top (castle_lib.round_tower's y_top), whether it has a conical roof
+# (its top floor is then the highest of its floors) and a spiral stair (or
+# a ladder, as narrow towers have anyway). build_outer.tower builds from
+# this, and castle_lib.tower_stair_top tells the checks where each tower's
+# way up comes out on its top floor
+TOWER_LEVELS: dict[str, tuple[int, list[int], int, bool, bool]] = {
+    **{
+        name: (
+            (MOAT_FLOOR, [0, _WALK, YU, _UWALK], _UWALK + 8, False, True)
+            if "junction" in name
+            else (MOAT_FLOOR, [0, _WALK], _WALK + 8, False, True)
+        )
+        for name in BAILEY_TOWERS
+    },
+    **{name: (MOAT_FLOOR, [0, 16], 24, False, True) for name in GATE_TOWERS},
+    **{
+        name: (
+            (DITCH_FLOOR - 1, [YU, _UWALK, _UWALK + 6], _UWALK + 12, True, True)
+            if "corner" in name
+            else (DITCH_FLOOR - 1, [YU, _UWALK], _UWALK + 6, False, True)
+        )
+        for name in UPPER_TOWERS
+    },
+    **{
+        f"keep turret {x},{z}": (YU - 2, [*KEEP_FLOORS, KEEP_ROOF], KEEP_ROOF + 10, True, True)
+        for x in (KEEP[0], KEEP[2])
+        for z in (KEEP[1], KEEP[3])
+    },
+    "keep's lantern tower": (KEEP_ROOF - 1, [KEEP_ROOF], KEEP_ROOF + 8, True, False),
+    "alchemist's tower": (
+        YU - 2, [YU, YU + 8, YU + 16, YU + 24], YU + 31, True, False
+    ),
 }  # fmt: skip
 
 # every round tower standing on a ward's ground, for `layout_problems`

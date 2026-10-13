@@ -32,6 +32,7 @@ from castle_layout import (
     SITE_TOP,
     SPAWN,
     TOWER_DOORS,
+    TOWER_LEVELS,
     UD,
     UPPER_TOWERS,
     WALL_H,
@@ -77,9 +78,13 @@ def wcells(cells: L.Cells) -> L.Cells:
     return {(ORIGIN.x + x, ORIGIN.z + z) for x, z in cells}
 
 
-def tower(name: str, y_bottom: int, y_top: int, floors: list[int], **kwargs) -> None:
-    """the round tower ``name`` of TOWER_DOORS, with its doors (levels local)"""
+def tower(name: str, **kwargs) -> None:
+    """the round tower ``name`` of TOWER_DOORS, with its doors, at its
+    levels of TOWER_LEVELS (local)"""
     cx, cz, r, wall, doors = TOWER_DOORS[name]
+    y_bottom, floors, y_top, roofed, stair = TOWER_LEVELS[name]
+    if (kwargs.get("roof") is not None) != roofed:
+        raise ValueError(f"{name}: TOWER_LEVELS says roofed={roofed}")
     L.round_tower(
         ORIGIN.x + cx,
         ORIGIN.z + cz,
@@ -89,6 +94,7 @@ def tower(name: str, y_bottom: int, y_top: int, floors: list[int], **kwargs) -> 
         wall=wall,
         floors=[ORIGIN.y + f for f in floors],
         doors=[(ORIGIN.y + dy, d, o) for dy, d, o in doors],
+        stair=stair,
         **kwargs,
     )
 
@@ -280,25 +286,12 @@ def bailey_walls() -> None:
         ORIGIN.y + WALL_H - 1,
     )
     # corner towers straddling the corners, and mid-wall towers
-    walk = WALL_H
     for name in BAILEY_TOWERS:
         if "junction" in name:
             # where the bailey walls meet the cliff: up past the upper ward's walls
-            tower(
-                name,
-                MOAT_FLOOR,
-                YU + walk + 8,
-                [0, walk, YU, YU + walk],
-                banner=BANNER2,
-            )
+            tower(name, banner=BANNER2)
         else:
-            tower(
-                name,
-                MOAT_FLOOR,
-                walk + 8,
-                [0, walk],
-                banner=BANNER if "corner" in name else None,
-            )
+            tower(name, banner=BANNER if "corner" in name else None)
     # stairs from the courtyard up to the wall walks (west, east, and beside the gatehouse)
     wall_stairs(upper=False)
 
@@ -375,7 +368,7 @@ def gatehouse() -> dict:
     # drum towers straddling the gatehouse's outer corners (clear of the
     # portcullis wiring channel east of the passage), up past the gatehouse top
     for name in GATE_TOWERS:
-        tower(name, MOAT_FLOOR, top + 8, [0, top], banner=BANNER)
+        tower(name, banner=BANNER)
     # a lamp and banners over the arch (clear of the drawbridge chains at XG +- 4)
     for x in (XG - GATE_BANNER_DX, XG + GATE_BANNER_DX):
         L.set_block(V(x, 5, z2 + 1), f"minecraft:{BANNER}_wall_banner[facing=south]")
@@ -551,20 +544,12 @@ def upper_walls() -> None:
         ORIGIN.y + y + 2,
         ORIGIN.y + y + WALL_H - 1,
     )
-    walk = y + WALL_H
     # north corner towers with conical roofs, mid-wall towers with battlements
     for name in UPPER_TOWERS:
         if "corner" in name:
-            tower(
-                name,
-                DITCH_FLOOR - 1,
-                walk + 12,
-                [y, walk, walk + 6],
-                roof=L.DARK_TILES,
-                banner=BANNER2,
-            )
+            tower(name, roof=L.DARK_TILES, banner=BANNER2)
         else:
-            tower(name, DITCH_FLOOR - 1, walk + 6, [y, walk])
+            tower(name)
     # stairs up to the wall walks
     wall_stairs(upper=True)
 
@@ -725,14 +710,7 @@ def keep_shell() -> None:
     # corner turrets with conical roofs, reached from the roof terrace and the ground
     for cx in (x1, x2):
         for cz in (z1, z2):
-            tower(
-                f"keep turret {cx},{cz}",
-                y - 2,
-                KEEP_ROOF + 10,
-                [y, y + 10, y + 19, KEEP_ROOF],
-                roof=L.DARK_TILES,
-                banner=BANNER,
-            )
+            tower(f"keep turret {cx},{cz}", roof=L.DARK_TILES, banner=BANNER)
     # windows: tall stained glass in pairs on every face, each storey
     for fy in (y + 2, y + 12, y + 21):
         for x in range(x1 + 6, x2 - 5, 6):
@@ -772,12 +750,8 @@ def keep_shell() -> None:
     # a central lantern tower on the roof
     tower(
         "keep's lantern tower",
-        KEEP_ROOF - 1,
-        KEEP_ROOF + 8,
-        [KEEP_ROOF],
         roof=L.DARK_TILES,
         banner=BANNER,
-        stair=False,
         plinth=False,  # it stands on the roof: no kerb in front of its door
     )
     # a path from the middle gate to the great door

@@ -210,11 +210,12 @@ coordinates in the scripts are offsets from it (x east, z south, y up).
    slide into the wall. Behind: a lit mechanism room and a ladder at
    ({V(lx, 0, lz).x}, *, {V(lx, 0, lz).z}) straight down into the vault.
    Put any *other* book in or out to close the door again.
-4. **The well.** Jump in: the bubble column takes you down to y {ORIGIN.y - 8}.
+4. **The well.** Open the gate in its rim and jump in: the bubble column
+   takes you down to y {ORIGIN.y - 8}.
    A dark oak door at the bottom (east side) opens into a dry tunnel. East
    then south leads to the dungeon's hidden chamber; north the tunnel climbs
    under the cliff to an iron door (buttons either side) into the vault.
-   Swim back up the column to leave.
+   Ride the column back up and open the gate to step out.
 5. **The dungeon's escape door.** Down the dungeon stair, through the guard
    room and along the cell block. Each cell's iron door has a stone button
    on its frame on both sides, so nobody gets shut in: no cell is a trap. In the **last cell on the north side** (x {V(70, 0, 0).x}..{V(72, 0, 0).x},

@@ -66,11 +66,13 @@ from castle_layout import (  # noqa: E402
     TAG,
     TELEPORTS,
     TOWER_DOORS,
+    TOWER_LEVELS,
     VAULT,
     VAULT_Y,
     WALL_H,
     WALL_STAIRS,
     WELL,
+    WELL_GATE,
     WELL_TUNNEL_X,
     XG,
     YU,
@@ -461,6 +463,16 @@ def passages() -> None:
         and all(
             is_block(V(wx, y, wz), "minecraft:bubble_column") for y in range(-8, 0)
         ),
+    )
+    gx, gz = WELL_GATE
+    check(
+        "well: a gate in the rim, the way out of the water onto the bailey",
+        is_block(V(gx, 0, gz), "#minecraft:fence_gates")
+        and is_block(V(gx, 1, gz), L.AIR)
+        and is_block(V(wx, 0, wz), L.AIR)
+        and is_block(V(wx, 1, wz), L.AIR)
+        and is_block(V(2 * gx - wx, 0, 2 * gz - wz), L.AIR)
+        and is_block(V(2 * gx - wx, 1, 2 * gz - wz), L.AIR),
     )
     check(
         "well: a door at the bottom into a dry tunnel",
@@ -1018,7 +1030,7 @@ def summoned_clear(kind_at) -> None:
 
 def towers(kind_at, describe=None) -> None:
     """every round tower's doorway opens onto somewhere to stand at its
-    level on both sides"""
+    level on both sides, and its stair or ladder comes out on its top floor"""
     for name, (_cx, _cz, _r, _wall, doors) in TOWER_DOORS.items():
         bad = [
             b
@@ -1027,6 +1039,13 @@ def towers(kind_at, describe=None) -> None:
         ]
         check(
             f"towers: the {name}'s {len(doors)} doors open onto floors at their levels on both sides{' (' + '; '.join(bad) + ')' if bad else ''}",
+            not bad,
+        )
+    stair_tops = reach.stair_top_problems(kind_at)
+    for name in TOWER_LEVELS:
+        bad = [b for b in stair_tops if b.startswith(name + ",")]
+        check(
+            f"towers: the {name}'s way up comes out on its top floor with headroom{' (' + '; '.join(bad) + ')' if bad else ''}",
             not bad,
         )
 
@@ -1079,9 +1098,16 @@ def checks() -> None:
     print(f"killed {L.kill_hostiles(*site_box())} hostile mobs in the site")
     portcullis("main gate", MAIN_GATE)
     portcullis("middle gate", MIDDLE_GATE)
-    blocked = [z for z in range(ZS - 8, ZS + 1) if not is_block(V(XG, 0, z), L.AIR)]
+    # air all the way, or a fence gate (a castle may close its passage
+    # with fence gates, which visitors open and villagers cannot: castle2)
+    blocked = [
+        z
+        for z in range(ZS - 8, ZS + 1)
+        if not is_block(V(XG, 0, z), L.AIR)
+        and not is_block(V(XG, 0, z), "#minecraft:fence_gates")
+    ]
     check(
-        f"main gate passage is open end to end (blocked at local z {blocked})",
+        f"main gate passage is open end to end, or through fence gates (blocked at local z {blocked})",
         not blocked,
     )
     check(
