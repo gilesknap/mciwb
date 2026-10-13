@@ -97,10 +97,17 @@ def cmd(command: str) -> str:
     return get_client().run(command)
 
 
+def snbt_string(text: str) -> str:
+    """text as a double-quoted SNBT string (a plain text component)"""
+    return '"' + text.replace("\\", "\\\\").replace('"', '\\"') + '"'
+
+
 def sign(pos: Vec3, block: str, *lines: str) -> None:
     """a sign (``oak_sign[rotation=4]``, ``oak_wall_sign[facing=north]`` ...)
-    with up to four lines of text"""
-    text = ",".join(f"'\"{line}\"'" for line in (*lines, "", "", "", "")[:4])
+    with up to four lines of text. Each line is a plain SNBT string: since
+    Minecraft 1.21.5 text components in NBT are SNBT, and the old form (a
+    JSON string inside quotes, ``'"text"'``) shows its quotes on the sign"""
+    text = ",".join(snbt_string(line) for line in (*lines, "", "", "", "")[:4])
     placer().setblock(pos, f"minecraft:{block}{{front_text:{{messages:[{text}]}}}}")
 
 
