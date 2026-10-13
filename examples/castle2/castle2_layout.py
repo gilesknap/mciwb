@@ -288,6 +288,22 @@ TELEPORTS.update(  # noqa: F405
     }
 )
 
+# ---- phase 6: the secrets, the machines that open them and their clues.
+# One entry per secret (castle's old ones included), in the order of the
+# clue trail (each secret's clues lead on to the next):
+#   "name": {
+#       "machine": the machine that opens it ("lectern lock" ...), or castle's
+#                  mechanism ("library bookshelf door" ...),
+#       "where": (x, y, z) local: where the machine is worked (its trigger),
+#       "opens": what it opens or gives,
+#       "solution": how to work it (the guide's spoilers),
+#       "clues": [(kind, (x, y, z) local, what it says or shows), ...]:
+#                kind is "book", "sign", "frame", "map", "trade", "banner",
+#                "path", "painting" ...; at least two per secret,
+#   }
+# verify checks every clue is in place and works every machine.
+SECRETS: dict[str, dict] = {}
+
 BAILEY_DEPTH_NOTE = (
     f"Its lower bailey is {LD} blocks deep (BAILEY_DEPTH), with a village in it."
 )
