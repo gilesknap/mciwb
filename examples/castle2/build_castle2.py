@@ -12,7 +12,8 @@ castle's, and its own furniture in castle's rooms (``interiors``,
 ``furnish`` (more detail in the alchemist's tower, the dungeon, the vault
 and the winch room) after ``dungeons``: ``village`` (the lanes, the square and the houses) after
 ``bailey_buildings``, then ``pens`` (the animals, the allotments and
-the bee hives), and ``people`` (the castle's people, the shopkeepers,
+the bee hives), ``bailey_machines`` (machines_bailey: the clock tower, the
+archery lock, the mill, the listening door), and ``people`` (the castle's people, the shopkeepers,
 the villagers and the guards) after castle's ``details``. The stages, the site's forceload, the player check and the
 entity checks are castle's (see its README). The defaults (site, name,
 banner) are in castle2_layout.DEFAULTS; the environment overrides them.
@@ -30,6 +31,7 @@ import build_castle  # noqa: E402
 import build_inner  # noqa: E402
 import build_outer  # noqa: E402
 import castle_lib as L  # noqa: E402
+import machines_bailey  # noqa: E402
 import main_gate  # noqa: E402
 import pens  # noqa: E402
 import people  # noqa: E402
@@ -104,11 +106,29 @@ build_castle.STAGES["chapel"] = chapel
 build_castle.STAGES["bailey_buildings"] = bailey_buildings
 _insert_after("dungeons", "furnish", rooms.extras)
 
+# phase 6, the bailey's machines (machines_bailey.py): the clock tower, the
+# archery lock, the mill and its tunnel, the listening door. The dungeons
+# stage builds the oubliette's and the guard room's walls again, so the
+# listening door and the tunnel's doorway are built again after it
+_insert_after("pens", "bailey_machines", machines_bailey.bailey_machines)
+_castle_dungeons = build_castle.STAGES["dungeons"]
+
+
+def dungeons():
+    """castle's dungeons, then the machines that cut into their walls"""
+    result = _castle_dungeons()
+    machines_bailey.after_dungeons()
+    return result
+
+
+build_castle.STAGES["dungeons"] = dungeons
+
 # what each of these stages summons, learnt by running it against a fake
 # client: the build checks they are all there, verify counts them
 for _stage in (
     "village",
     "pens",
+    "bailey_machines",
     "people",
     "interiors",
     "chapel",

@@ -37,10 +37,15 @@ on castle2's layout, then castle2's own:
   out on its top floor with headroom;
 - strays: the untagged golems, cats, bees, villagers and wild animals of
   the pens' kinds in the site, listed with where they are, before they are
-  removed (an untagged villager inside the walls fails it).
+  removed (an untagged villager inside the walls fails it);
+- bailey_machines: the clock tower rings at dusk and dawn and lights its
+  lamps at night, a bullseye opens the archery cache and an outer ring does
+  not, the mill's wheel turns and its lever opens the way down to the
+  tunnel, the listening door opens to a bell and not to an arrow; each
+  trigger is one a player in adventure mode may use.
 
 ``CHECKS=seats,pens`` runs only some of them (strays, castle, seats,
-signs, rooms, houses, pens, people, gate, reach).
+signs, rooms, houses, pens, people, gate, reach, bailey_machines).
 Refuses to run while a player is within 200 blocks of the site, unless
 FORCE=1. Exits non-zero if any check fails.
 """
@@ -541,6 +546,18 @@ def people_checks() -> None:
 
 
 # the groups of checks, in order (CHECKS=... picks some)
+def bailey_machines_check() -> None:
+    """the bailey's machines (machines_bailey), each worked in place and
+    put back as found: the clock tower (time set to day and night, then
+    back), the archery lock (arrows at the target), the mill (its wheel
+    turning, its lever opening the way down), the listening door (an arrow
+    and the bells)"""
+    import machines_bailey
+
+    for name, ok in machines_bailey.checks():
+        check(name, ok)
+
+
 GROUPS = {
     "strays": strays,
     "castle": VC.checks,
@@ -552,6 +569,7 @@ GROUPS = {
     "people": people_checks,
     "gate": gate_checks,
     "reach": reach_checks,
+    "bailey_machines": bailey_machines_check,
 }
 
 

@@ -210,7 +210,10 @@ PENS = {
     "rabbit hutch": ((44, 208, 55, 216), {"rabbit": 4}),
     "frog pond": ((90, 208, 106, 216), {"frog": 3}),
 }
-GARDEN = (66, 192, 108, 205)  # the allotments, with a scarecrow
+GARDEN = (66, 192, 88, 205)  # the allotments, with a scarecrow (the mill east of them)
+# the water mill (machines_bailey.py): its plot (x1, z1, x2, z2), east of the
+# allotments and north of the frog pond
+MILL = (92, 192, 108, 205)
 BEEHIVES = [(10, 37), (14, 37), (18, 37)]  # by the upper ward's garden (at YU)
 
 
@@ -256,6 +259,7 @@ def village_footprints() -> dict[str, set[tuple[int, int]]]:
     for name, (box, _animals) in PENS.items():
         out[name] = _cells(*box)
     out["the allotments"] = _cells(*GARDEN)
+    out["the mill"] = _cells(*MILL)
     out["market cross"] = _cells(
         MARKET_CROSS[0] - 1,
         MARKET_CROSS[1] - 1,
@@ -278,7 +282,7 @@ def village_problems() -> list[str]:
     houses = {
         n: c
         for n, c in feet.items()
-        if n.startswith("house ") or n in PENS or n == "the allotments"
+        if n.startswith("house ") or n in PENS or n in ("the allotments", "the mill")
     }
     castle = footprints()
     open_ground = {
@@ -328,6 +332,9 @@ TELEPORTS.update(
         "the tavern's door": _tavern_door(),
         "the pens, on the pen lane": (34, 0, 190),
         "the allotments' gate": (70, 0, 191),
+        "the mill's door": (98, 0, 191),
+        "the clock tower's door": (65, 0, 156),
+        "the archery range's shooting line": (37, 0, 80),
     }
 )
 
@@ -346,6 +353,83 @@ TELEPORTS.update(
 #   }
 # verify checks every clue is in place and works every machine.
 SECRETS: dict[str, dict] = {}
+
+# ---- phase 6: the bailey's machines (machines_bailey.py), local coordinates
+# the listening door: the lower cell of the sliding door in the oubliette's
+# west wall (the hidden space and the ossuary are west of it); a bell before
+# a carved face 5 blocks south of it, a sculk sensor tuned to bells behind
+LISTENING_DOOR = (91, -15, 125)
+# the archery range in the barracks yard: the target (on its post, facing
+# west; its straw butt and the cache east of it) and the shooting line's x
+ARCHERY_TARGET = (51, 1, 80)
+ARCHERY_LINE = 38
+# the mill: the house's north-west corner (11 x 9, door north), the water
+# wheel's hub (in the race east of the house), and the secret door in the
+# house's south wall (lower cell) with the tunnel at x 95 down to the
+# dungeon's guard room (castle's, its south wall at z 140)
+MILL_HOUSE = (93, 0, 193)
+MILL_WHEEL = (107, 1, 197)
+MILL_DOOR = (95, 0, 201)
+MILL_TUNNEL = (95, -8, 140)  # x, standing level, the guard room wall's z
+SECRETS.update(
+    {
+        "the ossuary": {
+            "machine": "listening door",
+            "where": (92, -15, 130),
+            "opens": "a sliding door in the oubliette's west wall (91, -15, 125)"
+            " onto a hidden ossuary (x 81..87, z 120..128) with the founder's"
+            " reliquary (a chest)",
+            "solution": "In the oubliette, ring the bell before the carved face"
+            " in the west wall: a calibrated sculk sensor behind the face hears"
+            " only bells (vibration frequency 11) and the wall beside it slides"
+            " open. Ring it again to shut it; inside, the ossuary's own bell"
+            " does the same. Footsteps, arrows, the pit's trapdoors, doors and"
+            " chests opening do nothing.",
+            "clues": [
+                ("sign", (92, -13, 130), "The dead hear / only the bell"),
+                (
+                    "carving",
+                    (91, -14, 130),
+                    "a carved face (chiseled polished"
+                    " blackstone) in the oubliette's west wall, a bell before it",
+                ),
+            ],
+        },
+        "the archery cache": {
+            "machine": "archery lock",
+            "where": ARCHERY_TARGET,
+            "opens": "an iron hatch behind the target's straw butt (55, 0, 80)"
+            " over a barrel: arrows, a bow and a note",
+            "solution": "From the shooting line (x 38: bows and an arrow dropper"
+            " with a button are there) hit the target's bullseye: only a"
+            " bullseye gives 15, the comparator behind it passes nothing less,"
+            " and a copper bulb latches the hatch open. Another bullseye shuts"
+            " it.",
+            "clues": [
+                ("sign", (37, 0, 77), "Archery range / a true eye / opens the stores"),
+            ],
+        },
+        "the miller's way": {
+            "machine": "water wheel and mill",
+            "where": (99, 1, 200),
+            "opens": "the wall beside the mill's fireplace (95, 0, 201): a"
+            " ladder down to a tunnel north to the dungeon's guard room"
+            " (95, -8, 140)",
+            "solution": "Pull the lever marked 'Sluice' on the mill's south"
+            " wall (it does not stop the wheel): the stones beside the hearth"
+            " slide aside. The lever on the far side (on the brick in the"
+            " passage) opens it from within.",
+            "clues": [
+                ("sign", (100, 1, 200), "Sluice"),
+                (
+                    "mark",
+                    (95, 2, 201),
+                    "a mason's mark (chiseled stone bricks) over the stones that move",
+                ),
+            ],
+        },
+    }
+)
 
 BAILEY_DEPTH_NOTE = (
     f"Its lower bailey is {LD} blocks deep (BAILEY_DEPTH), with a village in it."
