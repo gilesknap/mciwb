@@ -20,7 +20,7 @@ on castle2's layout, then castle2's own:
   castle's walls (stray cats and iron golems, which villages bring, are
   removed first).
 
-``CHECKS=seats,pens`` runs only some of them (castle, seats, houses, pens,
+``CHECKS=seats,pens`` runs only some of them (castle, seats, signs, houses, pens,
 people).
 Refuses to run while a player is within 200 blocks of the site, unless
 FORCE=1. Exits non-zero if any check fails.
@@ -29,6 +29,7 @@ FORCE=1. Exits non-zero if any check fails.
 from __future__ import annotations
 
 import os
+import re
 import sys
 from pathlib import Path
 
@@ -41,6 +42,8 @@ import build_outer  # noqa: E402
 import castle_lib as L  # noqa: E402
 import verify_castle as VC  # noqa: E402
 from record_build import dry_run  # noqa: E402
+
+import numpy as np  # noqa: E402
 
 from castle2_layout import TAG, V  # noqa: E402
 
@@ -76,10 +79,21 @@ def seat_cells() -> list[tuple[Vec3, str]]:
     return _seat_cells
 
 
+_recording: list = []
+
+
+def recording():
+    """the build's stages run against a fake client (once), with the blocks
+    they place in the site (``.world``): what the checks expect to find"""
+    if not _recording:
+        L.PLACED_SEATS.clear()
+        stages = [f for name, f in build_castle.STAGES.items() if name != "earthworks"]
+        _recording.append(dry_run(*stages, box=castle2_layout.site_box()))
+    return _recording[0]
+
+
 def _learn_seats() -> list[tuple[Vec3, str]]:
-    L.PLACED_SEATS.clear()
-    stages = [f for name, f in build_castle.STAGES.items() if name != "earthworks"]
-    rec = dry_run(*stages, box=castle2_layout.site_box())
+    rec = recording()
     cells = []
     for a, b, faces in L.PLACED_SEATS:
         for x in range(min(a.x, b.x), max(a.x, b.x) + 1):
@@ -131,6 +145,55 @@ def seats() -> None:
         f"seats: all {len(cells)} face their table, altar or hall"
         + (f" (not {bad[:4]})" if bad else ""),
         bool(cells) and not bad,
+    )
+
+
+_SNBT_STRING = re.compile(r'"((?:[^"\\]|\\.)*)"|\'((?:[^\'\\]|\\.)*)\'')
+
+
+def snbt_strings(text: str) -> list[str]:
+    """the quoted strings in SNBT text (a sign's messages), unescaped"""
+    return [
+        re.sub(r"\\(.)", r"\1", a if a or not b else b)
+        for a, b in _SNBT_STRING.findall(text)
+    ]
+
+
+def placed_signs() -> list[tuple[Vec3, list[str]]]:
+    """every sign the build places in the site, with its front lines as
+    written: learnt from the recording"""
+    rec = recording()
+    blocks = rec.world.blocks
+    has_text = np.asarray(np.frompyfunc(lambda b: "front_text:" in b, 1, 1)(blocks))
+    out = []
+    for i, j, k in np.argwhere(has_text.astype(bool)):
+        block = blocks[i, j, k]
+        front = re.search(r"front_text:\{messages:\[(.*?)\]", block)
+        if front:
+            lo = rec.world.lo
+            pos = Vec3(int(lo[0] + i), int(lo[1] + j), int(lo[2] + k))
+            out.append((pos, snbt_strings(front.group(1))))
+    return out
+
+
+def signs() -> None:
+    """every sign's front text, read back, is exactly the lines the build
+    wrote: no quote marks shown (the pre-26 JSON-in-a-string form) and no
+    sign of empty lines"""
+    bad = []
+    wanted = placed_signs()
+    for p, lines in wanted:
+        if not any(lines) or any('"' in line for line in lines):
+            bad.append(f"{tuple(p)} written as {lines}")
+            continue
+        reply = VC.c(f"data get block {p.x} {p.y} {p.z} front_text.messages")
+        found = snbt_strings(reply.split(":", 1)[-1])
+        if found != lines:
+            bad.append(f"{tuple(p)} reads {found}, not {lines}")
+    check(
+        f"signs: all {len(wanted)} read back exactly as written, no quotes shown"
+        + (f" (not {bad[:4]})" if bad else ""),
+        bool(wanted) and not bad,
     )
 
 
@@ -250,10 +313,13 @@ def main() -> None:
             (p.x - o.x, p.z - o.z, p.x - o.x, p.z - o.z, p.y - o.y, faces)
             for p, faces in seat_cells()
         ]
-        wanted = os.environ.get("CHECKS", "castle,seats,houses,pens,people").split(",")
+        wanted = os.environ.get(
+            "CHECKS", "castle,seats,signs,houses,pens,people"
+        ).split(",")
         for name, func in (
             ("castle", VC.checks),
             ("seats", seats),
+            ("signs", signs),
             ("houses", houses),
             ("pens", pens),
             ("people", people_checks),
