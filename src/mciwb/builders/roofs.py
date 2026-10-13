@@ -42,7 +42,9 @@ def _ridge_core(ridge: BlockState) -> BlockState:
     ridge as a full block (a double slab) so that there is no hole under it
     """
     if ridge.name.endswith("_slab"):
-        return ridge.with_props(type="double")
+        # a double slab fills its block, so it cannot hold water
+        props = {"waterlogged": False} if "waterlogged" in ridge.props else {}
+        return ridge.with_props(type="double", **props)
     return ridge
 
 

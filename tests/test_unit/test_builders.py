@@ -411,6 +411,15 @@ def test_hip_roof_fills_under_the_ridge(mock_client: MockClient):
         assert mock_client.getblock(Vec3(12, 3, z)) == Item.OAK_PLANKS
 
 
+def test_roof_ridge_core_is_not_waterlogged(mock_client: MockClient):
+    ridge = "oak_slab[type=bottom,waterlogged=true]"
+    hip_roof(Vec3(0, 0, 0), Vec3(2, 0, 2), Item.OAK_STAIRS, ridge=ridge)
+    assert mock_client.state_at(Vec3(1, 1, 1)) == (
+        "minecraft:oak_slab[type=double,waterlogged=false]"
+    )
+    assert mock_client.state_at(Vec3(1, 2, 1)) == f"minecraft:{ridge}"
+
+
 def test_flat_roof(mock_client: MockClient):
     volume = flat_roof(
         Vec3(0, 0, 0),
