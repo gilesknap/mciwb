@@ -46,7 +46,7 @@ Castle Fable II is built at ORIGIN 560,68,-190: site x 550..690,
 z -200..47, entities tagged `castle_560_-190`; its road runs south from
 the bridge, west along z ~52 / x 545, then along z -64 to spawn
 (32,74,-64), sharing the last leg with the castle at 148,-262. Built with
-mciwb 0940fd4 (origin/main with #167 and #169; #170 not merged yet), from
+mciwb 426d61c (origin/main with #167, #169 and #170), from
 this branch's examples copied to nuc2:~/castle2-run/{castle,castle2}.
 
 Last full verify (`verify_castle2.py`, all checks, player online so real

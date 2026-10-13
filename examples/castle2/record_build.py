@@ -200,6 +200,19 @@ def dry_run(*funcs, box: tuple | None = None) -> Recorder:
     return rec
 
 
+def summon_counts(*funcs) -> dict[str, int]:
+    """what build functions summon, by entity type (riders included),
+    learnt by running them against a fake client"""
+    counts: dict[str, int] = {}
+    for command in dry_run(*funcs).commands:
+        if command.startswith("summon minecraft:"):
+            kinds = [command.split()[1].split(":")[1]]
+            kinds += re.findall(r'Passengers:\[\{id:"minecraft:(\w+)"', command)
+            for kind in kinds:
+                counts[kind] = counts.get(kind, 0) + 1
+    return counts
+
+
 def main() -> None:
     if len(sys.argv) < 3:
         raise SystemExit(__doc__)
