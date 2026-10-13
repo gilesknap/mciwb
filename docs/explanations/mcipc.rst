@@ -59,7 +59,9 @@ program uses RCON at the same time, e.g. a server dashboard that polls
 
 This can not be fixed on the client side, so mciwb's ``Client`` checks the
 replies of the commands it uses most, which are safe to send twice:
-``setblock``, ``fill``, ``clone`` and ``loot`` (which reads blocks). If the
+``setblock`` and ``fill`` (except in ``destroy`` mode), and ``loot`` (which
+reads blocks). ``clone`` is not retried: a second ``clone ... move``, or
+a second clone between overlapping boxes, would do harm. If the
 reply does not say that the command ran, the command is sent again (up to
 5 times, with a warning in the log), and only the command's own output is
 returned. `mciwb.builders.ground_heights` and ``foundation`` check each
@@ -71,7 +73,9 @@ command that is safe to repeat, pass the reply you expect to ``world.cmd``::
 
     world.cmd("gamerule advance_time", expect=r"Game rule \S+ is currently set to \S+")
 
-``world.cmd`` returns the server's reply as text, errors included. Since
+``world.cmd`` returns the server's reply as text, errors included.
+(Changed: it used to raise mcipc exceptions such as ``InvalidArgument`` for
+the errors that mcipc recognises.) Since
 Minecraft 1.21.11 game rules have snake case names (``advance_time``, not
 ``doDaylightCycle``), and since 26.1 ``time query`` takes a timeline:
 ``time query day`` gives the ticks into the current day (it was

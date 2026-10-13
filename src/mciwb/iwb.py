@@ -490,6 +490,10 @@ class Iwb:
         too: use ``time query day`` for the ticks into the current day, and
         ``time query day repetition`` for the number of days.)
 
+        Changed: before mciwb#166 the errors that mcipc recognises were
+        raised as mcipc exceptions (e.g. ``InvalidArgument``); now they are
+        returned as text like any other reply.
+
         Another RCON client of the server (e.g. a dashboard) can, rarely,
         garble the reply: empty it or add its own output to it. Pass
         *expect* to check the reply and send the command again if needed.
