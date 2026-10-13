@@ -6,6 +6,7 @@ Render a Build to an Image
 mciwb can draw a region of the world to a PNG image, so you can see what a
 script built without joining the game. This is especially useful for AI
 agents that write build scripts: they can read the image and check their work.
+The :ref:`Claude Code skill <claude_skill>` uses it to check each build.
 
 .. figure:: ../images/render-example.png
     :alt: top, isometric, south and east views of a small test scene

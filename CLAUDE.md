@@ -33,6 +33,10 @@ uv run tox -e docs               # docs build, warnings are errors
 
 ## Building something
 
+The `minecraft-build` skill (`.claude/skills/minecraft-build`) gives the
+whole workflow: server, backup, survey, build script template, render,
+restore. Its `scripts/survey.py` finds the ground height of a site.
+
 Start a server (Minecraft 26.3 in podman, RCON on localhost:20100) with
 `mciwb start`. Then either run a script, or use `mciwb shell` for IPython:
 
