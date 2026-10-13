@@ -73,8 +73,14 @@ client.setblock(pos, "minecraft:chest[facing=west]")
 From mcwb (geometry) and mciwb:
 
 - `Volume.from_corners(a, b)`: a box. `.start` (lowest corner), `.end`,
-  `.size`, `.inside(pos)`, `.fill(client, item)` (any size: splits into
-  several `/fill`s), `.walls(client, item, top=False, bottom=False)`.
+  `.size`, `.inside(pos)`, `.fill(client, item)` (replaces every block in
+  the box, of any size: splits it into several `/fill`s; `Item.AIR` clears
+  it), `.walls(client, item, top=False, bottom=False)`.
+- `Placer().fill(a, b, item, mode=None, filter=None)`: a `/fill` of any
+  size that raises `BuildError` if the server rejects it; with
+  `filter="minecraft:stone"` (or a tag like `"#minecraft:logs"`) it replaces
+  only those blocks, e.g. `Placer().fill(a, b, Item.AIR, filter="minecraft:water")`
+  drains a box.
 - `Volume.from_anchor(pos, size, Anchor3.BOTTOM_MIDDLE)`: a box positioned
   by a corner or face centre.
 - `polygon(client, center, height, diameter, sides=4, item=..., mode=...)`:
@@ -289,7 +295,7 @@ of `mciwb start`, as it starts the server again. Existing backups:
 | `Could not connect to server localhost:20100` | the server is not running: `mciwb start`, or wrong `--port` |
 | `Wrong RCON password` | use the `--password` given to `mciwb start` (`rcon.password` in `~/mciwb-server/server.properties`) |
 | `set_block` returns False with a "not loaded" error | the chunk is unloaded: build near a player or `forceload add` |
-| Fill: "Too many blocks" | over 32768 blocks: use `Volume.fill` or split the box |
+| Fill: "Too many blocks" | over 32768 blocks: use `Volume.from_corners(a, b).fill(client, item)`, or `Placer().fill(a, b, item, mode, filter)` for a mode or filter; both split the box |
 | Render warns "no server ... recent changes may be missing" | pass the `--port`/`--password` of `mciwb start` so it can flush the world first |
 | Render is all pale blue | the region is air, or chunks were never generated: check coordinates with the survey |
 | Build has floating or buried parts | re-survey: ground height varies; lay a `foundation` under it, or place each column at `ground_height(x, z) + 1` |

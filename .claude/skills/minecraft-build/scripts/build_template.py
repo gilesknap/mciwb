@@ -46,7 +46,8 @@ def players_inside(vol: Volume) -> list[str]:
 
 
 def clear(vol: Volume) -> None:
-    """replace everything in the build space with air"""
+    """replace everything in the build space with air: Volume.fill replaces
+    every block, in boxes of any size"""
     vol.fill(get_client(), Item.AIR)
 
 

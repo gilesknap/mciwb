@@ -56,8 +56,11 @@ the image to check every step.
   states go in brackets (`"minecraft:oak_stairs[facing=east,half=top]"`) or
   `world.set_block(pos, item, facing=Direction.EAST, nbt=["half=top"])`.
 - Prefer `/fill` to loops of `set_block`: one `client.fill(a, b, item)`
-  places up to 32768 blocks in one RCON command; `Volume.fill` splits larger
-  boxes. Use `FillMode.HOLLOW`/`OUTLINE` for walls and shells, `polygon` for
+  places up to 32768 blocks in one RCON command;
+  `Volume.from_corners(a, b).fill(client, item)` fills a box of any size,
+  replacing everything in it (`Item.AIR` clears a site), and
+  `Placer().fill(a, b, item, filter="minecraft:stone")` replaces only some
+  blocks in a box of any size. Use `FillMode.HOLLOW`/`OUTLINE` for walls and shells, `polygon` for
   towers, `Blocks` for a 3D array. Each `set_block` is an RCON round trip,
   so keep per-block loops for details.
 - Use the builders rather than placing stairs by hand: `gable_roof`,
