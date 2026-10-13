@@ -35,7 +35,7 @@ import pens  # noqa: E402
 import people  # noqa: E402
 import rooms  # noqa: E402
 import village  # noqa: E402
-from record_build import summon_counts  # noqa: E402
+from fake_client import summon_counts  # noqa: E402
 
 from mciwb.imports import Vec3  # noqa: E402
 
