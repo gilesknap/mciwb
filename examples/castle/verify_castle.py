@@ -71,6 +71,7 @@ from castle_layout import (  # noqa: E402
     WALL_H,
     WALL_STAIRS,
     WELL,
+    WELL_GATE,
     WELL_TUNNEL_X,
     XG,
     YU,
@@ -461,6 +462,16 @@ def passages() -> None:
         and all(
             is_block(V(wx, y, wz), "minecraft:bubble_column") for y in range(-8, 0)
         ),
+    )
+    gx, gz = WELL_GATE
+    check(
+        "well: a gate in the rim, the way out of the water onto the bailey",
+        is_block(V(gx, 0, gz), "#minecraft:fence_gates")
+        and is_block(V(gx, 1, gz), L.AIR)
+        and is_block(V(wx, 0, wz), L.AIR)
+        and is_block(V(wx, 1, wz), L.AIR)
+        and is_block(V(2 * gx - wx, 0, 2 * gz - wz), L.AIR)
+        and is_block(V(2 * gx - wx, 1, 2 * gz - wz), L.AIR),
     )
     check(
         "well: a door at the bottom into a dry tunnel",

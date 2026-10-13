@@ -124,6 +124,7 @@ CELL_LEVER = -4
 PIT_TRAP = (95, -8, 127, 7)
 ARROW_TRAP = (94, 96, -15, 118, 108)  # x1, x2, standing level, wire z, dispenser z
 WELL = (60, 105)
+WELL_GATE = (WELL[0], WELL[1] + 1)  # the fence gate in the well's rim, south
 # ---- the lower bailey's buildings and features, x1, z1, x2, z2 (local).
 # Each keeps clear of the bailey's round towers (BAILEY_TOWERS), with room
 # for a tower's ground door: `layout_problems` checks it before a build.

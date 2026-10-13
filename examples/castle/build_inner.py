@@ -52,6 +52,7 @@ from castle_layout import (
     VAULT_Y,
     WALL_H,
     WELL,
+    WELL_GATE,
     WELL_TUNNEL_X,
     XG,
     YU,
@@ -954,6 +955,12 @@ def well() -> None:
     L.set_block(V(x, 3, z), f"{L.LANTERN}[hanging=true]")
     # the shaft: water with soul sand at the bottom (a bubble column lifts you back up)
     L.fill(V(x, -9, z), V(x, 0, z), L.AIR)
+    # a gate in the rim's south side (WELL_GATE), the way in and out: the
+    # water is level with the ground, so whoever the bubble column brings
+    # up opens it and steps out onto the bailey (a 1.5-high wall all round
+    # left them no way out); villagers cannot open a fence gate
+    gx, gz = WELL_GATE
+    L.set_block(V(gx, 0, gz), "minecraft:dark_oak_fence_gate[facing=south]")
     L.set_block(V(x, -9, z), "minecraft:soul_sand")
     L.fill(V(x, -8, z), V(x, -1, z), L.WATER)
     # the shaft's walls, then a door at the bottom into the tunnel east
