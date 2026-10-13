@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>MCIPC Client object &#8212; mciwb 0.9.2.dev114+g0940fd4dc documentation</title>
+    <title>MCIPC Client object &#8212; mciwb 0.9.2.dev115+g426d61c04 documentation</title>
   
   
   
@@ -40,7 +40,7 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be" />
 
-    <script src="../_static/documentation_options.js?v=e704940e"></script>
+    <script src="../_static/documentation_options.js?v=581c5855"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -531,6 +531,38 @@ separate client object per thread of execution. If it did not do so then
 the communication to RCON would get tangled up between threads and fail to
 work.</p>
 </section>
+<section id="other-rcon-clients">
+<h2>Other RCON clients<a class="headerlink" href="#other-rcon-clients" title="Link to this heading">#</a></h2>
+<p>The Minecraft server keeps one output buffer for all of its RCON
+connections. It empties the buffer before running a command and returns
+what is in it afterwards, so when two connections run commands at the same
+moment, a reply can come back empty, or with the other connection’s output
+in it. mciwb’s threads take turns, so this only happens when another
+program uses RCON at the same time, e.g. a server dashboard that polls
+<code class="docutils literal notranslate"><span class="pre">list</span></code>: about one command in 10000.</p>
+<p>This can not be fixed on the client side, so mciwb’s <code class="docutils literal notranslate"><span class="pre">Client</span></code> checks the
+replies of the commands it uses most, which are safe to send twice:
+<code class="docutils literal notranslate"><span class="pre">setblock</span></code> and <code class="docutils literal notranslate"><span class="pre">fill</span></code> (except in <code class="docutils literal notranslate"><span class="pre">destroy</span></code> mode), and <code class="docutils literal notranslate"><span class="pre">loot</span></code> (which
+reads blocks). <code class="docutils literal notranslate"><span class="pre">clone</span></code> is not retried: a second <code class="docutils literal notranslate"><span class="pre">clone</span> <span class="pre">...</span> <span class="pre">move</span></code>, or
+a second clone between overlapping boxes, would do harm. If the
+reply does not say that the command ran, the command is sent again (up to
+5 times, with a warning in the log), and only the command’s own output is
+returned. <a class="reference internal" href="../_api/mciwb.builders.html#mciwb.builders.ground_heights" title="mciwb.builders.ground_heights"><code class="xref any py py-func docutils literal notranslate"><span class="pre">mciwb.builders.ground_heights</span></code></a> and <code class="docutils literal notranslate"><span class="pre">foundation</span></code> check each
+column in the same way.</p>
+<p>Other commands are sent once, because some are not safe to send twice: a
+garbled reply to <code class="docutils literal notranslate"><span class="pre">summon</span></code> or <code class="docutils literal notranslate"><span class="pre">give</span></code> does not mean that it failed. For a
+command that is safe to repeat, pass the reply you expect to <code class="docutils literal notranslate"><span class="pre">world.cmd</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">world</span><span class="o">.</span><span class="n">cmd</span><span class="p">(</span><span class="s2">"gamerule advance_time"</span><span class="p">,</span> <span class="n">expect</span><span class="o">=</span><span class="sa">r</span><span class="s2">"Game rule \S+ is currently set to \S+"</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">world.cmd</span></code> returns the server’s reply as text, errors included.
+(Changed: it used to raise mcipc exceptions such as <code class="docutils literal notranslate"><span class="pre">InvalidArgument</span></code> for
+the errors that mcipc recognises.) Since
+Minecraft 1.21.11 game rules have snake case names (<code class="docutils literal notranslate"><span class="pre">advance_time</span></code>, not
+<code class="docutils literal notranslate"><span class="pre">doDaylightCycle</span></code>), and since 26.1 <code class="docutils literal notranslate"><span class="pre">time</span> <span class="pre">query</span></code> takes a timeline:
+<code class="docutils literal notranslate"><span class="pre">time</span> <span class="pre">query</span> <span class="pre">day</span></code> gives the ticks into the current day (it was
+<code class="docutils literal notranslate"><span class="pre">time</span> <span class="pre">query</span> <span class="pre">daytime</span></code>) and <code class="docutils literal notranslate"><span class="pre">time</span> <span class="pre">query</span> <span class="pre">day</span> <span class="pre">repetition</span></code> the number of days.</p>
+</section>
 </section>
 
 
@@ -582,6 +614,7 @@ work.</p>
     <ul class="pst-show_toc_level nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#get-client">get_client</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#thread-safe">Thread Safe</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#other-rcon-clients">Other RCON clients</a></li>
 </ul>
   </nav></div>
 

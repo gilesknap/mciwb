@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>mciwb &#8212; mciwb 0.9.2.dev114+g0940fd4dc documentation</title>
+    <title>mciwb &#8212; mciwb 0.9.2.dev115+g426d61c04 documentation</title>
   
   
   
@@ -40,7 +40,7 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be" />
 
-    <script src="../_static/documentation_options.js?v=e704940e"></script>
+    <script src="../_static/documentation_options.js?v=581c5855"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -553,7 +553,7 @@ called <code class="docutils literal notranslate"><span class="pre">render</span
 <td><p>A class to provide threads for monitoring.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#mciwb.Client" title="mciwb.Client"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Client</span></code></a></p></td>
-<td><p>An RCON client for Minecraft Java Edition that is safe to use alongside the clients of other threads in this process.</p></td>
+<td><p>An RCON client for Minecraft Java Edition that copes with the other RCON clients of the server.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#mciwb.get_client" title="mciwb.get_client"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_client</span></code></a></p></td>
 <td><p>Retrieve the client for the current thread.</p></td>
@@ -846,15 +846,36 @@ iso_ne, iso_nw or iso_sw; a list, or the name of one view</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mciwb.Iwb.cmd">
-<span class="sig-name descname"><span class="pre">cmd</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cmd</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></span><a class="reference internal" href="../_modules/mciwb/iwb.html#Iwb.cmd"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.Iwb.cmd" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">cmd</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cmd</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">expect</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></span><a class="reference internal" href="../_modules/mciwb/iwb.html#Iwb.cmd"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.Iwb.cmd" title="Link to this definition">#</a></dt>
 <dd><p>Run any arbitrary Minecraft console command on the server.</p>
+<p>The server’s reply is returned as it is, including error messages
+such as <code class="docutils literal notranslate"><span class="pre">Incorrect</span> <span class="pre">argument</span> <span class="pre">for</span> <span class="pre">command...&lt;--[HERE]</span></code>. (On Minecraft
+26.x, for example, game rules have snake case names, so
+<code class="docutils literal notranslate"><span class="pre">gamerule</span> <span class="pre">doDaylightCycle</span></code> is an error: use
+<code class="docutils literal notranslate"><span class="pre">gamerule</span> <span class="pre">advance_time</span></code>. And <code class="docutils literal notranslate"><span class="pre">time</span> <span class="pre">query</span> <span class="pre">daytime</span></code> is an error
+too: use <code class="docutils literal notranslate"><span class="pre">time</span> <span class="pre">query</span> <span class="pre">day</span></code> for the ticks into the current day, and
+<code class="docutils literal notranslate"><span class="pre">time</span> <span class="pre">query</span> <span class="pre">day</span> <span class="pre">repetition</span></code> for the number of days.)</p>
+<p>Changed: before mciwb#166 the errors that mcipc recognises were
+raised as mcipc exceptions (e.g. <code class="docutils literal notranslate"><span class="pre">InvalidArgument</span></code>); now they are
+returned as text like any other reply.</p>
+<p>Another RCON client of the server (e.g. a dashboard) can, rarely,
+garble the reply: empty it or add its own output to it. Pass
+<em>expect</em> to check the reply and send the command again if needed.
+Only do that for a command that is safe to send twice (e.g.
+<code class="docutils literal notranslate"><span class="pre">setblock</span></code>, <code class="docutils literal notranslate"><span class="pre">tp</span></code> to a fixed place, <code class="docutils literal notranslate"><span class="pre">gamerule</span> <span class="pre">...</span></code>, but not
+<code class="docutils literal notranslate"><span class="pre">give</span></code> or <code class="docutils literal notranslate"><span class="pre">summon</span></code>).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>cmd</strong> – the command to run, without the leading slash
-e.g. “time set day”</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>cmd</strong> – the command to run, without the leading slash
+e.g. “time set day”</p></li>
+<li><p><strong>expect</strong> – a regular expression that the reply must contain,
+e.g. <code class="docutils literal notranslate"><span class="pre">r&quot;Game</span> <span class="pre">rule</span> <span class="pre">\S+</span> <span class="pre">is</span> <span class="pre">currently</span> <span class="pre">set</span> <span class="pre">to</span> <span class="pre">\S+&quot;</span></code></p></li>
+</ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>the server’s response</p>
+<dd class="field-even"><p>the server’s response. With <em>expect</em>, just the part of it
+that matched, or the whole response if it never matched</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1364,13 +1385,36 @@ the program so that background work is finished cleanly.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="mciwb.Client">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">mciwb.</span></span><span class="sig-name descname"><span class="pre">Client</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frag_threshold</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">4096</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mciwb/threads.html#Client"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.Client" title="Link to this definition">#</a></dt>
-<dd><p>An RCON client for Minecraft Java Edition that is safe to use alongside
-the clients of other threads in this process.</p>
-<p>Each command waits for any command running on another connection to
-complete, so that the server returns the output of this command only.</p>
+<dd><p>An RCON client for Minecraft Java Edition that copes with the other RCON
+clients of the server.</p>
+<p>Each command waits for any command running on another connection of this
+process to complete, so that the server returns the output of this
+command only.</p>
+<p>Other processes can still run commands at the same moment, which can
+empty our reply or add theirs to it (about 1 in 10000 commands while
+another client polls the server). So the replies of <code class="docutils literal notranslate"><span class="pre">setblock</span></code> and
+<code class="docutils literal notranslate"><span class="pre">fill</span></code> (except in <code class="docutils literal notranslate"><span class="pre">destroy</span></code> mode) and <code class="docutils literal notranslate"><span class="pre">loot</span></code> (as used by
+<code class="docutils literal notranslate"><span class="pre">mcwb.get_block</span></code>) are checked, the command is sent again if the reply
+is lost, and only the command’s own output is returned. Other commands,
+including <code class="docutils literal notranslate"><span class="pre">clone</span></code>, are sent once: use <code class="docutils literal notranslate"><span class="pre">retry_command</span></code>, or
+<code class="docutils literal notranslate"><span class="pre">Iwb.cmd(...,</span> <span class="pre">expect=...)</span></code>, for those that are safe to send again.</p>
 <p>Set an optional fragmentation threshold and
 command in order to detect fragmented packets.</p>
 <p>For details see: <a class="reference external" href="https://wiki.vg/RCON#Fragmentation">https://wiki.vg/RCON#Fragmentation</a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="mciwb.Client.run">
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">command</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">arguments</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></span><a class="reference internal" href="../_modules/mciwb/threads.html#Client.run"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.Client.run" title="Link to this definition">#</a></dt>
+<dd><p>Run a command, raising mcipc’s exceptions (e.g. <code class="docutils literal notranslate"><span class="pre">InvalidArgument</span></code>)
+for the errors that mcipc recognises</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mciwb.Client.run_raw">
+<span class="sig-name descname"><span class="pre">run_raw</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">command</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">arguments</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></span><a class="reference internal" href="../_modules/mciwb/threads.html#Client.run_raw"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.Client.run_raw" title="Link to this definition">#</a></dt>
+<dd><p>Run a command and return the server’s reply as it is, including any
+error message, rather than raising mcipc’s exceptions</p>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="py function">
@@ -1823,7 +1867,11 @@ not drawn, 255 for solid blocks</p>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mciwb.Monitor.stop_named"><code class="docutils literal notranslate"><span class="pre">Monitor.stop_named()</span></code></a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mciwb.Client"><code class="docutils literal notranslate"><span class="pre">Client</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mciwb.Client"><code class="docutils literal notranslate"><span class="pre">Client</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mciwb.Client.run"><code class="docutils literal notranslate"><span class="pre">Client.run()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mciwb.Client.run_raw"><code class="docutils literal notranslate"><span class="pre">Client.run_raw()</span></code></a></li>
+</ul>
+</li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mciwb.get_client"><code class="docutils literal notranslate"><span class="pre">get_client()</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mciwb.set_client"><code class="docutils literal notranslate"><span class="pre">set_client()</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mciwb.new_thread"><code class="docutils literal notranslate"><span class="pre">new_thread()</span></code></a></li>
