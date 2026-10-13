@@ -19,7 +19,7 @@ dependencies = [
     # TODO: switch to a released mcwb (>0.3.0) once gilesknap/mcwb#1 is merged
     # and published. This commit adds mcwb.Item for current Minecraft blocks
     # and get_block support for blocks without a loot table (e.g. air).
-    "mcwb @ git+https://github.com/gilesknap/mcwb@a6802ea8a8761b673514df2398590751bb66d571",
+    "mcwb @ git+https://github.com/gilesknap/mcwb@1f2c0171efeef8ba594b86366440216f12eac351",
     # mcipc (RCON client + command wrappers) and rcon are unmaintained but work on
     # Python 3.11-3.14 and Minecraft 26.x; pinned to the last known-good releases.
     "mcipc==2.4.2",
