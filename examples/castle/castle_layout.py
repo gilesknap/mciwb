@@ -225,6 +225,108 @@ SUMMONED = {
     "details": {"armor_stand": 4, "iron_golem": 1, "cat": 1},
 }
 
+# the round towers' doorways: centre x, z, radius, wall thickness and the
+# doors as (standing level, direction, offset), as castle_lib.round_tower
+# takes them: a 2-high opening from the tower's floor out through its wall,
+# shifted sideways by offset to the right of the direction (east of a door
+# facing north, west of one facing south) to meet a wall walk. The curtains'
+# walks are their two inner rows (x 1..2 and W-3..W-2, z 1..2, and the
+# south curtains' z ZS-2..ZS-1 and UD-3..UD-2), and the ground doors keep
+# off the curtains. Every door opens onto something to stand on at its
+# level on both sides: a floor inside, and outside the walk, the ward or
+# the keep's roof (reach.door_problems checks it). The mid-wall towers'
+# walls are one thick, so that there is a floor between their spiral stair
+# and the wall for the walk's doors to open onto
+_N, _S, _E, _W = Vec3(0, 0, -1), Vec3(0, 0, 1), Vec3(1, 0, 0), Vec3(-1, 0, 0)
+_WALK, _UWALK = WALL_H, YU + WALL_H
+TOWER_DOORS = {
+    "south-west corner tower": (
+        *BAILEY_TOWERS["south-west corner tower"],
+        2,
+        [(_WALK, _N, -1), (_WALK, _E, 1), (0, _N, 1)],
+    ),
+    "south-east corner tower": (
+        *BAILEY_TOWERS["south-east corner tower"],
+        2,
+        [(_WALK, _N, 1), (_WALK, _W, -1), (0, _N, -1)],
+    ),
+    "west mid-wall tower": (
+        *BAILEY_TOWERS["west mid-wall tower"],
+        1,
+        [(_WALK, _N, -1), (_WALK, _S, 1), (0, _E, 0)],
+    ),
+    "east mid-wall tower": (
+        *BAILEY_TOWERS["east mid-wall tower"],
+        1,
+        [(_WALK, _N, 1), (_WALK, _S, -1), (0, _W, 0)],
+    ),
+    # the junction towers: the bailey's walk, the bailey, the upper ward and
+    # its west (east) and south walks
+    "west junction tower": (
+        *BAILEY_TOWERS["west junction tower"],
+        2,
+        [
+            (_WALK, _S, 1),
+            (0, _S, -1),
+            (YU, _N, 1),
+            (_UWALK, _N, -1),
+            (_UWALK, _E, -1),
+        ],
+    ),
+    "east junction tower": (
+        *BAILEY_TOWERS["east junction tower"],
+        2,
+        [
+            (_WALK, _S, -1),
+            (0, _S, 1),
+            (YU, _N, -1),
+            (_UWALK, _N, 1),
+            (_UWALK, _W, 1),
+        ],
+    ),
+    "west drum tower": (*GATE_TOWERS["west drum tower"], 2, [(0, _N, 0), (16, _E, 0)]),
+    "east drum tower": (*GATE_TOWERS["east drum tower"], 2, [(0, _N, 0), (16, _W, 0)]),
+    "north-west corner tower": (
+        *UPPER_TOWERS["north-west corner tower"],
+        2,
+        [(_UWALK, _S, 1), (_UWALK, _E, -1), (YU, _S, -1)],
+    ),
+    "north-east corner tower": (
+        *UPPER_TOWERS["north-east corner tower"],
+        2,
+        [(_UWALK, _S, -1), (_UWALK, _W, 1), (YU, _S, 1)],
+    ),
+    "upper west mid-wall tower": (
+        *UPPER_TOWERS["upper west mid-wall tower"],
+        1,
+        [(_UWALK, _N, -1), (_UWALK, _S, 1), (YU, _E, 0)],
+    ),
+    "upper east mid-wall tower": (
+        *UPPER_TOWERS["upper east mid-wall tower"],
+        1,
+        [(_UWALK, _N, 1), (_UWALK, _S, -1), (YU, _W, 0)],
+    ),
+    # the keep's turrets: from the roof terrace, one row in from the parapet
+    # on either side, and from the ward, away from the keep (not north: the
+    # ladder is on the north wall inside)
+    "keep turret 40,12": (
+        KEEP[0], KEEP[1], 4, 2, [(KEEP_ROOF, _E, 1), (KEEP_ROOF, _S, -1), (YU, _W, 0)]
+    ),
+    "keep turret 80,12": (
+        KEEP[2], KEEP[1], 4, 2, [(KEEP_ROOF, _W, -1), (KEEP_ROOF, _S, 1), (YU, _E, 0)]
+    ),
+    "keep turret 40,42": (
+        KEEP[0], KEEP[3], 4, 2, [(KEEP_ROOF, _E, -1), (KEEP_ROOF, _N, 1), (YU, _S, 0)]
+    ),
+    "keep turret 80,42": (
+        KEEP[2], KEEP[3], 4, 2, [(KEEP_ROOF, _W, 1), (KEEP_ROOF, _N, -1), (YU, _S, 0)]
+    ),
+    "keep's lantern tower": (
+        XG, (KEEP[1] + KEEP[3]) // 2, 3, 2, [(KEEP_ROOF, _S, 0)]
+    ),
+    "alchemist's tower": (*ALCH, 6, 2, [(YU, _S, 0)]),
+}  # fmt: skip
+
 # every round tower standing on a ward's ground, for `layout_problems`
 ROUND_TOWERS = {
     **BAILEY_TOWERS,

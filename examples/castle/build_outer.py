@@ -31,6 +31,7 @@ from castle_layout import (
     ORIGIN,
     SITE_TOP,
     SPAWN,
+    TOWER_DOORS,
     UD,
     UPPER_TOWERS,
     WALL_H,
@@ -164,6 +165,22 @@ DITCH = (
 def wcells(cells: L.Cells) -> L.Cells:
     """local cells to world cells"""
     return {(ORIGIN.x + x, ORIGIN.z + z) for x, z in cells}
+
+
+def tower(name: str, y_bottom: int, y_top: int, floors: list[int], **kwargs) -> None:
+    """the round tower ``name`` of TOWER_DOORS, with its doors (levels local)"""
+    cx, cz, r, wall, doors = TOWER_DOORS[name]
+    L.round_tower(
+        ORIGIN.x + cx,
+        ORIGIN.z + cz,
+        r,
+        ORIGIN.y + y_bottom,
+        ORIGIN.y + y_top,
+        wall=wall,
+        floors=[ORIGIN.y + f for f in floors],
+        doors=[(ORIGIN.y + dy, d, o) for dy, d, o in doors],
+        **kwargs,
+    )
 
 
 def portcullis_args(gate: tuple[int, int, int, int]) -> tuple[int, int, int, int]:
@@ -352,53 +369,24 @@ def bailey_walls() -> None:
     )
     # corner towers straddling the corners, and mid-wall towers
     walk = WALL_H
-    t = BAILEY_TOWERS
-    towers = [
-        (
-            t["south-west corner tower"],
-            [(walk, N, -1), (walk, E, 1), (0, N, 1)],
-            BANNER,
-        ),
-        (
-            t["south-east corner tower"],
-            [(walk, N, 1), (walk, Wd, 1), (0, N, -1)],
-            BANNER,
-        ),
-        (t["west mid-wall tower"], [(walk, N, -1), (walk, S, -1), (0, E, 0)], None),
-        (t["east mid-wall tower"], [(walk, N, 1), (walk, S, 1), (0, Wd, 0)], None),
-    ]
-    for (cx, cz, r), doors, banner in towers:
-        L.round_tower(
-            ORIGIN.x + cx,
-            ORIGIN.z + cz,
-            r,
-            ORIGIN.y + MOAT_FLOOR,
-            ORIGIN.y + walk + 8,
-            floors=[ORIGIN.y, ORIGIN.y + walk],
-            doors=[(ORIGIN.y + dy, d, o) for dy, d, o in doors],
-            banner=banner,
-        )
-    # the junction towers where the bailey walls meet the cliff: up past the upper ward's walls
-    for (cx, cz, r), doors in (
-        (
-            t["west junction tower"],
-            [(walk, S, -1), (YU + WALL_H, N, -1), (0, S, 1), (YU, S, 1)],
-        ),
-        (
-            t["east junction tower"],
-            [(walk, S, 1), (YU + WALL_H, N, 1), (0, S, -1), (YU, S, -1)],
-        ),
-    ):
-        L.round_tower(
-            ORIGIN.x + cx,
-            ORIGIN.z + cz,
-            r,
-            ORIGIN.y + MOAT_FLOOR,
-            ORIGIN.y + YU + WALL_H + 8,
-            floors=[ORIGIN.y, ORIGIN.y + walk, ORIGIN.y + YU, ORIGIN.y + YU + walk],
-            doors=[(ORIGIN.y + dy, d, o) for dy, d, o in doors],
-            banner=BANNER2,
-        )
+    for name in BAILEY_TOWERS:
+        if "junction" in name:
+            # where the bailey walls meet the cliff: up past the upper ward's walls
+            tower(
+                name,
+                MOAT_FLOOR,
+                YU + walk + 8,
+                [0, walk, YU, YU + walk],
+                banner=BANNER2,
+            )
+        else:
+            tower(
+                name,
+                MOAT_FLOOR,
+                walk + 8,
+                [0, walk],
+                banner=BANNER if "corner" in name else None,
+            )
     # stairs from the courtyard up to the wall walks (west, east, and beside the gatehouse)
     wall_stairs(upper=False)
 
@@ -474,20 +462,8 @@ def gatehouse() -> dict:
     g = L.portcullis(*portcullis_args(MAIN_GATE))
     # drum towers straddling the gatehouse's outer corners (clear of the
     # portcullis wiring channel east of the passage), up past the gatehouse top
-    for (cx, cz, r), doors in (
-        (GATE_TOWERS["west drum tower"], [(0, N, 0), (top, E, 0)]),
-        (GATE_TOWERS["east drum tower"], [(0, N, 0), (top, Wd, 0)]),
-    ):
-        L.round_tower(
-            ORIGIN.x + cx,
-            ORIGIN.z + cz,
-            r,
-            ORIGIN.y + MOAT_FLOOR,
-            ORIGIN.y + top + 8,
-            floors=[ORIGIN.y, ORIGIN.y + top],
-            doors=[(ORIGIN.y + dy, d, o) for dy, d, o in doors],
-            banner=BANNER,
-        )
+    for name in GATE_TOWERS:
+        tower(name, MOAT_FLOOR, top + 8, [0, top], banner=BANNER)
     # a lamp and banners over the arch (clear of the drawbridge chains at XG +- 4)
     for x in (XG - GATE_BANNER_DX, XG + GATE_BANNER_DX):
         L.set_block(V(x, 5, z2 + 1), f"minecraft:{BANNER}_wall_banner[facing=south]")
@@ -665,43 +641,18 @@ def upper_walls() -> None:
     )
     walk = y + WALL_H
     # north corner towers with conical roofs, mid-wall towers with battlements
-    t = UPPER_TOWERS
-    for (cx, cz, r), doors, roof in (
-        (
-            t["north-west corner tower"],
-            [(walk, S, -1), (walk, E, 1), (y, S, 1)],
-            L.DARK_TILES,
-        ),
-        (
-            t["north-east corner tower"],
-            [(walk, S, 1), (walk, Wd, 1), (y, S, -1)],
-            L.DARK_TILES,
-        ),
-    ):
-        L.round_tower(
-            ORIGIN.x + cx,
-            ORIGIN.z + cz,
-            r,
-            ORIGIN.y + DITCH_FLOOR - 1,
-            ORIGIN.y + walk + 12,
-            floors=[ORIGIN.y + y, ORIGIN.y + walk, ORIGIN.y + walk + 6],
-            doors=[(ORIGIN.y + dy, d, o) for dy, d, o in doors],
-            roof=roof,
-            banner=BANNER2,
-        )
-    for (cx, cz, r), doors in (
-        (t["upper west mid-wall tower"], [(walk, N, -1), (walk, S, -1), (y, E, 0)]),
-        (t["upper east mid-wall tower"], [(walk, N, 1), (walk, S, 1), (y, Wd, 0)]),
-    ):
-        L.round_tower(
-            ORIGIN.x + cx,
-            ORIGIN.z + cz,
-            r,
-            ORIGIN.y + DITCH_FLOOR - 1,
-            ORIGIN.y + walk + 6,
-            floors=[ORIGIN.y + y, ORIGIN.y + walk],
-            doors=[(ORIGIN.y + dy, d, o) for dy, d, o in doors],
-        )
+    for name in UPPER_TOWERS:
+        if "corner" in name:
+            tower(
+                name,
+                DITCH_FLOOR - 1,
+                walk + 12,
+                [y, walk, walk + 6],
+                roof=L.DARK_TILES,
+                banner=BANNER2,
+            )
+        else:
+            tower(name, DITCH_FLOOR - 1, walk + 6, [y, walk])
     # stairs up to the wall walks
     wall_stairs(upper=True)
 
@@ -783,6 +734,13 @@ def grand_stair() -> dict:
     L.fill(V(GATE_X1, YU + 1, UD + 1), V(GATE_X2, YU + 1, UD + 1), L.AIR)
     L.fill(V(GATE_X1, YU, UD + 1), V(GATE_X2, YU, UD + 1), L.AIR)
     g = L.portcullis(*portcullis_args(MIDDLE_GATE))
+    # its winch room spans the gap between the gate towers over the ward
+    # behind the gate: a floor out to the west tower's passage, a north
+    # wall with a slit (the facade is its south wall) and a roof
+    L.fill(V(XG - 4, YU + 3, UD - 3), V(XG - 3, YU + 3, UD - 2), L.BRICK)
+    L.fill(V(XG - 4, YU + 3, UD - 4), V(XG + 4, YU + 7, UD - 4), L.BRICK)
+    L.fill(V(XG - 2, YU + 5, UD - 4), V(XG + 2, YU + 5, UD - 4), L.BARS)
+    L.fill(V(XG - 4, YU + 7, UD - 3), V(XG + 4, YU + 7, UD - 1), L.BRICK)
     # the winch room of this gate is reached through the WEST tower (the
     # wiring channel runs inside the east one): a door from the ward, a
     # lobby, a stair up four blocks and a passage east into the winch room
@@ -853,34 +811,16 @@ def keep_shell() -> None:
         ORIGIN.y + KEEP_ROOF + 1,
     )
     # corner turrets with conical roofs, reached from the roof terrace and the ground
-    for cx, cz, dirs in (
-        (x1, z1, (E, S)),
-        (x2, z1, (Wd, S)),
-        (x1, z2, (E, N)),
-        (x2, z2, (Wd, N)),
-    ):
-        doors = [
-            (KEEP_ROOF, dirs[0], 0),
-            (KEEP_ROOF, dirs[1], 0),
-            (y, dirs[0], 0),
-            (y, dirs[1], 0),
-        ]
-        L.round_tower(
-            ORIGIN.x + cx,
-            ORIGIN.z + cz,
-            4,
-            ORIGIN.y + y - 2,
-            ORIGIN.y + KEEP_ROOF + 10,
-            floors=[
-                ORIGIN.y + y,
-                ORIGIN.y + y + 10,
-                ORIGIN.y + y + 19,
-                ORIGIN.y + KEEP_ROOF,
-            ],
-            doors=[(ORIGIN.y + dy, d, o) for dy, d, o in doors],
-            roof=L.DARK_TILES,
-            banner=BANNER,
-        )
+    for cx in (x1, x2):
+        for cz in (z1, z2):
+            tower(
+                f"keep turret {cx},{cz}",
+                y - 2,
+                KEEP_ROOF + 10,
+                [y, y + 10, y + 19, KEEP_ROOF],
+                roof=L.DARK_TILES,
+                banner=BANNER,
+            )
     # windows: tall stained glass in pairs on every face, each storey
     for fy in (y + 2, y + 12, y + 21):
         for x in range(x1 + 6, x2 - 5, 6):
@@ -918,17 +858,15 @@ def keep_shell() -> None:
         )
     L.fill(V(XG - 2, y + 2, z2), V(XG + 2, y + 3, z2), L.BARS)
     # a central lantern tower on the roof
-    L.round_tower(
-        ORIGIN.x + XG,
-        ORIGIN.z + (z1 + z2) // 2,
-        3,
-        ORIGIN.y + KEEP_ROOF - 1,
-        ORIGIN.y + KEEP_ROOF + 8,
-        floors=[ORIGIN.y + KEEP_ROOF],
-        doors=[(ORIGIN.y + KEEP_ROOF, S, 0)],
+    tower(
+        "keep's lantern tower",
+        KEEP_ROOF - 1,
+        KEEP_ROOF + 8,
+        [KEEP_ROOF],
         roof=L.DARK_TILES,
         banner=BANNER,
         stair=False,
+        plinth=False,  # it stands on the roof: no kerb in front of its door
     )
     # a path from the middle gate to the great door
     L.fill(V(XG - 1, y - 1, z2 + 1), V(XG + 1, y - 1, UD - 5), L.ANDESITE)

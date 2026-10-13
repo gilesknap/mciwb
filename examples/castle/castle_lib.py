@@ -415,6 +415,27 @@ def spiral_points(cx: int, cz: int, y1: int, y2: int, rad: int = 2) -> list[Vec3
     return points
 
 
+def door_line(cx: int, cz: int, r: int, direction: Vec3, offset: int) -> Cells:
+    """the (x, z) cells along a round tower's doorway, from the centre out
+    through its wall (see `round_tower`)"""
+    side = Vec3(-direction.z, 0, direction.x) * offset
+    return {
+        (int(q.x), int(q.z))
+        for k in range(r + 1)
+        for q in [Vec3(cx, 0, cz) + direction * k + side]
+    }
+
+
+def lantern_spot(
+    candidates: list[tuple[int, int]], room: Cells, doorways: Cells
+) -> tuple[int, int] | None:
+    """the first candidate cell that is in the room and not in a doorway"""
+    for spot in candidates:
+        if spot in room and spot not in doorways:
+            return spot
+    return None
+
+
 def round_tower(
     cx: int,
     cz: int,
@@ -429,6 +450,7 @@ def round_tower(
     block: str = BRICK,
     roof: str | None = None,
     banner: str | None = None,
+    plinth: bool = True,
 ) -> None:
     """
     A hollow round tower. ``y_top`` is the top floor's standing level: the
@@ -443,14 +465,20 @@ def round_tower(
         floor to the top
     :param roof: a block for a stepped conical roof instead of battlements
     :param banner: a banner block to fly from the top
+    :param plinth: a splayed plinth round the foot (not for a tower standing
+        on a roof, where it would be a kerb in front of the door)
     """
     floors = sorted(floors)
+    doors = list(doors)
     outer = disc(cx, cz, r)
     inner = disc(cx, cz, r - wall)
     fill_cells(outer, y_bottom, y_top - 1, block)
-    fill_cells(
-        disc(cx, cz, r + 1) - outer, y_bottom, y_bottom + 1, DARK_BRICK
-    )  # a splayed plinth
+    if plinth:
+        fill_cells(disc(cx, cz, r + 1) - outer, y_bottom, y_bottom + 1, DARK_BRICK)
+    # the cells each floor's doorways run through: no lantern goes there
+    in_doorway: dict[int, Cells] = {}
+    for dy, direction, offset in doors:
+        in_doorway.setdefault(dy, set()).update(door_line(cx, cz, r, direction, offset))
     fill_cells(inner, floors[0] if floors else y_bottom + 1, y_top - 1, AIR)
     # floors
     for fy in floors:
@@ -481,10 +509,13 @@ def round_tower(
             clearance=3,
         )
         for fy in floors:
-            if (cx + 3, cz) in inner:
-                set_block(
-                    Vec3(cx + 3, fy, cz), f"{LANTERN}[hanging=false]"
-                )  # standing on the floor
+            spot = lantern_spot(
+                [(cx + 3, cz), (cx - 3, cz), (cx, cz + 3), (cx, cz - 3)],
+                inner,
+                in_doorway.get(fy, set()),
+            )
+            if spot:  # standing on the floor, out of the doorways
+                set_block(Vec3(spot[0], fy, spot[1]), f"{LANTERN}[hanging=false]")
     elif floors:
         # a ladder up the north inside wall, and a lantern on every floor
         q = Vec3(cx, 0, cz - (r - wall))
@@ -500,7 +531,13 @@ def round_tower(
                 "minecraft:ladder[facing=south]",
             )
         for fy in floors:
-            set_block(Vec3(cx + 1, fy, cz), f"{LANTERN}[hanging=false]")
+            spot = lantern_spot(
+                [(cx + 1, cz), (cx - 1, cz), (cx + 1, cz + 1), (cx - 1, cz + 1)],
+                inner - {(q.x, q.z)},
+                in_doorway.get(fy, set()),
+            )
+            if spot:
+                set_block(Vec3(spot[0], fy, spot[1]), f"{LANTERN}[hanging=false]")
     # top: battlements or a stepped cone (clearing anything left above the top floor first)
     fill_cells(inner, y_top - 1, y_top - 1, BRICK)
     fill_cells(disc(cx, cz, r + 1), y_top, y_top + 4, AIR)

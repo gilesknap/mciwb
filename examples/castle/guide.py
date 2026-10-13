@@ -176,7 +176,7 @@ coordinates in the scripts are offsets from it (x east, z south, y up).
 | Library (secret bookshelf) | 2nd floor (y {ORIGIN.y + KEEP_FLOORS[1]}), west half; the chiseled bookshelf at {p(lib["trigger"])} |
 | Armoury, gallery | 2nd floor, east |
 | Lord's chamber, map room, guest rooms | 3rd floor (y {ORIGIN.y + KEEP_FLOORS[2]}) |
-| Roof terrace and turrets | y {ORIGIN.y + KEEP_ROOF}, up the stair hall; lantern tower in the middle; the four turrets are entered from the terrace |
+| Roof terrace and turrets | y {ORIGIN.y + KEEP_ROOF}, up the stair hall; lantern tower in the middle; the four turrets have doors onto the terrace and the ward, and ladders between their floors |
 | Chapel | {xyz(XG + 38, YU, cz2)} door on the south end; altar at the north end; bell tower at the SW corner |
 | Alchemist's tower | centre {xyz(ex, YU, ez)}, door on the south; the Engine is on the top floor (y {ORIGIN.y + ey}) |
 | Stables, barracks | west side of the bailey |

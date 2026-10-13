@@ -31,6 +31,7 @@ sys.path.insert(0, str(Path(__file__).parent))
 
 import build_outer  # noqa: E402
 import castle_lib as L  # noqa: E402
+import reach  # noqa: E402
 from castle_layout import (  # noqa: E402
     ARROW_TRAP,
     BAILEY_TOWERS,
@@ -62,6 +63,7 @@ from castle_layout import (  # noqa: E402
     SUMMONED,
     TAG,
     TELEPORTS,
+    TOWER_DOORS,
     VAULT,
     VAULT_Y,
     WALL_H,
@@ -552,14 +554,8 @@ def bailey() -> None:
     bad = []
     for name in ("west mid-wall tower", "east mid-wall tower"):
         cx, cz, r = BAILEY_TOWERS[name]
-        # the pillar, and the north and south walls below the wall-walk doors
-        for x, z in (
-            (cx, cz),
-            (cx, cz - r),
-            (cx, cz - r + 1),
-            (cx, cz + r),
-            (cx, cz + r - 1),
-        ):
+        # the pillar, and the north and south walls beside the wall-walk doors
+        for x, z in ((cx, cz), (cx, cz - r), (cx, cz + r)):
             bad += [
                 (name, x, y, z) for y in range(0, WALL_H) if is_block(V(x, y, z), L.AIR)
             ]
@@ -755,6 +751,133 @@ def road() -> None:
     )
 
 
+# how verify reads a block's class (reach.kind) over RCON: the first test
+# that passes; anything else is solid
+_KIND_TESTS = [
+    ("minecraft:air", reach.OPEN),
+    ("minecraft:cave_air", reach.OPEN),
+    ("#minecraft:planks", reach.SOLID),
+    ("#minecraft:stone_bricks", reach.SOLID),
+    ("#minecraft:doors", reach.DOOR),
+    ("#minecraft:fence_gates", reach.DOOR),
+    ("minecraft:iron_trapdoor[open=true]", reach.BLOCK),
+    ("minecraft:iron_trapdoor", reach.SOLID),
+    ("#minecraft:trapdoors", reach.HATCH),
+    ("#minecraft:climbable", reach.CLIMB),
+    ("minecraft:water", reach.SWIM),
+    ("minecraft:bubble_column", reach.SWIM),
+    ("#minecraft:fences", reach.BLOCK),
+    ("#minecraft:walls", reach.BLOCK),
+    ("minecraft:lava", reach.BLOCK),
+    ("minecraft:iron_bars", reach.PANE),
+    ("minecraft:iron_chain", reach.PANE),
+    ("minecraft:glass_pane", reach.PANE),
+    ("#minecraft:replaceable", reach.OPEN),
+    ("#minecraft:wool_carpets", reach.OPEN),
+    ("#minecraft:all_signs", reach.OPEN),
+    ("#minecraft:banners", reach.OPEN),
+    ("#minecraft:buttons", reach.OPEN),
+    ("#minecraft:candles", reach.OPEN),
+    *(
+        (f"minecraft:{b}", reach.OPEN)
+        for b in (
+            "lantern", "soul_lantern", "redstone_wire", "lever", "torch",
+            "wall_torch", "redstone_torch", "redstone_wall_torch", "repeater",
+            "comparator", "tripwire", "tripwire_hook", "cobweb",
+        )
+    ),
+]  # fmt: skip
+_kinds: dict[tuple[int, int, int], int] = {}
+
+
+def rcon_kind(p: Vec3) -> int:
+    """the class (reach.kind) of the block at p, read over RCON"""
+    key = (int(p.x), int(p.y), int(p.z))
+    if key not in _kinds:
+        _kinds[key] = next(
+            (k for test, k in _KIND_TESTS if is_block(p, test)), reach.SOLID
+        )
+    return _kinds[key]
+
+
+POS = re.compile(r"\[(-?[\d.]+)d, (-?[\d.]+)d, (-?[\d.]+)d\]")
+FACING = {
+    0: Vec3(0, -1, 0),
+    1: Vec3(0, 1, 0),
+    2: Vec3(0, 0, -1),
+    3: Vec3(0, 0, 1),
+    4: Vec3(-1, 0, 0),
+    5: Vec3(1, 0, 0),
+}
+
+
+def summoned_clear(kind_at) -> None:
+    """no armour stand stands in a block (a chest, a wall ...) and every
+    item frame hangs in an open cell on a solid block"""
+    from math import floor
+
+    bad = []
+    stands = c(
+        f"execute as @e[type=minecraft:armor_stand,tag={TAG}] run data get entity @s Pos"
+    )
+    n_stands = 0
+    for m in POS.finditer(stands):
+        n_stands += 1
+        x, y, z = (float(v) for v in m.groups())
+        cells = {
+            Vec3(floor(x + dx), floor(y + dy), floor(z + dz))
+            for dx in (-0.25, 0.25)
+            for dz in (-0.25, 0.25)
+            for dy in (0.1, 1.0, 1.9)
+        }
+        if any(kind_at(q) not in reach.PASS for q in cells):
+            bad.append(("armour stand", round(x, 1), round(y, 1), round(z, 1)))
+    frames = c(
+        f"execute as @e[type=minecraft:item_frame,tag={TAG}] run data get entity @s Pos"
+    )
+    n_frames = 0
+    for m in POS.finditer(frames):
+        n_frames += 1
+        x, y, z = (float(v) for v in m.groups())
+        r = c(
+            f"data get entity @e[type=minecraft:item_frame,tag={TAG},"
+            f"x={x},y={y},z={z},distance=..0.2,limit=1] Facing"
+        )
+        f = re.search(r"(\d)b", r)
+        own = Vec3(floor(x), floor(y), floor(z))
+        on = own - FACING[int(f.group(1))] if f else None
+        if on is None or kind_at(own) not in reach.PASS or kind_at(on) in reach.PASS:
+            bad.append(("item frame", round(x, 1), round(y, 1), round(z, 1)))
+    check(
+        f"entities: none of the {n_stands} armour stands is in a block, and the {n_frames} item frames hang in the open on solid blocks{' (not ' + str(bad[:6]) + ')' if bad else ''}",
+        not bad and n_stands > 0 and n_frames > 0,
+    )
+
+
+def towers(kind_at, describe=None) -> None:
+    """every round tower's doorway opens onto somewhere to stand at its
+    level on both sides"""
+    for name, (_cx, _cz, _r, _wall, doors) in TOWER_DOORS.items():
+        bad = [
+            b
+            for b in reach.door_problems(kind_at, describe)
+            if b.startswith(name + ",")
+        ]
+        check(
+            f"towers: the {name}'s {len(doors)} doors open onto floors at their levels on both sides{' (' + '; '.join(bad) + ')' if bad else ''}",
+            not bad,
+        )
+
+
+def reachable(g: reach.Grid) -> None:
+    """a visitor can walk from the bridge to every room (the secret doors
+    opened)"""
+    for line in reach.problems(g):
+        check(f"reach: {line}", False)
+    n = len(reach.spaces())
+    check(f"reach: all {n} rooms and spaces can be walked to from the gate", True)
+
+
 def entities() -> None:
     a, b = site_box()
     box = L.box_selector(a, b)
@@ -803,6 +926,22 @@ def main() -> None:
         bailey()
         road()
         entities()
+        world_folder = os.environ.get("WORLD_FOLDER")
+        if world_folder:
+            # read the site from the world files (RCON is too slow for a
+            # flood fill over it): doors and reachability
+            c("save-all flush")
+            g = reach.load_world(world_folder)
+            summoned_clear(reach.grid_kind(g))
+            towers(reach.grid_kind(g), g.name)
+            reachable(g)
+        else:
+            summoned_clear(rcon_kind)
+            towers(rcon_kind)
+            print(
+                "INFO reach: not checked (set WORLD_FOLDER to the server's world "
+                "folder to walk the castle from its files)"
+            )
     finally:
         c("kill @e[tag=castle_verify]")
         build_outer.forceload(False)

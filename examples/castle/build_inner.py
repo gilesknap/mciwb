@@ -19,6 +19,7 @@ Secrets (see the README for the full list):
 from __future__ import annotations
 
 import castle_lib as L
+from build_outer import tower
 from castle_layout import (
     ALCH,
     ARROW_TRAP,
@@ -67,6 +68,9 @@ F1, F2, F3, FR = YU - 1, YU + 9, YU + 18, KEEP_ROOF - 1  # the keep's floor slab
 KX1, KZ1, KX2, KZ2 = KEEP
 IX1, IZ1, IX2, IZ2 = KX1 + 3, KZ1 + 3, KX2 - 3, KZ2 - 3  # the keep's interior
 LX, LZ = LIBRARY_LADDER  # the ladder shaft from the library's secret room to the vault
+# the z range of the opening in the roof over the stair hall's top flight
+# (x 75..76, which climbs south from z 29 to the roof at z 38)
+ROOF_STAIR = (35, 37)
 
 
 def door(pos: Vec3, facing: str, kind: str = "dark_oak") -> None:
@@ -182,7 +186,7 @@ def keep_interiors() -> None:
         support=L.BRICK,
         clearance=3,
     )
-    for fy in (F2, F3, FR):
+    for fy in (F2, F3):
         L.fill(
             V(69, fy + 1, 30), V(70, fy + 1, 38), L.BRICK_WALL
         )  # a rail round the stairwell
@@ -192,8 +196,15 @@ def keep_interiors() -> None:
     library()
     armoury()
     chambers()
-    # the roof terrace
+    # the roof terrace, and the top flight's way out through it (its last
+    # three steps need the headroom), railed on three sides
     L.fill(V(IX1, FR, IZ1), V(IX2, FR, IZ2), L.ANDESITE)
+    L.fill(V(75, FR, ROOF_STAIR[0]), V(76, FR, ROOF_STAIR[1]), L.AIR)
+    L.fill(V(74, FR + 1, ROOF_STAIR[0] - 1), V(74, FR + 1, ROOF_STAIR[1]), L.BRICK_WALL)
+    L.fill(
+        V(75, FR + 1, ROOF_STAIR[0] - 1), V(77, FR + 1, ROOF_STAIR[0] - 1), L.BRICK_WALL
+    )
+    L.fill(V(77, FR + 1, ROOF_STAIR[0]), V(77, FR + 1, ROOF_STAIR[1]), L.BRICK_WALL)
     for x in (IX1 + 4, IX2 - 4):
         for z in (IZ1 + 4, IZ2 - 4):
             L.set_block(V(x, FR + 1, z), "minecraft:campfire[lit=true]")
@@ -542,17 +553,13 @@ def crypt() -> None:
 
 def alchemist_tower() -> None:
     cx, cz = ALCH
-    r = 6
     y = YU
     floors = [y, y + 8, y + 16, y + 24]
-    L.round_tower(
-        V(cx, 0, cz).x,
-        V(cx, 0, cz).z,
-        r,
-        V(0, y - 2, 0).y,
-        V(0, y + 31, 0).y,
-        floors=[V(0, f, 0).y for f in floors],
-        doors=[(V(0, y, 0).y, S, 0)],
+    tower(
+        "alchemist's tower",
+        y - 2,
+        y + 31,
+        floors,
         roof="minecraft:oxidized_copper",
         banner="purple",
         stair=False,

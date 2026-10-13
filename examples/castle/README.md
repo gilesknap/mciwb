@@ -141,7 +141,12 @@ mid-wall towers stand whole, every wall stair's top step is at its walk
 with headroom and the walk goes on beyond it, and every standing sign
 stands on a solid block, then checks the passages, the treasure,
 the teleport targets of the guide, the road to spawn and its signpost, and
-that the castle's entities are exactly the ones it summoned. A portcullis
+that the castle's entities are exactly the ones it summoned and that no
+armour stand stands in a block or item frame hangs in one, that every round
+tower's doorway opens onto somewhere to stand on both sides at its level
+(`castle_layout.TOWER_DOORS`, `reach.door_problems`), and, given the
+server's world folder in `WORLD_FOLDER`, that a visitor can walk from the
+bridge to every room (`reach.py`, below). A portcullis
 a visitor left closed is reported as found, tested, and left closed. It clears hostile mobs from the site and anything from
 the tripwires first, and leaves everything as it found it: the levers off,
 the bookshelf untouched, the dispensers reloaded. Two things it has to work round: the server pauses
@@ -208,4 +213,14 @@ lightning rod may be `exposed_lightning_rod` by the time you visit.
 - `build_inner.py`: rooms, chapel and crypt, alchemist's tower, bailey
   buildings, dungeons, vault, details.
 - `build_castle.py`: the staged driver. `verify_castle.py`: the checks.
+- `reach.py`: can a visitor walk to every room? A flood fill over the
+  site's blocks (read from the world files: RCON is far too slow) from the
+  bridge, walking, climbing a block, dropping at most 3, up ladders and
+  through water, opening every door and with the hidden doors open, then
+  each space in `reach.spaces()` (every keep room, tower floor, wall walk,
+  the chapel and crypt, the bailey's buildings, the dungeons, catacombs,
+  vault and treasury) must have been reached. `verify_castle.py` runs it
+  when `WORLD_FOLDER` is set (it must be able to read the world, e.g. as
+  root on the server's host); `DUMP=site.npz python reach.py` runs it on a
+  saved copy (`reach.dump`).
 - `test_modules.py`: the mechanism modules alone. `guide.py`: the guide.
