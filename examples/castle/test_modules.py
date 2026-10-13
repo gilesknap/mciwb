@@ -27,8 +27,9 @@ sys.path.insert(0, str(Path(__file__).parent))
 
 import castle_layout  # noqa: E402
 import castle_lib as L  # noqa: E402
-from build_outer import ground_heights_retry, wait_loaded  # noqa: E402
+from build_outer import wait_loaded  # noqa: E402
 
+from mciwb.builders import ground_heights  # noqa: E402
 from mciwb.imports import Heightmap, Vec3, get_world  # noqa: E402
 
 world = get_world()
@@ -74,7 +75,7 @@ def check(name: str, ok: bool) -> None:
 def is_empty(b: Vec3, e: Vec3) -> bool:
     """is the box all air? (the highest block of every column is below it)"""
     columns = [(x, z) for x in range(b.x, e.x + 1) for z in range(b.z, e.z + 1)]
-    tops = ground_heights_retry(columns, Heightmap.WORLD_SURFACE)
+    tops = ground_heights(columns, Heightmap.WORLD_SURFACE)
     return all(top < b.y for top in tops.values())
 
 

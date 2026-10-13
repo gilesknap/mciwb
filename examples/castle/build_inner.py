@@ -493,9 +493,6 @@ def chapel() -> None:
         "minecraft:deepslate_tile_stairs",
         overhang=1,
     )
-    L.fill(
-        V(bx1 + 3, y + 28, bz1 + 3), V(bx1 + 3, y + 29, bz1 + 3), L.DARK_TILES
-    )  # workaround: hip_roof leaves a hole in its top ring (gilesknap/mciwb#166, item 5)
     L.set_block(V(bx1 + 3, y + 30, bz1 + 3), "minecraft:lightning_rod")
     # the crypt under the altar: a trapdoor behind it and a ladder down a
     # lined shaft

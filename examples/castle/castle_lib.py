@@ -19,7 +19,7 @@ from mcwb import Vec3
 
 from mciwb.builders.paths import stairway
 from mciwb.builders.placer import Placer, rectangles
-from mciwb.threads import get_client
+from mciwb.threads import get_client, reply_matches, retry_command
 
 AIR = "minecraft:air"
 STONE = "minecraft:stone"
@@ -97,30 +97,11 @@ def cmd(command: str) -> str:
     return get_client().run(command)
 
 
-def run(command: str, ok: tuple[str, ...]) -> str:
-    """a command whose reply must hold one of ``ok``: an empty reply is
-    retried, and another client's output in front of ours is tolerated
-    (gilesknap/mciwb#166, item 2)"""
-    for _attempt in range(3):
-        r = cmd(command)
-        if r.strip():
-            break
-    if not any(k in r for k in ok):
-        raise RuntimeError(f"{command[:60]}... failed: {r!r}")
-    return r
-
-
-def set_nbt(pos: Vec3, block: str) -> None:
-    """setblock for blocks with block-entity data, e.g. signs: Placer cannot
-    parse the {...} suffix (gilesknap/mciwb#166, item 3)"""
-    run(f"setblock {pos.x} {pos.y} {pos.z} {block}", ("Changed", "Could not set"))
-
-
 def sign(pos: Vec3, block: str, *lines: str) -> None:
     """a sign (``oak_sign[rotation=4]``, ``oak_wall_sign[facing=north]`` ...)
     with up to four lines of text"""
     text = ",".join(f"'\"{line}\"'" for line in (*lines, "", "", "", "")[:4])
-    set_nbt(pos, f"minecraft:{block}{{front_text:{{messages:[{text}]}}}}")
+    placer().setblock(pos, f"minecraft:{block}{{front_text:{{messages:[{text}]}}}}")
 
 
 # the build stage running now, for the tag on summoned entities
@@ -134,10 +115,19 @@ def summon(kind: str, pos: Vec3, nbt: str = "") -> None:
     Summon an entity, tagged ``TAG`` (the castle's) and ``TAG.STAGE`` so that
     a rebuild of the castle or of a stage removes the old ones first (see
     build_castle.kill_stage_entities). ``nbt`` is extra NBT, without braces.
+
+    Another RCON client can empty our reply or add its output to it, and
+    mciwb sends a summon once (a lost reply does not mean it failed, and a
+    second summon would make two): a reply that holds "Summoned" is taken,
+    an empty one is let pass (the build counts what each stage summoned and
+    summons it again if it is missing), and anything else is an error.
     """
     tags = f'Tags:["{TAG}","{TAG}.{STAGE}"]'
     data = f"{{{tags},{nbt}}}" if nbt else f"{{{tags}}}"
-    run(f"summon minecraft:{kind} {pos.x} {pos.y} {pos.z} {data}", ("Summoned",))
+    command = f"summon minecraft:{kind} {pos.x} {pos.y} {pos.z} {data}"
+    r = cmd(command)
+    if r.strip() and "Summoned" not in r:
+        raise RuntimeError(f"{command[:60]}... failed: {r!r}")
 
 
 def players_online() -> list[str]:
@@ -262,12 +252,13 @@ def count_entities(selector: str) -> int:
 
 
 def is_block(pos: Vec3, block: str) -> bool:
-    """is this block (or block tag) at pos? an empty reply is another RCON
-    client's doing (gilesknap/mciwb#166, item 2) and is read again"""
-    for _attempt in range(3):
-        r = cmd(f"execute if block {pos.x} {pos.y} {pos.z} {block}")
-        if r.strip():
-            break
+    """is this block (or block tag) at pos? A read, so safe to send again:
+    mciwb retries only setblock, fill and loot itself, so a reply another
+    RCON client emptied or added to is checked and read again here"""
+    command = f"execute if block {pos.x} {pos.y} {pos.z} {block}"
+    r = retry_command(
+        lambda: cmd(command), reply_matches(r"Test (passed|failed)"), command
+    )
     return "Test passed" in r
 
 

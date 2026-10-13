@@ -171,22 +171,22 @@ the air at `RIG=x,y,z` (its north-west bottom corner, default `0,160,-40`),
 toggles it and reads it back. It refuses to run unless the rig's box is
 empty, and always clears the rig again.
 
-## Workarounds
+## Other RCON clients
 
 The Minecraft server keeps one output buffer for all its RCON connections,
 so when another client (a dashboard polling `list`, say) runs a command at
 the same moment, a reply comes back empty or with the other client's output
-in front of ours: about one command in 10k (gilesknap/mciwb#166, item 2).
-`build_outer.py` wraps mciwb's `ground_heights`, `Placer.fill` and
-`Placer.setblock` to accept a polluted reply and retry an empty one;
-`castle_lib.run` does the same for summons and signs, and the checks read
-a block again when the reply is empty. Signs are placed with a raw
-`setblock`, which works, but `Placer.setblock` now takes block-entity NBT
-and could place them instead (item 3). The
-chapel's bell tower fills the hole that `hip_roof` used to leave in its top
-ring (item 5); `hip_roof` no longer leaves it, so that fill is now harmless
-but redundant. Each workaround is marked in the code with the issue; delete them when
-the fixes are released.
+in it: about one command in 10k. mciwb checks and resends the commands that
+are safe to send twice (`setblock`, `fill`, `loot` and its own
+`ground_heights`), and signs go through `Placer.setblock`, which takes
+their text as block entity data. Two things here it does not cover:
+`castle_lib.is_block` reads a block with `execute if block`, a read that is
+safe to repeat, so it checks the reply and reads again with mciwb's
+`retry_command`; and `castle_lib.summon` is sent once, as mciwb sends a
+summon (a lost reply does not mean it failed, and sending it again could
+make two): it takes a reply that holds "Summoned" and lets an empty one
+pass, since the build counts what each stage summoned and summons what is
+missing again.
 
 The ticks that the checks sprint through also bring night, and hostile
 mobs spawn wherever the light is 0. The castle lights every dark place of

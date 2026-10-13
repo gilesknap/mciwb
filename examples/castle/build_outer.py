@@ -47,100 +47,10 @@ from castle_layout import (
 from mcwb import Vec3
 
 from mciwb.builders import arch, foundation, ground_height, road, stairway
-from mciwb.builders import paths as _paths
-from mciwb.builders import terrain as _terrain
-from mciwb.builders.placer import BuildError, Placer, rectangles
-from mciwb.threads import get_client
+from mciwb.builders.placer import BuildError, rectangles
 
 N, S, E, Wd = Vec3(0, 0, -1), Vec3(0, 0, 1), Vec3(1, 0, 0), Vec3(-1, 0, 0)
 
-
-# ---------------------------------------------------------------- workaround
-# gilesknap/mciwb#166 (item 2): the server keeps one output buffer for all
-# its RCON connections, so when another client (the dashboard polling
-# ``list``) runs a command at the same moment, a reply comes back empty or
-# with the other client's output in front of ours. About one in 10k
-# commands. mciwb's ground_heights then aborts the whole foundation, and
-# Placer.fill and Placer.setblock raise BuildError. Until the library copes
-# with it, this section wraps them: a polluted reply that still holds the
-# command's own reply is accepted, an empty one is retried a few times.
-# Delete it when the fix is released.
-
-RETRIES = 3
-OK_REPLIES = (
-    "Changed the block",
-    "Could not set the block",
-    "Successfully filled",
-    "No blocks were filled",
-)
-
-
-def _retrying(method):
-    """a Placer method that accepts a polluted reply and retries an empty one"""
-
-    def wrapper(self, *args, **kwargs):
-        for attempt in range(RETRIES):
-            try:
-                return method(self, *args, **kwargs)
-            except BuildError as e:
-                reply = str(e).partition(" failed: ")[2]
-                if any(ok in reply for ok in OK_REPLIES):
-                    return reply
-                if reply.strip() or attempt == RETRIES - 1:
-                    raise
-                print(f"   retrying: {e}")
-
-    return wrapper
-
-
-Placer.fill = _retrying(Placer.fill)
-Placer.setblock = _retrying(Placer.setblock)
-
-
-def ground_heights_retry(
-    columns: Iterable[tuple[float, float]],
-    heightmap: _terrain.Heightmap | str = _terrain.Heightmap.MOTION_BLOCKING_NO_LEAVES,
-) -> dict[tuple[int, int], int]:
-    import re
-    from math import floor
-    from uuid import uuid4
-
-    teleported = re.compile(r"Teleported .* to (-?[\d.]+), (-?[\d.]+), (-?[\d.]+)")
-    columns = [(floor(x), floor(z)) for x, z in columns]
-    if not columns:
-        return {}
-    heightmap = _terrain.Heightmap(heightmap).value
-    client = get_client()
-    tag = f"mciwb_{uuid4().hex[:8]}"
-    entity = f"@e[type=minecraft:marker,tag={tag},limit=1]"
-    x, z = columns[0]
-    result = client.run(f'summon minecraft:marker {x} 0 {z} {{Tags:["{tag}"]}}')
-    if not result.startswith("Summoned"):
-        raise BuildError(f"could not summon a marker at {x} 0 {z}: {result}")
-    heights = {}
-    try:
-        for x, z in columns:
-            for _attempt in range(5):
-                result = client.run(
-                    f"execute positioned {x} 0 {z} positioned over {heightmap} run tp {entity} ~ ~ ~"
-                )
-                match = teleported.search(result)
-                if match:
-                    break
-                print(f"   retrying the ground at {x}, {z}: {result!r}")
-                if "No entity" in result:
-                    client.run(f'summon minecraft:marker {x} 0 {z} {{Tags:["{tag}"]}}')
-            else:
-                raise BuildError(f"could not read the ground at {x}, {z}: {result}")
-            heights[(x, z)] = round(float(match.group(2))) - 1
-    finally:
-        client.run(f"kill @e[type=minecraft:marker,tag={tag}]")
-    return heights
-
-
-_terrain.ground_heights = ground_heights_retry
-_paths.ground_heights = ground_heights_retry
-# ---------------------------------------------------------------- end workaround
 
 # local cell sets of the big regions
 BAILEY = L.rect(-1, UD - 1, W, UD + LD)  # platform incl. a 1-block berm
