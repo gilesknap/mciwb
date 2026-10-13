@@ -65,6 +65,7 @@ from castle_layout import (  # noqa: E402
     VAULT,
     VAULT_Y,
     WALL_H,
+    WALL_STAIRS,
     WELL,
     WELL_TUNNEL_X,
     XG,
@@ -532,13 +533,20 @@ def banners() -> None:
     )
 
 
+def walk_step(x: int, walk: int, z: int) -> bool:
+    """somewhere to stand at a wall walk's level: solid under, air for feet and head"""
+    return not is_block(V(x, walk - 1, z), L.AIR) and all(
+        is_block(V(x, walk + k, z), L.AIR) for k in (0, 1)
+    )
+
+
 def bailey() -> None:
-    """the bailey's layout keeps clear of its towers, the mid-wall towers
-    (which buildings and stairs once cut) stand whole, and every standing
-    sign stands on something"""
+    """the layout keeps clear of the round towers, the mid-wall towers
+    (which buildings and stairs once cut) stand whole, every wall stair
+    reaches its walk, and every standing sign stands on something"""
     problems = layout_problems()
     check(
-        f"layout: no building, stair, path or sign in a bailey tower or another building{' (' + '; '.join(problems[:3]) + ')' if problems else ''}",
+        f"layout: no building, stair, path or sign in a round tower or another building{' (' + '; '.join(problems[:3]) + ')' if problems else ''}",
         not problems,
     )
     bad = []
@@ -559,6 +567,22 @@ def bailey() -> None:
         f"towers: the mid-wall towers' pillars and north and south walls are whole{' (not ' + str(bad[:3]) + ')' if bad else ''}",
         not bad,
     )
+    # every wall stair: its top steps at the walk's level with headroom, and
+    # along one row (the one on the curtain's inner edge) the walk goes on
+    for name, (points, width, walk) in WALL_STAIRS.items():
+        (ax, _, az), (bx, _, bz) = points[-2], points[-1]
+        dx, dz = (bx > ax) - (bx < ax), (bz > az) - (bz < az)
+        tops = [
+            (bx - dz * o, bz + dx * o)
+            for o in range(-((width - 1) // 2), width // 2 + 1)
+        ]
+
+        top_ok = all(walk_step(x, walk, z) for x, z in tops)
+        walk_on = any(walk_step(x + dx, walk, z + dz) for x, z in tops)
+        check(
+            f"{name}: top step at the walk (y {ORIGIN.y + walk}) with headroom ({top_ok}), and the walk goes on beyond it ({walk_on})",
+            top_ok and walk_on,
+        )
     floating = []
     for first, (x, y, z, _r) in STANDING_SIGNS.items():
         p = V(x, y, z)

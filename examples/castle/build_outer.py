@@ -16,6 +16,7 @@ from castle_layout import (
     BRIDGE_END,
     DITCH_FLOOR,
     GATE_BANNER_DX,
+    GATE_TOWERS,
     GATE_X1,
     GATE_X2,
     GATEHOUSE,
@@ -30,8 +31,8 @@ from castle_layout import (
     ORIGIN,
     SITE_TOP,
     SPAWN,
-    TR,
     UD,
+    UPPER_TOWERS,
     WALL_H,
     WALL_STAIRS,
     XG,
@@ -399,14 +400,20 @@ def bailey_walls() -> None:
             banner=BANNER2,
         )
     # stairs from the courtyard up to the wall walks (west, east, and beside the gatehouse)
-    for points, width in WALL_STAIRS.values():
-        stairway(
-            [V(*q) for q in points],
-            L.BRICK_STAIRS,
-            width=width,
-            support=L.BRICK,
-            clearance=3,
-        )
+    wall_stairs(upper=False)
+
+
+def wall_stairs(upper: bool) -> None:
+    """the upper ward's stairs up to its wall walks, or the bailey's"""
+    for name, (points, width, _walk) in WALL_STAIRS.items():
+        if name.startswith("upper") == upper:
+            stairway(
+                [V(*q) for q in points],
+                L.BRICK_STAIRS,
+                width=width,
+                support=L.BRICK,
+                clearance=3,
+            )
 
 
 def gatehouse() -> dict:
@@ -467,14 +474,14 @@ def gatehouse() -> dict:
     g = L.portcullis(*portcullis_args(MAIN_GATE))
     # drum towers straddling the gatehouse's outer corners (clear of the
     # portcullis wiring channel east of the passage), up past the gatehouse top
-    for cx, doors in (
-        (x1 - 2, [(0, N, 0), (top, E, 0)]),
-        (x2 + 2, [(0, N, 0), (top, Wd, 0)]),
+    for (cx, cz, r), doors in (
+        (GATE_TOWERS["west drum tower"], [(0, N, 0), (top, E, 0)]),
+        (GATE_TOWERS["east drum tower"], [(0, N, 0), (top, Wd, 0)]),
     ):
         L.round_tower(
             ORIGIN.x + cx,
-            ORIGIN.z + z2 - 3,
-            4,
+            ORIGIN.z + cz,
+            r,
             ORIGIN.y + MOAT_FLOOR,
             ORIGIN.y + top + 8,
             floors=[ORIGIN.y, ORIGIN.y + top],
@@ -658,14 +665,23 @@ def upper_walls() -> None:
     )
     walk = y + WALL_H
     # north corner towers with conical roofs, mid-wall towers with battlements
-    for cx, doors, roof in (
-        (3, [(walk, S, -1), (walk, E, 1), (y, S, 1)], L.DARK_TILES),
-        (W - 4, [(walk, S, 1), (walk, Wd, 1), (y, S, -1)], L.DARK_TILES),
+    t = UPPER_TOWERS
+    for (cx, cz, r), doors, roof in (
+        (
+            t["north-west corner tower"],
+            [(walk, S, -1), (walk, E, 1), (y, S, 1)],
+            L.DARK_TILES,
+        ),
+        (
+            t["north-east corner tower"],
+            [(walk, S, 1), (walk, Wd, 1), (y, S, -1)],
+            L.DARK_TILES,
+        ),
     ):
         L.round_tower(
             ORIGIN.x + cx,
-            ORIGIN.z + 3,
-            TR,
+            ORIGIN.z + cz,
+            r,
             ORIGIN.y + DITCH_FLOOR - 1,
             ORIGIN.y + walk + 12,
             floors=[ORIGIN.y + y, ORIGIN.y + walk, ORIGIN.y + walk + 6],
@@ -673,34 +689,21 @@ def upper_walls() -> None:
             roof=roof,
             banner=BANNER2,
         )
-    for cx, doors in (
-        (3, [(walk, N, -1), (walk, S, -1), (y, E, 0)]),
-        (W - 4, [(walk, N, 1), (walk, S, 1), (y, Wd, 0)]),
+    for (cx, cz, r), doors in (
+        (t["upper west mid-wall tower"], [(walk, N, -1), (walk, S, -1), (y, E, 0)]),
+        (t["upper east mid-wall tower"], [(walk, N, 1), (walk, S, 1), (y, Wd, 0)]),
     ):
         L.round_tower(
             ORIGIN.x + cx,
-            ORIGIN.z + 32,
-            TR - 1,
+            ORIGIN.z + cz,
+            r,
             ORIGIN.y + DITCH_FLOOR - 1,
             ORIGIN.y + walk + 6,
             floors=[ORIGIN.y + y, ORIGIN.y + walk],
             doors=[(ORIGIN.y + dy, d, o) for dy, d, o in doors],
         )
     # stairs up to the wall walks
-    stairway(
-        [V(3, y - 1, 12), V(3, walk - 1, 22)],
-        L.BRICK_STAIRS,
-        width=2,
-        support=L.BRICK,
-        clearance=3,
-    )
-    stairway(
-        [V(W - 4, y - 1, 12), V(W - 4, walk - 1, 22)],
-        L.BRICK_STAIRS,
-        width=2,
-        support=L.BRICK,
-        clearance=3,
-    )
+    wall_stairs(upper=True)
 
 
 def grand_stair() -> dict:

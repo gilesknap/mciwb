@@ -660,10 +660,11 @@ def engine(cx: int, cz: int, y: int) -> None:
 
 def bailey_buildings() -> None:
     # paths first: from the gate to the grand stair, and across to the buildings
-    L.fill(V(XG - 2, -1, UD + YU + 1), V(XG + 2, -1, ZS - 9), "minecraft:dirt_path")
-    L.fill(V(XG - 1, -1, UD + YU + 1), V(XG + 1, -1, ZS - 9), L.ANDESITE)
-    px1, pz1, px2, pz2 = PATHS["cross path"]
-    L.fill(V(px1, -1, pz1), V(px2, -1, pz2), "minecraft:dirt_path")
+    # (each stops at the well's rim, where they cross)
+    for name, (px1, pz1, px2, pz2) in PATHS.items():
+        L.fill(V(px1, -1, pz1), V(px2, -1, pz2), "minecraft:dirt_path")
+        if name.startswith("gate path"):  # paved down the middle
+            L.fill(V(px1 + 1, -1, pz1), V(px2 - 1, -1, pz2), L.ANDESITE)
     stables()
     smithy()
     barracks()

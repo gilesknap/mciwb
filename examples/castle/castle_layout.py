@@ -125,27 +125,48 @@ SMITHY = (99, 95, 109, 115)
 SMITHY_HATCH = (107, 105)
 DUNGEON_HUT = (93, 108, 97, 112)  # the dungeon entrance over its stair
 MARKET = (70, 130, 82, 132)  # two stalls by the gate
-# the stairs from the courtyard up to the wall walks: (points, width), as
-# for mciwb.builders.stairway (the walkway blocks; the rows widen to the
-# right of the way up). West and east climb south beside the curtains,
-# south of the mid-wall towers; the other two beside the gatehouse
+# the stairs up to the wall walks: (points, width, walk), the points and
+# width as for mciwb.builders.stairway (the walkway blocks; each row widens
+# to the right of the way up), and the walk's standing level, which the
+# last point reaches (its walkway block is one below). Each climbs beside a
+# curtain with one row on the curtain's inner edge, so that the block after
+# the top step along that row is the walk. West and east of the bailey:
+# south beside the curtains, south of the mid-wall towers. Beside the
+# gatehouse: along the south curtain, ending before the gatehouse's drum
+# towers. In the upper ward: south beside the curtains, north of the
+# mid-wall towers
 WALL_STAIRS = {
-    "west wall stair": ([(3, -1, 112), (3, WALL_H - 1, 122)], 2),
-    "east wall stair": ([(W - 4, -1, 112), (W - 4, WALL_H - 1, 122)], 2),
+    "west wall stair": ([(3, -1, 112), (3, WALL_H - 1, 122)], 2, WALL_H),
+    "east wall stair": ([(W - 3, -1, 112), (W - 3, WALL_H - 1, 122)], 2, WALL_H),
     "stair west of the gatehouse": (
-        [(GATEHOUSE[0] - 14, -1, ZS - 3), (GATEHOUSE[0] - 4, WALL_H - 1, ZS - 3)],
+        [(GATEHOUSE[0] - 18, -1, ZS - 3), (GATEHOUSE[0] - 8, WALL_H - 1, ZS - 3)],
         2,
+        WALL_H,
     ),
     "stair east of the gatehouse": (
-        [(GATEHOUSE[2] + 14, -1, ZS - 3), (GATEHOUSE[2] + 4, WALL_H - 1, ZS - 3)],
+        [(GATEHOUSE[2] + 18, -1, ZS - 2), (GATEHOUSE[2] + 8, WALL_H - 1, ZS - 2)],
         2,
+        WALL_H,
+    ),
+    "upper west wall stair": (
+        [(3, YU - 1, 12), (3, YU + WALL_H - 1, 22)],
+        2,
+        YU + WALL_H,
+    ),
+    "upper east wall stair": (
+        [(W - 3, YU - 1, 12), (W - 3, YU + WALL_H - 1, 22)],
+        2,
+        YU + WALL_H,
     ),
 }
 # the courtyard paths (x1, z1, x2, z2): gate to grand stair, and across
-# from the stables to the smithy's door
+# from the stables to the smithy's door. The well stands where they cross,
+# and each stops at its rim
 PATHS = {
-    "gate path": (XG - 2, UD + YU + 1, XG + 2, ZS - 9),
-    "cross path": (STABLES[2] + 1, MID_Z - 1, SMITHY[0] - 1, MID_Z + 1),
+    "gate path north": (XG - 2, UD + YU + 1, XG + 2, WELL[1] - 2),
+    "gate path south": (XG - 2, WELL[1] + 2, XG + 2, ZS - 9),
+    "cross path west": (STABLES[2] + 1, MID_Z - 1, WELL[0] - 2, MID_Z + 1),
+    "cross path east": (WELL[0] + 2, MID_Z - 1, SMITHY[0] - 1, MID_Z + 1),
 }
 # the standing signs (x, y, z, rotation; standing positions on the ground)
 STANDING_SIGNS = {
@@ -163,6 +184,19 @@ BAILEY_TOWERS = {
     "east mid-wall tower": (W - 4, MID_Z, TR - 1),
     "west junction tower": (3, UD - 1, TR),
     "east junction tower": (W - 4, UD - 1, TR),
+}
+# the gatehouse's drum towers, on its outer corners (build_outer.gatehouse)
+GATE_TOWERS = {
+    "west drum tower": (GATEHOUSE[0] - 2, ZS - 3, 4),
+    "east drum tower": (GATEHOUSE[2] + 2, ZS - 3, 4),
+}
+# the upper ward's wall towers (build_outer.upper_walls)
+UPPER_MID_Z = 32
+UPPER_TOWERS = {
+    "north-west corner tower": (3, 3, TR),
+    "north-east corner tower": (W - 4, 3, TR),
+    "upper west mid-wall tower": (3, UPPER_MID_Z, TR - 1),
+    "upper east mid-wall tower": (W - 4, UPPER_MID_Z, TR - 1),
 }
 DUNGEON_Y = -8  # the dungeon's standing level
 # the two rows of cells: interior z, the z of the cell front (grille, door
@@ -189,6 +223,19 @@ SUMMONED = {
     "alchemist": {"item_frame": 6},
     "bailey_buildings": {"horse": 6, "armor_stand": 2},
     "details": {"armor_stand": 4, "iron_golem": 1, "cat": 1},
+}
+
+# every round tower standing on a ward's ground, for `layout_problems`
+ROUND_TOWERS = {
+    **BAILEY_TOWERS,
+    **GATE_TOWERS,
+    **UPPER_TOWERS,
+    "alchemist's tower": (ALCH[0], ALCH[1], 6),
+    **{
+        f"keep turret {x},{z}": (x, z, 4)
+        for x in (KEEP[0], KEEP[2])
+        for z in (KEEP[1], KEEP[3])
+    },
 }
 
 # the roofed towers (centre x, z, radius, standing level of the top floor):
@@ -270,9 +317,9 @@ def footprints() -> dict[str, set[tuple[int, int]]]:
         "smithy": _cells(SMITHY[0] - 1, SMITHY[1] - 1, SMITHY[2] + 1, SMITHY[3] + 1),
         "dungeon hut": _cells(*DUNGEON_HUT),
         "market": _cells(*MARKET),
-        "well": _cells(WELL[0] - 2, WELL[1] - 2, WELL[0] + 2, WELL[1] + 2),
+        "well": _cells(WELL[0] - 1, WELL[1] - 1, WELL[0] + 1, WELL[1] + 1),  # its rim
     }
-    for name, (points, width) in WALL_STAIRS.items():
+    for name, (points, width, _walk) in WALL_STAIRS.items():
         out[name] = stair_cells(points, width)
     for name, rect in PATHS.items():
         out[name] = _cells(*rect)
@@ -284,14 +331,20 @@ def footprints() -> dict[str, set[tuple[int, int]]]:
 def layout_problems() -> list[str]:
     """
     What in the lower bailey's layout overlaps what it must not: any
-    footprint (`footprints`) inside a bailey tower's disc out to radius + 1
-    (its plinth, so its walls and ground door stay clear), and any two
-    buildings or stairs on each other. Pure arithmetic on the constants
+    footprint (`footprints`) inside a round tower's disc (`ROUND_TOWERS`)
+    out to radius + 1 (its plinth, so its walls and ground door stay clear),
+    any two buildings or stairs on each other, a path running into one, and
+    a wall stair whose top is not at its walk's level. Pure arithmetic on the constants
     above: build_castle.py refuses to build if this finds anything.
     """
     feet = footprints()
     problems = []
-    for tname, (cx, cz, r) in BAILEY_TOWERS.items():
+    for name, (points, _width, walk) in WALL_STAIRS.items():
+        if points[-1][1] != walk - 1:
+            problems.append(
+                f"{name} ends at {points[-1][1] + 1}, not the walk at {walk}"
+            )
+    for tname, (cx, cz, r) in ROUND_TOWERS.items():
         rr = (r + 1 + 0.5) ** 2  # as castle_lib.disc
         for fname, cells in feet.items():
             hit = sorted(c for c in cells if (c[0] - cx) ** 2 + (c[1] - cz) ** 2 <= rr)
@@ -302,4 +355,15 @@ def layout_problems() -> list[str]:
         for b in solid[i + 1 :]:
             if feet[a] & feet[b]:
                 problems.append(f"{a} overlaps {b} at {sorted(feet[a] & feet[b])[:3]}")
+    # a path may pass under a roof's overhang, not into a building's walls
+    ground = {
+        "stables": _cells(*STABLES),
+        "barracks": _cells(*BARRACKS),
+        "smithy": _cells(*SMITHY),
+        **{n: feet[n] for n in solid if n not in ("stables", "barracks", "smithy")},
+    }
+    for a in PATHS:
+        for b, cells in ground.items():
+            if feet[a] & cells:
+                problems.append(f"{a} runs into {b} at {sorted(feet[a] & cells)[:3]}")
     return problems

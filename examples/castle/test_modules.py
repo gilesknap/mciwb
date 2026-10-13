@@ -81,23 +81,29 @@ def is_empty(b: Vec3, e: Vec3) -> bool:
 def test_layout() -> None:
     """no bailey building, stair, path or sign overlaps a tower or another
     building; and the check finds the overlaps it is there to catch (the
-    stables, wall stairs and smithy of earlier rounds cut the mid-wall towers)"""
+    stables, wall stairs and smithy of earlier rounds cut the mid-wall towers,
+    and the stairs beside the gatehouse ran into its drum towers)"""
     problems = castle_layout.layout_problems()
     check(f"layout: nothing overlaps {problems[:3]}", not problems)
     saved = castle_layout.STABLES, castle_layout.SMITHY, dict(castle_layout.WALL_STAIRS)
     try:
         castle_layout.STABLES = (3, 92, 15, 122)
         castle_layout.SMITHY = (104, 95, 117, 115)
-        castle_layout.WALL_STAIRS["west wall stair"] = ([(3, -1, 100), (3, 9, 110)], 2)
+        stairs = castle_layout.WALL_STAIRS
+        stairs["west wall stair"] = ([(3, -1, 100), (3, 9, 110)], 2, 10)
+        stairs["stair west of the gatehouse"] = ([(32, -1, 142), (42, 9, 142)], 2, 10)
+        stairs["stair east of the gatehouse"] = ([(88, -1, 142), (78, 9, 142)], 2, 10)
         found = "\n".join(castle_layout.layout_problems())
         check(
-            "layout: the check finds the old stables, smithy and stair in the towers",
+            "layout: the check finds the old stables, smithy and stairs in the towers",
             all(
                 f"{what} overlaps the {tower}" in found
                 for what, tower in (
                     ("stables", "west mid-wall tower"),
                     ("smithy", "east mid-wall tower"),
                     ("west wall stair", "west mid-wall tower"),
+                    ("stair west of the gatehouse", "west drum tower"),
+                    ("stair east of the gatehouse", "east drum tower"),
                 )
             ),
         )
