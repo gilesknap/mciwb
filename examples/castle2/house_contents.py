@@ -62,7 +62,7 @@ GOODS = {
     ),
 }
 SHELF = "minecraft:spruce_shelf"
-TABLE = "minecraft:spruce_slab[type=top]"  # a table top (on a fence post)
+TABLE = "minecraft:spruce_slab[type=top]"  # a table top
 SEAT = "minecraft:spruce_stairs"
 OPP = {"north": "south", "south": "north", "east": "west", "west": "east"}
 STEP = {"north": (0, -1), "south": (0, 1), "east": (1, 0), "west": (-1, 0)}
@@ -180,8 +180,9 @@ def furnish(
 
 
 def _table_with_seats(room: Room, info: dict, chairs: int = 2) -> bool:
-    """a table (a slab on a fence post) in the open floor with seats either
-    side, looking at it; False if there is no room"""
+    """a table (a top slab, at the height of the seats beside it, as the
+    castle's tables are) in the open floor with seats either side looking
+    at it; False if there is no room"""
     for x, z in room.cells(by_wall=False):
         sides = [
             (s, (x + dx, z + dz))
@@ -190,13 +191,12 @@ def _table_with_seats(room: Room, info: dict, chairs: int = 2) -> bool:
         ]
         if len(sides) < chairs:
             continue
-        room.put(x, z, "minecraft:spruce_fence")
-        room.put(x, z, TABLE, 1)
+        room.put(x, z, TABLE)
         for side, (sx, sz) in sides[:chairs]:
             looks = OPP[side]  # the sitter looks back at the table
             room.put(sx, sz, f"{SEAT}[facing={OPP[looks]}]")
             info["seats"].append(((sx, room.y, sz), looks))
-        room.c.set(x, room.y + 2, z, "minecraft:candle[candles=2,lit=true]")
+        room.c.set(x, room.y + 1, z, "minecraft:candle[candles=2,lit=true]")
         return True
     return False
 

@@ -154,6 +154,33 @@ HOUSES: list[tuple[str, int, int, int, int, str, dict]] = [
 ]
 
 
+# ---- the south of the bailey: pens and paddocks along the walls, the
+# kitchen garden and allotments, a frog pond (x1, z1, x2, z2: the fence
+# ring), and what lives in each. The gates open north onto the pen lane.
+PEN_LANE = (12, 190, 57, 191)  # from the pens to the main street
+PENS = {
+    "cow pen": ((12, 192, 27, 205), {"cow": 4, "cow calf": 1}),
+    "sheep pen": ((30, 192, 43, 205), {"sheep": 5}),
+    "pig pen": ((46, 192, 55, 205), {"pig": 3, "pig piglet": 1}),
+    "chicken run": ((12, 208, 24, 216), {"chicken": 6}),
+    "goat pen": ((27, 208, 41, 216), {"goat": 3, "goat kid": 1}),
+    "rabbit hutch": ((44, 208, 55, 216), {"rabbit": 4}),
+    "frog pond": ((90, 208, 106, 216), {"frog": 3}),
+}
+GARDEN = (66, 192, 108, 205)  # the allotments, with a scarecrow
+BEEHIVES = [(10, 37), (14, 37), (18, 37)]  # by the upper ward's garden (at YU)
+
+
+def pen_animals() -> dict[str, int]:
+    """every animal the pens hold, by entity type (young ones included)"""
+    out: dict[str, int] = {}
+    for _box, animals in PENS.values():
+        for what, n in animals.items():
+            kind = what.split()[0]
+            out[kind] = out.get(kind, 0) + n
+    return out
+
+
 def village_houses(origin=None):
     """every house of the village, as `house.House` (its blocks not placed),
     at ``origin`` (default: the world position of local 0, 0, 0)"""
@@ -183,6 +210,9 @@ def village_footprints() -> dict[str, set[tuple[int, int]]]:
         f"house '{name}'": h.footprint
         for name, h in village_houses(Vec3(0, 0, 0)).items()
     }
+    for name, (box, _animals) in PENS.items():
+        out[name] = _cells(*box)
+    out["the allotments"] = _cells(*GARDEN)
     out["market cross"] = _cells(
         MARKET_CROSS[0] - 1,
         MARKET_CROSS[1] - 1,
@@ -202,11 +232,16 @@ def village_problems() -> list[str]:
 
     problems = []
     feet = village_footprints()
-    houses = {n: c for n, c in feet.items() if n.startswith("house ")}
+    houses = {
+        n: c
+        for n, c in feet.items()
+        if n.startswith("house ") or n in PENS or n == "the allotments"
+    }
     castle = footprints()
     open_ground = {
         **{n: _cells(*r) for n, r in LANES.items()},
         "the square": _cells(*SQUARE),
+        "the pen lane": _cells(*PEN_LANE),
     }
     for name, cells in houses.items():
         for tname, (cx, cz, r) in ROUND_TOWERS.items():
