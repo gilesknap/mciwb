@@ -61,7 +61,9 @@ def main(
 def shell(
     server: str = HOST,
     port: int = def_port,
-    passwd: str = def_pass,
+    passwd: Annotated[
+        str, typer.Option("--password", "--passwd", help="the RCON password")
+    ] = def_pass,
     player: str = "",
     debug: bool = False,
     test: bool = False,
@@ -126,7 +128,9 @@ def run(
     script: Annotated[Path, typer.Argument(help="the Python script to run")],
     server: str = HOST,
     port: int = def_port,
-    passwd: str = def_pass,
+    passwd: Annotated[
+        str, typer.Option("--password", "--passwd", help="the RCON password")
+    ] = def_pass,
     player: str = "",
     debug: bool = False,
 ):

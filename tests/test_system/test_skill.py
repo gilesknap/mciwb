@@ -26,7 +26,7 @@ def run_script(script: Path):
     result = runner.invoke(
         cli,
         ["run", str(script), "--server", HOST, "--port", str(RCON_PORT)]
-        + ["--passwd", RCON_P],
+        + ["--password", RCON_P],
     )
     assert result.exit_code == 0, (result.output, result.exception)
     return result.output
