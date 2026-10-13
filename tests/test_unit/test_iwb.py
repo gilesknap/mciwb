@@ -75,6 +75,15 @@ def test_place_door(world: Iwb, mock_client: MockClient):
         world.place_door(Vec3(0, 0, 0), Item.STONE)
 
 
+def test_place_door_in_wall(world: Iwb, mock_client: MockClient):
+    """a door replacing part of a wall keeps both halves"""
+    mock_client.fill(Vec3(0, 0, 0), Vec3(4, 3, 0), Item.STONE)
+    world.place_door(Vec3(2, 0, 0), Item.OAK_DOOR, Direction.SOUTH)
+
+    assert mock_client.getblock(Vec3(2, 0, 0)) == Item.OAK_DOOR
+    assert mock_client.getblock(Vec3(2, 1, 0)) == Item.OAK_DOOR
+
+
 def test_cmd(world: Iwb, mock_client: MockClient):
     world.cmd("time set day")
     assert mock_client.commands[-1] == "time set day"

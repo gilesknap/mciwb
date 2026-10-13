@@ -731,7 +731,7 @@ dev = [
 requires-dist = [
     { name = "ipython" },
     { name = "mcipc", specifier = "==2.4.2" },
-    { name = "mcwb", git = "https://github.com/gilesknap/mcwb?rev=254e7bdf2c542231a6358fa74c7be784887ba501" },
+    { name = "mcwb", git = "https://github.com/gilesknap/mcwb?rev=1f2c0171efeef8ba594b86366440216f12eac351" },
     { name = "numpy" },
     { name = "pillow", specifier = ">=12.3.0" },
     { name = "podman", specifier = ">=5.5" },
@@ -757,8 +757,8 @@ dev = [
 
 [[package]]
 name = "mcwb"
-version = "0.1.dev153+g254e7bdf2"
-source = { git = "https://github.com/gilesknap/mcwb?rev=254e7bdf2c542231a6358fa74c7be784887ba501#254e7bdf2c542231a6358fa74c7be784887ba501" }
+version = "0.1.dev155+g1f2c0171e"
+source = { git = "https://github.com/gilesknap/mcwb?rev=1f2c0171efeef8ba594b86366440216f12eac351#1f2c0171efeef8ba594b86366440216f12eac351" }
 dependencies = [
     { name = "mcipc" },
     { name = "numpy", version = "2.4.6", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.12'" },

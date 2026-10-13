@@ -3,6 +3,7 @@ from pathlib import Path
 from subprocess import check_output
 
 import pytest
+import typer
 from PIL import Image
 from rcon.exceptions import WrongPassword
 from typer.testing import CliRunner
@@ -41,6 +42,27 @@ def test_run(mock_iwb: MockClient, tmp_path: Path):
 
     assert result.exit_code == 0, (result.output, result.exception)
     assert mock_iwb.getblock(Vec3(1, 2, 3)) == Item.GOLD_BLOCK
+
+
+@pytest.mark.parametrize("command", ["run", "shell"])
+@pytest.mark.parametrize("option", ["--password", "--passwd"])
+def test_password_option(
+    command: str, option: str, monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+):
+    """run and shell take --password, like the other commands, or --passwd"""
+    seen = {}
+
+    def connect(server, port, passwd, player):
+        seen["passwd"] = passwd
+        raise typer.Exit(3)
+
+    monkeypatch.setattr(mciwb.__main__, "_connect", connect)
+    script = tmp_path / "build.py"
+    script.write_text("")
+    args = [command, str(script)] if command == "run" else [command]
+    result = runner.invoke(cli, [*args, option, "secret"])
+    assert result.exit_code == 3, (result.output, result.exception)
+    assert seen["passwd"] == "secret"
 
 
 def test_run_missing_script(tmp_path: Path):
