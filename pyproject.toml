@@ -66,6 +66,11 @@ version_file = "src/mciwb/_version.py"
 typeCheckingMode = "standard"
 reportMissingImports = false # Ignore missing stubs in imported modules
 
+# castle2 imports castle's modules (it puts examples/castle on sys.path)
+[[tool.pyright.executionEnvironments]]
+root = "examples/castle2"
+extraPaths = ["examples/castle"]
+
 [tool.pytest.ini_options]
 # Run pytest with all our checkers, and don't spam us with massive tracebacks on error
 addopts = """

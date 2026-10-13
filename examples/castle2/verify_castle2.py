@@ -61,7 +61,7 @@ import build_outer  # noqa: E402
 import castle_lib as L  # noqa: E402
 import reach as R  # noqa: E402  (castle's)
 import verify_castle as VC  # noqa: E402
-from record_build import dry_run  # noqa: E402
+from fake_client import dry_run  # noqa: E402
 
 import numpy as np  # noqa: E402
 
@@ -131,9 +131,10 @@ def _learn_seats() -> list[tuple[Vec3, str]]:
     rec = dry_build()
     cells = []
     for a, b, faces in L.PLACED_SEATS:
-        for x in range(min(a.x, b.x), max(a.x, b.x) + 1):
-            for y in range(min(a.y, b.y), max(a.y, b.y) + 1):
-                for z in range(min(a.z, b.z), max(a.z, b.z) + 1):
+        (ax, ay, az), (bx, by, bz) = (int(v) for v in a), (int(v) for v in b)
+        for x in range(min(ax, bx), max(ax, bx) + 1):
+            for y in range(min(ay, by), max(ay, by) + 1):
+                for z in range(min(az, bz), max(az, bz) + 1):
                     p = Vec3(x, y, z)
                     if "_stairs" in rec.world.at(p):
                         cells.append((p, faces))
@@ -574,8 +575,9 @@ def main() -> None:
         o = castle2_layout.ORIGIN
         castle2_layout.SEATS.clear()
         castle2_layout.SEATS["castle2's seats"] = [
-            (p.x - o.x, p.z - o.z, p.x - o.x, p.z - o.z, p.y - o.y, faces)
+            (x, z, x, z, y, faces)
             for p, faces in seat_cells()
+            for x, y, z in [(int(p.x - o.x), int(p.y - o.y), int(p.z - o.z))]
         ]
         for name, func in GROUPS.items():
             if name in wanted and name != "strays":

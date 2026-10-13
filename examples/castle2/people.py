@@ -21,7 +21,7 @@ from __future__ import annotations
 
 import castle2_layout as C
 import castle_lib as L
-from castle2_layout import KEEP, KEEP_ROOF, SQUARE, WALL_H, YU, ZS, V
+from castle2_layout import KEEP, KEEP_ROOF, WALL_H, YU, ZS, V
 
 from mciwb.imports import Vec3
 
@@ -147,7 +147,6 @@ CASTLE_PEOPLE = [
     ("jailer", (93, -8, 137), "east", True, "nitwit", "Grimsby the Jailer", None),
 ]
 # the mobile people and creatures round the square (local block positions)
-SX1, SZ1, SX2, SZ2 = SQUARE
 WANDERERS = [(48, 150), (72, 150), (47, 163), (73, 163), (56, 160), (64, 150)]
 CHILDREN = [(50, 160), (70, 161), (55, 149)]
 CATS = [(46, 158), (74, 152)]
