@@ -360,12 +360,14 @@ def armoury() -> None:
     ):
         item_frame(V(x2, y + 1 + (i % 2), z1 + 2 + i), 4, item)  # on the east wall
     L.fill(V(x1, y, 22), V(x1, y + 1, 24), L.BARS)  # a weapons rack
+    # two chests against the west wall, south of the rack and west of the
+    # armour stands (x1+1, x1+3 ...): not where a stand stands
     chest(
-        V(x1 + 1, y, 26),
-        "north",
+        V(x1, y, 25),
+        "east",
         [("arrow", 64), ("iron_ingot", 32), ("shield", 1), ("iron_helmet", 1)],
     )
-    L.set_block(V(x1 + 2, y, 26), "minecraft:chest[facing=north]")
+    L.set_block(V(x1, y, 26), "minecraft:chest[facing=east]")
     # the gallery between library and armoury: x 63..66, with the windows and banners
     for z in range(IZ1 + 1, IZ2, 4):
         L.set_block(V(66, y + 3, z), f"minecraft:{BANNER}_wall_banner[facing=west]")
