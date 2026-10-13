@@ -36,6 +36,16 @@ def _ridge_state(stairs: Block, ridge: Block | None) -> BlockState:
     return state
 
 
+def _ridge_core(ridge: BlockState) -> BlockState:
+    """
+    The block under a ridge, between the stairs of the course below it: the
+    ridge as a full block (a double slab) so that there is no hole under it
+    """
+    if ridge.name.endswith("_slab"):
+        return ridge.with_props(type="double")
+    return ridge
+
+
 def gable_roof(
     start: Vec3,
     end: Vec3,
@@ -64,7 +74,9 @@ def gable_roof(
     :param stairs: the stairs to build the slopes from
     :param ridge: the block along the ridge when the footprint is an odd
         number of blocks across. Defaults to the slab matching *stairs*,
-        placed as a bottom slab
+        placed as a bottom slab. The gap under it, between the stairs of
+        the course below, is filled with the same block as a double slab
+        (or with *ridge* itself if it is not a slab)
     :param gable: if given, fill the triangular gable ends under the roof
         with this block, above the footprint's end walls
     :param axis: ``"x"`` or ``"z"``, the direction that the ridge runs.
@@ -98,6 +110,8 @@ def gable_roof(
     base_y = int(start.y) + 1
     slope = BlockState.of(stairs, half="bottom", shape="straight")
     ridge_state = _ridge_state(stairs, ridge)
+    core_state = _ridge_core(ridge_state)
+    gable_ends = (a1 + overhang, a2 - overhang)
 
     course = 0
     while c1 + course <= c2 - course:
@@ -110,12 +124,15 @@ def gable_roof(
             else:
                 cells[to_world(a, lo)] = slope.with_props(facing=rising)
                 cells[to_world(a, hi)] = slope.with_props(facing=falling)
+            if hi - lo == 2 and not (gable is not None and a in gable_ends):
+                # the ridge goes on the next course: fill the gap under it
+                cells[to_world(a, lo + 1)] = core_state
         placer.layer(y, cells)
 
         # the gable ends: inside the slopes, above the footprint's ends
         g_lo, g_hi = max(lo + 1, c1 + overhang), min(hi - 1, c2 - overhang)
         if gable is not None and g_lo <= g_hi:
-            for a in (a1 + overhang, a2 - overhang):
+            for a in gable_ends:
                 wx1, wz1 = to_world(a, g_lo)
                 wx2, wz2 = to_world(a, g_hi)
                 placer.fill(Vec3(wx1, y, wz1), Vec3(wx2, y, wz2), gable)
@@ -137,14 +154,17 @@ def hip_roof(
     with outer corner stairs where they meet. Each course is a ring of stairs
     one block in and one block up from the course below. Where the slopes
     meet along a line one block wide (the ridge) the roof is finished with
-    *ridge* blocks.
+    *ridge* blocks, on a line of full blocks (the ridge slab doubled) that
+    fills the middle of the course below.
 
     :param start: a corner of the footprint, e.g. the top of a corner of the
         walls; the roof starts at ``start.y + 1``
     :param end: the opposite corner of the footprint (only x and z are used)
     :param stairs: the stairs to build the slopes from
     :param ridge: the block for a ridge one block wide, defaults to the slab
-        matching *stairs*, placed as a bottom slab
+        matching *stairs*, placed as a bottom slab. The middle of the course
+        below it is filled with the same block as a double slab (or with
+        *ridge* itself if it is not a slab)
     :param overhang: extend the roof this many blocks past the footprint on
         every side
     :returns: the bounding box of the roof
@@ -154,6 +174,7 @@ def hip_roof(
     base_y = int(start.y) + 1
     slope = BlockState.of(stairs, half="bottom")
     ridge_state = _ridge_state(stairs, ridge)
+    core_state = _ridge_core(ridge_state)
 
     course = 0
     while x1 + course <= x2 - course and z1 + course <= z2 - course:
@@ -176,13 +197,17 @@ def hip_roof(
             facings[(lx, z)] = "east"
             facings[(hx, z)] = "west"
         shapes = stair_shapes(facings)
-        placer.layer(
-            y,
-            {
-                pos: slope.with_props(facing=facing, shape=shapes[pos])
-                for pos, facing in facings.items()
-            },
-        )
+        cells = {
+            pos: slope.with_props(facing=facing, shape=shapes[pos])
+            for pos, facing in facings.items()
+        }
+        if hx - lx == 2 or hz - lz == 2:
+            # the ridge goes on the next course, over the middle of this
+            # ring: fill the middle so that there is no hole under it
+            for x in range(lx + 1, hx):
+                for z in range(lz + 1, hz):
+                    cells[(x, z)] = core_state
+        placer.layer(y, cells)
         course += 1
 
     return placer.volume

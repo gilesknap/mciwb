@@ -291,6 +291,8 @@ def test_gable_roof(mock_client: MockClient):
         "fill 6 1 1 6 1 3 minecraft:oak_planks",
         f"fill 0 2 1 6 2 1 {stairs('south')}",
         f"fill 0 2 3 6 2 3 {stairs('north')}",
+        # a full block under the ridge, between the gable ends
+        "fill 1 2 2 5 2 2 minecraft:oak_slab[type=double]",
         "fill 0 2 2 0 2 2 minecraft:oak_planks",
         "fill 6 2 2 6 2 2 minecraft:oak_planks",
         "fill 0 3 2 6 3 2 minecraft:oak_slab[type=bottom]",
@@ -349,6 +351,64 @@ def test_hip_roof_ridge(mock_client: MockClient):
     assert mock_client.block_commands[-1] == (
         "fill 1 2 1 3 2 1 minecraft:oak_slab[type=bottom]"
     )
+
+
+def holes_under_ridge(mock_client: MockClient, volume: Volume) -> list[Vec3]:
+    """The air blocks under a bottom slab, above the roof's lowest course"""
+    holes = []
+    x1, y1, z1 = (int(v) for v in volume.start)
+    x2, y2, z2 = (int(v) for v in volume.end)
+    for x in range(x1, x2 + 1):
+        for y in range(y1 + 1, y2 + 1):
+            for z in range(z1, z2 + 1):
+                above = mock_client.state_at(Vec3(x, y, z))
+                below = Vec3(x, y - 1, z)
+                if above.endswith("_slab[type=bottom]") and (
+                    mock_client.getblock(below) == Item.AIR
+                ):
+                    holes.append(below)
+    return holes
+
+
+# footprints (x size, z size) of each shape: odd and even squares, rectangles
+# odd or even across their short side, and ridges one block long
+ROOF_SIZES = [(1, 1), (2, 2), (3, 3), (4, 4), (5, 5), (8, 8), (9, 9), (3, 5)]
+ROOF_SIZES += [(5, 3), (4, 7), (7, 4), (5, 8), (9, 6), (7, 11), (1, 5)]
+ROOF_IDS = [f"{x}x{z}" for x, z in ROOF_SIZES]
+
+
+@pytest.mark.parametrize("overhang", [0, 1])
+@pytest.mark.parametrize("size", ROOF_SIZES, ids=ROOF_IDS)
+def test_hip_roof_has_no_hole_under_the_ridge(
+    mock_client: MockClient, size: tuple[int, int], overhang: int
+):
+    end = Vec3(size[0] - 1, 0, size[1] - 1)
+    volume = hip_roof(Vec3(0, 0, 0), end, Item.OAK_STAIRS, overhang=overhang)
+    assert holes_under_ridge(mock_client, volume) == []
+
+
+@pytest.mark.parametrize("gable", [None, Item.OAK_PLANKS])
+@pytest.mark.parametrize("size", ROOF_SIZES, ids=ROOF_IDS)
+def test_gable_roof_has_no_hole_under_the_ridge(
+    mock_client: MockClient, size: tuple[int, int], gable: Item | None
+):
+    for axis, offset in (("x", Vec3(0, 0, 0)), ("z", Vec3(20, 0, 0))):
+        end = offset + Vec3(size[0] - 1, 0, size[1] - 1)
+        volume = gable_roof(offset, end, gable=gable, axis=axis, overhang=1)
+        assert holes_under_ridge(mock_client, volume) == []
+
+
+def test_hip_roof_fills_under_the_ridge(mock_client: MockClient):
+    # 5 by 5: a ring, a 3 by 3 ring around a full block, a slab on top
+    volume = hip_roof(Vec3(0, 0, 0), Vec3(4, 0, 4), Item.OAK_STAIRS)
+    assert (volume.start, volume.end) == (Vec3(0, 1, 0), Vec3(4, 3, 4))
+    assert mock_client.state_at(Vec3(2, 2, 2)) == "minecraft:oak_slab[type=double]"
+    assert mock_client.state_at(Vec3(2, 3, 2)) == "minecraft:oak_slab[type=bottom]"
+    # a ridge of full blocks (not slabs) fills its own core
+    hip_roof(Vec3(10, 0, 0), Vec3(14, 0, 6), Item.OAK_STAIRS, ridge=Item.OAK_PLANKS)
+    for z in range(2, 5):
+        assert mock_client.getblock(Vec3(12, 2, z)) == Item.OAK_PLANKS
+        assert mock_client.getblock(Vec3(12, 3, z)) == Item.OAK_PLANKS
 
 
 def test_flat_roof(mock_client: MockClient):

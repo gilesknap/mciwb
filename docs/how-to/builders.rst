@@ -115,6 +115,10 @@ the top corners of the walls. The roof starts one block above them.
 `mciwb.builders.hip_roof`
     four slopes, with outer corner stairs where they meet.
 
+Over an odd width, both sloping roofs finish with a ridge of slabs (or the
+``ridge`` block), on a full block (a double slab) that fills the gap between
+the top stairs.
+
 `mciwb.builders.flat_roof`
     one layer of a block or slab, with an optional ``parapet`` around the
     edge. Walls, fences and panes in the parapet join up by themselves.
