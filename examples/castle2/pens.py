@@ -210,8 +210,8 @@ def allotments() -> None:
     L.set_block(V(sx, 0, sz), "minecraft:oak_fence")
     L.summon(
         "armor_stand",
-        V(sx, 1, sz) + Vec3(0.5, 0, 0.5),
-        "ShowArms:1b,Rotation:[0f,0f],equipment:{"
+        V(sx, 1, sz) + Vec3(0.5, 0.5, 0.5),  # on the post's top, held there
+        "ShowArms:1b,NoGravity:1b,Rotation:[0f,0f],equipment:{"
         'head:{id:"minecraft:carved_pumpkin",count:1},'
         'chest:{id:"minecraft:leather_chestplate",count:1},'
         'mainhand:{id:"minecraft:wheat",count:1}}',

@@ -262,7 +262,8 @@ def people() -> str:
 
 
 def kill_strays() -> None:
-    """the cats and iron golems that villages bring, which are not ours"""
+    """the cats and iron golems that villages bring, and wild animals of
+    the kinds the castle keeps that have wandered into the site: not ours"""
     a, b = C.site_box()
-    for kind in ("cat", "iron_golem"):
+    for kind in ("cat", "iron_golem", *C.pen_animals()):
         L.cmd(f"kill @e[type=minecraft:{kind},tag=!{L.TAG},{L.box_selector(a, b)}]")
