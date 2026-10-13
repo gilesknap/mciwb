@@ -207,3 +207,5 @@ lint.select = [
 # See https://github.com/DiamondLightSource/python-copier-template/issues/154
 # Remove this line to forbid private member access in tests
 "tests/**/*" = ["SLF001"]
+# build scripts: long literal commands, and the short L/V helper names read best
+"examples/**/*" = ["E501", "N802", "N812"]
