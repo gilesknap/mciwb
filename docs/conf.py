@@ -77,8 +77,11 @@ nitpick_ignore = [
     ("py:class", "mcwb.volume.Volume"),
     ("py:class", "mcwb.types.Anchor3"),
     ("py:class", "mcipc.rcon.je.client.Client"),
-    ("py:exc", "SessionTimeout"),
+    ("py:class", "mcipc.rcon.enumerations.FillMode"),
     ("py:class", "numpy.ndarray"),
+    # how Sphinx renders the Mapping[str, str] type of a dataclass field
+    ("py:class", "collections.abc.Mapping[str"),
+    ("py:exc", "SessionTimeout"),
     ("py:class", "PIL.Image.Image"),
 ]
 

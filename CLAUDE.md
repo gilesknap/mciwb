@@ -144,12 +144,72 @@ From `mciwb.imports` (all re-exported from mcwb or mciwb):
 - `Blocks(client, position, cuboid, anchor=Anchor3.BOTTOM_NW)`: render a 3D
   array of Items, indexed `cuboid[x][y][z]`. `Volume`, `Anchor3` position it.
 - `Volume.from_corners(a, b).fill(client, item)`: fill a box of any size.
+  Above 32768 blocks it only fills air (mcwb uses keep mode), so it cannot
+  clear a big box: `Placer().fill(a, b, Item.AIR)` splits big fills instead;
+  add `filter="minecraft:stone"` to replace only those blocks.
 - `world.save(file, vol)` / `world.load(file, position)`: save blocks to
   JSON and load them elsewhere. `grab(client, vol)` reads blocks as a cuboid.
 - `Wall(height=3, item=...)` or `Wall(profile=[...])`, then `set_start(pos)`
   and `draw(end)`: walls with repeating profiles, e.g. battlements.
 - `Switch(pos, Item.LEVER, callback)`, `world.signs.add_sign(text, callback)`:
   interactive levers and action signs.
+
+## Higher-level builders
+
+`mciwb.builders` (all re-exported from `mciwb.imports`). Each one uses the
+thread's client, takes blocks as `Item`, block state strings or `BlockState`,
+returns the bounding `Volume` of what it placed (to grab, save or clear), and
+raises `BuildError` if the server rejects a command (unknown block, unloaded
+chunk). Footprints are two opposite corners; their y is the top of the walls
+for roofs (the roof starts at y + 1) and the top of the platform for a
+foundation. See docs/how-to/builders.rst. To check a build, render the
+returned volume (`world.render(box.start, box.end, "out.png")`, see "Seeing
+what you built"); renders draw stairs and slabs as full blocks, so check
+their states with `Schematic.from_world(box)`.
+
+- `gable_roof(start, end, stairs=OAK_STAIRS, ridge=None, gable=None,
+  axis=None, overhang=0)`: two stair slopes; the ridge runs along the longer
+  side (or `axis="x"/"z"`), slab ridge for odd widths, `gable=` fills the ends.
+- `hip_roof(start, end, stairs, ridge=None, overhang=0)`: four slopes with
+  outer corner stairs. `flat_roof(start, end, block, parapet=None,
+  parapet_height=1, overhang=0)`.
+- `arch(start, end, block, style="round"|"pointed", thickness=1, depth=1,
+  clear=False)`: start/end are the two feet, in line along x or z; depth goes
+  south/east; `clear=True` cuts the opening to air. `arch_profile(span, ...)`
+  gives the (u, v) cells without building. `column(base, height, block,
+  width=1, plinth=None, capital=None)`.
+- `stairway(points, stairs, landing=None, width=1, support=None,
+  clearance=0)`: points are walkway blocks; sections run along x or z and
+  climb at most 1 per block; stairs face up the slope, level parts are
+  `landing` (default: the stairs' full block). Same-height points make a path.
+  The path may pass over itself (spiral, switchback): every pass is built,
+  and `support` stops above the headroom (max(clearance, 2)) of a lower pass.
+  At a corner that climbs, the middle and outside of a wide stairway climb 1
+  per block but the inside is too steep: make wide corners level for a few
+  blocks either side if every lane must be walkable.
+- `road(points, block=DIRT_PATH, width=3, border=None, clearance=2)`: lays the
+  road on the ground (point y ignored), replacing the top ground block.
+- `ground_height(x, z, heightmap)`, `ground_heights(columns, heightmap)`: y of
+  the top ground block via `execute positioned over <heightmap>` (one command
+  per column). `Heightmap.OCEAN_FLOOR` ignores water,
+  `MOTION_BLOCKING_NO_LEAVES` (default) ignores leaves and plants.
+- `foundation(start, end, block=COBBLESTONE, heightmap=OCEAN_FLOOR,
+  max_depth=64)`: fill each column from the ground up to a platform at
+  `start.y`, going at most `max_depth` blocks below it. Build it first: anything already standing there counts as ground.
+- `Schematic`: Sponge `.schem` v3 (reads v2 too). `Schematic.from_world(vol)`
+  reads blocks plus stairs/slab/axis states (other states and block entities
+  are not readable over RCON), `.paste(pos, air=False)`, `.rotate(steps)`
+  (clockwise from above), `.mirror("x"|"z")`, `.save(file)`,
+  `Schematic.load(file)`, `from_cuboid`/`to_cuboid` to convert from/to `grab`
+  cuboids. `blocks[x][y][z]` is a numpy array of `BlockState`.
+  `world.save("f.schem", vol)` and `world.load("f.schem", pos)` use it too.
+- `BlockState.parse("oak_stairs[facing=east]")`, `.with_props(half="top")`,
+  `BlockState.of(Item.SNOW, layers=3, waterlogged=False)` (values may be str,
+  int, bool or a Direction), `.rotate(1)`, `.mirror("x")`, `str(state)` for commands.
+
+Stairs `facing` is the side of the full height step (people walk up towards
+it); Minecraft recomputes stair `shape` from neighbours, and the builders send
+the same shapes (`stair_shapes`), so grabbing back gives what was sent.
 
 ## Examples
 

@@ -13,6 +13,7 @@ from rcon.exceptions import SessionTimeout
 
 from mciwb.backup import Backup
 from mciwb.blockgrid import BlockGrid
+from mciwb.builders.schematic import Schematic
 from mciwb.copier import CopyPaste
 from mciwb.logging import init_logging, log
 from mciwb.monitor import Monitor
@@ -354,7 +355,10 @@ class Iwb:
         the *vol* parameter or alternatively defaults to the current copy buffer.
 
         The file is saved in the mcwb format which is a JSON file containing
-        a 3d array of Item objects.
+        a 3d array of Item objects. If the filename ends in ``.schem`` it is
+        saved as a Sponge schematic instead, with the block states of stairs,
+        slabs and logs (see `mciwb.builders.Schematic.from_world`), which
+        other Minecraft tools such as WorldEdit can load.
 
         The file can be loaded into a world using the `load` method.
 
@@ -371,6 +375,9 @@ class Iwb:
                 )
             vol = self.copier.to_volume()
 
+        if Path(filename).suffix == ".schem":
+            Schematic.from_world(vol).save(filename)
+            return
         blocks = grab(get_client(), vol)
         save_items(blocks, Path(filename))
 
@@ -386,7 +393,9 @@ class Iwb:
         to the copy buffer start position.
 
         The blocks are loaded from a file in the mcwb format which is a
-        JSON file containing a 3d array of Item objects.
+        JSON file containing a 3d array of Item objects, or from a Sponge
+        schematic if the filename ends in ``.schem`` (see
+        `mciwb.builders.Schematic`).
 
         The blocks are loaded into the world using the Blocks class.
 
@@ -404,13 +413,18 @@ class Iwb:
                 )
             position = self.copier.start_pos
 
-        # load a 3d array of Item from the file
-        items = load_items(Path(filename), dimensions=3)
-        # convert the items into a Blocks object which renders them in the world
-        blocks = Blocks(get_client(), position, items, anchor=anchor)
+        if Path(filename).suffix == ".schem":
+            schematic = Schematic.load(filename)
+            volume = Volume.from_anchor(position, schematic.size, anchor)
+            schematic.paste(volume.start)
+        else:
+            # load a 3d array of Item from the file
+            items = load_items(Path(filename), dimensions=3)
+            # convert the items into a Blocks object which renders them
+            volume = Blocks(get_client(), position, items, anchor=anchor).volume
 
         if self.copier:
-            self.copier.apply_volume(blocks.volume)
+            self.copier.apply_volume(volume)
 
     def scan(self, start: Vec3, end: Vec3) -> BlockGrid:
         """

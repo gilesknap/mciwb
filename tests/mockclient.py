@@ -3,11 +3,13 @@ A mock client for testing functions that call the minecraft server.
 This mocks a world of 100 blocks square with origin in the middle.
 """
 
+import itertools
+import re
 from math import floor
 from typing import Any
 
 import numpy as np
-from mcipc.rcon.enumerations import CloneMode, MaskMode
+from mcipc.rcon.enumerations import CloneMode, FillMode, MaskMode
 from mcwb.types import Items
 
 from mciwb.imports import Item, Player, Vec3, Volume
@@ -47,6 +49,10 @@ class MockClient:
             state["gamerules"] = {}
             # record of all commands sent with run(), say(), save_*() etc.
             state["commands"] = []
+            # record of all setblock and fill commands, as Minecraft commands
+            state["block_commands"] = []
+            # positions of the marker entities summoned, keyed by tag
+            state["markers"] = {}
         self._state = state
 
     @classmethod
@@ -60,6 +66,8 @@ class MockClient:
     given = property(lambda self: self._state["given"])
     gamerules = property(lambda self: self._state["gamerules"])
     commands = property(lambda self: self._state["commands"])
+    block_commands = property(lambda self: self._state["block_commands"])
+    markers = property(lambda self: self._state["markers"])
 
     @property
     def rotation(self) -> tuple[float, float]:
@@ -98,24 +106,67 @@ class MockClient:
     def setblock(self, pos: Vec3, block: Item | str, mode=None):
         """set the block at position in the world"""
         key = (int(pos.x), int(pos.y), int(pos.z))
-        # split e.g. 'minecraft:oak_door[half=lower]' into item and state
-        name, _, state = str(block).partition("[")
-        name = name.split("{")[0]
-        self.world[key] = Item(name)
-        self.states[key] = state.rstrip("]")
+        self.block_commands.append(f"setblock {key[0]} {key[1]} {key[2]} {block}")
+        self._set(key, str(block))
         return f"Changed the block at {key[0]}, {key[1]}, {key[2]}"
 
-    def fill(self, start: Vec3, end: Vec3, block: Item, mode=None, **_kwargs):
-        """fill a volume, including both corners, like the Minecraft command"""
-        block = Item(block)  # ensure enum
+    def _set(self, key: tuple[int, ...], block: str):
+        # split e.g. 'minecraft:oak_door[half=lower]' into item and state
+        name, _, state = block.partition("[")
+        name = name.split("{")[0]
+        self.world[key] = Item(name)
+        if state:
+            self.states[key] = state.rstrip("]")
+        else:
+            self.states.pop(key, None)
+
+    def fill(
+        self,
+        start: Vec3,
+        end: Vec3,
+        block: Item | str,
+        mode: FillMode | None = None,
+        filter: str | None = None,
+    ):
+        """
+        fill a volume, including both corners, like the Minecraft command.
+        Supports block states, and the keep and replace (with a filter) modes
+        """
         lo = [floor(min(a, b)) for a, b in zip(start, end, strict=True)]
-        hi = [floor(max(a, b)) + 1 for a, b in zip(start, end, strict=True)]
-        self.world[lo[0] : hi[0], lo[1] : hi[1], lo[2] : hi[2]] = block
-        for key in [
-            k for k in self.states if all(lo[i] <= k[i] < hi[i] for i in range(3))
-        ]:
-            del self.states[key]
-        return f"Successfully filled {np.prod(np.subtract(hi, lo))} block(s)"
+        hi = [floor(max(a, b)) for a, b in zip(start, end, strict=True)]
+        command = f"fill {' '.join(map(str, lo))} {' '.join(map(str, hi))} {block}"
+        if mode is not None:
+            command += f" {FillMode(mode).value}"
+            if filter is not None:
+                command += f" {filter}"
+        self.block_commands.append(command)
+
+        keys = itertools.product(
+            *(range(a, b + 1) for a, b in zip(lo, hi, strict=True))
+        )
+        simple = mode in (None, FillMode.REPLACE) and filter is None
+        if simple and "[" not in block and min(lo) >= 0:
+            # the common case, quickly (slices do not wrap negative indexes)
+            self.world[lo[0] : hi[0] + 1, lo[1] : hi[1] + 1, lo[2] : hi[2] + 1] = Item(
+                block
+            )
+            for key in [
+                k for k in self.states if all(lo[i] <= k[i] <= hi[i] for i in range(3))
+            ]:
+                del self.states[key]
+            count = int(np.prod(np.subtract(hi, lo) + 1))
+        else:
+            count = 0
+            for key in keys:
+                if mode == FillMode.KEEP and self.world[key] != Item.AIR:
+                    continue
+                if filter is not None and not self.matches(Vec3(*key), filter):
+                    continue
+                self._set(key, str(block))
+                count += 1
+        if count == 0:
+            return "No blocks were filled"
+        return f"Successfully filled {count} block(s)"
 
     def clone(
         self,
@@ -294,8 +345,45 @@ class MockClient:
         return "Automatic saving is now enabled"
 
     def run(self, command: str, *args: str) -> str:
-        self.commands.append(" ".join((command, *args)))
+        command = " ".join((command, *args))
+        self.commands.append(command)
+        if match := re.match(
+            r"summon minecraft:marker (\S+) (\S+) (\S+) .*\"(\w+)\"", command
+        ):
+            self.markers[match.group(4)] = tuple(map(float, match.groups()[:3]))
+            return "Summoned new Marker"
+        if match := re.match(
+            r"execute positioned (\S+) 0 (\S+) positioned over \w+ run tp "
+            r"@e\[type=minecraft:marker,tag=(\w+),limit=1\] ~ ~ ~",
+            command,
+        ):
+            x, z = int(match.group(1)), int(match.group(2))
+            # the mock heightmap: the first block above the highest solid one
+            y = self.height(x, z)
+            self.markers[match.group(3)] = (x + 0.5, y, z + 0.5)
+            return f"Teleported Marker to {x + 0.5:f}, {y:f}, {z + 0.5:f}"
+        if match := re.match(r"kill @e\[type=minecraft:marker,tag=(\w+)\]", command):
+            if self.markers.pop(match.group(1), None) is None:
+                return "No entity was found"
+            return "Killed Marker"
         return f"ran {command}"
+
+    def height(self, x: int, z: int) -> int:
+        """
+        The mock world's heightmap at x, z: one above the highest block that
+        is not air, or the bottom of the mock world (-50)
+        """
+        for y in range(49, -51, -1):
+            if self.world[x, y, z] != Item.AIR:
+                return y + 1
+        return -50
+
+    def state_at(self, pos: Vec3) -> str:
+        """the block state at pos, as a string e.g. 'minecraft:stone'"""
+        key = (int(pos.x), int(pos.y), int(pos.z))
+        state = self.states.get(key)
+        block = str(self.getblock(pos))
+        return f"{block}[{state}]" if state else block
 
     def getblock(self, pos: Vec3) -> Item:
         """return the block at position in the world"""
