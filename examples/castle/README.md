@@ -4,29 +4,55 @@ A large, two-ward hillside castle built with mciwb: a lower bailey with a
 moat, drum-towered gatehouse and working portcullis, a grand stair up to an
 upper ward with a four-turreted keep, chapel and alchemist's tower, and
 dungeons, a treasure vault, traps and secret passages underneath. About
-150 x 190 blocks and 100 blocks tall, built in a few seconds over RCON.
+140 x 165 blocks and 80 blocks tall, with a road to spawn. A build is
+about 30,000 RCON commands (most of them reading the ground under the
+earthworks and the road, one command per column) and takes 5-10 seconds
+with mciwb on the server's own host, plus a few seconds waiting for the
+chunks to load; over a network allow a round trip per command.
 
 ```
-mciwb run build_castle.py                 # everything, in order
-STAGES=keep,interiors mciwb run build_castle.py   # just some stages
-mciwb run verify_castle.py                # exercise every mechanism
-mciwb run test_modules.py                 # test the mechanism modules alone
+mciwb run build_castle.py                        # everything, in order
+STAGES=keep,interiors mciwb run build_castle.py  # just some stages
+mciwb run verify_castle.py                       # exercise every mechanism
+mciwb run test_modules.py                        # test the mechanism modules alone
+python guide.py > GUIDE.md                       # a visitor's guide, with coordinates
 ```
 
 Pass `--server`, `--port` and `--passwd` for a server that is not the
-`mciwb start` one. The scripts need the chunks loaded: `build_castle.py`
-forceloads the site itself and the `cleanup` stage unloads it again
-(`STAGES=cleanup`).
+`mciwb start` one. The scripts forceload the chunks they need while they
+run and unload them again when they finish, however they finish.
 
-## Moving it
+## Moving it, and building more than one
 
-Everything is placed relative to `ORIGIN` in `castle_layout.py`, the
-north-west corner of the outer wall at the lower bailey's standing level. The
-earthworks stage follows the terrain (it fills a platform down to the ground
-and digs the moat and ditch), so the castle can go on any site about
-150 x 190 blocks where the ground is within ~30 blocks of the platform
-levels. The road to spawn in `build_outer.bridge_and_road` has the spawn
-point of the world it was built for (32, 74, -64) hard coded.
+Where to build, and the castle's name and colour, come from the environment:
+
+```
+ORIGIN=-80,82,-230 SPAWN=32,74,-64 NAME=Fable BANNER=red mciwb run build_castle.py
+```
+
+- `ORIGIN` is the north-west corner of the outer wall at the lower bailey's
+  standing level (ground y + 1). Everything is placed relative to it
+  (`castle_layout.py`). The earthworks stage follows the terrain (it fills a
+  platform down to the ground and digs the moat and ditch), so the castle
+  can go on any site about 150 x 190 blocks where the ground is within ~30
+  blocks of the platform levels (the bailey at `ORIGIN.y`, the upper ward
+  18 higher).
+- `SPAWN` is where the road from the gate leads. The gate faces south; the
+  road goes south until it is clear of the site, then round the side of the
+  site nearer spawn, then to spawn, with lantern posts along it and a
+  signpost at the end.
+- `NAME` goes on the sign inside the gate, the vault's sign and the
+  signpost; `BANNER` is the colour of the castle's banners (the second
+  colour, blue, is fixed).
+- `verify_castle.py` and `guide.py` take the same variables, so that they
+  check and describe the right castle.
+
+Every entity the castle summons (horses, armour stands, item frames, the
+golem and the cat) is tagged `castle_<x>_<z>` of its origin, and with its
+stage. A stage removes its own entities before it runs and the earthworks
+stage (a fresh site) removes every entity in the site, so rebuilding all or
+part of a castle never duplicates them. Mobs are summoned with
+`PersistenceRequired`, so they do not despawn.
 
 ## Layout (local coordinates, x east, z south, y above the bailey floor)
 
@@ -44,9 +70,18 @@ point of the world it was built for (32, 74, -64) hard coded.
 | Catacombs | x 91..110, z 104..132, standing level -15 | oubliette, arrow trap, lower treasury |
 | Vault | x 50..70, z 16..30, standing level 8 | under the keep |
 
+The site that is cleared and forceloaded is x -10..130, z -10..156 (the
+moat, ditch and bridge included); the castle itself spans y -16 (the
+catacombs' floor) to 62 (the keep's lightning rod). Everything underground
+is cut out of a lining of brick or cobble, so a cave or an aquifer in the
+hill cannot break into it.
+
 ## Mechanisms
 
-All plain redstone, so they work for players without mciwb running:
+All plain redstone, so they work for players without mciwb running. Their
+positions are in `castle_layout.py`; `castle_lib` has a `*_cells` function
+for each that gives the positions of its parts, used by the build and by
+`verify_castle.py` alike:
 
 - **Portcullises** (`castle_lib.portcullis`): sticky pistons above and
   below a 3-wide, 2-high passage drop and raise iron bars. The lever is in
@@ -64,20 +99,51 @@ All plain redstone, so they work for players without mciwb running:
   comparators chase lamps, a piston and note blocks.
 
 `verify_castle.py` toggles each of them over RCON and reads the result
-back. Two things it has to work round: the server pauses when nobody is
-online (ticks are advanced with `tick sprint`), and a lever or hook set with
-`setblock` only updates its own neighbours, so levers get a dust block
-beside them and tripwires are tripped by summoning an armour stand onto
-them.
+back, then checks the passages, the treasure, the teleport targets of the
+guide and that the castle's entities are exactly the ones it summoned. It
+leaves everything as it found it: the levers off, the bookshelf untouched,
+the dispensers reloaded. Two things it has to work round: the server pauses
+when nobody is online (ticks are advanced with `tick sprint`), and a lever
+or hook set with `setblock` only updates its own neighbours, so levers get a
+dust block beside them and tripwires are tripped by summoning an armour
+stand onto them.
+
+`test_modules.py` builds each mechanism in a 70 x 22 x 30 block of stone in
+the air at `RIG=x,y,z` (its north-west bottom corner, default `0,160,-40`),
+toggles it and reads it back. It refuses to run unless the rig's box is
+empty, and always clears the rig again.
+
+## Workarounds
+
+The Minecraft server keeps one output buffer for all its RCON connections,
+so when another client (a dashboard polling `list`, say) runs a command at
+the same moment, a reply comes back empty or with the other client's output
+in front of ours: about one command in 10k (gilesknap/mciwb#166, item 2).
+`build_outer.py` wraps mciwb's `ground_heights`, `Placer.fill` and
+`Placer.setblock` to accept a polluted reply and retry an empty one;
+`castle_lib.run` does the same for summons and signs, and the checks read
+a block again when the reply is empty. Signs are placed with a raw
+`setblock` (item 3: `Placer` does not parse block-entity NBT) and the
+chapel's bell tower fills the hole `hip_roof` leaves in its top ring (item
+5). Each workaround is marked in the code with the issue; delete them when
+the fixes are released.
+
+Two more things about a server with no players on it: it does not tick, so
+after a `forceload` the scripts wait for the chunks and make it tick a
+little before they look for entities (`build_outer.wait_loaded`); and the
+ticks that `verify_castle.py` sprints through age copper, so the keep's
+lightning rod may be `exposed_lightning_rod` by the time you visit.
 
 ## Files
 
-- `castle_layout.py`: `ORIGIN` and where everything is.
-- `castle_lib.py`: fills, round towers, battlements and the mechanisms.
+- `castle_layout.py`: `ORIGIN`, `SPAWN`, `NAME` and `BANNER` from the
+  environment, and where everything is, including the mechanisms and the
+  teleport targets.
+- `castle_lib.py`: fills, round towers, battlements, tagged summoning, the
+  mechanisms and their `*_cells`.
 - `build_outer.py`: earthworks, walls, towers, gatehouse, bridge, road,
-  grand stair, keep shell.
+  grand stair, keep shell; the site's forceload and the road's route.
 - `build_inner.py`: rooms, chapel and crypt, alchemist's tower, bailey
   buildings, dungeons, vault, details.
 - `build_castle.py`: the staged driver. `verify_castle.py`: the checks.
-- `test_modules.py`: builds each mechanism in a block of stone in the air,
-  east of the castle, toggles it and removes it.
+- `test_modules.py`: the mechanism modules alone. `guide.py`: the guide.

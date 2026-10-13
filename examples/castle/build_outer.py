@@ -6,24 +6,28 @@ driver (build_castle.py) runs them in order.
 
 from __future__ import annotations
 
+from collections.abc import Iterable
+
 import castle_lib as L
 from castle_layout import (
+    BANNER,
+    BANNER2,
+    BRIDGE_END,
     DITCH_FLOOR,
     GATE_X1,
     GATE_X2,
-    GATE_Z,
     GATEHOUSE,
     KEEP,
     KEEP_ROOF,
     LD,
+    MAIN_GATE,
+    MIDDLE_GATE,
     MOAT_FLOOR,
     MOAT_W,
+    NAME,
     ORIGIN,
     SITE_TOP,
-    SITE_X1,
-    SITE_X2,
-    SITE_Z1,
-    SITE_Z2,
+    SPAWN,
     TR,
     UD,
     WALL_H,
@@ -32,30 +36,71 @@ from castle_layout import (
     ZS,
     V,
     W,
+    centre,
+    site_box,
 )
 from mcwb import Vec3
 
 from mciwb.builders import arch, foundation, ground_height, road, stairway
 from mciwb.builders import paths as _paths
 from mciwb.builders import terrain as _terrain
-from mciwb.builders.placer import BuildError, rectangles
+from mciwb.builders.placer import BuildError, Placer, rectangles
 from mciwb.threads import get_client
 
 N, S, E, Wd = Vec3(0, 0, -1), Vec3(0, 0, 1), Vec3(1, 0, 0), Vec3(-1, 0, 0)
 
 
+# ---------------------------------------------------------------- workaround
+# gilesknap/mciwb#166 (item 2): the server keeps one output buffer for all
+# its RCON connections, so when another client (the dashboard polling
+# ``list``) runs a command at the same moment, a reply comes back empty or
+# with the other client's output in front of ours. About one in 10k
+# commands. mciwb's ground_heights then aborts the whole foundation, and
+# Placer.fill and Placer.setblock raise BuildError. Until the library copes
+# with it, this section wraps them: a polluted reply that still holds the
+# command's own reply is accepted, an empty one is retried a few times.
+# Delete it when the fix is released.
+
+RETRIES = 3
+OK_REPLIES = (
+    "Changed the block",
+    "Could not set the block",
+    "Successfully filled",
+    "No blocks were filled",
+)
+
+
+def _retrying(method):
+    """a Placer method that accepts a polluted reply and retries an empty one"""
+
+    def wrapper(self, *args, **kwargs):
+        for attempt in range(RETRIES):
+            try:
+                return method(self, *args, **kwargs)
+            except BuildError as e:
+                reply = str(e).partition(" failed: ")[2]
+                if any(ok in reply for ok in OK_REPLIES):
+                    return reply
+                if reply.strip() or attempt == RETRIES - 1:
+                    raise
+                print(f"   retrying: {e}")
+
+    return wrapper
+
+
+Placer.fill = _retrying(Placer.fill)
+Placer.setblock = _retrying(Placer.setblock)
+
+
 def ground_heights_retry(
-    columns, heightmap=_terrain.Heightmap.MOTION_BLOCKING_NO_LEAVES
-):
-    """
-    mciwb's ground_heights, with a retry per column: over tens of thousands
-    of RCON commands the odd reply comes back empty, which would abort the
-    whole foundation.
-    """
+    columns: Iterable[tuple[float, float]],
+    heightmap: _terrain.Heightmap | str = _terrain.Heightmap.MOTION_BLOCKING_NO_LEAVES,
+) -> dict[tuple[int, int], int]:
     import re
     from math import floor
     from uuid import uuid4
 
+    teleported = re.compile(r"Teleported .* to (-?[\d.]+), (-?[\d.]+), (-?[\d.]+)")
     columns = [(floor(x), floor(z)) for x, z in columns]
     if not columns:
         return {}
@@ -63,7 +108,6 @@ def ground_heights_retry(
     client = get_client()
     tag = f"mciwb_{uuid4().hex[:8]}"
     entity = f"@e[type=minecraft:marker,tag={tag},limit=1]"
-    teleported = re.compile(r"Teleported .* to (-?[\d.]+), (-?[\d.]+), (-?[\d.]+)")
     x, z = columns[0]
     result = client.run(f'summon minecraft:marker {x} 0 {z} {{Tags:["{tag}"]}}')
     if not result.startswith("Summoned"):
@@ -91,6 +135,7 @@ def ground_heights_retry(
 
 _terrain.ground_heights = ground_heights_retry
 _paths.ground_heights = ground_heights_retry
+# ---------------------------------------------------------------- end workaround
 
 # local cell sets of the big regions
 BAILEY = L.rect(-1, UD - 1, W, UD + LD)  # platform incl. a 1-block berm
@@ -117,6 +162,12 @@ def wcells(cells: L.Cells) -> L.Cells:
     return {(ORIGIN.x + x, ORIGIN.z + z) for x, z in cells}
 
 
+def portcullis_args(gate: tuple[int, int, int, int]) -> tuple[int, int, int, int]:
+    """a gate's (x1, x2, z, standing level) from local to world"""
+    x1, x2, z, y0 = gate
+    return ORIGIN.x + x1, ORIGIN.x + x2, ORIGIN.z + z, ORIGIN.y + y0
+
+
 def foundation_cells(cells: L.Cells, top_y: int, block: str) -> None:
     """a level platform at local top_y over a set of cells, filled down to the ground"""
     for ax, az, bx, bz in rectangles(wcells(cells)):
@@ -128,11 +179,105 @@ def foundation_cells(cells: L.Cells, top_y: int, block: str) -> None:
         )
 
 
-def forceload(add: bool = True) -> None:
-    a, b = V(SITE_X1, 0, SITE_Z1), V(SITE_X2, 0, SITE_Z2)
-    # plus the road to spawn
-    x2, z2 = max(b.x, 40), max(b.z, -58)
-    print(L.cmd(f"forceload {'add' if add else 'remove'} {a.x} {a.z} {x2} {z2}"))
+# ---------------------------------------------------------------- the site and the road
+
+ROAD_MARGIN = 5  # how far the road keeps from the site
+FORCELOAD_LIMIT = 256  # chunks per forceload command
+
+
+def road_start() -> Vec3:
+    """where the road leaves the castle: just beyond the bridge (y ignored)"""
+    return V(XG, 0, BRIDGE_END + 1)
+
+
+def road_points(start: Vec3 | None = None) -> list[Vec3]:
+    """
+    The corners of the road from the foot of the bridge to SPAWN, round the
+    castle's site and never through it: south from the gate until clear of
+    the site, then, unless spawn is south of there, north along the side of
+    the site nearer spawn as far as spawn's row, then along it to spawn. y
+    is ignored: the road follows the ground.
+    """
+    start = start or road_start()
+    a, b = site_box()
+    x1, x2 = a.x - ROAD_MARGIN, b.x + ROAD_MARGIN
+    zs = max(int(start.z), b.z + ROAD_MARGIN)
+    points = [start, Vec3(start.x, 0, zs)]
+    if SPAWN.z < zs:
+        # hug the site's side, then go along spawn's row: the shortest
+        # route keeps near the castle and away from whatever is at spawn
+        side = x1 if SPAWN.x < (x1 + x2) / 2 else x2
+        points += [Vec3(side, 0, zs), Vec3(side, 0, SPAWN.z)]
+    else:
+        points.append(Vec3(start.x, 0, SPAWN.z))
+    points.append(Vec3(SPAWN.x, 0, SPAWN.z))
+    route = [points[0]]
+    for p in points[1:]:
+        if (p.x, p.z) != (route[-1].x, route[-1].z):
+            route.append(p)
+    return route
+
+
+def chunk_pieces(
+    x1: int, z1: int, x2: int, z2: int, limit: int = FORCELOAD_LIMIT
+) -> list[tuple[int, int, int, int]]:
+    """a block box split into boxes of at most ``limit`` chunks each"""
+    cx1, cx2, cz1, cz2 = x1 // 16, x2 // 16, z1 // 16, z2 // 16
+    columns = min(cx2 - cx1 + 1, limit)
+    rows = max(1, limit // columns)
+    pieces = []
+    for cx in range(cx1, cx2 + 1, columns):
+        for cz in range(cz1, cz2 + 1, rows):
+            ex, ez = min(cx + columns - 1, cx2), min(cz + rows - 1, cz2)
+            pieces.append((cx * 16, cz * 16, ex * 16 + 15, ez * 16 + 15))
+    return pieces
+
+
+def wait_loaded(
+    points: Iterable[tuple[int, int]], chunks: int, timeout: float = 60
+) -> None:
+    """
+    Wait until the chunks at these (x, z) have their blocks, then a moment
+    more for their entities: forceloading only asks for the chunks, and a
+    build is faster than the loading, so commands sent at once find no
+    chunk, or no entities. (``execute if loaded`` cannot be used: a server
+    with no players does not tick, and never calls a chunk fully loaded.)
+    ``chunks`` is how many were asked for.
+    """
+    import time
+
+    deadline = time.time() + timeout
+    for x, z in points:
+        while "not loaded" in L.cmd(f"execute if block {x} 0 {z} minecraft:air"):
+            if time.time() > deadline:
+                raise BuildError(
+                    f"chunk at {x}, {z} still not loaded after {timeout} s"
+                )
+            time.sleep(0.5)
+    time.sleep(2 + chunks / 100)
+    # a server with no players does not tick, and until it has ticked the
+    # chunks their entities are not selectable: make it tick a little
+    L.cmd("tick sprint 20")
+    time.sleep(1)
+
+
+def forceload(add: bool = True, with_road: bool = True) -> None:
+    """forceload (or unload) the site and, if asked, the road to spawn; when
+    loading, wait until the chunks are in"""
+    a, b = site_box()
+    xs, zs = [a.x, b.x], [a.z, b.z]
+    if with_road:
+        for p in road_points():
+            xs += [p.x - 4, p.x + 4]
+            zs += [p.z - 4, p.z + 4]
+    x1, z1, x2, z2 = min(xs), min(zs), max(xs), max(zs)
+    for px1, pz1, px2, pz2 in chunk_pieces(x1, z1, x2, z2):
+        print(L.cmd(f"forceload {'add' if add else 'remove'} {px1} {pz1} {px2} {pz2}"))
+    if add:
+        corners = [
+            (x, z) for x in (x1, (x1 + x2) // 2, x2) for z in (z1, (z1 + z2) // 2, z2)
+        ]
+        wait_loaded(corners, (x2 - x1) * (z2 - z1) // 256)
 
 
 def earthworks() -> None:
@@ -185,8 +330,8 @@ def bailey_walls() -> None:
     # corner towers straddling the corners, and mid-wall towers
     walk = WALL_H
     towers = [
-        (3, ZS - 3, [(walk, N, -1), (walk, E, 1), (0, N, 1)], "red"),
-        (W - 4, ZS - 3, [(walk, N, 1), (walk, Wd, 1), (0, N, -1)], "red"),
+        (3, ZS - 3, [(walk, N, -1), (walk, E, 1), (0, N, 1)], BANNER),
+        (W - 4, ZS - 3, [(walk, N, 1), (walk, Wd, 1), (0, N, -1)], BANNER),
         (3, 105, [(walk, N, -1), (walk, S, -1), (0, E, 0)], None),
         (W - 4, 105, [(walk, N, 1), (walk, S, 1), (0, Wd, 0)], None),
     ]
@@ -215,7 +360,7 @@ def bailey_walls() -> None:
             ORIGIN.y + YU + WALL_H + 8,
             floors=[ORIGIN.y, ORIGIN.y + walk, ORIGIN.y + YU, ORIGIN.y + YU + walk],
             doors=[(ORIGIN.y + dy, d, o) for dy, d, o in doors],
-            banner="blue",
+            banner=BANNER2,
         )
     # stairs from the courtyard up to the wall walks (west, east, and beside the gatehouse)
     stairway(
@@ -303,9 +448,7 @@ def gatehouse() -> dict:
     L.fill(V(GATE_X1, 2, z1 + 2), V(GATE_X2, 2, z1 + 2), L.AIR)
     L.fill(V(GATE_X1, 3, z1 + 2), V(GATE_X2, 3, z1 + 2), L.BARS)
     # the portcullis itself
-    g = L.portcullis(
-        ORIGIN.x + GATE_X1, ORIGIN.x + GATE_X2, ORIGIN.z + GATE_Z, ORIGIN.y
-    )
+    g = L.portcullis(*portcullis_args(MAIN_GATE))
     # drum towers straddling the gatehouse's outer corners (clear of the
     # portcullis wiring channel east of the passage), up past the gatehouse top
     for cx, doors in (
@@ -320,11 +463,11 @@ def gatehouse() -> dict:
             ORIGIN.y + top + 8,
             floors=[ORIGIN.y, ORIGIN.y + top],
             doors=[(ORIGIN.y + dy, d, o) for dy, d, o in doors],
-            banner="red",
+            banner=BANNER,
         )
     # a lamp and banners over the arch
     for x in (XG - 4, XG + 4):
-        L.set_block(V(x, 5, z2 + 1), "minecraft:red_wall_banner[facing=south]")
+        L.set_block(V(x, 5, z2 + 1), f"minecraft:{BANNER}_wall_banner[facing=south]")
     L.set_block(V(XG, 6, z2 + 1), f"{L.LANTERN}[hanging=true]")
     L.set_block(V(XG, 7, z2 + 1), L.CHAIN)
     L.set_block(V(XG, 8, z2 + 1), L.CHAIN)
@@ -350,38 +493,69 @@ def bridge_and_road() -> None:
         L.set_block(
             V(x, 7, z1), "minecraft:dark_oak_trapdoor[facing=south,half=top,open=false]"
         )
-    # down from the bank to the ground, then the road to spawn
-    gx, gz = ORIGIN.x + XG, ORIGIN.z + z2 + 1
+    # a stair from the bank down (or up) to the ground, then the road to spawn
+    foot = road_start()
+    gx, gz = foot.x, foot.z
+    top = ORIGIN.y - 1  # the bank's top block
     ground = ground_height(gx, gz + 6)
-    top = ORIGIN.y - 1
-    drop = top - ground
-    if drop > 0:
+    run = abs(top - ground)  # the stair climbs or drops one block per block
+    if run:
         stairway(
-            [Vec3(gx, top, gz), Vec3(gx, ground, gz + drop)],
+            [Vec3(gx, top, gz), Vec3(gx, ground, gz + run)],
             L.BRICK_STAIRS,
             width=5,
             support=L.COBBLE,
             clearance=3,
         )
-        start = Vec3(gx, ground, gz + drop + 1)
-    else:
-        start = Vec3(gx, ground, gz)
-    road(
-        [start, Vec3(gx, 0, -70), Vec3(32, 0, -70), Vec3(32, 0, -66)],
-        "minecraft:dirt_path",
-        width=3,
-        border=L.COBBLE,
-    )
-    # lanterns on posts along the road every 10 blocks
-    for x in range(gx + 5, 32, 10):
-        y = ground_height(x, -72) + 1
-        L.fill(Vec3(x, y, -72), Vec3(x, y + 1, -72), "minecraft:dark_oak_fence")
-        L.set_block(Vec3(x, y + 2, -72), L.LANTERN)
-    # a signpost at spawn pointing the way
-    y = ground_height(30, -66) + 1
-    L.set_nbt(
-        Vec3(30, y, -66),
-        "minecraft:oak_sign[rotation=4]{front_text:{messages:['\"<- To the Castle\"','\"follow the road\"','\"north-west\"','\"\"']}}",
+    points = road_points(Vec3(gx, ground, gz + run + 1))
+    road(points, "minecraft:dirt_path", width=3, border=L.COBBLE)
+    lamp_posts(points)
+    signpost(points)
+
+
+def _unit(a: Vec3, b: Vec3) -> tuple[Vec3, Vec3, int]:
+    """the direction of a leg of the road, its right-hand side and its length"""
+    dx, dz = int(b.x - a.x), int(b.z - a.z)
+    d = Vec3((dx > 0) - (dx < 0), 0, (dz > 0) - (dz < 0))
+    return d, Vec3(-d.z, 0, d.x), abs(dx) + abs(dz)
+
+
+def lamp_posts(points: list[Vec3], every: int = 12) -> None:
+    """lantern posts beside the road, on the right of the way to spawn"""
+    for a, b in zip(points, points[1:], strict=False):
+        d, right, length = _unit(a, b)
+        for k in range(every // 2, length - 2, every):
+            p = a + d * k + right * 3
+            y = ground_height(p.x, p.z) + 1
+            L.fill(Vec3(p.x, y, p.z), Vec3(p.x, y + 1, p.z), "minecraft:dark_oak_fence")
+            L.set_block(Vec3(p.x, y + 2, p.z), L.LANTERN)
+
+
+def compass(dx: int, dz: int) -> str:
+    """the bearing of (dx, dz) as north, north-east ..."""
+    ns = "north" if dz < 0 else "south"
+    ew = "east" if dx > 0 else "west"
+    if abs(dx) > 2 * abs(dz):
+        return ew
+    if abs(dz) > 2 * abs(dx):
+        return ns
+    return f"{ns}-{ew}"
+
+
+def signpost(points: list[Vec3]) -> None:
+    """a signpost at spawn beside the road's end, pointing the way"""
+    d, right, _ = _unit(points[-2], points[-1])
+    p = points[-1] - d * 2 + right * 2
+    y = ground_height(p.x, p.z) + 1
+    # the sign faces the road, i.e. left: rotation 0 south, 4 west, 8 north, 12 east
+    rotation = {(0, 1): 0, (-1, 0): 4, (0, -1): 8, (1, 0): 12}[(-right.x, -right.z)]
+    middle = centre()
+    L.sign(
+        Vec3(p.x, y, p.z),
+        f"oak_sign[rotation={rotation}]",
+        f"Castle {NAME}",
+        "follow the road",
+        compass(middle.x - SPAWN.x, middle.z - SPAWN.z),
     )
 
 
@@ -417,7 +591,7 @@ def upper_walls() -> None:
             floors=[ORIGIN.y + y, ORIGIN.y + walk, ORIGIN.y + walk + 6],
             doors=[(ORIGIN.y + dy, d, o) for dy, d, o in doors],
             roof=roof,
-            banner="blue",
+            banner=BANNER2,
         )
     for cx, doors in (
         (3, [(walk, N, -1), (walk, S, -1), (y, E, 0)]),
@@ -500,7 +674,7 @@ def grand_stair() -> dict:
         )
         L.set_block(
             V(x1 + 2, YU + WALL_H + 7, UD + 2),
-            "minecraft:blue_wall_banner[facing=south]",
+            f"minecraft:{BANNER2}_wall_banner[facing=south]",
         )
     # the gate passage through the south wall and its portcullis
     L.fill(V(GATE_X1, YU, UD - 4), V(GATE_X2, YU + 1, UD), L.AIR)
@@ -525,9 +699,7 @@ def grand_stair() -> dict:
     )
     L.fill(V(GATE_X1, YU + 1, UD + 1), V(GATE_X2, YU + 1, UD + 1), L.AIR)
     L.fill(V(GATE_X1, YU, UD + 1), V(GATE_X2, YU, UD + 1), L.AIR)
-    g = L.portcullis(
-        ORIGIN.x + GATE_X1, ORIGIN.x + GATE_X2, ORIGIN.z + UD - 2, ORIGIN.y + YU
-    )
+    g = L.portcullis(*portcullis_args(MIDDLE_GATE))
     # the winch room of this gate is reached through the WEST tower (the
     # wiring channel runs inside the east one): a door from the ward, a
     # lobby, a stair up four blocks and a passage east into the winch room
@@ -616,17 +788,12 @@ def keep_shell() -> None:
             ],
             doors=[(ORIGIN.y + dy, d, o) for dy, d, o in doors],
             roof=L.DARK_TILES,
-            banner="red",
+            banner=BANNER,
         )
     # windows: tall stained glass in pairs on every face, each storey
     for fy in (y + 2, y + 12, y + 21):
         for x in range(x1 + 6, x2 - 5, 6):
             for z in (z1, z2):
-                L.fill(
-                    V(x, fy, z),
-                    V(x + 1, fy + 3, z + 2 if z == z1 else z - 2),
-                    "minecraft:light_blue_stained_glass_pane",
-                )
                 L.fill(
                     V(x, fy, z),
                     V(x + 1, fy + 3, z + 2 if z == z1 else z - 2),
@@ -649,9 +816,6 @@ def keep_shell() -> None:
         clear=True,
     )
     L.fill(V(XG - 2, y, z2 - 2), V(XG + 2, y + 3, z2), L.AIR)
-    L.fill(
-        V(XG - 2, y, z2), V(XG + 2, y + 3, z2), "minecraft:dark_oak_door[facing=north]"
-    ) if False else None
     for x in range(XG - 2, XG + 3):
         L.set_block(
             V(x, y, z2),
@@ -672,7 +836,7 @@ def keep_shell() -> None:
         floors=[ORIGIN.y + KEEP_ROOF],
         doors=[(ORIGIN.y + KEEP_ROOF, S, 0)],
         roof=L.DARK_TILES,
-        banner="red",
+        banner=BANNER,
         stair=False,
     )
     # a path from the middle gate to the great door

@@ -12,6 +12,7 @@ from __future__ import annotations
 import random
 from collections.abc import Iterable
 
+from castle_layout import TAG
 from mcipc.rcon.enumerations import FillMode
 from mcwb import Vec3
 
@@ -69,6 +70,24 @@ def keep(a: Vec3, b: Vec3, block: str) -> None:
     placer().fill(a, b, block, FillMode.KEEP)
 
 
+def seal(a: Vec3, b: Vec3, block: str) -> None:
+    """
+    Make a box solid without touching what is solid already: the lining of
+    an underground passage that runs close to other parts of the castle.
+    Air (a cave), water and lava (an aquifer) and sand and gravel (which
+    would fall in) all become ``block``.
+    """
+    p = placer()
+    p.fill(a, b, block, FillMode.KEEP)
+    for loose in (
+        "minecraft:water",
+        "minecraft:lava",
+        "#minecraft:sand",
+        "minecraft:gravel",
+    ):
+        p.fill(a, b, block, FillMode.REPLACE, loose)
+
+
 def set_block(pos: Vec3, block: str) -> None:
     placer().setblock(pos, block)
 
@@ -77,12 +96,52 @@ def cmd(command: str) -> str:
     return get_client().run(command)
 
 
+def run(command: str, ok: tuple[str, ...]) -> str:
+    """a command whose reply must hold one of ``ok``: an empty reply is
+    retried, and another client's output in front of ours is tolerated
+    (gilesknap/mciwb#166, item 2)"""
+    for _attempt in range(3):
+        r = cmd(command)
+        if r.strip():
+            break
+    if not any(k in r for k in ok):
+        raise RuntimeError(f"{command[:60]}... failed: {r!r}")
+    return r
+
+
 def set_nbt(pos: Vec3, block: str) -> None:
     """setblock for blocks with block-entity data, e.g. signs: Placer cannot
-    parse the {...} suffix"""
-    r = cmd(f"setblock {pos.x} {pos.y} {pos.z} {block}")
-    if not r.startswith(("Changed", "Could not set")):
-        raise RuntimeError(f"setblock {pos} {block[:40]}... failed: {r}")
+    parse the {...} suffix (gilesknap/mciwb#166, item 3)"""
+    run(f"setblock {pos.x} {pos.y} {pos.z} {block}", ("Changed", "Could not set"))
+
+
+def sign(pos: Vec3, block: str, *lines: str) -> None:
+    """a sign (``oak_sign[rotation=4]``, ``oak_wall_sign[facing=north]`` ...)
+    with up to four lines of text"""
+    text = ",".join(f"'\"{line}\"'" for line in (*lines, "", "", "", "")[:4])
+    set_nbt(pos, f"minecraft:{block}{{front_text:{{messages:[{text}]}}}}")
+
+
+# the build stage running now, for the tag on summoned entities
+STAGE = "build"
+# mobs are summoned with this so that they never despawn
+PERSIST = "PersistenceRequired:1b"
+
+
+def summon(kind: str, pos: Vec3, nbt: str = "") -> None:
+    """
+    Summon an entity, tagged ``TAG`` (the castle's) and ``TAG.STAGE`` so that
+    a rebuild of the castle or of a stage removes the old ones first (see
+    build_castle.kill_stage_entities). ``nbt`` is extra NBT, without braces.
+    """
+    tags = f'Tags:["{TAG}","{TAG}.{STAGE}"]'
+    data = f"{{{tags},{nbt}}}" if nbt else f"{{{tags}}}"
+    run(f"summon minecraft:{kind} {pos.x} {pos.y} {pos.z} {data}", ("Summoned",))
+
+
+def kill_tagged(tag: str) -> str:
+    """kill every entity with a tag, wherever it has wandered to"""
+    return cmd(f"kill @e[tag={tag}]")
 
 
 def shell(a: Vec3, b: Vec3, block: str) -> None:
@@ -348,9 +407,6 @@ def round_tower(
         set_block(Vec3(cx, level, cz), "minecraft:lightning_rod")
         if banner:
             set_block(
-                Vec3(cx, level - 1, cz), f"minecraft:{banner}_wall_banner[facing=south]"
-            ) if False else None
-            set_block(
                 Vec3(cx + 1, level - 2, cz),
                 f"minecraft:{banner}_wall_banner[facing=east]",
             )
@@ -372,6 +428,18 @@ def dust(*positions: Vec3) -> None:
     p = placer()
     for pos in positions:
         p.setblock(pos, DUST)
+
+
+def portcullis_cells(x1: int, x2: int, z: int, y0: int) -> dict:
+    """the positions of a `portcullis`'s parts: what to check"""
+    return {
+        "lever": Vec3(x2 + 2, y0 + 4, z),
+        "ceiling_pistons": [Vec3(x, y0 + 3, z) for x in range(x1, x2 + 1)],
+        "floor_pistons": [Vec3(x, y0 - 2, z) for x in range(x1, x2 + 1)],
+        "closed_cells": [
+            Vec3(x, y, z) for x in range(x1, x2 + 1) for y in (y0, y0 + 1)
+        ],
+    }
 
 
 def portcullis(x1: int, x2: int, z: int, y0: int) -> dict:
@@ -436,14 +504,7 @@ def portcullis(x1: int, x2: int, z: int, y0: int) -> dict:
     p.fill(Vec3(x2 + 1, y0 - 4, z + 2), Vec3(xr, y0 - 4, z + 2), STONE)
     for x in range(x2 + 1, xr + 1):
         p.setblock(Vec3(x, y0 - 3, z + 2), DUST)
-    return {
-        "lever": Vec3(x2 + 2, y0 + 4, z),
-        "ceiling_pistons": [Vec3(x, y0 + 3, z) for x in range(x1, x2 + 1)],
-        "floor_pistons": [Vec3(x, y0 - 2, z) for x in range(x1, x2 + 1)],
-        "closed_cells": [
-            Vec3(x, y, z) for x in range(x1, x2 + 1) for y in (y0, y0 + 1)
-        ],
-    }
+    return portcullis_cells(x1, x2, z, y0)
 
 
 def _facing(d: Vec3) -> str:
@@ -478,9 +539,13 @@ def hidden_door(
       (a=-1, b=lever_b, h=1): on opens, off closes. lever_b may be negative
       (the other side of the door) but not 0..2.
 
-    The hidden space a=1..3, b=0..9, h=0..3 is carved and floored; the room
-    side a=-1 at b=1..2 gets a 2-high pilaster of ``material`` hiding the
-    piston faces. Returns positions to check.
+    The hidden space a=1..3, h=0..3 is carved and floored, along b=0..8 for
+    the bookshelf (its dust line) or from the lever to the pistons for a
+    lever; the room side a=-1 at b=1..2 gets a 2-high pilaster of
+    ``material`` hiding the piston faces. Everything from a=-1 to a=3,
+    h=-1 to h=4 along the strip must be solid before this is called: it
+    carves what it needs and leaves the rest as the walls. Returns the
+    positions to check (`hidden_door_cells`).
     """
     p = placer()
     up = Vec3(0, 1, 0)
@@ -490,10 +555,7 @@ def hidden_door(
 
     f_mv = _facing(v * -1)  # towards the door
     f_mu = _facing(u * -1)  # towards the room
-    if trigger == "lever" and lever_b in (0, 1, 2):
-        raise ValueError("lever_b must not be 0..2 (the door and its pistons)")
-    b_lo = min(-1, lever_b - 1) if trigger == "lever" else -1
-    b_hi = max(9, lever_b + 1) if trigger == "lever" else 9
+    b_lo, b_hi = _hidden_door_strip(trigger, lever_b)
     # the wall strip, solid
     for b in range(b_lo, b_hi + 1):
         p.fill(at(0, b, -1), at(0, b, 2), material)
@@ -522,7 +584,6 @@ def hidden_door(
             )
         cmd(f"data merge block {s.x} {s.y} {s.z} {{last_interacted_slot:-1}}")
         p.setblock(at(1, 8, 1), f"minecraft:comparator[facing={f_mu}]")
-        first = at(2, 8, 1)
         for b in range(3, 9):
             p.setblock(at(2, b, 1), DUST)
     else:
@@ -531,7 +592,6 @@ def hidden_door(
         p.setblock(s, f"minecraft:lever[face=wall,facing={f_mu},powered=false]")
         p.setblock(at(1, lever_b, 0), BRICK)
         p.setblock(at(1, lever_b, 1), DUST)
-        first = at(1, lever_b, 1)
         run = range(lever_b, 2) if lever_b < 2 else range(lever_b, 2, -1)
         for b in run:
             p.setblock(at(2, b, 0), BRICK)
@@ -539,8 +599,34 @@ def hidden_door(
     # the block whose power turns the torch off, and the torch beside the upper piston
     p.setblock(at(2, 2, 1), BRICK)
     p.setblock(at(1, 2, 1), f"minecraft:redstone_wall_torch[facing={f_mu}]")
+    return hidden_door_cells(base, u, v, trigger=trigger, lever_b=lever_b)
+
+
+def _hidden_door_strip(trigger: str, lever_b: int) -> tuple[int, int]:
+    """the extent along the wall (b) of a hidden door's wall strip"""
+    if trigger == "lever" and lever_b in (0, 1, 2):
+        raise ValueError("lever_b must not be 0..2 (the door and its pistons)")
+    if trigger == "lever":
+        return min(-1, lever_b - 1), max(3, lever_b + 1)
+    return -1, 9
+
+
+def hidden_door_cells(
+    base: Vec3, u: Vec3, v: Vec3, *, trigger: str = "bookshelf", lever_b: int = 8
+) -> dict:
+    """the positions of a `hidden_door`'s parts: what to check and trigger"""
+    up = Vec3(0, 1, 0)
+
+    def at(a: int, b: int, h: int) -> Vec3:
+        return base + u * a + v * b + up * h
+
+    if trigger == "bookshelf":
+        s, first = at(0, 8, 1), at(2, 8, 1)
+    else:
+        s, first = at(-1, lever_b, 1), at(1, lever_b, 1)
     return {
         "trigger": s,
+        "trigger_facing": _facing(u * -1),  # a lever faces the room
         "first_dust": first,
         "pistons": [at(0, 2, 0), at(0, 2, 1)],
         "door": [at(0, 0, 0), at(0, 0, 1)],
@@ -602,10 +688,18 @@ def pit_trap(x: int, y: int, zt: int, depth: int, travel: int = -1) -> dict:
     p.setblock(
         Vec3(x - 3, y + 1, zn), AIR
     )  # so the dust can step down to (x-3, y-1, zt)
+    return pit_trap_cells(x, y, zt, depth, travel)
+
+
+def pit_trap_cells(x: int, y: int, zt: int, depth: int, travel: int = -1) -> dict:
+    """the positions of a `pit_trap`'s parts: what to check and trigger"""
+    s = 1 if travel > 0 else -1
+    zh = zt - 2 * s
     return {
         "hooks": [Vec3(x - 1, y, zh), Vec3(x + 1, y, zh)],
         "wire": Vec3(x, y, zh),
-        "trapdoors": [Vec3(x, y - 1, z) for z in doors],
+        "trapdoors": [Vec3(x, y - 1, z) for z in (zt, zt + s)],
+        "shaft": [Vec3(x, yy, zt) for yy in range(y - depth, y - 1)],
     }
 
 
@@ -667,8 +761,13 @@ def arrow_trap(x1: int, x2: int, y: int, zw: int, zdisp: int) -> dict:
         p.fill(Vec3(x2 + 2, y + 4, za), Vec3(x2 + 2, y + 4, zb), STONE)
         for z in range(za, zb + 1):
             p.setblock(Vec3(x2 + 2, y + 3, z), DUST)
+    return arrow_trap_cells(x1, x2, y, zw, zdisp)
+
+
+def arrow_trap_cells(x1: int, x2: int, y: int, zw: int, zdisp: int) -> dict:
+    """the positions of an `arrow_trap`'s parts: what to check and trigger"""
     return {
         "hooks": [Vec3(x1, y, zw), Vec3(x2, y, zw)],
-        "dispensers": cells,
+        "dispensers": [Vec3(x, y + 1, zdisp) for x in range(x1, x2 + 1)],
         "wire": Vec3(x1 + 1, y, zw),
     }

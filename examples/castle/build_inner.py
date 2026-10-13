@@ -19,7 +19,32 @@ Secrets (see the README for the full list):
 from __future__ import annotations
 
 import castle_lib as L
-from castle_layout import KEEP, KEEP_ROOF, UD, XG, YU, ZS, V, W
+from castle_layout import (
+    ALCH,
+    ARROW_TRAP,
+    BANNER,
+    BANNER2,
+    CELL_DOOR,
+    CHAPEL,
+    CRYPT_DOOR,
+    KEEP,
+    KEEP_ROOF,
+    LIBRARY_DOOR,
+    LIBRARY_LADDER,
+    NAME,
+    ORIGIN,
+    PIT_TRAP,
+    UD,
+    VAULT,
+    VAULT_Y,
+    WELL,
+    WELL_TUNNEL_X,
+    XG,
+    YU,
+    ZS,
+    V,
+    W,
+)
 from mcwb import Vec3
 
 from mciwb.builders import column, gable_roof, hip_roof, stairway
@@ -29,10 +54,7 @@ N, S, E, Wd = Vec3(0, 0, -1), Vec3(0, 0, 1), Vec3(1, 0, 0), Vec3(-1, 0, 0)
 F1, F2, F3, FR = YU - 1, YU + 9, YU + 18, KEEP_ROOF - 1  # the keep's floor slabs
 KX1, KZ1, KX2, KZ2 = KEEP
 IX1, IZ1, IX2, IZ2 = KX1 + 3, KZ1 + 3, KX2 - 3, KZ2 - 3  # the keep's interior
-
-# where the mechanisms are, filled in as they are built (local coordinates
-# are in the README; these are world positions for verify_castle.py)
-MECHANISMS: dict[str, dict] = {}
+LX, LZ = LIBRARY_LADDER  # the ladder shaft from the library's secret room to the vault
 
 
 def door(pos: Vec3, facing: str, kind: str = "dark_oak") -> None:
@@ -79,16 +101,19 @@ def armour_stand(pos: Vec3, material: str, rotation: int = 0) -> None:
             ("feet", "boots"),
         )
     )
-    L.cmd(
-        f"summon minecraft:armor_stand {pos.x} {pos.y} {pos.z} {{Rotation:[{rotation}f,0f],equipment:{{{eq}}}}}"
-    )
+    L.summon("armor_stand", pos, f"Rotation:[{rotation}f,0f],equipment:{{{eq}}}")
 
 
 def item_frame(pos: Vec3, facing: int, item: str) -> None:
     """facing: 2 north, 3 south, 4 west, 5 east (the side of the block it hangs on)"""
-    L.cmd(
-        f'summon minecraft:item_frame {pos.x} {pos.y} {pos.z} {{Facing:{facing}b,Item:{{id:"minecraft:{item}",count:1}}}}'
+    L.summon(
+        "item_frame", pos, f'Facing:{facing}b,Item:{{id:"minecraft:{item}",count:1}}'
     )
+
+
+def mob(kind: str, pos: Vec3) -> None:
+    """a creature that never despawns, standing at the middle of a cell"""
+    L.summon(kind, pos + Vec3(0.5, 0, 0.5), L.PERSIST)
 
 
 def bed(pos: Vec3, facing: str, colour: str = "red") -> None:
@@ -167,8 +192,10 @@ def great_hall() -> None:
     L.fill(V(IX1 + 4, y, 26), V(IX1 + 4, y, 28), f"{L.BRICK_STAIRS}[facing=east]")
     for z in (26, 28):
         L.set_block(V(IX1 + 1, y + 1, z), "minecraft:dark_oak_stairs[facing=east]")
-        L.set_block(V(IX1, y + 2, z), "minecraft:red_wall_banner[facing=east]")
+        L.set_block(V(IX1, y + 2, z), f"minecraft:{BANNER}_wall_banner[facing=east]")
     L.set_block(V(IX1, y + 3, 27), "minecraft:gold_block")
+    # a pier against the north wall hides the library's ladder shaft on its way down
+    L.fill(V(LX - 1, y, LZ - 1), V(LX + 1, F2 - 1, LZ + 1), L.BRICK)
     # two long tables with benches, and candles
     for z in (20, 34):
         table(V(50, y, z), V(64, y, z))
@@ -202,7 +229,7 @@ def great_hall() -> None:
     L.fill(V(57, y, IZ1 - 1), V(57, y + 3, IZ1 - 1), L.DARK_BRICK)
     # banners along the south wall between the windows, and the carpet from the door
     for x in range(IX1 + 2, 67, 6):
-        L.set_block(V(x, y + 4, IZ2), "minecraft:blue_wall_banner[facing=north]")
+        L.set_block(V(x, y + 4, IZ2), f"minecraft:{BANNER2}_wall_banner[facing=north]")
     carpet(XG - 1, 24, XG + 1, IZ2, F1 + 1)
     carpet(IX1 + 4, 26, XG + 1, 28, F1 + 1)
     # the great door's inside: a lintel lantern
@@ -242,8 +269,9 @@ def library() -> None:
     y = F2 + 1
     x1, z1, x2, z2 = IX1, IZ1, 57, IZ2
     carpet(x1, z1, x2, z2, F2 + 1, "blue")
-    # the secret partition x 58..61, solid, with the bookshelf wall on its west face
-    L.fill(V(58, y, IZ1), V(61, y + 7, IZ2), L.BRICK)
+    # the secret partition x 58..62, solid, with the bookshelf wall on its west
+    # face: the hidden door's room takes x 59..61 and x 62 walls it from the gallery
+    L.fill(V(58, y, IZ1), V(62, y + 7, IZ2), L.BRICK)
     L.fill(V(58, y, IZ1), V(58, y + 2, IZ2), "minecraft:bookshelf")
     # bookcases round the walls, three high, leaving the windows
     L.fill(V(x1, y, z1), V(x2, y + 2, z1), "minecraft:bookshelf")
@@ -252,13 +280,15 @@ def library() -> None:
     for z in range(z1 + 3, z2 - 2, 6):  # keep the windows in the west wall
         L.fill(V(x1, y, z), V(x1, y + 2, z + 1), L.AIR)
     # the secret door in the east bookcase wall (hidden space x 59..61)
-    MECHANISMS["library_door"] = L.hidden_door(V(58, y, 20), E, S)
-    # the ladder shaft from the hidden space down to the vault
-    L.fill(V(60, 8, 20), V(60, F2, 20), L.AIR)
-    L.fill(V(60, 8, 20), V(60, F2 + 1, 20), "minecraft:ladder[facing=south]")
-    L.set_block(V(60, y + 3, 20), f"{L.SOUL_LANTERN}[hanging=true]")
+    d = L.hidden_door(V(*LIBRARY_DOOR), E, S)
+    # the ladder shaft from the hidden space down to the vault, lined where
+    # it passes through the ward's foundation (the pier hides it in the hall)
+    L.fill(V(LX - 1, VAULT_Y + 5, LZ - 1), V(LX + 1, F1 - 1, LZ + 1), L.BRICK)
+    L.fill(V(LX, VAULT_Y, LZ), V(LX, F2, LZ), L.AIR)
+    L.fill(V(LX, VAULT_Y, LZ), V(LX, F2 + 1, LZ), "minecraft:ladder[facing=south]")
+    L.set_block(V(LX, y + 3, LZ), f"{L.SOUL_LANTERN}[hanging=true]")
     L.set_block(
-        V(61, y + 3, 24), f"{L.SOUL_LANTERN}[hanging=true]"
+        d["trigger"] + Vec3(3, 2, 0), f"{L.SOUL_LANTERN}[hanging=true]"
     )  # a dim light in the mechanism room
     # reading tables, lecterns, candles and a globe
     for z in (21, 27, 33):
@@ -298,7 +328,7 @@ def armoury() -> None:
             "mace",
         )
     ):
-        item_frame(V(x2 + 1, y + 1 + (i % 2), z1 + 2 + i), 4, item)
+        item_frame(V(x2, y + 1 + (i % 2), z1 + 2 + i), 4, item)  # on the east wall
     L.fill(V(x1, y, 22), V(x1, y + 1, 24), L.BARS)  # a weapons rack
     chest(
         V(x1 + 1, y, 26),
@@ -306,10 +336,10 @@ def armoury() -> None:
         [("arrow", 64), ("iron_ingot", 32), ("shield", 1), ("iron_helmet", 1)],
     )
     L.set_block(V(x1 + 2, y, 26), "minecraft:chest[facing=north]")
-    # the gallery between library and armoury: x 62..66, with the windows and banners
+    # the gallery between library and armoury: x 63..66, with the windows and banners
     for z in range(IZ1 + 1, IZ2, 4):
-        L.set_block(V(66, y + 3, z), "minecraft:red_wall_banner[facing=west]")
-    carpet(62, IZ1, 66, IZ2, F2 + 1, "red")
+        L.set_block(V(66, y + 3, z), f"minecraft:{BANNER}_wall_banner[facing=west]")
+    carpet(63, IZ1, 66, IZ2, F2 + 1, "red")
 
 
 def chambers() -> None:
@@ -332,7 +362,7 @@ def chambers() -> None:
     L.set_block(V(53, y + 1, 18), "minecraft:white_candle[candles=4,lit=true]")
     L.set_block(V(53, y, 19), "minecraft:dark_oak_stairs[facing=north]")
     L.set_block(V(50, y, 36), "minecraft:jukebox")
-    L.set_block(V(IX1, y + 3, 27), "minecraft:blue_wall_banner[facing=east]")
+    L.set_block(V(IX1, y + 3, 27), f"minecraft:{BANNER2}_wall_banner[facing=east]")
     # a fireplace in the south wall
     L.fill(V(50, y, IZ2 + 1), V(52, y + 1, IZ2 + 2), L.AIR)
     L.set_block(V(51, y, IZ2 + 2), "minecraft:campfire[lit=true]")
@@ -345,7 +375,7 @@ def chambers() -> None:
     for x, z in ((61, 22), (64, 31), (61, 31), (64, 22)):
         L.set_block(V(x, y + 1, z), "minecraft:white_candle[candles=1,lit=true]")
     for z in (19, 24, 29, 34):
-        item_frame(V(67, y + 2, z), 4, "map")
+        item_frame(V(66, y + 2, z), 4, "map")  # on the partition
     L.set_block(V(60, y, IZ1), "minecraft:lectern[facing=south,has_book=true]")
     # guest rooms in the east wing
     carpet(68, IZ1, IX2, 27, F3 + 1, "light_gray")
@@ -357,8 +387,6 @@ def chambers() -> None:
 
 
 # ---------------------------------------------------------------- the chapel and crypt
-
-CHAPEL = (86, 14, 110, 40)
 
 
 def chapel() -> None:
@@ -435,12 +463,14 @@ def chapel() -> None:
     )
     L.fill(
         V(bx1 + 3, y + 28, bz1 + 3), V(bx1 + 3, y + 29, bz1 + 3), L.DARK_TILES
-    )  # the hip roof's top ring has a hole in the middle
+    )  # workaround: hip_roof leaves a hole in its top ring (gilesknap/mciwb#166, item 5)
     L.set_block(V(bx1 + 3, y + 30, bz1 + 3), "minecraft:lightning_rod")
-    # the crypt under the altar: a trapdoor behind it and a ladder down
+    # the crypt under the altar: a trapdoor behind it and a ladder down a
+    # lined shaft
     L.set_block(
         V(94, y, z1 + 2), "minecraft:dark_oak_trapdoor[facing=south,half=top,open=true]"
     )
+    L.fill(V(93, 13, z1 + 1), V(95, y - 2, z1 + 3), L.DARK_BRICK)
     L.fill(V(94, 9, z1 + 2), V(94, y - 1, z1 + 2), L.AIR)
     L.fill(V(94, 9, z1 + 2), V(94, y - 1, z1 + 2), "minecraft:ladder[facing=east]")
     crypt()
@@ -465,25 +495,30 @@ def crypt() -> None:
         L.set_block(V(x, 11, 23), f"{L.SOUL_LANTERN}[hanging=true]")
     L.set_block(V(96, 8, 23), "minecraft:cobweb")
     L.set_block(V(104, 10, 19), "minecraft:cobweb")
-    # the passage west towards the vault, ending in a small chamber with the lever
+    # the passage west towards the vault, ending in a small chamber with the
+    # lever: lined with a solid block first, then carved
+    L.fill(V(72, 6, 19), V(x1, 12, 27), L.DARK_BRICK)
     L.fill(V(76, 8, 23), V(x1, 9, 23), L.AIR)
     L.fill(V(76, 7, 23), V(x1, 7, 23), L.DARK_TILES)
     L.fill(V(72, 8, 20), V(75, 10, 26), L.AIR)
     L.fill(V(72, 7, 20), V(75, 7, 26), L.DARK_TILES)
     L.set_block(V(74, 10, 23), f"{L.SOUL_LANTERN}[hanging=true]")
     L.set_block(V(75, 8, 20), "minecraft:skeleton_skull[rotation=12]")
-    L.set_nbt(
+    L.sign(
         V(73, 9, 26),
-        "minecraft:dark_oak_wall_sign[facing=north]{front_text:{messages:['\"Here lies\"','\"the first lord.\"','\"His gold\"','\"lies further.\"']}}",
+        "dark_oak_wall_sign[facing=north]",
+        "Here lies",
+        "the first lord.",
+        "His gold",
+        "lies further.",
     )
-    MECHANISMS["crypt_door"] = L.hidden_door(
-        V(71, 8, 23), Wd, S, trigger="lever", material=L.DARK_BRICK, lever_b=-1
+    # the hidden door in the chamber's west wall: the vault is behind it
+    L.hidden_door(
+        V(*CRYPT_DOOR), Wd, S, trigger="lever", material=L.DARK_BRICK, lever_b=-1
     )
 
 
 # ---------------------------------------------------------------- the alchemist's tower
-
-ALCH = (18, 22)  # centre, local
 
 
 def alchemist_tower() -> None:
@@ -564,7 +599,6 @@ def engine(cx: int, cz: int, y: int) -> None:
             f"item replace block {h.x} {h.y} {h.z} container.2 with minecraft:amethyst_shard 1"
         )
     # comparators outside the ring read the hoppers; lamps (or the pump) beyond them
-    lamps = []
     for dx in (-1, 0, 1):
         for dz, facing in ((-2, "south"), (2, "north")):
             L.set_block(
@@ -578,7 +612,6 @@ def engine(cx: int, cz: int, y: int) -> None:
                 L.set_block(V(cx - 1, y, cz + 3), "minecraft:note_block")
             else:
                 L.set_block(out, "minecraft:redstone_lamp")
-                lamps.append(out)
     for dz in (-1, 0, 1):
         for dx, facing in ((-2, "east"), (2, "west")):
             L.set_block(
@@ -588,24 +621,22 @@ def engine(cx: int, cz: int, y: int) -> None:
             L.set_block(
                 out, "minecraft:redstone_lamp" if dz else "minecraft:note_block"
             )
-            if dz:
-                lamps.append(out)
     # decoration: an observer, crystals and a warning
     L.set_block(V(cx, y + 1, cz), "minecraft:observer[facing=up]")
     L.set_block(V(cx, y + 2, cz), "minecraft:lightning_rod")
     L.fill(V(cx - 3, y + 3, cz - 3), V(cx - 3, y + 4, cz - 3), L.CHAIN)
     L.set_block(V(cx - 3, y + 2, cz - 3), f"{L.SOUL_LANTERN}[hanging=true]")
     L.set_block(V(cx + 3, y, cz - 3), "minecraft:lectern[facing=west,has_book=true]")
-    L.set_nbt(
+    L.sign(
         V(cx + 3, y + 1, cz - 3),
-        "minecraft:dark_oak_wall_sign[facing=west]{front_text:{messages:['\"The Engine\"','\"do not touch\"','\"the hoppers\"','\"\"']}}",
+        "dark_oak_wall_sign[facing=west]",
+        "The Engine",
+        "do not touch",
+        "the hoppers",
     )
-    MECHANISMS["engine"] = {"lamps": lamps, "piston": V(cx + 1, y, cz + 3)}
 
 
 # ---------------------------------------------------------------- the bailey's buildings
-
-WELL = (60, 105)
 
 
 def bailey_buildings() -> None:
@@ -647,23 +678,16 @@ def stables() -> None:
     L.fill(V(x1, 4, z2), V(x2, 4, z2), L.PLANKS)
     for z in range(z1, z2 + 1, 5):
         L.fill(V(x2, 0, z), V(x2, 3, z), "minecraft:stripped_dark_oak_log")
-        L.fill(V(x1, 0, z), V(x2 - 1, 0, z), "minecraft:dark_oak_fence") if z not in (
-            z1,
-            z2,
-        ) else None
+        if z not in (z1, z2):  # fences between the stalls
+            L.fill(V(x1, 0, z), V(x2 - 1, 0, z), "minecraft:dark_oak_fence")
         L.set_block(V(x2 - 1, 3, z), "minecraft:lantern")
     L.fill(V(x1, 0, z1), V(x2 - 1, 2, z1), L.PLANKS)
     L.fill(V(x1, 0, z2), V(x2 - 1, 2, z2), L.PLANKS)
     for z in range(z1 + 2, z2, 5):
         L.fill(V(x1, 0, z), V(x1 + 1, 0, z + 1), "minecraft:hay_block")
         L.set_block(V(x1 + 2, 0, z + 2), "minecraft:water_cauldron[level=3]")
-        L.cmd(
-            f"summon minecraft:horse {V(x1 + 6, 0, z + 1).x + 0.5} {V(0, 0, 0).y} {V(0, 0, z + 1).z + 0.5}"
-        )
-    L.set_nbt(
-        V(x2 + 1, 1, 107),
-        "minecraft:oak_sign[rotation=4]{front_text:{messages:['\"Stables\"','\"\"','\"\"','\"\"']}}",
-    )
+        mob("horse", V(x1 + 6, 0, z + 1))
+    L.sign(V(x2 + 1, 1, 107), "oak_sign[rotation=4]", "Stables")
 
 
 def smithy() -> None:
@@ -718,22 +742,19 @@ def smithy() -> None:
         V(x1 + 1, y + 4, z1 + 1), V(x2 - 1, y + 4, z2 - 1), L.PLANKS
     )  # a ceiling under the roof
     lanterns(x1 + 1, z1 + 1, x2 - 1, z2 - 1, y + 3, step=6)
-    L.set_nbt(
-        V(x1 - 1, 1, 103),
-        "minecraft:oak_sign[rotation=12]{front_text:{messages:['\"The Smithy\"','\"\"','\"\"','\"\"']}}",
-    )
-    # the secret: a trapdoor in the floor over a ladder down to the lower treasury
+    L.sign(V(x1 - 1, 1, 103), "oak_sign[rotation=12]", "The Smithy")
+    # the secret: a trapdoor in the floor over a ladder down a lined shaft to
+    # the lower treasury (catacombs() carries the ladder through its ceiling)
     L.set_block(
-        V(107, y - 1, 107),
+        V(107, y - 1, 105),
         "minecraft:spruce_trapdoor[facing=north,half=top,open=false]",
     )
-    L.fill(V(107, -14, 107), V(107, y - 2, 107), L.AIR)
-    L.fill(V(107, -14, 107), V(107, y - 2, 107), "minecraft:ladder[facing=north]")
-    L.set_block(V(107, -15, 107), L.COBBLE)
+    L.fill(V(106, -14, 104), V(108, y - 2, 106), L.COBBLE)
+    L.fill(V(107, -14, 105), V(107, y - 2, 105), "minecraft:ladder[facing=south]")
     L.fill(
-        V(105, y, 107), V(109, y, 107), "minecraft:red_carpet"
-    )  # a rug... over the trapdoor? carpet cannot sit on a trapdoor
-    L.set_block(V(107, y, 107), L.AIR)
+        V(105, y, 105), V(109, y, 105), "minecraft:red_carpet"
+    )  # a rug... round the trapdoor: carpet cannot sit on a trapdoor
+    L.set_block(V(107, y, 105), L.AIR)
 
 
 def barracks() -> None:
@@ -760,10 +781,7 @@ def barracks() -> None:
         V(x1 + 1, 4, z1 + 1), V(x2 - 1, 4, z2 - 1), L.PLANKS
     )  # a ceiling under the roof
     lanterns(x1 + 1, z1 + 1, x2 - 1, z2 - 1, 3, step=6)
-    L.set_nbt(
-        V(x2 + 1, 1, 77),
-        "minecraft:oak_sign[rotation=4]{front_text:{messages:['\"Barracks\"','\"\"','\"\"','\"\"']}}",
-    )
+    L.sign(V(x2 + 1, 1, 77), "oak_sign[rotation=4]", "Barracks")
 
 
 def well() -> None:
@@ -785,29 +803,41 @@ def well() -> None:
     L.shell(V(x - 1, -9, z - 1), V(x + 1, -1, z + 1), L.MOSSY_COBBLE)
     L.fill(V(x + 1, -8, z), V(x + 1, -7, z), L.AIR)
     door(V(x + 1, -8, z), "east", "dark_oak")
-    # the tunnel: east to x = 65, then south to the dungeon's hidden chamber, and north
-    # (level under the bailey, then climbing under the upper ward) to the vault
-    L.fill(V(x + 2, -8, z), V(65, -7, z), L.AIR)
-    L.fill(V(x + 2, -9, z), V(65, -9, z), L.COBBLE)
-    L.fill(V(65, -8, z), V(65, -7, 138), L.AIR)
-    L.fill(V(65, -9, z), V(65, -9, 138), L.COBBLE)
+    # the tunnel: east to TX, then south to the dungeon's hidden chamber, and
+    # north (level under the bailey, then climbing under the upper ward) to
+    # the vault. Each leg is cut through a lining of cobble, so that no cave
+    # or water breaks in: a solid block for the east and south legs, and for
+    # the north leg (which passes the grand stair's balustrade and the middle
+    # gate's tower, and stops short of the vault's south wall at z 31) only
+    # what is not solid already
+    tx = WELL_TUNNEL_X
+    L.fill(V(x + 2, -10, z - 1), V(tx + 1, -5, z + 1), L.COBBLE)
+    L.fill(V(tx - 1, -10, z), V(tx + 1, -5, 139), L.COBBLE)
+    L.seal(V(tx - 1, -10, 32), V(tx + 1, 11, z), L.COBBLE)
+    L.fill(V(x + 2, -8, z), V(tx, -7, z), L.AIR)
+    L.fill(V(x + 2, -9, z), V(tx, -9, z), L.COBBLE)
+    L.fill(V(tx, -8, z), V(tx, -7, 138), L.AIR)
+    L.fill(V(tx, -9, z), V(tx, -9, 138), L.COBBLE)
     for zz in range(z + 4, 139, 8):
-        L.set_block(V(65, -6, zz), f"{L.SOUL_LANTERN}[hanging=true]")
-    for xx in range(x + 4, 65, 4):
+        L.set_block(V(tx, -6, zz), f"{L.SOUL_LANTERN}[hanging=true]")
+    for xx in range(x + 4, tx, 4):
         L.set_block(V(xx, -6, z), f"{L.SOUL_LANTERN}[hanging=true]")
     stairway(
-        [V(65, -9, z - 1), V(65, -9, UD + 1), V(65, 7, UD - 15), V(65, 7, 32)],
+        [V(tx, -9, z - 1), V(tx, -9, UD + 1), V(tx, 7, UD - 15), V(tx, 7, 32)],
         L.BRICK_STAIRS,
         width=1,
         clearance=3,
     )
     for zz in range(z - 8, UD, -8):
-        L.set_block(V(65, -6, zz), f"{L.SOUL_LANTERN}[hanging=true]")
+        L.set_block(V(tx, -6, zz), f"{L.SOUL_LANTERN}[hanging=true]")
     for zz in range(UD - 20, 33, -8):
-        L.set_block(V(65, 11, zz), f"{L.SOUL_LANTERN}[hanging=true]")
-    L.set_nbt(
+        L.set_block(V(tx, 11, zz), f"{L.SOUL_LANTERN}[hanging=true]")
+    L.sign(
         V(x + 2, -7, z - 1),
-        "minecraft:dark_oak_wall_sign[facing=south]{front_text:{messages:['\"South: dungeons\"','\"North: climb\"','\"to the vault\"','\"\"']}}",
+        "dark_oak_wall_sign[facing=south]",
+        "South: dungeons",
+        "North: climb",
+        "to the vault",
     )
 
 
@@ -822,16 +852,15 @@ def dungeons() -> None:
     L.fill(V(94, 4, 108), V(96, 4, 112), L.COBBLE)
     doorway(V(95, 0, 108), V(95, 0, 108))
     L.set_block(V(95, 2, 109), f"{L.LANTERN}[hanging=true]")
-    L.set_nbt(
-        V(94, 1, 107),
-        "minecraft:oak_wall_sign[facing=north]{front_text:{messages:['\"DUNGEONS\"','\"mind your step\"','\"\"','\"\"']}}",
-    )
+    L.sign(V(94, 1, 107), "oak_wall_sign[facing=north]", "DUNGEONS", "mind your step")
+    # the stair and the corridor south of it are cut through a solid block
+    # of brick under the courtyard (the pit trap's wiring runs in it too)
+    L.fill(V(92, y - 3, 112), V(97, -2, 134), L.BRICK)
     stairway([V(95, -1, 112), V(95, y - 1, 120)], L.BRICK_STAIRS, width=1, clearance=3)
     L.fill(V(95, y - 1, 121), V(95, y - 1, 133), L.COBBLE)
     L.fill(V(95, y, 121), V(95, y + 1, 133), L.AIR)
-    MECHANISMS["pit_trap"] = L.pit_trap(
-        V(95, 0, 0).x, V(0, y, 0).y, V(0, 0, 127).z, 7, travel=1
-    )
+    px, py, pz, depth = PIT_TRAP
+    L.pit_trap(*V(px, py, pz), depth, travel=1)
     # the guard room
     L.fill(V(90, y - 1, 134), V(100, y + 3, 140), L.BRICK)
     L.fill(V(91, y, 135), V(99, y + 2, 139), L.AIR)
@@ -875,13 +904,17 @@ def dungeons() -> None:
         L.set_block(V(x, y + 2, 137), f"{L.SOUL_LANTERN}[hanging=true]")
     L.set_block(V(88, y, 136), "minecraft:water_cauldron[level=1]")
     # the secret in the last cell: a lever opens the end wall of the corridor
-    MECHANISMS["cell_door"] = L.hidden_door(
-        V(69, y, 137), Wd, S, trigger="lever", material=L.BRICK, lever_b=-3
-    )
-    # the hidden chamber behind it (x 66..68, z 134..145) opens onto the well tunnel at x = 65
-    L.set_nbt(
-        V(66, y + 1, 141),
-        "minecraft:dark_oak_wall_sign[facing=east]{front_text:{messages:['\"The prisoners\"','\"dug this.\"','\"North to the well\"','\"and the vault\"']}}",
+    # onto a hidden chamber (x 66..68, z 134..139), lined with brick, which
+    # opens onto the well tunnel at x 65
+    L.fill(V(WELL_TUNNEL_X + 1, y - 2, 132), V(69, y + 4, 141), L.BRICK)
+    L.hidden_door(V(*CELL_DOOR), Wd, S, trigger="lever", material=L.BRICK, lever_b=-3)
+    L.sign(
+        V(66, y + 1, 134),  # clear of the lever's dust line at x 67
+        "dark_oak_wall_sign[facing=south]",
+        "The prisoners",
+        "dug this.",
+        "West: the well",
+        "and the vault",
     )
     catacombs()
 
@@ -895,10 +928,14 @@ def catacombs() -> None:
     L.fill(V(92, y - 1, 124), V(98, y - 1, 131), L.MOSSY_COBBLE)
     L.set_block(V(92, y, 124), "minecraft:skeleton_skull[rotation=6]")
     L.set_block(V(98, y, 131), "minecraft:cobweb")
-    L.set_block(V(93, y + 2, 125), "minecraft:redstone_torch")
-    L.set_nbt(
+    L.set_block(V(92, y + 2, 125), "minecraft:redstone_wall_torch[facing=east]")
+    L.sign(
         V(93, y + 1, 131),
-        "minecraft:dark_oak_wall_sign[facing=north]{front_text:{messages:['\"You fell for it.\"','\"The only way\"','\"out is north,\"','\"and it is guarded.\"']}}",
+        "dark_oak_wall_sign[facing=north]",
+        "You fell for it.",
+        "The only way",
+        "out is north,",
+        "and it is guarded.",
     )
     # the trap corridor north, 3 wide, dispensers in its end wall
     L.fill(V(93, y - 1, 105), V(97, y + 3, 123), L.DARK_BRICK)
@@ -910,8 +947,9 @@ def catacombs() -> None:
     L.fill(
         V(95, y + 3, 127), V(95, y + 5, 128), L.AIR
     )  # the pit's shaft through the oubliette's ceiling
-    MECHANISMS["arrow_trap"] = L.arrow_trap(
-        V(94, 0, 0).x, V(96, 0, 0).x, V(0, y, 0).y, V(0, 0, 118).z, V(0, 0, 108).z
+    ax1, ax2, ay, zw, zd = ARROW_TRAP
+    L.arrow_trap(
+        ORIGIN.x + ax1, ORIGIN.x + ax2, ORIGIN.y + ay, ORIGIN.z + zw, ORIGIN.z + zd
     )
     L.set_block(V(96, y + 2, 115), "minecraft:soul_lantern[hanging=true]")
     # a door east into the lower treasury
@@ -940,21 +978,23 @@ def catacombs() -> None:
     L.fill(V(101, y, 112), V(102, y, 113), "minecraft:raw_gold_block")
     L.set_block(V(105, y + 2, 109), f"{L.SOUL_LANTERN}[hanging=true]")
     L.set_block(V(101, y, 109), "minecraft:skeleton_skull[rotation=4]")
-    # the ladder up into the smithy (built by smithy()) arrives at (107, y, 107)
-    L.set_nbt(
+    # the ladder down from the smithy (built by smithy()) arrives at (107, y,
+    # 105), on the north wall: carry it through this room's ceiling
+    L.fill(V(107, y + 1, 105), V(107, y + 3, 105), "minecraft:ladder[facing=south]")
+    L.sign(
         V(106, y + 1, 105),
-        "minecraft:dark_oak_wall_sign[facing=south]{front_text:{messages:['\"Up: the smithy\"','\"(the ladder)\"','\"\"','\"\"']}}",
+        "dark_oak_wall_sign[facing=south]",
+        "Up: the smithy",
+        "(the ladder)",
     )
 
 
 # ---------------------------------------------------------------- the vault
 
-VAULT = (50, 16, 70, 30)
-
 
 def vault() -> None:
     x1, z1, x2, z2 = VAULT
-    y = 8
+    y = VAULT_Y
     L.fill(
         V(x1 - 1, y - 2, z1 - 1),
         V(x2 + 1, y + 4, z2 + 1),
@@ -965,19 +1005,19 @@ def vault() -> None:
     for x in range(x1 + 2, x2, 4):
         for z in range(z1 + 2, z2, 4):
             L.set_block(V(x, y - 1, z), "minecraft:sea_lantern")
-    # the ladder from the library arrives at (60, y, 20); the crypt door is in the east wall;
-    # the well tunnel arrives from the south at (67, y, 31)
-    L.fill(V(65, y, z2 + 1), V(65, y + 1, z2 + 1), L.AIR)
-    L.set_block(V(65, y, z2 + 1), "minecraft:iron_door[facing=north,half=lower]")
-    L.set_block(V(65, y + 1, z2 + 1), "minecraft:iron_door[facing=north,half=upper]")
+    # the ladder from the library arrives on the north wall; the crypt door
+    # is in the east wall; the well tunnel arrives from the south at the
+    # iron door (buttons on both sides power the block beside it)
+    tx = WELL_TUNNEL_X
+    L.fill(V(tx, y, z2 + 1), V(tx, y + 1, z2 + 1), L.AIR)
+    L.set_block(V(tx, y, z2 + 1), "minecraft:iron_door[facing=north,half=lower]")
+    L.set_block(V(tx, y + 1, z2 + 1), "minecraft:iron_door[facing=north,half=upper]")
+    L.set_block(V(tx + 1, y + 1, z2), "minecraft:stone_button[face=wall,facing=north]")
     L.set_block(
-        V(66, y + 1, z2), "minecraft:stone_button[face=wall,facing=north]"
-    )  # both buttons power the block beside the door
-    L.set_block(V(66, y + 1, z2 + 2), "minecraft:stone_button[face=wall,facing=south]")
-    # the library's ladder comes down at (60, *, 20): a pillar for it to hang on
-    L.fill(V(60, y, 19), V(60, y + 4, 19), "minecraft:polished_blackstone")
+        V(tx + 1, y + 1, z2 + 2), "minecraft:stone_button[face=wall,facing=south]"
+    )
     L.fill(
-        V(60, y, 20), V(60, y + 4, 20), "minecraft:ladder[facing=south]"
+        V(LX, y, LZ), V(LX, y + 4, LZ), "minecraft:ladder[facing=south]"
     )  # through the vault's ceiling too
     # gold and gems
     for x, z in ((x1, z1), (x2 - 1, z1), (x1, z2 - 1), (x2 - 1, z2 - 1)):
@@ -986,7 +1026,9 @@ def vault() -> None:
     L.set_block(V(60, y + 1, 23), "minecraft:diamond_block")
     L.set_block(V(60, y + 2, 23), "minecraft:end_rod")
     L.fill(V(52, y, 22), V(52, y, 24), "minecraft:emerald_block")
-    L.fill(V(68, y, 22), V(68, y, 24), "minecraft:lapis_block")
+    L.fill(
+        V(66, y, 22), V(66, y, 24), "minecraft:lapis_block"
+    )  # west of the crypt door's wiring
     L.fill(V(55, y, 29), V(57, y, 29), "minecraft:raw_gold_block")
     L.fill(V(63, y, 29), V(65, y, 29), "minecraft:netherite_block")
     chests = [
@@ -1066,9 +1108,12 @@ def vault() -> None:
     for x in (x1 + 5, x2 - 5):
         for z in (z1 + 1, z2 - 1):
             L.set_block(V(x, y + 3, z), f"{L.SOUL_LANTERN}[hanging=true]")
-    L.set_nbt(
-        V(60, y + 1, 16),
-        "minecraft:dark_oak_wall_sign[facing=south]{front_text:{messages:['\"The Vault\"','\"of the castle.\"','\"You found it.\"','\"\"']}}",
+    L.sign(
+        V(LX + 2, y + 1, z1),
+        "dark_oak_wall_sign[facing=south]",
+        "The Vault",
+        f"of Castle {NAME}.",
+        "You found it.",
     )
 
 
@@ -1078,11 +1123,11 @@ def vault() -> None:
 def details() -> None:
     # banners along the bailey and upper walls
     for x in range(10, W - 10, 20):
-        L.set_block(V(x, 8, ZS - 3), "minecraft:red_wall_banner[facing=north]")
-        L.set_block(V(x, YU + 8, 3), "minecraft:blue_wall_banner[facing=south]")
+        L.set_block(V(x, 8, ZS - 3), f"minecraft:{BANNER}_wall_banner[facing=north]")
+        L.set_block(V(x, YU + 8, 3), f"minecraft:{BANNER2}_wall_banner[facing=south]")
     for z in range(UD + 10, ZS - 10, 20):
-        L.set_block(V(3, 8, z), "minecraft:red_wall_banner[facing=east]")
-        L.set_block(V(W - 4, 8, z), "minecraft:red_wall_banner[facing=west]")
+        L.set_block(V(3, 8, z), f"minecraft:{BANNER}_wall_banner[facing=east]")
+        L.set_block(V(W - 4, 8, z), f"minecraft:{BANNER}_wall_banner[facing=west]")
     # courtyard lanterns on posts
     for x, z in ((40, 90), (80, 90), (40, 125), (80, 125), (30, 110), (90, 110)):
         L.fill(V(x, 0, z), V(x, 2, z), "minecraft:dark_oak_fence")
@@ -1116,17 +1161,13 @@ def details() -> None:
         armour_stand(V(x, 0, ZS - 9) + Vec3(0.5, 0, 0.5), "iron")
         armour_stand(V(x, YU, KZ2 + 2) + Vec3(0.5, 0, 0.5), "iron")
     # a flagpole on the keep's lantern tower is the banner; signs at the main places
-    L.set_nbt(
-        V(XG + 4, 0, ZS - 10),
-        "minecraft:oak_sign[rotation=0]{front_text:{messages:['\"Welcome to\"','\"Castle\"','\"Fable\"','\"\"']}}",
-    )
-    L.set_nbt(
+    L.sign(V(XG + 4, 0, ZS - 10), "oak_sign[rotation=0]", "Welcome to", "Castle", NAME)
+    L.sign(
         V(XG + 5, YU, UD - 8),
-        "minecraft:oak_sign[rotation=0]{front_text:{messages:['\"The Keep\"','\"Chapel: east\"','\"Alchemist: west\"','\"\"']}}",
+        "oak_sign[rotation=0]",
+        "The Keep",
+        "Chapel: east",
+        "Alchemist: west",
     )
-    L.cmd(
-        f"summon minecraft:iron_golem {V(XG, 0, ZS - 12).x + 0.5} {V(0, 0, 0).y} {V(0, 0, ZS - 12).z + 0.5}"
-    )
-    L.cmd(
-        f"summon minecraft:cat {V(IX1 + 6, F1 + 1, 30).x + 0.5} {V(0, F1 + 1, 0).y} {V(0, 0, 30).z + 0.5}"
-    )
+    mob("iron_golem", V(XG, 0, ZS - 12))
+    mob("cat", V(IX1 + 9, F1 + 1, 27))  # on the hall's carpet, clear of the columns
