@@ -46,7 +46,7 @@ if _early is not None and str(_early.LD) != os.environ["BAILEY_DEPTH"]:
     raise SystemExit("import castle2_layout before castle's modules")
 
 from castle_layout import *  # noqa: E402, F403
-from castle_layout import LD, UD, ZS, layout_problems  # noqa: E402
+from castle_layout import LD, UD, ZS, V, layout_problems  # noqa: E402
 
 # ---- the bailey's three parts, north to south (local z)
 NORTH = (UD, UD + 55)  # barracks, stables, smithy, well and the cross paths
@@ -60,4 +60,176 @@ def castle2_problems() -> list[str]:
     problems = layout_problems()
     if LD != 162:
         problems.append(f"castle2 is laid out for BAILEY_DEPTH=162, not {LD}")
+        return problems
+    return problems + village_problems()
+
+
+# ---------------------------------------------------------------- the village
+# (local coordinates; all at the bailey's standing level 0)
+
+# the market square, paved, with the main street (castle's gate path, x
+# 58..62) running through it
+SQUARE = (44, 147, 76, 165)  # x1, z1, x2, z2
+MARKET_CROSS = (52, 156)  # a stone cross on steps in the square's west half
+CLOCK_TOWER = (68, 156)  # the square's east half: kept clear for the clock tower
+# the lanes round the square, joining the main street (x1, z1, x2, z2)
+LANES = {
+    "north lane": (26, 131, 96, 133),
+    "south lane": (26, 176, 96, 178),
+    "west lane": (26, 131, 28, 178),
+    "east lane": (94, 131, 96, 178),
+}
+
+# the houses: (name, corner x, corner z, width, depth, facing, options). The
+# corner is the north-west corner of the ground floor; width runs along the
+# street the house faces, depth back from it (see house.medieval_house).
+# Each keeps its jetties and eaves off the lanes, the square and the
+# streets (layout_problems checks it).
+HOUSES: list[tuple[str, int, int, int, int, str, dict]] = [
+    # north of the north lane, facing it
+    ("baker", 30, 121, 8, 8, "south", {"contents": "baker"}),
+    ("house n2", 40, 121, 8, 8, "south", {"frame": "square_panel"}),
+    ("butcher", 50, 121, 7, 8, "south", {"contents": "butcher", "roof": "hip"}),
+    ("tailor", 64, 121, 7, 8, "south", {"contents": "tailor"}),
+    ("house n5", 73, 121, 8, 8, "south", {"frame": "braced", "jetty": 0}),
+    (
+        "candlemaker",
+        83,
+        121,
+        8,
+        8,
+        "south",
+        {"contents": "candlemaker", "roof": "gable_cross"},
+    ),
+    # between the north lane and the square, facing the square
+    ("house c1", 30, 136, 8, 8, "south", {"window_boxes": True}),
+    (
+        "apothecary",
+        40,
+        136,
+        8,
+        8,
+        "south",
+        {"contents": "apothecary", "roof_block": "minecraft:deepslate_tile_stairs"},
+    ),
+    ("house c3", 50, 136, 7, 8, "south", {"floors": 3}),
+    ("cartographer", 64, 136, 7, 8, "south", {"contents": "cartographer", "floors": 3}),
+    (
+        "house c5",
+        73,
+        136,
+        8,
+        8,
+        "south",
+        {"frame": "square_panel", "windows": "shuttered"},
+    ),
+    ("house c6", 83, 136, 8, 8, "south", {"roof": "hip", "window_boxes": True}),
+    # the square's west and east sides, facing it
+    (
+        "tavern",
+        31,
+        148,
+        8,
+        9,
+        "east",
+        {"contents": "tavern", "floors": 3, "roof": "gable_cross"},
+    ),
+    ("house w2", 31, 158, 7, 9, "east", {"frame": "braced"}),
+    ("cobbler", 81, 148, 8, 9, "west", {"contents": "cobbler"}),
+    ("weaver", 81, 158, 7, 9, "west", {"contents": "weaver", "windows": "shuttered"}),
+    # south of the square, facing it
+    ("fletcher", 30, 168, 8, 6, "north", {"contents": "fletcher"}),
+    ("house s2", 40, 168, 8, 6, "north", {"window_boxes": True, "ground": "timber"}),
+    ("carpenter", 50, 168, 7, 6, "north", {"contents": "carpenter", "roof": "hip"}),
+    ("house s4", 64, 168, 7, 6, "north", {"frame": "square_panel"}),
+    ("house s5", 73, 168, 8, 6, "north", {"windows": "shuttered"}),
+    ("house s6", 83, 168, 8, 6, "north", {"roof": "gable_cross"}),
+    # south of the south lane, facing it
+    ("house l1", 30, 181, 8, 7, "north", {"frame": "braced", "window_boxes": True}),
+    ("house l2", 40, 182, 8, 7, "north", {"floors": 3}),
+    ("house l3", 50, 181, 7, 7, "north", {"ground": "timber"}),
+    ("house l4", 64, 181, 7, 7, "north", {"frame": "square_panel"}),
+    ("house l5", 73, 181, 8, 7, "north", {"roof": "hip"}),
+    ("house l6", 83, 181, 8, 7, "north", {"window_boxes": True}),
+]
+
+
+def village_houses(origin=None):
+    """every house of the village, as `house.House` (its blocks not placed),
+    at ``origin`` (default: the world position of local 0, 0, 0)"""
+    from house import house_blocks
+
+    from mciwb.imports import Vec3
+
+    o = V(0, 0, 0) if origin is None else origin
+    out = {}
+    for k, (name, x, z, width, depth, facing, opts) in enumerate(HOUSES):
+        out[name] = house_blocks(
+            Vec3(o.x + x, o.y, o.z + z), width, depth, facing=facing, seed=k, **opts
+        )
+    return out
+
+
+def _cells(x1: int, z1: int, x2: int, z2: int) -> set[tuple[int, int]]:
+    return {(x, z) for x in range(x1, x2 + 1) for z in range(z1, z2 + 1)}
+
+
+def village_footprints() -> dict[str, set[tuple[int, int]]]:
+    """the (x, z) cells (local) of each house (eaves and jetties included),
+    the square, the market cross and the clock tower's plot, and each lane"""
+    from mciwb.imports import Vec3
+
+    out = {
+        f"house '{name}'": h.footprint
+        for name, h in village_houses(Vec3(0, 0, 0)).items()
+    }
+    out["market cross"] = _cells(
+        MARKET_CROSS[0] - 1,
+        MARKET_CROSS[1] - 1,
+        MARKET_CROSS[0] + 1,
+        MARKET_CROSS[1] + 1,
+    )
+    out["clock tower"] = _cells(
+        CLOCK_TOWER[0] - 2, CLOCK_TOWER[1] - 2, CLOCK_TOWER[0] + 2, CLOCK_TOWER[1] + 2
+    )
+    return out
+
+
+def village_problems() -> list[str]:
+    """the houses against the round towers (out to radius + 1), castle's
+    buildings, stairs, paths and signs, the lanes, the square and each other"""
+    from castle_layout import ROUND_TOWERS, footprints
+
+    problems = []
+    feet = village_footprints()
+    houses = {n: c for n, c in feet.items() if n.startswith("house ")}
+    castle = footprints()
+    open_ground = {
+        **{n: _cells(*r) for n, r in LANES.items()},
+        "the square": _cells(*SQUARE),
+    }
+    for name, cells in houses.items():
+        for tname, (cx, cz, r) in ROUND_TOWERS.items():
+            rr = (r + 1 + 0.5) ** 2
+            if any((x - cx) ** 2 + (z - cz) ** 2 <= rr for x, z in cells):
+                problems.append(f"{name} overlaps the {tname}")
+        for other, ocells in {**castle, **open_ground}.items():
+            hit = cells & ocells
+            if hit:
+                problems.append(f"{name} overlaps {other} at {sorted(hit)[:3]}")
+        if not all(4 <= x <= 116 and UD + 1 <= z <= ZS - 4 for x, z in cells):
+            problems.append(f"{name} is not inside the bailey")
+    names = list(houses)
+    for i, a in enumerate(names):
+        for b in names[i + 1 :]:
+            if houses[a] & houses[b]:
+                problems.append(
+                    f"{a} overlaps {b} at {sorted(houses[a] & houses[b])[:3]}"
+                )
+    for fixture in ("market cross", "clock tower"):
+        if not feet[fixture] <= _cells(*SQUARE):
+            problems.append(f"the {fixture} is not in the square")
+        for name, cells in castle.items():
+            if feet[fixture] & cells:
+                problems.append(f"the {fixture} overlaps {name}")
     return problems
