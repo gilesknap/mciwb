@@ -28,13 +28,13 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent))
 
-from house import AIR, House, house_blocks, place  # noqa: E402
+from house import House, house_blocks, house_problems, place, wall_share  # noqa: E402
 
 from mciwb.imports import Vec3  # noqa: E402
 
 # the options of each house in the rig: every option value appears at least once
 VARIANTS: list[dict] = [
-    {"width": 7, "depth": 8, "floors": 2},
+    {"width": 7, "depth": 8, "floors": 2, "contents": "cobbler"},
     {
         "width": 9,
         "depth": 10,
@@ -50,7 +50,6 @@ VARIANTS: list[dict] = [
         "ground": "timber",
         "frame": "braced",
         "windows": "shuttered",
-        "contents": "cobbler",
     },
     {
         "width": 11,
@@ -148,112 +147,6 @@ def build_row(
     return houses
 
 
-def is_air(blocks: dict, p: Vec3) -> bool:
-    """free to stand in: air, or a carpet"""
-    s = blocks.get((int(p.x), int(p.y), int(p.z)), AIR)
-    return s == AIR or s.endswith("_carpet")
-
-
-def solid(blocks: dict, p: Vec3) -> bool:
-    s = blocks.get((int(p.x), int(p.y), int(p.z)), AIR)
-    return s != AIR and not any(k in s for k in ("carpet", "pane", "door", "trapdoor"))
-
-
-def passable(s: str) -> bool:
-    return s == AIR or any(
-        k in s
-        for k in ("carpet", "_door", "ladder", "lantern", "torch", "sign", "candle")
-    )
-
-
-def reachable(h: House) -> set[tuple[int, int, int]]:
-    """the standing places a visitor can walk, jump (1 up) or climb to from
-    the street in front of the door, inside the house's volume"""
-    b, v = h.blocks, h.volume
-
-    def at(x, y, z):
-        return b.get((x, y, z), AIR)
-
-    def stand(x, y, z):
-        if not (passable(at(x, y, z)) and passable(at(x, y + 1, z))):
-            return False
-        return "ladder" in at(x, y, z) or not passable(at(x, y - 1, z))
-
-    start = (h.outside.x, h.outside.y, h.outside.z)
-    seen, todo = {start}, [start]
-    while todo:
-        x, y, z = todo.pop()
-        moves = [
-            (x + dx, y + dy, z + dz)
-            for dx, dz in ((1, 0), (-1, 0), (0, 1), (0, -1))
-            for dy in (1, 0, -1, -2, -3)
-        ]
-        if "ladder" in at(x, y, z) or "ladder" in at(x, y - 1, z):
-            moves += [(x, y + 1, z), (x, y - 1, z)]
-        for q in moves:
-            if q in seen or not (
-                v.start.x - 1 <= q[0] <= v.end.x + 1
-                and v.start.z - 1 <= q[2] <= v.end.z + 1
-                and v.start.y <= q[1] <= v.end.y
-            ):
-                continue
-            below = at(q[0], q[1] - 1, q[2])
-            walk_up = (
-                "_stairs" in below or "_slab" in below
-            ) and "half=top" not in below
-            if q[1] > y and not walk_up and not passable(at(x, y + 2, z)):
-                continue  # no room to jump (stairs are walked up)
-            if stand(*q):
-                seen.add(q)
-                todo.append(q)
-    return seen
-
-
-def problems(h: House) -> list[str]:
-    b, out = h.blocks, []
-    v = h.volume
-    outside = [k for k in b if not v.inside(Vec3(*k))]
-    if outside:
-        out.append(f"{len(outside)} blocks outside the volume, e.g. {outside[0]}")
-    step = h.outside - h.door
-    inside = h.door - step
-    for name, p in (("outside", h.outside), ("inside", inside)):
-        if not (is_air(b, p) and is_air(b, p + Vec3(0, 1, 0))):
-            out.append(f"the door's {name} cell {p} is not free")
-    if "door" not in b.get((h.door.x, h.door.y, h.door.z), ""):
-        out.append(f"no door at {h.door}")
-    # every storey reached on foot from the street (a step of 1 can be
-    # climbed, ladders climbed, doors walked through)
-    reach = reachable(h)
-    for k, y in enumerate(h.floors):
-        if not any(p[1] == y for p in reach):
-            out.append(f"storey {k} (y {y}) cannot be reached from the door")
-    for p, looks in h.seats:
-        s = b.get((p.x, p.y, p.z), "")
-        back = {"north": "south", "south": "north", "east": "west", "west": "east"}[
-            looks
-        ]
-        if f"facing={back}" not in s:
-            out.append(f"seat at {p} looking {looks} is {s}")
-        dx, dz = {"north": (0, -1), "south": (0, 1), "east": (1, 0), "west": (-1, 0)}[
-            looks
-        ]
-        if "slab[type=top]" in b.get((p.x - dx, p.y, p.z - dz), ""):
-            out.append(f"seat at {p} looking {looks} has its back to a table")
-        if "slab[type=top]" not in b.get((p.x + dx, p.y, p.z + dz), ""):
-            out.append(f"seat at {p} looking {looks} has no table in front")
-    for name, p in h.stands.items():
-        if not (
-            is_air(b, p)
-            and is_air(b, p + Vec3(0, 1, 0))
-            and solid(b, p - Vec3(0, 1, 0))
-        ):
-            out.append(
-                f"stand {name} at {p} is not free floor ({b.get((p.x, p.y, p.z))})"
-            )
-    return out
-
-
 def joist_problems(h: House, opts: dict) -> list[str]:
     """every overhanging storey has a row of joists under it on the street
     side, one at least every other block of the storey below's front"""
@@ -296,25 +189,46 @@ def render_png(houses: list[tuple[int, House]], out: str) -> None:
     render(BlockGrid.from_blocks(names, lo), views).save(out)
 
 
-def report(houses: list[tuple[int, House]]) -> bool:
+def report(houses: list[tuple[int, House]], options: list[dict]) -> bool:
     ok = True
-    for k, h in houses:
-        found = problems(h) + joist_problems(h, VARIANTS[k])
+    for (k, h), opts in zip(houses, options, strict=True):
+        found = house_problems(h) + joist_problems(h, opts)
         ok &= not found
-        opts = ", ".join(f"{a}={b}" for a, b in VARIANTS[k].items())
+        text = ", ".join(f"{a}={b}" for a, b in opts.items())
         print(
-            f"{'PASS' if not found else 'FAIL'} house {k} ({opts}) at {h.volume.start}..{h.volume.end}"
+            f"{'PASS' if not found else 'FAIL'} house {k} ({text}) at"
+            f" {h.volume.start}..{h.volume.end}: walls {_share(h)} white"
         )
         for f in found:
             print(f"     {f}")
     return ok
 
 
+def _share(h: House) -> str:
+    share = wall_share(h)
+    return "-" if share is None else f"{share:.0%}"
+
+
+def village() -> None:
+    """check every house of castle2's village (offline)"""
+    import castle2_layout as C
+
+    houses = C.village_houses()
+    rows = [(k, h) for k, h in enumerate(houses.values())]
+    options = [dict(width=w, depth=d, **o) for _n, _x, _z, w, d, _f, o in C.HOUSES]
+    ok = report(rows, options)
+    if len(sys.argv) > 2:
+        render_png(rows, sys.argv[2])
+        print(f"rendered {sys.argv[2]}")
+    if not ok:
+        raise SystemExit(1)
+
+
 def offline() -> None:
     out = sys.argv[1] if len(sys.argv) > 1 else "rig.png"
     which = [int(a) for a in sys.argv[2:]] or list(range(len(VARIANTS)))
     houses = build_row(Vec3(0, 100, 0), which)
-    ok = report(houses)
+    ok = report(houses, [VARIANTS[k] for k in which])
     render_png(houses, out)
     print(f"rendered {out}")
     if not ok:
@@ -347,7 +261,11 @@ def in_world() -> None:
 
         from mciwb.imports import Heightmap
 
-        columns = [(x, z) for x in range(lo.x, hi.x + 1) for z in range(lo.z, hi.z + 1)]
+        columns = [
+            (x, z)
+            for x in range(int(lo.x), int(hi.x) + 1)
+            for z in range(int(lo.z), int(hi.z) + 1)
+        ]
         tops = ground_heights_retry(columns, Heightmap.WORLD_SURFACE)
         if max(tops.values()) >= lo.y and not os.environ.get("REUSE"):
             raise SystemExit(f"the rig's box {lo}..{hi} is not empty: not building")
@@ -356,7 +274,7 @@ def in_world() -> None:
         L.fill(box.start, box.end, L.AIR)
         for _k, h in houses:
             place(h, L.summon)
-        ok = report(houses)
+        ok = report(houses, [VARIANTS[k] for k in which])
         bad = []
         for _k, h in houses:  # read some blocks back: doors, seats, stands
             if not L.is_block(h.door, "#minecraft:doors"):
@@ -394,5 +312,7 @@ def connected() -> bool:
 if __name__ == "__main__":
     if connected():
         in_world()
+    elif sys.argv[1:2] == ["--village"]:
+        village()
     else:
         offline()
