@@ -89,3 +89,7 @@ Tips
 - Ask Claude to save a piece you like as a ``.schem`` file, to place copies
   of it elsewhere, turned or mirrored, or to open it in WorldEdit.
 - Backups are in ``~/mciwb-backups``. ``mciwb restore NAME`` brings one back.
+- For a large build with working redstone, see `examples/castle
+  <https://github.com/gilesknap/mciwb/tree/main/examples/castle>`_: a castle
+  that a Claude agent built with the skill, in stages, with a script that
+  checks every mechanism.
