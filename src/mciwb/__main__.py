@@ -2,6 +2,7 @@
 The mciwb command line interface
 """
 
+import os
 import runpy
 import sys
 from pathlib import Path
@@ -37,6 +38,59 @@ from mciwb.threads import Client, set_client
 
 cli = typer.Typer(add_completion=False)
 
+#: the environment variable that holds the RCON password
+PASSWORD_ENV = "MCIWB_PASSWORD"
+
+PasswordOption = Annotated[
+    str | None,
+    typer.Option(
+        "--password",
+        "--passwd",
+        help=(
+            "the RCON password, which other users can see with ps: prefer "
+            f"--password-file or ${PASSWORD_ENV} "
+            f"[default: ${PASSWORD_ENV}, else {def_pass}]"
+        ),
+        show_default=False,
+    ),
+]
+PasswordFileOption = Annotated[
+    Path | None,
+    typer.Option(
+        "--password-file",
+        "--passwd-file",
+        help="a file holding the RCON password (on its first line)",
+        show_default=False,
+    ),
+]
+
+
+def _password(password: str | None, password_file: Path | None) -> str:
+    """
+    The RCON password from, in order: --password, --password-file, the
+    MCIWB_PASSWORD environment variable, or the default. Exit with an error if
+    the file cannot be read. The password itself is never logged.
+    """
+    if password is not None:
+        if password_file is not None:
+            log.warning("--password overrides --password-file")
+        return password
+    if password_file is not None:
+        try:
+            text = password_file.read_text(encoding="utf-8")
+        except OSError as e:
+            log.error(f"cannot read the password file {password_file}: {e.strerror}")
+            raise typer.Exit(1) from None
+        except UnicodeDecodeError:
+            log.error(f"the password file {password_file} is not UTF-8 text")
+            raise typer.Exit(1) from None
+        lines = text.splitlines()
+        if not lines or not lines[0]:
+            log.error(f"the password file {password_file} has no password")
+            raise typer.Exit(1)
+        return lines[0]
+    return os.environ.get(PASSWORD_ENV) or def_pass
+
 
 def version_callback(value: bool):
     if value:
@@ -61,9 +115,8 @@ def main(
 def shell(
     server: str = HOST,
     port: int = def_port,
-    passwd: Annotated[
-        str, typer.Option("--password", "--passwd", help="the RCON password")
-    ] = def_pass,
+    password: PasswordOption = None,
+    password_file: PasswordFileOption = None,
     player: str = "",
     debug: bool = False,
     test: bool = False,
@@ -76,7 +129,7 @@ def shell(
 
     sys.path.append(".")
 
-    world = _connect(server, port, passwd, player)
+    world = _connect(server, port, _password(password, password_file), player)
 
     log.info("######### Starting Interactive Session ##########\n")
 
@@ -128,9 +181,8 @@ def run(
     script: Annotated[Path, typer.Argument(help="the Python script to run")],
     server: str = HOST,
     port: int = def_port,
-    passwd: Annotated[
-        str, typer.Option("--password", "--passwd", help="the RCON password")
-    ] = def_pass,
+    password: PasswordOption = None,
+    password_file: PasswordFileOption = None,
     player: str = "",
     debug: bool = False,
 ):
@@ -150,7 +202,7 @@ def run(
     # let the script import modules that sit beside it
     sys.path.insert(0, str(script.resolve().parent))
 
-    world = _connect(server, port, passwd, player)
+    world = _connect(server, port, _password(password, password_file), player)
     namespace = {name: getattr(imports, name) for name in imports.__all__}
     namespace["world"] = world
     try:
@@ -161,7 +213,8 @@ def run(
 
 @cli.command()
 def start(
-    password: str = def_pass,
+    password: PasswordOption = None,
+    password_file: PasswordFileOption = None,
     world_type: str = def_world_type,
     server_name: str = server_name,
     folder: Path = default_server_folder,
@@ -180,6 +233,7 @@ def start(
     settings that it was created with. Run `mciwb stop` first to change them.
     """
     init_logging(debug)
+    password = _password(password, password_file)
 
     if folder.exists():
         if not folder.is_dir():
@@ -234,7 +288,8 @@ def backup(
     backup_name: str = "",
     backup_folder: Path = backup_folder_default,
     port: int = def_port,
-    password: str = def_pass,
+    password: PasswordOption = None,
+    password_file: PasswordFileOption = None,
     debug: bool = False,
 ):
     """
@@ -247,7 +302,7 @@ def backup(
     init_logging(debug)
 
     backup = Backup(world_folder=folder / "world", backup_folder=backup_folder)
-    client, wrong_password = _rcon_client(port, password)
+    client, wrong_password = _rcon_client(port, _password(password, password_file))
     if wrong_password:
         log.warning(
             f"wrong RCON password for {HOST}:{port}: copying the world files "
@@ -297,7 +352,8 @@ def restore(
     backup_folder: Path = backup_folder_default,
     server_name: str = server_name,
     port: int = def_port,
-    password: str = def_pass,
+    password: PasswordOption = None,
+    password_file: PasswordFileOption = None,
     world_type: str = def_world_type,
     minecraft_version: str = MINECRAFT_VERSION,
     keep_old: bool = typer.Option(
@@ -310,6 +366,7 @@ def restore(
     Use the same options that you gave to `mciwb start`.
     """
     init_logging(debug)
+    password = _password(password, password_file)
 
     backup = Backup(world_folder=folder / "world", backup_folder=backup_folder)
     # check the backup exists before taking the server down
@@ -373,7 +430,8 @@ def render_cmd(
         bool, typer.Option(help="read blocks over RCON, not from the world files")
     ] = False,
     port: int = def_port,
-    password: str = def_pass,
+    password: PasswordOption = None,
+    password_file: PasswordFileOption = None,
     debug: bool = False,
 ):
     """
@@ -397,7 +455,7 @@ def render_cmd(
         log.error(e)
         raise typer.Exit(1) from None
 
-    client, wrong_password = _rcon_client(port, password)
+    client, wrong_password = _rcon_client(port, _password(password, password_file))
     world_folder = None if rcon else folder / "world"
     if client is None and world_folder and (world_folder / "level.dat").exists():
         # unlike backup, render expects a running server: without one the
