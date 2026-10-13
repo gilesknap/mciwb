@@ -1,0 +1,63 @@
+``mciwb.builders``
+==================
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+
+.. automodule:: mciwb.builders
+    :members:
+
+    
+    
+    
+
+    
+    
+    .. rubric:: Members
+
+    .. autosummary::
+        :nosignatures:
+    
+        BlockState
+        BuildError
+        Heightmap
+        PathStep
+        Placer
+        Schematic
+        arch
+        arch_profile
+        column
+        facing_name
+        flat_roof
+        foundation
+        full_block_of
+        gable_roof
+        ground_height
+        ground_heights
+        hip_roof
+        road
+        slab_of
+        stair_shapes
+        stairway
+        trace_path
+    
+    

@@ -6,7 +6,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>mciwb.iwb &#8212; mciwb 0.9.2.dev62+gd0bb83fba documentation</title>
+    <title>mciwb.iwb &#8212; mciwb 0.9.2.dev92+gb813bc9d3 documentation</title>
   
   
   
@@ -39,7 +39,7 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be" />
 
-    <script src="../../_static/documentation_options.js?v=68d1cc1e"></script>
+    <script src="../../_static/documentation_options.js?v=eaab3c44"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -464,6 +464,7 @@
 <span class="sd">Minecraft world</span>
 <span class="sd">"""</span>
 
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Sequence</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">mcipc.rcon.exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="n">NoPlayerFound</span>
@@ -472,10 +473,13 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">rcon.exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="n">SessionTimeout</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">mciwb.backup</span><span class="w"> </span><span class="kn">import</span> <span class="n">Backup</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mciwb.blockgrid</span><span class="w"> </span><span class="kn">import</span> <span class="n">BlockGrid</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mciwb.builders.schematic</span><span class="w"> </span><span class="kn">import</span> <span class="n">Schematic</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">mciwb.copier</span><span class="w"> </span><span class="kn">import</span> <span class="n">CopyPaste</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">mciwb.logging</span><span class="w"> </span><span class="kn">import</span> <span class="n">init_logging</span><span class="p">,</span> <span class="n">log</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">mciwb.monitor</span><span class="w"> </span><span class="kn">import</span> <span class="n">Monitor</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">mciwb.player</span><span class="w"> </span><span class="kn">import</span> <span class="n">Player</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mciwb.render</span><span class="w"> </span><span class="kn">import</span> <span class="n">render</span><span class="p">,</span> <span class="n">scan</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">mciwb.server</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">HOST</span><span class="p">,</span>
     <span class="n">backup_folder_default</span><span class="p">,</span>
@@ -485,6 +489,22 @@
 <span class="p">)</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">mciwb.signs</span><span class="w"> </span><span class="kn">import</span> <span class="n">Signs</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">mciwb.threads</span><span class="w"> </span><span class="kn">import</span> <span class="n">Client</span><span class="p">,</span> <span class="n">get_client</span><span class="p">,</span> <span class="n">set_client</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_rcon_port</span><span class="p">(</span><span class="n">server_folder</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""The RCON port in a server folder's server.properties, if there is one"""</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">lines</span> <span class="o">=</span> <span class="p">(</span><span class="n">server_folder</span> <span class="o">/</span> <span class="s2">"server.properties"</span><span class="p">)</span><span class="o">.</span><span class="n">read_text</span><span class="p">()</span><span class="o">.</span><span class="n">splitlines</span><span class="p">()</span>
+    <span class="k">except</span> <span class="ne">OSError</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
+    <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">:</span>
+        <span class="n">key</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">value</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">partition</span><span class="p">(</span><span class="s2">"="</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">key</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="o">==</span> <span class="s2">"rcon.port"</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">None</span>
+    <span class="k">return</span> <span class="kc">None</span>
 
 
 <div class="viewcode-block" id="get_world">
@@ -513,6 +533,11 @@
 <span class="sd">    :ivar player: The default `Player` object.</span>
 <span class="sd">    :ivar copier: `CopyPaste` object for the above player.</span>
 <span class="sd">    :ivar signs: The `Signs` object for the above player.</span>
+<span class="sd">    :ivar world_folder: The server's world folder, if it is on this machine.</span>
+<span class="sd">        ``scan`` and ``render`` read blocks from its files, which is much faster</span>
+<span class="sd">        than over RCON. Set for the server of ``mciwb start`` when it uses</span>
+<span class="sd">        the default ``--folder``: for another folder, set it yourself, e.g.</span>
+<span class="sd">        ``world.world_folder = Path("/my/server/world")``.</span>
 <span class="sd">    """</span>
 
     <span class="n">the_world</span><span class="p">:</span> <span class="s2">"Iwb"</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># type: ignore</span>
@@ -546,13 +571,17 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_players</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Player</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_copiers</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">CopyPaste</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
 
-        <span class="c1"># if we are using the default server created by mciwb then we know</span>
-        <span class="c1"># where the folders are for doing backups</span>
+        <span class="c1"># if we are using the server created by mciwb start (with its default</span>
+        <span class="c1"># folder) then we know where the folders are for doing backups</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_backup</span><span class="p">:</span> <span class="n">Backup</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="k">if</span> <span class="n">server</span> <span class="o">==</span> <span class="n">HOST</span> <span class="ow">and</span> <span class="n">port</span> <span class="o">==</span> <span class="n">def_port</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">world_folder</span><span class="p">:</span> <span class="n">Path</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">server</span> <span class="o">==</span> <span class="n">HOST</span> <span class="ow">and</span> <span class="p">(</span>
+            <span class="n">port</span> <span class="o">==</span> <span class="n">def_port</span> <span class="ow">or</span> <span class="n">_rcon_port</span><span class="p">(</span><span class="n">default_server_folder</span><span class="p">)</span> <span class="o">==</span> <span class="n">port</span>
+        <span class="p">):</span>
             <span class="n">world_folder</span> <span class="o">=</span> <span class="n">default_server_folder</span> <span class="o">/</span> <span class="s2">"world"</span>
             <span class="k">if</span> <span class="p">(</span><span class="n">world_folder</span> <span class="o">/</span> <span class="s2">"level.dat"</span><span class="p">)</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_backup</span> <span class="o">=</span> <span class="n">Backup</span><span class="p">(</span><span class="n">world_folder</span><span class="p">,</span> <span class="n">backup_folder_default</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">world_folder</span> <span class="o">=</span> <span class="n">world_folder</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="c1"># e.g. the server's folder is elsewhere, or not yet saved</span>
                 <span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
@@ -821,7 +850,10 @@
 <span class="sd">        the *vol* parameter or alternatively defaults to the current copy buffer.</span>
 
 <span class="sd">        The file is saved in the mcwb format which is a JSON file containing</span>
-<span class="sd">        a 3d array of Item objects.</span>
+<span class="sd">        a 3d array of Item objects. If the filename ends in ``.schem`` it is</span>
+<span class="sd">        saved as a Sponge schematic instead, with the block states of stairs,</span>
+<span class="sd">        slabs and logs (see `mciwb.builders.Schematic.from_world`), which</span>
+<span class="sd">        other Minecraft tools such as WorldEdit can load.</span>
 
 <span class="sd">        The file can be loaded into a world using the `load` method.</span>
 
@@ -838,6 +870,9 @@
                 <span class="p">)</span>
             <span class="n">vol</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">copier</span><span class="o">.</span><span class="n">to_volume</span><span class="p">()</span>
 
+        <span class="k">if</span> <span class="n">Path</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span><span class="o">.</span><span class="n">suffix</span> <span class="o">==</span> <span class="s2">".schem"</span><span class="p">:</span>
+            <span class="n">Schematic</span><span class="o">.</span><span class="n">from_world</span><span class="p">(</span><span class="n">vol</span><span class="p">)</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+            <span class="k">return</span>
         <span class="n">blocks</span> <span class="o">=</span> <span class="n">grab</span><span class="p">(</span><span class="n">get_client</span><span class="p">(),</span> <span class="n">vol</span><span class="p">)</span>
         <span class="n">save_items</span><span class="p">(</span><span class="n">blocks</span><span class="p">,</span> <span class="n">Path</span><span class="p">(</span><span class="n">filename</span><span class="p">))</span></div>
 
@@ -856,7 +891,9 @@
 <span class="sd">        to the copy buffer start position.</span>
 
 <span class="sd">        The blocks are loaded from a file in the mcwb format which is a</span>
-<span class="sd">        JSON file containing a 3d array of Item objects.</span>
+<span class="sd">        JSON file containing a 3d array of Item objects, or from a Sponge</span>
+<span class="sd">        schematic if the filename ends in ``.schem`` (see</span>
+<span class="sd">        `mciwb.builders.Schematic`).</span>
 
 <span class="sd">        The blocks are loaded into the world using the Blocks class.</span>
 
@@ -874,13 +911,67 @@
                 <span class="p">)</span>
             <span class="n">position</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">copier</span><span class="o">.</span><span class="n">start_pos</span>
 
-        <span class="c1"># load a 3d array of Item from the file</span>
-        <span class="n">items</span> <span class="o">=</span> <span class="n">load_items</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">filename</span><span class="p">),</span> <span class="n">dimensions</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
-        <span class="c1"># convert the items into a Blocks object which renders them in the world</span>
-        <span class="n">blocks</span> <span class="o">=</span> <span class="n">Blocks</span><span class="p">(</span><span class="n">get_client</span><span class="p">(),</span> <span class="n">position</span><span class="p">,</span> <span class="n">items</span><span class="p">,</span> <span class="n">anchor</span><span class="o">=</span><span class="n">anchor</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">Path</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span><span class="o">.</span><span class="n">suffix</span> <span class="o">==</span> <span class="s2">".schem"</span><span class="p">:</span>
+            <span class="n">schematic</span> <span class="o">=</span> <span class="n">Schematic</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+            <span class="n">volume</span> <span class="o">=</span> <span class="n">Volume</span><span class="o">.</span><span class="n">from_anchor</span><span class="p">(</span><span class="n">position</span><span class="p">,</span> <span class="n">schematic</span><span class="o">.</span><span class="n">size</span><span class="p">,</span> <span class="n">anchor</span><span class="p">)</span>
+            <span class="n">schematic</span><span class="o">.</span><span class="n">paste</span><span class="p">(</span><span class="n">volume</span><span class="o">.</span><span class="n">start</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># load a 3d array of Item from the file</span>
+            <span class="n">items</span> <span class="o">=</span> <span class="n">load_items</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">filename</span><span class="p">),</span> <span class="n">dimensions</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+            <span class="c1"># convert the items into a Blocks object which renders them</span>
+            <span class="n">volume</span> <span class="o">=</span> <span class="n">Blocks</span><span class="p">(</span><span class="n">get_client</span><span class="p">(),</span> <span class="n">position</span><span class="p">,</span> <span class="n">items</span><span class="p">,</span> <span class="n">anchor</span><span class="o">=</span><span class="n">anchor</span><span class="p">)</span><span class="o">.</span><span class="n">volume</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">copier</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">copier</span><span class="o">.</span><span class="n">apply_volume</span><span class="p">(</span><span class="n">blocks</span><span class="o">.</span><span class="n">volume</span><span class="p">)</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">copier</span><span class="o">.</span><span class="n">apply_volume</span><span class="p">(</span><span class="n">volume</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Iwb.scan">
+<a class="viewcode-back" href="../../_api/mciwb.html#mciwb.Iwb.scan">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">scan</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">start</span><span class="p">:</span> <span class="n">Vec3</span><span class="p">,</span> <span class="n">end</span><span class="p">:</span> <span class="n">Vec3</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BlockGrid</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""</span>
+<span class="sd">        Read the blocks between two opposite corners of a region, from the</span>
+<span class="sd">        world's files if ``world_folder`` is set, otherwise over RCON.</span>
+
+<span class="sd">        :param start: a corner of the region</span>
+<span class="sd">        :param end: the opposite corner of the region</span>
+
+<span class="sd">        :returns: the blocks, e.g. ``world.scan(a, b).counts()`` counts them</span>
+<span class="sd">        """</span>
+        <span class="n">vol</span> <span class="o">=</span> <span class="n">Volume</span><span class="o">.</span><span class="n">from_corners</span><span class="p">(</span><span class="n">Vec3</span><span class="p">(</span><span class="o">*</span><span class="n">start</span><span class="p">),</span> <span class="n">Vec3</span><span class="p">(</span><span class="o">*</span><span class="n">end</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">scan</span><span class="p">(</span><span class="n">vol</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">world_folder</span><span class="p">,</span> <span class="n">get_client</span><span class="p">())</span></div>
+
+
+<div class="viewcode-block" id="Iwb.render">
+<a class="viewcode-back" href="../../_api/mciwb.html#mciwb.Iwb.render">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">render</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">start</span><span class="p">:</span> <span class="n">Vec3</span><span class="p">,</span>
+        <span class="n">end</span><span class="p">:</span> <span class="n">Vec3</span><span class="p">,</span>
+        <span class="n">file</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Path</span> <span class="o">=</span> <span class="s2">"render.png"</span><span class="p">,</span>
+        <span class="n">views</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"top"</span><span class="p">,</span> <span class="s2">"iso"</span><span class="p">),</span>
+        <span class="n">scale</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">labels</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BlockGrid</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""</span>
+<span class="sd">        Render the region between two opposite corners to a PNG image, to</span>
+<span class="sd">        see what a build looks like. See `render_howto` for the views.</span>
+
+<span class="sd">        :param start: a corner of the region</span>
+<span class="sd">        :param end: the opposite corner of the region</span>
+<span class="sd">        :param file: the image file to write</span>
+<span class="sd">        :param views: the views to draw: top, iso, north, south, east, west,</span>
+<span class="sd">            iso_ne, iso_nw or iso_sw; a list, or the name of one view</span>
+<span class="sd">        :param scale: pixels per block, chosen automatically by default</span>
+<span class="sd">        :param labels: add titles and world coordinate labels</span>
+
+<span class="sd">        :returns: the blocks that were rendered, see `scan`</span>
+<span class="sd">        """</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">views</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">views</span> <span class="o">=</span> <span class="p">[</span><span class="n">views</span><span class="p">]</span>
+        <span class="n">grid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">scan</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">)</span>
+        <span class="n">render</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span> <span class="n">views</span><span class="p">,</span> <span class="n">scale</span><span class="p">,</span> <span class="n">labels</span><span class="p">)</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"rendered </span><span class="si">{</span><span class="s1">', '</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">views</span><span class="p">)</span><span class="si">}</span><span class="s2"> to </span><span class="si">{</span><span class="n">file</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">grid</span></div>
 
 
 <div class="viewcode-block" id="Iwb.cmd">

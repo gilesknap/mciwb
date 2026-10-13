@@ -1,0 +1,1453 @@
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>mciwb.builders &#8212; mciwb 0.9.2.dev92+gb813bc9d3 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=18bd87630a240e9c25be" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=18bd87630a240e9c25be" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="../_static/scripts/fontawesome.js?digest=18bd87630a240e9c25be"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be" />
+
+    <script src="../_static/documentation_options.js?v=eaab3c44"></script>
+    <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=30646c52"></script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_api/mciwb.builders';</script>
+    <script>
+        DOCUMENTATION_OPTIONS.theme_version = '0.23.0';
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://gilesknap.github.io/mciwb/switcher.json';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = 'main';
+        DOCUMENTATION_OPTIONS.show_version_warning_banner =
+            false;
+        </script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <link rel="icon" href="../_static/logo.png"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Demo Code" href="../reference/demo.html" />
+    <link rel="prev" title="mciwb.render" href="mciwb.render.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="color-scheme" content="light dark"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="main" />
+  
+    
+    <script src="../_static/searchtools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <script src="../searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button type="button" class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/logo.png" class="logo__image only-light" alt=""/>
+    <img src="../_static/logo.png" class="logo__image only-dark pst-js-only" alt=""/>
+  
+  
+    <p class="title logo__title">mciwb</p>
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../tutorials.html">
+    Tutorials
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../how-to.html">
+    How-to Guides
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../explanations.html">
+    Explanations
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../reference.html">
+    Reference
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button type="button" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/gilesknap/mciwb" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://pypi.org/project/mciwb" title="PyPI" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fas fa-cube fa-lg" aria-hidden="true"></i><span class="visually-hidden">PyPI</span></a>
+        </li>
+</ul></div>
+      
+        <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-2"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-2"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-2"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-2">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button type="button" class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../tutorials.html">
+    Tutorials
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../how-to.html">
+    How-to Guides
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../explanations.html">
+    Explanations
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../reference.html">
+    Reference
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button type="button" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/gilesknap/mciwb" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://pypi.org/project/mciwb" title="PyPI" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fas fa-cube fa-lg" aria-hidden="true"></i><span class="visually-hidden">PyPI</span></a>
+        </li>
+</ul></div>
+        
+          <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-3"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-3"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-3"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-3">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item pst-sidebar-collapse"><button type="button" id="pst-collapse-sidebar-button" aria-expanded="true" aria-controls="pst-primary-sidebar">
+  <svg class="pst-icon" role="img" aria-hidden="true" focusable="false" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+    <path fill="currentColor" d="M3 15.5C2.36232 15.5 1.74874 15.2564 1.28478 14.8189C0.820828 14.3815 0.541576 13.7832 0.504167 13.1467L0.5 13L0.5 3C0.499965 2.36232 0.743605 1.74874 1.18107 1.28478C1.61854 0.820828 2.21676 0.541576 2.85333 0.504167L3 0.5L13 0.5C13.6377 0.499965 14.2513 0.743605 14.7152 1.18107C15.1792 1.61854 15.4584 2.21676 15.4958 2.85333L15.5 3L15.5 13C15.5 13.6377 15.2564 14.2513 14.8189 14.7152C14.3815 15.1792 13.7832 15.4584 13.1467 15.4958L13 15.5L3 15.5ZM3 13.8333L10.5 13.8333L10.5 2.16667L3 2.16667C2.79589 2.16669 2.59889 2.24163 2.44636 2.37726C2.29383 2.5129 2.19638 2.69979 2.1725 2.9025L2.16667 3L2.16667 13C2.16669 13.2041 2.24163 13.4011 2.37726 13.5536C2.5129 13.7062 2.69979 13.8036 2.9025 13.8275L3 13.8333ZM6.65583 10.325L6.5775 10.2558L4.91083 8.58917C4.76735 8.44567 4.68116 8.25476 4.66843 8.05223C4.65569 7.84971 4.71729 7.6495 4.84167 7.48917L4.91083 7.41083L6.5775 5.74417C6.72747 5.59471 6.9287 5.50794 7.14032 5.50148C7.35194 5.49502 7.55809 5.56935 7.7169 5.70937C7.8757 5.8494 7.97525 6.04463 7.99533 6.25539C8.01541 6.46616 7.95451 6.67667 7.825 6.84417L7.75583 6.9225L6.67917 8L7.75583 9.0775C7.89931 9.22099 7.98551 9.41191 7.99824 9.61443C8.01097 9.81695 7.94938 10.0172 7.825 10.1775L7.75583 10.2558C7.61234 10.3993 7.42142 10.4855 7.2189 10.4982C7.01638 10.511 6.81617 10.4494 6.65583 10.325Z"/>
+  </svg>
+  <span class="pst-collapse-sidebar-label">Collapse Sidebar</span>
+  <span class="pst-expand-sidebar-label">Expand Sidebar</span>
+</button></div>
+        <div class="sidebar-primary-item">
+
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="mciwb.html">API</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="mciwb.render.html"><code class="docutils literal notranslate"><span class="pre">mciwb.render</span></code></a></li>
+<li class="toctree-l2 current active"><a aria-current="page" class="current reference internal" href="#"><code class="docutils literal notranslate"><span class="pre">mciwb.builders</span></code></a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/demo.html">Demo Code</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../genindex.html">Index</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/gilesknap/mciwb/releases">Release Notes</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../reference.html" class="nav-link">Reference</a></li>
+    
+    
+    <li class="breadcrumb-item"><a href="mciwb.html" class="nav-link"><code class="docutils literal notranslate"><span class="pre">mciwb</span></code></a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis"><code class="docutils literal notranslate"><span class="pre">mciwb.builders</span></code></span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="module-mciwb.builders">
+<span id="mciwb-builders"></span><h1><code class="docutils literal notranslate"><span class="pre">mciwb.builders</span></code><a class="headerlink" href="#module-mciwb.builders" title="Link to this heading">#</a></h1>
+<p>Higher level building blocks: roofs, arches, columns, stairways, roads,
+foundations that follow the terrain, and Sponge schematic files.</p>
+<p>They all build with the RCON client of the current thread (<code class="docutils literal notranslate"><span class="pre">get_client</span></code>),
+take <code class="docutils literal notranslate"><span class="pre">Vec3</span></code> positions and blocks as <code class="docutils literal notranslate"><span class="pre">Item</span></code>, block state strings or
+<a class="reference internal" href="#mciwb.builders.BlockState" title="mciwb.builders.BlockState"><code class="xref any py py-class docutils literal notranslate"><span class="pre">BlockState</span></code></a>, and return the bounding box (a <code class="docutils literal notranslate"><span class="pre">Volume</span></code>) of the blocks they
+placed, ready to <code class="docutils literal notranslate"><span class="pre">grab</span></code>, save or clear. A server error (e.g. an unknown block,
+or a position in an unloaded chunk) raises <a class="reference internal" href="#mciwb.builders.BuildError" title="mciwb.builders.BuildError"><code class="xref any py py-exc docutils literal notranslate"><span class="pre">BuildError</span></code></a>.</p>
+<p>Coordinates follow Minecraft: Y is up, north is -z, east is +x.</p>
+<p class="rubric">Members</p>
+<div class="pst-scrollable-table-container"><table class="autosummary longtable table">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#mciwb.builders.BlockState" title="mciwb.builders.BlockState"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BlockState</span></code></a></p></td>
+<td><p>A block id and its block state properties.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#mciwb.builders.BuildError" title="mciwb.builders.BuildError"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BuildError</span></code></a></p></td>
+<td><p>The server rejected a building command, e.g. an unknown block or a position that is not loaded.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#mciwb.builders.Heightmap" title="mciwb.builders.Heightmap"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Heightmap</span></code></a></p></td>
+<td><p>The Minecraft heightmaps: what counts as the ground.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#mciwb.builders.PathStep" title="mciwb.builders.PathStep"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PathStep</span></code></a></p></td>
+<td><p>One block along the middle of a path</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#mciwb.builders.Placer" title="mciwb.builders.Placer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Placer</span></code></a></p></td>
+<td><p>Place blocks with the RCON client of the current thread, recording the bounding box of every block placed.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#mciwb.builders.Schematic" title="mciwb.builders.Schematic"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Schematic</span></code></a></p></td>
+<td><p>A box of blocks with their block states, e.g. to save to, or load from, a Sponge schematic <code class="docutils literal notranslate"><span class="pre">.schem</span></code> file.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#mciwb.builders.arch" title="mciwb.builders.arch"><code class="xref py py-obj docutils literal notranslate"><span class="pre">arch</span></code></a></p></td>
+<td><p>An arch standing in a vertical wall plane.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#mciwb.builders.arch_profile" title="mciwb.builders.arch_profile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">arch_profile</span></code></a></p></td>
+<td><p>The blocks of an arch, as (u, v) cells where u counts across the span from 0 to <code class="docutils literal notranslate"><span class="pre">span</span> <span class="pre">-</span> <span class="pre">1</span></code> and v counts up from the springing line (v = 0).</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#mciwb.builders.column" title="mciwb.builders.column"><code class="xref py py-obj docutils literal notranslate"><span class="pre">column</span></code></a></p></td>
+<td><p>A square column standing on <em>base</em>.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#mciwb.builders.facing_name" title="mciwb.builders.facing_name"><code class="xref py py-obj docutils literal notranslate"><span class="pre">facing_name</span></code></a></p></td>
+<td><p>The block state name of a <code class="docutils literal notranslate"><span class="pre">Direction</span></code>, e.g. <code class="docutils literal notranslate"><span class="pre">&quot;east&quot;</span></code> for <code class="docutils literal notranslate"><span class="pre">Direction.EAST</span></code>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#mciwb.builders.flat_roof" title="mciwb.builders.flat_roof"><code class="xref py py-obj docutils literal notranslate"><span class="pre">flat_roof</span></code></a></p></td>
+<td><p>A flat roof: one layer of <em>block</em>, optionally with a parapet around its edge.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#mciwb.builders.foundation" title="mciwb.builders.foundation"><code class="xref py py-obj docutils literal notranslate"><span class="pre">foundation</span></code></a></p></td>
+<td><p>A foundation that follows the terrain: fill each column of a rectangular footprint from the ground up to <code class="docutils literal notranslate"><span class="pre">start.y</span></code>, giving a level platform at <code class="docutils literal notranslate"><span class="pre">start.y</span></code> to build on (at <code class="docutils literal notranslate"><span class="pre">start.y</span> <span class="pre">+</span> <span class="pre">1</span></code>).</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#mciwb.builders.full_block_of" title="mciwb.builders.full_block_of"><code class="xref py py-obj docutils literal notranslate"><span class="pre">full_block_of</span></code></a></p></td>
+<td><p>The full block made of the same material as a stairs block, e.g. <code class="docutils literal notranslate"><span class="pre">Item.OAK_PLANKS</span></code> for <code class="docutils literal notranslate"><span class="pre">Item.OAK_STAIRS</span></code>, <code class="docutils literal notranslate"><span class="pre">Item.STONE_BRICKS</span></code> for <code class="docutils literal notranslate"><span class="pre">Item.STONE_BRICK_STAIRS</span></code>.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#mciwb.builders.gable_roof" title="mciwb.builders.gable_roof"><code class="xref py py-obj docutils literal notranslate"><span class="pre">gable_roof</span></code></a></p></td>
+<td><p>A gable (pitched) roof: two slopes of stairs meeting at a ridge.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#mciwb.builders.ground_height" title="mciwb.builders.ground_height"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ground_height</span></code></a></p></td>
+<td><p>The y of the top ground block at <code class="docutils literal notranslate"><span class="pre">(x,</span> <span class="pre">z)</span></code>, see <a class="reference internal" href="#mciwb.builders.ground_heights" title="mciwb.builders.ground_heights"><code class="xref any py py-func docutils literal notranslate"><span class="pre">ground_heights</span></code></a>.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#mciwb.builders.ground_heights" title="mciwb.builders.ground_heights"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ground_heights</span></code></a></p></td>
+<td><p>The y of the top ground block of each of a set of columns.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#mciwb.builders.hip_roof" title="mciwb.builders.hip_roof"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hip_roof</span></code></a></p></td>
+<td><p>A hip roof: four slopes of stairs, one from each side of the footprint, with outer corner stairs where they meet.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#mciwb.builders.road" title="mciwb.builders.road"><code class="xref py py-obj docutils literal notranslate"><span class="pre">road</span></code></a></p></td>
+<td><p>A road along a path that follows the terrain: each block of the road replaces the top ground block of its column.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#mciwb.builders.slab_of" title="mciwb.builders.slab_of"><code class="xref py py-obj docutils literal notranslate"><span class="pre">slab_of</span></code></a></p></td>
+<td><p>The slab made of the same material as a stairs block, e.g. <code class="docutils literal notranslate"><span class="pre">Item.OAK_SLAB</span></code> for <code class="docutils literal notranslate"><span class="pre">Item.OAK_STAIRS</span></code>.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#mciwb.builders.stair_shapes" title="mciwb.builders.stair_shapes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">stair_shapes</span></code></a></p></td>
+<td><p>Work out the <code class="docutils literal notranslate"><span class="pre">shape</span></code> of each stairs block in one horizontal layer of stairs of the same <code class="docutils literal notranslate"><span class="pre">half</span></code>, as Minecraft does when the blocks are placed.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#mciwb.builders.stairway" title="mciwb.builders.stairway"><code class="xref py py-obj docutils literal notranslate"><span class="pre">stairway</span></code></a></p></td>
+<td><p>A stairway along a path, climbing (or descending) between the heights of its points.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#mciwb.builders.trace_path" title="mciwb.builders.trace_path"><code class="xref py py-obj docutils literal notranslate"><span class="pre">trace_path</span></code></a></p></td>
+<td><p>The blocks along the middle of a path through <em>points</em>, with the heights of the blocks spread evenly between the heights of the points.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<dl class="py class">
+<dt class="sig sig-object py" id="mciwb.builders.BlockState">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">mciwb.builders.</span></span><span class="sig-name descname"><span class="pre">BlockState</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">props</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Mapping[str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">str]</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">&lt;factory&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mciwb/builders/blockstate.html#BlockState"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.builders.BlockState" title="Link to this definition">#</a></dt>
+<dd><p>A block id and its block state properties.</p>
+<p><code class="docutils literal notranslate"><span class="pre">str(state)</span></code> gives the form that <code class="docutils literal notranslate"><span class="pre">setblock</span></code> and <code class="docutils literal notranslate"><span class="pre">fill</span></code> accept, and
+that Sponge schematic palettes use:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">state</span> <span class="o">=</span> <span class="n">BlockState</span><span class="o">.</span><span class="n">of</span><span class="p">(</span><span class="n">Item</span><span class="o">.</span><span class="n">OAK_STAIRS</span><span class="p">,</span> <span class="n">facing</span><span class="o">=</span><span class="s2">"east"</span><span class="p">,</span> <span class="n">half</span><span class="o">=</span><span class="s2">"bottom"</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">str</span><span class="p">(</span><span class="n">state</span><span class="p">)</span>
+<span class="go">'minecraft:oak_stairs[facing=east,half=bottom]'</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">str</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">rotate</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+<span class="go">'minecraft:oak_stairs[facing=south,half=bottom]'</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">BlockState</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s2">"stone"</span><span class="p">)</span><span class="o">.</span><span class="n">name</span>
+<span class="go">'minecraft:stone'</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Variables<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> – the namespaced block id, e.g. <code class="docutils literal notranslate"><span class="pre">minecraft:oak_stairs</span></code></p></li>
+<li><p><strong>props</strong> – the block state properties, e.g. <code class="docutils literal notranslate"><span class="pre">{&quot;facing&quot;:</span> <span class="pre">&quot;east&quot;}</span></code>.
+Properties that are not given take the block’s default value.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="mciwb.builders.BlockState.parse">
+<span class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">parse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">block</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Item</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="#mciwb.builders.BlockState" title="mciwb.builders.blockstate.BlockState"><span class="pre">BlockState</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#mciwb.builders.BlockState" title="mciwb.builders.blockstate.BlockState"><span class="pre">BlockState</span></a></span></span><a class="reference internal" href="../_modules/mciwb/builders/blockstate.html#BlockState.parse"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.builders.BlockState.parse" title="Link to this definition">#</a></dt>
+<dd><p>Make a BlockState from an <code class="docutils literal notranslate"><span class="pre">Item</span></code>, a block state string or a BlockState.
+Block entity data (<code class="docutils literal notranslate"><span class="pre">{...}</span></code>) at the end of a string is not supported.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mciwb.builders.BlockState.of">
+<span class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">of</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">block</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Item</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="#mciwb.builders.BlockState" title="mciwb.builders.blockstate.BlockState"><span class="pre">BlockState</span></a></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">props</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><span class="pre">bool</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Vec3</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#mciwb.builders.BlockState" title="mciwb.builders.blockstate.BlockState"><span class="pre">BlockState</span></a></span></span><a class="reference internal" href="../_modules/mciwb/builders/blockstate.html#BlockState.of"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.builders.BlockState.of" title="Link to this definition">#</a></dt>
+<dd><p>Make a BlockState from a block and extra properties, e.g.
+<code class="docutils literal notranslate"><span class="pre">BlockState.of(Item.OAK_STAIRS,</span> <span class="pre">facing=Direction.EAST)</span></code>. A Direction
+is converted to its name, a bool to <code class="docutils literal notranslate"><span class="pre">true</span></code>/<code class="docutils literal notranslate"><span class="pre">false</span></code> and an int to
+its digits, e.g. <code class="docutils literal notranslate"><span class="pre">BlockState.of(Item.SNOW,</span> <span class="pre">layers=3)</span></code>. The new
+properties replace any that the block already has.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mciwb.builders.BlockState.with_props">
+<span class="sig-name descname"><span class="pre">with_props</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">props</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><span class="pre">bool</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Vec3</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#mciwb.builders.BlockState" title="mciwb.builders.blockstate.BlockState"><span class="pre">BlockState</span></a></span></span><a class="reference internal" href="../_modules/mciwb/builders/blockstate.html#BlockState.with_props"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.builders.BlockState.with_props" title="Link to this definition">#</a></dt>
+<dd><p>A copy of this state with some properties added or replaced, e.g.
+<code class="docutils literal notranslate"><span class="pre">.with_props(half=&quot;top&quot;,</span> <span class="pre">waterlogged=True,</span> <span class="pre">rotation=4)</span></code></p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mciwb.builders.BlockState.item">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">item</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Item</span></span><a class="headerlink" href="#mciwb.builders.BlockState.item" title="Link to this definition">#</a></dt>
+<dd><p>The <code class="docutils literal notranslate"><span class="pre">Item</span></code> for this block, without its properties</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#ValueError" title="(in Python v3.15)"><strong>ValueError</strong></a> – if the block is not in <code class="docutils literal notranslate"><span class="pre">Item</span></code> e.g. a modded block</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mciwb.builders.BlockState.rotate">
+<span class="sig-name descname"><span class="pre">rotate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">steps</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#mciwb.builders.BlockState" title="mciwb.builders.blockstate.BlockState"><span class="pre">BlockState</span></a></span></span><a class="reference internal" href="../_modules/mciwb/builders/blockstate.html#BlockState.rotate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.builders.BlockState.rotate" title="Link to this definition">#</a></dt>
+<dd><p>Rotate the block about the Y axis by <em>steps</em> quarter turns clockwise,
+viewed from above (north becomes east). Updates <code class="docutils literal notranslate"><span class="pre">facing</span></code>, <code class="docutils literal notranslate"><span class="pre">axis</span></code>,
+<code class="docutils literal notranslate"><span class="pre">rotation</span></code> (signs, banners, heads), direction named connections
+(fences, walls, panes, redstone) and rail <code class="docutils literal notranslate"><span class="pre">shape</span></code>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mciwb.builders.BlockState.mirror">
+<span class="sig-name descname"><span class="pre">mirror</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#mciwb.builders.BlockState" title="mciwb.builders.blockstate.BlockState"><span class="pre">BlockState</span></a></span></span><a class="reference internal" href="../_modules/mciwb/builders/blockstate.html#BlockState.mirror"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.builders.BlockState.mirror" title="Link to this definition">#</a></dt>
+<dd><p>Mirror the block along the <code class="docutils literal notranslate"><span class="pre">&quot;x&quot;</span></code> axis (east and west swap) or the
+<code class="docutils literal notranslate"><span class="pre">&quot;z&quot;</span></code> axis (north and south swap). Also swaps left and right, e.g.
+the stairs shape <code class="docutils literal notranslate"><span class="pre">outer_left</span></code> becomes <code class="docutils literal notranslate"><span class="pre">outer_right</span></code>.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="mciwb.builders.BuildError">
+<span class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">mciwb.builders.</span></span><span class="sig-name descname"><span class="pre">BuildError</span></span><a class="reference internal" href="../_modules/mciwb/builders/placer.html#BuildError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.builders.BuildError" title="Link to this definition">#</a></dt>
+<dd><p>The server rejected a building command, e.g. an unknown block or
+a position that is not loaded</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="mciwb.builders.Heightmap">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">mciwb.builders.</span></span><span class="sig-name descname"><span class="pre">Heightmap</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mciwb/builders/terrain.html#Heightmap"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.builders.Heightmap" title="Link to this definition">#</a></dt>
+<dd><p>The Minecraft heightmaps: what counts as the ground.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mciwb.builders.Heightmap.WORLD_SURFACE">
+<span class="sig-name descname"><span class="pre">WORLD_SURFACE</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'world_surface'</span></span><a class="headerlink" href="#mciwb.builders.Heightmap.WORLD_SURFACE" title="Link to this definition">#</a></dt>
+<dd><p>the highest block that is not air (includes plants, snow layers …)</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mciwb.builders.Heightmap.MOTION_BLOCKING">
+<span class="sig-name descname"><span class="pre">MOTION_BLOCKING</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'motion_blocking'</span></span><a class="headerlink" href="#mciwb.builders.Heightmap.MOTION_BLOCKING" title="Link to this definition">#</a></dt>
+<dd><p>the highest block that blocks movement, or holds water or lava</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mciwb.builders.Heightmap.MOTION_BLOCKING_NO_LEAVES">
+<span class="sig-name descname"><span class="pre">MOTION_BLOCKING_NO_LEAVES</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'motion_blocking_no_leaves'</span></span><a class="headerlink" href="#mciwb.builders.Heightmap.MOTION_BLOCKING_NO_LEAVES" title="Link to this definition">#</a></dt>
+<dd><p>as MOTION_BLOCKING, but ignoring leaves</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mciwb.builders.Heightmap.OCEAN_FLOOR">
+<span class="sig-name descname"><span class="pre">OCEAN_FLOOR</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'ocean_floor'</span></span><a class="headerlink" href="#mciwb.builders.Heightmap.OCEAN_FLOOR" title="Link to this definition">#</a></dt>
+<dd><p>the highest block that blocks movement, e.g. the bed of a lake or the sea</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="mciwb.builders.PathStep">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">mciwb.builders.</span></span><span class="sig-name descname"><span class="pre">PathStep</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pos</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Vec3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">direction</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Vec3</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mciwb/builders/paths.html#PathStep"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.builders.PathStep" title="Link to this definition">#</a></dt>
+<dd><p>One block along the middle of a path</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mciwb.builders.PathStep.pos">
+<span class="sig-name descname"><span class="pre">pos</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Vec3</span></span><a class="headerlink" href="#mciwb.builders.PathStep.pos" title="Link to this definition">#</a></dt>
+<dd><p>the position of the block</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mciwb.builders.PathStep.direction">
+<span class="sig-name descname"><span class="pre">direction</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Vec3</span></span><a class="headerlink" href="#mciwb.builders.PathStep.direction" title="Link to this definition">#</a></dt>
+<dd><p>the horizontal direction of travel into this block (out of it, for
+the first block)</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="mciwb.builders.Placer">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">mciwb.builders.</span></span><span class="sig-name descname"><span class="pre">Placer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">client</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="mciwb.html#mciwb.Client" title="mciwb.threads.Client"><span class="pre">Client</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mciwb/builders/placer.html#Placer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.builders.Placer" title="Link to this definition">#</a></dt>
+<dd><p>Place blocks with the RCON client of the current thread, recording the
+bounding box of every block placed.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>client</strong> – the client to use, defaults to <code class="docutils literal notranslate"><span class="pre">get_client</span></code></p>
+</dd>
+</dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="mciwb.builders.Placer.volume">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">volume</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Volume</span></span><a class="headerlink" href="#mciwb.builders.Placer.volume" title="Link to this definition">#</a></dt>
+<dd><p>The bounding box of every block placed so far</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#ValueError" title="(in Python v3.15)"><strong>ValueError</strong></a> – if nothing has been placed</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mciwb.builders.Placer.include">
+<span class="sig-name descname"><span class="pre">include</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Vec3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Vec3</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mciwb/builders/placer.html#Placer.include"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.builders.Placer.include" title="Link to this definition">#</a></dt>
+<dd><p>Extend the bounding box to include a block, or a box of blocks</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mciwb.builders.Placer.setblock">
+<span class="sig-name descname"><span class="pre">setblock</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pos</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Vec3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">block</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Item</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="#mciwb.builders.BlockState" title="mciwb.builders.blockstate.BlockState"><span class="pre">BlockState</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></span><a class="reference internal" href="../_modules/mciwb/builders/placer.html#Placer.setblock"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.builders.Placer.setblock" title="Link to this definition">#</a></dt>
+<dd><p>Set one block, e.g. <code class="docutils literal notranslate"><span class="pre">placer.setblock(pos,</span> <span class="pre">&quot;oak_stairs[half=top]&quot;)</span></code></p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mciwb.builders.Placer.fill">
+<span class="sig-name descname"><span class="pre">fill</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Vec3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Vec3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">block</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Item</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="#mciwb.builders.BlockState" title="mciwb.builders.blockstate.BlockState"><span class="pre">BlockState</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">FillMode</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></span><a class="reference internal" href="../_modules/mciwb/builders/placer.html#Placer.fill"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.builders.Placer.fill" title="Link to this definition">#</a></dt>
+<dd><p>Fill the box between two opposite corners, inclusive.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>mode</strong> – e.g. <code class="docutils literal notranslate"><span class="pre">FillMode.KEEP</span></code> to only replace air</p></li>
+<li><p><strong>filter</strong> – only replace these blocks, e.g. <code class="docutils literal notranslate"><span class="pre">&quot;minecraft:stone&quot;</span></code>
+or a tag like <code class="docutils literal notranslate"><span class="pre">&quot;#minecraft:logs&quot;</span></code>. Implies <code class="docutils literal notranslate"><span class="pre">FillMode.REPLACE</span></code></p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#ValueError" title="(in Python v3.15)"><strong>ValueError</strong></a> – if a filter is given with a mode other than REPLACE</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mciwb.builders.Placer.layer">
+<span class="sig-name descname"><span class="pre">layer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">cells</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Mapping" title="(in Python v3.15)"><span class="pre">Mapping</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#tuple" title="(in Python v3.15)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Item</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="#mciwb.builders.BlockState" title="mciwb.builders.blockstate.BlockState"><span class="pre">BlockState</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mciwb/builders/placer.html#Placer.layer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.builders.Placer.layer" title="Link to this definition">#</a></dt>
+<dd><p>Place one horizontal layer of blocks at height <em>y</em>, given as a mapping
+of <code class="docutils literal notranslate"><span class="pre">(x,</span> <span class="pre">z)</span></code> to block. Uses one <code class="docutils literal notranslate"><span class="pre">fill</span></code> for each rectangle of the
+same block.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="mciwb.builders.Schematic">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">mciwb.builders.</span></span><span class="sig-name descname"><span class="pre">Schematic</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">blocks</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">block_entities</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.15)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.15)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Vec3</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">(0,</span> <span class="pre">0,</span> <span class="pre">0)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metadata</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.15)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.15)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_version</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">5023</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mciwb/builders/schematic.html#Schematic"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.builders.Schematic" title="Link to this definition">#</a></dt>
+<dd><p>A box of blocks with their block states, e.g. to save to, or load from,
+a Sponge schematic <code class="docutils literal notranslate"><span class="pre">.schem</span></code> file.</p>
+<p>For example, copy a building with its stairs and slabs facing the right
+way, turned a quarter turn clockwise:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">house</span> <span class="o">=</span> <span class="n">Schematic</span><span class="o">.</span><span class="n">from_world</span><span class="p">(</span><span class="n">Volume</span><span class="o">.</span><span class="n">from_corners</span><span class="p">(</span><span class="n">corner1</span><span class="p">,</span> <span class="n">corner2</span><span class="p">))</span>
+<span class="n">house</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">"house.schem"</span><span class="p">)</span>
+<span class="n">Schematic</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">"house.schem"</span><span class="p">)</span><span class="o">.</span><span class="n">rotate</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">paste</span><span class="p">(</span><span class="n">Vec3</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">64</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Variables<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>blocks</strong> – a 3D numpy array of <a class="reference internal" href="#mciwb.builders.BlockState" title="mciwb.builders.BlockState"><code class="xref any py py-class docutils literal notranslate"><span class="pre">BlockState</span></code></a>, indexed <code class="docutils literal notranslate"><span class="pre">[x][y][z]</span></code></p></li>
+<li><p><strong>block_entities</strong> – the block entities (chests, signs …) from a
+file, as Sponge BlockEntity compounds (<code class="docutils literal notranslate"><span class="pre">Pos</span></code>, <code class="docutils literal notranslate"><span class="pre">Id</span></code>, <code class="docutils literal notranslate"><span class="pre">Data</span></code>).
+These are kept when saving, but not pasted into the world</p></li>
+<li><p><strong>offset</strong> – the Sponge <code class="docutils literal notranslate"><span class="pre">Offset</span></code> of the file, kept when saving, but
+not used when pasting</p></li>
+<li><p><strong>metadata</strong> – the Sponge <code class="docutils literal notranslate"><span class="pre">Metadata</span></code> compound (<code class="docutils literal notranslate"><span class="pre">Name</span></code>, <code class="docutils literal notranslate"><span class="pre">Author</span></code>…)</p></li>
+<li><p><strong>data_version</strong> – the Minecraft data version that the blocks are from</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="mciwb.builders.Schematic.size">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">size</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Vec3</span></span><a class="headerlink" href="#mciwb.builders.Schematic.size" title="Link to this definition">#</a></dt>
+<dd><p>The size of the schematic, as (width x, height y, length z)</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mciwb.builders.Schematic.palette">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">palette</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#mciwb.builders.BlockState" title="mciwb.builders.blockstate.BlockState"><span class="pre">BlockState</span></a><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#mciwb.builders.Schematic.palette" title="Link to this definition">#</a></dt>
+<dd><p>The different block states in the schematic</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mciwb.builders.Schematic.from_cuboid">
+<span class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">from_cuboid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cuboid</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.15)"><span class="pre">Sequence</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.15)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#mciwb.builders.Schematic" title="mciwb.builders.schematic.Schematic"><span class="pre">Schematic</span></a></span></span><a class="reference internal" href="../_modules/mciwb/builders/schematic.html#Schematic.from_cuboid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.builders.Schematic.from_cuboid" title="Link to this definition">#</a></dt>
+<dd><p>Make a schematic from a 3D list (or numpy array) of blocks indexed
+<code class="docutils literal notranslate"><span class="pre">[x][y][z]</span></code>, e.g. from <code class="docutils literal notranslate"><span class="pre">grab</span></code> or <code class="docutils literal notranslate"><span class="pre">load_items</span></code>. The blocks may be
+<code class="docutils literal notranslate"><span class="pre">Item</span></code>, block state strings or <a class="reference internal" href="#mciwb.builders.BlockState" title="mciwb.builders.BlockState"><code class="xref any py py-class docutils literal notranslate"><span class="pre">BlockState</span></code></a>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mciwb.builders.Schematic.to_cuboid">
+<span class="sig-name descname"><span class="pre">to_cuboid</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><span class="pre">list</span></a></span></span><a class="reference internal" href="../_modules/mciwb/builders/schematic.html#Schematic.to_cuboid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.builders.Schematic.to_cuboid" title="Link to this definition">#</a></dt>
+<dd><p>The blocks as a 3D list of <code class="docutils literal notranslate"><span class="pre">Item</span></code> indexed <code class="docutils literal notranslate"><span class="pre">[x][y][z]</span></code>, for use with
+<code class="docutils literal notranslate"><span class="pre">Blocks</span></code> or <code class="docutils literal notranslate"><span class="pre">save_items</span></code>. This loses the block states.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#ValueError" title="(in Python v3.15)"><strong>ValueError</strong></a> – if a block is not in <code class="docutils literal notranslate"><span class="pre">Item</span></code> e.g. a modded block</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mciwb.builders.Schematic.from_world">
+<span class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">from_world</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">volume</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Volume</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">states</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#mciwb.builders.Schematic" title="mciwb.builders.schematic.Schematic"><span class="pre">Schematic</span></a></span></span><a class="reference internal" href="../_modules/mciwb/builders/schematic.html#Schematic.from_world"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.builders.Schematic.from_world" title="Link to this definition">#</a></dt>
+<dd><p>Read the blocks in a Volume of the world.</p>
+<p>Reading is slow: one RCON command for each block, and when <em>states</em>
+is True a few more for each stairs, slab and log-like block, to find
+its <code class="docutils literal notranslate"><span class="pre">facing</span></code>, <code class="docutils literal notranslate"><span class="pre">half</span></code>, <code class="docutils literal notranslate"><span class="pre">shape</span></code>, <code class="docutils literal notranslate"><span class="pre">type</span></code> or <code class="docutils literal notranslate"><span class="pre">axis</span></code>. Other block
+states (e.g. the facing of a door or a furnace) can not be read
+back, and those blocks take their default state. Block entity data
+(e.g. chest contents) is not read either. Some blocks read back as
+a related block, e.g. a wall torch as a torch, see <code class="docutils literal notranslate"><span class="pre">get_block</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>volume</strong> – the box of the world to read</p></li>
+<li><p><strong>states</strong> – read the block states of stairs, slabs and logs</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mciwb.builders.Schematic.paste">
+<span class="sig-name descname"><span class="pre">paste</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">position</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Vec3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">air</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Volume</span></span></span><a class="reference internal" href="../_modules/mciwb/builders/schematic.html#Schematic.paste"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.builders.Schematic.paste" title="Link to this definition">#</a></dt>
+<dd><p>Place the blocks in the world, with the schematic’s bottom north west
+corner (<code class="docutils literal notranslate"><span class="pre">blocks[0][0][0]</span></code>) at <em>position</em>. Uses one <code class="docutils literal notranslate"><span class="pre">fill</span></code> for
+each rectangle of the same block state in each layer, bottom layer
+first.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>position</strong> – where to put the bottom north west corner</p></li>
+<li><p><strong>air</strong> – if True, also place the air blocks, clearing whatever is
+in the box. If False, leave the world unchanged where the
+schematic has air</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>the box that the schematic covers in the world</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mciwb.builders.Schematic.rotate">
+<span class="sig-name descname"><span class="pre">rotate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">steps</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#mciwb.builders.Schematic" title="mciwb.builders.schematic.Schematic"><span class="pre">Schematic</span></a></span></span><a class="reference internal" href="../_modules/mciwb/builders/schematic.html#Schematic.rotate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.builders.Schematic.rotate" title="Link to this definition">#</a></dt>
+<dd><p>A copy of the schematic turned about the Y axis by <em>steps</em> quarter
+turns clockwise, viewed from above (so a stairs block facing north
+faces east after one step). See <a class="reference internal" href="#mciwb.builders.BlockState.rotate" title="mciwb.builders.BlockState.rotate"><code class="xref any py py-meth docutils literal notranslate"><span class="pre">BlockState.rotate</span></code></a> for the block
+states that turn with it.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mciwb.builders.Schematic.mirror">
+<span class="sig-name descname"><span class="pre">mirror</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#mciwb.builders.Schematic" title="mciwb.builders.schematic.Schematic"><span class="pre">Schematic</span></a></span></span><a class="reference internal" href="../_modules/mciwb/builders/schematic.html#Schematic.mirror"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.builders.Schematic.mirror" title="Link to this definition">#</a></dt>
+<dd><p>A mirror image copy of the schematic: <code class="docutils literal notranslate"><span class="pre">&quot;x&quot;</span></code> swaps east and west,
+<code class="docutils literal notranslate"><span class="pre">&quot;z&quot;</span></code> swaps north and south. See <a class="reference internal" href="#mciwb.builders.BlockState.mirror" title="mciwb.builders.BlockState.mirror"><code class="xref any py py-meth docutils literal notranslate"><span class="pre">BlockState.mirror</span></code></a>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mciwb.builders.Schematic.load">
+<span class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">load</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.15)"><span class="pre">Path</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#mciwb.builders.Schematic" title="mciwb.builders.schematic.Schematic"><span class="pre">Schematic</span></a></span></span><a class="reference internal" href="../_modules/mciwb/builders/schematic.html#Schematic.load"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.builders.Schematic.load" title="Link to this definition">#</a></dt>
+<dd><p>Load a Sponge schematic file (version 2 or 3).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mciwb.builders.Schematic.save">
+<span class="sig-name descname"><span class="pre">save</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.15)"><span class="pre">Path</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mciwb/builders/schematic.html#Schematic.save"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.builders.Schematic.save" title="Link to this definition">#</a></dt>
+<dd><p>Save as a Sponge schematic version 3 file (<code class="docutils literal notranslate"><span class="pre">.schem</span></code>).</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="mciwb.builders.arch">
+<span class="sig-prename descclassname"><span class="pre">mciwb.builders.</span></span><span class="sig-name descname"><span class="pre">arch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Vec3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Vec3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">block</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Item</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="#mciwb.builders.BlockState" title="mciwb.builders.blockstate.BlockState"><span class="pre">BlockState</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Item.STONE_BRICKS</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">style</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'round'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">thickness</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">depth</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">clear</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Volume</span></span></span><a class="reference internal" href="../_modules/mciwb/builders/arches.html#arch"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.builders.arch" title="Link to this definition">#</a></dt>
+<dd><p>An arch standing in a vertical wall plane.</p>
+<p><em>start</em> and <em>end</em> are the two outermost blocks at the foot of the arch,
+on the same y and in a line along x or along z. The arch rises from
+there: a 7 block span with the default thickness of 1 looks like this
+(<code class="docutils literal notranslate"><span class="pre">#</span></code> is the arch, <code class="docutils literal notranslate"><span class="pre">.</span></code> the opening):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>  <span class="c1">###          y = start.y + 3</span>
+<span class="c1">###.###</span>
+<span class="c1">#.....#</span>
+<span class="c1">#.....#        y = start.y: start and end are the # at each end</span>
+</pre></div>
+</div>
+<p>Its legs are short: build walls or a <a class="reference internal" href="#mciwb.builders.column" title="mciwb.builders.column"><code class="xref any py py-func docutils literal notranslate"><span class="pre">column</span></code></a> under it for a taller
+opening (or start it higher up). <a class="reference internal" href="#mciwb.builders.arch_profile" title="mciwb.builders.arch_profile"><code class="xref any py py-func docutils literal notranslate"><span class="pre">arch_profile</span></code></a> gives the shape of any
+arch without building it.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>start</strong> – the block at one foot of the arch</p></li>
+<li><p><strong>end</strong> – the block at the other foot, in line with <em>start</em> along x or z</p></li>
+<li><p><strong>block</strong> – the block to build the arch from</p></li>
+<li><p><strong>style</strong> – <code class="docutils literal notranslate"><span class="pre">&quot;round&quot;</span></code> (semicircular) or <code class="docutils literal notranslate"><span class="pre">&quot;pointed&quot;</span></code> (gothic)</p></li>
+<li><p><strong>thickness</strong> – the thickness of the ring of the arch, in blocks</p></li>
+<li><p><strong>depth</strong> – how many blocks thick the arch is through the wall. The
+extra blocks go south (for an arch along x) or east (along z)</p></li>
+<li><p><strong>clear</strong> – also set the opening under the arch to air, e.g. to cut
+an arched doorway through an existing wall</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>the bounding box of the arch, and the opening if cleared</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="mciwb.builders.arch_profile">
+<span class="sig-prename descclassname"><span class="pre">mciwb.builders.</span></span><span class="sig-name descname"><span class="pre">arch_profile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">span</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">thickness</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">style</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'round'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#tuple" title="(in Python v3.15)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#set" title="(in Python v3.15)"><span class="pre">set</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#tuple" title="(in Python v3.15)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#set" title="(in Python v3.15)"><span class="pre">set</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#tuple" title="(in Python v3.15)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/mciwb/builders/arches.html#arch_profile"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.builders.arch_profile" title="Link to this definition">#</a></dt>
+<dd><p>The blocks of an arch, as (u, v) cells where u counts across the span
+from 0 to <code class="docutils literal notranslate"><span class="pre">span</span> <span class="pre">-</span> <span class="pre">1</span></code> and v counts up from the springing line (v = 0).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>span</strong> – the outside width of the arch, in blocks</p></li>
+<li><p><strong>thickness</strong> – the thickness of the ring of the arch, in blocks</p></li>
+<li><p><strong>style</strong> – <code class="docutils literal notranslate"><span class="pre">&quot;round&quot;</span></code> (a semicircle) or <code class="docutils literal notranslate"><span class="pre">&quot;pointed&quot;</span></code> (a gothic,
+equilateral arch: two arcs whose radius is the width of the opening)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>(ring, opening): the cells of the ring of the arch, and the
+cells of the opening under it</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="mciwb.builders.column">
+<span class="sig-prename descclassname"><span class="pre">mciwb.builders.</span></span><span class="sig-name descname"><span class="pre">column</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">base</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Vec3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">block</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Item</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="#mciwb.builders.BlockState" title="mciwb.builders.blockstate.BlockState"><span class="pre">BlockState</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Item.QUARTZ_PILLAR</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">width</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plinth</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Item</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="#mciwb.builders.BlockState" title="mciwb.builders.blockstate.BlockState"><span class="pre">BlockState</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">capital</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Item</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="#mciwb.builders.BlockState" title="mciwb.builders.blockstate.BlockState"><span class="pre">BlockState</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Volume</span></span></span><a class="reference internal" href="../_modules/mciwb/builders/arches.html#column"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.builders.column" title="Link to this definition">#</a></dt>
+<dd><p>A square column standing on <em>base</em>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>base</strong> – the bottom block in the middle of the column</p></li>
+<li><p><strong>height</strong> – the total height of the column, including any plinth and
+capital</p></li>
+<li><p><strong>block</strong> – the block for the shaft</p></li>
+<li><p><strong>width</strong> – the width of the shaft. Odd widths are centred on <em>base</em>,
+even widths have the extra block to the east and south</p></li>
+<li><p><strong>plinth</strong> – if given, the bottom layer is this block, one block wider
+than the shaft on every side</p></li>
+<li><p><strong>capital</strong> – if given, the top layer is this block, one block wider
+than the shaft on every side</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>the bounding box of the column</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="mciwb.builders.facing_name">
+<span class="sig-prename descclassname"><span class="pre">mciwb.builders.</span></span><span class="sig-name descname"><span class="pre">facing_name</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">direction</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Vec3</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></span><a class="reference internal" href="../_modules/mciwb/builders/blockstate.html#facing_name"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.builders.facing_name" title="Link to this definition">#</a></dt>
+<dd><p>The block state name of a <code class="docutils literal notranslate"><span class="pre">Direction</span></code>, e.g. <code class="docutils literal notranslate"><span class="pre">&quot;east&quot;</span></code> for
+<code class="docutils literal notranslate"><span class="pre">Direction.EAST</span></code></p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#ValueError" title="(in Python v3.15)"><strong>ValueError</strong></a> – if <em>direction</em> is not one of the six Directions</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="mciwb.builders.flat_roof">
+<span class="sig-prename descclassname"><span class="pre">mciwb.builders.</span></span><span class="sig-name descname"><span class="pre">flat_roof</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Vec3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Vec3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">block</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Item</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="#mciwb.builders.BlockState" title="mciwb.builders.blockstate.BlockState"><span class="pre">BlockState</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Item.SMOOTH_STONE</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">parapet</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Item</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="#mciwb.builders.BlockState" title="mciwb.builders.blockstate.BlockState"><span class="pre">BlockState</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parapet_height</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overhang</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Volume</span></span></span><a class="reference internal" href="../_modules/mciwb/builders/roofs.html#flat_roof"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.builders.flat_roof" title="Link to this definition">#</a></dt>
+<dd><p>A flat roof: one layer of <em>block</em>, optionally with a parapet around its
+edge.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>start</strong> – a corner of the footprint, e.g. the top of a corner of the
+walls; the roof is at <code class="docutils literal notranslate"><span class="pre">start.y</span> <span class="pre">+</span> <span class="pre">1</span></code></p></li>
+<li><p><strong>end</strong> – the opposite corner of the footprint (only x and z are used)</p></li>
+<li><p><strong>block</strong> – the roof block, e.g. a full block or a slab</p></li>
+<li><p><strong>parapet</strong> – if given, build a low wall of this block around the edge
+of the roof, on top of it. Walls, fences and panes join up
+automatically</p></li>
+<li><p><strong>parapet_height</strong> – the height of the parapet</p></li>
+<li><p><strong>overhang</strong> – extend the roof this many blocks past the footprint on
+every side</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>the bounding box of the roof and parapet</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="mciwb.builders.foundation">
+<span class="sig-prename descclassname"><span class="pre">mciwb.builders.</span></span><span class="sig-name descname"><span class="pre">foundation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Vec3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Vec3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">block</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Item</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="#mciwb.builders.BlockState" title="mciwb.builders.blockstate.BlockState"><span class="pre">BlockState</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Item.COBBLESTONE</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">heightmap</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#mciwb.builders.Heightmap" title="mciwb.builders.terrain.Heightmap"><span class="pre">Heightmap</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Heightmap.OCEAN_FLOOR</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_depth</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">64</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Volume</span></span></span><a class="reference internal" href="../_modules/mciwb/builders/terrain.html#foundation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.builders.foundation" title="Link to this definition">#</a></dt>
+<dd><p>A foundation that follows the terrain: fill each column of a rectangular
+footprint from the ground up to <code class="docutils literal notranslate"><span class="pre">start.y</span></code>, giving a level platform at
+<code class="docutils literal notranslate"><span class="pre">start.y</span></code> to build on (at <code class="docutils literal notranslate"><span class="pre">start.y</span> <span class="pre">+</span> <span class="pre">1</span></code>).</p>
+<p>Build the foundation before anything above it: the ground height is the
+top of the highest block in each column, so a building already standing
+there would count as the ground. Columns where the ground is higher than
+<code class="docutils literal notranslate"><span class="pre">start.y</span></code> just get the top layer (replacing the ground there).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>start</strong> – a corner of the footprint, at the height of the top of the
+foundation</p></li>
+<li><p><strong>end</strong> – the opposite corner of the footprint (only x and z are used)</p></li>
+<li><p><strong>block</strong> – the block to build the foundation from</p></li>
+<li><p><strong>heightmap</strong> – what counts as the ground. The default ignores water,
+so the foundation goes down to the bed of a lake or the sea</p></li>
+<li><p><strong>max_depth</strong> – the deepest any column may go, in blocks below
+<code class="docutils literal notranslate"><span class="pre">start.y</span></code> (a guard against building down into a ravine or the
+void). 0 gives just the top layer</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>the bounding box of the foundation</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="mciwb.builders.full_block_of">
+<span class="sig-prename descclassname"><span class="pre">mciwb.builders.</span></span><span class="sig-name descname"><span class="pre">full_block_of</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">stairs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Item</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="#mciwb.builders.BlockState" title="mciwb.builders.blockstate.BlockState"><span class="pre">BlockState</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Item</span></span></span><a class="reference internal" href="../_modules/mciwb/builders/blockstate.html#full_block_of"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.builders.full_block_of" title="Link to this definition">#</a></dt>
+<dd><p>The full block made of the same material as a stairs block, e.g.
+<code class="docutils literal notranslate"><span class="pre">Item.OAK_PLANKS</span></code> for <code class="docutils literal notranslate"><span class="pre">Item.OAK_STAIRS</span></code>, <code class="docutils literal notranslate"><span class="pre">Item.STONE_BRICKS</span></code> for
+<code class="docutils literal notranslate"><span class="pre">Item.STONE_BRICK_STAIRS</span></code></p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#ValueError" title="(in Python v3.15)"><strong>ValueError</strong></a> – if there is no matching block</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="mciwb.builders.gable_roof">
+<span class="sig-prename descclassname"><span class="pre">mciwb.builders.</span></span><span class="sig-name descname"><span class="pre">gable_roof</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Vec3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Vec3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stairs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Item</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="#mciwb.builders.BlockState" title="mciwb.builders.blockstate.BlockState"><span class="pre">BlockState</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Item.OAK_STAIRS</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">ridge</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Item</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="#mciwb.builders.BlockState" title="mciwb.builders.blockstate.BlockState"><span class="pre">BlockState</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gable</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Item</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="#mciwb.builders.BlockState" title="mciwb.builders.blockstate.BlockState"><span class="pre">BlockState</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overhang</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Volume</span></span></span><a class="reference internal" href="../_modules/mciwb/builders/roofs.html#gable_roof"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.builders.gable_roof" title="Link to this definition">#</a></dt>
+<dd><p>A gable (pitched) roof: two slopes of stairs meeting at a ridge.</p>
+<p>For a footprint 7 wide across the ridge, seen from the gable end
+(<code class="docutils literal notranslate"><span class="pre">#</span></code> is the <em>gable</em>, if one is given):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>      ▄            &lt;- ridge slab, y = start.y + 4
+    ◢ # ◣
+  ◢ # # # ◣
+◢ # # # # # ◣      &lt;- stairs, y = start.y + 1
+W . . . . . W      &lt;- walls, top at start.y
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>start</strong> – a corner of the footprint, e.g. the top of a corner of the
+walls; the roof starts at <code class="docutils literal notranslate"><span class="pre">start.y</span> <span class="pre">+</span> <span class="pre">1</span></code></p></li>
+<li><p><strong>end</strong> – the opposite corner of the footprint (only x and z are used)</p></li>
+<li><p><strong>stairs</strong> – the stairs to build the slopes from</p></li>
+<li><p><strong>ridge</strong> – the block along the ridge when the footprint is an odd
+number of blocks across. Defaults to the slab matching <em>stairs</em>,
+placed as a bottom slab</p></li>
+<li><p><strong>gable</strong> – if given, fill the triangular gable ends under the roof
+with this block, above the footprint’s end walls</p></li>
+<li><p><strong>axis</strong> – <code class="docutils literal notranslate"><span class="pre">&quot;x&quot;</span></code> or <code class="docutils literal notranslate"><span class="pre">&quot;z&quot;</span></code>, the direction that the ridge runs.
+Defaults to the longer side of the footprint</p></li>
+<li><p><strong>overhang</strong> – extend the roof this many blocks past the footprint on
+every side (the slopes stay at the same height, so the eaves overhang
+the walls)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>the bounding box of the roof (and gables)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="mciwb.builders.ground_height">
+<span class="sig-prename descclassname"><span class="pre">mciwb.builders.</span></span><span class="sig-name descname"><span class="pre">ground_height</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">z</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">heightmap</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#mciwb.builders.Heightmap" title="mciwb.builders.terrain.Heightmap"><span class="pre">Heightmap</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Heightmap.MOTION_BLOCKING_NO_LEAVES</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a></span></span><a class="reference internal" href="../_modules/mciwb/builders/terrain.html#ground_height"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.builders.ground_height" title="Link to this definition">#</a></dt>
+<dd><p>The y of the top ground block at <code class="docutils literal notranslate"><span class="pre">(x,</span> <span class="pre">z)</span></code>, see <a class="reference internal" href="#mciwb.builders.ground_heights" title="mciwb.builders.ground_heights"><code class="xref any py py-func docutils literal notranslate"><span class="pre">ground_heights</span></code></a>.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="mciwb.builders.ground_heights">
+<span class="sig-prename descclassname"><span class="pre">mciwb.builders.</span></span><span class="sig-name descname"><span class="pre">ground_heights</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">columns</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Iterable" title="(in Python v3.15)"><span class="pre">Iterable</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#tuple" title="(in Python v3.15)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">heightmap</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#mciwb.builders.Heightmap" title="mciwb.builders.terrain.Heightmap"><span class="pre">Heightmap</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Heightmap.MOTION_BLOCKING_NO_LEAVES</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.15)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#tuple" title="(in Python v3.15)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/mciwb/builders/terrain.html#ground_heights"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.builders.ground_heights" title="Link to this definition">#</a></dt>
+<dd><p>The y of the top ground block of each of a set of columns.</p>
+<p>Teleports a temporary marker entity to the top of each column, which
+costs one RCON command per column (plus two to make and remove the
+marker).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>columns</strong> – <code class="docutils literal notranslate"><span class="pre">(x,</span> <span class="pre">z)</span></code> pairs</p></li>
+<li><p><strong>heightmap</strong> – what counts as the ground, see <a class="reference internal" href="#mciwb.builders.Heightmap" title="mciwb.builders.Heightmap"><code class="xref any py py-class docutils literal notranslate"><span class="pre">Heightmap</span></code></a></p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>the y of the top ground block, keyed by <code class="docutils literal notranslate"><span class="pre">(x,</span> <span class="pre">z)</span></code>. In a column
+with no ground at all (e.g. the void in the End) this is one below
+the bottom of the world</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#mciwb.builders.BuildError" title="mciwb.builders.BuildError"><strong>BuildError</strong></a> – if a column is not in a loaded chunk</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="mciwb.builders.hip_roof">
+<span class="sig-prename descclassname"><span class="pre">mciwb.builders.</span></span><span class="sig-name descname"><span class="pre">hip_roof</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Vec3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Vec3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stairs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Item</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="#mciwb.builders.BlockState" title="mciwb.builders.blockstate.BlockState"><span class="pre">BlockState</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Item.OAK_STAIRS</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">ridge</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Item</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="#mciwb.builders.BlockState" title="mciwb.builders.blockstate.BlockState"><span class="pre">BlockState</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overhang</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Volume</span></span></span><a class="reference internal" href="../_modules/mciwb/builders/roofs.html#hip_roof"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.builders.hip_roof" title="Link to this definition">#</a></dt>
+<dd><p>A hip roof: four slopes of stairs, one from each side of the footprint,
+with outer corner stairs where they meet. Each course is a ring of stairs
+one block in and one block up from the course below. Where the slopes
+meet along a line one block wide (the ridge) the roof is finished with
+<em>ridge</em> blocks.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>start</strong> – a corner of the footprint, e.g. the top of a corner of the
+walls; the roof starts at <code class="docutils literal notranslate"><span class="pre">start.y</span> <span class="pre">+</span> <span class="pre">1</span></code></p></li>
+<li><p><strong>end</strong> – the opposite corner of the footprint (only x and z are used)</p></li>
+<li><p><strong>stairs</strong> – the stairs to build the slopes from</p></li>
+<li><p><strong>ridge</strong> – the block for a ridge one block wide, defaults to the slab
+matching <em>stairs</em>, placed as a bottom slab</p></li>
+<li><p><strong>overhang</strong> – extend the roof this many blocks past the footprint on
+every side</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>the bounding box of the roof</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="mciwb.builders.road">
+<span class="sig-prename descclassname"><span class="pre">mciwb.builders.</span></span><span class="sig-name descname"><span class="pre">road</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">points</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.15)"><span class="pre">Sequence</span></a><span class="p"><span class="pre">[</span></span><span class="pre">Vec3</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">block</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Item</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="#mciwb.builders.BlockState" title="mciwb.builders.blockstate.BlockState"><span class="pre">BlockState</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Item.DIRT_PATH</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">width</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">border</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Item</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="#mciwb.builders.BlockState" title="mciwb.builders.blockstate.BlockState"><span class="pre">BlockState</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">clearance</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">heightmap</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#mciwb.builders.Heightmap" title="mciwb.builders.terrain.Heightmap"><span class="pre">Heightmap</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Heightmap.MOTION_BLOCKING_NO_LEAVES</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Volume</span></span></span><a class="reference internal" href="../_modules/mciwb/builders/paths.html#road"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.builders.road" title="Link to this definition">#</a></dt>
+<dd><p>A road along a path that follows the terrain: each block of the road
+replaces the top ground block of its column. The y of <em>points</em> is
+ignored.</p>
+<p>The road does not smooth the terrain, it steps up and down with it.
+Use <a class="reference internal" href="#mciwb.builders.stairway" title="mciwb.builders.stairway"><code class="xref any py py-func docutils literal notranslate"><span class="pre">stairway</span></code></a> for a path at fixed heights.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>points</strong> – the start, each corner and the end of the road</p></li>
+<li><p><strong>block</strong> – the road surface</p></li>
+<li><p><strong>width</strong> – the width of the road</p></li>
+<li><p><strong>border</strong> – if given, the blocks along both edges of the road</p></li>
+<li><p><strong>clearance</strong> – set this many blocks above the road to air, clearing
+grass, flowers and snow</p></li>
+<li><p><strong>heightmap</strong> – what counts as the ground, see <a class="reference internal" href="#mciwb.builders.Heightmap" title="mciwb.builders.Heightmap"><code class="xref any py py-class docutils literal notranslate"><span class="pre">Heightmap</span></code></a>. The
+default ignores leaves, but the road goes over the top of water</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>the bounding box of the road</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="mciwb.builders.slab_of">
+<span class="sig-prename descclassname"><span class="pre">mciwb.builders.</span></span><span class="sig-name descname"><span class="pre">slab_of</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">stairs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Item</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="#mciwb.builders.BlockState" title="mciwb.builders.blockstate.BlockState"><span class="pre">BlockState</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Item</span></span></span><a class="reference internal" href="../_modules/mciwb/builders/blockstate.html#slab_of"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.builders.slab_of" title="Link to this definition">#</a></dt>
+<dd><p>The slab made of the same material as a stairs block, e.g.
+<code class="docutils literal notranslate"><span class="pre">Item.OAK_SLAB</span></code> for <code class="docutils literal notranslate"><span class="pre">Item.OAK_STAIRS</span></code></p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#ValueError" title="(in Python v3.15)"><strong>ValueError</strong></a> – if there is no matching slab</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="mciwb.builders.stair_shapes">
+<span class="sig-prename descclassname"><span class="pre">mciwb.builders.</span></span><span class="sig-name descname"><span class="pre">stair_shapes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">stairs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Mapping" title="(in Python v3.15)"><span class="pre">Mapping</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#tuple" title="(in Python v3.15)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.15)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#tuple" title="(in Python v3.15)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/mciwb/builders/blockstate.html#stair_shapes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.builders.stair_shapes" title="Link to this definition">#</a></dt>
+<dd><p>Work out the <code class="docutils literal notranslate"><span class="pre">shape</span></code> of each stairs block in one horizontal layer of
+stairs of the same <code class="docutils literal notranslate"><span class="pre">half</span></code>, as Minecraft does when the blocks are placed.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>stairs</strong> – the <code class="docutils literal notranslate"><span class="pre">facing</span></code> of each stairs block, keyed by <code class="docutils literal notranslate"><span class="pre">(x,</span> <span class="pre">z)</span></code></p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>the <code class="docutils literal notranslate"><span class="pre">shape</span></code> of each stairs block, keyed by <code class="docutils literal notranslate"><span class="pre">(x,</span> <span class="pre">z)</span></code></p>
+</dd>
+</dl>
+<p>A stairs block’s <code class="docutils literal notranslate"><span class="pre">facing</span></code> is the side of its full height step, so
+people walking up it travel in that direction. A corner forms when the
+stairs in front of (or behind) it face across it: <code class="docutils literal notranslate"><span class="pre">outer_left</span></code> has its
+high corner on the <code class="docutils literal notranslate"><span class="pre">facing</span></code> side and the side counterclockwise from
+it, <code class="docutils literal notranslate"><span class="pre">outer_right</span></code> on the clockwise side. This follows
+<code class="docutils literal notranslate"><span class="pre">StairBlock.getStairsShape</span></code> in Minecraft.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="mciwb.builders.stairway">
+<span class="sig-prename descclassname"><span class="pre">mciwb.builders.</span></span><span class="sig-name descname"><span class="pre">stairway</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">points</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.15)"><span class="pre">Sequence</span></a><span class="p"><span class="pre">[</span></span><span class="pre">Vec3</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stairs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Item</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="#mciwb.builders.BlockState" title="mciwb.builders.blockstate.BlockState"><span class="pre">BlockState</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Item.STONE_BRICK_STAIRS</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">landing</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Item</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="#mciwb.builders.BlockState" title="mciwb.builders.blockstate.BlockState"><span class="pre">BlockState</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">width</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">support</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Item</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="#mciwb.builders.BlockState" title="mciwb.builders.blockstate.BlockState"><span class="pre">BlockState</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">clearance</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Volume</span></span></span><a class="reference internal" href="../_modules/mciwb/builders/paths.html#stairway"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.builders.stairway" title="Link to this definition">#</a></dt>
+<dd><p>A stairway along a path, climbing (or descending) between the heights
+of its points.</p>
+<p>Each point is a block of the walkway, the block that people stand on, so
+the walkway’s surface is one block above it. Each section between two
+points climbs at most one block for each block along it. Where a block
+is higher than the one before it there is a stairs block (facing the way
+up), elsewhere a level <em>landing</em> block. So <code class="docutils literal notranslate"><span class="pre">points</span></code> at the same height
+give a level path.</p>
+<p>The path may pass over itself, as in a spiral staircase round a tower
+or a switchback: each pass gets its own blocks. Choose the points so
+that there is headroom between one pass and the next one above it.</p>
+<p>For example, from (0, 64, 0) east to (4, 66, 0):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>      ◢ #    y = 66: stairs, then a landing at the end
+  ◢ #        y = 65: stairs, landing
+#            y = 64: a landing at the start
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>points</strong> – the walkway blocks at the start, each corner and the end</p></li>
+<li><p><strong>stairs</strong> – the stairs to climb with</p></li>
+<li><p><strong>landing</strong> – the block for the level parts, defaults to the full block
+matching <em>stairs</em> e.g. <code class="docutils literal notranslate"><span class="pre">Item.STONE_BRICKS</span></code></p></li>
+<li><p><strong>width</strong> – the width of the stairway</p></li>
+<li><p><strong>support</strong> – if given, fill the space under the stairway with this
+block, down to the height of its lowest block (only replacing air).
+Where the stairway passes over itself, the support stops above the
+headroom of the pass below</p></li>
+<li><p><strong>clearance</strong> – set this many blocks above the walkway to air, to
+make headroom through the terrain</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>the bounding box of the stairway</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="mciwb.builders.trace_path">
+<span class="sig-prename descclassname"><span class="pre">mciwb.builders.</span></span><span class="sig-name descname"><span class="pre">trace_path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">points</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.15)"><span class="pre">Sequence</span></a><span class="p"><span class="pre">[</span></span><span class="pre">Vec3</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#mciwb.builders.PathStep" title="mciwb.builders.paths.PathStep"><span class="pre">PathStep</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/mciwb/builders/paths.html#trace_path"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.builders.trace_path" title="Link to this definition">#</a></dt>
+<dd><p>The blocks along the middle of a path through <em>points</em>, with the
+heights of the blocks spread evenly between the heights of the points.</p>
+<p>In a section that climbs (or descends) by less than its length, the last
+block before each point (the first block after it, when descending)
+stays level, so that a corner is a landing.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#ValueError" title="(in Python v3.15)"><strong>ValueError</strong></a> – if a section is diagonal, or climbs more than one
+block for each block along</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="mciwb.render.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title"><code class="docutils literal notranslate"><span class="pre">mciwb.render</span></code></p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="../reference/demo.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Demo Code</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mciwb.builders.BlockState"><code class="docutils literal notranslate"><span class="pre">BlockState</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mciwb.builders.BlockState.parse"><code class="docutils literal notranslate"><span class="pre">BlockState.parse()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mciwb.builders.BlockState.of"><code class="docutils literal notranslate"><span class="pre">BlockState.of()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mciwb.builders.BlockState.with_props"><code class="docutils literal notranslate"><span class="pre">BlockState.with_props()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mciwb.builders.BlockState.item"><code class="docutils literal notranslate"><span class="pre">BlockState.item</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mciwb.builders.BlockState.rotate"><code class="docutils literal notranslate"><span class="pre">BlockState.rotate()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mciwb.builders.BlockState.mirror"><code class="docutils literal notranslate"><span class="pre">BlockState.mirror()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mciwb.builders.BuildError"><code class="docutils literal notranslate"><span class="pre">BuildError</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mciwb.builders.Heightmap"><code class="docutils literal notranslate"><span class="pre">Heightmap</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mciwb.builders.Heightmap.WORLD_SURFACE"><code class="docutils literal notranslate"><span class="pre">Heightmap.WORLD_SURFACE</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mciwb.builders.Heightmap.MOTION_BLOCKING"><code class="docutils literal notranslate"><span class="pre">Heightmap.MOTION_BLOCKING</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mciwb.builders.Heightmap.MOTION_BLOCKING_NO_LEAVES"><code class="docutils literal notranslate"><span class="pre">Heightmap.MOTION_BLOCKING_NO_LEAVES</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mciwb.builders.Heightmap.OCEAN_FLOOR"><code class="docutils literal notranslate"><span class="pre">Heightmap.OCEAN_FLOOR</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mciwb.builders.PathStep"><code class="docutils literal notranslate"><span class="pre">PathStep</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mciwb.builders.PathStep.pos"><code class="docutils literal notranslate"><span class="pre">PathStep.pos</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mciwb.builders.PathStep.direction"><code class="docutils literal notranslate"><span class="pre">PathStep.direction</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mciwb.builders.Placer"><code class="docutils literal notranslate"><span class="pre">Placer</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mciwb.builders.Placer.volume"><code class="docutils literal notranslate"><span class="pre">Placer.volume</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mciwb.builders.Placer.include"><code class="docutils literal notranslate"><span class="pre">Placer.include()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mciwb.builders.Placer.setblock"><code class="docutils literal notranslate"><span class="pre">Placer.setblock()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mciwb.builders.Placer.fill"><code class="docutils literal notranslate"><span class="pre">Placer.fill()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mciwb.builders.Placer.layer"><code class="docutils literal notranslate"><span class="pre">Placer.layer()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mciwb.builders.Schematic"><code class="docutils literal notranslate"><span class="pre">Schematic</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mciwb.builders.Schematic.size"><code class="docutils literal notranslate"><span class="pre">Schematic.size</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mciwb.builders.Schematic.palette"><code class="docutils literal notranslate"><span class="pre">Schematic.palette</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mciwb.builders.Schematic.from_cuboid"><code class="docutils literal notranslate"><span class="pre">Schematic.from_cuboid()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mciwb.builders.Schematic.to_cuboid"><code class="docutils literal notranslate"><span class="pre">Schematic.to_cuboid()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mciwb.builders.Schematic.from_world"><code class="docutils literal notranslate"><span class="pre">Schematic.from_world()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mciwb.builders.Schematic.paste"><code class="docutils literal notranslate"><span class="pre">Schematic.paste()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mciwb.builders.Schematic.rotate"><code class="docutils literal notranslate"><span class="pre">Schematic.rotate()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mciwb.builders.Schematic.mirror"><code class="docutils literal notranslate"><span class="pre">Schematic.mirror()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mciwb.builders.Schematic.load"><code class="docutils literal notranslate"><span class="pre">Schematic.load()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mciwb.builders.Schematic.save"><code class="docutils literal notranslate"><span class="pre">Schematic.save()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mciwb.builders.arch"><code class="docutils literal notranslate"><span class="pre">arch()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mciwb.builders.arch_profile"><code class="docutils literal notranslate"><span class="pre">arch_profile()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mciwb.builders.column"><code class="docutils literal notranslate"><span class="pre">column()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mciwb.builders.facing_name"><code class="docutils literal notranslate"><span class="pre">facing_name()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mciwb.builders.flat_roof"><code class="docutils literal notranslate"><span class="pre">flat_roof()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mciwb.builders.foundation"><code class="docutils literal notranslate"><span class="pre">foundation()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mciwb.builders.full_block_of"><code class="docutils literal notranslate"><span class="pre">full_block_of()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mciwb.builders.gable_roof"><code class="docutils literal notranslate"><span class="pre">gable_roof()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mciwb.builders.ground_height"><code class="docutils literal notranslate"><span class="pre">ground_height()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mciwb.builders.ground_heights"><code class="docutils literal notranslate"><span class="pre">ground_heights()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mciwb.builders.hip_roof"><code class="docutils literal notranslate"><span class="pre">hip_roof()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mciwb.builders.road"><code class="docutils literal notranslate"><span class="pre">road()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mciwb.builders.slab_of"><code class="docutils literal notranslate"><span class="pre">slab_of()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mciwb.builders.stair_shapes"><code class="docutils literal notranslate"><span class="pre">stair_shapes()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mciwb.builders.stairway"><code class="docutils literal notranslate"><span class="pre">stairway()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mciwb.builders.trace_path"><code class="docutils literal notranslate"><span class="pre">trace_path()</span></code></a></li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+
+  
+  <div class="tocsection editthispage">
+    <a href="https://github.com/gilesknap/mciwb/edit/main/docs/_api/mciwb.builders.rst">
+      <i class="fa-solid fa-pencil"></i>
+      
+      
+        
+          Edit on GitHub
+        
+      
+    </a>
+  </div>
+</div>
+
+  <div class="sidebar-secondary-item">
+
+  <div class="tocsection sourcelink">
+    <a href="../_sources/_api/mciwb.builders.rst.txt">
+      <i class="fa-solid fa-file-lines"></i> Show Source
+    </a>
+  </div>
+</div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.23.0.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

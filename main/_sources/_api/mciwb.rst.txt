@@ -17,11 +17,23 @@
         
         
         
+        
+        
 
 .. automodule:: mciwb
     :members:
 
     
+    
+    .. rubric:: Submodules
+
+    .. autosummary::
+        :toctree:
+        :template: custom-module-template.rst
+        :recursive:
+    
+        render
+        builders
     
     
 
@@ -49,5 +61,7 @@
         parse_nbt
         Backup
         MinecraftServer
+        BlockGrid
+        Palette
     
     

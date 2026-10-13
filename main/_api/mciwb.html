@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>mciwb &#8212; mciwb 0.9.2.dev62+gd0bb83fba documentation</title>
+    <title>mciwb &#8212; mciwb 0.9.2.dev92+gb813bc9d3 documentation</title>
   
   
   
@@ -40,7 +40,7 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be" />
 
-    <script src="../_static/documentation_options.js?v=68d1cc1e"></script>
+    <script src="../_static/documentation_options.js?v=eaab3c44"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -58,7 +58,7 @@
     <link rel="icon" href="../_static/logo.png"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Demo Code" href="../reference/demo.html" />
+    <link rel="next" title="mciwb.render" href="mciwb.render.html" />
     <link rel="prev" title="Reference" href="../reference.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="color-scheme" content="light dark"/>
@@ -422,7 +422,11 @@
      aria-label="Section Navigation">
   <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
   <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
-<li class="toctree-l1 current active"><a aria-current="page" class="current reference internal" href="#">API</a></li>
+<li class="toctree-l1 current active has-children"><a aria-current="page" class="current reference internal" href="#">API</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="mciwb.render.html"><code class="docutils literal notranslate"><span class="pre">mciwb.render</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="mciwb.builders.html"><code class="docutils literal notranslate"><span class="pre">mciwb.builders</span></code></a></li>
+</ul>
+</details></li>
 <li class="toctree-l1"><a class="reference internal" href="../reference/demo.html">Demo Code</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../genindex.html">Index</a></li>
 <li class="toctree-l1"><a class="reference external" href="https://github.com/gilesknap/mciwb/releases">Release Notes</a></li>
@@ -492,13 +496,29 @@
 <p>The main entry point is <a class="reference internal" href="#mciwb.Iwb" title="mciwb.Iwb"><code class="xref any py py-class docutils literal notranslate"><span class="pre">Iwb</span></code></a>, which connects to a Minecraft server. The
 building blocks (<code class="docutils literal notranslate"><span class="pre">Vec3</span></code>, <code class="docutils literal notranslate"><span class="pre">Item</span></code>, <code class="docutils literal notranslate"><span class="pre">Direction</span></code>, <code class="docutils literal notranslate"><span class="pre">Volume</span></code>, <code class="docutils literal notranslate"><span class="pre">polygon</span></code>
 etc.) come from the mcwb library. These and the classes below can all be
-imported from <code class="docutils literal notranslate"><span class="pre">mciwb.imports</span></code>.</p>
+imported from <code class="docutils literal notranslate"><span class="pre">mciwb.imports</span></code>. <a class="reference internal" href="mciwb.builders.html#module-mciwb.builders" title="mciwb.builders"><code class="xref py py-mod docutils literal notranslate"><span class="pre">mciwb.builders</span></code></a> has higher level building
+blocks: roofs, arches, stairways, foundations and schematic files.</p>
+<p>Read and draw regions with <code class="docutils literal notranslate"><span class="pre">scan</span></code> and <code class="docutils literal notranslate"><span class="pre">render</span></code> from the <a class="reference internal" href="mciwb.render.html#module-mciwb.render" title="mciwb.render"><code class="xref py py-mod docutils literal notranslate"><span class="pre">mciwb.render</span></code></a>
+module (or <code class="docutils literal notranslate"><span class="pre">mciwb.imports</span></code>). They are not imported here, where a function
+called <code class="docutils literal notranslate"><span class="pre">render</span></code> would hide the <code class="docutils literal notranslate"><span class="pre">mciwb.render</span></code> module.</p>
 <dl class="py data">
 <dt class="sig sig-object py" id="mciwb.__version__">
 <span class="sig-prename descclassname"><span class="pre">mciwb.</span></span><span class="sig-name descname"><span class="pre">__version__</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span><a class="headerlink" href="#mciwb.__version__" title="Link to this definition">#</a></dt>
 <dd><p>Version number as calculated by <a class="github reference external" href="https://github.com/pypa/setuptools_scm">pypa/setuptools_scm</a></p>
 </dd></dl>
 
+<p class="rubric">Submodules</p>
+<div class="pst-scrollable-table-container"><table class="autosummary longtable table">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="mciwb.render.html#module-mciwb.render" title="mciwb.render"><code class="xref py py-obj docutils literal notranslate"><span class="pre">render</span></code></a></p></td>
+<td><p>Render a region of a Minecraft world to an image, so that you (or an AI agent) can see what a build looks like without joining the game.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="mciwb.builders.html#module-mciwb.builders" title="mciwb.builders"><code class="xref py py-obj docutils literal notranslate"><span class="pre">builders</span></code></a></p></td>
+<td><p>Higher level building blocks: roofs, arches, columns, stairways, roads, foundations that follow the terrain, and Sponge schematic files.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
 <p class="rubric">Members</p>
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table">
 <tbody>
@@ -553,6 +573,12 @@ imported from <code class="docutils literal notranslate"><span class="pre">mciwb
 <tr class="row-odd"><td><p><a class="reference internal" href="#mciwb.MinecraftServer" title="mciwb.MinecraftServer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MinecraftServer</span></code></a></p></td>
 <td><p>Create and monitor Minecraft servers on the local machine using Podman</p></td>
 </tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#mciwb.BlockGrid" title="mciwb.BlockGrid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BlockGrid</span></code></a></p></td>
+<td><p>The blocks of a cuboid region of the world.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#mciwb.Palette" title="mciwb.Palette"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Palette</span></code></a></p></td>
+<td><p>The colours of blocks, see the module documentation for the rules.</p></td>
+</tr>
 </tbody>
 </table>
 </div>
@@ -572,6 +598,11 @@ interactive functions for use in an IPython shell, or in scripts.</p>
 <li><p><strong>player</strong> – The default <a class="reference internal" href="#mciwb.Player" title="mciwb.Player"><code class="xref any py py-class docutils literal notranslate"><span class="pre">Player</span></code></a> object.</p></li>
 <li><p><strong>copier</strong> – <a class="reference internal" href="#mciwb.CopyPaste" title="mciwb.CopyPaste"><code class="xref any py py-class docutils literal notranslate"><span class="pre">CopyPaste</span></code></a> object for the above player.</p></li>
 <li><p><strong>signs</strong> – The <a class="reference internal" href="#mciwb.Signs" title="mciwb.Signs"><code class="xref any py py-class docutils literal notranslate"><span class="pre">Signs</span></code></a> object for the above player.</p></li>
+<li><p><strong>world_folder</strong> – The server’s world folder, if it is on this machine.
+<code class="docutils literal notranslate"><span class="pre">scan</span></code> and <code class="docutils literal notranslate"><span class="pre">render</span></code> read blocks from its files, which is much faster
+than over RCON. Set for the server of <code class="docutils literal notranslate"><span class="pre">mciwb</span> <span class="pre">start</span></code> when it uses
+the default <code class="docutils literal notranslate"><span class="pre">--folder</span></code>: for another folder, set it yourself, e.g.
+<code class="docutils literal notranslate"><span class="pre">world.world_folder</span> <span class="pre">=</span> <span class="pre">Path(&quot;/my/server/world&quot;)</span></code>.</p></li>
 </ul>
 </dd>
 </dl>
@@ -729,7 +760,10 @@ rejected the command (the server’s response is logged as an error)</p>
 <dd><p>Save a Volume of blocks to a file. The volume can be specified in
 the <em>vol</em> parameter or alternatively defaults to the current copy buffer.</p>
 <p>The file is saved in the mcwb format which is a JSON file containing
-a 3d array of Item objects.</p>
+a 3d array of Item objects. If the filename ends in <code class="docutils literal notranslate"><span class="pre">.schem</span></code> it is
+saved as a Sponge schematic instead, with the block states of stairs,
+slabs and logs (see <a class="reference internal" href="mciwb.builders.html#mciwb.builders.Schematic.from_world" title="mciwb.builders.Schematic.from_world"><code class="xref any py py-meth docutils literal notranslate"><span class="pre">mciwb.builders.Schematic.from_world</span></code></a>), which
+other Minecraft tools such as WorldEdit can load.</p>
 <p>The file can be loaded into a world using the <a class="reference internal" href="#mciwb.Iwb.load" title="mciwb.Iwb.load"><code class="xref any py py-meth docutils literal notranslate"><span class="pre">load</span></code></a> method.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -751,7 +785,9 @@ a 3d array of Item objects.</p>
 specified in argument <em>position</em> or alternatively defaults
 to the copy buffer start position.</p>
 <p>The blocks are loaded from a file in the mcwb format which is a
-JSON file containing a 3d array of Item objects.</p>
+JSON file containing a 3d array of Item objects, or from a Sponge
+schematic if the filename ends in <code class="docutils literal notranslate"><span class="pre">.schem</span></code> (see
+<a class="reference internal" href="mciwb.builders.html#mciwb.builders.Schematic" title="mciwb.builders.Schematic"><code class="xref any py py-class docutils literal notranslate"><span class="pre">mciwb.builders.Schematic</span></code></a>).</p>
 <p>The blocks are loaded into the world using the Blocks class.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -763,6 +799,47 @@ JSON file containing a 3d array of Item objects.</p>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#ValueError" title="(in Python v3.15)"><strong>ValueError</strong></a> – if no <em>position</em> is given and there is no copy buffer</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mciwb.Iwb.scan">
+<span class="sig-name descname"><span class="pre">scan</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Vec3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Vec3</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#mciwb.BlockGrid" title="mciwb.blockgrid.BlockGrid"><span class="pre">BlockGrid</span></a></span></span><a class="reference internal" href="../_modules/mciwb/iwb.html#Iwb.scan"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.Iwb.scan" title="Link to this definition">#</a></dt>
+<dd><p>Read the blocks between two opposite corners of a region, from the
+world’s files if <code class="docutils literal notranslate"><span class="pre">world_folder</span></code> is set, otherwise over RCON.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>start</strong> – a corner of the region</p></li>
+<li><p><strong>end</strong> – the opposite corner of the region</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>the blocks, e.g. <code class="docutils literal notranslate"><span class="pre">world.scan(a,</span> <span class="pre">b).counts()</span></code> counts them</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mciwb.Iwb.render">
+<span class="sig-name descname"><span class="pre">render</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Vec3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Vec3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.15)"><span class="pre">Path</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'render.png'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">views</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.15)"><span class="pre">Sequence</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">('top',</span> <span class="pre">'iso')</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#mciwb.BlockGrid" title="mciwb.blockgrid.BlockGrid"><span class="pre">BlockGrid</span></a></span></span><a class="reference internal" href="../_modules/mciwb/iwb.html#Iwb.render"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.Iwb.render" title="Link to this definition">#</a></dt>
+<dd><p>Render the region between two opposite corners to a PNG image, to
+see what a build looks like. See <a class="reference internal" href="../how-to/render.html#render-howto"><span class="std std-ref">Render a Build to an Image</span></a> for the views.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>start</strong> – a corner of the region</p></li>
+<li><p><strong>end</strong> – the opposite corner of the region</p></li>
+<li><p><strong>file</strong> – the image file to write</p></li>
+<li><p><strong>views</strong> – the views to draw: top, iso, north, south, east, west,
+iso_ne, iso_nw or iso_sw; a list, or the name of one view</p></li>
+<li><p><strong>scale</strong> – pixels per block, chosen automatically by default</p></li>
+<li><p><strong>labels</strong> – add titles and world coordinate labels</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>the blocks that were rendered, see <a class="reference internal" href="#mciwb.Iwb.scan" title="mciwb.Iwb.scan"><code class="xref any py py-meth docutils literal notranslate"><span class="pre">scan</span></code></a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1502,6 +1579,120 @@ stopped) with the settings that it was created with. Use <em>force</em>, or
 
 </dd></dl>
 
+<dl class="py class">
+<dt class="sig sig-object py" id="mciwb.BlockGrid">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">mciwb.</span></span><span class="sig-name descname"><span class="pre">BlockGrid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">origin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Vec3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ids</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">names</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mciwb/blockgrid.html#BlockGrid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.BlockGrid" title="Link to this definition">#</a></dt>
+<dd><p>The blocks of a cuboid region of the world.</p>
+<p>Each block is stored as an index into a list of block names, which keeps
+large regions small and makes per-block lookups (e.g. colours) cheap.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Variables<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>origin</strong> – the world position of the block at index [0, 0, 0], the
+lowest (north west bottom) corner of the region</p></li>
+<li><p><strong>ids</strong> – integer array of shape (size x, size y, size z), indexed
+<code class="docutils literal notranslate"><span class="pre">ids[x][y][z]</span></code> like a <code class="docutils literal notranslate"><span class="pre">mcwb.Cuboid</span></code></p></li>
+<li><p><strong>names</strong> – the namespaced block id for each index in <em>ids</em>, e.g.
+<code class="docutils literal notranslate"><span class="pre">&quot;minecraft:stone&quot;</span></code></p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="mciwb.BlockGrid.from_blocks">
+<span class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">from_blocks</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">blocks</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Iterable" title="(in Python v3.15)"><span class="pre">Iterable</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">origin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Vec3</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#mciwb.BlockGrid" title="mciwb.blockgrid.BlockGrid"><span class="pre">BlockGrid</span></a></span></span><a class="reference internal" href="../_modules/mciwb/blockgrid.html#BlockGrid.from_blocks"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.BlockGrid.from_blocks" title="Link to this definition">#</a></dt>
+<dd><p>Make a grid from a 3D array of block names or <code class="docutils literal notranslate"><span class="pre">mcwb.Item</span></code>, indexed
+<code class="docutils literal notranslate"><span class="pre">[x][y][z]</span></code>, such as the <code class="docutils literal notranslate"><span class="pre">mcwb.Cuboid</span></code> returned by <code class="docutils literal notranslate"><span class="pre">grab</span></code></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>blocks</strong> – a nested list or numpy array of blocks</p></li>
+<li><p><strong>origin</strong> – the world position of blocks[0][0][0]</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mciwb.BlockGrid.size">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">size</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Vec3</span></span><a class="headerlink" href="#mciwb.BlockGrid.size" title="Link to this definition">#</a></dt>
+<dd><p>the size of the region in blocks (x, y, z)</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mciwb.BlockGrid.end">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">end</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Vec3</span></span><a class="headerlink" href="#mciwb.BlockGrid.end" title="Link to this definition">#</a></dt>
+<dd><p>the world position of the highest (south east top) corner block</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mciwb.BlockGrid.volume">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">volume</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Volume</span></span><a class="headerlink" href="#mciwb.BlockGrid.volume" title="Link to this definition">#</a></dt>
+<dd><p>the region as a <code class="docutils literal notranslate"><span class="pre">mcwb.Volume</span></code></p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mciwb.BlockGrid.counts">
+<span class="sig-name descname"><span class="pre">counts</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">include_air</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.15)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/mciwb/blockgrid.html#BlockGrid.counts"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.BlockGrid.counts" title="Link to this definition">#</a></dt>
+<dd><p>Count the blocks of each type, most common first. A quick way to
+check that a build contains what it should.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>include_air</strong> – also count air (and cave air and void air)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mciwb.BlockGrid.to_names">
+<span class="sig-name descname"><span class="pre">to_names</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/mciwb/blockgrid.html#BlockGrid.to_names"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.BlockGrid.to_names" title="Link to this definition">#</a></dt>
+<dd><p>a 3D numpy array of block names, indexed [x][y][z]</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="mciwb.Palette">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">mciwb.</span></span><span class="sig-name descname"><span class="pre">Palette</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">colours</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Mapping" title="(in Python v3.15)"><span class="pre">Mapping</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#tuple" title="(in Python v3.15)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#tuple" title="(in Python v3.15)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mciwb/palette.html#Palette"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.Palette" title="Link to this definition">#</a></dt>
+<dd><p>The colours of blocks, see the module documentation for the rules.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>colours</strong> – colours that take precedence over the defaults, keyed by
+block name (with or without the <code class="docutils literal notranslate"><span class="pre">minecraft:</span></code> namespace), as (r, g, b)
+or (r, g, b, a) with values 0-255</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="mciwb.Palette.set">
+<span class="sig-name descname"><span class="pre">set</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">colour</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#tuple" title="(in Python v3.15)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#tuple" title="(in Python v3.15)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mciwb/palette.html#Palette.set"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.Palette.set" title="Link to this definition">#</a></dt>
+<dd><p>Set the colour of a block</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> – the block name, e.g. “minecraft:stone” or “stone”</p></li>
+<li><p><strong>colour</strong> – (r, g, b) or (r, g, b, a), values 0-255</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mciwb.Palette.colour">
+<span class="sig-name descname"><span class="pre">colour</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#tuple" title="(in Python v3.15)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/mciwb/palette.html#Palette.colour"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.Palette.colour" title="Link to this definition">#</a></dt>
+<dd><p>The colour of a block</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>name</strong> – the block name, e.g. “minecraft:red_wool”; any block
+states, e.g. “[facing=north]”, are ignored</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>(r, g, b, a) with values 0-255. a is 0 for blocks that are
+not drawn, 255 for solid blocks</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
 </section>
 
 
@@ -1524,11 +1715,11 @@ stopped) with the settings that it was created with. Use <em>force</em>, or
       </div>
     </a>
     <a class="right-next"
-       href="../reference/demo.html"
+       href="mciwb.render.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Demo Code</p>
+        <p class="prev-next-title"><code class="docutils literal notranslate"><span class="pre">mciwb.render</span></code></p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -1565,6 +1756,8 @@ stopped) with the settings that it was created with. Use <em>force</em>, or
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mciwb.Iwb.get_block"><code class="docutils literal notranslate"><span class="pre">Iwb.get_block()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mciwb.Iwb.save"><code class="docutils literal notranslate"><span class="pre">Iwb.save()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mciwb.Iwb.load"><code class="docutils literal notranslate"><span class="pre">Iwb.load()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mciwb.Iwb.scan"><code class="docutils literal notranslate"><span class="pre">Iwb.scan()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mciwb.Iwb.render"><code class="docutils literal notranslate"><span class="pre">Iwb.render()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mciwb.Iwb.cmd"><code class="docutils literal notranslate"><span class="pre">Iwb.cmd()</span></code></a></li>
 </ul>
 </li>
@@ -1648,6 +1841,20 @@ stopped) with the settings that it was created with. Use <em>force</em>, or
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mciwb.MinecraftServer.remove"><code class="docutils literal notranslate"><span class="pre">MinecraftServer.remove()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mciwb.MinecraftServer.create"><code class="docutils literal notranslate"><span class="pre">MinecraftServer.create()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mciwb.MinecraftServer.stop_named"><code class="docutils literal notranslate"><span class="pre">MinecraftServer.stop_named()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mciwb.BlockGrid"><code class="docutils literal notranslate"><span class="pre">BlockGrid</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mciwb.BlockGrid.from_blocks"><code class="docutils literal notranslate"><span class="pre">BlockGrid.from_blocks()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mciwb.BlockGrid.size"><code class="docutils literal notranslate"><span class="pre">BlockGrid.size</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mciwb.BlockGrid.end"><code class="docutils literal notranslate"><span class="pre">BlockGrid.end</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mciwb.BlockGrid.volume"><code class="docutils literal notranslate"><span class="pre">BlockGrid.volume</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mciwb.BlockGrid.counts"><code class="docutils literal notranslate"><span class="pre">BlockGrid.counts()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mciwb.BlockGrid.to_names"><code class="docutils literal notranslate"><span class="pre">BlockGrid.to_names()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mciwb.Palette"><code class="docutils literal notranslate"><span class="pre">Palette</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mciwb.Palette.set"><code class="docutils literal notranslate"><span class="pre">Palette.set()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mciwb.Palette.colour"><code class="docutils literal notranslate"><span class="pre">Palette.colour()</span></code></a></li>
 </ul>
 </li>
 </ul>

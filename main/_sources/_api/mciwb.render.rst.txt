@@ -1,0 +1,29 @@
+``mciwb.render``
+================
+        
+        
+        
+        
+        
+
+.. automodule:: mciwb.render
+    :members:
+
+    
+    
+    
+
+    
+    
+    .. rubric:: Members
+
+    .. autosummary::
+        :nosignatures:
+    
+        VIEWS
+        auto_scale
+        render
+        render_view
+        scan
+    
+    

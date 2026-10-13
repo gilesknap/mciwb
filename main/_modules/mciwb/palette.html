@@ -1,0 +1,1283 @@
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>mciwb.palette &#8212; mciwb 0.9.2.dev92+gb813bc9d3 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=18bd87630a240e9c25be" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=18bd87630a240e9c25be" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="../../_static/scripts/fontawesome.js?digest=18bd87630a240e9c25be"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be" />
+
+    <script src="../../_static/documentation_options.js?v=eaab3c44"></script>
+    <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=30646c52"></script>
+    <script src="../../_static/design-tabs.js?v=f930bc37"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/mciwb/palette';</script>
+    <script>
+        DOCUMENTATION_OPTIONS.theme_version = '0.23.0';
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://gilesknap.github.io/mciwb/switcher.json';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = 'main';
+        DOCUMENTATION_OPTIONS.show_version_warning_banner =
+            false;
+        </script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <link rel="icon" href="../../_static/logo.png"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="color-scheme" content="light dark"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="main" />
+  
+    
+    <script src="../../_static/searchtools.js"></script>
+    <script src="../../_static/language_data.js"></script>
+    <script src="../../searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button type="button" class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../_static/logo.png" class="logo__image only-light" alt=""/>
+    <img src="../../_static/logo.png" class="logo__image only-dark pst-js-only" alt=""/>
+  
+  
+    <p class="title logo__title">mciwb</p>
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../tutorials.html">
+    Tutorials
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../how-to.html">
+    How-to Guides
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../explanations.html">
+    Explanations
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../reference.html">
+    Reference
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button type="button" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/gilesknap/mciwb" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://pypi.org/project/mciwb" title="PyPI" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fas fa-cube fa-lg" aria-hidden="true"></i><span class="visually-hidden">PyPI</span></a>
+        </li>
+</ul></div>
+      
+        <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-2"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-2"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-2"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-2">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar hide-on-wide">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../tutorials.html">
+    Tutorials
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../how-to.html">
+    How-to Guides
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../explanations.html">
+    Explanations
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../reference.html">
+    Reference
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button type="button" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/gilesknap/mciwb" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://pypi.org/project/mciwb" title="PyPI" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fas fa-cube fa-lg" aria-hidden="true"></i><span class="visually-hidden">PyPI</span></a>
+        </li>
+</ul></div>
+        
+          <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-3"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-3"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-3"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-3">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
+        
+      </div>
+    
+  </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../index.html" class="nav-link">Module code</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">mciwb.palette</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <h1>Source code for mciwb.palette</h1><div class="highlight"><pre>
+<span></span><span class="sd">"""</span>
+<span class="sd">Colours for rendering blocks: a map from block name to an RGBA colour.</span>
+
+<span class="sd">mciwb does not ship Minecraft's textures. Instead each block gets a single</span>
+<span class="sd">colour, close to the average colour of its texture, from:</span>
+
+<span class="sd">1. a curated table of common blocks (`BLOCK_COLOURS`),</span>
+<span class="sd">2. rules for families of blocks: the 16 dye colours (``red_wool``,</span>
+<span class="sd">   ``blue_concrete``, ``lime_stained_glass`` ...), the wood types</span>
+<span class="sd">   (``spruce_planks``, ``cherry_log``, ``birch_leaves`` ...), shapes made from</span>
+<span class="sd">   another block (``stone_brick_stairs`` is coloured like ``stone_bricks``),</span>
+<span class="sd">   and waxed or weathered copper,</span>
+<span class="sd">3. keywords in the name (``_ore``, ``glass``, ``coral`` ...),</span>
+<span class="sd">4. otherwise a muted colour made from a hash of the name, so that unknown</span>
+<span class="sd">   blocks (e.g. from mods) still differ from each other.</span>
+
+<span class="sd">The alpha channel says how much light a block stops: 0 for air, 255 for a</span>
+<span class="sd">solid block. Translucent blocks such as glass and water, and small blocks such</span>
+<span class="sd">as torches, flowers and fences, are partly transparent, so the blocks behind</span>
+<span class="sd">them show through.</span>
+
+<span class="sd">Add or change colours for one render with a `Palette`, or for every render</span>
+<span class="sd">with `set_colour`::</span>
+
+<span class="sd">    from mciwb.palette import set_colour</span>
+<span class="sd">    set_colour("minecraft:gold_block", (255, 215, 0))</span>
+<span class="sd">"""</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">colorsys</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">zlib</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Mapping</span>
+
+<span class="n">RGB</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span>
+<span class="n">RGBA</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span>
+
+<span class="c1"># alpha of glass and the like, of water, and of small blocks that only fill</span>
+<span class="c1"># part of their space</span>
+<span class="n">GLASS_ALPHA</span> <span class="o">=</span> <span class="mi">80</span>
+<span class="n">WATER_ALPHA</span> <span class="o">=</span> <span class="mi">150</span>
+<span class="n">THIN_ALPHA</span> <span class="o">=</span> <span class="mi">170</span>
+
+<span class="c1"># blocks that are never drawn</span>
+<span class="n">INVISIBLE</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">"air"</span><span class="p">,</span>
+    <span class="s2">"cave_air"</span><span class="p">,</span>
+    <span class="s2">"void_air"</span><span class="p">,</span>
+    <span class="s2">"barrier"</span><span class="p">,</span>
+    <span class="s2">"light"</span><span class="p">,</span>
+    <span class="s2">"structure_void"</span><span class="p">,</span>
+    <span class="s2">"moving_piston"</span><span class="p">,</span>
+<span class="p">}</span>
+
+<span class="n">DYE_COLOURS</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">RGB</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">"white"</span><span class="p">:</span> <span class="p">(</span><span class="mi">234</span><span class="p">,</span> <span class="mi">236</span><span class="p">,</span> <span class="mi">237</span><span class="p">),</span>
+    <span class="s2">"orange"</span><span class="p">:</span> <span class="p">(</span><span class="mi">240</span><span class="p">,</span> <span class="mi">118</span><span class="p">,</span> <span class="mi">19</span><span class="p">),</span>
+    <span class="s2">"magenta"</span><span class="p">:</span> <span class="p">(</span><span class="mi">189</span><span class="p">,</span> <span class="mi">68</span><span class="p">,</span> <span class="mi">179</span><span class="p">),</span>
+    <span class="s2">"light_blue"</span><span class="p">:</span> <span class="p">(</span><span class="mi">58</span><span class="p">,</span> <span class="mi">175</span><span class="p">,</span> <span class="mi">217</span><span class="p">),</span>
+    <span class="s2">"yellow"</span><span class="p">:</span> <span class="p">(</span><span class="mi">248</span><span class="p">,</span> <span class="mi">197</span><span class="p">,</span> <span class="mi">39</span><span class="p">),</span>
+    <span class="s2">"lime"</span><span class="p">:</span> <span class="p">(</span><span class="mi">112</span><span class="p">,</span> <span class="mi">185</span><span class="p">,</span> <span class="mi">25</span><span class="p">),</span>
+    <span class="s2">"pink"</span><span class="p">:</span> <span class="p">(</span><span class="mi">237</span><span class="p">,</span> <span class="mi">141</span><span class="p">,</span> <span class="mi">172</span><span class="p">),</span>
+    <span class="s2">"gray"</span><span class="p">:</span> <span class="p">(</span><span class="mi">62</span><span class="p">,</span> <span class="mi">68</span><span class="p">,</span> <span class="mi">71</span><span class="p">),</span>
+    <span class="s2">"light_gray"</span><span class="p">:</span> <span class="p">(</span><span class="mi">142</span><span class="p">,</span> <span class="mi">142</span><span class="p">,</span> <span class="mi">134</span><span class="p">),</span>
+    <span class="s2">"cyan"</span><span class="p">:</span> <span class="p">(</span><span class="mi">21</span><span class="p">,</span> <span class="mi">137</span><span class="p">,</span> <span class="mi">145</span><span class="p">),</span>
+    <span class="s2">"purple"</span><span class="p">:</span> <span class="p">(</span><span class="mi">121</span><span class="p">,</span> <span class="mi">42</span><span class="p">,</span> <span class="mi">172</span><span class="p">),</span>
+    <span class="s2">"blue"</span><span class="p">:</span> <span class="p">(</span><span class="mi">53</span><span class="p">,</span> <span class="mi">57</span><span class="p">,</span> <span class="mi">157</span><span class="p">),</span>
+    <span class="s2">"brown"</span><span class="p">:</span> <span class="p">(</span><span class="mi">114</span><span class="p">,</span> <span class="mi">71</span><span class="p">,</span> <span class="mi">40</span><span class="p">),</span>
+    <span class="s2">"green"</span><span class="p">:</span> <span class="p">(</span><span class="mi">84</span><span class="p">,</span> <span class="mi">109</span><span class="p">,</span> <span class="mi">27</span><span class="p">),</span>
+    <span class="s2">"red"</span><span class="p">:</span> <span class="p">(</span><span class="mi">160</span><span class="p">,</span> <span class="mi">39</span><span class="p">,</span> <span class="mi">34</span><span class="p">),</span>
+    <span class="s2">"black"</span><span class="p">:</span> <span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">21</span><span class="p">,</span> <span class="mi">25</span><span class="p">),</span>
+<span class="p">}</span>
+
+<span class="c1"># dyed terracotta is much more muted than the dye colour</span>
+<span class="n">TERRACOTTA_COLOURS</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">RGB</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">"white"</span><span class="p">:</span> <span class="p">(</span><span class="mi">209</span><span class="p">,</span> <span class="mi">178</span><span class="p">,</span> <span class="mi">161</span><span class="p">),</span>
+    <span class="s2">"orange"</span><span class="p">:</span> <span class="p">(</span><span class="mi">161</span><span class="p">,</span> <span class="mi">83</span><span class="p">,</span> <span class="mi">37</span><span class="p">),</span>
+    <span class="s2">"magenta"</span><span class="p">:</span> <span class="p">(</span><span class="mi">149</span><span class="p">,</span> <span class="mi">88</span><span class="p">,</span> <span class="mi">108</span><span class="p">),</span>
+    <span class="s2">"light_blue"</span><span class="p">:</span> <span class="p">(</span><span class="mi">113</span><span class="p">,</span> <span class="mi">108</span><span class="p">,</span> <span class="mi">137</span><span class="p">),</span>
+    <span class="s2">"yellow"</span><span class="p">:</span> <span class="p">(</span><span class="mi">186</span><span class="p">,</span> <span class="mi">133</span><span class="p">,</span> <span class="mi">35</span><span class="p">),</span>
+    <span class="s2">"lime"</span><span class="p">:</span> <span class="p">(</span><span class="mi">103</span><span class="p">,</span> <span class="mi">117</span><span class="p">,</span> <span class="mi">52</span><span class="p">),</span>
+    <span class="s2">"pink"</span><span class="p">:</span> <span class="p">(</span><span class="mi">161</span><span class="p">,</span> <span class="mi">78</span><span class="p">,</span> <span class="mi">78</span><span class="p">),</span>
+    <span class="s2">"gray"</span><span class="p">:</span> <span class="p">(</span><span class="mi">57</span><span class="p">,</span> <span class="mi">42</span><span class="p">,</span> <span class="mi">35</span><span class="p">),</span>
+    <span class="s2">"light_gray"</span><span class="p">:</span> <span class="p">(</span><span class="mi">135</span><span class="p">,</span> <span class="mi">106</span><span class="p">,</span> <span class="mi">97</span><span class="p">),</span>
+    <span class="s2">"cyan"</span><span class="p">:</span> <span class="p">(</span><span class="mi">86</span><span class="p">,</span> <span class="mi">91</span><span class="p">,</span> <span class="mi">91</span><span class="p">),</span>
+    <span class="s2">"purple"</span><span class="p">:</span> <span class="p">(</span><span class="mi">118</span><span class="p">,</span> <span class="mi">70</span><span class="p">,</span> <span class="mi">86</span><span class="p">),</span>
+    <span class="s2">"blue"</span><span class="p">:</span> <span class="p">(</span><span class="mi">74</span><span class="p">,</span> <span class="mi">59</span><span class="p">,</span> <span class="mi">91</span><span class="p">),</span>
+    <span class="s2">"brown"</span><span class="p">:</span> <span class="p">(</span><span class="mi">77</span><span class="p">,</span> <span class="mi">51</span><span class="p">,</span> <span class="mi">35</span><span class="p">),</span>
+    <span class="s2">"green"</span><span class="p">:</span> <span class="p">(</span><span class="mi">76</span><span class="p">,</span> <span class="mi">83</span><span class="p">,</span> <span class="mi">42</span><span class="p">),</span>
+    <span class="s2">"red"</span><span class="p">:</span> <span class="p">(</span><span class="mi">143</span><span class="p">,</span> <span class="mi">61</span><span class="p">,</span> <span class="mi">46</span><span class="p">),</span>
+    <span class="s2">"black"</span><span class="p">:</span> <span class="p">(</span><span class="mi">37</span><span class="p">,</span> <span class="mi">22</span><span class="p">,</span> <span class="mi">16</span><span class="p">),</span>
+<span class="p">}</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">Wood</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""the colours of a wood type"""</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">planks</span><span class="p">:</span> <span class="n">RGB</span><span class="p">,</span> <span class="n">log</span><span class="p">:</span> <span class="n">RGB</span><span class="p">,</span> <span class="n">leaves</span><span class="p">:</span> <span class="n">RGB</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">planks</span> <span class="o">=</span> <span class="n">planks</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log</span> <span class="o">=</span> <span class="n">log</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">leaves</span> <span class="o">=</span> <span class="n">leaves</span>
+
+
+<span class="n">WOODS</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Wood</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">"oak"</span><span class="p">:</span> <span class="n">Wood</span><span class="p">((</span><span class="mi">162</span><span class="p">,</span> <span class="mi">130</span><span class="p">,</span> <span class="mi">78</span><span class="p">),</span> <span class="p">(</span><span class="mi">109</span><span class="p">,</span> <span class="mi">85</span><span class="p">,</span> <span class="mi">50</span><span class="p">),</span> <span class="p">(</span><span class="mi">64</span><span class="p">,</span> <span class="mi">120</span><span class="p">,</span> <span class="mi">36</span><span class="p">)),</span>
+    <span class="s2">"spruce"</span><span class="p">:</span> <span class="n">Wood</span><span class="p">((</span><span class="mi">114</span><span class="p">,</span> <span class="mi">84</span><span class="p">,</span> <span class="mi">48</span><span class="p">),</span> <span class="p">(</span><span class="mi">58</span><span class="p">,</span> <span class="mi">37</span><span class="p">,</span> <span class="mi">16</span><span class="p">),</span> <span class="p">(</span><span class="mi">60</span><span class="p">,</span> <span class="mi">94</span><span class="p">,</span> <span class="mi">60</span><span class="p">)),</span>
+    <span class="s2">"birch"</span><span class="p">:</span> <span class="n">Wood</span><span class="p">((</span><span class="mi">192</span><span class="p">,</span> <span class="mi">175</span><span class="p">,</span> <span class="mi">121</span><span class="p">),</span> <span class="p">(</span><span class="mi">216</span><span class="p">,</span> <span class="mi">215</span><span class="p">,</span> <span class="mi">210</span><span class="p">),</span> <span class="p">(</span><span class="mi">96</span><span class="p">,</span> <span class="mi">130</span><span class="p">,</span> <span class="mi">60</span><span class="p">)),</span>
+    <span class="s2">"jungle"</span><span class="p">:</span> <span class="n">Wood</span><span class="p">((</span><span class="mi">160</span><span class="p">,</span> <span class="mi">115</span><span class="p">,</span> <span class="mi">80</span><span class="p">),</span> <span class="p">(</span><span class="mi">85</span><span class="p">,</span> <span class="mi">67</span><span class="p">,</span> <span class="mi">25</span><span class="p">),</span> <span class="p">(</span><span class="mi">48</span><span class="p">,</span> <span class="mi">130</span><span class="p">,</span> <span class="mi">30</span><span class="p">)),</span>
+    <span class="s2">"acacia"</span><span class="p">:</span> <span class="n">Wood</span><span class="p">((</span><span class="mi">168</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="mi">50</span><span class="p">),</span> <span class="p">(</span><span class="mi">103</span><span class="p">,</span> <span class="mi">96</span><span class="p">,</span> <span class="mi">86</span><span class="p">),</span> <span class="p">(</span><span class="mi">70</span><span class="p">,</span> <span class="mi">120</span><span class="p">,</span> <span class="mi">30</span><span class="p">)),</span>
+    <span class="s2">"dark_oak"</span><span class="p">:</span> <span class="n">Wood</span><span class="p">((</span><span class="mi">66</span><span class="p">,</span> <span class="mi">43</span><span class="p">,</span> <span class="mi">20</span><span class="p">),</span> <span class="p">(</span><span class="mi">60</span><span class="p">,</span> <span class="mi">46</span><span class="p">,</span> <span class="mi">26</span><span class="p">),</span> <span class="p">(</span><span class="mi">54</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">26</span><span class="p">)),</span>
+    <span class="s2">"mangrove"</span><span class="p">:</span> <span class="n">Wood</span><span class="p">((</span><span class="mi">117</span><span class="p">,</span> <span class="mi">54</span><span class="p">,</span> <span class="mi">48</span><span class="p">),</span> <span class="p">(</span><span class="mi">84</span><span class="p">,</span> <span class="mi">66</span><span class="p">,</span> <span class="mi">36</span><span class="p">),</span> <span class="p">(</span><span class="mi">80</span><span class="p">,</span> <span class="mi">120</span><span class="p">,</span> <span class="mi">40</span><span class="p">)),</span>
+    <span class="s2">"cherry"</span><span class="p">:</span> <span class="n">Wood</span><span class="p">((</span><span class="mi">226</span><span class="p">,</span> <span class="mi">178</span><span class="p">,</span> <span class="mi">172</span><span class="p">),</span> <span class="p">(</span><span class="mi">54</span><span class="p">,</span> <span class="mi">33</span><span class="p">,</span> <span class="mi">44</span><span class="p">),</span> <span class="p">(</span><span class="mi">230</span><span class="p">,</span> <span class="mi">170</span><span class="p">,</span> <span class="mi">200</span><span class="p">)),</span>
+    <span class="s2">"pale_oak"</span><span class="p">:</span> <span class="n">Wood</span><span class="p">((</span><span class="mi">227</span><span class="p">,</span> <span class="mi">217</span><span class="p">,</span> <span class="mi">215</span><span class="p">),</span> <span class="p">(</span><span class="mi">87</span><span class="p">,</span> <span class="mi">77</span><span class="p">,</span> <span class="mi">75</span><span class="p">),</span> <span class="p">(</span><span class="mi">160</span><span class="p">,</span> <span class="mi">165</span><span class="p">,</span> <span class="mi">155</span><span class="p">)),</span>
+    <span class="c1"># poplar is new in Minecraft 26.x, its colours are a guess</span>
+    <span class="s2">"poplar"</span><span class="p">:</span> <span class="n">Wood</span><span class="p">((</span><span class="mi">205</span><span class="p">,</span> <span class="mi">185</span><span class="p">,</span> <span class="mi">135</span><span class="p">),</span> <span class="p">(</span><span class="mi">130</span><span class="p">,</span> <span class="mi">120</span><span class="p">,</span> <span class="mi">100</span><span class="p">),</span> <span class="p">(</span><span class="mi">90</span><span class="p">,</span> <span class="mi">150</span><span class="p">,</span> <span class="mi">50</span><span class="p">)),</span>
+    <span class="s2">"bamboo"</span><span class="p">:</span> <span class="n">Wood</span><span class="p">((</span><span class="mi">193</span><span class="p">,</span> <span class="mi">173</span><span class="p">,</span> <span class="mi">80</span><span class="p">),</span> <span class="p">(</span><span class="mi">127</span><span class="p">,</span> <span class="mi">144</span><span class="p">,</span> <span class="mi">58</span><span class="p">)),</span>
+    <span class="s2">"crimson"</span><span class="p">:</span> <span class="n">Wood</span><span class="p">((</span><span class="mi">101</span><span class="p">,</span> <span class="mi">48</span><span class="p">,</span> <span class="mi">70</span><span class="p">),</span> <span class="p">(</span><span class="mi">92</span><span class="p">,</span> <span class="mi">25</span><span class="p">,</span> <span class="mi">29</span><span class="p">)),</span>
+    <span class="s2">"warped"</span><span class="p">:</span> <span class="n">Wood</span><span class="p">((</span><span class="mi">43</span><span class="p">,</span> <span class="mi">104</span><span class="p">,</span> <span class="mi">99</span><span class="p">),</span> <span class="p">(</span><span class="mi">58</span><span class="p">,</span> <span class="mi">58</span><span class="p">,</span> <span class="mi">77</span><span class="p">)),</span>
+<span class="p">}</span>
+
+<span class="c1"># the average colours of common blocks, by name without the namespace.</span>
+<span class="c1"># Alpha is 255 unless given.</span>
+<span class="n">BLOCK_COLOURS</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">RGB</span> <span class="o">|</span> <span class="n">RGBA</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="c1"># stone and friends</span>
+    <span class="s2">"stone"</span><span class="p">:</span> <span class="p">(</span><span class="mi">125</span><span class="p">,</span> <span class="mi">125</span><span class="p">,</span> <span class="mi">125</span><span class="p">),</span>
+    <span class="s2">"cobblestone"</span><span class="p">:</span> <span class="p">(</span><span class="mi">118</span><span class="p">,</span> <span class="mi">118</span><span class="p">,</span> <span class="mi">118</span><span class="p">),</span>
+    <span class="s2">"mossy_cobblestone"</span><span class="p">:</span> <span class="p">(</span><span class="mi">110</span><span class="p">,</span> <span class="mi">118</span><span class="p">,</span> <span class="mi">94</span><span class="p">),</span>
+    <span class="s2">"stone_bricks"</span><span class="p">:</span> <span class="p">(</span><span class="mi">122</span><span class="p">,</span> <span class="mi">121</span><span class="p">,</span> <span class="mi">122</span><span class="p">),</span>
+    <span class="s2">"mossy_stone_bricks"</span><span class="p">:</span> <span class="p">(</span><span class="mi">115</span><span class="p">,</span> <span class="mi">121</span><span class="p">,</span> <span class="mi">105</span><span class="p">),</span>
+    <span class="s2">"cracked_stone_bricks"</span><span class="p">:</span> <span class="p">(</span><span class="mi">118</span><span class="p">,</span> <span class="mi">117</span><span class="p">,</span> <span class="mi">118</span><span class="p">),</span>
+    <span class="s2">"chiseled_stone_bricks"</span><span class="p">:</span> <span class="p">(</span><span class="mi">119</span><span class="p">,</span> <span class="mi">118</span><span class="p">,</span> <span class="mi">119</span><span class="p">),</span>
+    <span class="s2">"smooth_stone"</span><span class="p">:</span> <span class="p">(</span><span class="mi">158</span><span class="p">,</span> <span class="mi">158</span><span class="p">,</span> <span class="mi">158</span><span class="p">),</span>
+    <span class="s2">"granite"</span><span class="p">:</span> <span class="p">(</span><span class="mi">149</span><span class="p">,</span> <span class="mi">103</span><span class="p">,</span> <span class="mi">85</span><span class="p">),</span>
+    <span class="s2">"polished_granite"</span><span class="p">:</span> <span class="p">(</span><span class="mi">154</span><span class="p">,</span> <span class="mi">106</span><span class="p">,</span> <span class="mi">89</span><span class="p">),</span>
+    <span class="s2">"diorite"</span><span class="p">:</span> <span class="p">(</span><span class="mi">188</span><span class="p">,</span> <span class="mi">188</span><span class="p">,</span> <span class="mi">188</span><span class="p">),</span>
+    <span class="s2">"polished_diorite"</span><span class="p">:</span> <span class="p">(</span><span class="mi">192</span><span class="p">,</span> <span class="mi">193</span><span class="p">,</span> <span class="mi">194</span><span class="p">),</span>
+    <span class="s2">"andesite"</span><span class="p">:</span> <span class="p">(</span><span class="mi">136</span><span class="p">,</span> <span class="mi">136</span><span class="p">,</span> <span class="mi">136</span><span class="p">),</span>
+    <span class="s2">"polished_andesite"</span><span class="p">:</span> <span class="p">(</span><span class="mi">132</span><span class="p">,</span> <span class="mi">134</span><span class="p">,</span> <span class="mi">133</span><span class="p">),</span>
+    <span class="s2">"deepslate"</span><span class="p">:</span> <span class="p">(</span><span class="mi">80</span><span class="p">,</span> <span class="mi">80</span><span class="p">,</span> <span class="mi">82</span><span class="p">),</span>
+    <span class="s2">"cobbled_deepslate"</span><span class="p">:</span> <span class="p">(</span><span class="mi">77</span><span class="p">,</span> <span class="mi">77</span><span class="p">,</span> <span class="mi">80</span><span class="p">),</span>
+    <span class="s2">"polished_deepslate"</span><span class="p">:</span> <span class="p">(</span><span class="mi">72</span><span class="p">,</span> <span class="mi">72</span><span class="p">,</span> <span class="mi">73</span><span class="p">),</span>
+    <span class="s2">"deepslate_bricks"</span><span class="p">:</span> <span class="p">(</span><span class="mi">70</span><span class="p">,</span> <span class="mi">70</span><span class="p">,</span> <span class="mi">71</span><span class="p">),</span>
+    <span class="s2">"deepslate_tiles"</span><span class="p">:</span> <span class="p">(</span><span class="mi">54</span><span class="p">,</span> <span class="mi">54</span><span class="p">,</span> <span class="mi">55</span><span class="p">),</span>
+    <span class="s2">"chiseled_deepslate"</span><span class="p">:</span> <span class="p">(</span><span class="mi">54</span><span class="p">,</span> <span class="mi">54</span><span class="p">,</span> <span class="mi">54</span><span class="p">),</span>
+    <span class="s2">"tuff"</span><span class="p">:</span> <span class="p">(</span><span class="mi">108</span><span class="p">,</span> <span class="mi">109</span><span class="p">,</span> <span class="mi">102</span><span class="p">),</span>
+    <span class="s2">"polished_tuff"</span><span class="p">:</span> <span class="p">(</span><span class="mi">97</span><span class="p">,</span> <span class="mi">104</span><span class="p">,</span> <span class="mi">99</span><span class="p">),</span>
+    <span class="s2">"tuff_bricks"</span><span class="p">:</span> <span class="p">(</span><span class="mi">98</span><span class="p">,</span> <span class="mi">103</span><span class="p">,</span> <span class="mi">95</span><span class="p">),</span>
+    <span class="s2">"calcite"</span><span class="p">:</span> <span class="p">(</span><span class="mi">223</span><span class="p">,</span> <span class="mi">224</span><span class="p">,</span> <span class="mi">220</span><span class="p">),</span>
+    <span class="s2">"dripstone_block"</span><span class="p">:</span> <span class="p">(</span><span class="mi">134</span><span class="p">,</span> <span class="mi">107</span><span class="p">,</span> <span class="mi">92</span><span class="p">),</span>
+    <span class="s2">"bedrock"</span><span class="p">:</span> <span class="p">(</span><span class="mi">85</span><span class="p">,</span> <span class="mi">85</span><span class="p">,</span> <span class="mi">85</span><span class="p">),</span>
+    <span class="s2">"obsidian"</span><span class="p">:</span> <span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">24</span><span class="p">),</span>
+    <span class="s2">"crying_obsidian"</span><span class="p">:</span> <span class="p">(</span><span class="mi">32</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">60</span><span class="p">),</span>
+    <span class="s2">"bricks"</span><span class="p">:</span> <span class="p">(</span><span class="mi">150</span><span class="p">,</span> <span class="mi">97</span><span class="p">,</span> <span class="mi">83</span><span class="p">),</span>
+    <span class="s2">"mud_bricks"</span><span class="p">:</span> <span class="p">(</span><span class="mi">137</span><span class="p">,</span> <span class="mi">103</span><span class="p">,</span> <span class="mi">79</span><span class="p">),</span>
+    <span class="s2">"packed_mud"</span><span class="p">:</span> <span class="p">(</span><span class="mi">142</span><span class="p">,</span> <span class="mi">106</span><span class="p">,</span> <span class="mi">79</span><span class="p">),</span>
+    <span class="c1"># sand and earth</span>
+    <span class="s2">"sand"</span><span class="p">:</span> <span class="p">(</span><span class="mi">219</span><span class="p">,</span> <span class="mi">207</span><span class="p">,</span> <span class="mi">163</span><span class="p">),</span>
+    <span class="s2">"red_sand"</span><span class="p">:</span> <span class="p">(</span><span class="mi">190</span><span class="p">,</span> <span class="mi">102</span><span class="p">,</span> <span class="mi">33</span><span class="p">),</span>
+    <span class="s2">"sandstone"</span><span class="p">:</span> <span class="p">(</span><span class="mi">216</span><span class="p">,</span> <span class="mi">203</span><span class="p">,</span> <span class="mi">155</span><span class="p">),</span>
+    <span class="s2">"cut_sandstone"</span><span class="p">:</span> <span class="p">(</span><span class="mi">217</span><span class="p">,</span> <span class="mi">206</span><span class="p">,</span> <span class="mi">159</span><span class="p">),</span>
+    <span class="s2">"chiseled_sandstone"</span><span class="p">:</span> <span class="p">(</span><span class="mi">216</span><span class="p">,</span> <span class="mi">203</span><span class="p">,</span> <span class="mi">155</span><span class="p">),</span>
+    <span class="s2">"smooth_sandstone"</span><span class="p">:</span> <span class="p">(</span><span class="mi">223</span><span class="p">,</span> <span class="mi">214</span><span class="p">,</span> <span class="mi">170</span><span class="p">),</span>
+    <span class="s2">"red_sandstone"</span><span class="p">:</span> <span class="p">(</span><span class="mi">186</span><span class="p">,</span> <span class="mi">99</span><span class="p">,</span> <span class="mi">29</span><span class="p">),</span>
+    <span class="s2">"cut_red_sandstone"</span><span class="p">:</span> <span class="p">(</span><span class="mi">189</span><span class="p">,</span> <span class="mi">101</span><span class="p">,</span> <span class="mi">31</span><span class="p">),</span>
+    <span class="s2">"chiseled_red_sandstone"</span><span class="p">:</span> <span class="p">(</span><span class="mi">183</span><span class="p">,</span> <span class="mi">97</span><span class="p">,</span> <span class="mi">28</span><span class="p">),</span>
+    <span class="s2">"smooth_red_sandstone"</span><span class="p">:</span> <span class="p">(</span><span class="mi">181</span><span class="p">,</span> <span class="mi">98</span><span class="p">,</span> <span class="mi">31</span><span class="p">),</span>
+    <span class="s2">"gravel"</span><span class="p">:</span> <span class="p">(</span><span class="mi">131</span><span class="p">,</span> <span class="mi">127</span><span class="p">,</span> <span class="mi">126</span><span class="p">),</span>
+    <span class="s2">"clay"</span><span class="p">:</span> <span class="p">(</span><span class="mi">160</span><span class="p">,</span> <span class="mi">166</span><span class="p">,</span> <span class="mi">179</span><span class="p">),</span>
+    <span class="s2">"dirt"</span><span class="p">:</span> <span class="p">(</span><span class="mi">134</span><span class="p">,</span> <span class="mi">96</span><span class="p">,</span> <span class="mi">67</span><span class="p">),</span>
+    <span class="s2">"coarse_dirt"</span><span class="p">:</span> <span class="p">(</span><span class="mi">119</span><span class="p">,</span> <span class="mi">85</span><span class="p">,</span> <span class="mi">59</span><span class="p">),</span>
+    <span class="s2">"rooted_dirt"</span><span class="p">:</span> <span class="p">(</span><span class="mi">144</span><span class="p">,</span> <span class="mi">103</span><span class="p">,</span> <span class="mi">76</span><span class="p">),</span>
+    <span class="s2">"podzol"</span><span class="p">:</span> <span class="p">(</span><span class="mi">91</span><span class="p">,</span> <span class="mi">63</span><span class="p">,</span> <span class="mi">24</span><span class="p">),</span>
+    <span class="s2">"mycelium"</span><span class="p">:</span> <span class="p">(</span><span class="mi">111</span><span class="p">,</span> <span class="mi">99</span><span class="p">,</span> <span class="mi">105</span><span class="p">),</span>
+    <span class="s2">"grass_block"</span><span class="p">:</span> <span class="p">(</span><span class="mi">95</span><span class="p">,</span> <span class="mi">159</span><span class="p">,</span> <span class="mi">53</span><span class="p">),</span>
+    <span class="s2">"dirt_path"</span><span class="p">:</span> <span class="p">(</span><span class="mi">148</span><span class="p">,</span> <span class="mi">122</span><span class="p">,</span> <span class="mi">65</span><span class="p">),</span>
+    <span class="s2">"farmland"</span><span class="p">:</span> <span class="p">(</span><span class="mi">143</span><span class="p">,</span> <span class="mi">102</span><span class="p">,</span> <span class="mi">70</span><span class="p">),</span>
+    <span class="s2">"mud"</span><span class="p">:</span> <span class="p">(</span><span class="mi">60</span><span class="p">,</span> <span class="mi">57</span><span class="p">,</span> <span class="mi">61</span><span class="p">),</span>
+    <span class="s2">"moss_block"</span><span class="p">:</span> <span class="p">(</span><span class="mi">89</span><span class="p">,</span> <span class="mi">109</span><span class="p">,</span> <span class="mi">45</span><span class="p">),</span>
+    <span class="s2">"moss_carpet"</span><span class="p">:</span> <span class="p">(</span><span class="mi">89</span><span class="p">,</span> <span class="mi">109</span><span class="p">,</span> <span class="mi">45</span><span class="p">,</span> <span class="n">THIN_ALPHA</span><span class="p">),</span>
+    <span class="s2">"pale_moss_block"</span><span class="p">:</span> <span class="p">(</span><span class="mi">107</span><span class="p">,</span> <span class="mi">112</span><span class="p">,</span> <span class="mi">104</span><span class="p">),</span>
+    <span class="s2">"terracotta"</span><span class="p">:</span> <span class="p">(</span><span class="mi">152</span><span class="p">,</span> <span class="mi">94</span><span class="p">,</span> <span class="mi">67</span><span class="p">),</span>
+    <span class="c1"># snow, ice and liquids</span>
+    <span class="s2">"snow"</span><span class="p">:</span> <span class="p">(</span><span class="mi">249</span><span class="p">,</span> <span class="mi">254</span><span class="p">,</span> <span class="mi">254</span><span class="p">,</span> <span class="n">THIN_ALPHA</span><span class="p">),</span>
+    <span class="s2">"snow_block"</span><span class="p">:</span> <span class="p">(</span><span class="mi">249</span><span class="p">,</span> <span class="mi">254</span><span class="p">,</span> <span class="mi">254</span><span class="p">),</span>
+    <span class="s2">"powder_snow"</span><span class="p">:</span> <span class="p">(</span><span class="mi">248</span><span class="p">,</span> <span class="mi">253</span><span class="p">,</span> <span class="mi">253</span><span class="p">),</span>
+    <span class="s2">"ice"</span><span class="p">:</span> <span class="p">(</span><span class="mi">145</span><span class="p">,</span> <span class="mi">183</span><span class="p">,</span> <span class="mi">253</span><span class="p">,</span> <span class="mi">180</span><span class="p">),</span>
+    <span class="s2">"packed_ice"</span><span class="p">:</span> <span class="p">(</span><span class="mi">141</span><span class="p">,</span> <span class="mi">180</span><span class="p">,</span> <span class="mi">250</span><span class="p">),</span>
+    <span class="s2">"blue_ice"</span><span class="p">:</span> <span class="p">(</span><span class="mi">116</span><span class="p">,</span> <span class="mi">167</span><span class="p">,</span> <span class="mi">253</span><span class="p">),</span>
+    <span class="s2">"water"</span><span class="p">:</span> <span class="p">(</span><span class="mi">63</span><span class="p">,</span> <span class="mi">118</span><span class="p">,</span> <span class="mi">228</span><span class="p">,</span> <span class="n">WATER_ALPHA</span><span class="p">),</span>
+    <span class="s2">"bubble_column"</span><span class="p">:</span> <span class="p">(</span><span class="mi">63</span><span class="p">,</span> <span class="mi">118</span><span class="p">,</span> <span class="mi">228</span><span class="p">,</span> <span class="n">WATER_ALPHA</span><span class="p">),</span>
+    <span class="s2">"lava"</span><span class="p">:</span> <span class="p">(</span><span class="mi">207</span><span class="p">,</span> <span class="mi">92</span><span class="p">,</span> <span class="mi">20</span><span class="p">),</span>
+    <span class="c1"># plants</span>
+    <span class="s2">"short_grass"</span><span class="p">:</span> <span class="p">(</span><span class="mi">95</span><span class="p">,</span> <span class="mi">159</span><span class="p">,</span> <span class="mi">53</span><span class="p">,</span> <span class="n">THIN_ALPHA</span><span class="p">),</span>
+    <span class="s2">"tall_grass"</span><span class="p">:</span> <span class="p">(</span><span class="mi">95</span><span class="p">,</span> <span class="mi">159</span><span class="p">,</span> <span class="mi">53</span><span class="p">,</span> <span class="n">THIN_ALPHA</span><span class="p">),</span>
+    <span class="s2">"fern"</span><span class="p">:</span> <span class="p">(</span><span class="mi">85</span><span class="p">,</span> <span class="mi">140</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="n">THIN_ALPHA</span><span class="p">),</span>
+    <span class="s2">"large_fern"</span><span class="p">:</span> <span class="p">(</span><span class="mi">85</span><span class="p">,</span> <span class="mi">140</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="n">THIN_ALPHA</span><span class="p">),</span>
+    <span class="s2">"azalea_leaves"</span><span class="p">:</span> <span class="p">(</span><span class="mi">90</span><span class="p">,</span> <span class="mi">120</span><span class="p">,</span> <span class="mi">40</span><span class="p">),</span>
+    <span class="s2">"flowering_azalea_leaves"</span><span class="p">:</span> <span class="p">(</span><span class="mi">110</span><span class="p">,</span> <span class="mi">120</span><span class="p">,</span> <span class="mi">70</span><span class="p">),</span>
+    <span class="s2">"cactus"</span><span class="p">:</span> <span class="p">(</span><span class="mi">85</span><span class="p">,</span> <span class="mi">127</span><span class="p">,</span> <span class="mi">43</span><span class="p">),</span>
+    <span class="s2">"sugar_cane"</span><span class="p">:</span> <span class="p">(</span><span class="mi">148</span><span class="p">,</span> <span class="mi">192</span><span class="p">,</span> <span class="mi">101</span><span class="p">,</span> <span class="n">THIN_ALPHA</span><span class="p">),</span>
+    <span class="s2">"bamboo"</span><span class="p">:</span> <span class="p">(</span><span class="mi">93</span><span class="p">,</span> <span class="mi">144</span><span class="p">,</span> <span class="mi">19</span><span class="p">,</span> <span class="n">THIN_ALPHA</span><span class="p">),</span>
+    <span class="s2">"kelp"</span><span class="p">:</span> <span class="p">(</span><span class="mi">88</span><span class="p">,</span> <span class="mi">142</span><span class="p">,</span> <span class="mi">45</span><span class="p">,</span> <span class="n">THIN_ALPHA</span><span class="p">),</span>
+    <span class="s2">"seagrass"</span><span class="p">:</span> <span class="p">(</span><span class="mi">88</span><span class="p">,</span> <span class="mi">142</span><span class="p">,</span> <span class="mi">45</span><span class="p">,</span> <span class="n">THIN_ALPHA</span><span class="p">),</span>
+    <span class="s2">"vine"</span><span class="p">:</span> <span class="p">(</span><span class="mi">62</span><span class="p">,</span> <span class="mi">110</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="n">THIN_ALPHA</span><span class="p">),</span>
+    <span class="s2">"lily_pad"</span><span class="p">:</span> <span class="p">(</span><span class="mi">32</span><span class="p">,</span> <span class="mi">128</span><span class="p">,</span> <span class="mi">48</span><span class="p">,</span> <span class="n">THIN_ALPHA</span><span class="p">),</span>
+    <span class="s2">"pumpkin"</span><span class="p">:</span> <span class="p">(</span><span class="mi">198</span><span class="p">,</span> <span class="mi">118</span><span class="p">,</span> <span class="mi">24</span><span class="p">),</span>
+    <span class="s2">"carved_pumpkin"</span><span class="p">:</span> <span class="p">(</span><span class="mi">198</span><span class="p">,</span> <span class="mi">118</span><span class="p">,</span> <span class="mi">24</span><span class="p">),</span>
+    <span class="s2">"jack_o_lantern"</span><span class="p">:</span> <span class="p">(</span><span class="mi">214</span><span class="p">,</span> <span class="mi">152</span><span class="p">,</span> <span class="mi">52</span><span class="p">),</span>
+    <span class="s2">"melon"</span><span class="p">:</span> <span class="p">(</span><span class="mi">111</span><span class="p">,</span> <span class="mi">145</span><span class="p">,</span> <span class="mi">30</span><span class="p">),</span>
+    <span class="s2">"hay_block"</span><span class="p">:</span> <span class="p">(</span><span class="mi">166</span><span class="p">,</span> <span class="mi">136</span><span class="p">,</span> <span class="mi">38</span><span class="p">),</span>
+    <span class="s2">"dried_kelp_block"</span><span class="p">:</span> <span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="mi">58</span><span class="p">,</span> <span class="mi">38</span><span class="p">),</span>
+    <span class="s2">"mushroom_stem"</span><span class="p">:</span> <span class="p">(</span><span class="mi">203</span><span class="p">,</span> <span class="mi">196</span><span class="p">,</span> <span class="mi">185</span><span class="p">),</span>
+    <span class="s2">"brown_mushroom_block"</span><span class="p">:</span> <span class="p">(</span><span class="mi">149</span><span class="p">,</span> <span class="mi">111</span><span class="p">,</span> <span class="mi">81</span><span class="p">),</span>
+    <span class="s2">"red_mushroom_block"</span><span class="p">:</span> <span class="p">(</span><span class="mi">200</span><span class="p">,</span> <span class="mi">46</span><span class="p">,</span> <span class="mi">45</span><span class="p">),</span>
+    <span class="s2">"nether_wart_block"</span><span class="p">:</span> <span class="p">(</span><span class="mi">114</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span>
+    <span class="s2">"warped_wart_block"</span><span class="p">:</span> <span class="p">(</span><span class="mi">22</span><span class="p">,</span> <span class="mi">119</span><span class="p">,</span> <span class="mi">121</span><span class="p">),</span>
+    <span class="s2">"crimson_nylium"</span><span class="p">:</span> <span class="p">(</span><span class="mi">130</span><span class="p">,</span> <span class="mi">31</span><span class="p">,</span> <span class="mi">31</span><span class="p">),</span>
+    <span class="s2">"warped_nylium"</span><span class="p">:</span> <span class="p">(</span><span class="mi">43</span><span class="p">,</span> <span class="mi">114</span><span class="p">,</span> <span class="mi">101</span><span class="p">),</span>
+    <span class="s2">"shroomlight"</span><span class="p">:</span> <span class="p">(</span><span class="mi">240</span><span class="p">,</span> <span class="mi">146</span><span class="p">,</span> <span class="mi">70</span><span class="p">),</span>
+    <span class="s2">"dandelion"</span><span class="p">:</span> <span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">236</span><span class="p">,</span> <span class="mi">79</span><span class="p">,</span> <span class="n">THIN_ALPHA</span><span class="p">),</span>
+    <span class="s2">"poppy"</span><span class="p">:</span> <span class="p">(</span><span class="mi">237</span><span class="p">,</span> <span class="mi">48</span><span class="p">,</span> <span class="mi">44</span><span class="p">,</span> <span class="n">THIN_ALPHA</span><span class="p">),</span>
+    <span class="s2">"sponge"</span><span class="p">:</span> <span class="p">(</span><span class="mi">195</span><span class="p">,</span> <span class="mi">192</span><span class="p">,</span> <span class="mi">74</span><span class="p">),</span>
+    <span class="s2">"wet_sponge"</span><span class="p">:</span> <span class="p">(</span><span class="mi">171</span><span class="p">,</span> <span class="mi">181</span><span class="p">,</span> <span class="mi">70</span><span class="p">),</span>
+    <span class="c1"># the nether and the end</span>
+    <span class="s2">"netherrack"</span><span class="p">:</span> <span class="p">(</span><span class="mi">97</span><span class="p">,</span> <span class="mi">38</span><span class="p">,</span> <span class="mi">38</span><span class="p">),</span>
+    <span class="s2">"nether_bricks"</span><span class="p">:</span> <span class="p">(</span><span class="mi">44</span><span class="p">,</span> <span class="mi">21</span><span class="p">,</span> <span class="mi">26</span><span class="p">),</span>
+    <span class="s2">"red_nether_bricks"</span><span class="p">:</span> <span class="p">(</span><span class="mi">69</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">9</span><span class="p">),</span>
+    <span class="s2">"soul_sand"</span><span class="p">:</span> <span class="p">(</span><span class="mi">81</span><span class="p">,</span> <span class="mi">62</span><span class="p">,</span> <span class="mi">51</span><span class="p">),</span>
+    <span class="s2">"soul_soil"</span><span class="p">:</span> <span class="p">(</span><span class="mi">75</span><span class="p">,</span> <span class="mi">57</span><span class="p">,</span> <span class="mi">46</span><span class="p">),</span>
+    <span class="s2">"basalt"</span><span class="p">:</span> <span class="p">(</span><span class="mi">80</span><span class="p">,</span> <span class="mi">81</span><span class="p">,</span> <span class="mi">86</span><span class="p">),</span>
+    <span class="s2">"polished_basalt"</span><span class="p">:</span> <span class="p">(</span><span class="mi">88</span><span class="p">,</span> <span class="mi">88</span><span class="p">,</span> <span class="mi">91</span><span class="p">),</span>
+    <span class="s2">"smooth_basalt"</span><span class="p">:</span> <span class="p">(</span><span class="mi">72</span><span class="p">,</span> <span class="mi">72</span><span class="p">,</span> <span class="mi">78</span><span class="p">),</span>
+    <span class="s2">"blackstone"</span><span class="p">:</span> <span class="p">(</span><span class="mi">42</span><span class="p">,</span> <span class="mi">36</span><span class="p">,</span> <span class="mi">41</span><span class="p">),</span>
+    <span class="s2">"polished_blackstone"</span><span class="p">:</span> <span class="p">(</span><span class="mi">53</span><span class="p">,</span> <span class="mi">48</span><span class="p">,</span> <span class="mi">56</span><span class="p">),</span>
+    <span class="s2">"polished_blackstone_bricks"</span><span class="p">:</span> <span class="p">(</span><span class="mi">48</span><span class="p">,</span> <span class="mi">42</span><span class="p">,</span> <span class="mi">49</span><span class="p">),</span>
+    <span class="s2">"gilded_blackstone"</span><span class="p">:</span> <span class="p">(</span><span class="mi">56</span><span class="p">,</span> <span class="mi">43</span><span class="p">,</span> <span class="mi">38</span><span class="p">),</span>
+    <span class="s2">"glowstone"</span><span class="p">:</span> <span class="p">(</span><span class="mi">171</span><span class="p">,</span> <span class="mi">131</span><span class="p">,</span> <span class="mi">84</span><span class="p">),</span>
+    <span class="s2">"magma_block"</span><span class="p">:</span> <span class="p">(</span><span class="mi">142</span><span class="p">,</span> <span class="mi">63</span><span class="p">,</span> <span class="mi">31</span><span class="p">),</span>
+    <span class="s2">"end_stone"</span><span class="p">:</span> <span class="p">(</span><span class="mi">219</span><span class="p">,</span> <span class="mi">222</span><span class="p">,</span> <span class="mi">158</span><span class="p">),</span>
+    <span class="s2">"end_stone_bricks"</span><span class="p">:</span> <span class="p">(</span><span class="mi">218</span><span class="p">,</span> <span class="mi">224</span><span class="p">,</span> <span class="mi">162</span><span class="p">),</span>
+    <span class="s2">"purpur_block"</span><span class="p">:</span> <span class="p">(</span><span class="mi">169</span><span class="p">,</span> <span class="mi">125</span><span class="p">,</span> <span class="mi">169</span><span class="p">),</span>
+    <span class="s2">"purpur_pillar"</span><span class="p">:</span> <span class="p">(</span><span class="mi">171</span><span class="p">,</span> <span class="mi">129</span><span class="p">,</span> <span class="mi">171</span><span class="p">),</span>
+    <span class="s2">"sculk"</span><span class="p">:</span> <span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">29</span><span class="p">,</span> <span class="mi">36</span><span class="p">),</span>
+    <span class="c1"># the ocean</span>
+    <span class="s2">"prismarine"</span><span class="p">:</span> <span class="p">(</span><span class="mi">99</span><span class="p">,</span> <span class="mi">156</span><span class="p">,</span> <span class="mi">151</span><span class="p">),</span>
+    <span class="s2">"prismarine_bricks"</span><span class="p">:</span> <span class="p">(</span><span class="mi">99</span><span class="p">,</span> <span class="mi">171</span><span class="p">,</span> <span class="mi">158</span><span class="p">),</span>
+    <span class="s2">"dark_prismarine"</span><span class="p">:</span> <span class="p">(</span><span class="mi">51</span><span class="p">,</span> <span class="mi">91</span><span class="p">,</span> <span class="mi">75</span><span class="p">),</span>
+    <span class="s2">"sea_lantern"</span><span class="p">:</span> <span class="p">(</span><span class="mi">172</span><span class="p">,</span> <span class="mi">199</span><span class="p">,</span> <span class="mi">190</span><span class="p">),</span>
+    <span class="c1"># quartz</span>
+    <span class="s2">"quartz_block"</span><span class="p">:</span> <span class="p">(</span><span class="mi">235</span><span class="p">,</span> <span class="mi">229</span><span class="p">,</span> <span class="mi">222</span><span class="p">),</span>
+    <span class="s2">"smooth_quartz"</span><span class="p">:</span> <span class="p">(</span><span class="mi">235</span><span class="p">,</span> <span class="mi">229</span><span class="p">,</span> <span class="mi">222</span><span class="p">),</span>
+    <span class="s2">"quartz_bricks"</span><span class="p">:</span> <span class="p">(</span><span class="mi">234</span><span class="p">,</span> <span class="mi">229</span><span class="p">,</span> <span class="mi">221</span><span class="p">),</span>
+    <span class="s2">"quartz_pillar"</span><span class="p">:</span> <span class="p">(</span><span class="mi">235</span><span class="p">,</span> <span class="mi">230</span><span class="p">,</span> <span class="mi">224</span><span class="p">),</span>
+    <span class="s2">"chiseled_quartz_block"</span><span class="p">:</span> <span class="p">(</span><span class="mi">231</span><span class="p">,</span> <span class="mi">226</span><span class="p">,</span> <span class="mi">218</span><span class="p">),</span>
+    <span class="c1"># mineral blocks</span>
+    <span class="s2">"coal_block"</span><span class="p">:</span> <span class="p">(</span><span class="mi">16</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">15</span><span class="p">),</span>
+    <span class="s2">"iron_block"</span><span class="p">:</span> <span class="p">(</span><span class="mi">220</span><span class="p">,</span> <span class="mi">220</span><span class="p">,</span> <span class="mi">220</span><span class="p">),</span>
+    <span class="s2">"gold_block"</span><span class="p">:</span> <span class="p">(</span><span class="mi">246</span><span class="p">,</span> <span class="mi">208</span><span class="p">,</span> <span class="mi">61</span><span class="p">),</span>
+    <span class="s2">"diamond_block"</span><span class="p">:</span> <span class="p">(</span><span class="mi">98</span><span class="p">,</span> <span class="mi">237</span><span class="p">,</span> <span class="mi">228</span><span class="p">),</span>
+    <span class="s2">"emerald_block"</span><span class="p">:</span> <span class="p">(</span><span class="mi">42</span><span class="p">,</span> <span class="mi">203</span><span class="p">,</span> <span class="mi">87</span><span class="p">),</span>
+    <span class="s2">"lapis_block"</span><span class="p">:</span> <span class="p">(</span><span class="mi">30</span><span class="p">,</span> <span class="mi">67</span><span class="p">,</span> <span class="mi">140</span><span class="p">),</span>
+    <span class="s2">"redstone_block"</span><span class="p">:</span> <span class="p">(</span><span class="mi">175</span><span class="p">,</span> <span class="mi">24</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span>
+    <span class="s2">"netherite_block"</span><span class="p">:</span> <span class="p">(</span><span class="mi">66</span><span class="p">,</span> <span class="mi">61</span><span class="p">,</span> <span class="mi">63</span><span class="p">),</span>
+    <span class="s2">"amethyst_block"</span><span class="p">:</span> <span class="p">(</span><span class="mi">133</span><span class="p">,</span> <span class="mi">97</span><span class="p">,</span> <span class="mi">191</span><span class="p">),</span>
+    <span class="s2">"raw_iron_block"</span><span class="p">:</span> <span class="p">(</span><span class="mi">166</span><span class="p">,</span> <span class="mi">135</span><span class="p">,</span> <span class="mi">107</span><span class="p">),</span>
+    <span class="s2">"raw_gold_block"</span><span class="p">:</span> <span class="p">(</span><span class="mi">221</span><span class="p">,</span> <span class="mi">169</span><span class="p">,</span> <span class="mi">46</span><span class="p">),</span>
+    <span class="s2">"raw_copper_block"</span><span class="p">:</span> <span class="p">(</span><span class="mi">154</span><span class="p">,</span> <span class="mi">105</span><span class="p">,</span> <span class="mi">79</span><span class="p">),</span>
+    <span class="s2">"resin_block"</span><span class="p">:</span> <span class="p">(</span><span class="mi">217</span><span class="p">,</span> <span class="mi">99</span><span class="p">,</span> <span class="mi">25</span><span class="p">),</span>
+    <span class="s2">"resin_bricks"</span><span class="p">:</span> <span class="p">(</span><span class="mi">206</span><span class="p">,</span> <span class="mi">101</span><span class="p">,</span> <span class="mi">39</span><span class="p">),</span>
+    <span class="s2">"copper_block"</span><span class="p">:</span> <span class="p">(</span><span class="mi">192</span><span class="p">,</span> <span class="mi">107</span><span class="p">,</span> <span class="mi">79</span><span class="p">),</span>
+    <span class="s2">"exposed_copper"</span><span class="p">:</span> <span class="p">(</span><span class="mi">161</span><span class="p">,</span> <span class="mi">125</span><span class="p">,</span> <span class="mi">103</span><span class="p">),</span>
+    <span class="s2">"weathered_copper"</span><span class="p">:</span> <span class="p">(</span><span class="mi">108</span><span class="p">,</span> <span class="mi">153</span><span class="p">,</span> <span class="mi">110</span><span class="p">),</span>
+    <span class="s2">"oxidized_copper"</span><span class="p">:</span> <span class="p">(</span><span class="mi">82</span><span class="p">,</span> <span class="mi">162</span><span class="p">,</span> <span class="mi">132</span><span class="p">),</span>
+    <span class="c1"># glass and other see-through blocks</span>
+    <span class="s2">"glass"</span><span class="p">:</span> <span class="p">(</span><span class="mi">200</span><span class="p">,</span> <span class="mi">220</span><span class="p">,</span> <span class="mi">230</span><span class="p">,</span> <span class="n">GLASS_ALPHA</span><span class="p">),</span>
+    <span class="s2">"glass_pane"</span><span class="p">:</span> <span class="p">(</span><span class="mi">200</span><span class="p">,</span> <span class="mi">220</span><span class="p">,</span> <span class="mi">230</span><span class="p">,</span> <span class="n">GLASS_ALPHA</span><span class="p">),</span>
+    <span class="s2">"tinted_glass"</span><span class="p">:</span> <span class="p">(</span><span class="mi">44</span><span class="p">,</span> <span class="mi">38</span><span class="p">,</span> <span class="mi">46</span><span class="p">,</span> <span class="mi">200</span><span class="p">),</span>
+    <span class="s2">"iron_bars"</span><span class="p">:</span> <span class="p">(</span><span class="mi">136</span><span class="p">,</span> <span class="mi">139</span><span class="p">,</span> <span class="mi">135</span><span class="p">,</span> <span class="n">THIN_ALPHA</span><span class="p">),</span>
+    <span class="s2">"cobweb"</span><span class="p">:</span> <span class="p">(</span><span class="mi">228</span><span class="p">,</span> <span class="mi">233</span><span class="p">,</span> <span class="mi">234</span><span class="p">,</span> <span class="mi">120</span><span class="p">),</span>
+    <span class="s2">"slime_block"</span><span class="p">:</span> <span class="p">(</span><span class="mi">111</span><span class="p">,</span> <span class="mi">192</span><span class="p">,</span> <span class="mi">91</span><span class="p">,</span> <span class="mi">200</span><span class="p">),</span>
+    <span class="s2">"honey_block"</span><span class="p">:</span> <span class="p">(</span><span class="mi">251</span><span class="p">,</span> <span class="mi">185</span><span class="p">,</span> <span class="mi">52</span><span class="p">,</span> <span class="mi">200</span><span class="p">),</span>
+    <span class="c1"># furniture and machines</span>
+    <span class="s2">"bookshelf"</span><span class="p">:</span> <span class="p">(</span><span class="mi">117</span><span class="p">,</span> <span class="mi">94</span><span class="p">,</span> <span class="mi">59</span><span class="p">),</span>
+    <span class="s2">"crafting_table"</span><span class="p">:</span> <span class="p">(</span><span class="mi">119</span><span class="p">,</span> <span class="mi">73</span><span class="p">,</span> <span class="mi">42</span><span class="p">),</span>
+    <span class="s2">"furnace"</span><span class="p">:</span> <span class="p">(</span><span class="mi">110</span><span class="p">,</span> <span class="mi">110</span><span class="p">,</span> <span class="mi">110</span><span class="p">),</span>
+    <span class="s2">"blast_furnace"</span><span class="p">:</span> <span class="p">(</span><span class="mi">108</span><span class="p">,</span> <span class="mi">108</span><span class="p">,</span> <span class="mi">107</span><span class="p">),</span>
+    <span class="s2">"smoker"</span><span class="p">:</span> <span class="p">(</span><span class="mi">107</span><span class="p">,</span> <span class="mi">87</span><span class="p">,</span> <span class="mi">66</span><span class="p">),</span>
+    <span class="s2">"chest"</span><span class="p">:</span> <span class="p">(</span><span class="mi">162</span><span class="p">,</span> <span class="mi">115</span><span class="p">,</span> <span class="mi">47</span><span class="p">),</span>
+    <span class="s2">"trapped_chest"</span><span class="p">:</span> <span class="p">(</span><span class="mi">162</span><span class="p">,</span> <span class="mi">115</span><span class="p">,</span> <span class="mi">47</span><span class="p">),</span>
+    <span class="s2">"ender_chest"</span><span class="p">:</span> <span class="p">(</span><span class="mi">40</span><span class="p">,</span> <span class="mi">55</span><span class="p">,</span> <span class="mi">57</span><span class="p">),</span>
+    <span class="s2">"barrel"</span><span class="p">:</span> <span class="p">(</span><span class="mi">134</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">58</span><span class="p">),</span>
+    <span class="s2">"note_block"</span><span class="p">:</span> <span class="p">(</span><span class="mi">88</span><span class="p">,</span> <span class="mi">58</span><span class="p">,</span> <span class="mi">40</span><span class="p">),</span>
+    <span class="s2">"jukebox"</span><span class="p">:</span> <span class="p">(</span><span class="mi">94</span><span class="p">,</span> <span class="mi">64</span><span class="p">,</span> <span class="mi">47</span><span class="p">),</span>
+    <span class="s2">"tnt"</span><span class="p">:</span> <span class="p">(</span><span class="mi">219</span><span class="p">,</span> <span class="mi">68</span><span class="p">,</span> <span class="mi">52</span><span class="p">),</span>
+    <span class="s2">"target"</span><span class="p">:</span> <span class="p">(</span><span class="mi">226</span><span class="p">,</span> <span class="mi">170</span><span class="p">,</span> <span class="mi">157</span><span class="p">),</span>
+    <span class="s2">"beacon"</span><span class="p">:</span> <span class="p">(</span><span class="mi">117</span><span class="p">,</span> <span class="mi">220</span><span class="p">,</span> <span class="mi">215</span><span class="p">),</span>
+    <span class="s2">"anvil"</span><span class="p">:</span> <span class="p">(</span><span class="mi">68</span><span class="p">,</span> <span class="mi">68</span><span class="p">,</span> <span class="mi">68</span><span class="p">),</span>
+    <span class="s2">"cauldron"</span><span class="p">:</span> <span class="p">(</span><span class="mi">74</span><span class="p">,</span> <span class="mi">74</span><span class="p">,</span> <span class="mi">74</span><span class="p">),</span>
+    <span class="s2">"hopper"</span><span class="p">:</span> <span class="p">(</span><span class="mi">68</span><span class="p">,</span> <span class="mi">68</span><span class="p">,</span> <span class="mi">70</span><span class="p">),</span>
+    <span class="s2">"scaffolding"</span><span class="p">:</span> <span class="p">(</span><span class="mi">175</span><span class="p">,</span> <span class="mi">140</span><span class="p">,</span> <span class="mi">75</span><span class="p">,</span> <span class="n">THIN_ALPHA</span><span class="p">),</span>
+    <span class="s2">"ladder"</span><span class="p">:</span> <span class="p">(</span><span class="mi">125</span><span class="p">,</span> <span class="mi">97</span><span class="p">,</span> <span class="mi">55</span><span class="p">,</span> <span class="n">THIN_ALPHA</span><span class="p">),</span>
+    <span class="s2">"torch"</span><span class="p">:</span> <span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span> <span class="mi">80</span><span class="p">,</span> <span class="n">THIN_ALPHA</span><span class="p">),</span>
+    <span class="s2">"wall_torch"</span><span class="p">:</span> <span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span> <span class="mi">80</span><span class="p">,</span> <span class="n">THIN_ALPHA</span><span class="p">),</span>
+    <span class="s2">"soul_torch"</span><span class="p">:</span> <span class="p">(</span><span class="mi">110</span><span class="p">,</span> <span class="mi">225</span><span class="p">,</span> <span class="mi">230</span><span class="p">,</span> <span class="n">THIN_ALPHA</span><span class="p">),</span>
+    <span class="s2">"lantern"</span><span class="p">:</span> <span class="p">(</span><span class="mi">106</span><span class="p">,</span> <span class="mi">91</span><span class="p">,</span> <span class="mi">83</span><span class="p">,</span> <span class="n">THIN_ALPHA</span><span class="p">),</span>
+    <span class="s2">"redstone_wire"</span><span class="p">:</span> <span class="p">(</span><span class="mi">175</span><span class="p">,</span> <span class="mi">24</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="n">THIN_ALPHA</span><span class="p">),</span>
+    <span class="s2">"redstone_torch"</span><span class="p">:</span> <span class="p">(</span><span class="mi">175</span><span class="p">,</span> <span class="mi">24</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="n">THIN_ALPHA</span><span class="p">),</span>
+    <span class="s2">"rail"</span><span class="p">:</span> <span class="p">(</span><span class="mi">125</span><span class="p">,</span> <span class="mi">110</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="n">THIN_ALPHA</span><span class="p">),</span>
+    <span class="s2">"lever"</span><span class="p">:</span> <span class="p">(</span><span class="mi">110</span><span class="p">,</span> <span class="mi">95</span><span class="p">,</span> <span class="mi">70</span><span class="p">,</span> <span class="n">THIN_ALPHA</span><span class="p">),</span>
+    <span class="s2">"light_weighted_pressure_plate"</span><span class="p">:</span> <span class="p">(</span><span class="mi">246</span><span class="p">,</span> <span class="mi">208</span><span class="p">,</span> <span class="mi">61</span><span class="p">,</span> <span class="n">THIN_ALPHA</span><span class="p">),</span>
+    <span class="s2">"bone_block"</span><span class="p">:</span> <span class="p">(</span><span class="mi">229</span><span class="p">,</span> <span class="mi">225</span><span class="p">,</span> <span class="mi">207</span><span class="p">),</span>
+    <span class="s2">"honeycomb_block"</span><span class="p">:</span> <span class="p">(</span><span class="mi">229</span><span class="p">,</span> <span class="mi">148</span><span class="p">,</span> <span class="mi">29</span><span class="p">),</span>
+    <span class="s2">"ancient_debris"</span><span class="p">:</span> <span class="p">(</span><span class="mi">95</span><span class="p">,</span> <span class="mi">66</span><span class="p">,</span> <span class="mi">58</span><span class="p">),</span>
+    <span class="s2">"ochre_froglight"</span><span class="p">:</span> <span class="p">(</span><span class="mi">245</span><span class="p">,</span> <span class="mi">233</span><span class="p">,</span> <span class="mi">180</span><span class="p">),</span>
+    <span class="s2">"verdant_froglight"</span><span class="p">:</span> <span class="p">(</span><span class="mi">229</span><span class="p">,</span> <span class="mi">244</span><span class="p">,</span> <span class="mi">228</span><span class="p">),</span>
+    <span class="s2">"pearlescent_froglight"</span><span class="p">:</span> <span class="p">(</span><span class="mi">245</span><span class="p">,</span> <span class="mi">240</span><span class="p">,</span> <span class="mi">245</span><span class="p">),</span>
+    <span class="s2">"cinnabar"</span><span class="p">:</span> <span class="p">(</span><span class="mi">150</span><span class="p">,</span> <span class="mi">40</span><span class="p">,</span> <span class="mi">35</span><span class="p">),</span>
+    <span class="s2">"sulfur"</span><span class="p">:</span> <span class="p">(</span><span class="mi">200</span><span class="p">,</span> <span class="mi">190</span><span class="p">,</span> <span class="mi">60</span><span class="p">),</span>
+    <span class="s2">"chiseled_tuff"</span><span class="p">:</span> <span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">105</span><span class="p">,</span> <span class="mi">98</span><span class="p">),</span>
+    <span class="s2">"chiseled_bookshelf"</span><span class="p">:</span> <span class="p">(</span><span class="mi">117</span><span class="p">,</span> <span class="mi">94</span><span class="p">,</span> <span class="mi">59</span><span class="p">),</span>
+    <span class="s2">"beehive"</span><span class="p">:</span> <span class="p">(</span><span class="mi">182</span><span class="p">,</span> <span class="mi">146</span><span class="p">,</span> <span class="mi">89</span><span class="p">),</span>
+    <span class="s2">"bee_nest"</span><span class="p">:</span> <span class="p">(</span><span class="mi">196</span><span class="p">,</span> <span class="mi">151</span><span class="p">,</span> <span class="mi">75</span><span class="p">),</span>
+    <span class="s2">"composter"</span><span class="p">:</span> <span class="p">(</span><span class="mi">110</span><span class="p">,</span> <span class="mi">75</span><span class="p">,</span> <span class="mi">40</span><span class="p">),</span>
+    <span class="s2">"lectern"</span><span class="p">:</span> <span class="p">(</span><span class="mi">160</span><span class="p">,</span> <span class="mi">125</span><span class="p">,</span> <span class="mi">75</span><span class="p">),</span>
+    <span class="s2">"loom"</span><span class="p">:</span> <span class="p">(</span><span class="mi">142</span><span class="p">,</span> <span class="mi">119</span><span class="p">,</span> <span class="mi">92</span><span class="p">),</span>
+    <span class="s2">"smithing_table"</span><span class="p">:</span> <span class="p">(</span><span class="mi">57</span><span class="p">,</span> <span class="mi">58</span><span class="p">,</span> <span class="mi">70</span><span class="p">),</span>
+    <span class="s2">"fletching_table"</span><span class="p">:</span> <span class="p">(</span><span class="mi">197</span><span class="p">,</span> <span class="mi">181</span><span class="p">,</span> <span class="mi">132</span><span class="p">),</span>
+    <span class="s2">"cartography_table"</span><span class="p">:</span> <span class="p">(</span><span class="mi">103</span><span class="p">,</span> <span class="mi">87</span><span class="p">,</span> <span class="mi">67</span><span class="p">),</span>
+    <span class="s2">"enchanting_table"</span><span class="p">:</span> <span class="p">(</span><span class="mi">128</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">58</span><span class="p">),</span>
+    <span class="s2">"dispenser"</span><span class="p">:</span> <span class="p">(</span><span class="mi">110</span><span class="p">,</span> <span class="mi">110</span><span class="p">,</span> <span class="mi">110</span><span class="p">),</span>
+    <span class="s2">"dropper"</span><span class="p">:</span> <span class="p">(</span><span class="mi">110</span><span class="p">,</span> <span class="mi">110</span><span class="p">,</span> <span class="mi">110</span><span class="p">),</span>
+    <span class="s2">"observer"</span><span class="p">:</span> <span class="p">(</span><span class="mi">98</span><span class="p">,</span> <span class="mi">98</span><span class="p">,</span> <span class="mi">98</span><span class="p">),</span>
+    <span class="s2">"piston"</span><span class="p">:</span> <span class="p">(</span><span class="mi">153</span><span class="p">,</span> <span class="mi">127</span><span class="p">,</span> <span class="mi">85</span><span class="p">),</span>
+    <span class="s2">"sticky_piston"</span><span class="p">:</span> <span class="p">(</span><span class="mi">120</span><span class="p">,</span> <span class="mi">150</span><span class="p">,</span> <span class="mi">90</span><span class="p">),</span>
+    <span class="s2">"spawner"</span><span class="p">:</span> <span class="p">(</span><span class="mi">36</span><span class="p">,</span> <span class="mi">46</span><span class="p">,</span> <span class="mi">62</span><span class="p">),</span>
+    <span class="s2">"trial_spawner"</span><span class="p">:</span> <span class="p">(</span><span class="mi">60</span><span class="p">,</span> <span class="mi">70</span><span class="p">,</span> <span class="mi">80</span><span class="p">),</span>
+    <span class="s2">"vault"</span><span class="p">:</span> <span class="p">(</span><span class="mi">60</span><span class="p">,</span> <span class="mi">70</span><span class="p">,</span> <span class="mi">80</span><span class="p">),</span>
+    <span class="s2">"crafter"</span><span class="p">:</span> <span class="p">(</span><span class="mi">110</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">95</span><span class="p">),</span>
+    <span class="s2">"respawn_anchor"</span><span class="p">:</span> <span class="p">(</span><span class="mi">40</span><span class="p">,</span> <span class="mi">25</span><span class="p">,</span> <span class="mi">70</span><span class="p">),</span>
+    <span class="s2">"end_portal_frame"</span><span class="p">:</span> <span class="p">(</span><span class="mi">91</span><span class="p">,</span> <span class="mi">120</span><span class="p">,</span> <span class="mi">97</span><span class="p">),</span>
+    <span class="s2">"end_portal"</span><span class="p">:</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+    <span class="s2">"end_gateway"</span><span class="p">:</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+    <span class="s2">"dragon_egg"</span><span class="p">:</span> <span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">15</span><span class="p">),</span>
+    <span class="s2">"chorus_plant"</span><span class="p">:</span> <span class="p">(</span><span class="mi">93</span><span class="p">,</span> <span class="mi">57</span><span class="p">,</span> <span class="mi">93</span><span class="p">),</span>
+    <span class="s2">"chorus_flower"</span><span class="p">:</span> <span class="p">(</span><span class="mi">151</span><span class="p">,</span> <span class="mi">120</span><span class="p">,</span> <span class="mi">151</span><span class="p">),</span>
+    <span class="s2">"creaking_heart"</span><span class="p">:</span> <span class="p">(</span><span class="mi">90</span><span class="p">,</span> <span class="mi">75</span><span class="p">,</span> <span class="mi">70</span><span class="p">),</span>
+    <span class="s2">"fire"</span><span class="p">:</span> <span class="p">(</span><span class="mi">230</span><span class="p">,</span> <span class="mi">140</span><span class="p">,</span> <span class="mi">40</span><span class="p">,</span> <span class="n">THIN_ALPHA</span><span class="p">),</span>
+    <span class="s2">"soul_fire"</span><span class="p">:</span> <span class="p">(</span><span class="mi">80</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span> <span class="mi">210</span><span class="p">,</span> <span class="n">THIN_ALPHA</span><span class="p">),</span>
+    <span class="s2">"cake"</span><span class="p">:</span> <span class="p">(</span><span class="mi">240</span><span class="p">,</span> <span class="mi">220</span><span class="p">,</span> <span class="mi">210</span><span class="p">,</span> <span class="n">THIN_ALPHA</span><span class="p">),</span>
+    <span class="s2">"bell"</span><span class="p">:</span> <span class="p">(</span><span class="mi">246</span><span class="p">,</span> <span class="mi">208</span><span class="p">,</span> <span class="mi">61</span><span class="p">,</span> <span class="n">THIN_ALPHA</span><span class="p">),</span>
+    <span class="s2">"petrified_oak_slab"</span><span class="p">:</span> <span class="p">(</span><span class="mi">162</span><span class="p">,</span> <span class="mi">130</span><span class="p">,</span> <span class="mi">78</span><span class="p">),</span>
+    <span class="s2">"glow_lichen"</span><span class="p">:</span> <span class="p">(</span><span class="mi">112</span><span class="p">,</span> <span class="mi">130</span><span class="p">,</span> <span class="mi">120</span><span class="p">,</span> <span class="n">THIN_ALPHA</span><span class="p">),</span>
+    <span class="s2">"melon_stem"</span><span class="p">:</span> <span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">150</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="n">THIN_ALPHA</span><span class="p">),</span>
+    <span class="s2">"pumpkin_stem"</span><span class="p">:</span> <span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">150</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="n">THIN_ALPHA</span><span class="p">),</span>
+    <span class="s2">"attached_melon_stem"</span><span class="p">:</span> <span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">150</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="n">THIN_ALPHA</span><span class="p">),</span>
+    <span class="s2">"attached_pumpkin_stem"</span><span class="p">:</span> <span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">150</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="n">THIN_ALPHA</span><span class="p">),</span>
+    <span class="s2">"pale_moss_carpet"</span><span class="p">:</span> <span class="p">(</span><span class="mi">107</span><span class="p">,</span> <span class="mi">112</span><span class="p">,</span> <span class="mi">104</span><span class="p">,</span> <span class="n">THIN_ALPHA</span><span class="p">),</span>
+    <span class="s2">"pale_hanging_moss"</span><span class="p">:</span> <span class="p">(</span><span class="mi">107</span><span class="p">,</span> <span class="mi">112</span><span class="p">,</span> <span class="mi">104</span><span class="p">,</span> <span class="n">THIN_ALPHA</span><span class="p">),</span>
+    <span class="s2">"leaf_litter"</span><span class="p">:</span> <span class="p">(</span><span class="mi">150</span><span class="p">,</span> <span class="mi">110</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="n">THIN_ALPHA</span><span class="p">),</span>
+    <span class="s2">"kelp_plant"</span><span class="p">:</span> <span class="p">(</span><span class="mi">88</span><span class="p">,</span> <span class="mi">142</span><span class="p">,</span> <span class="mi">45</span><span class="p">,</span> <span class="n">THIN_ALPHA</span><span class="p">),</span>
+    <span class="s2">"wheat"</span><span class="p">:</span> <span class="p">(</span><span class="mi">170</span><span class="p">,</span> <span class="mi">160</span><span class="p">,</span> <span class="mi">60</span><span class="p">,</span> <span class="n">THIN_ALPHA</span><span class="p">),</span>
+    <span class="s2">"carrots"</span><span class="p">:</span> <span class="p">(</span><span class="mi">80</span><span class="p">,</span> <span class="mi">150</span><span class="p">,</span> <span class="mi">40</span><span class="p">,</span> <span class="n">THIN_ALPHA</span><span class="p">),</span>
+    <span class="s2">"potatoes"</span><span class="p">:</span> <span class="p">(</span><span class="mi">80</span><span class="p">,</span> <span class="mi">150</span><span class="p">,</span> <span class="mi">40</span><span class="p">,</span> <span class="n">THIN_ALPHA</span><span class="p">),</span>
+    <span class="s2">"beetroots"</span><span class="p">:</span> <span class="p">(</span><span class="mi">80</span><span class="p">,</span> <span class="mi">150</span><span class="p">,</span> <span class="mi">40</span><span class="p">,</span> <span class="n">THIN_ALPHA</span><span class="p">),</span>
+    <span class="s2">"candle"</span><span class="p">:</span> <span class="p">(</span><span class="mi">225</span><span class="p">,</span> <span class="mi">210</span><span class="p">,</span> <span class="mi">170</span><span class="p">,</span> <span class="n">THIN_ALPHA</span><span class="p">),</span>
+    <span class="s2">"candle_cake"</span><span class="p">:</span> <span class="p">(</span><span class="mi">240</span><span class="p">,</span> <span class="mi">220</span><span class="p">,</span> <span class="mi">210</span><span class="p">,</span> <span class="n">THIN_ALPHA</span><span class="p">),</span>
+    <span class="s2">"decorated_pot"</span><span class="p">:</span> <span class="p">(</span><span class="mi">140</span><span class="p">,</span> <span class="mi">80</span><span class="p">,</span> <span class="mi">60</span><span class="p">,</span> <span class="n">THIN_ALPHA</span><span class="p">),</span>
+    <span class="s2">"end_rod"</span><span class="p">:</span> <span class="p">(</span><span class="mi">240</span><span class="p">,</span> <span class="mi">235</span><span class="p">,</span> <span class="mi">225</span><span class="p">,</span> <span class="n">THIN_ALPHA</span><span class="p">),</span>
+    <span class="s2">"conduit"</span><span class="p">:</span> <span class="p">(</span><span class="mi">160</span><span class="p">,</span> <span class="mi">140</span><span class="p">,</span> <span class="mi">110</span><span class="p">,</span> <span class="n">THIN_ALPHA</span><span class="p">),</span>
+    <span class="s2">"heavy_core"</span><span class="p">:</span> <span class="p">(</span><span class="mi">80</span><span class="p">,</span> <span class="mi">85</span><span class="p">,</span> <span class="mi">95</span><span class="p">,</span> <span class="n">THIN_ALPHA</span><span class="p">),</span>
+    <span class="s2">"soul_lantern"</span><span class="p">:</span> <span class="p">(</span><span class="mi">80</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">110</span><span class="p">,</span> <span class="n">THIN_ALPHA</span><span class="p">),</span>
+    <span class="s2">"soul_wall_torch"</span><span class="p">:</span> <span class="p">(</span><span class="mi">110</span><span class="p">,</span> <span class="mi">225</span><span class="p">,</span> <span class="mi">230</span><span class="p">,</span> <span class="n">THIN_ALPHA</span><span class="p">),</span>
+    <span class="s2">"tripwire"</span><span class="p">:</span> <span class="p">(</span><span class="mi">200</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span> <span class="mi">60</span><span class="p">),</span>
+    <span class="s2">"tripwire_hook"</span><span class="p">:</span> <span class="p">(</span><span class="mi">140</span><span class="p">,</span> <span class="mi">140</span><span class="p">,</span> <span class="mi">140</span><span class="p">,</span> <span class="n">THIN_ALPHA</span><span class="p">),</span>
+    <span class="s2">"repeater"</span><span class="p">:</span> <span class="p">(</span><span class="mi">160</span><span class="p">,</span> <span class="mi">160</span><span class="p">,</span> <span class="mi">160</span><span class="p">,</span> <span class="n">THIN_ALPHA</span><span class="p">),</span>
+    <span class="s2">"comparator"</span><span class="p">:</span> <span class="p">(</span><span class="mi">160</span><span class="p">,</span> <span class="mi">160</span><span class="p">,</span> <span class="mi">160</span><span class="p">,</span> <span class="n">THIN_ALPHA</span><span class="p">),</span>
+    <span class="s2">"daylight_detector"</span><span class="p">:</span> <span class="p">(</span><span class="mi">130</span><span class="p">,</span> <span class="mi">115</span><span class="p">,</span> <span class="mi">95</span><span class="p">,</span> <span class="n">THIN_ALPHA</span><span class="p">),</span>
+    <span class="s2">"brewing_stand"</span><span class="p">:</span> <span class="p">(</span><span class="mi">120</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">70</span><span class="p">,</span> <span class="n">THIN_ALPHA</span><span class="p">),</span>
+    <span class="s2">"turtle_egg"</span><span class="p">:</span> <span class="p">(</span><span class="mi">230</span><span class="p">,</span> <span class="mi">225</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span> <span class="n">THIN_ALPHA</span><span class="p">),</span>
+    <span class="s2">"sniffer_egg"</span><span class="p">:</span> <span class="p">(</span><span class="mi">150</span><span class="p">,</span> <span class="mi">60</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="n">THIN_ALPHA</span><span class="p">),</span>
+    <span class="s2">"sea_pickle"</span><span class="p">:</span> <span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">120</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="n">THIN_ALPHA</span><span class="p">),</span>
+    <span class="s2">"frogspawn"</span><span class="p">:</span> <span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="mi">80</span><span class="p">,</span> <span class="n">THIN_ALPHA</span><span class="p">),</span>
+    <span class="s2">"cocoa"</span><span class="p">:</span> <span class="p">(</span><span class="mi">150</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="mi">40</span><span class="p">,</span> <span class="n">THIN_ALPHA</span><span class="p">),</span>
+    <span class="s2">"spore_blossom"</span><span class="p">:</span> <span class="p">(</span><span class="mi">210</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">170</span><span class="p">,</span> <span class="n">THIN_ALPHA</span><span class="p">),</span>
+    <span class="s2">"heavy_weighted_pressure_plate"</span><span class="p">:</span> <span class="p">(</span><span class="mi">220</span><span class="p">,</span> <span class="mi">220</span><span class="p">,</span> <span class="mi">220</span><span class="p">,</span> <span class="n">THIN_ALPHA</span><span class="p">),</span>
+<span class="p">}</span>
+
+<span class="c1"># the endings of blocks that are made from another block, e.g. stairs</span>
+<span class="n">SHAPES</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="s2">"_stairs"</span><span class="p">,</span>
+    <span class="s2">"_slab"</span><span class="p">,</span>
+    <span class="s2">"_wall"</span><span class="p">,</span>
+    <span class="s2">"_fence_gate"</span><span class="p">,</span>
+    <span class="s2">"_fence"</span><span class="p">,</span>
+    <span class="s2">"_pressure_plate"</span><span class="p">,</span>
+    <span class="s2">"_button"</span><span class="p">,</span>
+    <span class="s2">"_trapdoor"</span><span class="p">,</span>
+    <span class="s2">"_door"</span><span class="p">,</span>
+    <span class="s2">"_wall_hanging_sign"</span><span class="p">,</span>
+    <span class="s2">"_hanging_sign"</span><span class="p">,</span>
+    <span class="s2">"_wall_sign"</span><span class="p">,</span>
+    <span class="s2">"_sign"</span><span class="p">,</span>
+    <span class="s2">"_pillar"</span><span class="p">,</span>
+    <span class="s2">"_grate"</span><span class="p">,</span>
+    <span class="s2">"_bulb"</span><span class="p">,</span>
+    <span class="s2">"_shelf"</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="c1"># keywords for small blocks that only fill part of their space, so the</span>
+<span class="c1"># blocks behind them show through</span>
+<span class="n">THIN</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="s2">"torch"</span><span class="p">,</span>
+    <span class="s2">"sapling"</span><span class="p">,</span>
+    <span class="s2">"rail"</span><span class="p">,</span>
+    <span class="s2">"button"</span><span class="p">,</span>
+    <span class="s2">"pressure_plate"</span><span class="p">,</span>
+    <span class="s2">"sign"</span><span class="p">,</span>
+    <span class="s2">"banner"</span><span class="p">,</span>
+    <span class="s2">"ladder"</span><span class="p">,</span>
+    <span class="s2">"vine"</span><span class="p">,</span>
+    <span class="s2">"lever"</span><span class="p">,</span>
+    <span class="s2">"tripwire"</span><span class="p">,</span>
+    <span class="s2">"grass"</span><span class="p">,</span>
+    <span class="s2">"fern"</span><span class="p">,</span>
+    <span class="s2">"bush"</span><span class="p">,</span>
+    <span class="s2">"flower"</span><span class="p">,</span>
+    <span class="s2">"tulip"</span><span class="p">,</span>
+    <span class="s2">"orchid"</span><span class="p">,</span>
+    <span class="s2">"allium"</span><span class="p">,</span>
+    <span class="s2">"bluet"</span><span class="p">,</span>
+    <span class="s2">"daisy"</span><span class="p">,</span>
+    <span class="s2">"cornflower"</span><span class="p">,</span>
+    <span class="s2">"lily"</span><span class="p">,</span>
+    <span class="s2">"rose"</span><span class="p">,</span>
+    <span class="s2">"lilac"</span><span class="p">,</span>
+    <span class="s2">"peony"</span><span class="p">,</span>
+    <span class="s2">"pane"</span><span class="p">,</span>
+    <span class="s2">"bars"</span><span class="p">,</span>
+    <span class="s2">"fence"</span><span class="p">,</span>
+    <span class="s2">"door"</span><span class="p">,</span>
+    <span class="s2">"carpet"</span><span class="p">,</span>
+    <span class="s2">"candle"</span><span class="p">,</span>
+    <span class="s2">"chain"</span><span class="p">,</span>
+    <span class="s2">"pot"</span><span class="p">,</span>
+    <span class="s2">"coral"</span><span class="p">,</span>
+    <span class="s2">"seagrass"</span><span class="p">,</span>
+    <span class="s2">"kelp"</span><span class="p">,</span>
+    <span class="s2">"mushroom"</span><span class="p">,</span>
+    <span class="s2">"wheat"</span><span class="p">,</span>
+    <span class="s2">"carrots"</span><span class="p">,</span>
+    <span class="s2">"beetroots"</span><span class="p">,</span>
+    <span class="s2">"berry"</span><span class="p">,</span>
+    <span class="s2">"head"</span><span class="p">,</span>
+    <span class="s2">"skull"</span><span class="p">,</span>
+    <span class="s2">"lantern"</span><span class="p">,</span>
+    <span class="s2">"rod"</span><span class="p">,</span>
+    <span class="s2">"petals"</span><span class="p">,</span>
+    <span class="s2">"roots"</span><span class="p">,</span>
+    <span class="s2">"sprouts"</span><span class="p">,</span>
+    <span class="s2">"fungus"</span><span class="p">,</span>
+    <span class="s2">"dripleaf"</span><span class="p">,</span>
+    <span class="s2">"pickle"</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="c1"># colour keywords for blocks that nothing else matched, most specific first</span>
+<span class="n">KEYWORDS</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">RGB</span> <span class="o">|</span> <span class="n">RGBA</span><span class="p">],</span> <span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="p">(</span><span class="s2">"glass"</span><span class="p">,</span> <span class="p">(</span><span class="mi">200</span><span class="p">,</span> <span class="mi">220</span><span class="p">,</span> <span class="mi">230</span><span class="p">,</span> <span class="n">GLASS_ALPHA</span><span class="p">)),</span>
+    <span class="p">(</span><span class="s2">"potted_"</span><span class="p">,</span> <span class="p">(</span><span class="mi">124</span><span class="p">,</span> <span class="mi">68</span><span class="p">,</span> <span class="mi">52</span><span class="p">)),</span>
+    <span class="p">(</span><span class="s2">"sapling"</span><span class="p">,</span> <span class="p">(</span><span class="mi">70</span><span class="p">,</span> <span class="mi">130</span><span class="p">,</span> <span class="mi">40</span><span class="p">)),</span>
+    <span class="p">(</span><span class="s2">"propagule"</span><span class="p">,</span> <span class="p">(</span><span class="mi">90</span><span class="p">,</span> <span class="mi">140</span><span class="p">,</span> <span class="mi">60</span><span class="p">)),</span>
+    <span class="p">(</span><span class="s2">"vines"</span><span class="p">,</span> <span class="p">(</span><span class="mi">60</span><span class="p">,</span> <span class="mi">110</span><span class="p">,</span> <span class="mi">40</span><span class="p">)),</span>
+    <span class="p">(</span><span class="s2">"roots"</span><span class="p">,</span> <span class="p">(</span><span class="mi">110</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="mi">60</span><span class="p">)),</span>
+    <span class="p">(</span><span class="s2">"crimson_fungus"</span><span class="p">,</span> <span class="p">(</span><span class="mi">160</span><span class="p">,</span> <span class="mi">40</span><span class="p">,</span> <span class="mi">40</span><span class="p">)),</span>
+    <span class="p">(</span><span class="s2">"warped_fungus"</span><span class="p">,</span> <span class="p">(</span><span class="mi">40</span><span class="p">,</span> <span class="mi">140</span><span class="p">,</span> <span class="mi">120</span><span class="p">)),</span>
+    <span class="p">(</span><span class="s2">"stem"</span><span class="p">,</span> <span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">150</span><span class="p">,</span> <span class="mi">50</span><span class="p">)),</span>
+    <span class="p">(</span><span class="s2">"dripleaf"</span><span class="p">,</span> <span class="p">(</span><span class="mi">90</span><span class="p">,</span> <span class="mi">140</span><span class="p">,</span> <span class="mi">50</span><span class="p">)),</span>
+    <span class="p">(</span><span class="s2">"bush"</span><span class="p">,</span> <span class="p">(</span><span class="mi">90</span><span class="p">,</span> <span class="mi">130</span><span class="p">,</span> <span class="mi">50</span><span class="p">)),</span>
+    <span class="p">(</span><span class="s2">"eyeblossom"</span><span class="p">,</span> <span class="p">(</span><span class="mi">180</span><span class="p">,</span> <span class="mi">120</span><span class="p">,</span> <span class="mi">90</span><span class="p">)),</span>
+    <span class="p">(</span><span class="s2">"froglight"</span><span class="p">,</span> <span class="p">(</span><span class="mi">240</span><span class="p">,</span> <span class="mi">235</span><span class="p">,</span> <span class="mi">210</span><span class="p">)),</span>
+    <span class="p">(</span><span class="s2">"sculk"</span><span class="p">,</span> <span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">29</span><span class="p">,</span> <span class="mi">36</span><span class="p">)),</span>
+    <span class="p">(</span><span class="s2">"command_block"</span><span class="p">,</span> <span class="p">(</span><span class="mi">170</span><span class="p">,</span> <span class="mi">120</span><span class="p">,</span> <span class="mi">90</span><span class="p">)),</span>
+    <span class="p">(</span><span class="s2">"structure_block"</span><span class="p">,</span> <span class="p">(</span><span class="mi">90</span><span class="p">,</span> <span class="mi">75</span><span class="p">,</span> <span class="mi">90</span><span class="p">)),</span>
+    <span class="p">(</span><span class="s2">"lightning_rod"</span><span class="p">,</span> <span class="p">(</span><span class="mi">192</span><span class="p">,</span> <span class="mi">107</span><span class="p">,</span> <span class="mi">79</span><span class="p">)),</span>
+    <span class="p">(</span><span class="s2">"rail"</span><span class="p">,</span> <span class="p">(</span><span class="mi">125</span><span class="p">,</span> <span class="mi">110</span><span class="p">,</span> <span class="mi">90</span><span class="p">)),</span>
+    <span class="p">(</span><span class="s2">"cinnabar"</span><span class="p">,</span> <span class="p">(</span><span class="mi">150</span><span class="p">,</span> <span class="mi">40</span><span class="p">,</span> <span class="mi">35</span><span class="p">)),</span>
+    <span class="p">(</span><span class="s2">"sulfur"</span><span class="p">,</span> <span class="p">(</span><span class="mi">200</span><span class="p">,</span> <span class="mi">190</span><span class="p">,</span> <span class="mi">60</span><span class="p">)),</span>
+    <span class="p">(</span><span class="s2">"head"</span><span class="p">,</span> <span class="p">(</span><span class="mi">190</span><span class="p">,</span> <span class="mi">190</span><span class="p">,</span> <span class="mi">180</span><span class="p">)),</span>
+    <span class="p">(</span><span class="s2">"skull"</span><span class="p">,</span> <span class="p">(</span><span class="mi">190</span><span class="p">,</span> <span class="mi">190</span><span class="p">,</span> <span class="mi">180</span><span class="p">)),</span>
+    <span class="p">(</span><span class="s2">"campfire"</span><span class="p">,</span> <span class="p">(</span><span class="mi">110</span><span class="p">,</span> <span class="mi">80</span><span class="p">,</span> <span class="mi">50</span><span class="p">)),</span>
+    <span class="p">(</span><span class="s2">"cauldron"</span><span class="p">,</span> <span class="p">(</span><span class="mi">74</span><span class="p">,</span> <span class="mi">74</span><span class="p">,</span> <span class="mi">74</span><span class="p">)),</span>
+    <span class="p">(</span><span class="s2">"_table"</span><span class="p">,</span> <span class="p">(</span><span class="mi">130</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">70</span><span class="p">)),</span>
+    <span class="p">(</span><span class="s2">"deepslate"</span><span class="p">,</span> <span class="p">(</span><span class="mi">80</span><span class="p">,</span> <span class="mi">80</span><span class="p">,</span> <span class="mi">82</span><span class="p">)),</span>
+    <span class="p">(</span><span class="s2">"blackstone"</span><span class="p">,</span> <span class="p">(</span><span class="mi">42</span><span class="p">,</span> <span class="mi">36</span><span class="p">,</span> <span class="mi">41</span><span class="p">)),</span>
+    <span class="p">(</span><span class="s2">"nether"</span><span class="p">,</span> <span class="p">(</span><span class="mi">97</span><span class="p">,</span> <span class="mi">38</span><span class="p">,</span> <span class="mi">38</span><span class="p">)),</span>
+    <span class="p">(</span><span class="s2">"copper"</span><span class="p">,</span> <span class="p">(</span><span class="mi">192</span><span class="p">,</span> <span class="mi">107</span><span class="p">,</span> <span class="mi">79</span><span class="p">)),</span>
+    <span class="p">(</span><span class="s2">"tube_coral"</span><span class="p">,</span> <span class="p">(</span><span class="mi">49</span><span class="p">,</span> <span class="mi">87</span><span class="p">,</span> <span class="mi">207</span><span class="p">)),</span>
+    <span class="p">(</span><span class="s2">"brain_coral"</span><span class="p">,</span> <span class="p">(</span><span class="mi">207</span><span class="p">,</span> <span class="mi">91</span><span class="p">,</span> <span class="mi">159</span><span class="p">)),</span>
+    <span class="p">(</span><span class="s2">"bubble_coral"</span><span class="p">,</span> <span class="p">(</span><span class="mi">161</span><span class="p">,</span> <span class="mi">24</span><span class="p">,</span> <span class="mi">160</span><span class="p">)),</span>
+    <span class="p">(</span><span class="s2">"fire_coral"</span><span class="p">,</span> <span class="p">(</span><span class="mi">164</span><span class="p">,</span> <span class="mi">35</span><span class="p">,</span> <span class="mi">47</span><span class="p">)),</span>
+    <span class="p">(</span><span class="s2">"horn_coral"</span><span class="p">,</span> <span class="p">(</span><span class="mi">216</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span> <span class="mi">66</span><span class="p">)),</span>
+    <span class="p">(</span><span class="s2">"coral"</span><span class="p">,</span> <span class="p">(</span><span class="mi">130</span><span class="p">,</span> <span class="mi">123</span><span class="p">,</span> <span class="mi">119</span><span class="p">)),</span>
+    <span class="p">(</span><span class="s2">"sandstone"</span><span class="p">,</span> <span class="p">(</span><span class="mi">216</span><span class="p">,</span> <span class="mi">203</span><span class="p">,</span> <span class="mi">155</span><span class="p">)),</span>
+    <span class="p">(</span><span class="s2">"sand"</span><span class="p">,</span> <span class="p">(</span><span class="mi">219</span><span class="p">,</span> <span class="mi">207</span><span class="p">,</span> <span class="mi">163</span><span class="p">)),</span>
+    <span class="p">(</span><span class="s2">"gravel"</span><span class="p">,</span> <span class="p">(</span><span class="mi">131</span><span class="p">,</span> <span class="mi">127</span><span class="p">,</span> <span class="mi">126</span><span class="p">)),</span>
+    <span class="p">(</span><span class="s2">"ice"</span><span class="p">,</span> <span class="p">(</span><span class="mi">145</span><span class="p">,</span> <span class="mi">183</span><span class="p">,</span> <span class="mi">253</span><span class="p">)),</span>
+    <span class="p">(</span><span class="s2">"snow"</span><span class="p">,</span> <span class="p">(</span><span class="mi">249</span><span class="p">,</span> <span class="mi">254</span><span class="p">,</span> <span class="mi">254</span><span class="p">)),</span>
+    <span class="p">(</span><span class="s2">"leaves"</span><span class="p">,</span> <span class="p">(</span><span class="mi">64</span><span class="p">,</span> <span class="mi">120</span><span class="p">,</span> <span class="mi">36</span><span class="p">)),</span>
+    <span class="p">(</span><span class="s2">"grass"</span><span class="p">,</span> <span class="p">(</span><span class="mi">95</span><span class="p">,</span> <span class="mi">159</span><span class="p">,</span> <span class="mi">53</span><span class="p">)),</span>
+    <span class="p">(</span><span class="s2">"flower"</span><span class="p">,</span> <span class="p">(</span><span class="mi">200</span><span class="p">,</span> <span class="mi">120</span><span class="p">,</span> <span class="mi">180</span><span class="p">)),</span>
+    <span class="p">(</span><span class="s2">"tulip"</span><span class="p">,</span> <span class="p">(</span><span class="mi">220</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="mi">60</span><span class="p">)),</span>
+    <span class="p">(</span><span class="s2">"allium"</span><span class="p">,</span> <span class="p">(</span><span class="mi">180</span><span class="p">,</span> <span class="mi">120</span><span class="p">,</span> <span class="mi">220</span><span class="p">)),</span>
+    <span class="p">(</span><span class="s2">"bluet"</span><span class="p">,</span> <span class="p">(</span><span class="mi">220</span><span class="p">,</span> <span class="mi">225</span><span class="p">,</span> <span class="mi">230</span><span class="p">)),</span>
+    <span class="p">(</span><span class="s2">"daisy"</span><span class="p">,</span> <span class="p">(</span><span class="mi">230</span><span class="p">,</span> <span class="mi">230</span><span class="p">,</span> <span class="mi">220</span><span class="p">)),</span>
+    <span class="p">(</span><span class="s2">"lilac"</span><span class="p">,</span> <span class="p">(</span><span class="mi">200</span><span class="p">,</span> <span class="mi">150</span><span class="p">,</span> <span class="mi">200</span><span class="p">)),</span>
+    <span class="p">(</span><span class="s2">"peony"</span><span class="p">,</span> <span class="p">(</span><span class="mi">230</span><span class="p">,</span> <span class="mi">170</span><span class="p">,</span> <span class="mi">200</span><span class="p">)),</span>
+    <span class="p">(</span><span class="s2">"lily_of_the_valley"</span><span class="p">,</span> <span class="p">(</span><span class="mi">230</span><span class="p">,</span> <span class="mi">230</span><span class="p">,</span> <span class="mi">230</span><span class="p">)),</span>
+    <span class="p">(</span><span class="s2">"wither_rose"</span><span class="p">,</span> <span class="p">(</span><span class="mi">40</span><span class="p">,</span> <span class="mi">40</span><span class="p">,</span> <span class="mi">30</span><span class="p">)),</span>
+    <span class="p">(</span><span class="s2">"orchid"</span><span class="p">,</span> <span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="mi">170</span><span class="p">,</span> <span class="mi">220</span><span class="p">)),</span>
+    <span class="p">(</span><span class="s2">"cornflower"</span><span class="p">,</span> <span class="p">(</span><span class="mi">70</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">220</span><span class="p">)),</span>
+    <span class="p">(</span><span class="s2">"pitcher"</span><span class="p">,</span> <span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">130</span><span class="p">,</span> <span class="mi">160</span><span class="p">)),</span>
+    <span class="p">(</span><span class="s2">"mushroom"</span><span class="p">,</span> <span class="p">(</span><span class="mi">149</span><span class="p">,</span> <span class="mi">111</span><span class="p">,</span> <span class="mi">81</span><span class="p">)),</span>
+    <span class="p">(</span><span class="s2">"dirt"</span><span class="p">,</span> <span class="p">(</span><span class="mi">134</span><span class="p">,</span> <span class="mi">96</span><span class="p">,</span> <span class="mi">67</span><span class="p">)),</span>
+    <span class="p">(</span><span class="s2">"bricks"</span><span class="p">,</span> <span class="p">(</span><span class="mi">150</span><span class="p">,</span> <span class="mi">97</span><span class="p">,</span> <span class="mi">83</span><span class="p">)),</span>
+    <span class="p">(</span><span class="s2">"quartz"</span><span class="p">,</span> <span class="p">(</span><span class="mi">235</span><span class="p">,</span> <span class="mi">229</span><span class="p">,</span> <span class="mi">222</span><span class="p">)),</span>
+    <span class="p">(</span><span class="s2">"prismarine"</span><span class="p">,</span> <span class="p">(</span><span class="mi">99</span><span class="p">,</span> <span class="mi">156</span><span class="p">,</span> <span class="mi">151</span><span class="p">)),</span>
+    <span class="p">(</span><span class="s2">"purpur"</span><span class="p">,</span> <span class="p">(</span><span class="mi">169</span><span class="p">,</span> <span class="mi">125</span><span class="p">,</span> <span class="mi">169</span><span class="p">)),</span>
+    <span class="p">(</span><span class="s2">"amethyst"</span><span class="p">,</span> <span class="p">(</span><span class="mi">133</span><span class="p">,</span> <span class="mi">97</span><span class="p">,</span> <span class="mi">191</span><span class="p">)),</span>
+    <span class="p">(</span><span class="s2">"redstone"</span><span class="p">,</span> <span class="p">(</span><span class="mi">175</span><span class="p">,</span> <span class="mi">24</span><span class="p">,</span> <span class="mi">5</span><span class="p">)),</span>
+    <span class="p">(</span><span class="s2">"stone"</span><span class="p">,</span> <span class="p">(</span><span class="mi">125</span><span class="p">,</span> <span class="mi">125</span><span class="p">,</span> <span class="mi">125</span><span class="p">)),</span>
+    <span class="p">(</span><span class="s2">"iron"</span><span class="p">,</span> <span class="p">(</span><span class="mi">220</span><span class="p">,</span> <span class="mi">220</span><span class="p">,</span> <span class="mi">220</span><span class="p">)),</span>
+    <span class="p">(</span><span class="s2">"gold"</span><span class="p">,</span> <span class="p">(</span><span class="mi">246</span><span class="p">,</span> <span class="mi">208</span><span class="p">,</span> <span class="mi">61</span><span class="p">)),</span>
+    <span class="p">(</span><span class="s2">"anvil"</span><span class="p">,</span> <span class="p">(</span><span class="mi">68</span><span class="p">,</span> <span class="mi">68</span><span class="p">,</span> <span class="mi">68</span><span class="p">)),</span>
+    <span class="p">(</span><span class="s2">"bed"</span><span class="p">,</span> <span class="p">(</span><span class="mi">160</span><span class="p">,</span> <span class="mi">39</span><span class="p">,</span> <span class="mi">34</span><span class="p">)),</span>
+    <span class="p">(</span><span class="s2">"shulker_box"</span><span class="p">,</span> <span class="p">(</span><span class="mi">151</span><span class="p">,</span> <span class="mi">103</span><span class="p">,</span> <span class="mi">151</span><span class="p">)),</span>
+<span class="p">)</span>
+
+<span class="c1"># the stone that an ore is set in, by prefix</span>
+<span class="n">ORE_HOSTS</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">RGB</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">"deepslate_"</span><span class="p">:</span> <span class="p">(</span><span class="mi">80</span><span class="p">,</span> <span class="mi">80</span><span class="p">,</span> <span class="mi">82</span><span class="p">),</span>
+    <span class="s2">"nether_"</span><span class="p">:</span> <span class="p">(</span><span class="mi">97</span><span class="p">,</span> <span class="mi">38</span><span class="p">,</span> <span class="mi">38</span><span class="p">),</span>
+<span class="p">}</span>
+<span class="n">ORE_MINERALS</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">RGB</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">"coal"</span><span class="p">:</span> <span class="p">(</span><span class="mi">46</span><span class="p">,</span> <span class="mi">46</span><span class="p">,</span> <span class="mi">46</span><span class="p">),</span>
+    <span class="s2">"iron"</span><span class="p">:</span> <span class="p">(</span><span class="mi">216</span><span class="p">,</span> <span class="mi">175</span><span class="p">,</span> <span class="mi">147</span><span class="p">),</span>
+    <span class="s2">"copper"</span><span class="p">:</span> <span class="p">(</span><span class="mi">224</span><span class="p">,</span> <span class="mi">128</span><span class="p">,</span> <span class="mi">90</span><span class="p">),</span>
+    <span class="s2">"gold"</span><span class="p">:</span> <span class="p">(</span><span class="mi">252</span><span class="p">,</span> <span class="mi">238</span><span class="p">,</span> <span class="mi">75</span><span class="p">),</span>
+    <span class="s2">"redstone"</span><span class="p">:</span> <span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+    <span class="s2">"emerald"</span><span class="p">:</span> <span class="p">(</span><span class="mi">23</span><span class="p">,</span> <span class="mi">221</span><span class="p">,</span> <span class="mi">98</span><span class="p">),</span>
+    <span class="s2">"lapis"</span><span class="p">:</span> <span class="p">(</span><span class="mi">30</span><span class="p">,</span> <span class="mi">67</span><span class="p">,</span> <span class="mi">140</span><span class="p">),</span>
+    <span class="s2">"diamond"</span><span class="p">:</span> <span class="p">(</span><span class="mi">92</span><span class="p">,</span> <span class="mi">219</span><span class="p">,</span> <span class="mi">213</span><span class="p">),</span>
+    <span class="s2">"quartz"</span><span class="p">:</span> <span class="p">(</span><span class="mi">235</span><span class="p">,</span> <span class="mi">229</span><span class="p">,</span> <span class="mi">222</span><span class="p">),</span>
+<span class="p">}</span>
+
+<span class="n">COPPER_AGES</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"exposed_"</span><span class="p">,</span> <span class="s2">"weathered_"</span><span class="p">,</span> <span class="s2">"oxidized_"</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_mix</span><span class="p">(</span><span class="n">a</span><span class="p">:</span> <span class="n">RGB</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="n">RGB</span><span class="p">,</span> <span class="n">amount</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">RGB</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""mix *amount* of colour b into colour a"""</span>
+    <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">x</span> <span class="o">+</span> <span class="p">(</span><span class="n">y</span> <span class="o">-</span> <span class="n">x</span><span class="p">)</span> <span class="o">*</span> <span class="n">amount</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>  <span class="c1"># type: ignore</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_scale</span><span class="p">(</span><span class="n">colour</span><span class="p">:</span> <span class="n">RGB</span><span class="p">,</span> <span class="n">factor</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">RGB</span><span class="p">:</span>
+    <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="nb">round</span><span class="p">(</span><span class="n">c</span> <span class="o">*</span> <span class="n">factor</span><span class="p">))</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">colour</span><span class="p">)</span>  <span class="c1"># type: ignore</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_rgba</span><span class="p">(</span><span class="n">colour</span><span class="p">:</span> <span class="n">RGB</span> <span class="o">|</span> <span class="n">RGBA</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">RGBA</span><span class="p">:</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">colour</span><span class="p">)</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">colour</span>  <span class="c1"># type: ignore</span>
+    <span class="k">return</span> <span class="p">(</span><span class="o">*</span><span class="n">colour</span><span class="p">,</span> <span class="mi">255</span><span class="p">)</span>  <span class="c1"># type: ignore</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_dyed</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">RGB</span> <span class="o">|</span> <span class="n">RGBA</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""colours of blocks named &lt;dye colour&gt;_&lt;material&gt;"""</span>
+    <span class="c1"># try light_blue before blue</span>
+    <span class="k">for</span> <span class="n">dye</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">DYE_COLOURS</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="nb">len</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">dye</span> <span class="o">+</span> <span class="s2">"_"</span><span class="p">):</span>
+            <span class="k">continue</span>
+        <span class="n">material</span> <span class="o">=</span> <span class="n">name</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">dye</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span> <span class="p">:]</span>
+        <span class="n">colour</span> <span class="o">=</span> <span class="n">DYE_COLOURS</span><span class="p">[</span><span class="n">dye</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">material</span> <span class="o">==</span> <span class="s2">"terracotta"</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">TERRACOTTA_COLOURS</span><span class="p">[</span><span class="n">dye</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">material</span> <span class="o">==</span> <span class="s2">"glazed_terracotta"</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">_mix</span><span class="p">(</span><span class="n">colour</span><span class="p">,</span> <span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">),</span> <span class="mf">0.15</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">material</span> <span class="o">==</span> <span class="s2">"concrete_powder"</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">_mix</span><span class="p">(</span><span class="n">colour</span><span class="p">,</span> <span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">),</span> <span class="mf">0.2</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">material</span> <span class="o">==</span> <span class="s2">"concrete"</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">_scale</span><span class="p">(</span><span class="n">colour</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">)</span>
+        <span class="k">if</span> <span class="s2">"glass"</span> <span class="ow">in</span> <span class="n">material</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">(</span><span class="o">*</span><span class="n">colour</span><span class="p">,</span> <span class="mi">110</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">material</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">"carpet"</span><span class="p">,</span> <span class="s2">"candle"</span><span class="p">,</span> <span class="s2">"banner"</span><span class="p">,</span> <span class="s2">"wall_banner"</span><span class="p">,</span> <span class="s2">"bed"</span><span class="p">):</span>
+            <span class="k">return</span> <span class="p">(</span><span class="o">*</span><span class="n">colour</span><span class="p">,</span> <span class="n">THIN_ALPHA</span><span class="p">)</span> <span class="k">if</span> <span class="n">material</span> <span class="o">!=</span> <span class="s2">"bed"</span> <span class="k">else</span> <span class="n">colour</span>
+        <span class="k">return</span> <span class="n">colour</span>
+    <span class="k">return</span> <span class="kc">None</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_wood</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">RGB</span> <span class="o">|</span> <span class="n">RGBA</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""colours of blocks made of wood, e.g. oak_planks, stripped_birch_log"""</span>
+    <span class="n">stripped</span> <span class="o">=</span> <span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">"stripped_"</span><span class="p">)</span>
+    <span class="n">base</span> <span class="o">=</span> <span class="n">name</span><span class="o">.</span><span class="n">removeprefix</span><span class="p">(</span><span class="s2">"stripped_"</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">wood_name</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">WOODS</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="nb">len</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="n">wood</span> <span class="o">=</span> <span class="n">WOODS</span><span class="p">[</span><span class="n">wood_name</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">base</span> <span class="o">==</span> <span class="n">wood_name</span> <span class="ow">or</span> <span class="n">base</span> <span class="o">==</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">wood_name</span><span class="si">}</span><span class="s2">_planks"</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">wood</span><span class="o">.</span><span class="n">planks</span>
+        <span class="n">rest</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">removeprefix</span><span class="p">(</span><span class="n">wood_name</span> <span class="o">+</span> <span class="s2">"_"</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">rest</span> <span class="o">==</span> <span class="n">base</span><span class="p">:</span>
+            <span class="k">continue</span>
+        <span class="k">if</span> <span class="n">rest</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">"log"</span><span class="p">,</span> <span class="s2">"wood"</span><span class="p">,</span> <span class="s2">"stem"</span><span class="p">,</span> <span class="s2">"hyphae"</span><span class="p">,</span> <span class="s2">"block"</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">_scale</span><span class="p">(</span><span class="n">wood</span><span class="o">.</span><span class="n">planks</span><span class="p">,</span> <span class="mf">1.05</span><span class="p">)</span> <span class="k">if</span> <span class="n">stripped</span> <span class="k">else</span> <span class="n">wood</span><span class="o">.</span><span class="n">log</span>
+        <span class="k">if</span> <span class="n">rest</span> <span class="o">==</span> <span class="s2">"leaves"</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">wood</span><span class="o">.</span><span class="n">leaves</span> <span class="ow">or</span> <span class="n">wood</span><span class="o">.</span><span class="n">planks</span>
+        <span class="k">if</span> <span class="n">rest</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">"mosaic"</span><span class="p">,</span> <span class="s2">"planks"</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">wood</span><span class="o">.</span><span class="n">planks</span>
+    <span class="k">return</span> <span class="kc">None</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_ore</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">RGB</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""ores: the host stone with a little of the mineral"""</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">name</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">"_ore"</span><span class="p">):</span>
+        <span class="k">return</span> <span class="kc">None</span>
+    <span class="n">host</span> <span class="o">=</span> <span class="n">BLOCK_COLOURS</span><span class="p">[</span><span class="s2">"stone"</span><span class="p">][:</span><span class="mi">3</span><span class="p">]</span>
+    <span class="n">mineral</span> <span class="o">=</span> <span class="n">name</span><span class="o">.</span><span class="n">removesuffix</span><span class="p">(</span><span class="s2">"_ore"</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">prefix</span><span class="p">,</span> <span class="n">colour</span> <span class="ow">in</span> <span class="n">ORE_HOSTS</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="k">if</span> <span class="n">mineral</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">prefix</span><span class="p">):</span>
+            <span class="n">host</span> <span class="o">=</span> <span class="n">colour</span>
+            <span class="n">mineral</span> <span class="o">=</span> <span class="n">mineral</span><span class="o">.</span><span class="n">removeprefix</span><span class="p">(</span><span class="n">prefix</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">_mix</span><span class="p">(</span><span class="n">host</span><span class="p">,</span> <span class="n">ORE_MINERALS</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">mineral</span><span class="p">,</span> <span class="n">host</span><span class="p">),</span> <span class="mf">0.3</span><span class="p">)</span>  <span class="c1"># type: ignore</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_hashed</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">RGB</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""a muted colour for a block that no rule knows"""</span>
+    <span class="n">hue</span> <span class="o">=</span> <span class="p">(</span><span class="n">zlib</span><span class="o">.</span><span class="n">crc32</span><span class="p">(</span><span class="n">name</span><span class="o">.</span><span class="n">encode</span><span class="p">())</span> <span class="o">%</span> <span class="mi">360</span><span class="p">)</span> <span class="o">/</span> <span class="mi">360</span>
+    <span class="n">r</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">b</span> <span class="o">=</span> <span class="n">colorsys</span><span class="o">.</span><span class="n">hsv_to_rgb</span><span class="p">(</span><span class="n">hue</span><span class="p">,</span> <span class="mf">0.35</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nb">round</span><span class="p">(</span><span class="n">r</span> <span class="o">*</span> <span class="mi">255</span><span class="p">),</span> <span class="nb">round</span><span class="p">(</span><span class="n">g</span> <span class="o">*</span> <span class="mi">255</span><span class="p">),</span> <span class="nb">round</span><span class="p">(</span><span class="n">b</span> <span class="o">*</span> <span class="mi">255</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="Palette">
+<a class="viewcode-back" href="../../_api/mciwb.html#mciwb.Palette">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Palette</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    The colours of blocks, see the module documentation for the rules.</span>
+
+<span class="sd">    :param colours: colours that take precedence over the defaults, keyed by</span>
+<span class="sd">        block name (with or without the ``minecraft:`` namespace), as (r, g, b)</span>
+<span class="sd">        or (r, g, b, a) with values 0-255</span>
+<span class="sd">    """</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">colours</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">RGB</span> <span class="o">|</span> <span class="n">RGBA</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_overrides</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">RGBA</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">RGBA</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">colour</span> <span class="ow">in</span> <span class="p">(</span><span class="n">colours</span> <span class="ow">or</span> <span class="p">{})</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">colour</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Palette.set">
+<a class="viewcode-back" href="../../_api/mciwb.html#mciwb.Palette.set">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">colour</span><span class="p">:</span> <span class="n">RGB</span> <span class="o">|</span> <span class="n">RGBA</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""</span>
+<span class="sd">        Set the colour of a block</span>
+
+<span class="sd">        :param name: the block name, e.g. "minecraft:stone" or "stone"</span>
+<span class="sd">        :param colour: (r, g, b) or (r, g, b, a), values 0-255</span>
+<span class="sd">        """</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">colour</span><span class="p">)</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">c</span> <span class="o">&lt;=</span> <span class="mi">255</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">colour</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"colour must be (r, g, b[, a]) 0-255, not </span><span class="si">{</span><span class="n">colour</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_overrides</span><span class="p">[</span><span class="n">_short</span><span class="p">(</span><span class="n">name</span><span class="p">)]</span> <span class="o">=</span> <span class="n">_rgba</span><span class="p">(</span><span class="nb">tuple</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">colour</span><span class="p">))</span>  <span class="c1"># type: ignore</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="Palette.colour">
+<a class="viewcode-back" href="../../_api/mciwb.html#mciwb.Palette.colour">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">colour</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">RGBA</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""</span>
+<span class="sd">        The colour of a block</span>
+
+<span class="sd">        :param name: the block name, e.g. "minecraft:red_wool"; any block</span>
+<span class="sd">            states, e.g. "[facing=north]", are ignored</span>
+<span class="sd">        :returns: (r, g, b, a) with values 0-255. a is 0 for blocks that are</span>
+<span class="sd">            not drawn, 255 for solid blocks</span>
+<span class="sd">        """</span>
+        <span class="n">short</span> <span class="o">=</span> <span class="n">_short</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">short</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="n">short</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lookup</span><span class="p">(</span><span class="n">short</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="n">short</span><span class="p">]</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_lookup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">RGBA</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_overrides</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_overrides</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">INVISIBLE</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">colour</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_base</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">colour</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">colour</span> <span class="o">=</span> <span class="n">_hashed</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">colour</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span> <span class="ow">and</span> <span class="n">_is_thin</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+            <span class="n">colour</span> <span class="o">=</span> <span class="p">(</span><span class="o">*</span><span class="n">colour</span><span class="p">,</span> <span class="n">THIN_ALPHA</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">_rgba</span><span class="p">(</span><span class="n">colour</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_base</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">RGB</span> <span class="o">|</span> <span class="n">RGBA</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_overrides</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_overrides</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">BLOCK_COLOURS</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">BLOCK_COLOURS</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">"waxed_"</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_base</span><span class="p">(</span><span class="n">name</span><span class="o">.</span><span class="n">removeprefix</span><span class="p">(</span><span class="s2">"waxed_"</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">shape</span> <span class="ow">in</span> <span class="n">SHAPES</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">name</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="n">shape</span><span class="p">):</span>
+                <span class="n">base</span> <span class="o">=</span> <span class="n">name</span><span class="o">.</span><span class="n">removesuffix</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span>
+                <span class="n">colour</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_block_named</span><span class="p">(</span><span class="n">base</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">colour</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="n">colour</span>
+        <span class="k">for</span> <span class="n">rule</span> <span class="ow">in</span> <span class="p">(</span><span class="n">_dyed</span><span class="p">,</span> <span class="n">_wood</span><span class="p">,</span> <span class="n">_ore</span><span class="p">,</span> <span class="n">_copper</span><span class="p">):</span>
+            <span class="n">colour</span> <span class="o">=</span> <span class="n">rule</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">colour</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">colour</span>
+        <span class="k">for</span> <span class="n">keyword</span><span class="p">,</span> <span class="n">colour</span> <span class="ow">in</span> <span class="n">KEYWORDS</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">keyword</span> <span class="ow">in</span> <span class="n">name</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">colour</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_block_named</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">base</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">RGB</span> <span class="o">|</span> <span class="n">RGBA</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""the colour of the full block for *base*, e.g. stone_brick -&gt; bricks"""</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">base</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">base</span> <span class="ow">in</span> <span class="n">WOODS</span> <span class="ow">and</span> <span class="n">base</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_overrides</span><span class="p">:</span>
+            <span class="c1"># e.g. bamboo_stairs are made of bamboo planks, not bamboo</span>
+            <span class="k">return</span> <span class="n">WOODS</span><span class="p">[</span><span class="n">base</span><span class="p">]</span><span class="o">.</span><span class="n">planks</span>
+        <span class="k">for</span> <span class="n">candidate</span> <span class="ow">in</span> <span class="p">(</span><span class="n">base</span><span class="p">,</span> <span class="n">base</span> <span class="o">+</span> <span class="s2">"s"</span><span class="p">,</span> <span class="n">base</span> <span class="o">+</span> <span class="s2">"_block"</span><span class="p">,</span> <span class="n">base</span> <span class="o">+</span> <span class="s2">"_planks"</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">candidate</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_overrides</span> <span class="ow">or</span> <span class="n">candidate</span> <span class="ow">in</span> <span class="n">BLOCK_COLOURS</span><span class="p">:</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_base</span><span class="p">(</span><span class="n">candidate</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_base</span><span class="p">(</span><span class="n">base</span><span class="p">)</span></div>
+
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_copper</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">RGB</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""weathered copper of all shapes, e.g. oxidized_cut_copper"""</span>
+    <span class="k">if</span> <span class="s2">"copper"</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">name</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
+    <span class="k">for</span> <span class="n">age</span> <span class="ow">in</span> <span class="n">COPPER_AGES</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">age</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">BLOCK_COLOURS</span><span class="p">[</span><span class="n">age</span> <span class="o">+</span> <span class="s2">"copper"</span><span class="p">][:</span><span class="mi">3</span><span class="p">]</span>  <span class="c1"># type: ignore</span>
+    <span class="k">return</span> <span class="kc">None</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_short</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""the block name without namespace or block states"""</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">name</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">"["</span><span class="p">,</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">"{"</span><span class="p">,</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">name</span><span class="o">.</span><span class="n">removeprefix</span><span class="p">(</span><span class="s2">"minecraft:"</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_is_thin</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    True for small blocks such as torches or fences. The curated table gives</span>
+<span class="sd">    its blocks' alpha explicitly</span>
+<span class="sd">    """</span>
+    <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">BLOCK_COLOURS</span> <span class="ow">or</span> <span class="n">name</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">"_block"</span><span class="p">):</span>
+        <span class="k">return</span> <span class="kc">False</span>
+    <span class="k">return</span> <span class="nb">any</span><span class="p">(</span><span class="n">keyword</span> <span class="ow">in</span> <span class="n">name</span> <span class="k">for</span> <span class="n">keyword</span> <span class="ow">in</span> <span class="n">THIN</span><span class="p">)</span>
+
+
+<span class="n">default_palette</span> <span class="o">=</span> <span class="n">Palette</span><span class="p">()</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">set_colour</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">colour</span><span class="p">:</span> <span class="n">RGB</span> <span class="o">|</span> <span class="n">RGBA</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Set the colour of a block in the default palette, used by every render</span>
+<span class="sd">    that is not given a palette of its own</span>
+
+<span class="sd">    :param name: the block name, e.g. "minecraft:stone" or "stone"</span>
+<span class="sd">    :param colour: (r, g, b) or (r, g, b, a), values 0-255</span>
+<span class="sd">    """</span>
+    <span class="n">default_palette</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">colour</span><span class="p">)</span>
+</pre></div>
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be"></script>
+<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.23.0.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

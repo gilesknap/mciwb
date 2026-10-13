@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>mciwb.builders.roofs &#8212; mciwb 0.9.2.dev92+gb813bc9d3 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../_static/styles/theme.css?digest=18bd87630a240e9c25be" rel="stylesheet" />
+<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=18bd87630a240e9c25be" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.min.css?v=95c83b7e" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="../../../_static/scripts/fontawesome.js?digest=18bd87630a240e9c25be"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be" />
+<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be" />
+
+    <script src="../../../_static/documentation_options.js?v=eaab3c44"></script>
+    <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../../_static/copybutton.js?v=30646c52"></script>
+    <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/mciwb/builders/roofs';</script>
+    <script>
+        DOCUMENTATION_OPTIONS.theme_version = '0.23.0';
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://gilesknap.github.io/mciwb/switcher.json';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = 'main';
+        DOCUMENTATION_OPTIONS.show_version_warning_banner =
+            false;
+        </script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <link rel="icon" href="../../../_static/logo.png"/>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="color-scheme" content="light dark"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="main" />
+  
+    
+    <script src="../../../_static/searchtools.js"></script>
+    <script src="../../../_static/language_data.js"></script>
+    <script src="../../../searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button type="button" class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../../_static/logo.png" class="logo__image only-light" alt=""/>
+    <img src="../../../_static/logo.png" class="logo__image only-dark pst-js-only" alt=""/>
+  
+  
+    <p class="title logo__title">mciwb</p>
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../tutorials.html">
+    Tutorials
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../how-to.html">
+    How-to Guides
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../explanations.html">
+    Explanations
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../reference.html">
+    Reference
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button type="button" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/gilesknap/mciwb" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://pypi.org/project/mciwb" title="PyPI" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fas fa-cube fa-lg" aria-hidden="true"></i><span class="visually-hidden">PyPI</span></a>
+        </li>
+</ul></div>
+      
+        <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-2"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-2"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-2"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-2">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar hide-on-wide">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../tutorials.html">
+    Tutorials
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../how-to.html">
+    How-to Guides
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../explanations.html">
+    Explanations
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../reference.html">
+    Reference
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button type="button" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/gilesknap/mciwb" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://pypi.org/project/mciwb" title="PyPI" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fas fa-cube fa-lg" aria-hidden="true"></i><span class="visually-hidden">PyPI</span></a>
+        </li>
+</ul></div>
+        
+          <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-3"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-3"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-3"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-3">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
+        
+      </div>
+    
+  </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../../index.html" class="nav-link">Module code</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">mciwb.builders.roofs</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <h1>Source code for mciwb.builders.roofs</h1><div class="highlight"><pre>
+<span></span><span class="sd">"""</span>
+<span class="sd">Roofs over a rectangular footprint: gable, hip and flat (with a parapet).</span>
+
+<span class="sd">Each roof covers the rectangle between two opposite corners, *start* and</span>
+<span class="sd">*end*, which are usually the corners of the tops of the walls. The roof's</span>
+<span class="sd">lowest course is at ``start.y + 1``, i.e. directly on top of walls whose top</span>
+<span class="sd">blocks are at ``start.y`` (the y of *end* is ignored). The sloping roofs are</span>
+<span class="sd">built from stairs that rise one block for each block in from the eaves.</span>
+
+<span class="sd">Each function returns the bounding box (a ``Volume``) of the blocks it placed.</span>
+<span class="sd">"""</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">mcwb</span><span class="w"> </span><span class="kn">import</span> <span class="n">Item</span><span class="p">,</span> <span class="n">Vec3</span><span class="p">,</span> <span class="n">Volume</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">mciwb.builders.blockstate</span><span class="w"> </span><span class="kn">import</span> <span class="n">Block</span><span class="p">,</span> <span class="n">BlockState</span><span class="p">,</span> <span class="n">slab_of</span><span class="p">,</span> <span class="n">stair_shapes</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mciwb.builders.placer</span><span class="w"> </span><span class="kn">import</span> <span class="n">Placer</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"flat_roof"</span><span class="p">,</span> <span class="s2">"gable_roof"</span><span class="p">,</span> <span class="s2">"hip_roof"</span><span class="p">]</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_footprint</span><span class="p">(</span><span class="n">start</span><span class="p">:</span> <span class="n">Vec3</span><span class="p">,</span> <span class="n">end</span><span class="p">:</span> <span class="n">Vec3</span><span class="p">,</span> <span class="n">overhang</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">"""(x1, z1, x2, z2) with x1 &lt;= x2 and z1 &lt;= z2, expanded by overhang"""</span>
+    <span class="n">x1</span><span class="p">,</span> <span class="n">x2</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">((</span><span class="nb">int</span><span class="p">(</span><span class="n">start</span><span class="o">.</span><span class="n">x</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">end</span><span class="o">.</span><span class="n">x</span><span class="p">)))</span>
+    <span class="n">z1</span><span class="p">,</span> <span class="n">z2</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">((</span><span class="nb">int</span><span class="p">(</span><span class="n">start</span><span class="o">.</span><span class="n">z</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">end</span><span class="o">.</span><span class="n">z</span><span class="p">)))</span>
+    <span class="k">if</span> <span class="n">overhang</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"overhang must not be negative"</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">x1</span> <span class="o">-</span> <span class="n">overhang</span><span class="p">,</span> <span class="n">z1</span> <span class="o">-</span> <span class="n">overhang</span><span class="p">,</span> <span class="n">x2</span> <span class="o">+</span> <span class="n">overhang</span><span class="p">,</span> <span class="n">z2</span> <span class="o">+</span> <span class="n">overhang</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_ridge_state</span><span class="p">(</span><span class="n">stairs</span><span class="p">:</span> <span class="n">Block</span><span class="p">,</span> <span class="n">ridge</span><span class="p">:</span> <span class="n">Block</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BlockState</span><span class="p">:</span>
+    <span class="n">state</span> <span class="o">=</span> <span class="n">BlockState</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">slab_of</span><span class="p">(</span><span class="n">stairs</span><span class="p">)</span> <span class="k">if</span> <span class="n">ridge</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">ridge</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">state</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">"_slab"</span><span class="p">)</span> <span class="ow">and</span> <span class="s2">"type"</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">state</span><span class="o">.</span><span class="n">props</span><span class="p">:</span>
+        <span class="n">state</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">with_props</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s2">"bottom"</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">state</span>
+
+
+<div class="viewcode-block" id="gable_roof">
+<a class="viewcode-back" href="../../../_api/mciwb.builders.html#mciwb.builders.gable_roof">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">gable_roof</span><span class="p">(</span>
+    <span class="n">start</span><span class="p">:</span> <span class="n">Vec3</span><span class="p">,</span>
+    <span class="n">end</span><span class="p">:</span> <span class="n">Vec3</span><span class="p">,</span>
+    <span class="n">stairs</span><span class="p">:</span> <span class="n">Block</span> <span class="o">=</span> <span class="n">Item</span><span class="o">.</span><span class="n">OAK_STAIRS</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">ridge</span><span class="p">:</span> <span class="n">Block</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">gable</span><span class="p">:</span> <span class="n">Block</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">axis</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">overhang</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Volume</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    A gable (pitched) roof: two slopes of stairs meeting at a ridge.</span>
+
+<span class="sd">    For a footprint 7 wide across the ridge, seen from the gable end</span>
+<span class="sd">    (``#`` is the *gable*, if one is given)::</span>
+
+<span class="sd">              ▄            &lt;- ridge slab, y = start.y + 4</span>
+<span class="sd">            ◢ # ◣</span>
+<span class="sd">          ◢ # # # ◣</span>
+<span class="sd">        ◢ # # # # # ◣      &lt;- stairs, y = start.y + 1</span>
+<span class="sd">        W . . . . . W      &lt;- walls, top at start.y</span>
+
+<span class="sd">    :param start: a corner of the footprint, e.g. the top of a corner of the</span>
+<span class="sd">        walls; the roof starts at ``start.y + 1``</span>
+<span class="sd">    :param end: the opposite corner of the footprint (only x and z are used)</span>
+<span class="sd">    :param stairs: the stairs to build the slopes from</span>
+<span class="sd">    :param ridge: the block along the ridge when the footprint is an odd</span>
+<span class="sd">        number of blocks across. Defaults to the slab matching *stairs*,</span>
+<span class="sd">        placed as a bottom slab</span>
+<span class="sd">    :param gable: if given, fill the triangular gable ends under the roof</span>
+<span class="sd">        with this block, above the footprint's end walls</span>
+<span class="sd">    :param axis: ``"x"`` or ``"z"``, the direction that the ridge runs.</span>
+<span class="sd">        Defaults to the longer side of the footprint</span>
+<span class="sd">    :param overhang: extend the roof this many blocks past the footprint on</span>
+<span class="sd">        every side (the slopes stay at the same height, so the eaves overhang</span>
+<span class="sd">        the walls)</span>
+<span class="sd">    :returns: the bounding box of the roof (and gables)</span>
+<span class="sd">    """</span>
+    <span class="n">x1</span><span class="p">,</span> <span class="n">z1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">z2</span> <span class="o">=</span> <span class="n">_footprint</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">,</span> <span class="n">overhang</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">axis</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">axis</span> <span class="o">=</span> <span class="s2">"x"</span> <span class="k">if</span> <span class="n">x2</span> <span class="o">-</span> <span class="n">x1</span> <span class="o">&gt;=</span> <span class="n">z2</span> <span class="o">-</span> <span class="n">z1</span> <span class="k">else</span> <span class="s2">"z"</span>
+    <span class="k">if</span> <span class="n">axis</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">"x"</span><span class="p">,</span> <span class="s2">"z"</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"axis must be 'x' or 'z'"</span><span class="p">)</span>
+
+    <span class="c1"># work in (along, across) the ridge; to_world maps back to (x, z)</span>
+    <span class="k">if</span> <span class="n">axis</span> <span class="o">==</span> <span class="s2">"x"</span><span class="p">:</span>
+        <span class="n">a1</span><span class="p">,</span> <span class="n">a2</span><span class="p">,</span> <span class="n">c1</span><span class="p">,</span> <span class="n">c2</span> <span class="o">=</span> <span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">z1</span><span class="p">,</span> <span class="n">z2</span>
+        <span class="n">rising</span><span class="p">,</span> <span class="n">falling</span> <span class="o">=</span> <span class="s2">"south"</span><span class="p">,</span> <span class="s2">"north"</span>  <span class="c1"># facing of the low and high sides</span>
+
+        <span class="k">def</span><span class="w"> </span><span class="nf">to_world</span><span class="p">(</span><span class="n">a</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">c</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
+            <span class="k">return</span> <span class="n">a</span><span class="p">,</span> <span class="n">c</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">a1</span><span class="p">,</span> <span class="n">a2</span><span class="p">,</span> <span class="n">c1</span><span class="p">,</span> <span class="n">c2</span> <span class="o">=</span> <span class="n">z1</span><span class="p">,</span> <span class="n">z2</span><span class="p">,</span> <span class="n">x1</span><span class="p">,</span> <span class="n">x2</span>
+        <span class="n">rising</span><span class="p">,</span> <span class="n">falling</span> <span class="o">=</span> <span class="s2">"east"</span><span class="p">,</span> <span class="s2">"west"</span>
+
+        <span class="k">def</span><span class="w"> </span><span class="nf">to_world</span><span class="p">(</span><span class="n">a</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">c</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
+            <span class="k">return</span> <span class="n">c</span><span class="p">,</span> <span class="n">a</span>
+
+    <span class="n">placer</span> <span class="o">=</span> <span class="n">Placer</span><span class="p">()</span>
+    <span class="n">base_y</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">start</span><span class="o">.</span><span class="n">y</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+    <span class="n">slope</span> <span class="o">=</span> <span class="n">BlockState</span><span class="o">.</span><span class="n">of</span><span class="p">(</span><span class="n">stairs</span><span class="p">,</span> <span class="n">half</span><span class="o">=</span><span class="s2">"bottom"</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="s2">"straight"</span><span class="p">)</span>
+    <span class="n">ridge_state</span> <span class="o">=</span> <span class="n">_ridge_state</span><span class="p">(</span><span class="n">stairs</span><span class="p">,</span> <span class="n">ridge</span><span class="p">)</span>
+
+    <span class="n">course</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">while</span> <span class="n">c1</span> <span class="o">+</span> <span class="n">course</span> <span class="o">&lt;=</span> <span class="n">c2</span> <span class="o">-</span> <span class="n">course</span><span class="p">:</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="n">base_y</span> <span class="o">+</span> <span class="n">course</span>
+        <span class="n">lo</span><span class="p">,</span> <span class="n">hi</span> <span class="o">=</span> <span class="n">c1</span> <span class="o">+</span> <span class="n">course</span><span class="p">,</span> <span class="n">c2</span> <span class="o">-</span> <span class="n">course</span>
+        <span class="n">cells</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span> <span class="n">BlockState</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">a1</span><span class="p">,</span> <span class="n">a2</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">lo</span> <span class="o">==</span> <span class="n">hi</span><span class="p">:</span>
+                <span class="n">cells</span><span class="p">[</span><span class="n">to_world</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">lo</span><span class="p">)]</span> <span class="o">=</span> <span class="n">ridge_state</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">cells</span><span class="p">[</span><span class="n">to_world</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">lo</span><span class="p">)]</span> <span class="o">=</span> <span class="n">slope</span><span class="o">.</span><span class="n">with_props</span><span class="p">(</span><span class="n">facing</span><span class="o">=</span><span class="n">rising</span><span class="p">)</span>
+                <span class="n">cells</span><span class="p">[</span><span class="n">to_world</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">hi</span><span class="p">)]</span> <span class="o">=</span> <span class="n">slope</span><span class="o">.</span><span class="n">with_props</span><span class="p">(</span><span class="n">facing</span><span class="o">=</span><span class="n">falling</span><span class="p">)</span>
+        <span class="n">placer</span><span class="o">.</span><span class="n">layer</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">cells</span><span class="p">)</span>
+
+        <span class="c1"># the gable ends: inside the slopes, above the footprint's ends</span>
+        <span class="n">g_lo</span><span class="p">,</span> <span class="n">g_hi</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">lo</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">c1</span> <span class="o">+</span> <span class="n">overhang</span><span class="p">),</span> <span class="nb">min</span><span class="p">(</span><span class="n">hi</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">c2</span> <span class="o">-</span> <span class="n">overhang</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">gable</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">g_lo</span> <span class="o">&lt;=</span> <span class="n">g_hi</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="p">(</span><span class="n">a1</span> <span class="o">+</span> <span class="n">overhang</span><span class="p">,</span> <span class="n">a2</span> <span class="o">-</span> <span class="n">overhang</span><span class="p">):</span>
+                <span class="n">wx1</span><span class="p">,</span> <span class="n">wz1</span> <span class="o">=</span> <span class="n">to_world</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">g_lo</span><span class="p">)</span>
+                <span class="n">wx2</span><span class="p">,</span> <span class="n">wz2</span> <span class="o">=</span> <span class="n">to_world</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">g_hi</span><span class="p">)</span>
+                <span class="n">placer</span><span class="o">.</span><span class="n">fill</span><span class="p">(</span><span class="n">Vec3</span><span class="p">(</span><span class="n">wx1</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">wz1</span><span class="p">),</span> <span class="n">Vec3</span><span class="p">(</span><span class="n">wx2</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">wz2</span><span class="p">),</span> <span class="n">gable</span><span class="p">)</span>
+        <span class="n">course</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="k">return</span> <span class="n">placer</span><span class="o">.</span><span class="n">volume</span></div>
+
+
+
+<div class="viewcode-block" id="hip_roof">
+<a class="viewcode-back" href="../../../_api/mciwb.builders.html#mciwb.builders.hip_roof">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">hip_roof</span><span class="p">(</span>
+    <span class="n">start</span><span class="p">:</span> <span class="n">Vec3</span><span class="p">,</span>
+    <span class="n">end</span><span class="p">:</span> <span class="n">Vec3</span><span class="p">,</span>
+    <span class="n">stairs</span><span class="p">:</span> <span class="n">Block</span> <span class="o">=</span> <span class="n">Item</span><span class="o">.</span><span class="n">OAK_STAIRS</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">ridge</span><span class="p">:</span> <span class="n">Block</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">overhang</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Volume</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    A hip roof: four slopes of stairs, one from each side of the footprint,</span>
+<span class="sd">    with outer corner stairs where they meet. Each course is a ring of stairs</span>
+<span class="sd">    one block in and one block up from the course below. Where the slopes</span>
+<span class="sd">    meet along a line one block wide (the ridge) the roof is finished with</span>
+<span class="sd">    *ridge* blocks.</span>
+
+<span class="sd">    :param start: a corner of the footprint, e.g. the top of a corner of the</span>
+<span class="sd">        walls; the roof starts at ``start.y + 1``</span>
+<span class="sd">    :param end: the opposite corner of the footprint (only x and z are used)</span>
+<span class="sd">    :param stairs: the stairs to build the slopes from</span>
+<span class="sd">    :param ridge: the block for a ridge one block wide, defaults to the slab</span>
+<span class="sd">        matching *stairs*, placed as a bottom slab</span>
+<span class="sd">    :param overhang: extend the roof this many blocks past the footprint on</span>
+<span class="sd">        every side</span>
+<span class="sd">    :returns: the bounding box of the roof</span>
+<span class="sd">    """</span>
+    <span class="n">x1</span><span class="p">,</span> <span class="n">z1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">z2</span> <span class="o">=</span> <span class="n">_footprint</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">,</span> <span class="n">overhang</span><span class="p">)</span>
+    <span class="n">placer</span> <span class="o">=</span> <span class="n">Placer</span><span class="p">()</span>
+    <span class="n">base_y</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">start</span><span class="o">.</span><span class="n">y</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+    <span class="n">slope</span> <span class="o">=</span> <span class="n">BlockState</span><span class="o">.</span><span class="n">of</span><span class="p">(</span><span class="n">stairs</span><span class="p">,</span> <span class="n">half</span><span class="o">=</span><span class="s2">"bottom"</span><span class="p">)</span>
+    <span class="n">ridge_state</span> <span class="o">=</span> <span class="n">_ridge_state</span><span class="p">(</span><span class="n">stairs</span><span class="p">,</span> <span class="n">ridge</span><span class="p">)</span>
+
+    <span class="n">course</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">while</span> <span class="n">x1</span> <span class="o">+</span> <span class="n">course</span> <span class="o">&lt;=</span> <span class="n">x2</span> <span class="o">-</span> <span class="n">course</span> <span class="ow">and</span> <span class="n">z1</span> <span class="o">+</span> <span class="n">course</span> <span class="o">&lt;=</span> <span class="n">z2</span> <span class="o">-</span> <span class="n">course</span><span class="p">:</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="n">base_y</span> <span class="o">+</span> <span class="n">course</span>
+        <span class="n">lx</span><span class="p">,</span> <span class="n">hx</span> <span class="o">=</span> <span class="n">x1</span> <span class="o">+</span> <span class="n">course</span><span class="p">,</span> <span class="n">x2</span> <span class="o">-</span> <span class="n">course</span>
+        <span class="n">lz</span><span class="p">,</span> <span class="n">hz</span> <span class="o">=</span> <span class="n">z1</span> <span class="o">+</span> <span class="n">course</span><span class="p">,</span> <span class="n">z2</span> <span class="o">-</span> <span class="n">course</span>
+
+        <span class="k">if</span> <span class="n">lx</span> <span class="o">==</span> <span class="n">hx</span> <span class="ow">or</span> <span class="n">lz</span> <span class="o">==</span> <span class="n">hz</span><span class="p">:</span>
+            <span class="c1"># the slopes meet in a line: finish with the ridge</span>
+            <span class="n">placer</span><span class="o">.</span><span class="n">fill</span><span class="p">(</span><span class="n">Vec3</span><span class="p">(</span><span class="n">lx</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">lz</span><span class="p">),</span> <span class="n">Vec3</span><span class="p">(</span><span class="n">hx</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">hz</span><span class="p">),</span> <span class="n">ridge_state</span><span class="p">)</span>
+            <span class="k">break</span>
+
+        <span class="c1"># a ring of stairs facing inwards, the corners belong to the north</span>
+        <span class="c1"># and south sides and the server makes them outer corners</span>
+        <span class="n">facings</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">lx</span><span class="p">,</span> <span class="n">hx</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="n">facings</span><span class="p">[(</span><span class="n">x</span><span class="p">,</span> <span class="n">lz</span><span class="p">)]</span> <span class="o">=</span> <span class="s2">"south"</span>
+            <span class="n">facings</span><span class="p">[(</span><span class="n">x</span><span class="p">,</span> <span class="n">hz</span><span class="p">)]</span> <span class="o">=</span> <span class="s2">"north"</span>
+        <span class="k">for</span> <span class="n">z</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">lz</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">hz</span><span class="p">):</span>
+            <span class="n">facings</span><span class="p">[(</span><span class="n">lx</span><span class="p">,</span> <span class="n">z</span><span class="p">)]</span> <span class="o">=</span> <span class="s2">"east"</span>
+            <span class="n">facings</span><span class="p">[(</span><span class="n">hx</span><span class="p">,</span> <span class="n">z</span><span class="p">)]</span> <span class="o">=</span> <span class="s2">"west"</span>
+        <span class="n">shapes</span> <span class="o">=</span> <span class="n">stair_shapes</span><span class="p">(</span><span class="n">facings</span><span class="p">)</span>
+        <span class="n">placer</span><span class="o">.</span><span class="n">layer</span><span class="p">(</span>
+            <span class="n">y</span><span class="p">,</span>
+            <span class="p">{</span>
+                <span class="n">pos</span><span class="p">:</span> <span class="n">slope</span><span class="o">.</span><span class="n">with_props</span><span class="p">(</span><span class="n">facing</span><span class="o">=</span><span class="n">facing</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="n">shapes</span><span class="p">[</span><span class="n">pos</span><span class="p">])</span>
+                <span class="k">for</span> <span class="n">pos</span><span class="p">,</span> <span class="n">facing</span> <span class="ow">in</span> <span class="n">facings</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+            <span class="p">},</span>
+        <span class="p">)</span>
+        <span class="n">course</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="k">return</span> <span class="n">placer</span><span class="o">.</span><span class="n">volume</span></div>
+
+
+
+<div class="viewcode-block" id="flat_roof">
+<a class="viewcode-back" href="../../../_api/mciwb.builders.html#mciwb.builders.flat_roof">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">flat_roof</span><span class="p">(</span>
+    <span class="n">start</span><span class="p">:</span> <span class="n">Vec3</span><span class="p">,</span>
+    <span class="n">end</span><span class="p">:</span> <span class="n">Vec3</span><span class="p">,</span>
+    <span class="n">block</span><span class="p">:</span> <span class="n">Block</span> <span class="o">=</span> <span class="n">Item</span><span class="o">.</span><span class="n">SMOOTH_STONE</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">parapet</span><span class="p">:</span> <span class="n">Block</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">parapet_height</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="n">overhang</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Volume</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    A flat roof: one layer of *block*, optionally with a parapet around its</span>
+<span class="sd">    edge.</span>
+
+<span class="sd">    :param start: a corner of the footprint, e.g. the top of a corner of the</span>
+<span class="sd">        walls; the roof is at ``start.y + 1``</span>
+<span class="sd">    :param end: the opposite corner of the footprint (only x and z are used)</span>
+<span class="sd">    :param block: the roof block, e.g. a full block or a slab</span>
+<span class="sd">    :param parapet: if given, build a low wall of this block around the edge</span>
+<span class="sd">        of the roof, on top of it. Walls, fences and panes join up</span>
+<span class="sd">        automatically</span>
+<span class="sd">    :param parapet_height: the height of the parapet</span>
+<span class="sd">    :param overhang: extend the roof this many blocks past the footprint on</span>
+<span class="sd">        every side</span>
+<span class="sd">    :returns: the bounding box of the roof and parapet</span>
+<span class="sd">    """</span>
+    <span class="n">x1</span><span class="p">,</span> <span class="n">z1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">z2</span> <span class="o">=</span> <span class="n">_footprint</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">,</span> <span class="n">overhang</span><span class="p">)</span>
+    <span class="n">placer</span> <span class="o">=</span> <span class="n">Placer</span><span class="p">()</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">start</span><span class="o">.</span><span class="n">y</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+    <span class="n">placer</span><span class="o">.</span><span class="n">fill</span><span class="p">(</span><span class="n">Vec3</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z1</span><span class="p">),</span> <span class="n">Vec3</span><span class="p">(</span><span class="n">x2</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z2</span><span class="p">),</span> <span class="n">block</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">parapet</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">parapet_height</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">top</span> <span class="o">=</span> <span class="n">y</span> <span class="o">+</span> <span class="n">parapet_height</span>
+        <span class="n">corners</span> <span class="o">=</span> <span class="p">[(</span><span class="n">x1</span><span class="p">,</span> <span class="n">z1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">z1</span><span class="p">),</span> <span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">z2</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">z2</span><span class="p">),</span> <span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">z1</span><span class="p">,</span> <span class="n">x1</span><span class="p">,</span> <span class="n">z2</span><span class="p">)]</span>
+        <span class="n">corners</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">x2</span><span class="p">,</span> <span class="n">z1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">z2</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">ax</span><span class="p">,</span> <span class="n">az</span><span class="p">,</span> <span class="n">bx</span><span class="p">,</span> <span class="n">bz</span> <span class="ow">in</span> <span class="n">corners</span><span class="p">:</span>
+            <span class="n">placer</span><span class="o">.</span><span class="n">fill</span><span class="p">(</span><span class="n">Vec3</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">y</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">az</span><span class="p">),</span> <span class="n">Vec3</span><span class="p">(</span><span class="n">bx</span><span class="p">,</span> <span class="n">top</span><span class="p">,</span> <span class="n">bz</span><span class="p">),</span> <span class="n">parapet</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">placer</span><span class="o">.</span><span class="n">volume</span></div>
+
+</pre></div>
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../../_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be"></script>
+<script defer src="../../../_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.23.0.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

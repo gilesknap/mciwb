@@ -1,0 +1,1124 @@
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>mciwb.render &#8212; mciwb 0.9.2.dev92+gb813bc9d3 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=18bd87630a240e9c25be" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=18bd87630a240e9c25be" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="../../_static/scripts/fontawesome.js?digest=18bd87630a240e9c25be"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be" />
+
+    <script src="../../_static/documentation_options.js?v=eaab3c44"></script>
+    <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=30646c52"></script>
+    <script src="../../_static/design-tabs.js?v=f930bc37"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/mciwb/render';</script>
+    <script>
+        DOCUMENTATION_OPTIONS.theme_version = '0.23.0';
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://gilesknap.github.io/mciwb/switcher.json';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = 'main';
+        DOCUMENTATION_OPTIONS.show_version_warning_banner =
+            false;
+        </script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <link rel="icon" href="../../_static/logo.png"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="color-scheme" content="light dark"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="main" />
+  
+    
+    <script src="../../_static/searchtools.js"></script>
+    <script src="../../_static/language_data.js"></script>
+    <script src="../../searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button type="button" class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../_static/logo.png" class="logo__image only-light" alt=""/>
+    <img src="../../_static/logo.png" class="logo__image only-dark pst-js-only" alt=""/>
+  
+  
+    <p class="title logo__title">mciwb</p>
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../tutorials.html">
+    Tutorials
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../how-to.html">
+    How-to Guides
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../explanations.html">
+    Explanations
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../reference.html">
+    Reference
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button type="button" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/gilesknap/mciwb" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://pypi.org/project/mciwb" title="PyPI" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fas fa-cube fa-lg" aria-hidden="true"></i><span class="visually-hidden">PyPI</span></a>
+        </li>
+</ul></div>
+      
+        <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-2"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-2"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-2"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-2">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar hide-on-wide">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../tutorials.html">
+    Tutorials
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../how-to.html">
+    How-to Guides
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../explanations.html">
+    Explanations
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../reference.html">
+    Reference
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button type="button" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/gilesknap/mciwb" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://pypi.org/project/mciwb" title="PyPI" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fas fa-cube fa-lg" aria-hidden="true"></i><span class="visually-hidden">PyPI</span></a>
+        </li>
+</ul></div>
+        
+          <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-3"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-3"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-3"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-3">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
+        
+      </div>
+    
+  </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../index.html" class="nav-link">Module code</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">mciwb.render</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <h1>Source code for mciwb.render</h1><div class="highlight"><pre>
+<span></span><span class="sd">"""</span>
+<span class="sd">Render a region of a Minecraft world to an image, so that you (or an AI agent)</span>
+<span class="sd">can see what a build looks like without joining the game.</span>
+
+<span class="sd">First read the blocks with `scan`, then draw them with `render`::</span>
+
+<span class="sd">    from mciwb.render import scan, render</span>
+
+<span class="sd">    grid = scan(Volume.from_corners(a, b), world_folder, client)</span>
+<span class="sd">    render(grid, views=["top", "iso", "south"]).save("build.png")</span>
+
+<span class="sd">The views are:</span>
+
+<span class="sd">- ``top``: a plan, north up, showing the highest block of each column.</span>
+<span class="sd">  Higher blocks are lighter, and a block higher than its northern</span>
+<span class="sd">  neighbour has a light edge (a lower one a dark edge).</span>
+<span class="sd">- ``north``, ``south``, ``east``, ``west``: elevations, the region seen</span>
+<span class="sd">  from that side, e.g. ``south`` looks north at the south face. Nearer</span>
+<span class="sd">  blocks are lighter.</span>
+<span class="sd">- ``iso``: a 3D isometric view from the south east, with shaded faces.</span>
+<span class="sd">  ``iso_ne``, ``iso_nw`` and ``iso_sw`` look from the other corners.</span>
+
+<span class="sd">Translucent blocks (glass, water, ice) and small ones (torches, flowers,</span>
+<span class="sd">fences) let the blocks behind them show through. Each view has axis labels</span>
+<span class="sd">with world coordinates, unless you ask for none.</span>
+<span class="sd">"""</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Sequence</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">dataclass</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">functools</span><span class="w"> </span><span class="kn">import</span> <span class="n">cache</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mcwb</span><span class="w"> </span><span class="kn">import</span> <span class="n">Volume</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">PIL</span><span class="w"> </span><span class="kn">import</span> <span class="n">Image</span><span class="p">,</span> <span class="n">ImageDraw</span><span class="p">,</span> <span class="n">ImageFont</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">mciwb.anvil</span><span class="w"> </span><span class="kn">import</span> <span class="n">read_world_blocks</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mciwb.blockgrid</span><span class="w"> </span><span class="kn">import</span> <span class="n">BlockGrid</span><span class="p">,</span> <span class="n">grab_blocks</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mciwb.logging</span><span class="w"> </span><span class="kn">import</span> <span class="n">log</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mciwb.palette</span><span class="w"> </span><span class="kn">import</span> <span class="n">Palette</span><span class="p">,</span> <span class="n">default_palette</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mciwb.threads</span><span class="w"> </span><span class="kn">import</span> <span class="n">Client</span>
+
+<span class="c1"># the background of each view: a pale sky blue, unlike any common block</span>
+<span class="n">BACKGROUND</span> <span class="o">=</span> <span class="p">(</span><span class="mi">214</span><span class="p">,</span> <span class="mi">230</span><span class="p">,</span> <span class="mi">245</span><span class="p">)</span>
+<span class="n">CANVAS</span> <span class="o">=</span> <span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">)</span>
+<span class="n">INK</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+<span class="n">GRID</span> <span class="o">=</span> <span class="p">(</span><span class="mi">60</span><span class="p">,</span> <span class="mi">60</span><span class="p">,</span> <span class="mi">60</span><span class="p">)</span>
+<span class="c1"># the largest region that `scan` reads over RCON, one block at a time</span>
+<span class="n">MAX_RCON_BLOCKS</span> <span class="o">=</span> <span class="mi">32768</span>
+<span class="c1"># the auto scale aims for views about this many pixels across</span>
+<span class="n">TARGET_PIXELS</span> <span class="o">=</span> <span class="mi">512</span>
+<span class="n">MAX_SCALE</span> <span class="o">=</span> <span class="mi">16</span>
+<span class="c1"># the auto scale shrinks views to keep the whole image within this width:</span>
+<span class="c1"># models see a scaled down copy of wider images</span>
+<span class="n">MAX_IMAGE_PIXELS</span> <span class="o">=</span> <span class="mi">1500</span>
+<span class="n">FONT_SIZE</span> <span class="o">=</span> <span class="mi">12</span>
+<span class="n">PAD</span> <span class="o">=</span> <span class="mi">6</span>
+<span class="c1"># how much darker the furthest blocks of a top view or elevation are</span>
+<span class="n">DEPTH_SHADE</span> <span class="o">=</span> <span class="mf">0.3</span>
+<span class="c1"># how much lighter (or darker) a block higher (lower) than its northern</span>
+<span class="c1"># neighbour is in a top view</span>
+<span class="n">EDGE_SHADE</span> <span class="o">=</span> <span class="mf">0.15</span>
+
+
+<span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">_Ortho</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    How an orthographic view maps the region's [x][y][z] array to</span>
+<span class="sd">    [row][column][depth], where depth 0 is nearest the viewer</span>
+<span class="sd">    """</span>
+
+    <span class="n">title</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">axes</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span>
+    <span class="n">flips</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="nb">bool</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]</span>
+    <span class="c1"># True to light the edges of blocks that are higher than their neighbours</span>
+    <span class="n">hillshade</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+
+
+<span class="n">_ORTHO_VIEWS</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">"top"</span><span class="p">:</span> <span class="n">_Ortho</span><span class="p">(</span><span class="s2">"top, north up"</span><span class="p">,</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="kc">False</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">True</span><span class="p">),</span> <span class="kc">True</span><span class="p">),</span>
+    <span class="s2">"south"</span><span class="p">:</span> <span class="n">_Ortho</span><span class="p">(</span><span class="s2">"south side, looking north"</span><span class="p">,</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">True</span><span class="p">)),</span>
+    <span class="s2">"north"</span><span class="p">:</span> <span class="n">_Ortho</span><span class="p">(</span><span class="s2">"north side, looking south"</span><span class="p">,</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">)),</span>
+    <span class="s2">"east"</span><span class="p">:</span> <span class="n">_Ortho</span><span class="p">(</span><span class="s2">"east side, looking west"</span><span class="p">,</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">)),</span>
+    <span class="s2">"west"</span><span class="p">:</span> <span class="n">_Ortho</span><span class="p">(</span><span class="s2">"west side, looking east"</span><span class="p">,</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">False</span><span class="p">)),</span>
+<span class="p">}</span>
+
+<span class="c1"># the number of quarter turns about y that brings each iso viewpoint to the</span>
+<span class="c1"># south east, the viewpoint that the iso renderer draws</span>
+<span class="n">_ISO_VIEWS</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"iso"</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">"iso_se"</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">"iso_ne"</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">"iso_nw"</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s2">"iso_sw"</span><span class="p">:</span> <span class="mi">3</span><span class="p">}</span>
+
+<span class="c1">#: the names of the views that `render` can draw</span>
+<span class="n">VIEWS</span> <span class="o">=</span> <span class="p">(</span><span class="o">*</span><span class="n">_ORTHO_VIEWS</span><span class="p">,</span> <span class="o">*</span><span class="n">_ISO_VIEWS</span><span class="p">)</span>
+<span class="n">_AXIS_NAMES</span> <span class="o">=</span> <span class="s2">"xyz"</span>
+
+<span class="c1"># how much light each visible face of an iso block gets</span>
+<span class="n">_TOP</span><span class="p">,</span> <span class="n">_SOUTH</span><span class="p">,</span> <span class="n">_EAST</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.62</span>
+
+
+<span class="c1"># how to read the world files rather than ask over RCON</span>
+<span class="n">_WORLD_FOLDER_HINT</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="s2">"to read the world files, set world.world_folder in a script, or give "</span>
+    <span class="s2">"mciwb render the --folder of mciwb start (without --rcon)"</span>
+<span class="p">)</span>
+
+
+<div class="viewcode-block" id="scan">
+<a class="viewcode-back" href="../../_api/mciwb.render.html#mciwb.render.scan">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">scan</span><span class="p">(</span>
+    <span class="n">vol</span><span class="p">:</span> <span class="n">Volume</span><span class="p">,</span>
+    <span class="n">world_folder</span><span class="p">:</span> <span class="n">Path</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">client</span><span class="p">:</span> <span class="n">Client</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">dimension</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"overworld"</span><span class="p">,</span>
+    <span class="n">max_rcon_blocks</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">MAX_RCON_BLOCKS</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BlockGrid</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Read the blocks in a region of the world, by the fastest means available.</span>
+
+<span class="sd">    If *world_folder* is a world, its region files are read directly, after</span>
+<span class="sd">    asking the server (if *client* is given) to save its changes to disk.</span>
+<span class="sd">    Otherwise the blocks are read over RCON with *client*, one at a time.</span>
+
+<span class="sd">    :param vol: the region to read</span>
+<span class="sd">    :param world_folder: the server's world folder, e.g.</span>
+<span class="sd">        ``~/mciwb-server/world`` for the server of ``mciwb start``</span>
+<span class="sd">    :param client: an RCON client for the running server</span>
+<span class="sd">    :param dimension: overworld, the_nether or the_end (world files only)</span>
+<span class="sd">    :param max_rcon_blocks: refuse to read larger regions over RCON</span>
+
+<span class="sd">    :raises ValueError: if neither source can read the region</span>
+<span class="sd">    """</span>
+    <span class="k">if</span> <span class="n">world_folder</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">world_folder</span><span class="p">)</span> <span class="o">/</span> <span class="s2">"level.dat"</span><span class="p">)</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+        <span class="k">if</span> <span class="n">client</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># write the server's changes to the region files</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">"save_all: "</span> <span class="o">+</span> <span class="n">client</span><span class="o">.</span><span class="n">save_all</span><span class="p">(</span><span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">read_world_blocks</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">world_folder</span><span class="p">),</span> <span class="n">vol</span><span class="p">,</span> <span class="n">dimension</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">client</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">where</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s2">"no world folder"</span> <span class="k">if</span> <span class="n">world_folder</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="sa">f</span><span class="s2">"no world in </span><span class="si">{</span><span class="n">world_folder</span><span class="si">}</span><span class="s2">"</span>
+        <span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"cannot read blocks: </span><span class="si">{</span><span class="n">where</span><span class="si">}</span><span class="s2"> and no server to ask over RCON"</span><span class="p">)</span>
+    <span class="n">blocks</span> <span class="o">=</span> <span class="n">vol</span><span class="o">.</span><span class="n">size</span><span class="o">.</span><span class="n">volume</span>
+    <span class="k">if</span> <span class="n">blocks</span> <span class="o">&gt;</span> <span class="n">max_rcon_blocks</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">vol</span><span class="o">.</span><span class="n">size</span><span class="o">.</span><span class="n">i_tuple</span><span class="si">}</span><span class="s2"> is </span><span class="si">{</span><span class="n">blocks</span><span class="si">}</span><span class="s2"> blocks: too many to read over RCON "</span>
+            <span class="sa">f</span><span class="s2">"(max </span><span class="si">{</span><span class="n">max_rcon_blocks</span><span class="si">}</span><span class="s2">). Pick a smaller region, or </span><span class="si">{</span><span class="n">_WORLD_FOLDER_HINT</span><span class="si">}</span><span class="s2">"</span>
+        <span class="p">)</span>
+    <span class="k">if</span> <span class="n">world_folder</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">world_folder</span><span class="si">}</span><span class="s2"> is not a world, so reading blocks over RCON"</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">"reading </span><span class="si">{</span><span class="n">blocks</span><span class="si">}</span><span class="s2"> blocks over RCON one at a time, which is slow: "</span>
+            <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">_WORLD_FOLDER_HINT</span><span class="si">}</span><span class="s2">"</span>
+        <span class="p">)</span>
+    <span class="k">return</span> <span class="n">grab_blocks</span><span class="p">(</span><span class="n">client</span><span class="p">,</span> <span class="n">vol</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="render">
+<a class="viewcode-back" href="../../_api/mciwb.render.html#mciwb.render.render">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">render</span><span class="p">(</span>
+    <span class="n">grid</span><span class="p">:</span> <span class="n">BlockGrid</span><span class="p">,</span>
+    <span class="n">views</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"top"</span><span class="p">,</span> <span class="s2">"iso"</span><span class="p">),</span>
+    <span class="n">scale</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">labels</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="n">palette</span><span class="p">:</span> <span class="n">Palette</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Image</span><span class="o">.</span><span class="n">Image</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Draw one or more views of a region side by side in one image.</span>
+
+<span class="sd">    :param grid: the blocks, from `scan`</span>
+<span class="sd">    :param views: the views to draw, see the module documentation, or the</span>
+<span class="sd">        name of one view</span>
+<span class="sd">    :param scale: pixels per block for every view. By default each view gets</span>
+<span class="sd">        its own scale, chosen to make it about 512 pixels across, or smaller</span>
+<span class="sd">        if needed to keep the image under 1500 pixels wide</span>
+<span class="sd">    :param labels: add a title, axis labels and grid lines with world</span>
+<span class="sd">        coordinates</span>
+<span class="sd">    :param palette: block colours, defaults to ``mciwb.palette.default_palette``</span>
+
+<span class="sd">    :returns: a Pillow image: call its ``save("file.png")`` method to save it</span>
+<span class="sd">    """</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">views</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="n">views</span> <span class="o">=</span> <span class="p">[</span><span class="n">views</span><span class="p">]</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">views</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"no views requested"</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">scale</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">panels</span> <span class="o">=</span> <span class="p">[</span><span class="n">render_view</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">scale</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">palette</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">views</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">_layout</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span> <span class="n">panels</span><span class="p">,</span> <span class="n">labels</span><span class="p">)</span>
+
+    <span class="c1"># each view at its own automatic scale, smaller if the image is too wide</span>
+    <span class="n">scales</span> <span class="o">=</span> <span class="p">[</span><span class="n">auto_scale</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">views</span><span class="p">]</span>
+    <span class="n">panels</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">render_view</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">palette</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">v</span><span class="p">,</span> <span class="n">s</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">views</span><span class="p">,</span> <span class="n">scales</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="p">]</span>
+    <span class="n">image</span> <span class="o">=</span> <span class="n">_layout</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span> <span class="n">panels</span><span class="p">,</span> <span class="n">labels</span><span class="p">)</span>
+    <span class="n">columns</span> <span class="o">=</span> <span class="n">_columns</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">panels</span><span class="p">))</span>
+    <span class="k">while</span> <span class="n">image</span><span class="o">.</span><span class="n">width</span> <span class="o">&gt;</span> <span class="n">MAX_IMAGE_PIXELS</span><span class="p">:</span>
+        <span class="c1"># the widest row: its labels and padding stay the same size as the</span>
+        <span class="c1"># scale changes, so shrink the blocks to fit in the space left</span>
+        <span class="n">row</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span>
+            <span class="p">(</span>
+                <span class="nb">range</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="nb">min</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="n">columns</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">panels</span><span class="p">)))</span>
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">panels</span><span class="p">),</span> <span class="n">columns</span><span class="p">)</span>
+            <span class="p">),</span>
+            <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">r</span><span class="p">:</span> <span class="nb">sum</span><span class="p">(</span><span class="n">panels</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">width</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">r</span><span class="p">),</span>
+        <span class="p">)</span>
+        <span class="n">blocks</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">_view_size</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span> <span class="n">views</span><span class="p">[</span><span class="n">i</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">scales</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">row</span><span class="p">)</span>
+        <span class="n">fixed</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">width</span> <span class="o">-</span> <span class="n">blocks</span>
+        <span class="n">factor</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">MAX_IMAGE_PIXELS</span> <span class="o">-</span> <span class="n">fixed</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">/</span> <span class="n">blocks</span>
+        <span class="n">smaller</span> <span class="o">=</span> <span class="p">[</span><span class="nb">max</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">min</span><span class="p">(</span><span class="n">s</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">s</span> <span class="o">*</span> <span class="n">factor</span><span class="p">)))</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">scales</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">smaller</span> <span class="o">==</span> <span class="n">scales</span><span class="p">:</span>
+            <span class="k">break</span>
+        <span class="n">panels</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">p</span> <span class="k">if</span> <span class="n">s</span> <span class="o">==</span> <span class="n">old</span> <span class="k">else</span> <span class="n">render_view</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">palette</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">v</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">old</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">views</span><span class="p">,</span> <span class="n">panels</span><span class="p">,</span> <span class="n">smaller</span><span class="p">,</span> <span class="n">scales</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="p">]</span>
+        <span class="n">scales</span> <span class="o">=</span> <span class="n">smaller</span>
+        <span class="n">image</span> <span class="o">=</span> <span class="n">_layout</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span> <span class="n">panels</span><span class="p">,</span> <span class="n">labels</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">image</span></div>
+
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_columns</span><span class="p">(</span><span class="n">panels</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""the number of panels in each row of the image"""</span>
+    <span class="k">return</span> <span class="n">panels</span> <span class="k">if</span> <span class="n">panels</span> <span class="o">&lt;=</span> <span class="mi">3</span> <span class="k">else</span> <span class="mi">2</span> <span class="k">if</span> <span class="n">panels</span> <span class="o">==</span> <span class="mi">4</span> <span class="k">else</span> <span class="mi">3</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_layout</span><span class="p">(</span><span class="n">grid</span><span class="p">:</span> <span class="n">BlockGrid</span><span class="p">,</span> <span class="n">panels</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Image</span><span class="o">.</span><span class="n">Image</span><span class="p">],</span> <span class="n">labels</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Image</span><span class="o">.</span><span class="n">Image</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Arrange the panels in rows of up to three under a header"""</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">panels</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">labels</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">panels</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="n">columns</span> <span class="o">=</span> <span class="n">_columns</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">panels</span><span class="p">))</span>
+    <span class="n">rows</span> <span class="o">=</span> <span class="p">[</span><span class="n">panels</span><span class="p">[</span><span class="n">i</span> <span class="p">:</span> <span class="n">i</span> <span class="o">+</span> <span class="n">columns</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">panels</span><span class="p">),</span> <span class="n">columns</span><span class="p">)]</span>
+    <span class="n">widths</span> <span class="o">=</span> <span class="p">[</span><span class="nb">sum</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">width</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">row</span><span class="p">)</span> <span class="o">+</span> <span class="n">PAD</span> <span class="o">*</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">row</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">rows</span><span class="p">]</span>
+    <span class="n">heights</span> <span class="o">=</span> <span class="p">[</span><span class="nb">max</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">height</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">row</span><span class="p">)</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">rows</span><span class="p">]</span>
+
+    <span class="n">header</span> <span class="o">=</span> <span class="s2">""</span>
+    <span class="k">if</span> <span class="n">labels</span><span class="p">:</span>
+        <span class="n">lo</span><span class="p">,</span> <span class="n">hi</span> <span class="o">=</span> <span class="n">grid</span><span class="o">.</span><span class="n">origin</span><span class="p">,</span> <span class="n">grid</span><span class="o">.</span><span class="n">end</span>
+        <span class="n">header</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="sa">f</span><span class="s2">"x </span><span class="si">{</span><span class="n">lo</span><span class="o">.</span><span class="n">x</span><span class="si">}</span><span class="s2">..</span><span class="si">{</span><span class="n">hi</span><span class="o">.</span><span class="n">x</span><span class="si">}</span><span class="s2">  y </span><span class="si">{</span><span class="n">lo</span><span class="o">.</span><span class="n">y</span><span class="si">}</span><span class="s2">..</span><span class="si">{</span><span class="n">hi</span><span class="o">.</span><span class="n">y</span><span class="si">}</span><span class="s2">  z </span><span class="si">{</span><span class="n">lo</span><span class="o">.</span><span class="n">z</span><span class="si">}</span><span class="s2">..</span><span class="si">{</span><span class="n">hi</span><span class="o">.</span><span class="n">z</span><span class="si">}</span><span class="s2">  "</span>
+            <span class="sa">f</span><span class="s2">"(</span><span class="si">{</span><span class="n">grid</span><span class="o">.</span><span class="n">size</span><span class="o">.</span><span class="n">x</span><span class="si">}</span><span class="s2"> x </span><span class="si">{</span><span class="n">grid</span><span class="o">.</span><span class="n">size</span><span class="o">.</span><span class="n">y</span><span class="si">}</span><span class="s2"> x </span><span class="si">{</span><span class="n">grid</span><span class="o">.</span><span class="n">size</span><span class="o">.</span><span class="n">z</span><span class="si">}</span><span class="s2"> blocks)"</span>
+        <span class="p">)</span>
+    <span class="n">top</span> <span class="o">=</span> <span class="n">_text_height</span><span class="p">()</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">PAD</span> <span class="k">if</span> <span class="n">header</span> <span class="k">else</span> <span class="n">PAD</span>
+    <span class="c1"># a small region's panels can be narrower than the header</span>
+    <span class="n">width</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="o">*</span><span class="n">widths</span><span class="p">,</span> <span class="n">_text_width</span><span class="p">(</span><span class="n">header</span><span class="p">)</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">PAD</span> <span class="k">if</span> <span class="n">header</span> <span class="k">else</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="n">image</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="s2">"RGB"</span><span class="p">,</span> <span class="p">(</span><span class="n">width</span><span class="p">,</span> <span class="n">top</span> <span class="o">+</span> <span class="nb">sum</span><span class="p">(</span><span class="n">heights</span><span class="p">)</span> <span class="o">+</span> <span class="n">PAD</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">rows</span><span class="p">)),</span> <span class="n">CANVAS</span><span class="p">)</span>
+    <span class="n">draw</span> <span class="o">=</span> <span class="n">ImageDraw</span><span class="o">.</span><span class="n">Draw</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">header</span><span class="p">:</span>
+        <span class="n">draw</span><span class="o">.</span><span class="n">text</span><span class="p">((</span><span class="n">PAD</span><span class="p">,</span> <span class="n">PAD</span><span class="p">),</span> <span class="n">header</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="n">INK</span><span class="p">,</span> <span class="n">font</span><span class="o">=</span><span class="n">_font</span><span class="p">())</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">top</span>
+    <span class="k">for</span> <span class="n">row</span><span class="p">,</span> <span class="n">height</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">rows</span><span class="p">,</span> <span class="n">heights</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">PAD</span>
+        <span class="k">for</span> <span class="n">panel</span> <span class="ow">in</span> <span class="n">row</span><span class="p">:</span>
+            <span class="n">image</span><span class="o">.</span><span class="n">paste</span><span class="p">(</span><span class="n">panel</span><span class="p">,</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">))</span>
+            <span class="n">x</span> <span class="o">+=</span> <span class="n">panel</span><span class="o">.</span><span class="n">width</span> <span class="o">+</span> <span class="n">PAD</span>
+        <span class="n">y</span> <span class="o">+=</span> <span class="n">height</span> <span class="o">+</span> <span class="n">PAD</span>
+    <span class="k">return</span> <span class="n">image</span>
+
+
+<div class="viewcode-block" id="render_view">
+<a class="viewcode-back" href="../../_api/mciwb.render.html#mciwb.render.render_view">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">render_view</span><span class="p">(</span>
+    <span class="n">grid</span><span class="p">:</span> <span class="n">BlockGrid</span><span class="p">,</span>
+    <span class="n">view</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">scale</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">labels</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="n">palette</span><span class="p">:</span> <span class="n">Palette</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Image</span><span class="o">.</span><span class="n">Image</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Draw one view of a region, see `render` for the parameters</span>
+
+<span class="sd">    :raises ValueError: if the view is not one of `VIEWS`</span>
+<span class="sd">    """</span>
+    <span class="n">palette</span> <span class="o">=</span> <span class="n">palette</span> <span class="ow">or</span> <span class="n">default_palette</span>
+    <span class="k">if</span> <span class="n">scale</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">scale</span> <span class="o">=</span> <span class="n">auto_scale</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span> <span class="n">view</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">scale</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"scale must be at least 1, not </span><span class="si">{</span><span class="n">scale</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+    <span class="n">colours</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">palette</span><span class="o">.</span><span class="n">colour</span><span class="p">(</span><span class="n">n</span><span class="p">)</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">grid</span><span class="o">.</span><span class="n">names</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+    <span class="n">colours</span> <span class="o">/=</span> <span class="mi">255</span>
+    <span class="k">if</span> <span class="n">view</span> <span class="ow">in</span> <span class="n">_ORTHO_VIEWS</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">_ortho</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span> <span class="n">_ORTHO_VIEWS</span><span class="p">[</span><span class="n">view</span><span class="p">],</span> <span class="n">colours</span><span class="p">,</span> <span class="n">scale</span><span class="p">,</span> <span class="n">labels</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">view</span> <span class="ow">in</span> <span class="n">_ISO_VIEWS</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">_iso</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span> <span class="n">view</span><span class="p">,</span> <span class="n">_ISO_VIEWS</span><span class="p">[</span><span class="n">view</span><span class="p">],</span> <span class="n">colours</span><span class="p">,</span> <span class="n">scale</span><span class="p">,</span> <span class="n">labels</span><span class="p">)</span>
+    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"unknown view </span><span class="si">{</span><span class="n">view</span><span class="si">}</span><span class="s2">, use one of </span><span class="si">{</span><span class="s1">', '</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">VIEWS</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="auto_scale">
+<a class="viewcode-back" href="../../_api/mciwb.render.html#mciwb.render.auto_scale">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">auto_scale</span><span class="p">(</span><span class="n">grid</span><span class="p">:</span> <span class="n">BlockGrid</span><span class="p">,</span> <span class="n">view</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    The pixels per block that make *view* about 512 pixels across and no more</span>
+<span class="sd">    than 512 pixels high, or that do so for every view if *view* is None</span>
+<span class="sd">    """</span>
+    <span class="k">if</span> <span class="n">view</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">blocks</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">_view_size</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span> <span class="n">v</span><span class="p">))</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">"top"</span><span class="p">,</span> <span class="s2">"south"</span><span class="p">,</span> <span class="s2">"iso"</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">blocks</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">_view_size</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span> <span class="n">view</span><span class="p">))</span>
+    <span class="k">return</span> <span class="nb">max</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">min</span><span class="p">(</span><span class="n">MAX_SCALE</span><span class="p">,</span> <span class="n">TARGET_PIXELS</span> <span class="o">//</span> <span class="n">blocks</span><span class="p">))</span></div>
+
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_view_size</span><span class="p">(</span><span class="n">grid</span><span class="p">:</span> <span class="n">BlockGrid</span><span class="p">,</span> <span class="n">view</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">"""The width and height of a view in blocks, without its labels"""</span>
+    <span class="n">sx</span><span class="p">,</span> <span class="n">sy</span><span class="p">,</span> <span class="n">sz</span> <span class="o">=</span> <span class="n">grid</span><span class="o">.</span><span class="n">ids</span><span class="o">.</span><span class="n">shape</span>
+    <span class="k">if</span> <span class="n">view</span> <span class="ow">in</span> <span class="n">_ORTHO_VIEWS</span><span class="p">:</span>
+        <span class="n">rows</span><span class="p">,</span> <span class="n">cols</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">_ORTHO_VIEWS</span><span class="p">[</span><span class="n">view</span><span class="p">]</span><span class="o">.</span><span class="n">axes</span>
+        <span class="k">return</span> <span class="n">grid</span><span class="o">.</span><span class="n">ids</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="n">cols</span><span class="p">],</span> <span class="n">grid</span><span class="o">.</span><span class="n">ids</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="n">rows</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">view</span> <span class="ow">in</span> <span class="n">_ISO_VIEWS</span><span class="p">:</span>
+        <span class="c1"># turning about y keeps x + z the same</span>
+        <span class="k">return</span> <span class="n">sx</span> <span class="o">+</span> <span class="n">sz</span><span class="p">,</span> <span class="p">(</span><span class="n">sx</span> <span class="o">+</span> <span class="n">sz</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">//</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">sy</span>
+    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"unknown view </span><span class="si">{</span><span class="n">view</span><span class="si">}</span><span class="s2">, use one of </span><span class="si">{</span><span class="s1">', '</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">VIEWS</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+
+
+<span class="c1"># ----------------------------------------------------------------------------</span>
+<span class="c1"># orthographic views</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_ortho</span><span class="p">(</span>
+    <span class="n">grid</span><span class="p">:</span> <span class="n">BlockGrid</span><span class="p">,</span> <span class="n">spec</span><span class="p">:</span> <span class="n">_Ortho</span><span class="p">,</span> <span class="n">colours</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">scale</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">labels</span><span class="p">:</span> <span class="nb">bool</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Image</span><span class="o">.</span><span class="n">Image</span><span class="p">:</span>
+    <span class="n">ids</span> <span class="o">=</span> <span class="n">grid</span><span class="o">.</span><span class="n">ids</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">spec</span><span class="o">.</span><span class="n">axes</span><span class="p">)</span>
+    <span class="n">ids</span> <span class="o">=</span> <span class="n">ids</span><span class="p">[</span><span class="nb">tuple</span><span class="p">(</span><span class="nb">slice</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span> <span class="k">if</span> <span class="n">f</span> <span class="k">else</span> <span class="kc">None</span><span class="p">)</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">spec</span><span class="o">.</span><span class="n">flips</span><span class="p">)]</span>
+    <span class="n">rows</span><span class="p">,</span> <span class="n">cols</span><span class="p">,</span> <span class="n">depth</span> <span class="o">=</span> <span class="n">ids</span><span class="o">.</span><span class="n">shape</span>
+
+    <span class="n">background</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">BACKGROUND</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span> <span class="o">/</span> <span class="mi">255</span>
+    <span class="n">total</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">rows</span><span class="p">,</span> <span class="n">cols</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+    <span class="c1"># the light that gets through the blocks in front</span>
+    <span class="n">passed</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="n">rows</span><span class="p">,</span> <span class="n">cols</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+    <span class="c1"># the depth of the first mostly opaque block in each pixel</span>
+    <span class="n">hit</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">((</span><span class="n">rows</span><span class="p">,</span> <span class="n">cols</span><span class="p">),</span> <span class="n">depth</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
+
+    <span class="c1"># shade from the nearest to the furthest layer that has any blocks</span>
+    <span class="n">occupied</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nonzero</span><span class="p">((</span><span class="n">colours</span><span class="p">[:,</span> <span class="mi">3</span><span class="p">][</span><span class="n">ids</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)))[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">near</span><span class="p">,</span> <span class="n">far</span> <span class="o">=</span> <span class="p">(</span><span class="n">occupied</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">occupied</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="k">if</span> <span class="n">occupied</span><span class="o">.</span><span class="n">size</span> <span class="k">else</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">depth</span><span class="p">):</span>
+        <span class="n">rgba</span> <span class="o">=</span> <span class="n">colours</span><span class="p">[</span><span class="n">ids</span><span class="p">[:,</span> <span class="p">:,</span> <span class="n">d</span><span class="p">]]</span>
+        <span class="n">alpha</span> <span class="o">=</span> <span class="n">rgba</span><span class="p">[:,</span> <span class="p">:,</span> <span class="mi">3</span><span class="p">]</span>
+        <span class="c1"># nearer blocks are lighter</span>
+        <span class="n">shade</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">-</span> <span class="n">DEPTH_SHADE</span> <span class="o">*</span> <span class="p">(</span><span class="n">d</span> <span class="o">-</span> <span class="n">near</span><span class="p">)</span> <span class="o">/</span> <span class="nb">max</span><span class="p">(</span><span class="n">far</span> <span class="o">-</span> <span class="n">near</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">total</span> <span class="o">+=</span> <span class="p">(</span><span class="n">passed</span> <span class="o">*</span> <span class="n">alpha</span> <span class="o">*</span> <span class="n">shade</span><span class="p">)[:,</span> <span class="p">:,</span> <span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">]</span> <span class="o">*</span> <span class="n">rgba</span><span class="p">[:,</span> <span class="p">:,</span> <span class="p">:</span><span class="mi">3</span><span class="p">]</span>
+        <span class="n">hit</span><span class="p">[(</span><span class="n">hit</span> <span class="o">==</span> <span class="n">depth</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">alpha</span> <span class="o">&gt;=</span> <span class="mf">0.5</span><span class="p">)]</span> <span class="o">=</span> <span class="n">d</span>
+        <span class="n">passed</span> <span class="o">*=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">alpha</span>
+        <span class="k">if</span> <span class="n">passed</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="o">&lt;</span> <span class="mf">0.004</span><span class="p">:</span>
+            <span class="k">break</span>
+    <span class="n">total</span> <span class="o">+=</span> <span class="n">passed</span><span class="p">[:,</span> <span class="p">:,</span> <span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">]</span> <span class="o">*</span> <span class="n">background</span>
+
+    <span class="k">if</span> <span class="n">spec</span><span class="o">.</span><span class="n">hillshade</span><span class="p">:</span>
+        <span class="c1"># compare each column with its northern neighbour: higher is lighter</span>
+        <span class="n">step</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">rows</span><span class="p">,</span> <span class="n">cols</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+        <span class="n">step</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">hit</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">hit</span><span class="p">[</span><span class="mi">1</span><span class="p">:],</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="c1"># no edge against empty columns</span>
+        <span class="n">step</span><span class="p">[</span><span class="n">hit</span> <span class="o">==</span> <span class="n">depth</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">step</span><span class="p">[</span><span class="mi">1</span><span class="p">:][</span><span class="n">hit</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">depth</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">total</span> <span class="o">*=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">EDGE_SHADE</span> <span class="o">*</span> <span class="n">step</span><span class="p">)[:,</span> <span class="p">:,</span> <span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">]</span>
+
+    <span class="n">pixels</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">total</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="mi">255</span><span class="p">)</span><span class="o">.</span><span class="n">round</span><span class="p">()</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">)</span>
+    <span class="n">pixels</span> <span class="o">=</span> <span class="n">pixels</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="n">scale</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="n">scale</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">image</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">fromarray</span><span class="p">(</span><span class="n">pixels</span><span class="p">,</span> <span class="s2">"RGB"</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">labels</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">image</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">coords</span><span class="p">(</span><span class="n">axis</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+        <span class="n">world_axis</span> <span class="o">=</span> <span class="n">spec</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">axis</span><span class="p">]</span>
+        <span class="n">values</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">grid</span><span class="o">.</span><span class="n">size</span><span class="p">[</span><span class="n">world_axis</span><span class="p">])</span> <span class="o">+</span> <span class="n">grid</span><span class="o">.</span><span class="n">origin</span><span class="p">[</span><span class="n">world_axis</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">values</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="k">if</span> <span class="n">spec</span><span class="o">.</span><span class="n">flips</span><span class="p">[</span><span class="n">axis</span><span class="p">]</span> <span class="k">else</span> <span class="n">values</span>
+
+    <span class="n">row_name</span><span class="p">,</span> <span class="n">col_name</span> <span class="o">=</span> <span class="p">(</span><span class="n">_AXIS_NAMES</span><span class="p">[</span><span class="n">a</span><span class="p">]</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">spec</span><span class="o">.</span><span class="n">axes</span><span class="p">[:</span><span class="mi">2</span><span class="p">])</span>
+    <span class="n">title</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">spec</span><span class="o">.</span><span class="n">title</span><span class="si">}</span><span class="s2"> (rows </span><span class="si">{</span><span class="n">row_name</span><span class="si">}</span><span class="s2">, columns </span><span class="si">{</span><span class="n">col_name</span><span class="si">}</span><span class="s2">)"</span>
+    <span class="k">return</span> <span class="n">_frame</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">coords</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">coords</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="n">row_name</span><span class="p">,</span> <span class="n">col_name</span><span class="p">,</span> <span class="n">scale</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_frame</span><span class="p">(</span>
+    <span class="n">image</span><span class="p">:</span> <span class="n">Image</span><span class="o">.</span><span class="n">Image</span><span class="p">,</span>
+    <span class="n">title</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">row_coords</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+    <span class="n">col_coords</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+    <span class="n">row_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">col_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">scale</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Image</span><span class="o">.</span><span class="n">Image</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Add a title, grid lines and coordinate labels to a view. Each label is</span>
+<span class="sd">    centred on the row or column of blocks at that coordinate, with a grid</span>
+<span class="sd">    line along its leading edge</span>
+<span class="sd">    """</span>
+    <span class="n">font</span> <span class="o">=</span> <span class="n">_font</span><span class="p">()</span>
+    <span class="n">text_h</span> <span class="o">=</span> <span class="n">_text_height</span><span class="p">()</span>
+    <span class="n">widest</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">_text_width</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">c</span><span class="p">))</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="p">(</span><span class="o">*</span><span class="n">row_coords</span><span class="p">,</span> <span class="o">*</span><span class="n">col_coords</span><span class="p">))</span>
+    <span class="n">left</span> <span class="o">=</span> <span class="n">widest</span> <span class="o">+</span> <span class="n">_text_width</span><span class="p">(</span><span class="n">row_name</span><span class="p">)</span> <span class="o">+</span> <span class="mi">3</span> <span class="o">*</span> <span class="n">PAD</span>
+    <span class="n">top</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">text_h</span> <span class="o">+</span> <span class="mi">3</span> <span class="o">*</span> <span class="n">PAD</span>
+    <span class="n">width</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">left</span> <span class="o">+</span> <span class="n">image</span><span class="o">.</span><span class="n">width</span> <span class="o">+</span> <span class="n">PAD</span><span class="p">,</span> <span class="n">_text_width</span><span class="p">(</span><span class="n">title</span><span class="p">)</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">PAD</span><span class="p">)</span>
+    <span class="n">framed</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="s2">"RGB"</span><span class="p">,</span> <span class="p">(</span><span class="n">width</span><span class="p">,</span> <span class="n">top</span> <span class="o">+</span> <span class="n">image</span><span class="o">.</span><span class="n">height</span> <span class="o">+</span> <span class="n">PAD</span><span class="p">),</span> <span class="n">CANVAS</span><span class="p">)</span>
+    <span class="n">framed</span><span class="o">.</span><span class="n">paste</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="n">top</span><span class="p">))</span>
+    <span class="n">draw</span> <span class="o">=</span> <span class="n">ImageDraw</span><span class="o">.</span><span class="n">Draw</span><span class="p">(</span><span class="n">framed</span><span class="p">,</span> <span class="s2">"RGBA"</span><span class="p">)</span>
+    <span class="n">draw</span><span class="o">.</span><span class="n">text</span><span class="p">((</span><span class="n">PAD</span><span class="p">,</span> <span class="n">PAD</span><span class="p">),</span> <span class="n">title</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="n">INK</span><span class="p">,</span> <span class="n">font</span><span class="o">=</span><span class="n">font</span><span class="p">)</span>
+    <span class="n">draw</span><span class="o">.</span><span class="n">text</span><span class="p">((</span><span class="n">PAD</span><span class="p">,</span> <span class="n">top</span> <span class="o">-</span> <span class="n">text_h</span> <span class="o">-</span> <span class="n">PAD</span><span class="p">),</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">row_name</span><span class="si">}</span><span class="se">\\</span><span class="si">{</span><span class="n">col_name</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="n">INK</span><span class="p">,</span> <span class="n">font</span><span class="o">=</span><span class="n">font</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">scale</span> <span class="o">&gt;=</span> <span class="mi">8</span><span class="p">:</span>
+        <span class="c1"># a faint line between every block</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">col_coords</span><span class="p">)):</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">left</span> <span class="o">+</span> <span class="n">i</span> <span class="o">*</span> <span class="n">scale</span>
+            <span class="n">draw</span><span class="o">.</span><span class="n">line</span><span class="p">([(</span><span class="n">x</span><span class="p">,</span> <span class="n">top</span><span class="p">),</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">top</span> <span class="o">+</span> <span class="n">image</span><span class="o">.</span><span class="n">height</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)],</span> <span class="n">fill</span><span class="o">=</span><span class="p">(</span><span class="o">*</span><span class="n">GRID</span><span class="p">,</span> <span class="mi">30</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">row_coords</span><span class="p">)):</span>
+            <span class="n">y</span> <span class="o">=</span> <span class="n">top</span> <span class="o">+</span> <span class="n">i</span> <span class="o">*</span> <span class="n">scale</span>
+            <span class="n">draw</span><span class="o">.</span><span class="n">line</span><span class="p">([(</span><span class="n">left</span><span class="p">,</span> <span class="n">y</span><span class="p">),</span> <span class="p">(</span><span class="n">left</span> <span class="o">+</span> <span class="n">image</span><span class="o">.</span><span class="n">width</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">y</span><span class="p">)],</span> <span class="n">fill</span><span class="o">=</span><span class="p">(</span><span class="o">*</span><span class="n">GRID</span><span class="p">,</span> <span class="mi">30</span><span class="p">))</span>
+
+    <span class="n">label_y</span> <span class="o">=</span> <span class="n">top</span> <span class="o">-</span> <span class="n">text_h</span> <span class="o">-</span> <span class="n">PAD</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">_labelled</span><span class="p">(</span><span class="n">col_coords</span><span class="p">,</span> <span class="n">scale</span><span class="p">,</span> <span class="n">widest</span> <span class="o">+</span> <span class="n">PAD</span><span class="p">):</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">left</span> <span class="o">+</span> <span class="n">i</span> <span class="o">*</span> <span class="n">scale</span>
+        <span class="n">text</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">col_coords</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+        <span class="n">draw</span><span class="o">.</span><span class="n">line</span><span class="p">([(</span><span class="n">x</span><span class="p">,</span> <span class="n">top</span> <span class="o">-</span> <span class="mi">3</span><span class="p">),</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">top</span> <span class="o">+</span> <span class="n">image</span><span class="o">.</span><span class="n">height</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)],</span> <span class="n">fill</span><span class="o">=</span><span class="p">(</span><span class="o">*</span><span class="n">GRID</span><span class="p">,</span> <span class="mi">110</span><span class="p">))</span>
+        <span class="n">centre</span> <span class="o">=</span> <span class="n">x</span> <span class="o">+</span> <span class="n">scale</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">-</span> <span class="n">_text_width</span><span class="p">(</span><span class="n">text</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span>
+        <span class="n">draw</span><span class="o">.</span><span class="n">text</span><span class="p">((</span><span class="n">centre</span><span class="p">,</span> <span class="n">label_y</span><span class="p">),</span> <span class="n">text</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="n">INK</span><span class="p">,</span> <span class="n">font</span><span class="o">=</span><span class="n">font</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">_labelled</span><span class="p">(</span><span class="n">row_coords</span><span class="p">,</span> <span class="n">scale</span><span class="p">,</span> <span class="n">text_h</span> <span class="o">+</span> <span class="mi">2</span><span class="p">):</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="n">top</span> <span class="o">+</span> <span class="n">i</span> <span class="o">*</span> <span class="n">scale</span>
+        <span class="n">text</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">row_coords</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+        <span class="n">draw</span><span class="o">.</span><span class="n">line</span><span class="p">([(</span><span class="n">left</span> <span class="o">-</span> <span class="mi">3</span><span class="p">,</span> <span class="n">y</span><span class="p">),</span> <span class="p">(</span><span class="n">left</span> <span class="o">+</span> <span class="n">image</span><span class="o">.</span><span class="n">width</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">y</span><span class="p">)],</span> <span class="n">fill</span><span class="o">=</span><span class="p">(</span><span class="o">*</span><span class="n">GRID</span><span class="p">,</span> <span class="mi">110</span><span class="p">))</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">left</span> <span class="o">-</span> <span class="n">PAD</span> <span class="o">-</span> <span class="n">_text_width</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+        <span class="n">draw</span><span class="o">.</span><span class="n">text</span><span class="p">((</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">+</span> <span class="n">scale</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">-</span> <span class="n">text_h</span> <span class="o">/</span> <span class="mi">2</span><span class="p">),</span> <span class="n">text</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="n">INK</span><span class="p">,</span> <span class="n">font</span><span class="o">=</span><span class="n">font</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">framed</span>
+
+
+<span class="n">_STEPS</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span> <span class="mi">500</span><span class="p">,</span> <span class="mi">1000</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_labelled</span><span class="p">(</span><span class="n">coords</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">scale</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">space</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    The indices of the coordinates to label: multiples of a round step,</span>
+<span class="sd">    spaced far enough apart for labels *space* pixels long</span>
+<span class="sd">    """</span>
+    <span class="n">step</span> <span class="o">=</span> <span class="nb">next</span><span class="p">((</span><span class="n">s</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">_STEPS</span> <span class="k">if</span> <span class="n">s</span> <span class="o">*</span> <span class="n">scale</span> <span class="o">&gt;=</span> <span class="n">space</span><span class="p">),</span> <span class="n">_STEPS</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">indices</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">c</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">coords</span><span class="p">)</span> <span class="k">if</span> <span class="n">c</span> <span class="o">%</span> <span class="n">step</span> <span class="o">==</span> <span class="mi">0</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">indices</span> <span class="ow">or</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+
+<span class="nd">@cache</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_font</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">ImageFont</span><span class="o">.</span><span class="n">ImageFont</span> <span class="o">|</span> <span class="n">ImageFont</span><span class="o">.</span><span class="n">FreeTypeFont</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">ImageFont</span><span class="o">.</span><span class="n">load_default</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="n">FONT_SIZE</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_text_width</span><span class="p">(</span><span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+    <span class="k">return</span> <span class="nb">round</span><span class="p">(</span><span class="n">_font</span><span class="p">()</span><span class="o">.</span><span class="n">getlength</span><span class="p">(</span><span class="n">text</span><span class="p">))</span>
+
+
+<span class="nd">@cache</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_text_height</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+    <span class="n">left</span><span class="p">,</span> <span class="n">top</span><span class="p">,</span> <span class="n">right</span><span class="p">,</span> <span class="n">bottom</span> <span class="o">=</span> <span class="n">_font</span><span class="p">()</span><span class="o">.</span><span class="n">getbbox</span><span class="p">(</span><span class="s2">"-0123456789xyz"</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nb">round</span><span class="p">(</span><span class="n">bottom</span><span class="p">)</span>
+
+
+<span class="c1"># ----------------------------------------------------------------------------</span>
+<span class="c1"># isometric views</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_iso</span><span class="p">(</span>
+    <span class="n">grid</span><span class="p">:</span> <span class="n">BlockGrid</span><span class="p">,</span>
+    <span class="n">view</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">turns</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="n">colours</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+    <span class="n">scale</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="n">labels</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Image</span><span class="o">.</span><span class="n">Image</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Draw the region from above its south east corner with the painter's</span>
+<span class="sd">    algorithm: the faces of nearer blocks are drawn over those behind</span>
+<span class="sd">    """</span>
+    <span class="c1"># the world x and z of each column, turned along with the blocks</span>
+    <span class="n">world_x</span><span class="p">,</span> <span class="n">world_z</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">grid</span><span class="o">.</span><span class="n">size</span><span class="o">.</span><span class="n">x</span><span class="p">)</span> <span class="o">+</span> <span class="n">grid</span><span class="o">.</span><span class="n">origin</span><span class="o">.</span><span class="n">x</span><span class="p">,</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">grid</span><span class="o">.</span><span class="n">size</span><span class="o">.</span><span class="n">z</span><span class="p">)</span> <span class="o">+</span> <span class="n">grid</span><span class="o">.</span><span class="n">origin</span><span class="o">.</span><span class="n">z</span><span class="p">,</span>
+        <span class="n">indexing</span><span class="o">=</span><span class="s2">"ij"</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">ids</span> <span class="o">=</span> <span class="n">_turn</span><span class="p">(</span><span class="n">grid</span><span class="o">.</span><span class="n">ids</span><span class="p">,</span> <span class="n">turns</span><span class="p">)</span>
+    <span class="n">world_x</span> <span class="o">=</span> <span class="n">_turn</span><span class="p">(</span><span class="n">world_x</span><span class="p">[:,</span> <span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">,</span> <span class="p">:],</span> <span class="n">turns</span><span class="p">)[:,</span> <span class="mi">0</span><span class="p">,</span> <span class="p">:]</span>
+    <span class="n">world_z</span> <span class="o">=</span> <span class="n">_turn</span><span class="p">(</span><span class="n">world_z</span><span class="p">[:,</span> <span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">,</span> <span class="p">:],</span> <span class="n">turns</span><span class="p">)[:,</span> <span class="mi">0</span><span class="p">,</span> <span class="p">:]</span>
+    <span class="n">sx</span><span class="p">,</span> <span class="n">sy</span><span class="p">,</span> <span class="n">sz</span> <span class="o">=</span> <span class="n">ids</span><span class="o">.</span><span class="n">shape</span>
+
+    <span class="n">alpha</span> <span class="o">=</span> <span class="n">colours</span><span class="p">[:,</span> <span class="mi">3</span><span class="p">][</span><span class="n">ids</span><span class="p">]</span>
+    <span class="c1"># blocks that hide whatever is behind them</span>
+    <span class="n">solid</span> <span class="o">=</span> <span class="n">alpha</span> <span class="o">&gt;=</span> <span class="mf">1.0</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">exposed</span><span class="p">(</span><span class="n">axis</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""blocks whose face on the + side of axis can be seen"""</span>
+        <span class="n">neighbour_solid</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">solid</span><span class="p">)</span>
+        <span class="n">same</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">solid</span><span class="p">)</span>
+        <span class="n">inner</span> <span class="o">=</span> <span class="p">[</span><span class="nb">slice</span><span class="p">(</span><span class="kc">None</span><span class="p">)]</span> <span class="o">*</span> <span class="mi">3</span>
+        <span class="n">outer</span> <span class="o">=</span> <span class="p">[</span><span class="nb">slice</span><span class="p">(</span><span class="kc">None</span><span class="p">)]</span> <span class="o">*</span> <span class="mi">3</span>
+        <span class="n">inner</span><span class="p">[</span><span class="n">axis</span><span class="p">]</span> <span class="o">=</span> <span class="nb">slice</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">outer</span><span class="p">[</span><span class="n">axis</span><span class="p">]</span> <span class="o">=</span> <span class="nb">slice</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="n">neighbour_solid</span><span class="p">[</span><span class="nb">tuple</span><span class="p">(</span><span class="n">inner</span><span class="p">)]</span> <span class="o">=</span> <span class="n">solid</span><span class="p">[</span><span class="nb">tuple</span><span class="p">(</span><span class="n">outer</span><span class="p">)]</span>
+        <span class="c1"># no faces between two blocks of the same glass, water ...</span>
+        <span class="n">same</span><span class="p">[</span><span class="nb">tuple</span><span class="p">(</span><span class="n">inner</span><span class="p">)]</span> <span class="o">=</span> <span class="n">ids</span><span class="p">[</span><span class="nb">tuple</span><span class="p">(</span><span class="n">inner</span><span class="p">)]</span> <span class="o">==</span> <span class="n">ids</span><span class="p">[</span><span class="nb">tuple</span><span class="p">(</span><span class="n">outer</span><span class="p">)]</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">alpha</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="o">&amp;</span> <span class="o">~</span><span class="n">neighbour_solid</span> <span class="o">&amp;</span> <span class="o">~</span><span class="n">same</span>
+
+    <span class="n">faces</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"top"</span><span class="p">:</span> <span class="n">exposed</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="s2">"south"</span><span class="p">:</span> <span class="n">exposed</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span> <span class="s2">"east"</span><span class="p">:</span> <span class="n">exposed</span><span class="p">(</span><span class="mi">0</span><span class="p">)}</span>
+    <span class="n">visible</span> <span class="o">=</span> <span class="n">faces</span><span class="p">[</span><span class="s2">"top"</span><span class="p">]</span> <span class="o">|</span> <span class="n">faces</span><span class="p">[</span><span class="s2">"south"</span><span class="p">]</span> <span class="o">|</span> <span class="n">faces</span><span class="p">[</span><span class="s2">"east"</span><span class="p">]</span>
+    <span class="n">xs</span><span class="p">,</span> <span class="n">ys</span><span class="p">,</span> <span class="n">zs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nonzero</span><span class="p">(</span><span class="n">visible</span><span class="p">)</span>
+    <span class="n">order</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">xs</span> <span class="o">+</span> <span class="n">ys</span> <span class="o">+</span> <span class="n">zs</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="s2">"stable"</span><span class="p">)</span>
+
+    <span class="n">half</span> <span class="o">=</span> <span class="n">scale</span> <span class="o">/</span> <span class="mi">2</span>
+    <span class="n">width</span> <span class="o">=</span> <span class="p">(</span><span class="n">sx</span> <span class="o">+</span> <span class="n">sz</span><span class="p">)</span> <span class="o">*</span> <span class="n">scale</span>
+    <span class="n">height</span> <span class="o">=</span> <span class="nb">round</span><span class="p">((</span><span class="n">sx</span> <span class="o">+</span> <span class="n">sz</span><span class="p">)</span> <span class="o">*</span> <span class="n">half</span><span class="p">)</span> <span class="o">+</span> <span class="n">sy</span> <span class="o">*</span> <span class="n">scale</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">point</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">z</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="p">((</span><span class="n">x</span> <span class="o">-</span> <span class="n">z</span> <span class="o">+</span> <span class="n">sz</span><span class="p">)</span> <span class="o">*</span> <span class="n">scale</span><span class="p">,</span> <span class="p">(</span><span class="n">x</span> <span class="o">+</span> <span class="n">z</span><span class="p">)</span> <span class="o">*</span> <span class="n">half</span> <span class="o">+</span> <span class="p">(</span><span class="n">sy</span> <span class="o">-</span> <span class="n">y</span><span class="p">)</span> <span class="o">*</span> <span class="n">scale</span><span class="p">)</span>
+
+    <span class="c1"># drawing RGBA on an RGB image blends translucent faces with those behind</span>
+    <span class="n">image</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="s2">"RGB"</span><span class="p">,</span> <span class="p">(</span><span class="n">width</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">height</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span> <span class="n">BACKGROUND</span><span class="p">)</span>
+    <span class="n">draw</span> <span class="o">=</span> <span class="n">ImageDraw</span><span class="o">.</span><span class="n">Draw</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="s2">"RGBA"</span><span class="p">)</span>
+    <span class="n">face_colours</span> <span class="o">=</span> <span class="n">_face_colours</span><span class="p">(</span><span class="n">colours</span><span class="p">)</span>
+    <span class="n">outline</span> <span class="o">=</span> <span class="n">scale</span> <span class="o">&gt;=</span> <span class="mi">6</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">order</span><span class="p">:</span>
+        <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">xs</span><span class="p">[</span><span class="n">i</span><span class="p">]),</span> <span class="nb">int</span><span class="p">(</span><span class="n">ys</span><span class="p">[</span><span class="n">i</span><span class="p">]),</span> <span class="nb">int</span><span class="p">(</span><span class="n">zs</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+        <span class="n">block</span> <span class="o">=</span> <span class="n">ids</span><span class="p">[</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">]</span>
+        <span class="n">polygons</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">faces</span><span class="p">[</span><span class="s2">"top"</span><span class="p">][</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">]:</span>
+            <span class="n">corners</span> <span class="o">=</span> <span class="p">((</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">z</span><span class="p">),</span> <span class="p">(</span><span class="n">x</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">y</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">z</span><span class="p">),</span> <span class="p">(</span><span class="n">x</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">y</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">z</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
+            <span class="n">polygons</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="p">(</span><span class="o">*</span><span class="n">corners</span><span class="p">,</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">z</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))))</span>
+        <span class="k">if</span> <span class="n">faces</span><span class="p">[</span><span class="s2">"south"</span><span class="p">][</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">]:</span>
+            <span class="n">corners</span> <span class="o">=</span> <span class="p">((</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="n">x</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="n">x</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">y</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">z</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
+            <span class="n">polygons</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="p">(</span><span class="o">*</span><span class="n">corners</span><span class="p">,</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">z</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))))</span>
+        <span class="k">if</span> <span class="n">faces</span><span class="p">[</span><span class="s2">"east"</span><span class="p">][</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">]:</span>
+            <span class="n">corners</span> <span class="o">=</span> <span class="p">((</span><span class="n">x</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">),</span> <span class="p">(</span><span class="n">x</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="n">x</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">y</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">z</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
+            <span class="n">polygons</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span> <span class="p">(</span><span class="o">*</span><span class="n">corners</span><span class="p">,</span> <span class="p">(</span><span class="n">x</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">y</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">z</span><span class="p">))))</span>
+        <span class="k">for</span> <span class="n">face</span><span class="p">,</span> <span class="n">corners</span> <span class="ow">in</span> <span class="n">polygons</span><span class="p">:</span>
+            <span class="n">fill</span><span class="p">,</span> <span class="n">edge</span> <span class="o">=</span> <span class="n">face_colours</span><span class="p">[</span><span class="n">block</span><span class="p">][</span><span class="n">face</span><span class="p">]</span>
+            <span class="n">draw</span><span class="o">.</span><span class="n">polygon</span><span class="p">(</span>
+                <span class="p">[</span><span class="n">point</span><span class="p">(</span><span class="o">*</span><span class="n">c</span><span class="p">)</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">corners</span><span class="p">],</span>
+                <span class="n">fill</span><span class="o">=</span><span class="n">fill</span><span class="p">,</span>
+                <span class="n">outline</span><span class="o">=</span><span class="n">edge</span> <span class="k">if</span> <span class="n">outline</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">labels</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">image</span>
+
+    <span class="c1"># label the three footprint corners that are in view with world x, z</span>
+    <span class="n">margin_w</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span>
+        <span class="n">_text_width</span><span class="p">(</span><span class="n">_xz</span><span class="p">(</span><span class="n">world_x</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">],</span> <span class="n">world_z</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]))</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="p">)</span>
+    <span class="n">text_h</span> <span class="o">=</span> <span class="n">_text_height</span><span class="p">()</span>
+    <span class="n">top</span> <span class="o">=</span> <span class="n">text_h</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">PAD</span>
+    <span class="n">framed</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">new</span><span class="p">(</span>
+        <span class="s2">"RGB"</span><span class="p">,</span>
+        <span class="p">(</span><span class="n">image</span><span class="o">.</span><span class="n">width</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="n">margin_w</span> <span class="o">+</span> <span class="n">PAD</span><span class="p">),</span> <span class="n">top</span> <span class="o">+</span> <span class="n">image</span><span class="o">.</span><span class="n">height</span> <span class="o">+</span> <span class="n">text_h</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">PAD</span><span class="p">),</span>
+        <span class="n">CANVAS</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">left</span> <span class="o">=</span> <span class="n">margin_w</span> <span class="o">+</span> <span class="n">PAD</span>
+    <span class="n">framed</span><span class="o">.</span><span class="n">paste</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="n">top</span><span class="p">))</span>
+    <span class="n">draw</span> <span class="o">=</span> <span class="n">ImageDraw</span><span class="o">.</span><span class="n">Draw</span><span class="p">(</span><span class="n">framed</span><span class="p">)</span>
+    <span class="n">font</span> <span class="o">=</span> <span class="n">_font</span><span class="p">()</span>
+    <span class="n">title</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">view</span><span class="si">}</span><span class="s2">: from the </span><span class="si">{</span><span class="n">_corner_name</span><span class="p">(</span><span class="n">turns</span><span class="p">)</span><span class="si">}</span><span class="s2">, up is up"</span>
+    <span class="n">draw</span><span class="o">.</span><span class="n">text</span><span class="p">((</span><span class="n">PAD</span><span class="p">,</span> <span class="n">PAD</span><span class="p">),</span> <span class="n">title</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="n">INK</span><span class="p">,</span> <span class="n">font</span><span class="o">=</span><span class="n">font</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">),</span> <span class="n">anchor</span> <span class="ow">in</span> <span class="p">(((</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="s2">"rm"</span><span class="p">),</span> <span class="p">((</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="s2">"mt"</span><span class="p">),</span> <span class="p">((</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="s2">"lm"</span><span class="p">)):</span>
+        <span class="n">corner_x</span> <span class="o">=</span> <span class="n">sx</span> <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span> <span class="k">else</span> <span class="mi">0</span>
+        <span class="n">corner_z</span> <span class="o">=</span> <span class="n">sz</span> <span class="k">if</span> <span class="n">j</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span> <span class="k">else</span> <span class="mi">0</span>
+        <span class="n">px</span><span class="p">,</span> <span class="n">py</span> <span class="o">=</span> <span class="n">point</span><span class="p">(</span><span class="n">corner_x</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">corner_z</span><span class="p">)</span>
+        <span class="n">text</span> <span class="o">=</span> <span class="n">_xz</span><span class="p">(</span><span class="n">world_x</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">],</span> <span class="n">world_z</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">])</span>
+        <span class="n">nudge</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"rm"</span><span class="p">:</span> <span class="p">(</span><span class="o">-</span><span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="s2">"mt"</span><span class="p">:</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="s2">"lm"</span><span class="p">:</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">)}[</span><span class="n">anchor</span><span class="p">]</span>
+        <span class="n">draw</span><span class="o">.</span><span class="n">text</span><span class="p">(</span>
+            <span class="p">(</span><span class="n">left</span> <span class="o">+</span> <span class="n">px</span> <span class="o">+</span> <span class="n">nudge</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">top</span> <span class="o">+</span> <span class="n">py</span> <span class="o">+</span> <span class="n">nudge</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span>
+            <span class="n">text</span><span class="p">,</span>
+            <span class="n">fill</span><span class="o">=</span><span class="n">INK</span><span class="p">,</span>
+            <span class="n">font</span><span class="o">=</span><span class="n">font</span><span class="p">,</span>
+            <span class="n">anchor</span><span class="o">=</span><span class="n">anchor</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">font</span><span class="p">,</span> <span class="n">ImageFont</span><span class="o">.</span><span class="n">FreeTypeFont</span><span class="p">)</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="p">)</span>
+    <span class="k">return</span> <span class="n">framed</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_turn</span><span class="p">(</span><span class="n">array</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">turns</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Turn an [x][y][z] array a quarter turn about y *turns* times, so that the</span>
+<span class="sd">    north east, north west or south west corner becomes the south east one</span>
+<span class="sd">    """</span>
+    <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">turns</span><span class="p">):</span>
+        <span class="c1"># x' = -z, z' = x takes the north east corner to the south east</span>
+        <span class="n">array</span> <span class="o">=</span> <span class="n">array</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)[::</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]</span>
+    <span class="k">return</span> <span class="n">array</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_corner_name</span><span class="p">(</span><span class="n">turns</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">return</span> <span class="p">(</span><span class="s2">"south east"</span><span class="p">,</span> <span class="s2">"north east"</span><span class="p">,</span> <span class="s2">"north west"</span><span class="p">,</span> <span class="s2">"south west"</span><span class="p">)[</span><span class="n">turns</span><span class="p">]</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_xz</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">z</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">return</span> <span class="sa">f</span><span class="s2">"x=</span><span class="si">{</span><span class="n">x</span><span class="si">}</span><span class="s2"> z=</span><span class="si">{</span><span class="n">z</span><span class="si">}</span><span class="s2">"</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_face_colours</span><span class="p">(</span>
+    <span class="n">colours</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">]]]]:</span>
+<span class="w">    </span><span class="sd">"""the fill and outline colour of each face of each block"""</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">rgba</span> <span class="ow">in</span> <span class="n">colours</span><span class="p">:</span>
+        <span class="n">faces</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">light</span> <span class="ow">in</span> <span class="p">(</span><span class="n">_TOP</span><span class="p">,</span> <span class="n">_SOUTH</span><span class="p">,</span> <span class="n">_EAST</span><span class="p">):</span>
+            <span class="n">rgb</span> <span class="o">=</span> <span class="n">rgba</span><span class="p">[:</span><span class="mi">3</span><span class="p">]</span> <span class="o">*</span> <span class="n">light</span>
+            <span class="n">alpha</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">rgba</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">*</span> <span class="mi">255</span><span class="p">))</span>
+            <span class="n">fill</span> <span class="o">=</span> <span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">c</span> <span class="o">*</span> <span class="mi">255</span><span class="p">))</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">rgb</span><span class="p">),</span> <span class="n">alpha</span><span class="p">)</span>
+            <span class="n">edge</span> <span class="o">=</span> <span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">c</span> <span class="o">*</span> <span class="mi">255</span> <span class="o">*</span> <span class="mf">0.8</span><span class="p">))</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">rgb</span><span class="p">),</span> <span class="n">alpha</span><span class="p">)</span>
+            <span class="n">faces</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">fill</span><span class="p">,</span> <span class="n">edge</span><span class="p">))</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">faces</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">result</span>
+</pre></div>
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be"></script>
+<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.23.0.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>
