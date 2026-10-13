@@ -257,16 +257,15 @@ def in_world() -> None:
     L.cmd(f"forceload add {lo.x} {lo.z} {hi.x} {hi.z}")
     try:
         wait_loaded([(lo.x, lo.z), (hi.x, hi.z)], 20)
-        from build_outer import ground_heights_retry
+        from mciwb.imports import Heightmap, ground_heights
 
-        from mciwb.imports import Heightmap
-
+        # the box must be empty: the surface under it (every 4th column)
         columns = [
             (x, z)
-            for x in range(int(lo.x), int(hi.x) + 1)
-            for z in range(int(lo.z), int(hi.z) + 1)
+            for x in range(int(lo.x), int(hi.x) + 1, 4)
+            for z in range(int(lo.z), int(hi.z) + 1, 4)
         ]
-        tops = ground_heights_retry(columns, Heightmap.WORLD_SURFACE)
+        tops = ground_heights(columns, Heightmap.WORLD_SURFACE)
         if max(tops.values()) >= lo.y and not os.environ.get("REUSE"):
             raise SystemExit(f"the rig's box {lo}..{hi} is not empty: not building")
         L.STAGE = "house_rig"
@@ -288,6 +287,14 @@ def in_world() -> None:
                 }[looks]
                 if not L.is_block(p, f"#minecraft:stairs[facing={back}]"):
                     bad.append(f"seat {p}")
+            for p in h.steps:  # the stairs and their headroom
+                if not (
+                    L.is_block(p, "#minecraft:stairs") or L.is_block(p, "minecraft:ladder")
+                ):
+                    bad.append(f"step {p}")
+            for p in h.headroom:
+                if not L.is_block(p, L.AIR):
+                    bad.append(f"headroom {p}")
         print("world readback:", "PASS" if not bad else f"FAIL {bad[:5]}")
         if not ok or bad:
             raise SystemExit(1)

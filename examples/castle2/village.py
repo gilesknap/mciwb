@@ -79,9 +79,10 @@ def lot_cells() -> set[tuple[int, int]]:
 
 def clear_lots() -> None:
     """clear the lots (houses move when the layout changes) back to grass"""
-    cells = lot_cells()
-    L.fill_cells(cells, 0, TOP, L.AIR)
-    L.fill_cells(cells, -1, -1, "minecraft:grass_block")
+    o = V(0, 0, 0)
+    cells = {(x + int(o.x), z + int(o.z)) for x, z in lot_cells()}
+    L.fill_cells(cells, int(o.y), int(o.y) + TOP, L.AIR)
+    L.fill_cells(cells, int(o.y) - 1, int(o.y) - 1, "minecraft:grass_block")
 
 
 def relight() -> None:
