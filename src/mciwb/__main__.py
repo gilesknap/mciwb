@@ -59,7 +59,10 @@ PasswordFileOption = Annotated[
     typer.Option(
         "--password-file",
         "--passwd-file",
-        help="a file holding the RCON password (on its first line)",
+        help=(
+            "a file holding the RCON password on its first line; "
+            "make it private with chmod 600"
+        ),
         show_default=False,
         # _password reports a file that it cannot read
         readable=False,
@@ -79,7 +82,7 @@ def _password(password: str | None, password_file: Path | None) -> str:
         return password
     if password_file is not None:
         try:
-            text = password_file.read_text(encoding="utf-8")
+            text = password_file.read_text(encoding="utf-8-sig")  # drop a BOM
         except OSError as e:
             log.error(f"cannot read the password file {password_file}: {e.strerror}")
             raise typer.Exit(1) from None

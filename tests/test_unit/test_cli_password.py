@@ -106,6 +106,7 @@ def test_file(command: str, option: str, seen: list[str], tmp_path: Path):
     [
         (f"{SECRET}", SECRET),  # no newline
         (f"{SECRET}\r\n", SECRET),  # windows line ending
+        (f"\ufeff{SECRET}\n", SECRET),  # a byte order mark is not part of it
         (f" {SECRET} \nignored\n", f" {SECRET} "),  # only the first line, as is
     ],
 )
@@ -185,7 +186,9 @@ def test_bad_file(
     assert SECRET not in result.output + capsys.readouterr().err
 
 
-def test_unreadable_file(seen: list[str], tmp_path: Path):
+def test_unreadable_file(
+    seen: list[str], tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+):
     file = tmp_path / "rcon-password"
     file.write_text(SECRET)
     file.chmod(0)
@@ -194,7 +197,11 @@ def test_unreadable_file(seen: list[str], tmp_path: Path):
     except PermissionError:
         pass
     else:
-        pytest.skip("root can read any file")
+        # root can read any file, so fake the error
+        def denied(self, *args, **kwargs):
+            raise PermissionError(13, "Permission denied", str(self))
+
+        monkeypatch.setattr(Path, "read_text", denied)
     result = invoke("run", tmp_path, "--password-file", str(file))
     assert result.exit_code == 1, (result.output, result.exception)
     assert "cannot read the password file" in result.output
