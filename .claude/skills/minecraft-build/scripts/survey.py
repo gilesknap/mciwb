@@ -108,7 +108,8 @@ def surface(grid: BlockGrid) -> tuple[np.ndarray, np.ndarray]:
     top = grid.ids.shape[1] - 1 - from_top
     has_ground = ground.any(axis=1)
     x, z = np.indices(top.shape)
-    ids = np.where(has_ground, grid.ids[x, top, z], -1)
+    # signed: the ids read from world files are uint16, where -1 does not fit
+    ids = np.where(has_ground, grid.ids[x, top, z].astype(np.int64), -1)
     heights = np.where(has_ground, top + grid.origin.y, grid.origin.y - 1)
     return heights, ids
 

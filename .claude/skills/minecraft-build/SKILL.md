@@ -44,7 +44,9 @@ the image to check every step.
    `mciwb render X1 Y1 Z1 X2 Y2 Z2 --view top --view iso --view south`
    (or `--centre X Y Z --size DX DY DZ`).
 7. **Iterate**: fix the script and run it again. Scripts clear their site
-   first, so re-running is safe.
+   first, so re-running is safe for blocks, but not for entities: tag what
+   you `summon` and kill the tagged ones before summoning again (see
+   [reference.md](reference.md#entities)).
 8. **Undo** if it went badly wrong: `mciwb restore before-<what>` (it stops
    the server, restores the world and starts it again; give the same options
    as `mciwb start`). Tell the user before you restore.
@@ -55,8 +57,11 @@ the image to check every step.
   west -x. In renders, `top` has north up and x increasing to the right.
 - Flat world (`--world-type flat`): the top grass block is y = -61, so build
   from y = -60. Default world (seed 0): spawn is (632, 73, -1658).
-- Blocks are `Item.NAME` (`Item.STONE_BRICKS`) or `"minecraft:name"` strings;
-  states go in brackets (`"minecraft:oak_stairs[facing=east,half=top]"`) or
+- Blocks are `Item.NAME` (`Item.STONE_BRICKS`) or `"minecraft:name"` strings,
+  with the server's current ids: some were renamed (`minecraft:chain` is now
+  `iron_chain`, `grass` is `short_grass`); `hasattr(Item, "NAME")` checks
+  one. States go in
+  brackets (`"minecraft:oak_stairs[facing=east,half=top]"`) or
   `world.set_block(pos, item, facing=Direction.EAST, nbt=["half=top"])`.
 - Prefer `/fill` to loops of `set_block`: one `client.fill(a, b, item)`
   places up to 32768 blocks in one RCON command;
@@ -84,7 +89,14 @@ the image to check every step.
 - Renders show average colours, not textures, and not block states (stairs
   and slabs look like full blocks): check stairs with
   `Schematic.from_world(vol).blocks[x, y, z].props["facing"]` on a small
-  region. Keep renders under about 100 blocks across.
+  region. Keep renders under about 100 blocks across. Over RCON a render
+  reads at most 32768 blocks: bigger regions need the world files on this
+  machine (`mciwb render --folder SERVER_FOLDER`).
+- Redstone and entities: a server with no players may be paused (nothing
+  ticks, entities in new chunks cannot be found), and a lever or tripwire
+  hook placed with `setblock` does not power its circuit as a click does.
+  Read [reference.md](reference.md#redstone-entities-and-paused-servers)
+  before building or testing a mechanism.
 
 ## More
 
@@ -92,6 +104,9 @@ the image to check every step.
   `Blocks`, `Wall`), the builders (roofs, arches, stairways, roads,
   foundations, schematics) with their arguments, render views and options,
   performance numbers and troubleshooting.
+- A large worked example: `examples/castle/` in the mciwb repository (a
+  castle with working redstone, built and verified in stages: read its
+  `README.md`).
 - For other helpers, read `CLAUDE.md` in the mciwb repository and the API
   docs at https://gilesknap.github.io/mciwb/main/_api/mciwb.html. Every
   name in `mciwb.imports` is available to `mciwb run` scripts.

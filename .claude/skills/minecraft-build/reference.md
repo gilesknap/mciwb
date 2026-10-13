@@ -14,6 +14,8 @@ template imports it anyway, to keep linters and editors happy).
 - [Schematics: saving and reusing pieces](#schematics-saving-and-reusing-pieces)
 - [Reading blocks back](#reading-blocks-back)
 - [Rendering](#rendering)
+- [Redstone, entities and paused servers](#redstone-entities-and-paused-servers)
+- [Big builds: layout and stages](#big-builds-layout-and-stages)
 - [Server, backups and options](#server-backups-and-options)
 - [Performance](#performance)
 - [Troubleshooting](#troubleshooting)
@@ -261,9 +263,127 @@ In a script `world.render(a, b, "out.png", views=["top", "iso"])` returns the
   `Schematic.from_world` (see above), not from the image.
 - Blocks are read from the world files after `save-all flush` (fast, needs
   the world folder on this machine: `~/mciwb-server/world` for `mciwb start`,
-  or `--folder`). Otherwise, or with `--rcon`, over RCON at most 32768
-  blocks. In a script set `world.world_folder = Path(".../world")` for a
+  or `--folder SERVER_FOLDER`, the folder that holds `world/`). Otherwise, or
+  with `--rcon`, over RCON at most 32768 blocks (e.g. 32 x 32 x 32): a
+  larger region fails, so render a large build in pieces, or from the world
+  files. In a script set `world.world_folder = Path(".../world")` for a
   server in another folder.
+
+## Redstone, entities and paused servers
+
+### Paused servers
+
+The server of `mciwb start` keeps ticking with nobody online. Other
+servers usually pause: `pause-when-empty-seconds` in `server.properties`
+(default 60) stops the game that long after the last player leaves.
+Commands still run and `setblock`/`fill` still change blocks, but nothing
+moves: no redstone, pistons, hoppers, falling sand or flowing water, and
+mobs stand still. So on a paused server:
+
+- To see a mechanism work, advance the game by hand:
+  `world.cmd("tick sprint 40")` runs 40 ticks (2 s of game time) as fast
+  as it can. The command returns at once and the sprint runs after it, so
+  wait a moment (about 0.2 s plus 0.01 s per tick) before reading blocks.
+  Only sprint when no player is online (`get_client().players.players` is
+  empty): with a player online the server ticks anyway, and a sprint would
+  run their game at speed; wait `ticks / 20` seconds instead.
+- `execute if loaded X Y Z` never reports true, even for forceloaded
+  chunks: do not wait on it.
+- Entities in freshly forceloaded chunks cannot be selected (`kill @e[...]`
+  and `execute if entity` find nothing) until the server has ticked them.
+- Many sprinted ticks (thousands, over repeated checks) also bring night,
+  so hostile mobs spawn in the dark parts of the site, and copper ages:
+  light the build, and kill hostile mobs in the site before you check it.
+
+### Loading chunks
+
+`forceload add X1 Z1 X2 Z2` only asks for the chunks; they load in the
+background, and a script is faster. Commands sent at once fail with "not
+loaded", or find no entities. What works on any server: poll a block in
+each chunk until it is loaded, then tick a little so that its entities are
+there too.
+
+```python
+import time
+
+
+def wait_loaded(points, timeout=60):
+    """wait for the chunks at these (x, z) and their entities"""
+    deadline = time.time() + timeout
+    for x, z in points:  # e.g. one point in each forceloaded chunk
+        while "not loaded" in world.cmd(f"execute if block {x} 0 {z} minecraft:air"):
+            if time.time() > deadline:
+                raise TimeoutError(f"chunk at {x}, {z} not loaded")
+            time.sleep(0.5)
+    if not get_client().players.players:
+        world.cmd("tick sprint 20")  # let the entities load: see above
+    time.sleep(1)
+```
+
+Forceload at most 256 chunks per command, and `forceload remove` them when
+the script ends (in a `finally`), so the server does not keep them loaded.
+
+### Redstone placed by commands
+
+- A lever or tripwire hook placed or switched with `setblock` updates only
+  its own neighbours, not the blocks next to the block it is attached to,
+  as a click would. Put a redstone dust beside the lever, and after
+  switching it re-place the dust (`setblock` to `air`, then to
+  `redstone_wire`) so that it picks up the new power. A button placed with
+  `setblock` does not press: to test the circuit, set a `redstone_block` in
+  place of the block the button is on, as a stand-in for a press, then put
+  that block back.
+- A tripwire is only tripped by an entity standing on it: summon one onto
+  the wire (an `Invulnerable:1b` armour stand, so arrows from a trap do not
+  break it), tick, check, then kill it.
+- Block entity data is not a block state: a chiseled bookshelf's
+  `last_interacted_slot` (what its comparator reads), a sign's text or a
+  container's items are set with
+  `world.cmd("data merge block X Y Z {last_interacted_slot:5}")`, not in
+  `[...]`.
+- Test each mechanism on its own (in an empty box in the air, say) before
+  building it into the real thing, toggling it and reading the blocks back.
+
+### Entities
+
+Clearing a site removes blocks, not entities, so running a build script
+again adds a second horse, armour stand or item frame on top of the first.
+Tag everything you summon, and kill the tagged ones before summoning again:
+
+```python
+TAG = "mybuild"  # one per build; add a second tag per stage to rebuild one stage
+world.cmd(f"kill @e[tag={TAG}]")  # first: wherever they have wandered to
+world.cmd(
+    f'summon minecraft:horse {x} {y} {z} {{Tags:["{TAG}"],PersistenceRequired:1b}}'
+)
+```
+
+The chunks must be loaded, with their entities (see above), or the kill
+finds nothing. `PersistenceRequired:1b` stops a mob despawning; fence it in
+too, and keep doorways out of its pen, or it wanders off. Count them back
+with `world.cmd(f"execute if entity @e[tag={TAG}]")` (the reply ends with
+the count).
+
+## Big builds: layout and stages
+
+`examples/castle/` in the mciwb repository
+(https://github.com/gilesknap/mciwb/tree/main/examples/castle) is a large
+worked example: a castle with working redstone, built in stages and checked
+by a separate verify script. Its lessons:
+
+- Put every position in one layout module (`castle_layout.py`): the
+  buildings, the mechanisms and their parts, and teleport targets. The
+  build, the checks and any guide all import it, so they cannot disagree.
+  Give each mechanism a function that returns the positions of its parts,
+  used by the build and the checks alike.
+- Check the layout in code before building: buildings must not overlap
+  towers (out to the tower's radius + 1, so walls and tower doors stay
+  clear) or each other, paths must stop short of buildings, and stair tops
+  must meet their floors. Refuse to build a layout that fails.
+- Build in stages that can be rerun on their own, each killing its own
+  tagged entities first.
+- Keep the verify script separate from the build, and have it leave the
+  world as it found it (levers back, entities it summoned killed).
 
 ## Server, backups and options
 
@@ -307,3 +427,8 @@ of `mciwb start`, as it starts the server again. Existing backups:
 | Build has floating or buried parts | re-survey: ground height varies; lay a `foundation` under it, or place each column at `ground_height(x, z) + 1` |
 | `BuildError` from a builder | the message has the server's reply: an unknown block or state, or an unloaded chunk |
 | Stairs face the wrong way | `facing` is the side of the tall step: read them back with `Schematic.from_world` and fix the `facing` you sent |
+| Redstone does nothing, nothing moves | the server is paused with nobody online: `tick sprint N` (see [Paused servers](#paused-servers)); a lever set with `setblock` needs its dust re-placed |
+| `kill @e[...]` or a count finds no entities that should be there | the chunks are not loaded, or not yet ticked: [Loading chunks](#loading-chunks) |
+| Unknown block, e.g. `minecraft:chain` | the id was renamed: `iron_chain`. Look for the name in `Item` |
+| Duplicate mobs or armour stands after a rerun | tag what you summon and kill the tagged ones first: [Entities](#entities) |
+| Render or scan: too many blocks over RCON | over 32768 blocks: render from the world files (`--folder`), or smaller pieces |

@@ -12,6 +12,7 @@ from typer.testing import CliRunner
 
 from mciwb.__main__ import cli
 from mciwb.imports import Item, Vec3
+from tests.anvil_writer import write_world
 from tests.mockclient import MockClient
 
 SKILL = Path(__file__).parents[2] / ".claude" / "skills" / "minecraft-build"
@@ -165,3 +166,34 @@ def test_survey_needs_a_site(mock_world: MockClient):
 
     assert result.exit_code != 0
     assert "SURVEY=" in str(result.exception)
+
+
+def test_survey_world_files(
+    mock_client: MockClient, monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+):
+    """
+    with the world files on this machine the blocks are read from them, as
+    uint16 ids: a column with no ground is marked -1, which does not fit in
+    uint16 (OverflowError, or wraps to 65535 and IndexError, by numpy version)
+    """
+    server = tmp_path / "server"
+    blocks = {(x, 0, z): "minecraft:grass_block" for x in range(5) for z in range(5)}
+    blocks[(2, 1, 2)] = "minecraft:stone"
+    del blocks[(4, 0, 4)]  # a column with no ground
+    write_world(server / "world", blocks)
+    (server / "server.properties").write_text("rcon.port=20400\n")
+    monkeypatch.setattr("mciwb.iwb.Client", MockClient)
+    monkeypatch.setattr("mciwb.iwb.default_server_folder", server)
+    monkeypatch.chdir(tmp_path)
+    monkeypatch.setenv("SURVEY", "2 2 2 -2 4")
+
+    result = run(SCRIPTS / "survey.py")
+
+    assert result.exit_code == 0, (result.output, result.exception)
+    out = result.output
+    assert "min 0, median 0, max 1" in out
+    assert "minecraft:grass_block 23" in out
+    rows = [line.strip()[1:-1] for line in out.splitlines() if "|" in line]
+    assert rows[2] == "00100"
+    assert rows[4] == "0000 "
+    assert (tmp_path / "survey.png").is_file()
