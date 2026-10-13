@@ -18,7 +18,8 @@ on castle2's layout, then castle2's own:
   entities (the hams, the effigies' swords, the armour-stand dummies) are
   all there;
 - every house has its door, clear floor either side of it, and its stands
-  (counter, bedside, hearth) free;
+  (counter, bedside, hearth) free, and every step of its stairs (or rung of
+  its ladder) in place with the headroom a player needs to climb it;
 - every pen's fence ring is whole with its gate closed, and its animals are
   all inside it. (castle's entity check counts every animal and item frame
   the stages summoned, castle2's included.)
@@ -305,6 +306,32 @@ def houses() -> None:
                 bad.append(f"{name}: {what} {tuple(p)} not free")
     check(
         f"village: {len(built)} houses, each with its door clear and its stands free"
+        + (f" (not {bad[:4]})" if bad else ""),
+        not bad,
+    )
+    # the stairs: every step (or rung) in place, and the cells a player
+    # needs free to climb them (house.House.headroom: 3 over each step, 2 at
+    # the top, the landings) free: only these cells are read
+    bad, reads = [], 0
+    for name, h in built.items():
+        for p in h.steps:
+            reads += 1
+            if not (
+                is_block(p, "#minecraft:stairs")
+                or is_block(p, "minecraft:ladder")
+                or is_block(p, "#minecraft:stairs")  # read again (#166)
+            ):
+                bad.append(f"{name}: no step at {tuple(p)}")
+        for p in h.headroom:
+            reads += 1
+            if not (
+                is_block(p, L.AIR)
+                or is_block(p, "#minecraft:wool_carpets")
+                or is_block(p, L.AIR)
+            ):
+                bad.append(f"{name}: no headroom at {tuple(p)}")
+    check(
+        f"village: every house's stairs climbable ({reads} cells read)"
         + (f" (not {bad[:4]})" if bad else ""),
         not bad,
     )

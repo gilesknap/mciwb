@@ -115,10 +115,11 @@ def castle2_problems() -> list[str]:
 SQUARE = (44, 147, 76, 165)  # x1, z1, x2, z2
 MARKET_CROSS = (52, 156)  # a stone cross on steps in the square's west half
 CLOCK_TOWER = (68, 156)  # the square's east half: kept clear for the clock tower
-# the lanes round the square, joining the main street (x1, z1, x2, z2)
+# the lanes round the square, joining the main street; the north and south
+# lanes run on past the ring to the houses by the walls (x1, z1, x2, z2)
 LANES = {
-    "north lane": (26, 131, 96, 133),
-    "south lane": (26, 176, 96, 178),
+    "north lane": (8, 131, 112, 133),
+    "south lane": (8, 176, 112, 178),
     "west lane": (26, 131, 28, 178),
     "east lane": (94, 131, 96, 178),
 }
@@ -127,73 +128,260 @@ LANES = {
 # corner is the north-west corner of the ground floor; width runs along the
 # street the house faces, depth back from it (see house.medieval_house).
 # Each keeps its jetties and eaves off the lanes, the square and the
-# streets (layout_problems checks it).
+# streets, with at least 3 blocks between neighbours (village_problems
+# checks it); roofs, heights and sizes vary so that no row reads as a
+# terrace. The houses stay within z 120..190 (the mill is south of it).
+SPRUCE = "minecraft:spruce_stairs"
+DARK_OAK = "minecraft:dark_oak_stairs"
+SLATE = "minecraft:deepslate_tile_stairs"
+MUD = "minecraft:mud_brick_stairs"
+TILE = "minecraft:brick_stairs"
 HOUSES: list[tuple[str, int, int, int, int, str, dict]] = [
     # north of the north lane, facing it
-    ("baker", 30, 121, 8, 8, "south", {"contents": "baker"}),
-    ("house n2", 40, 121, 8, 8, "south", {"frame": "square_panel"}),
-    ("butcher", 50, 121, 7, 8, "south", {"contents": "butcher", "roof": "hip"}),
-    ("tailor", 64, 121, 7, 8, "south", {"contents": "tailor"}),
-    ("house n5", 73, 121, 8, 8, "south", {"frame": "braced", "jetty": 0}),
+    (
+        "cottage n1",
+        9,
+        125,
+        7,
+        5,
+        "south",
+        {"floors": 1, "jetty": 0, "roof_block": MUD, "window_boxes": True},
+    ),
+    (
+        "house n2",
+        21,
+        125,
+        7,
+        5,
+        "south",
+        {"jetty": 0, "roof": "hip", "roof_block": DARK_OAK, "ground": "timber"},
+    ),
+    ("baker", 33, 121, 9, 8, "south", {"contents": "baker", "roof_block": TILE}),
+    (
+        "butcher",
+        47,
+        121,
+        8,
+        6,
+        "south",
+        {"contents": "butcher", "floors": 4, "roof": "hip", "roof_block": SLATE},
+    ),
+    (
+        "tailor",
+        64,
+        121,
+        8,
+        7,
+        "south",
+        {"contents": "tailor", "floors": 3, "ground": "timber"},
+    ),
+    (
+        "house n6",
+        77,
+        121,
+        10,
+        8,
+        "south",
+        {"roof": "gable_cross", "roof_block": DARK_OAK, "window_boxes": True},
+    ),
     (
         "candlemaker",
-        83,
+        92,
         121,
         8,
         8,
         "south",
-        {"contents": "candlemaker", "roof": "gable_cross"},
+        {"contents": "candlemaker", "roof_block": MUD, "frame": "braced"},
     ),
-    # between the north lane and the square, facing the square
-    ("house c1", 30, 136, 8, 8, "south", {"window_boxes": True}),
+    (
+        "house n8",
+        105,
+        122,
+        7,
+        6,
+        "south",
+        {"floors": 3, "roof_block": SLATE, "windows": "shuttered"},
+    ),
+    # between the north lane and the square, facing it
+    (
+        "house c1",
+        30,
+        135,
+        8,
+        9,
+        "south",
+        {"floors": 3, "roof_block": TILE, "ground": "timber", "window_boxes": True},
+    ),
     (
         "apothecary",
-        40,
-        136,
-        8,
+        43,
+        135,
+        9,
         8,
         "south",
-        {"contents": "apothecary", "roof_block": "minecraft:deepslate_tile_stairs"},
+        {"contents": "apothecary", "roof": "hip", "roof_block": SLATE},
     ),
-    ("house c3", 50, 136, 7, 8, "south", {"floors": 3}),
-    ("cartographer", 64, 136, 7, 8, "south", {"contents": "cartographer", "floors": 3}),
     (
-        "house c5",
-        73,
-        136,
+        "cartographer",
+        64,
+        135,
         8,
-        8,
+        9,
         "south",
-        {"frame": "square_panel", "windows": "shuttered"},
+        {"contents": "cartographer", "floors": 3, "roof": "gable_cross"},
     ),
-    ("house c6", 83, 136, 8, 8, "south", {"roof": "hip", "window_boxes": True}),
+    (
+        "house c4",
+        78,
+        135,
+        11,
+        9,
+        "south",
+        {"roof_block": MUD, "jetty_sides": "front+sides", "frame": "close_studding"},
+    ),
     # the square's west and east sides, facing it
     (
         "tavern",
         31,
-        148,
+        151,
+        11,
+        10,
+        "east",
+        {
+            "contents": "tavern",
+            "floors": 3,
+            "roof": "gable_cross",
+            "roof_block": DARK_OAK,
+            "window_boxes": True,
+        },
+    ),
+    ("house w2", 33, 167, 8, 8, "east", {"roof": "hip", "roof_block": TILE}),
+    (
+        "cobbler",
+        79,
+        151,
         8,
         9,
-        "east",
-        {"contents": "tavern", "floors": 3, "roof": "gable_cross"},
+        "west",
+        {"contents": "cobbler", "roof_block": SLATE, "ground": "timber"},
     ),
-    ("house w2", 31, 158, 7, 9, "east", {"frame": "braced"}),
-    ("cobbler", 81, 148, 8, 9, "west", {"contents": "cobbler"}),
-    ("weaver", 81, 158, 7, 9, "west", {"contents": "weaver", "windows": "shuttered"}),
+    (
+        "weaver",
+        80,
+        164,
+        9,
+        9,
+        "west",
+        {"contents": "weaver", "floors": 3, "windows": "shuttered"},
+    ),
     # south of the square, facing it
-    ("fletcher", 30, 168, 8, 6, "north", {"contents": "fletcher"}),
-    ("house s2", 40, 168, 8, 6, "north", {"window_boxes": True, "ground": "timber"}),
-    ("carpenter", 50, 168, 7, 6, "north", {"contents": "carpenter", "roof": "hip"}),
-    ("house s4", 64, 168, 7, 6, "north", {"frame": "square_panel"}),
-    ("house s5", 73, 168, 8, 6, "north", {"windows": "shuttered"}),
-    ("house s6", 83, 168, 8, 6, "north", {"roof": "gable_cross"}),
+    (
+        "fletcher",
+        47,
+        168,
+        8,
+        6,
+        "north",
+        {"contents": "fletcher", "roof_block": MUD, "frame": "braced"},
+    ),
+    (
+        "carpenter",
+        64,
+        168,
+        8,
+        7,
+        "north",
+        {"contents": "carpenter", "roof": "hip", "roof_block": DARK_OAK},
+    ),
     # south of the south lane, facing it
-    ("house l1", 30, 181, 8, 7, "north", {"frame": "braced", "window_boxes": True}),
-    ("house l2", 40, 182, 8, 7, "north", {"floors": 3}),
-    ("house l3", 50, 181, 7, 7, "north", {"ground": "timber"}),
-    ("house l4", 64, 181, 7, 7, "north", {"frame": "square_panel"}),
-    ("house l5", 73, 181, 8, 7, "north", {"roof": "hip"}),
-    ("house l6", 83, 181, 8, 7, "north", {"window_boxes": True}),
+    ("house l1", 9, 181, 8, 8, "north", {"roof_block": SLATE, "window_boxes": True}),
+    (
+        "house l2",
+        22,
+        182,
+        7,
+        7,
+        "north",
+        {"floors": 3, "roof": "hip", "roof_block": SPRUCE, "ground": "timber"},
+    ),
+    (
+        "house l3",
+        34,
+        181,
+        9,
+        8,
+        "north",
+        {"roof": "gable_cross", "roof_block": TILE, "windows": "shuttered"},
+    ),
+    ("house l4", 48, 181, 7, 6, "north", {"roof_block": DARK_OAK, "jetty": 0}),
+    (
+        "house l5",
+        64,
+        181,
+        8,
+        8,
+        "north",
+        {"roof_block": MUD, "frame": "close_studding", "ground": "timber"},
+    ),
+    (
+        "house l6",
+        77,
+        182,
+        7,
+        7,
+        "north",
+        {"floors": 3, "roof_block": SLATE, "window_boxes": True},
+    ),
+    (
+        "house l7",
+        90,
+        181,
+        8,
+        8,
+        "north",
+        {"roof": "hip", "roof_block": SPRUCE, "jetty_sides": "front+sides"},
+    ),
+    ("house l8", 104, 181, 8, 6, "north", {"roof_block": TILE, "ground": "timber"}),
+    # by the west wall, facing the west lane
+    (
+        "house ws1",
+        14,
+        135,
+        9,
+        10,
+        "east",
+        {"roof_block": DARK_OAK, "window_boxes": True},
+    ),
+    (
+        "house ws2",
+        14,
+        149,
+        11,
+        9,
+        "east",
+        {"floors": 3, "roof": "gable_cross", "roof_block": SLATE, "ground": "timber"},
+    ),
+    ("house ws3", 15, 165, 9, 8, "east", {"roof": "hip", "roof_block": MUD}),
+    # by the east wall, facing the east lane
+    (
+        "house es1",
+        100,
+        135,
+        9,
+        11,
+        "west",
+        {"floors": 3, "roof_block": TILE, "frame": "braced"},
+    ),
+    (
+        "house es2",
+        99,
+        149,
+        8,
+        10,
+        "west",
+        {"roof_block": SPRUCE, "ground": "timber", "windows": "shuttered"},
+    ),
+    ("house es3", 99, 162, 9, 9, "west", {"roof": "hip", "roof_block": DARK_OAK}),
 ]
 
 
@@ -308,6 +496,30 @@ def village_problems() -> list[str]:
                 problems.append(
                     f"{a} overlaps {b} at {sorted(houses[a] & houses[b])[:3]}"
                 )
+    # at least 3 blocks between two houses' eaves, so that rows do not read
+    # as terraces; every house within the village's part of the bailey
+    homes = [n for n in names if n.startswith("house ")]
+    near = {
+        n: {
+            (x + dx, z + dz)
+            for x, z in feet[n]
+            for dx in range(-3, 4)
+            for dz in range(-3, 4)
+        }
+        for n in homes
+    }
+    for i, a in enumerate(homes):
+        if not all(120 <= z <= 190 for _x, z in feet[a]):
+            problems.append(f"{a} is not within z 120..190")
+        for b in homes[i + 1 :]:
+            if near[a] & feet[b]:
+                problems.append(f"{a} is less than 3 blocks from {b}")
+    # every house: stairs climbable, stands and seats usable, white walls,
+    # every storey furnished, a clue spot (house.house_problems)
+    from house import house_problems
+
+    for name, h in village_houses().items():
+        problems += [f"house '{name}': {p}" for p in house_problems(h)]
     for fixture in ("market cross", "clock tower"):
         if not feet[fixture] <= _cells(*SQUARE):
             problems.append(f"the {fixture} is not in the square")
