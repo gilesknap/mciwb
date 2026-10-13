@@ -321,6 +321,7 @@ def kitchen() -> None:
     (people.py). The doorways (x 68, z 20..21; x 70..71, z 27) stay clear."""
     y = F1 + 1
     x1, z1, x2, z2 = 68, IZ1, IX2, 27
+    L.fill(V(x1, y, z1), V(x2, F2 - 1, z2), L.AIR)  # a rebuild starts clear
     food = [
         "bread",
         "apple",
@@ -443,6 +444,9 @@ def library() -> None:
     history (people.py)"""
     y = F2 + 1
     x1, z1, x2, z2 = IX1, IZ1, 57, IZ2
+    # a rebuild starts clear, under the ceiling's lanterns (library_shell)
+    L.fill(V(x1, y, z1), V(x2, F3 - 2, z2), L.AIR)
+    carpet(x1, z1, x2, z2, y, "blue")
     windows_z = {18, 19, 24, 25, 30, 31, 36, 37}  # the west wall's windows (from y + 2)
     windows_x = {46, 47, 52, 53}  # the north and south walls' windows
     for z in range(z1, z2 + 1):
@@ -554,6 +558,7 @@ def chambers() -> None:
     split by a wall of wardrobes), the map room, and the east wing's guest
     room, nursery and privy"""
     y = F3 + 1
+    L.fill(V(IX1, y, IZ1), V(57, FR - 1, IZ2), L.AIR)  # a rebuild starts clear
     carpet(IX1, IZ1, 57, IZ2, y, "red")
     # the wardrobe wall between the bedchamber (north) and the solar
     # (south): the way through is by the door, x 54..57
@@ -703,6 +708,9 @@ def east_wing() -> None:
     bed, a toy chest and toys, the nurse's chair, a cat"""
     y = F3 + 1
     # the nursery's carpet, then the guest room's, then the guest room's walls
+    # a rebuild starts clear (but the wall closing the partition's doorway)
+    L.fill(V(68, y, IZ1), V(IX2, FR - 1, 27), L.AIR)
+    L.fill(V(68, y, 20), V(68, y + 1, 21), L.BRICK)
     carpet(68, 18, IX2, 27, y, "light_blue")
     carpet(69, 24, 71, 26, y, "pink")
     carpet(73, 15, IX2, 21, y, "blue")
@@ -822,6 +830,9 @@ def crypt_furnishing() -> None:
     side; skulls in niches in the walls, cobwebs, candles"""
     x1, z1, x2, z2 = 88, 16, 108, 30
     y = 8
+    L.fill(
+        V(x1 + 1, y, z1 + 1), V(x2 - 1, y + 2, z2 - 1), L.AIR
+    )  # a rebuild starts clear
     for x in range(x1 + 3, x2 - 2, 4):
         # (head, body, feet) z, and the way the feet point (to the aisle)
         for zs, toes, rot in (((18, 19, 20), "south", 0), ((28, 27, 26), "north", 8)):
