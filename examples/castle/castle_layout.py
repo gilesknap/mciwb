@@ -1,0 +1,60 @@
+"""
+Where everything is. All positions are relative to ORIGIN, the north-west
+corner of the castle's outer wall at the level of the lower bailey floor:
+``V(x, y, z)`` gives the world position of local (x, y, z).
+
+The castle has two wards on a hillside:
+
+- the **upper ward** on the plateau, local z 0..UD-1, standing level YU,
+  with the keep, chapel, alchemist's tower and the north towers;
+- the **lower bailey** to the south, local z UD..UD+LD-1, standing level 0,
+  with the gatehouse (facing south, towards spawn), stables, smithy, well and
+  the dungeons under its east side;
+- a retaining cliff between them with the Grand Stair and the Middle Gate.
+
+Local axes: x east, y up, z south (as Minecraft). People stand at a level
+y when the floor block is at y - 1.
+"""
+
+from mcwb import Vec3
+
+# ---- the one thing to change to move the castle: the NW corner of the
+# outer wall, at the bailey's standing level (ground y + 1 of the lower site)
+ORIGIN = Vec3(-80, 82, -230)
+
+W = 121  # width of both wards, x 0..W-1 (outer wall faces)
+UD = 65  # upper ward depth: z 0..UD-1
+LD = 81  # lower bailey depth: z UD..UD+LD-1
+YU = 18  # the upper ward's standing level above the bailey's
+WALL_H = 10  # curtain walls: solid blocks above the standing level
+MOAT_W = 6  # the width of the water moat round the bailey and the dry ditch round the upper ward
+MOAT_FLOOR = -6  # the bed of the moat (water from -5 to -2)
+DITCH_FLOOR = YU - 7  # the floor of the dry ditch round the upper ward
+TR = 6  # corner tower radius
+
+# the bailey's south edge and the gate
+ZS = UD + LD - 1  # south outer face of the bailey, z = 145
+XG = W // 2  # the gate's centre line, x = 60
+GATE_X1, GATE_X2 = XG - 1, XG + 1  # the passage is 3 wide
+GATE_Z = ZS - 4  # the portcullis line, inside the gatehouse
+GATEHOUSE = (XG - 14, ZS - 8, XG + 14, ZS)  # x1, z1, x2, z2 of the gatehouse block
+
+# the keep in the upper ward
+KEEP = (40, 12, 80, 42)  # x1, z1, x2, z2 of its outer walls
+KEEP_FLOORS = (YU, YU + 10, YU + 19)  # standing levels of the three storeys
+KEEP_ROOF = YU + 28  # the roof terrace's standing level
+KEEP_TOP = KEEP_ROOF + 2  # top of the parapet
+
+# the site to clear and forceload (local), with margins for moat, bridge and road
+SITE_X1, SITE_X2 = -MOAT_W - 4, W + MOAT_W + 3
+SITE_Z1, SITE_Z2 = -MOAT_W - 4, UD + LD + MOAT_W + 4
+SITE_TOP = YU + 75
+
+
+def V(x: float, y: float, z: float) -> Vec3:
+    """world position of a local position"""
+    return Vec3(ORIGIN.x + int(x), ORIGIN.y + int(y), ORIGIN.z + int(z))
+
+
+def world_xz(x: int, z: int) -> tuple[int, int]:
+    return ORIGIN.x + x, ORIGIN.z + z
