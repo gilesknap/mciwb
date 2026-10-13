@@ -709,7 +709,7 @@ def bailey() -> None:
         not problems,
     )
     bad = []
-    for name in ("west mid-wall tower", "east mid-wall tower"):
+    for name in (n for n in BAILEY_TOWERS if "mid-wall" in n):
         cx, cz, r = BAILEY_TOWERS[name]
         # the pillar, and the north and south walls beside the wall-walk doors
         for x, z in ((cx, cz), (cx, cz - r), (cx, cz + r)):
@@ -1060,56 +1060,59 @@ def main() -> None:
         )
     build_outer.forceload(True)
     try:
-        print(f"killed {L.kill_hostiles(*site_box())} hostile mobs in the site")
-        portcullis("main gate", MAIN_GATE)
-        portcullis("middle gate", MIDDLE_GATE)
-        blocked = [z for z in range(ZS - 8, ZS + 1) if not is_block(V(XG, 0, z), L.AIR)]
-        check(
-            f"main gate passage is open end to end (blocked at local z {blocked})",
-            not blocked,
-        )
-        check(
-            "bridge spans the moat",
-            all(
-                is_block(V(XG, -1, z), L.PLANKS) for z in range(ZS + 1, BRIDGE_END + 1)
-            ),
-        )
-        library()
-        lever_door("cell block", V(*CELL_DOOR), CELL_LEVER, L.BRICK)
-        lever_door("crypt", V(*CRYPT_DOOR), -1, L.DARK_BRICK)
-        traps()
-        passages()
-        engine()
-        places()
-        cells()
-        mounts()
-        seats()
-        banners()
-        bailey()
-        road()
-        entities()
-        world_folder = os.environ.get("WORLD_FOLDER")
-        if world_folder:
-            # read the site from the world files (RCON is too slow for a
-            # flood fill over it): doors and reachability
-            c("save-all flush")
-            g = reach.load_world(world_folder)
-            summoned_clear(reach.grid_kind(g))
-            towers(reach.grid_kind(g), g.name)
-            reachable(g)
-        else:
-            summoned_clear(rcon_kind)
-            towers(rcon_kind)
-            print(
-                "INFO reach: not checked (set WORLD_FOLDER to the server's world "
-                "folder to walk the castle from its files)"
-            )
+        checks()
     finally:
         c("kill @e[tag=castle_verify]")
         build_outer.forceload(False)
     print(f"{sum(results)}/{len(results)} checks passed")
     if not all(results):
         raise SystemExit(1)
+
+
+def checks() -> None:
+    """every check, with the site loaded (castle2's verify runs these too)"""
+    print(f"killed {L.kill_hostiles(*site_box())} hostile mobs in the site")
+    portcullis("main gate", MAIN_GATE)
+    portcullis("middle gate", MIDDLE_GATE)
+    blocked = [z for z in range(ZS - 8, ZS + 1) if not is_block(V(XG, 0, z), L.AIR)]
+    check(
+        f"main gate passage is open end to end (blocked at local z {blocked})",
+        not blocked,
+    )
+    check(
+        "bridge spans the moat",
+        all(is_block(V(XG, -1, z), L.PLANKS) for z in range(ZS + 1, BRIDGE_END + 1)),
+    )
+    library()
+    lever_door("cell block", V(*CELL_DOOR), CELL_LEVER, L.BRICK)
+    lever_door("crypt", V(*CRYPT_DOOR), -1, L.DARK_BRICK)
+    traps()
+    passages()
+    engine()
+    places()
+    cells()
+    mounts()
+    seats()
+    banners()
+    bailey()
+    road()
+    entities()
+    world_folder = os.environ.get("WORLD_FOLDER")
+    if world_folder:
+        # read the site from the world files (RCON is too slow for a
+        # flood fill over it): doors and reachability
+        c("save-all flush")
+        g = reach.load_world(world_folder)
+        summoned_clear(reach.grid_kind(g))
+        towers(reach.grid_kind(g), g.name)
+        reachable(g)
+    else:
+        summoned_clear(rcon_kind)
+        towers(rcon_kind)
+        print(
+            "INFO reach: not checked (set WORLD_FOLDER to the server's world "
+            "folder to walk the castle from its files)"
+        )
 
 
 if __name__ == "__main__":

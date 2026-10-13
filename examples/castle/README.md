@@ -54,6 +54,14 @@ ORIGIN=-80,82,-230 SPAWN=32,74,-64 NAME=Fable BANNER=red mciwb run build_castle.
 - `NAME` goes on the sign inside the gate, the vault's sign and the
   signpost; `BANNER` is the colour of the castle's banners (the second
   colour, blue, is fixed).
+- `BAILEY_DEPTH` (default 81) is the lower bailey's depth, north to south.
+  A deeper bailey moves its south end (the south wall, the gatehouse, the
+  market and the stairs beside the gatehouse) south, and adds a pair of
+  mid-wall towers, each with its wall stairs, for every 81 blocks of depth
+  (`castle_layout.MID_ZS`). Its north end stays, and so does everything
+  under the bailey's east side: the dungeons, catacombs and lower treasury
+  hang off the smithy's hatch and the well's tunnel. `examples/castle2`
+  builds a castle with a bailey of 162.
 - `verify_castle.py` and `guide.py` take the same variables, so that they
   check and describe the right castle.
 
@@ -222,7 +230,15 @@ lightning rod may be `exposed_lightning_rod` by the time you visit.
 - `build_outer.py`: earthworks, walls, towers, gatehouse, bridge, road,
   grand stair, keep shell; the site's forceload and the road's route.
 - `build_inner.py`: rooms, chapel and crypt, alchemist's tower, bailey
-  buildings, dungeons, vault, details.
+  buildings, dungeons, vault, details. The stages that furnish rooms are
+  split into a shell and its furnishing, so that another castle can keep the rooms and furnish them
+  its own way: `keep_interiors` is `interiors_shell`,
+  `interiors_furnishing` and `interiors_lights`; `chapel` is
+  `chapel_shell` and `chapel_furnishing`; `bailey_buildings` is
+  `bailey_shell` and `bailey_furnishing`; `details` is `details_fixtures`
+  and `details_people`. Every seat is placed by `castle_lib.seat(pos,
+  faces)`, given the way the sitter looks, and recorded in
+  `castle_lib.PLACED_SEATS`.
 - `build_castle.py`: the staged driver. `verify_castle.py`: the checks.
 - `reach.py`: can a visitor walk to every room? A flood fill over the
   site's blocks (read from the world files: RCON is far too slow) from the

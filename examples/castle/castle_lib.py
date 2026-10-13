@@ -13,7 +13,7 @@ import random
 import re
 from collections.abc import Iterable
 
-from castle_layout import TAG
+from castle_layout import TAG, seat_facing
 from mcipc.rcon.enumerations import FillMode
 from mcwb import Vec3
 
@@ -271,6 +271,34 @@ def shell(a: Vec3, b: Vec3, block: str) -> None:
     p.fill(Vec3(lo.x, lo.y, hi.z), Vec3(hi.x, hi.y, hi.z), block)
     p.fill(Vec3(lo.x, lo.y, lo.z), Vec3(lo.x, hi.y, hi.z), block)
     p.fill(Vec3(hi.x, lo.y, lo.z), Vec3(hi.x, hi.y, hi.z), block)
+
+
+# ---------------------------------------------------------------- seats
+
+# every seat placed so far: (first cell, last cell, the way the sitter looks)
+PLACED_SEATS: list[tuple[Vec3, Vec3, str]] = []
+
+
+def seat(
+    pos: Vec3,
+    faces: str,
+    to: Vec3 | None = None,
+    block: str = "minecraft:dark_oak_stairs",
+) -> None:
+    """
+    A stair to sit on at ``pos`` (a row of them to ``to``), for someone who
+    looks ``faces`` (north, south, east or west): towards their table, altar
+    or hall. A stair's facing is its high back, so the stair faces the
+    other way (`castle_layout.seat_facing`). Each seat is recorded in
+    `PLACED_SEATS`, so that another castle's checks can learn its seats by
+    running its build against a fake client.
+    """
+    state = f"{block}[facing={seat_facing(faces)}]"
+    if to is None:
+        set_block(pos, state)
+    else:
+        fill(pos, to, state)
+    PLACED_SEATS.append((pos, pos if to is None else to, faces))
 
 
 # ---------------------------------------------------------------- cells
