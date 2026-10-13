@@ -1096,9 +1096,16 @@ def checks() -> None:
     print(f"killed {L.kill_hostiles(*site_box())} hostile mobs in the site")
     portcullis("main gate", MAIN_GATE)
     portcullis("middle gate", MIDDLE_GATE)
-    blocked = [z for z in range(ZS - 8, ZS + 1) if not is_block(V(XG, 0, z), L.AIR)]
+    # air all the way, or a fence gate (a castle may close its passage
+    # with fence gates, which visitors open and villagers cannot: castle2)
+    blocked = [
+        z
+        for z in range(ZS - 8, ZS + 1)
+        if not is_block(V(XG, 0, z), L.AIR)
+        and not is_block(V(XG, 0, z), "#minecraft:fence_gates")
+    ]
     check(
-        f"main gate passage is open end to end (blocked at local z {blocked})",
+        f"main gate passage is open end to end, or through fence gates (blocked at local z {blocked})",
         not blocked,
     )
     check(
