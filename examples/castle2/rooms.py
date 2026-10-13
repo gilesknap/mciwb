@@ -78,6 +78,12 @@ KEY_ENTITIES: list[tuple[str, str, Vec3, Vec3]] = []
 def key(what: str, pos: Vec3, block: str) -> None:
     """place a block that the rooms check reads back"""
     L.set_block(pos, block)
+    keyed(what, pos, block)
+
+
+def keyed(what: str, pos: Vec3, block: str) -> None:
+    """record a block placed already (a bed, a shelf of goods ...) for the
+    rooms check, which reads back only its name"""
     KEYS.append((what, pos, block))
 
 
@@ -374,7 +380,7 @@ def kitchen() -> None:
     L.set_block(V(x1, y, 19), "minecraft:barrel[facing=up]")
     # the long work table, with a meal being made on it
     table(V(71, y, 20), V(74, y, 21))
-    key("the kitchen's work table", V(71, y, 20), "minecraft:dark_oak_slab[type=top]")
+    keyed("the kitchen's work table", V(71, y, 20), "minecraft:dark_oak_slab[type=top]")
     L.set_block(V(71, y + 1, 21), "minecraft:cake")
     L.set_block(V(73, y + 1, 21), "minecraft:melon")
     L.set_block(V(74, y + 1, 20), "minecraft:carved_pumpkin[facing=west]")
@@ -389,7 +395,7 @@ def kitchen() -> None:
     # (clear of the ceiling's lanterns at x 71, 77, z 18, 24)
     bz = 23
     L.fill(V(72, y + 6, bz), V(75, y + 6, bz), "minecraft:stripped_spruce_log[axis=x]")
-    key("the ham beam", V(73, y + 6, bz), "minecraft:stripped_spruce_log[axis=x]")
+    keyed("the ham beam", V(73, y + 6, bz), "minecraft:stripped_spruce_log[axis=x]")
     for x in (72, 75):
         L.fill(V(x, y + 7, bz), V(x, F2 - 1, bz), L.CHAIN)
     for x, item in (
@@ -409,7 +415,7 @@ def kitchen() -> None:
     for z in range(21, 25):
         shelf(V(x2, y, z), "west", _rng.sample(food, 3))
         shelf(V(x2, y + 1, z), "west", _rng.sample(food, 3))
-    key("the pantry's shelves", V(x2, y, 22), "minecraft:spruce_shelf[facing=west]")
+    keyed("the pantry's shelves", V(x2, y, 22), "minecraft:spruce_shelf[facing=west]")
     chest(
         V(x2, y, 25),
         "west",
@@ -485,7 +491,7 @@ def library() -> None:
     L.set_block(V(IX1 + 1, y, 37), "minecraft:loom[facing=east]")
     # the scribe's desk in the north-west corner: a candle, ink and a quill
     table(V(45, y, 17), V(46, y, 17))
-    key("the scribe's desk", V(46, y, 17), "minecraft:dark_oak_slab[type=top]")
+    keyed("the scribe's desk", V(46, y, 17), "minecraft:dark_oak_slab[type=top]")
     L.set_block(V(45, y + 1, 17), "minecraft:white_candle[candles=1,lit=true]")
     L.set_block(V(46, y + 1, 17), "minecraft:decorated_pot[facing=south]")
     L.seat(V(45, y, 18), "north")
@@ -586,7 +592,7 @@ def bedchamber() -> None:
     # the four-poster bed, its head to the west wall, a red canopy on posts
     for z in (20, 21):
         bed(V(IX1 + 1, y, z), "west", "red")
-    key("the four-poster bed", V(IX1, y, 20), "minecraft:red_bed[part=head]")
+    keyed("the four-poster bed", V(IX1, y, 20), "minecraft:red_bed[part=head]")
     for x, z in ((IX1, 19), (IX1, 22), (IX1 + 2, 19), (IX1 + 2, 22)):
         L.fill(V(x, y, z), V(x, y + 2, z), "minecraft:dark_oak_fence")
     L.fill(V(IX1, y + 3, 19), V(IX1 + 2, y + 3, 22), "minecraft:red_wool")
@@ -724,7 +730,7 @@ def east_wing() -> None:
     )
     # the guest room: a bed, a chest, a desk and chair, a wardrobe, a painting
     bed(V(IX2 - 1, y, 16), "east", "blue")
-    key("the guest bed", V(IX2, y, 16), "minecraft:blue_bed[part=head]")
+    keyed("the guest bed", V(IX2, y, 16), "minecraft:blue_bed[part=head]")
     chest(V(IX2, y, 18), "west", [("book", 1), ("candle", 2), ("bread", 3)])
     table(V(IX2, y, 20), V(IX2, y, 20))
     L.set_block(V(IX2, y + 1, 20), "minecraft:candle[candles=1,lit=true]")
@@ -734,13 +740,13 @@ def east_wing() -> None:
     painting(V(75, y + 2, 15), "south", "aztec2")
     # the nursery's cot, railed round, against the east wall
     bed(V(IX2 - 1, y, 25), "east", "white")
-    key("the nursery's cot", V(IX2, y, 25), "minecraft:white_bed[part=head]")
+    keyed("the nursery's cot", V(IX2, y, 25), "minecraft:white_bed[part=head]")
     for x, z in ((75, 24), (75, 25), (75, 26), (76, 24), (77, 24), (76, 26), (77, 26)):
         L.set_block(V(x, y, z), "minecraft:oak_fence")
     L.set_block(V(IX2, y, 27), "minecraft:note_block[instrument=bell]")  # a music box
     # the child's bed, the toy chest and a heap of toy blocks
     bed(V(69, y, 23), "west", "pink")
-    key("the child's bed", V(68, y, 23), "minecraft:pink_bed[part=head]")
+    keyed("the child's bed", V(68, y, 23), "minecraft:pink_bed[part=head]")
     chest(
         V(68, y, 22),
         "east",
