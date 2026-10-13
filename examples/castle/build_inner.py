@@ -219,9 +219,9 @@ def great_hall() -> None:
     # dais and thrones at the west end
     L.fill(V(IX1, F1, 22), V(IX1 + 3, F1, 32), L.DARK)
     L.fill(V(IX1, y, 22), V(IX1 + 3, y, 32), L.DARK)
-    L.fill(V(IX1 + 4, y, 26), V(IX1 + 4, y, 28), f"{L.BRICK_STAIRS}[facing=east]")
+    L.fill(V(IX1 + 4, y, 26), V(IX1 + 4, y, 28), f"{L.BRICK_STAIRS}[facing=west]")
     for z in (26, 28):
-        L.set_block(V(IX1 + 1, y + 1, z), "minecraft:dark_oak_stairs[facing=east]")
+        L.set_block(V(IX1 + 1, y + 1, z), "minecraft:dark_oak_stairs[facing=west]")
         L.set_block(V(IX1, y + 2, z), f"minecraft:{BANNER}_wall_banner[facing=east]")
     L.set_block(V(IX1, y + 3, 27), "minecraft:gold_block")
     # a pier against the north wall hides the library's ladder shaft on its way down
@@ -230,10 +230,10 @@ def great_hall() -> None:
     for z in (20, 34):
         table(V(50, y, z), V(64, y, z))
         L.fill(
-            V(50, y, z - 1), V(64, y, z - 1), "minecraft:dark_oak_stairs[facing=south]"
+            V(50, y, z - 1), V(64, y, z - 1), "minecraft:dark_oak_stairs[facing=north]"
         )
         L.fill(
-            V(50, y, z + 1), V(64, y, z + 1), "minecraft:dark_oak_stairs[facing=north]"
+            V(50, y, z + 1), V(64, y, z + 1), "minecraft:dark_oak_stairs[facing=south]"
         )
         for x in range(51, 64, 4):
             L.set_block(V(x, y + 1, z), "minecraft:white_candle[candles=3,lit=true]")
@@ -323,8 +323,8 @@ def library() -> None:
     # reading tables, lecterns, candles and a globe
     for z in (21, 27, 33):
         table(V(48, y, z), V(52, y, z))
-        L.set_block(V(47, y, z), "minecraft:dark_oak_stairs[facing=east]")
-        L.set_block(V(53, y, z), "minecraft:dark_oak_stairs[facing=west]")
+        L.set_block(V(47, y, z), "minecraft:dark_oak_stairs[facing=west]")
+        L.set_block(V(53, y, z), "minecraft:dark_oak_stairs[facing=east]")
         L.set_block(V(50, y + 1, z), "minecraft:white_candle[candles=2,lit=true]")
     L.set_block(V(50, y, 24), "minecraft:lectern[facing=south,has_book=true]")
     L.set_block(V(50, y, 30), "minecraft:lectern[facing=north,has_book=true]")
@@ -392,7 +392,7 @@ def chambers() -> None:
     L.set_block(V(IX1, y, 33), "minecraft:chest[facing=east]")
     table(V(52, y, 18), V(54, y, 18))
     L.set_block(V(53, y + 1, 18), "minecraft:white_candle[candles=4,lit=true]")
-    L.set_block(V(53, y, 19), "minecraft:dark_oak_stairs[facing=north]")
+    L.set_block(V(53, y, 19), "minecraft:dark_oak_stairs[facing=south]")
     L.set_block(V(50, y, 36), "minecraft:jukebox")
     L.set_block(V(IX1, y + 3, 27), f"minecraft:{BANNER2}_wall_banner[facing=east]")
     # a fireplace in the south wall
@@ -452,11 +452,11 @@ def chapel() -> None:
     )
     carpet(97, z1 + 1, 99, z2 - 1, y, "purple")
     for z in range(z2 - 4, z1 + 8, -2):
-        L.fill(V(x1 + 3, y, z), V(95, y, z), "minecraft:dark_oak_stairs[facing=north]")
-        L.fill(V(101, y, z), V(x2 - 3, y, z), "minecraft:dark_oak_stairs[facing=north]")
+        L.fill(V(x1 + 3, y, z), V(95, y, z), "minecraft:dark_oak_stairs[facing=south]")
+        L.fill(V(101, y, z), V(x2 - 3, y, z), "minecraft:dark_oak_stairs[facing=south]")
     # the altar on a dais at the north end
     L.fill(V(93, y, z1 + 1), V(103, y, z1 + 4), L.DARK)
-    L.fill(V(93, y, z1 + 4), V(103, y, z1 + 4), f"{L.BRICK_STAIRS}[facing=south]")
+    L.fill(V(93, y, z1 + 4), V(103, y, z1 + 4), f"{L.BRICK_STAIRS}[facing=north]")
     L.fill(
         V(96, y + 1, z1 + 2), V(100, y + 1, z1 + 2), "minecraft:chiseled_quartz_block"
     )
@@ -903,8 +903,8 @@ def dungeons() -> None:
     doorway(V(95, y, 134), V(95, y, 134))
     table(V(94, y, 137), V(96, y, 137))
     L.set_block(V(95, y + 1, 137), "minecraft:white_candle[candles=2,lit=true]")
-    L.set_block(V(93, y, 137), "minecraft:dark_oak_stairs[facing=east]")
-    L.set_block(V(97, y, 137), "minecraft:dark_oak_stairs[facing=west]")
+    L.set_block(V(93, y, 137), "minecraft:dark_oak_stairs[facing=west]")
+    L.set_block(V(97, y, 137), "minecraft:dark_oak_stairs[facing=east]")
     chest(V(99, y, 135), "west", [("bread", 3), ("iron_sword", 1), ("lead", 2)])
     L.set_block(V(91, y, 139), "minecraft:water_cauldron[level=2]")
     L.set_block(V(95, y + 2, 137), f"{L.LANTERN}[hanging=true]")
