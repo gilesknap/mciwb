@@ -66,6 +66,7 @@ from castle_layout import (  # noqa: E402
     TAG,
     TELEPORTS,
     TOWER_DOORS,
+    TOWER_LEVELS,
     VAULT,
     VAULT_Y,
     WALL_H,
@@ -1027,7 +1028,7 @@ def summoned_clear(kind_at) -> None:
 
 def towers(kind_at, describe=None) -> None:
     """every round tower's doorway opens onto somewhere to stand at its
-    level on both sides"""
+    level on both sides, and its stair or ladder comes out on its top floor"""
     for name, (_cx, _cz, _r, _wall, doors) in TOWER_DOORS.items():
         bad = [
             b
@@ -1036,6 +1037,13 @@ def towers(kind_at, describe=None) -> None:
         ]
         check(
             f"towers: the {name}'s {len(doors)} doors open onto floors at their levels on both sides{' (' + '; '.join(bad) + ')' if bad else ''}",
+            not bad,
+        )
+    stair_tops = reach.stair_top_problems(kind_at)
+    for name in TOWER_LEVELS:
+        bad = [b for b in stair_tops if b.startswith(name + ",")]
+        check(
+            f"towers: the {name}'s way up comes out on its top floor with headroom{' (' + '; '.join(bad) + ')' if bad else ''}",
             not bad,
         )
 

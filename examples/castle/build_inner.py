@@ -47,6 +47,7 @@ from castle_layout import (
     SMITHY_HATCH,
     STABLES,
     STANDING_SIGNS,
+    TOWER_LEVELS,
     UD,
     VAULT,
     VAULT_Y,
@@ -630,16 +631,8 @@ def crypt_furnishing() -> None:
 def alchemist_tower() -> None:
     cx, cz = ALCH
     y = YU
-    floors = [y, y + 8, y + 16, y + 24]
-    tower(
-        "alchemist's tower",
-        y - 2,
-        y + 31,
-        floors,
-        roof="minecraft:oxidized_copper",
-        banner="purple",
-        stair=False,
-    )
+    floors = TOWER_LEVELS["alchemist's tower"][1]
+    tower("alchemist's tower", roof="minecraft:oxidized_copper", banner="purple")
     # ground floor: the laboratory
     L.set_block(V(cx - 3, y, cz - 2), "minecraft:brewing_stand")
     L.set_block(V(cx - 3, y, cz - 1), "minecraft:water_cauldron[level=3]")
