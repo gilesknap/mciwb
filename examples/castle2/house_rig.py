@@ -256,7 +256,7 @@ def in_world() -> None:
     box = Volume.from_corners(lo, hi)
     L.cmd(f"forceload add {lo.x} {lo.z} {hi.x} {hi.z}")
     try:
-        wait_loaded([(lo.x, lo.z), (hi.x, hi.z)], 20)
+        wait_loaded([(int(lo.x), int(lo.z)), (int(hi.x), int(hi.z))], 20)
         from mciwb.imports import Heightmap, ground_heights
 
         # the box must be empty: the surface under it (every 4th column)
@@ -289,7 +289,8 @@ def in_world() -> None:
                     bad.append(f"seat {p}")
             for p in h.steps:  # the stairs and their headroom
                 if not (
-                    L.is_block(p, "#minecraft:stairs") or L.is_block(p, "minecraft:ladder")
+                    L.is_block(p, "#minecraft:stairs")
+                    or L.is_block(p, "minecraft:ladder")
                 ):
                     bad.append(f"step {p}")
             for p in h.headroom:
