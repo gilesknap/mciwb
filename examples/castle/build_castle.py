@@ -18,7 +18,8 @@ environment (see castle_layout.py)::
 Rebuilding is safe: every entity the castle summons is tagged with the
 castle's tag and its stage's, a stage removes its own before it runs, and
 earthworks (a fresh site) removes every entity in the site. Refuses to run
-if a player is inside the site, unless FORCE=1.
+if a player is within 200 blocks of the site, unless FORCE=1; with anyone
+online at all it waits for the game's own ticks instead of sprinting them.
 """
 
 from __future__ import annotations
@@ -35,7 +36,9 @@ import build_outer  # noqa: E402
 import castle_lib as L  # noqa: E402
 from castle_layout import NAME, ORIGIN, SPAWN, SUMMONED, TAG, site_box  # noqa: E402
 
-from mciwb.imports import Player, Volume, get_client  # noqa: E402
+from mciwb.imports import Volume  # noqa: E402
+
+PLAYER_MARGIN = 200  # how far from the site a player must be for a build to go ahead
 
 STAGES = {
     "earthworks": build_outer.earthworks,
@@ -53,11 +56,6 @@ STAGES = {
     "dungeons": build_inner.dungeons,
     "details": build_inner.details,
 }
-
-
-def players_inside(vol: Volume) -> list[str]:
-    names = [p.name for p in get_client().players.players]
-    return [name for name in names if vol.inside(Player(name).pos, 2, 2, 2)]
 
 
 def kill_in_site(selector: str) -> None:
@@ -90,16 +88,16 @@ def missing_entities(stage: str) -> list[str]:
 def settle_entities(stages: list[str]) -> None:
     """
     Make sure every entity the stages summoned survives its chunk being
-    unloaded and loaded again, and summon the missing ones again: now and
-    then one summoned into a freshly loaded chunk is lost (the chunk's
-    entities load after its blocks), and it only shows once the chunk has
-    been unloaded.
+    unloaded and loaded again, and summon the missing ones again. Now and
+    then one is lost between the build and the first check (observed, not
+    explained: gilesknap/mciwb#166, item 9); an unload and reload before
+    counting has caught it so far.
     """
-    L.cmd("tick sprint 60")
+    L.tick(60)
     time.sleep(2)
     L.cmd("save-all flush")
     build_outer.forceload(False)
-    L.cmd("tick sprint 100")
+    L.tick(100)
     time.sleep(3)
     build_outer.forceload(True)
     for stage in stages:
@@ -107,7 +105,7 @@ def settle_entities(stages: list[str]) -> None:
         if missing:
             print(f"== {stage} again: missing {', '.join(missing)}")
             run_stage(stage)
-            L.cmd("tick sprint 20")
+            L.tick(20)
             time.sleep(2)
             missing = missing_entities(stage)
             if missing:
@@ -119,9 +117,11 @@ def main() -> None:
     site = Volume.from_corners(a, b)
     if site.inside(SPAWN):
         raise SystemExit(f"spawn {SPAWN} is inside the site {a}..{b}: not building")
-    inside = players_inside(site)
-    if inside and not os.environ.get("FORCE"):
-        raise SystemExit(f"{', '.join(inside)} inside the site {a}..{b}: not building")
+    near = L.players_near(a, b, PLAYER_MARGIN)
+    if near and not os.environ.get("FORCE"):
+        raise SystemExit(
+            f"{', '.join(near)} within {PLAYER_MARGIN} blocks of the site {a}..{b}: not building"
+        )
     wanted = os.environ.get("STAGES", ",".join(STAGES)).split(",")
     unknown = [s for s in wanted if s not in STAGES and s != "cleanup"]
     if unknown:

@@ -135,7 +135,8 @@ Built with mciwb from `examples/castle/` in the mciwb repo; rebuildable with
 ## Getting there
 
 World spawn is {p(SPAWN)}. The castle is to the {bearing}: follow the
-cobble-edged dirt road from the signpost at ({sign.x}, {sign.z}) beside spawn,
+cobble-edged dirt road from the signpost at ({sign.x}, {sign.z}) beside spawn
+(a few blocks further from spawn if another castle's sign was there first),
 which leads to the stair at the foot of the bridge at ({gate.x}, {gate.z})
 (from there the road runs {legs}). Or teleport:
 

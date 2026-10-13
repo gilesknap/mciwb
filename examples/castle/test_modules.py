@@ -61,8 +61,8 @@ def arrows_in(dispensers: list[Vec3]) -> list[int]:
 
 
 def advance(ticks: int = 40) -> None:
-    c(f"tick sprint {ticks}")
-    time.sleep(0.7)
+    L.tick(ticks)
+    time.sleep(0.5)
 
 
 def check(name: str, ok: bool) -> None:
@@ -198,7 +198,10 @@ def test_arrow_trap(x: int, y0: int, zw: int) -> None:
         c(f"kill @e[type=!minecraft:player,{box}]")
         advance()
         before = arrows_in(dispensers)
-        c(f'summon minecraft:armor_stand {w.x} {w.y} {w.z} {{Tags:["castle_test"]}}')
+        c(
+            f"summon minecraft:armor_stand {w.x} {w.y} {w.z} "
+            '{Tags:["castle_test"],Invulnerable:1b}'
+        )
         after = before
         for _ in range(6):
             advance(10)
@@ -216,6 +219,9 @@ def test_arrow_trap(x: int, y0: int, zw: int) -> None:
 def main() -> None:
     b = rig_corner()
     e = b + SIZE - Vec3(1, 1, 1)
+    near = L.players_near(b, e, 200)
+    if near and not os.environ.get("FORCE"):
+        raise SystemExit(f"{', '.join(near)} within 200 blocks of the rig: not testing")
     print(f"the rig: {b} to {e}")
     print(c(f"forceload add {b.x} {b.z} {e.x} {e.z}"))
     wait_loaded([(b.x, b.z), (e.x, e.z)], SIZE.x * SIZE.z // 256)

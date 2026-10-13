@@ -42,9 +42,11 @@ ORIGIN=-80,82,-230 SPAWN=32,74,-64 NAME=Fable BANNER=red mciwb run build_castle.
   road goes south until it is clear of the site, then round the side of the
   site nearer spawn, then to spawn, with lantern posts along it and a
   signpost at the end. Several castles may share the last leg: the roads
-  re-lay the same path, a lamp post is skipped where another road or post
-  already is, and each castle's signpost stands a different distance back
-  from spawn (chosen from its `ORIGIN`), so none overwrites another's.
+  re-lay the same path, a lamp post is left alone where one (or another
+  road) already is, and each castle's signpost stands a different distance
+  back from spawn (chosen from its `ORIGIN`, stepping further back if
+  another castle's sign is there), so none overwrites another's. Rebuilding
+  a road is idempotent: the same posts and sign, once.
 - `NAME` goes on the sign inside the gate, the vault's sign and the
   signpost; `BANNER` is the colour of the castle's banners (the second
   colour, blue, is fixed).
@@ -57,10 +59,10 @@ stage. A stage removes its own entities before it runs and the earthworks
 stage (a fresh site) removes every entity in the site, so rebuilding all or
 part of a castle never duplicates them. Mobs are summoned with
 `PersistenceRequired`, so they do not despawn, and the horses are fenced in
-their stalls. Before it finishes, the build counts what each stage summoned
-(`castle_layout.SUMMONED`) and runs a stage again if anything is missing:
-an entity summoned into a chunk whose entities have not finished loading
-(they load after the blocks) is lost when they do.
+their stalls. Before it finishes, the build unloads and reloads the site,
+counts what each stage summoned (`castle_layout.SUMMONED`) and runs a stage
+again if anything is missing: now and then one horse was gone by the first
+check after a build (observed, not explained: gilesknap/mciwb#166, item 9).
 
 ## Layout (local coordinates, x east, z south, y above the bailey floor)
 
@@ -140,11 +142,21 @@ chapel's bell tower fills the hole `hip_roof` leaves in its top ring (item
 the fixes are released.
 
 The ticks that the checks sprint through also bring night, and hostile
-mobs spawn wherever the light is 0, so the `details` stage lights every
-dark place: lantern posts on a 16-block grid over both wards, lanterns in
-the dry ditch, on the moat's bank, on the flat tops and on every tower
-floor, and in the dungeons' corners; the build's cleanup and the checks
-kill whatever has spawned in the site anyway.
+mobs spawn wherever the light is 0. The castle lights every dark place of
+its own: lantern posts on a 16-block grid over both wards, lanterns in the
+dry ditch, on the moat's bank, on the flat tops, on every tower floor and
+roofed tower's steps, along the keep's string courses, in the attics under
+the gable roofs and in the dungeons' corners; arrow slits are one block
+high so nothing fits in them. That covers the castle, not the natural caves
+in the hill under it (the dungeons and tunnels are sealed from them): mobs
+go on spawning there. The build's cleanup and the checks kill whatever has
+spawned in the site anyway.
+
+With a player online the scripts never `tick sprint` (it would run the
+player's game at speed): they wait for the game's own ticks, which makes
+the checks slower. They refuse to build, test or verify while a player is
+within 200 blocks of the site (`FORCE=1` overrides), and the checks' trap
+clearing only touches hostile mobs, stray armour stands and arrows.
 
 Two more things about a server with no players on it: it does not tick, so
 after a `forceload` the scripts wait for the chunks and make it tick a

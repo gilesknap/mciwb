@@ -1175,6 +1175,14 @@ def lighting() -> None:
     bx1, bz1 = CHAPEL[0] - 2, CHAPEL[3] - 1
     for k in (4, 11, 18):
         L.set_block(V(bx1 + 5, YU + k, bz1 + 3), "minecraft:wall_torch[facing=west]")
+    # the attics under the gable roofs (barracks, smithy, chapel): sealed,
+    # dark, and roomy enough for a mob
+    for x, z in ((9, 75), (9, 83)):
+        L.set_block(V(x, 5, z), f"{L.LANTERN}[hanging=false]")
+    for x, z in ((110, 100), (110, 110)):
+        L.set_block(V(x, 5, z), f"{L.LANTERN}[hanging=false]")
+    for x, z in ((98, 20), (98, 34)):
+        L.set_block(V(x, YU + 7, z), f"{L.LANTERN}[hanging=false]")
     # the dungeons: the pit corridor, the hidden chamber, the oubliette, the
     # trap corridor and the lower treasury (lanterns hang in the ceilings)
     for z in (122, 131):

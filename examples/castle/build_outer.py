@@ -6,7 +6,7 @@ driver (build_castle.py) runs them in order.
 
 from __future__ import annotations
 
-from collections.abc import Iterable
+from collections.abc import Callable, Iterable
 
 import castle_lib as L
 from castle_layout import (
@@ -273,7 +273,7 @@ def wait_loaded(
     time.sleep(2 + chunks / 100)
     # a server with no players does not tick, and until it has ticked the
     # chunks their entities are not selectable: make it tick a little
-    L.cmd("tick sprint 20")
+    L.tick(20)
     time.sleep(1)
 
 
@@ -528,55 +528,93 @@ def bridge_and_road() -> None:
     signpost(points)
 
 
-def _unit(a: Vec3, b: Vec3) -> tuple[Vec3, Vec3, int]:
+def leg_of(a: Vec3, b: Vec3) -> tuple[Vec3, Vec3, int]:
     """the direction of a leg of the road, its right-hand side and its length"""
     dx, dz = int(b.x - a.x), int(b.z - a.z)
     d = Vec3((dx > 0) - (dx < 0), 0, (dz > 0) - (dz < 0))
     return d, Vec3(-d.z, 0, d.x), abs(dx) + abs(dz)
 
 
-def lamp_posts(points: list[Vec3], every: int = 12) -> None:
-    """lantern posts beside the road, on the right of the way to spawn,
-    except where another castle's road or post is already"""
+POST_HEIGHT = 2  # fence blocks under a lamp post's lantern
+POST_EVERY = 12  # blocks between lamp posts
+
+
+def lamp_post_cells(points: list[Vec3], every: int = POST_EVERY) -> list[Vec3]:
+    """where the lamp posts stand: every ``every`` blocks along each leg,
+    three blocks to the right of the way to spawn (y is 0)"""
+    cells = []
     for a, b in zip(points, points[1:], strict=False):
-        d, right, length = _unit(a, b)
+        d, right, length = leg_of(a, b)
         for k in range(every // 2, length - 2, every):
             p = a + d * k + right * 3
-            y = ground_height(p.x, p.z) + 1
-            foot, top = Vec3(p.x, y, p.z), Vec3(p.x, y + 2, p.z)
-            if L.is_block(foot - Vec3(0, 1, 0), "minecraft:dirt_path") or not all(
-                L.is_block(Vec3(p.x, yy, p.z), L.AIR) for yy in range(y, y + 3)
-            ):
-                continue
-            L.fill(foot, foot + Vec3(0, 1, 0), "minecraft:dark_oak_fence")
-            L.set_block(top, L.LANTERN)
+            cells.append(Vec3(p.x, 0, p.z))
+    return cells
+
+
+def lamp_posts(points: list[Vec3]) -> None:
+    """
+    Lantern posts beside the road, except where another castle's road or
+    post is already. A post that is there already is left alone: the
+    heightmap counts fences and lanterns as ground, so building on top of
+    it would stack another post on it.
+    """
+    for p in lamp_post_cells(points):
+        top = ground_height(p.x, p.z)
+        if L.is_block(Vec3(p.x, top, p.z), L.LANTERN):
+            continue  # a post is there (ours from before, or another castle's)
+        y = top + 1
+        foot = Vec3(p.x, y, p.z)
+        if L.is_block(Vec3(p.x, top, p.z), "minecraft:dirt_path") or not all(
+            L.is_block(Vec3(p.x, yy, p.z), L.AIR)
+            for yy in range(y, y + POST_HEIGHT + 1)
+        ):
+            continue
+        L.fill(foot, Vec3(p.x, y + POST_HEIGHT - 1, p.z), "minecraft:dark_oak_fence")
+        L.set_block(Vec3(p.x, y + POST_HEIGHT, p.z), L.LANTERN)
 
 
 def road_centre(points: list[Vec3]) -> list[tuple[int, int]]:
     """the (x, z) cells of the road's centre line: what verify checks"""
     cells = []
     for a, b in zip(points, points[1:], strict=False):
-        d, _, length = _unit(a, b)
+        d, _, length = leg_of(a, b)
         for k in range(length + 1):
             p = a + d * k
             cells.append((int(p.x), int(p.z)))
     return cells
 
 
-def signpost_position(points: list[Vec3]) -> tuple[Vec3, int]:
+def signpost_position(
+    points: list[Vec3], taken: Callable[[Vec3], bool] | None = None
+) -> tuple[Vec3, int]:
     """
     Where the castle's signpost stands, and its rotation: beside the end of
     the road's last leg, on the right, a few blocks back along the leg. How
     many differs per castle (from its ORIGIN), so that castles whose roads
-    arrive by the same leg do not overwrite each other's signs. y is 0:
-    the sign stands on the ground.
+    arrive by the same leg do not usually want the same spot; and given
+    ``taken`` (is another castle's sign at this spot?) it steps further
+    back until the spot is free, so they never collide. y is 0: the sign
+    stands on the ground.
     """
-    d, right, _ = _unit(points[-2], points[-1])
+    d, right, _ = leg_of(points[-2], points[-1])
     back = 2 + 2 * ((ORIGIN.x // 16 + ORIGIN.z // 16) % 5)
-    p = points[-1] - d * back + right * 2
     # the sign faces the road, i.e. left: rotation 0 south, 4 west, 8 north, 12 east
     rotation = {(0, 1): 0, (-1, 0): 4, (0, -1): 8, (1, 0): 12}[(-right.x, -right.z)]
-    return Vec3(p.x, 0, p.z), rotation
+    for _ in range(20):
+        p = points[-1] - d * back + right * 2
+        p = Vec3(p.x, 0, p.z)
+        if taken is None or not taken(p):
+            return p, rotation
+        back += 2
+    raise BuildError("no free spot for the signpost within 40 blocks of spawn")
+
+
+def other_sign_at(p: Vec3) -> bool:
+    """is there a sign on the ground at (x, z) that is not this castle's?"""
+    y = ground_height(p.x, p.z) + 1
+    if not L.is_block(Vec3(p.x, y, p.z), "#minecraft:all_signs"):
+        return False
+    return NAME not in L.cmd(f"data get block {p.x} {y} {p.z} front_text.messages")
 
 
 def compass(dx: int, dz: int) -> str:
@@ -592,7 +630,7 @@ def compass(dx: int, dz: int) -> str:
 
 def signpost(points: list[Vec3]) -> None:
     """a signpost at spawn beside the road's end, pointing the way"""
-    p, rotation = signpost_position(points)
+    p, rotation = signpost_position(points, other_sign_at)
     y = ground_height(p.x, p.z) + 1
     middle = centre()
     L.sign(
@@ -799,6 +837,14 @@ def keep_shell() -> None:
             V(x2 + 1, fy - 1, z2 + 1),
             f"{L.BRICK_STAIRS}[half=top,facing=east]",
         )
+    # the string courses are ledges a mob could spawn on in the dark: lanterns
+    for fy in (y + 10, y + 19, KEEP_ROOF - 1):
+        for x in range(x1 - 1, x2 + 2, 6):
+            for z in (z1 - 1, z2 + 1):
+                L.set_block(V(x, fy, z), f"{L.LANTERN}[hanging=false]")
+        for z in range(z1 + 5, z2 - 4, 6):
+            for x in (x1 - 1, x2 + 1):
+                L.set_block(V(x, fy, z), f"{L.LANTERN}[hanging=false]")
     # parapet round the roof terrace
     L.shell(V(x1, KEEP_ROOF, z1), V(x2, KEEP_ROOF, z2), L.BRICK)
     L.merlons(

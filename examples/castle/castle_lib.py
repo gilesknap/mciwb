@@ -140,6 +140,53 @@ def summon(kind: str, pos: Vec3, nbt: str = "") -> None:
     run(f"summon minecraft:{kind} {pos.x} {pos.y} {pos.z} {data}", ("Summoned",))
 
 
+def players_online() -> list[str]:
+    """the names of the players online"""
+    r = cmd("list")
+    if ":" not in r:
+        return []
+    return [n.strip() for n in r.split(":", 1)[1].split(",") if n.strip()]
+
+
+def player_positions() -> dict[str, Vec3]:
+    """where every player online is"""
+    found = {}
+    for name in players_online():
+        m = re.search(
+            r"\[(-?[\d.]+)d, (-?[\d.]+)d, (-?[\d.]+)d\]",
+            cmd(f"data get entity {name} Pos"),
+        )
+        if m:
+            found[name] = Vec3(*(float(v) for v in m.groups()))
+    return found
+
+
+def players_near(a: Vec3, b: Vec3, margin: float) -> list[str]:
+    """the players within ``margin`` blocks (horizontally) of a box"""
+    near = []
+    for name, p in player_positions().items():
+        dx = max(min(a.x, b.x) - p.x, 0, p.x - max(a.x, b.x))
+        dz = max(min(a.z, b.z) - p.z, 0, p.z - max(a.z, b.z))
+        if dx <= margin and dz <= margin:
+            near.append(name)
+    return near
+
+
+def tick(ticks: int) -> None:
+    """
+    Let the game run ``ticks`` ticks. With nobody online the server does
+    not tick, so sprint them; with a player online it ticks for them, and
+    ``tick sprint`` would wreck their game, so just wait that long.
+    """
+    import time
+
+    if players_online():
+        time.sleep(ticks / 20 + 0.5)
+    else:
+        cmd(f"tick sprint {ticks}")
+        time.sleep(min(0.15 + ticks / 100, 3))
+
+
 def kill_tagged(tag: str) -> str:
     """kill every entity with a tag, wherever it has wandered to"""
     return cmd(f"kill @e[tag={tag}]")
@@ -317,17 +364,14 @@ def curtain(
     p.fill(Vec3(lo.x, top, lo.z), Vec3(hi.x, top, hi.z), block)
     line = [(x, z) for x in range(lo.x, hi.x + 1) for z in range(lo.z, hi.z + 1)]
     merlons(line, top + 1, block)
-    # arrow slits every 7 blocks through the outer face, 2 high
+    # arrow slits every 7 blocks through the outer face, 1 high (a 2-high
+    # slit is a dark cell a mob can spawn in)
     for i, (x, z) in enumerate(line):
         if i % 7 == 3:
-            p.fill(Vec3(x, lo.y + height - 5, z), Vec3(x, lo.y + height - 4, z), AIR)
+            p.setblock(Vec3(x, lo.y + height - 4, z), AIR)
             for k in range(1, thickness):
                 q = Vec3(x, 0, z) + inward * k
-                p.fill(
-                    Vec3(q.x, lo.y + height - 5, q.z),
-                    Vec3(q.x, lo.y + height - 4, q.z),
-                    AIR,
-                )
+                p.setblock(Vec3(q.x, lo.y + height - 4, q.z), AIR)
     # torches along the walkway's inner edge
     for i, (x, z) in enumerate(line):
         if i % 8 == 4:
@@ -411,12 +455,12 @@ def round_tower(
             if (q.x, q.z) in inner and k < r - wall:
                 continue
             fill(Vec3(q.x, dy, q.z), Vec3(q.x, dy + 1, q.z), AIR)
-    # arrow slits on each floor, in the four diagonal directions
+    # arrow slits on each floor, in the four diagonal directions, 1 high
     for fy in floors:
         for dx, dz in ((1, 1), (-1, 1), (-1, -1), (1, -1)):
             for k in range(r - wall, r + 1):
                 q = Vec3(cx + round(dx * k * 0.7071), 0, cz + round(dz * k * 0.7071))
-                fill(Vec3(q.x, fy + 1, q.z), Vec3(q.x, fy + 2, q.z), AIR)
+                set_block(Vec3(q.x, fy + 1, q.z), AIR)
     # the spiral stair round a pillar
     if stair and floors and r - wall >= 3:
         pillar = rect(cx - 1, cz - 1, cx + 1, cz + 1)
@@ -462,11 +506,20 @@ def round_tower(
         fill_cells(ring(cx, cz, r + 1, 1), y_top, y_top, roof)  # eaves
         level = y_top
         rr = r
+        steps = []
         while rr >= 0:
             fill_cells(disc(cx, cz, rr), level, level + 1, roof)
+            steps.append((level, rr))
             level += 2
             rr -= 1
         set_block(Vec3(cx, level, cz), "minecraft:lightning_rod")
+        # lanterns on the eaves and every other step, at the compass points:
+        # the steps are ledges a mob could spawn on in the dark
+        for level, rr in [(y_top, r + 1)] + steps[1::2]:
+            for dx, dz in ((rr, 0), (-rr, 0), (0, rr), (0, -rr)):
+                set_block(
+                    Vec3(cx + dx, level + 1, cz + dz), f"{LANTERN}[hanging=false]"
+                )
         if banner:
             set_block(
                 Vec3(cx + 1, level - 2, cz),

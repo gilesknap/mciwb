@@ -4,7 +4,9 @@ Verify the castle's mechanisms over RCON, without a player::
     ORIGIN=-80,82,-230 mciwb run verify_castle.py
 
 The server pauses when nobody is online, so ``tick sprint`` advances the
-game between a trigger and its check. Levers and hooks set with ``setblock``
+game between a trigger and its check (with a player online it waits for
+the game's own ticks instead). It refuses to run while a player is within
+200 blocks of the site, unless FORCE=1. Levers and hooks set with ``setblock``
 only update their own neighbours (a player's click also updates the powered
 block's neighbours), so levers here have dust beside them, lever doors get
 their first dust re-placed ("poked"), and tripwires are tripped by summoning
@@ -19,6 +21,7 @@ bookshelf untouched, the dispensers reloaded, its own armour stands gone.
 
 from __future__ import annotations
 
+import os
 import re
 import sys
 import time
@@ -89,17 +92,24 @@ def arrows_in(dispensers: list[Vec3]) -> list[int]:
 
 
 def clear(a: Vec3, b: Vec3) -> None:
-    """remove everything but players and the castle's own entities from a
-    box: hostile mobs, stray armour stands, arrows, items"""
-    c(f"kill @e[type=!minecraft:player,tag=!{TAG},{L.box_selector(a, b)}]")
+    """clear a trap of what would hold its wire or get in the way: hostile
+    mobs, armour stands that are not the castle's, arrows, and dropped
+    armour stands and arrows (the checks' own leavings; never other items
+    or pets, which may be a player's)"""
+    box = L.box_selector(a, b)
+    L.kill_hostiles(a, b)
+    c(f"kill @e[type=minecraft:armor_stand,tag=!{TAG},{box}]")
+    c(f"kill @e[type=minecraft:arrow,{box}]")
+    for item in ("armor_stand", "arrow"):  # what the checks themselves drop
+        c(f'kill @e[type=minecraft:item,nbt={{Item:{{id:"minecraft:{item}"}}}},{box}]')
 
 
 count = L.count_entities
 
 
 def advance(ticks: int = 40) -> None:
-    c(f"tick sprint {ticks}")
-    time.sleep(0.7)
+    L.tick(ticks)
+    time.sleep(0.5)
 
 
 def check(name: str, ok: bool) -> None:
@@ -156,8 +166,12 @@ def lever_door(name: str, base: Vec3, lever_b: int, material: str) -> None:
 
 
 def trip(wire: Vec3) -> None:
+    """stand something on the wire: invulnerable, so that the arrows it draws
+    do not break it (a broken stand drops an item, and the item holds the
+    wire tripped)"""
     c(
-        f'summon minecraft:armor_stand {wire.x} {wire.y} {wire.z} {{Tags:["castle_verify"]}}'
+        f"summon minecraft:armor_stand {wire.x} {wire.y} {wire.z} "
+        '{Tags:["castle_verify"],Invulnerable:1b}'
     )
     advance()
 
@@ -328,8 +342,7 @@ def engine() -> None:
     # hoppers move items every 8 ticks: sample at 5 and 7 ticks alternately,
     # so that the samples do not fall into step with the lamp
     for i in range(32):
-        c(f"tick sprint {5 if i % 2 else 7}")
-        time.sleep(0.15)
+        L.tick(5 if i % 2 else 7)
         lamps.append(is_block(lamp, "minecraft:redstone_lamp[lit=true]"))
         pattern = ""
         for dx, dz in ring:
@@ -382,17 +395,27 @@ def places() -> None:
         )
 
 
-def road_block(x: int, z: int) -> bool:
-    """is the top block of this column the road's path (or, where another
-    castle's road crosses, its cobble edge)?"""
-    for block in ("minecraft:dirt_path", "minecraft:cobblestone"):
-        r = c(
-            f"execute positioned {x} 0 {z} positioned over motion_blocking_no_leaves "
-            f"if block ~ ~-1 ~ {block}"
-        )
-        if "Test passed" in r:
-            return True
-    return False
+def top_is(x: int, z: int, block: str) -> bool:
+    """is the top block of this column ``block``?"""
+    r = c(
+        f"execute positioned {x} 0 {z} positioned over motion_blocking_no_leaves "
+        f"if block ~ ~-1 ~ {block}"
+    )
+    return "Test passed" in r
+
+
+def road_block(x: int, z: int, d: Vec3) -> bool:
+    """is this centre cell of a leg running in direction ``d`` the road's
+    path? Cobble is allowed only where another road crosses: then the
+    cells two to either side, beyond this road's own edges, are road too"""
+    if top_is(x, z, "minecraft:dirt_path"):
+        return True
+    px, pz = -int(d.z), int(d.x)
+    return top_is(x, z, "minecraft:cobblestone") and all(
+        top_is(x + s * 2 * px, z + s * 2 * pz, "minecraft:dirt_path")
+        or top_is(x + s * 2 * px, z + s * 2 * pz, "minecraft:cobblestone")
+        for s in (1, -1)
+    )
 
 
 def road_start() -> Vec3 | None:
@@ -416,18 +439,48 @@ def road() -> None:
     if start is None:
         return
     points = build_outer.road_points(start)
-    gaps = [(x, z) for x, z in build_outer.road_centre(points) if not road_block(x, z)]
+    gaps = []
+    for a, b in zip(points, points[1:], strict=False):
+        d, _, length = build_outer.leg_of(a, b)
+        for k in range(length + 1):
+            p = a + d * k
+            if not road_block(int(p.x), int(p.z), d):
+                gaps.append((int(p.x), int(p.z)))
     check(
         f"road: dirt path all the way from the castle to spawn {tuple(SPAWN)}"
         + (f" ({len(gaps)} gaps, first at {gaps[:6]})" if gaps else ""),
         not gaps,
     )
-    p, _ = build_outer.signpost_position(points)
+    p, _ = build_outer.signpost_position(points, build_outer.other_sign_at)
     y = ground_height(p.x, p.z) + 1
     text = c(f"data get block {p.x} {y} {p.z} front_text.messages")
     check(
         f"road: signpost at ({p.x}, {y}, {p.z}) names Castle {NAME}",
         is_block(Vec3(p.x, y, p.z), "#minecraft:all_signs") and NAME in text,
+    )
+    # every lamp post is one post: a lantern on exactly POST_HEIGHT fence
+    # blocks, nothing on it and no post under it (or no post at all, where
+    # another road was in the way)
+    h = build_outer.POST_HEIGHT
+    bad = []
+    for q in build_outer.lamp_post_cells(points):
+        top = ground_height(q.x, q.z)
+        if not is_block(Vec3(q.x, top, q.z), L.LANTERN):
+            continue
+        fences = all(
+            is_block(Vec3(q.x, top - k, q.z), "minecraft:dark_oak_fence")
+            for k in range(1, h + 1)
+        )
+        below = Vec3(q.x, top - h - 1, q.z)
+        if (
+            not fences
+            or is_block(below, "minecraft:dark_oak_fence")
+            or is_block(below, L.LANTERN)
+        ):
+            bad.append((q.x, top, q.z))
+    check(
+        f"road: every lamp post is a single post{' (not ' + str(bad[:6]) + ')' if bad else ''}",
+        not bad,
     )
 
 
@@ -444,6 +497,12 @@ def entities() -> None:
 
 
 def main() -> None:
+    a, b = site_box()
+    near = L.players_near(a, b, 200)
+    if near and not os.environ.get("FORCE"):
+        raise SystemExit(
+            f"{', '.join(near)} within 200 blocks of the site: not verifying"
+        )
     build_outer.forceload(True)
     try:
         print(f"killed {L.kill_hostiles(*site_box())} hostile mobs in the site")
