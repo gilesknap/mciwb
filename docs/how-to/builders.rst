@@ -73,6 +73,22 @@ Run it with ``mciwb run house.py``::
     # roof's overhang, which would otherwise count as the ground)
     road([Vec3(645, 0, far.z + 2), Vec3(645, 0, far.z + 20)], Item.DIRT_PATH)
 
+Check what you built
+--------------------
+
+Each builder returns the ``Volume`` it placed, so you can render exactly that
+region to an image (see :ref:`render_howto`) and look at it, then fix the
+script and build again::
+
+    roof = hip_roof(floor + Direction.UP * 4, far + Direction.UP * 4,
+                    Item.DARK_OAK_STAIRS, overhang=1)
+    world.render(roof.start, roof.end, "roof.png", views=["top", "iso", "south"])
+
+Or render the whole site from the command line with ``mciwb render``. The
+images show blocks as flat colours and draw stairs and slabs as full blocks,
+so to check the facing or shape of stairs read them back with
+``Schematic.from_world(volume)`` (see `Schematics`_).
+
 Roofs
 -----
 

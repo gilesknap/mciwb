@@ -82,7 +82,6 @@ nitpick_ignore = [
     # how Sphinx renders the Mapping[str, str] type of a dataclass field
     ("py:class", "collections.abc.Mapping[str"),
     ("py:exc", "SessionTimeout"),
-    ("py:class", "numpy.ndarray"),
     ("py:class", "PIL.Image.Image"),
 ]
 

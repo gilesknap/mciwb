@@ -162,7 +162,10 @@ returns the bounding `Volume` of what it placed (to grab, save or clear), and
 raises `BuildError` if the server rejects a command (unknown block, unloaded
 chunk). Footprints are two opposite corners; their y is the top of the walls
 for roofs (the roof starts at y + 1) and the top of the platform for a
-foundation. See docs/how-to/builders.rst.
+foundation. See docs/how-to/builders.rst. To check a build, render the
+returned volume (`world.render(box.start, box.end, "out.png")`, see "Seeing
+what you built"); renders draw stairs and slabs as full blocks, so check
+their states with `Schematic.from_world(box)`.
 
 - `gable_roof(start, end, stairs=OAK_STAIRS, ridge=None, gable=None,
   axis=None, overhang=0)`: two stair slopes; the ridge runs along the longer
