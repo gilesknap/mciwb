@@ -220,6 +220,49 @@ CHAPEL = (86, 14, 110, 40)
 VAULT = (50, 16, 70, 30)
 VAULT_Y = 8
 
+# the seats (stairs to sit on), as (x1, z1, x2, z2, standing level, the way
+# the sitter faces), and the steps up onto the daises, as (..., the way up).
+# A stair's facing is the side of its tall back: a seat's stair faces away
+# from where its sitter looks (`seat_facing`), and a step faces the way up.
+# build_inner places them; verify checks their facings
+_KX = KEEP[0] + 3  # the keep's interior's west side
+SEATS = {
+    "great hall thrones": [
+        (_KX + 1, z, _KX + 1, z, YU + 1, "east") for z in (26, 28)
+    ],  # on the dais at the west end, looking down the hall
+    "great hall benches": [  # either side of the two tables, facing them
+        (50, z + dz, 64, z + dz, YU, face)
+        for z in (20, 34)
+        for dz, face in ((-1, "south"), (1, "north"))
+    ],
+    "library reading chairs": [  # at each end of the three reading tables
+        (x, z, x, z, YU + 10, face)
+        for z in (21, 27, 33)
+        for x, face in ((47, "east"), (53, "west"))
+    ],
+    "lord's chair": [(53, 19, 53, 19, YU + 19, "north")],  # at his table
+    "chapel pews": [  # either side of the aisle, facing the altar (north)
+        (x1, z, x2, z, YU, "north")
+        for z in range(CHAPEL[3] - 4, CHAPEL[1] + 8, -2)
+        for x1, x2 in ((CHAPEL[0] + 3, 95), (101, CHAPEL[2] - 3))
+    ],
+    "dungeon guard room stools": [  # at each end of the guards' table
+        (93, 137, 93, 137, DUNGEON_Y, "east"),
+        (97, 137, 97, 137, DUNGEON_Y, "west"),
+    ],
+}
+STEPS = {
+    "great hall dais": [(_KX + 4, 26, _KX + 4, 28, YU, "west")],
+    "chapel altar dais": [(93, CHAPEL[1] + 4, 103, CHAPEL[1] + 4, YU, "north")],
+}
+OPPOSITE = {"north": "south", "south": "north", "east": "west", "west": "east"}
+
+
+def seat_facing(faces: str) -> str:
+    """the facing of a seat's stair whose sitter faces ``faces``"""
+    return OPPOSITE[faces]
+
+
 # what each stage summons, by entity type: the build checks they are all
 # there before it finishes (an entity summoned into a chunk whose entities
 # have not finished loading can be lost) and verify counts them

@@ -57,9 +57,11 @@ from castle_layout import (  # noqa: E402
     ORIGIN,
     PIT_TRAP,
     ROOFED_TOWERS,
+    SEATS,
     SMITHY_HATCH,
     SPAWN,
     STANDING_SIGNS,
+    STEPS,
     SUMMONED,
     TAG,
     TELEPORTS,
@@ -75,6 +77,7 @@ from castle_layout import (  # noqa: E402
     ZS,
     V,
     layout_problems,
+    seat_facing,
     site_box,
 )
 
@@ -671,6 +674,31 @@ def walk_step(x: int, walk: int, z: int) -> bool:
     )
 
 
+def seats() -> None:
+    """every seat's stair has its back behind its sitter (a stair faces
+    its tall back), and every dais step faces the way up"""
+    for kind, table, facing in (
+        ("seat", SEATS, seat_facing),
+        ("step", STEPS, lambda up: up),
+    ):
+        for name, rects in table.items():
+            bad = []
+            for x1, z1, x2, z2, y, way in rects:
+                want = facing(way)
+                for x in range(x1, x2 + 1):
+                    for z in range(z1, z2 + 1):
+                        p = V(x, y, z)
+                        if not is_block(
+                            p, f"#minecraft:stairs[facing={want},half=bottom]"
+                        ):
+                            bad.append((p.x, p.y, p.z))
+            what = "sitters face" if kind == "seat" else "the way up is"
+            check(
+                f"{kind}s: {name} ({what} {', '.join(sorted({r[5] for r in rects}))}){' (wrong at ' + str(bad[:4]) + ')' if bad else ''}",
+                not bad,
+            )
+
+
 def bailey() -> None:
     """the layout keeps clear of the round towers, the mid-wall towers
     (which buildings and stairs once cut) stand whole, every wall stair
@@ -1051,6 +1079,7 @@ def main() -> None:
         places()
         cells()
         mounts()
+        seats()
         banners()
         bailey()
         road()

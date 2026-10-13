@@ -52,8 +52,10 @@ world.cmd("time set day")  # any console command, without the /
   take a `BlockState`). `Volume.fill`, `polygon` and `Volume.walls` need an
   `Item`.
 - Facing: stairs, doors, chests, furnaces and the like take `facing=` a
-  `Direction` (`NORTH` -z, `SOUTH` +z, `EAST` +x, `WEST` -x). Stairs face
-  the way you walk up them. Slabs take `nbt=["type=top"]`, logs
+  `Direction` (`NORTH` -z, `SOUTH` +z, `EAST` +x, `WEST` -x). A stair's
+  facing is the side of its tall back: it faces the way you walk up it, and
+  someone sitting on it faces the opposite way (a chair facing a table to
+  its north is `facing=south`). Slabs take `nbt=["type=top"]`, logs
   `nbt=["axis=x"]`, lanterns `nbt=["hanging=true"]`.
 - Thin panels: a closed door's panel and an open trapdoor's lie against
   the edge of their block opposite their `facing`; iron bars, glass panes
