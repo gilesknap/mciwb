@@ -63,16 +63,6 @@ world.cmd("time set day")  # any console command, without the /
   grille beside it, use open iron trapdoors with the door's facing. An iron
   trapdoor follows its redstone power, so a lever or button touching it
   closes it when the power goes.
-- Redstone set by command: a lever set with `setblock` updates only its
-  own neighbours, not those of the block it is on (a player's pull does
-  both), and a redstone torch keeps the `lit` state it is given until a
-  neighbour changes, so set a torch's state to match its power. A tripwire
-  is tripped by an entity that moves into it: an armour stand summoned onto
-  it works, a `NoGravity` one does not.
-- Tripwire timing: the hooks hold their signal 10 ticks after the first
-  touch, and a walking player is on the string for about 7, so whatever
-  the wire triggers must act on them while they are on it (a pit trap's
-  trapdoors under the wire, not two blocks on).
 - Vec3 arithmetic: `pos + Direction.UP * 3`, `a - b`, `pos.with_ints()`.
   `Direction.cardinals()` lists the four compass directions.
 
@@ -348,9 +338,19 @@ the script ends (in a `finally`), so the server does not keep them loaded.
   `setblock` does not press: to test the circuit, set a `redstone_block` in
   place of the block the button is on, as a stand-in for a press, then put
   that block back.
-- A tripwire is only tripped by an entity standing on it: summon one onto
+  When the lever's block carries a redstone torch (to take the signal up),
+  re-placing dust is no help: change the lever's block to another block and
+  back instead. A redstone torch set by command keeps the `lit` state it is
+  given until a neighbour changes, so give it the state its power implies.
+- A tripwire is only tripped by an entity moving on it: summon one onto
   the wire (an `Invulnerable:1b` armour stand, so arrows from a trap do not
-  break it), tick, check, then kill it.
+  break it; not `NoGravity:1b`, which never touches the blocks it is in),
+  tick, check, then kill it.
+- Tripwire timing: the hooks hold their signal 10 ticks from the first
+  touch, and a walking player is on the string for about 7, so whatever the
+  wire sets off must act on them while they are on it (a pit's trapdoors
+  under the wire, not two blocks on). A test stand that stays on the wire
+  hides this: move it off as soon as the trap fires.
 - Block entity data is not a block state: a chiseled bookshelf's
   `last_interacted_slot` (what its comparator reads), a sign's text or a
   container's items are set with
