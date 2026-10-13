@@ -78,11 +78,20 @@ def test_build_template(mock_world: MockClient, tmp_path: Path):
 
     assert result.exit_code == 0, (result.output, result.exception)
     assert (tmp_path / "build.png").is_file()
+    # the foundation reaches down to the ground, the bottom of the mock world
+    assert mock_world.getblock(Vec3(10, -50, 10)) == Item.COBBLESTONE
     assert mock_world.getblock(Vec3(10, 1, 10)) == Item.COBBLESTONE
-    assert mock_world.getblock(Vec3(11, 1, 11)) == Item.SPRUCE_PLANKS
-    assert mock_world.getblock(Vec3(11, 2, 11)) == Item.AIR
-    assert mock_world.getblock(Vec3(9, 6, 9)) == Item.SPRUCE_SLAB
-    assert mock_world.getblock(Vec3(13, 2, 15)) == Item.OAK_DOOR
+    assert mock_world.getblock(Vec3(11, 2, 11)) == Item.COBBLESTONE
+    assert mock_world.getblock(Vec3(12, 1, 12)) == Item.SPRUCE_PLANKS
+    assert mock_world.getblock(Vec3(12, 2, 12)) == Item.AIR
+    assert mock_world.getblock(Vec3(14, 2, 16)) == Item.OAK_DOOR
+    assert mock_world.getblock(Vec3(14, 3, 16)) == Item.OAK_DOOR
+    # the roof overhangs the walls, and has gable ends above the end walls
+    assert mock_world.state_at(Vec3(10, 6, 10)).startswith(
+        "minecraft:spruce_stairs[facing=south"
+    )
+    assert mock_world.getblock(Vec3(11, 7, 13)) == Item.SPRUCE_PLANKS
+    assert "facing=south" in result.output
 
 
 def test_build_template_refuses_player(mock_world: MockClient, tmp_path: Path):
@@ -123,10 +132,30 @@ def test_survey(mock_world: MockClient, tmp_path: Path, monkeypatch):
 
 
 def test_survey_around_player(mock_world: MockClient, tmp_path: Path):
+    """
+    over RCON the whole world height is too many blocks to read, so the
+    survey reads only the blocks near the ground, found from the heightmap
+    """
+    mock_world.fill(Vec3(-20, 0, -20), Vec3(20, 4, 20), Item.GRASS_BLOCK)
+    mock_world.fill(Vec3(4, 5, 4), Vec3(5, 9, 5), Item.STONE)
 
     result = run(SCRIPTS / "survey.py", "--player", "georgeTest")
 
-    # the default survey reads the whole world height, too many blocks for RCON
+    assert result.exit_code == 0, (result.output, result.exception)
+    out = result.output
+    assert "site x -16..16, z -16..16 (y -64..319)" in out
+    assert "sampled the ground every 4 blocks (y 4..9), reading y 0..15" in out
+    assert "min 4, median 4, max 9" in out
+    assert (tmp_path / "survey.png").is_file()
+
+
+def test_survey_too_hilly(mock_world: MockClient):
+    """a site too hilly to read near the ground over RCON"""
+    mock_world.fill(Vec3(-20, 0, -20), Vec3(20, 4, 20), Item.GRASS_BLOCK)
+    mock_world.fill(Vec3(0, 5, 0), Vec3(0, 40, 0), Item.STONE)
+
+    result = run(SCRIPTS / "survey.py", "--player", "georgeTest")
+
     assert result.exit_code != 0
     assert "give a smaller RADIUS" in str(result.exception)
 

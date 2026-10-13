@@ -11,8 +11,10 @@ world height)::
 
 It prints a report and writes ``survey.png`` (set SURVEY_PNG to change it).
 Reading the whole world height needs the world files on this machine (the
-server of ``mciwb start``): over RCON give a small RADIUS and a Y range, as
-RCON reads at most 32768 blocks.
+server of ``mciwb start``). Over RCON, which reads at most 32768 blocks, it
+reads just a few blocks either side of the ground instead, finding the ground
+with `ground_heights` (Minecraft's heightmaps) on a grid of columns; that
+fails on hilly sites, so give a smaller RADIUS or a YMIN YMAX range.
 """
 
 import os
@@ -28,6 +30,7 @@ from mciwb.imports import (
     Volume,
     get_client,
     get_world,
+    ground_heights,
     render,
 )
 
@@ -35,6 +38,10 @@ DEFAULT_RADIUS = 16
 WORLD_BOTTOM, WORLD_TOP = -64, 319
 # the most columns of the printed height map: wider sites are sampled
 MAP_COLUMNS = 48
+# over RCON: the spacing of the columns whose ground height is sampled, and
+# how far below and above the sampled ground to read the blocks
+SAMPLE_STEP = 4
+BELOW_GROUND, ABOVE_GROUND = 4, 6
 
 # blocks that sit on the ground rather than being it: plants, trees, snow layers
 NOT_GROUND_ENDINGS = (
@@ -140,6 +147,24 @@ def height_map(heights: np.ndarray, ids: np.ndarray, names: list[str]) -> list[s
     return rows
 
 
+def near_ground(vol: Volume) -> Volume:
+    """
+    vol cut down to a few blocks below and above the ground, found from the
+    heightmap of a grid of columns (one RCON command per column)
+    """
+    start, end = vol.start, vol.end
+    xs = sorted({*range(start.x, end.x + 1, SAMPLE_STEP), end.x})
+    zs = sorted({*range(start.z, end.z + 1, SAMPLE_STEP), end.z})
+    heights = ground_heights([(x, z) for x in xs for z in zs]).values()
+    low = max(start.y, min(heights) - BELOW_GROUND)
+    high = min(end.y, max(heights) + ABOVE_GROUND)
+    print(
+        f"no world files: sampled the ground every {SAMPLE_STEP} blocks "
+        f"(y {min(heights)}..{max(heights)}), reading y {low}..{high} over RCON"
+    )
+    return Volume.from_corners(Vec3(start.x, low, start.z), Vec3(end.x, high, end.z))
+
+
 def site(world: Iwb) -> Volume:
     """the region to survey, from the SURVEY variable or around the player"""
     args = os.environ.get("SURVEY", "").split()
@@ -176,7 +201,15 @@ def survey(world: Iwb, vol: Volume, png: str) -> None:
     try:
         grid = world.scan(start, end)
     except ValueError as e:
-        raise SystemExit(f"{e}: give a smaller RADIUS and a YMIN YMAX range") from e
+        if (start.y, end.y) != (WORLD_BOTTOM, WORLD_TOP):
+            raise SystemExit(f"{e}: give a smaller RADIUS or Y range") from e
+        # too many blocks to read over RCON: read only those near the ground
+        vol = near_ground(vol)
+        start, end = vol.start, vol.end
+        try:
+            grid = world.scan(start, end)
+        except ValueError as e:
+            raise SystemExit(f"{e}: give a smaller RADIUS") from e
     heights, ids = surface(grid)
     with_ground = heights[ids >= 0]
     if with_ground.size == 0:
@@ -208,12 +241,12 @@ def survey(world: Iwb, vol: Volume, png: str) -> None:
     # world height, so that the iso view is not tiny
     bottom = max(start.y, int(with_ground.min()) - 4)
     top = min(end.y, int(with_ground.max()) + 16)
-    near_ground = BlockGrid(
+    ground_layers = BlockGrid(
         grid.origin + Vec3(0, bottom - start.y, 0),
         grid.ids[:, bottom - start.y : top - start.y + 1, :],
         grid.names,
     )
-    render(near_ground, ["top", "iso"]).save(png)
+    render(ground_layers, ["top", "iso"]).save(png)
     print(f"rendered y {bottom}..{top} to {png}: read it to see the site")
 
 
