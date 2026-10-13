@@ -93,9 +93,9 @@ You should see output like this::
     INFO:   Monitoring player TransformerScorn enabled for sign commands
     INFO:   ######### Starting Interactive Session ##########
 
-    Python 3.9.5 (default, Nov 23 2021, 15:27:38) 
+    Python 3.12.3 (main, Apr 10 2026, 05:33:47) [GCC 13.3.0]
     Type 'copyright', 'credits' or 'license' for more information
-    IPython 8.4.0 -- An enhanced Interactive Python. Type '?' for help.
+    IPython 9.17.1 -- An enhanced Interactive Python. Type '?' for help.
 
     In [1]: 
 
@@ -192,7 +192,7 @@ feet. You can also try this command which tells you what type of block your
 player is standing on.::
     
     In [5]: world.get_block(world.player.pos + Direction.DOWN)
-    Out[5]: <Item.SAND: 'sand'>
+    Out[5]: <Item.SAND: 'minecraft:sand'>
 
 Here we also used ``Direction`` which provides a list of all the possible
 directions. By adding ``Direction.DOWN`` to our player's position we get
