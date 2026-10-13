@@ -861,7 +861,9 @@ def road() -> None:
     text = c(f"data get block {p.x} {y} {p.z} front_text.messages")
     check(
         f"road: signpost at ({p.x}, {y}, {p.z}) names Castle {NAME}",
-        is_block(Vec3(p.x, y, p.z), "#minecraft:all_signs") and NAME in text,
+        is_block(Vec3(p.x, y, p.z), "#minecraft:all_signs")
+        and f'"Castle {NAME}"' in text
+        and "'\"" not in text,  # plain lines: '"Castle ..."' shows its quotes
     )
     # every lamp post is one post: a lantern on exactly POST_HEIGHT fence
     # blocks, nothing on it and no post under it (or no post at all, where

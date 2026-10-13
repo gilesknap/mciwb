@@ -20,7 +20,7 @@ How they work
   ``Placer().setblock`` and ``Placer().fill`` send it with the block::
 
       sign = BlockState.of(Item.OAK_SIGN, rotation=4).with_nbt(
-          """{front_text:{messages:['"Hi"','""','""','""']}}""")
+          """{front_text:{messages:["Hi","","",""]}}""")
       Placer().setblock(Vec3(0, 70, 0), sign)
       Placer().setblock(Vec3(1, 70, 0),
                         'chest[facing=west]{Items:[{Slot:0b,id:"minecraft:apple",count:3}]}')
