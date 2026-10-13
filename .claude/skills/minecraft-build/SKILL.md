@@ -58,8 +58,9 @@ the image to check every step.
 - Flat world (`--world-type flat`): the top grass block is y = -61, so build
   from y = -60. Default world (seed 0): spawn is (632, 73, -1658).
 - Blocks are `Item.NAME` (`Item.STONE_BRICKS`) or `"minecraft:name"` strings,
-  with the ids of Minecraft 26.3: `minecraft:chain` is now `iron_chain`, and
-  `grass` is `short_grass`; `hasattr(Item, "NAME")` checks one. States go in
+  with the server's current ids: some were renamed (`minecraft:chain` is now
+  `iron_chain`, `grass` is `short_grass`); `hasattr(Item, "NAME")` checks
+  one. States go in
   brackets (`"minecraft:oak_stairs[facing=east,half=top]"`) or
   `world.set_block(pos, item, facing=Direction.EAST, nbt=["half=top"])`.
 - Prefer `/fill` to loops of `set_block`: one `client.fill(a, b, item)`

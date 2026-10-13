@@ -291,8 +291,8 @@ mobs stand still. So on a paused server:
   chunks: do not wait on it.
 - Entities in freshly forceloaded chunks cannot be selected (`kill @e[...]`
   and `execute if entity` find nothing) until the server has ticked them.
-- Sprinted ticks also bring night, so hostile mobs spawn in the dark parts
-  of the site, and copper ages: light the build, and kill hostile mobs in
+- Many sprinted ticks (thousands, over repeated checks) also bring night,
+  so hostile mobs spawn in the dark parts of the site, and copper ages: light the build, and kill hostile mobs in
   the site before you check it.
 
 ### Loading chunks
