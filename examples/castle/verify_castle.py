@@ -1029,10 +1029,14 @@ def towers(kind_at, describe=None) -> None:
 def reachable(g: reach.Grid) -> None:
     """a visitor can walk from the bridge to every room (the secret doors
     opened)"""
-    for line in reach.problems(g):
+    problems = reach.problems(g)
+    for line in problems:
         check(f"reach: {line}", False)
     n = len(reach.spaces())
-    check(f"reach: all {n} rooms and spaces can be walked to from the gate", True)
+    check(
+        f"reach: {n - len(problems)} of the {n} rooms and spaces can be walked to from the gate",
+        not problems,
+    )
 
 
 def entities() -> None:
