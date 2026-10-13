@@ -32,6 +32,7 @@ from castle_layout import (
     CHAPEL,
     CRYPT_DOOR,
     DUNGEON_HUT,
+    HALL_TABLES,
     KEEP,
     KEEP_ROOF,
     LIBRARY_DOOR,
@@ -226,17 +227,26 @@ def great_hall() -> None:
     L.set_block(V(IX1, y + 3, 27), "minecraft:gold_block")
     # a pier against the north wall hides the library's ladder shaft on its way down
     L.fill(V(LX - 1, y, LZ - 1), V(LX + 1, F2 - 1, LZ + 1), L.BRICK)
-    # two long tables with benches, and candles
+    # two long tables with benches, and candles; each in two pieces, either
+    # side of the aisle the carpet runs down from the door (XG-1..XG+1)
     for z in (20, 34):
-        table(V(50, y, z), V(64, y, z))
-        L.fill(
-            V(50, y, z - 1), V(64, y, z - 1), "minecraft:dark_oak_stairs[facing=north]"
-        )
-        L.fill(
-            V(50, y, z + 1), V(64, y, z + 1), "minecraft:dark_oak_stairs[facing=south]"
-        )
+        for x1, x2 in HALL_TABLES:
+            table(V(x1, y, z), V(x2, y, z))
+            L.fill(
+                V(x1, y, z - 1),
+                V(x2, y, z - 1),
+                "minecraft:dark_oak_stairs[facing=north]",
+            )
+            L.fill(
+                V(x1, y, z + 1),
+                V(x2, y, z + 1),
+                "minecraft:dark_oak_stairs[facing=south]",
+            )
         for x in range(51, 64, 4):
-            L.set_block(V(x, y + 1, z), "minecraft:white_candle[candles=3,lit=true]")
+            if any(x1 <= x <= x2 for x1, x2 in HALL_TABLES):
+                L.set_block(
+                    V(x, y + 1, z), "minecraft:white_candle[candles=3,lit=true]"
+                )
         L.set_block(V(57, y + 1, z), "minecraft:cake")
     # columns down the hall and chandeliers between them
     for x in (49, 58):
@@ -261,7 +271,7 @@ def great_hall() -> None:
     for x in range(IX1 + 2, 67, 6):
         L.set_block(V(x, y + 4, IZ2), f"minecraft:{BANNER2}_wall_banner[facing=north]")
     carpet(XG - 1, 24, XG + 1, IZ2, F1 + 1)
-    carpet(IX1 + 4, 26, XG + 1, 28, F1 + 1)
+    carpet(IX1 + 5, 26, XG + 1, 28, F1 + 1)  # up to the dais's step at IX1+4
     # the great door's inside: a lintel lantern
     L.set_block(V(XG, y + 4, IZ2), f"{L.LANTERN}[hanging=false]")
 

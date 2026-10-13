@@ -226,13 +226,17 @@ VAULT_Y = 8
 # from where its sitter looks (`seat_facing`), and a step faces the way up.
 # build_inner places them; verify checks their facings
 _KX = KEEP[0] + 3  # the keep's interior's west side
+# the great hall's tables (x1, x2), either side of the aisle down from the
+# keep's door (XG-1..XG+1); there are two rows of them, at z 20 and 34
+HALL_TABLES = ((50, XG - 2), (XG + 2, 64))
 SEATS = {
     "great hall thrones": [
         (_KX + 1, z, _KX + 1, z, YU + 1, "east") for z in (26, 28)
     ],  # on the dais at the west end, looking down the hall
     "great hall benches": [  # either side of the two tables, facing them
-        (50, z + dz, 64, z + dz, YU, face)
+        (x1, z + dz, x2, z + dz, YU, face)
         for z in (20, 34)
+        for x1, x2 in HALL_TABLES
         for dz, face in ((-1, "south"), (1, "north"))
     ],
     "library reading chairs": [  # at each end of the three reading tables
