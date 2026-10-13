@@ -5,6 +5,11 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    # Queue rather than overlap: two runs pushing gh-pages at once (e.g. PRs
+    # merged back to back) make the second push fail with "fetch first"
+    concurrency:
+      group: docs-${{ github.repository }}
+      cancel-in-progress: false
 
     steps:
       - name: Avoid git conflicts when tag and branch pushed at same time
