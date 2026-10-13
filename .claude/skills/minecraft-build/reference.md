@@ -222,6 +222,9 @@ Schematic.from_world(vol).blocks[x, y, z]  # a BlockState, from vol.start
 - `BlockState.parse("minecraft:oak_stairs[facing=east]")`,
   `BlockState.of(Item.OAK_STAIRS, facing=Direction.EAST, half="top")`,
   `.with_props(...)` and `str(state)` build state strings for `setblock`.
+  A trailing SNBT block entity suffix is kept (`state.nbt`, `.with_nbt(...)`),
+  so `Placer().setblock(pos, "oak_sign[rotation=4]{front_text:{...}}")` and
+  `Placer().fill` place signs, filled chests and lecterns without `cmd()`.
 
 ## Reading blocks back
 

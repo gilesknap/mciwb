@@ -53,6 +53,90 @@ def test_block_state_parse_and_format():
         BlockState.parse("oak_stairs[facing]")
 
 
+SIGN_TEXT = """{front_text:{messages:['"Hi"','""','""','""']}}"""
+
+
+def test_block_state_parses_block_entity_nbt():
+    sign = BlockState.parse(f"oak_sign[rotation=4]{SIGN_TEXT}")
+    assert sign.name == "minecraft:oak_sign"
+    assert sign.props == {"rotation": "4"}
+    assert sign.nbt == SIGN_TEXT
+    assert str(sign) == f"minecraft:oak_sign[rotation=4]{SIGN_TEXT}"
+    assert BlockState.parse(str(sign)) == sign
+    # NBT without block states
+    chest = BlockState.parse('chest{Items:[{Slot:0b,id:"minecraft:apple",count:3}]}')
+    assert chest.name == "minecraft:chest"
+    assert chest.props == {}
+    assert chest.nbt == '{Items:[{Slot:0b,id:"minecraft:apple",count:3}]}'
+    # brackets, braces and escaped quotes inside quoted strings
+    tricky = r"""{text:'a]}[{',other:"say \"}]\" and 'x'",list:[[1],[2]]}"""
+    book = BlockState.parse(f"minecraft:lectern[facing=north,has_book=true]{tricky}")
+    assert book.nbt == tricky
+    assert book.props == {"facing": "north", "has_book": "true"}
+
+
+def test_block_state_nbt_equality_and_copies():
+    plain = BlockState.of(Item.OAK_SIGN, rotation=4)
+    sign = plain.with_nbt(SIGN_TEXT)
+    assert sign != plain
+    assert hash(sign) != hash(plain)
+    assert sign == BlockState.parse(f"oak_sign[rotation=4]{SIGN_TEXT}")
+    assert len({sign, BlockState.parse(f"oak_sign[rotation=4]{SIGN_TEXT}")}) == 1
+    assert sign.with_nbt(None) == plain
+    assert sign.with_nbt("") == plain
+    # property changes, rotations and mirrors keep the NBT
+    assert sign.with_props(waterlogged=True).nbt == SIGN_TEXT
+    assert BlockState.of(sign, rotation=0).nbt == SIGN_TEXT
+    assert sign.rotate(1) == plain.rotate(1).with_nbt(SIGN_TEXT)
+    assert sign.mirror("x").nbt == SIGN_TEXT
+    assert sign.item is Item.OAK_SIGN
+
+
+@pytest.mark.parametrize(
+    "bad",
+    [
+        "oak_sign{front_text:{}",  # unclosed
+        "oak_sign{front_text:[}]}",  # mismatched brackets
+        "oak_sign{a:'unclosed}",  # unclosed string
+        "oak_sign{a:1}x",  # text after the NBT
+        "oak_sign{a:1}{b:2}",  # two compounds
+        "oak_sign[rotation=4] {a:1}",  # a space before the NBT
+        "oak_sign[rotation=4]x",  # text after the states
+        "{a:1}",  # no block id
+    ],
+)
+def test_block_state_rejects_bad_nbt(bad: str):
+    with pytest.raises(ValueError):
+        BlockState.parse(bad)
+
+
+def test_block_state_with_nbt_rejects_bad_nbt():
+    with pytest.raises(ValueError):
+        BlockState.of(Item.CHEST).with_nbt("Items:[]")
+    with pytest.raises(ValueError):
+        BlockState.of(Item.CHEST).with_nbt("{Items:[]}}")
+
+
+def test_placer_sends_block_entity_nbt(mock_client: MockClient):
+    placer = Placer()
+    placer.setblock(Vec3(1, 2, 3), f"oak_sign[rotation=4]{SIGN_TEXT}")
+    chest = BlockState.of(Item.CHEST, facing=Direction.WEST).with_nbt(
+        '{Items:[{Slot:0b,id:"minecraft:apple",count:3}]}'
+    )
+    placer.fill(Vec3(0, 0, 0), Vec3(1, 0, 0), chest)
+    placer.layer(5, {(0, 0): chest, (1, 0): chest, (3, 3): chest})
+    assert mock_client.block_commands == [
+        f"setblock 1 2 3 minecraft:oak_sign[rotation=4]{SIGN_TEXT}",
+        f"fill 0 0 0 1 0 0 {chest}",
+        f"fill 0 5 0 1 5 0 {chest}",
+        f"setblock 3 5 3 {chest}",
+    ]
+    assert mock_client.state_at(Vec3(1, 2, 3)) == "minecraft:oak_sign[rotation=4]"
+    assert mock_client.block_nbt[(1, 2, 3)] == SIGN_TEXT
+    assert mock_client.block_nbt[(1, 0, 0)] == chest.nbt
+    assert mock_client.getblock(Vec3(3, 5, 3)) == Item.CHEST
+
+
 def test_block_state_takes_bool_and_int_props():
     sign = BlockState.of(Item.OAK_SIGN, waterlogged=True, rotation=4)
     assert sign.props == {"waterlogged": "true", "rotation": "4"}

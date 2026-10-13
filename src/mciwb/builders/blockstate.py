@@ -1,6 +1,8 @@
 """
 Block states: a block id plus properties, e.g.
-``minecraft:oak_stairs[facing=east,half=bottom,shape=straight]``.
+``minecraft:oak_stairs[facing=east,half=bottom,shape=straight]``, and
+optionally block entity data, e.g.
+``minecraft:oak_sign[rotation=4]{front_text:{messages:['"Hi"','""','""','""']}}``.
 
 `BlockState` parses and formats these strings, and rotates and mirrors them
 about the Y axis (used to rotate schematics). `stair_shapes` works out the
@@ -11,7 +13,7 @@ emit the states that the server would settle on anyway.
 from __future__ import annotations
 
 from collections.abc import Mapping
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 
 from mcwb import Direction, Item, Vec3
 
@@ -77,10 +79,56 @@ def _block_id(name: str) -> str:
     return name if ":" in name else f"minecraft:{name}"
 
 
+_CLOSERS = {"{": "}", "[": "]"}
+
+
+def _snbt_end(text: str, start: int) -> int:
+    """
+    The index just after the SNBT compound ``{...}`` that starts at
+    *text[start]*. Skips quoted strings (``"..."`` or ``'...'``, with
+    backslash escapes), so brackets and braces inside them do not count.
+
+    :raises ValueError: if the compound is not closed, or its brackets do
+        not match
+    """
+    if text[start : start + 1] != "{":
+        raise ValueError("block entity data must start with '{'")
+    stack: list[str] = []
+    quote = ""
+    i = start
+    while i < len(text):
+        char = text[i]
+        if quote:
+            if char == "\\":
+                i += 1  # skip the escaped character
+            elif char == quote:
+                quote = ""
+        elif char in "\"'":
+            quote = char
+        elif char in _CLOSERS:
+            stack.append(_CLOSERS[char])
+        elif char in "]}":
+            if not stack or stack.pop() != char:
+                raise ValueError(f"unmatched '{char}' in block entity data")
+            if not stack:
+                return i + 1
+        i += 1
+    raise ValueError("unclosed block entity data")
+
+
+def _check_nbt(nbt: str) -> str:
+    """*nbt* stripped, after checking that it is one SNBT compound or empty"""
+    nbt = nbt.strip()
+    if nbt and _snbt_end(nbt, 0) != len(nbt):
+        raise ValueError(f"unexpected text after block entity data '{nbt}'")
+    return nbt
+
+
 @dataclass(frozen=True)
 class BlockState:
     """
-    A block id and its block state properties.
+    A block id, its block state properties and optionally its block entity
+    data (the contents of a chest, the text of a sign ...).
 
     ``str(state)`` gives the form that ``setblock`` and ``fill`` accept, and
     that Sponge schematic palettes use::
@@ -92,37 +140,65 @@ class BlockState:
         'minecraft:oak_stairs[facing=south,half=bottom]'
         >>> BlockState.parse("stone").name
         'minecraft:stone'
+        >>> sign = BlockState.parse("oak_sign[rotation=4]{front_text:{}}")
+        >>> sign.nbt
+        '{front_text:{}}'
 
     :ivar name: the namespaced block id, e.g. ``minecraft:oak_stairs``
     :ivar props: the block state properties, e.g. ``{"facing": "east"}``.
         Properties that are not given take the block's default value.
+    :ivar nbt: the block entity data as SNBT text, including its braces,
+        e.g. ``{Items:[{Slot:0b,id:"minecraft:apple",count:3}]}``, or ``""``
+        for none. ``setblock`` and ``fill`` give it to every block they
+        place. It is compared as text, so states that differ only in the
+        spacing or order of their NBT are not equal.
     """
 
     name: str
     props: Mapping[str, str] = field(default_factory=dict)
+    nbt: str = ""
 
     @classmethod
     def parse(cls, block: Block) -> BlockState:
         """
         Make a BlockState from an ``Item``, a block state string or a BlockState.
-        Block entity data (``{...}``) at the end of a string is not supported.
+        A string may end with block entity data in SNBT, as ``setblock``
+        takes it, e.g. ``chest[facing=west]{Items:[...]}``.
+
+        :raises ValueError: if the string is not a valid block state
         """
         if isinstance(block, BlockState):
             return block
         if isinstance(block, Item):
             return cls(block.value)
-        name, _, rest = str(block).partition("[")
+        text = str(block).strip()
+        end = len(text)
+        for i, char in enumerate(text):
+            if char in "[{":
+                end = i
+                break
+        name, rest = text[:end], text[end:]
+        if not name.strip():
+            raise ValueError(f"invalid block state '{block}': no block id")
         props: dict[str, str] = {}
-        if rest:
-            if not rest.endswith("]"):
+        if rest.startswith("["):
+            close = rest.find("]")
+            if close < 0:
                 raise ValueError(f"invalid block state '{block}'")
-            for pair in rest[:-1].split(","):
+            for pair in rest[1:close].split(","):
                 if pair.strip():
                     key, sep, value = pair.partition("=")
                     if not sep:
                         raise ValueError(f"invalid block state '{block}'")
                     props[key.strip()] = value.strip()
-        return cls(_block_id(name), props)
+            rest = rest[close + 1 :]
+        if rest and not rest.startswith("{"):
+            raise ValueError(f"invalid block state '{block}'")
+        try:
+            nbt = _check_nbt(rest)
+        except ValueError as error:
+            raise ValueError(f"invalid block state '{block}': {error}") from None
+        return cls(_block_id(name), props, nbt)
 
     @classmethod
     def of(cls, block: Block, **props: PropValue) -> BlockState:
@@ -131,7 +207,8 @@ class BlockState:
         ``BlockState.of(Item.OAK_STAIRS, facing=Direction.EAST)``. A Direction
         is converted to its name, a bool to ``true``/``false`` and an int to
         its digits, e.g. ``BlockState.of(Item.SNOW, layers=3)``. The new
-        properties replace any that the block already has.
+        properties replace any that the block already has, and any block
+        entity data is kept.
         """
         return cls.parse(block).with_props(**props)
 
@@ -143,10 +220,20 @@ class BlockState:
         new = dict(self.props)
         for key, value in props.items():
             new[key] = _prop_value(value)
-        return BlockState(self.name, new)
+        return replace(self, props=new)
+
+    def with_nbt(self, nbt: str | None) -> BlockState:
+        """
+        A copy of this state with its block entity data replaced, e.g.
+        ``.with_nbt('{Items:[{Slot:0b,id:"minecraft:apple",count:3}]}')``.
+        ``None`` or ``""`` removes it.
+
+        :raises ValueError: if *nbt* is not one SNBT compound ``{...}``
+        """
+        return replace(self, nbt=_check_nbt(nbt or ""))
 
     def __hash__(self) -> int:
-        return hash((self.name, tuple(sorted(self.props.items()))))
+        return hash((self.name, tuple(sorted(self.props.items())), self.nbt))
 
     @property
     def item(self) -> Item:
@@ -167,9 +254,9 @@ class BlockState:
 
     def __str__(self) -> str:
         if not self.props:
-            return self.name
+            return self.name + self.nbt
         props = ",".join(f"{key}={value}" for key, value in sorted(self.props.items()))
-        return f"{self.name}[{props}]"
+        return f"{self.name}[{props}]{self.nbt}"
 
     def _map_directions(self, turn: dict[str, str], handed: bool) -> BlockState:
         """
@@ -198,14 +285,15 @@ class BlockState:
             elif key in ("hinge", "type") and value in _HANDED and handed:
                 value = _HANDED[value]
             props[new_key] = value
-        return BlockState(self.name, props)
+        return replace(self, props=props)
 
     def rotate(self, steps: int = 1) -> BlockState:
         """
         Rotate the block about the Y axis by *steps* quarter turns clockwise,
         viewed from above (north becomes east). Updates ``facing``, ``axis``,
         ``rotation`` (signs, banners, heads), direction named connections
-        (fences, walls, panes, redstone) and rail ``shape``.
+        (fences, walls, panes, redstone) and rail ``shape``. Block entity
+        data is kept unchanged.
         """
         steps %= 4
         if steps == 0:
@@ -217,7 +305,7 @@ class BlockState:
             props["axis"] = "z" if props["axis"] == "x" else "x"
         if "rotation" in props:
             props["rotation"] = str((int(props["rotation"]) + 4 * steps) % 16)
-        return BlockState(self.name, props)
+        return replace(self, props=props)
 
     def mirror(self, axis: str) -> BlockState:
         """
@@ -233,7 +321,7 @@ class BlockState:
             # rotation 0 is south, counting sixteenths of a turn clockwise
             centre = 16 if axis == "x" else 8
             props["rotation"] = str((centre - int(props["rotation"])) % 16)
-        return BlockState(self.name, props)
+        return replace(self, props=props)
 
 
 Block = Item | str | BlockState

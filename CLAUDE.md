@@ -210,6 +210,8 @@ their states with `Schematic.from_world(box)`.
 - `BlockState.parse("oak_stairs[facing=east]")`, `.with_props(half="top")`,
   `BlockState.of(Item.SNOW, layers=3, waterlogged=False)` (values may be str,
   int, bool or a Direction), `.rotate(1)`, `.mirror("x")`, `str(state)` for commands.
+  A trailing block entity SNBT suffix (`oak_sign[rotation=4]{front_text:...}`)
+  is parsed into `.nbt` (`.with_nbt(...)`) and sent by `Placer.setblock/fill`.
 
 Stairs `facing` is the side of the full height step (people walk up towards
 it); Minecraft recomputes stair `shape` from neighbours, and the builders send
