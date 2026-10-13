@@ -21,7 +21,7 @@ from mciwb.builders import (
     trace_path,
 )
 from mciwb.builders.placer import rectangles
-from mciwb.imports import Direction, Item, Vec3
+from mciwb.imports import Direction, FillMode, Item, Vec3
 from tests.mockclient import MockClient
 
 
@@ -51,6 +51,15 @@ def test_block_state_parse_and_format():
         BlockState.parse("oak_stairs[facing=east")
     with pytest.raises(ValueError):
         BlockState.parse("oak_stairs[facing]")
+
+
+def test_block_state_takes_bool_and_int_props():
+    sign = BlockState.of(Item.OAK_SIGN, waterlogged=True, rotation=4)
+    assert sign.props == {"waterlogged": "true", "rotation": "4"}
+    assert str(BlockState.of("snow", layers=3)) == "minecraft:snow[layers=3]"
+    assert sign.with_props(waterlogged=False).props["waterlogged"] == "false"
+    stairs = BlockState.of(Item.OAK_STAIRS, facing=Direction.EAST, half="top")
+    assert stairs.props == {"facing": "east", "half": "top"}
 
 
 def test_block_state_rotate():
@@ -152,6 +161,20 @@ def test_placer_splits_large_fills(mock_client: MockClient):
     assert len(fills) == 2
     assert fills[0] == "fill 0 0 0 19 39 39 minecraft:stone"
     assert fills[1] == "fill 20 0 0 39 39 39 minecraft:stone"
+
+
+def test_placer_fill_filter_implies_replace(mock_client: MockClient):
+    mock_client.fill(Vec3(0, 0, 0), Vec3(2, 0, 2), Item.STONE)
+    mock_client.setblock(Vec3(1, 0, 1), Item.DIRT)
+    mock_client.block_commands.clear()
+    Placer().fill(Vec3(0, 0, 0), Vec3(2, 0, 2), Item.AIR, filter="minecraft:stone")
+    assert mock_client.block_commands == [
+        "fill 0 0 0 2 0 2 minecraft:air replace minecraft:stone"
+    ]
+    assert mock_client.getblock(Vec3(1, 0, 1)) == Item.DIRT
+    assert mock_client.getblock(Vec3(0, 0, 0)) == Item.AIR
+    with pytest.raises(ValueError, match="REPLACE"):
+        Placer().fill(Vec3(0, 0, 0), Vec3(1, 0, 1), Item.AIR, FillMode.KEEP, "stone")
 
 
 # roofs #######################################################################
@@ -680,9 +703,15 @@ def test_foundation(mock_client: MockClient):
 
 
 def test_foundation_max_depth(mock_client: MockClient):
+    # max_depth is the number of blocks below start.y, not counting the top
     volume = foundation(Vec3(0, 10, 0), Vec3(1, 10, 1), max_depth=3)
-    assert (volume.start, volume.end) == (Vec3(0, 8, 0), Vec3(1, 10, 1))
-    assert mock_client.block_commands == ["fill 0 8 0 1 10 1 minecraft:cobblestone"]
+    assert (volume.start, volume.end) == (Vec3(0, 7, 0), Vec3(1, 10, 1))
+    assert mock_client.block_commands == ["fill 0 7 0 1 10 1 minecraft:cobblestone"]
+    mock_client.block_commands.clear()
+    foundation(Vec3(5, 10, 0), Vec3(6, 10, 1), max_depth=0)
+    assert mock_client.block_commands == ["fill 5 10 0 6 10 1 minecraft:cobblestone"]
+    with pytest.raises(ValueError, match="max_depth"):
+        foundation(Vec3(0, 10, 0), Vec3(1, 10, 1), max_depth=-1)
 
 
 def test_builders_take_block_states(mock_client: MockClient):

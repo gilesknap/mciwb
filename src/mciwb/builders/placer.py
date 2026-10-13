@@ -98,8 +98,14 @@ class Placer:
         Fill the box between two opposite corners, inclusive.
 
         :param mode: e.g. ``FillMode.KEEP`` to only replace air
-        :param filter: with ``FillMode.REPLACE``, only replace these blocks
+        :param filter: only replace these blocks, e.g. ``"minecraft:stone"``
+            or a tag like ``"#minecraft:logs"``. Implies ``FillMode.REPLACE``
+        :raises ValueError: if a filter is given with a mode other than REPLACE
         """
+        if filter is not None:
+            if mode not in (None, FillMode.REPLACE):
+                raise ValueError(f"a fill filter needs FillMode.REPLACE, not {mode}")
+            mode = FillMode.REPLACE
         start, end = _ints(start), _ints(end)
         state = str(BlockState.parse(block))
         size = Volume.from_corners(start, end).size

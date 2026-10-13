@@ -123,9 +123,12 @@ def foundation(
     :param heightmap: what counts as the ground. The default ignores water,
         so the foundation goes down to the bed of a lake or the sea
     :param max_depth: the deepest any column may go, in blocks below
-        ``start.y`` (a guard against building down into a ravine or the void)
+        ``start.y`` (a guard against building down into a ravine or the
+        void). 0 gives just the top layer
     :returns: the bounding box of the foundation
     """
+    if max_depth < 0:
+        raise ValueError(f"max_depth must not be negative, not {max_depth}")
     top = int(start.y)
     x1, x2 = sorted((int(start.x), int(end.x)))
     z1, z2 = sorted((int(start.z), int(end.z)))
@@ -134,7 +137,7 @@ def foundation(
 
     # the bottom of the foundation in each column, then group the columns
     # with the same bottom into rectangles
-    lowest = top - max_depth + 1
+    lowest = top - max_depth
     bottoms: dict[int, list[tuple[int, int]]] = {}
     for column, y in ground.items():
         bottom = min(max(y + 1, lowest), top)

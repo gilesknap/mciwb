@@ -145,7 +145,8 @@ From `mciwb.imports` (all re-exported from mcwb or mciwb):
   array of Items, indexed `cuboid[x][y][z]`. `Volume`, `Anchor3` position it.
 - `Volume.from_corners(a, b).fill(client, item)`: fill a box of any size.
   Above 32768 blocks it only fills air (mcwb uses keep mode), so it cannot
-  clear a big box: `Placer().fill(a, b, Item.AIR)` splits big fills instead.
+  clear a big box: `Placer().fill(a, b, Item.AIR)` splits big fills instead;
+  add `filter="minecraft:stone"` to replace only those blocks.
 - `world.save(file, vol)` / `world.load(file, position)`: save blocks to
   JSON and load them elsewhere. `grab(client, vol)` reads blocks as a cuboid.
 - `Wall(height=3, item=...)` or `Wall(profile=[...])`, then `set_start(pos)`
@@ -191,7 +192,7 @@ foundation. See docs/how-to/builders.rst.
   `MOTION_BLOCKING_NO_LEAVES` (default) ignores leaves and plants.
 - `foundation(start, end, block=COBBLESTONE, heightmap=OCEAN_FLOOR,
   max_depth=64)`: fill each column from the ground up to a platform at
-  `start.y`. Build it first: anything already standing there counts as ground.
+  `start.y`, going at most `max_depth` blocks below it. Build it first: anything already standing there counts as ground.
 - `Schematic`: Sponge `.schem` v3 (reads v2 too). `Schematic.from_world(vol)`
   reads blocks plus stairs/slab/axis states (other states and block entities
   are not readable over RCON), `.paste(pos, air=False)`, `.rotate(steps)`
@@ -200,7 +201,8 @@ foundation. See docs/how-to/builders.rst.
   cuboids. `blocks[x][y][z]` is a numpy array of `BlockState`.
   `world.save("f.schem", vol)` and `world.load("f.schem", pos)` use it too.
 - `BlockState.parse("oak_stairs[facing=east]")`, `.with_props(half="top")`,
-  `.rotate(1)`, `.mirror("x")`, `str(state)` for commands.
+  `BlockState.of(Item.SNOW, layers=3, waterlogged=False)` (values may be str,
+  int, bool or a Direction), `.rotate(1)`, `.mirror("x")`, `str(state)` for commands.
 
 Stairs `facing` is the side of the full height step (people walk up towards
 it); Minecraft recomputes stair `shape` from neighbours, and the builders send

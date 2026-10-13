@@ -57,6 +57,21 @@ def facing_name(direction: Vec3) -> str:
     raise ValueError(f"{direction} is not a Direction")
 
 
+#: a property value for `BlockState.of` and `BlockState.with_props`
+PropValue = str | bool | int | Vec3
+
+
+def _prop_value(value: PropValue) -> str:
+    """The block state text of a property value"""
+    if isinstance(value, str):
+        return value
+    if isinstance(value, bool):
+        return str(value).lower()
+    if isinstance(value, int):
+        return str(value)
+    return facing_name(value)
+
+
 def _block_id(name: str) -> str:
     name = name.strip()
     return name if ":" in name else f"minecraft:{name}"
@@ -110,20 +125,24 @@ class BlockState:
         return cls(_block_id(name), props)
 
     @classmethod
-    def of(cls, block: Block, **props: str | Vec3) -> BlockState:
+    def of(cls, block: Block, **props: PropValue) -> BlockState:
         """
         Make a BlockState from a block and extra properties, e.g.
         ``BlockState.of(Item.OAK_STAIRS, facing=Direction.EAST)``. A Direction
-        is converted to its name. The new properties replace any that the
-        block already has.
+        is converted to its name, a bool to ``true``/``false`` and an int to
+        its digits, e.g. ``BlockState.of(Item.SNOW, layers=3)``. The new
+        properties replace any that the block already has.
         """
         return cls.parse(block).with_props(**props)
 
-    def with_props(self, **props: str | Vec3) -> BlockState:
-        """A copy of this state with some properties added or replaced"""
+    def with_props(self, **props: PropValue) -> BlockState:
+        """
+        A copy of this state with some properties added or replaced, e.g.
+        ``.with_props(half="top", waterlogged=True, rotation=4)``
+        """
         new = dict(self.props)
         for key, value in props.items():
-            new[key] = value if isinstance(value, str) else facing_name(value)
+            new[key] = _prop_value(value)
         return BlockState(self.name, new)
 
     def __hash__(self) -> int:
