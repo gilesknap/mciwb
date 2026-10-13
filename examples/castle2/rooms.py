@@ -249,6 +249,7 @@ def great_hall() -> None:
     # rushes on the floor, clear of the aisle, the tables and the dais
     clear = taken | {(x, z) for x in range(IX1 + 4, 62) for z in range(26, 29)}
     clear |= {(x, z) for x in range(58, 63) for z in range(24, IZ2 + 1)}
+    clear |= {(x, z) for x in range(59, 62) for z in range(IZ1, IZ1 + 3)}  # the pier
     clear |= {(x, z) for x in range(49, 52) for z in (22, 23, 24, 30, 31, 32)}
     clear |= {(x, z) for x in range(55, 58) for z in (22, 23, 24, 30, 31, 32)}
     clear |= {

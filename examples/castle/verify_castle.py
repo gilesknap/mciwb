@@ -975,7 +975,10 @@ def summoned_clear(kind_at) -> None:
 
     bad = []
     stands = c(
-        f"execute as @e[type=minecraft:armor_stand,tag={TAG}] run data get entity @s Pos"
+        # (not markers: an invisible marker stand that a sitter rides sits
+        # in its seat, castle2's do)
+        f"execute as @e[type=minecraft:armor_stand,tag={TAG},nbt=!{{Marker:1b}}] "
+        "run data get entity @s Pos"
     )
     n_stands = 0
     for m in POS.finditer(stands):

@@ -15,12 +15,16 @@ The state of the work on castle2 (gilesknap/mciwb#173, plan in
   `bailey_buildings` = `bailey_shell` + `bailey_furnishing`, `details` =
   `details_fixtures` + `details_people`. Every seat goes through
   `castle_lib.seat(pos, faces)` (faces = the way the sitter looks) and is
-  recorded in `castle_lib.SEATS`. Proof: `record_build.py` records a full
-  castle build against a fake client; the sorted commands and the final
-  blocks are identical to 5096c3c's (also after the rebase onto #167/#169).
-  Re-check after touching castle with
+  recorded in `castle_lib.PLACED_SEATS` (castle's own `castle_layout.SEATS`
+  from #174 lists castle's seats for its verify). The branch was rebuilt on
+  694358f (#174, which reworked castle: tower doors, levers by the gates,
+  pit trap, seats): the refactor was redone on top of it, dropping our own
+  seat fix (#174 has it). Proof: `record_build.py` records a full castle
+  build against a fake client; the sorted commands and the final blocks
+  are identical to 694358f's. Re-check after touching castle with
   `python record_build.py ../castle /tmp/after` and diffing against a
-  recording of the old castle (`git archive 72cedf8 examples/castle`).
+  recording of `git archive 694358f examples/castle` (the old branch, before
+  the rebuild, is the local branch `castle2-pre174`).
   Decision taken: the underground complex (dungeons, catacombs, lower
   treasury) does NOT move with the gate: it hangs off the smithy's hatch and
   the well's tunnel, so it is counted from the junction. (PLAN.md put the
@@ -58,7 +62,7 @@ Castle Fable II is built at ORIGIN 560,68,-190: site x 550..690,
 z -200..47, entities tagged `castle_560_-190`; its road runs south from
 the bridge, west along z ~52 / x 545, then along z -64 to spawn
 (32,74,-64), sharing the last leg with the castle at 148,-262. Built with
-mciwb 426d61c (origin/main with #167, #169 and #170), from
+mciwb 694358f (origin/main with #167, #169, #170 and #174), from
 this branch's examples copied to nuc2:~/castle2-run/{castle,castle2}.
 
 Last full verify (`verify_castle2.py`, all checks, player online so real
