@@ -33,6 +33,7 @@ import build_outer  # noqa: E402
 import castle_lib as L  # noqa: E402
 from castle_layout import (  # noqa: E402
     ARROW_TRAP,
+    BAILEY_TOWERS,
     BRIDGE_END,
     CELL_DOOR,
     CELL_LEVER,
@@ -55,18 +56,22 @@ from castle_layout import (  # noqa: E402
     ORIGIN,
     PIT_TRAP,
     ROOFED_TOWERS,
+    SMITHY_HATCH,
     SPAWN,
+    STANDING_SIGNS,
     SUMMONED,
     TAG,
     TELEPORTS,
     VAULT,
     VAULT_Y,
+    WALL_H,
     WELL,
     WELL_TUNNEL_X,
     XG,
     YU,
     ZS,
     V,
+    layout_problems,
     site_box,
 )
 
@@ -346,11 +351,12 @@ def passages() -> None:
         and is_block(V(tx + 1, -8, 120), L.COBBLE)
         and is_block(V(tx, -5, 120), L.COBBLE),
     )
+    hx, hz = SMITHY_HATCH
     check(
         "smithy: trapdoor over a ladder to the lower treasury",
-        is_block(V(107, -1, 105), "minecraft:spruce_trapdoor")
-        and all(is_block(V(107, y, 105), "minecraft:ladder") for y in range(-14, -1))
-        and is_block(V(107, -15, 105), L.AIR),
+        is_block(V(hx, -1, hz), "minecraft:spruce_trapdoor")
+        and all(is_block(V(hx, y, hz), "minecraft:ladder") for y in range(-14, -1))
+        and is_block(V(hx, -15, hz), L.AIR),
     )
 
 
@@ -523,6 +529,47 @@ def banners() -> None:
     check(
         f"towers: every cone's banner hangs beside its top{' (not ' + str(bad) + ')' if bad else ''}",
         not bad,
+    )
+
+
+def bailey() -> None:
+    """the bailey's layout keeps clear of its towers, the mid-wall towers
+    (which buildings and stairs once cut) stand whole, and every standing
+    sign stands on something"""
+    problems = layout_problems()
+    check(
+        f"layout: no building, stair, path or sign in a bailey tower or another building{' (' + '; '.join(problems[:3]) + ')' if problems else ''}",
+        not problems,
+    )
+    bad = []
+    for name in ("west mid-wall tower", "east mid-wall tower"):
+        cx, cz, r = BAILEY_TOWERS[name]
+        # the pillar, and the north and south walls below the wall-walk doors
+        for x, z in (
+            (cx, cz),
+            (cx, cz - r),
+            (cx, cz - r + 1),
+            (cx, cz + r),
+            (cx, cz + r - 1),
+        ):
+            bad += [
+                (name, x, y, z) for y in range(0, WALL_H) if is_block(V(x, y, z), L.AIR)
+            ]
+    check(
+        f"towers: the mid-wall towers' pillars and north and south walls are whole{' (not ' + str(bad[:3]) + ')' if bad else ''}",
+        not bad,
+    )
+    floating = []
+    for first, (x, y, z, _r) in STANDING_SIGNS.items():
+        p = V(x, y, z)
+        under = p - Vec3(0, 1, 0)
+        if not is_block(p, "#minecraft:standing_signs") or any(
+            is_block(under, b) for b in (L.AIR, L.WATER, "#minecraft:replaceable")
+        ):
+            floating.append(first)
+    check(
+        f"signs: every standing sign stands on a solid block{' (not ' + str(floating) + ')' if floating else ''}",
+        not floating,
     )
 
 
@@ -729,6 +776,7 @@ def main() -> None:
         cells()
         mounts()
         banners()
+        bailey()
         road()
         entities()
     finally:

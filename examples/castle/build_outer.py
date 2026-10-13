@@ -10,6 +10,7 @@ from collections.abc import Callable, Iterable
 
 import castle_lib as L
 from castle_layout import (
+    BAILEY_TOWERS,
     BANNER,
     BANNER2,
     BRIDGE_END,
@@ -32,6 +33,7 @@ from castle_layout import (
     TR,
     UD,
     WALL_H,
+    WALL_STAIRS,
     XG,
     YU,
     ZS,
@@ -349,14 +351,22 @@ def bailey_walls() -> None:
     )
     # corner towers straddling the corners, and mid-wall towers
     walk = WALL_H
+    t = BAILEY_TOWERS
     towers = [
-        (3, ZS - 3, [(walk, N, -1), (walk, E, 1), (0, N, 1)], BANNER),
-        (W - 4, ZS - 3, [(walk, N, 1), (walk, Wd, 1), (0, N, -1)], BANNER),
-        (3, 105, [(walk, N, -1), (walk, S, -1), (0, E, 0)], None),
-        (W - 4, 105, [(walk, N, 1), (walk, S, 1), (0, Wd, 0)], None),
+        (
+            t["south-west corner tower"],
+            [(walk, N, -1), (walk, E, 1), (0, N, 1)],
+            BANNER,
+        ),
+        (
+            t["south-east corner tower"],
+            [(walk, N, 1), (walk, Wd, 1), (0, N, -1)],
+            BANNER,
+        ),
+        (t["west mid-wall tower"], [(walk, N, -1), (walk, S, -1), (0, E, 0)], None),
+        (t["east mid-wall tower"], [(walk, N, 1), (walk, S, 1), (0, Wd, 0)], None),
     ]
-    for cx, cz, doors, banner in towers:
-        r = TR if cz != 105 else TR - 1
+    for (cx, cz, r), doors, banner in towers:
         L.round_tower(
             ORIGIN.x + cx,
             ORIGIN.z + cz,
@@ -368,14 +378,20 @@ def bailey_walls() -> None:
             banner=banner,
         )
     # the junction towers where the bailey walls meet the cliff: up past the upper ward's walls
-    for cx, doors in (
-        (3, [(walk, S, -1), (YU + WALL_H, N, -1), (0, S, 1), (YU, S, 1)]),
-        (W - 4, [(walk, S, 1), (YU + WALL_H, N, 1), (0, S, -1), (YU, S, -1)]),
+    for (cx, cz, r), doors in (
+        (
+            t["west junction tower"],
+            [(walk, S, -1), (YU + WALL_H, N, -1), (0, S, 1), (YU, S, 1)],
+        ),
+        (
+            t["east junction tower"],
+            [(walk, S, 1), (YU + WALL_H, N, 1), (0, S, -1), (YU, S, -1)],
+        ),
     ):
         L.round_tower(
             ORIGIN.x + cx,
-            ORIGIN.z + UD - 1,
-            TR,
+            ORIGIN.z + cz,
+            r,
             ORIGIN.y + MOAT_FLOOR,
             ORIGIN.y + YU + WALL_H + 8,
             floors=[ORIGIN.y, ORIGIN.y + walk, ORIGIN.y + YU, ORIGIN.y + YU + walk],
@@ -383,34 +399,14 @@ def bailey_walls() -> None:
             banner=BANNER2,
         )
     # stairs from the courtyard up to the wall walks (west, east, and beside the gatehouse)
-    stairway(
-        [V(3, -1, 100), V(3, walk - 1, 110)],
-        L.BRICK_STAIRS,
-        width=2,
-        support=L.BRICK,
-        clearance=3,
-    )
-    stairway(
-        [V(W - 4, -1, 100), V(W - 4, walk - 1, 110)],
-        L.BRICK_STAIRS,
-        width=2,
-        support=L.BRICK,
-        clearance=3,
-    )
-    stairway(
-        [V(GATEHOUSE[0] - 14, -1, ZS - 3), V(GATEHOUSE[0] - 4, walk - 1, ZS - 3)],
-        L.BRICK_STAIRS,
-        width=2,
-        support=L.BRICK,
-        clearance=3,
-    )
-    stairway(
-        [V(GATEHOUSE[2] + 14, -1, ZS - 3), V(GATEHOUSE[2] + 4, walk - 1, ZS - 3)],
-        L.BRICK_STAIRS,
-        width=2,
-        support=L.BRICK,
-        clearance=3,
-    )
+    for points, width in WALL_STAIRS.values():
+        stairway(
+            [V(*q) for q in points],
+            L.BRICK_STAIRS,
+            width=width,
+            support=L.BRICK,
+            clearance=3,
+        )
 
 
 def gatehouse() -> dict:

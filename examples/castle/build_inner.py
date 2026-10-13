@@ -24,19 +24,27 @@ from castle_layout import (
     ARROW_TRAP,
     BANNER,
     BANNER2,
+    BARRACKS,
     CELL_DOOR,
     CELL_LEVER,
     CELL_ROWS,
     CHAPEL,
     CRYPT_DOOR,
+    DUNGEON_HUT,
     KEEP,
     KEEP_ROOF,
     LIBRARY_DOOR,
     LIBRARY_LADDER,
+    MARKET,
+    MID_Z,
     NAME,
     ORIGIN,
+    PATHS,
     PIT_TRAP,
+    SMITHY,
+    SMITHY_HATCH,
     STABLES,
+    STANDING_SIGNS,
     UD,
     VAULT,
     VAULT_Y,
@@ -118,6 +126,13 @@ def item_frame(pos: Vec3, facing: int, item: str) -> None:
 def mob(kind: str, pos: Vec3) -> None:
     """a creature that never despawns, standing at the middle of a cell"""
     L.summon(kind, pos + Vec3(0.5, 0, 0.5), L.PERSIST)
+
+
+def standing_sign(first: str, *more: str) -> None:
+    """the standing sign whose first line is ``first``, where
+    STANDING_SIGNS puts it: on the ground (verify checks what is under it)"""
+    x, y, z, rotation = STANDING_SIGNS[first]
+    L.sign(V(x, y, z), f"oak_sign[rotation={rotation}]", first, *more)
 
 
 def bed(pos: Vec3, facing: str, colour: str = "red") -> None:
@@ -647,13 +662,14 @@ def bailey_buildings() -> None:
     # paths first: from the gate to the grand stair, and across to the buildings
     L.fill(V(XG - 2, -1, UD + YU + 1), V(XG + 2, -1, ZS - 9), "minecraft:dirt_path")
     L.fill(V(XG - 1, -1, UD + YU + 1), V(XG + 1, -1, ZS - 9), L.ANDESITE)
-    L.fill(V(STABLES[2] + 1, -1, 104), V(103, -1, 106), "minecraft:dirt_path")
+    px1, pz1, px2, pz2 = PATHS["cross path"]
+    L.fill(V(px1, -1, pz1), V(px2, -1, pz2), "minecraft:dirt_path")
     stables()
     smithy()
     barracks()
     well()
     # a market: two stalls by the gate
-    for x in (70, 78):
+    for x in (MARKET[0], MARKET[2] - 4):
         L.fill(V(x, -1, 130), V(x + 4, -1, 132), L.PLANKS)
         for dx, dz in ((0, 0), (4, 0), (0, 2), (4, 2)):
             L.fill(
@@ -697,11 +713,11 @@ def stables() -> None:
         L.fill(V(x1 + 1, 0, z), V(x1 + 2, 0, z + 1), "minecraft:hay_block")
         L.set_block(V(x1 + 3, 0, z + 2), "minecraft:water_cauldron[level=3]")
         mob("horse", V(x1 + 6, 0, z + 1))
-    L.sign(V(x2 + 1, 1, 107), "oak_sign[rotation=4]", "Stables")
+    standing_sign("Stables")
 
 
 def smithy() -> None:
-    x1, z1, x2, z2 = 104, 95, 117, 115
+    x1, z1, x2, z2 = SMITHY
     y = 0
     L.fill(V(x1, y - 1, z1), V(x2, y + 4, z2), L.COBBLE)
     L.fill(V(x1 + 1, y, z1 + 1), V(x2 - 1, y + 4, z2 - 1), L.AIR)
@@ -714,10 +730,10 @@ def smithy() -> None:
         axis="z",
         overhang=1,
     )
-    doorway(V(x1, y, 104), V(x1, y, 106))
+    doorway(V(x1, y, MID_Z - 1), V(x1, y, MID_Z + 1))
     L.fill(
-        V(x1, y + 2, 104),
-        V(x1, y + 2, 106),
+        V(x1, y + 2, MID_Z - 1),
+        V(x1, y + 2, MID_Z + 1),
         "minecraft:spruce_trapdoor[facing=west,half=top,open=false]",
     )
     # the forge: a chimney over a campfire, blast furnaces, anvils
@@ -752,23 +768,22 @@ def smithy() -> None:
         V(x1 + 1, y + 4, z1 + 1), V(x2 - 1, y + 4, z2 - 1), L.PLANKS
     )  # a ceiling under the roof
     lanterns(x1 + 1, z1 + 1, x2 - 1, z2 - 1, y + 3, step=6)
-    L.sign(V(x1 - 1, 1, 103), "oak_sign[rotation=12]", "The Smithy")
+    standing_sign("The Smithy")
     # the secret: a trapdoor in the floor over a ladder down a lined shaft to
     # the lower treasury (catacombs() carries the ladder through its ceiling)
+    hx, hz = SMITHY_HATCH
     L.set_block(
-        V(107, y - 1, 105),
+        V(hx, y - 1, hz),
         "minecraft:spruce_trapdoor[facing=north,half=top,open=false]",
     )
-    L.fill(V(106, -14, 104), V(108, y - 2, 106), L.COBBLE)
-    L.fill(V(107, -14, 105), V(107, y - 2, 105), "minecraft:ladder[facing=south]")
-    L.fill(
-        V(105, y, 105), V(109, y, 105), "minecraft:red_carpet"
-    )  # a rug... round the trapdoor: carpet cannot sit on a trapdoor
-    L.set_block(V(107, y, 105), L.AIR)
+    L.fill(V(hx - 1, -14, hz - 1), V(hx + 1, y - 2, hz + 1), L.COBBLE)
+    L.fill(V(hx, -14, hz), V(hx, y - 2, hz), "minecraft:ladder[facing=south]")
+    # a rug leading to the trapdoor (carpet cannot sit on a trapdoor)
+    L.fill(V(hx - 3, y, hz), V(hx - 1, y, hz), "minecraft:red_carpet")
 
 
 def barracks() -> None:
-    x1, z1, x2, z2 = 3, 70, 16, 88
+    x1, z1, x2, z2 = BARRACKS
     L.fill(V(x1, -1, z1), V(x2, 4, z2), L.COBBLE)
     L.fill(V(x1 + 1, 0, z1 + 1), V(x2 - 1, 4, z2 - 1), L.AIR)
     L.fill(V(x1 + 1, -1, z1 + 1), V(x2 - 1, -1, z2 - 1), L.PLANKS)
@@ -791,7 +806,7 @@ def barracks() -> None:
         V(x1 + 1, 4, z1 + 1), V(x2 - 1, 4, z2 - 1), L.PLANKS
     )  # a ceiling under the roof
     lanterns(x1 + 1, z1 + 1, x2 - 1, z2 - 1, 3, step=6)
-    L.sign(V(x2 + 1, 1, 77), "oak_sign[rotation=4]", "Barracks")
+    standing_sign("Barracks")
 
 
 def well() -> None:
@@ -857,9 +872,10 @@ def well() -> None:
 def dungeons() -> None:
     y = -8  # the dungeon's standing level
     # the entrance: a little stone hut in the courtyard over a stair going south
-    L.fill(V(93, -1, 108), V(97, 3, 112), L.COBBLE)
-    L.fill(V(94, 0, 109), V(96, 2, 111), L.AIR)
-    L.fill(V(94, 4, 108), V(96, 4, 112), L.COBBLE)
+    hx1, hz1, hx2, hz2 = DUNGEON_HUT
+    L.fill(V(hx1, -1, hz1), V(hx2, 3, hz2), L.COBBLE)
+    L.fill(V(hx1 + 1, 0, hz1 + 1), V(hx2 - 1, 2, hz2 - 1), L.AIR)
+    L.fill(V(hx1 + 1, 4, hz1), V(hx2 - 1, 4, hz2), L.COBBLE)
     doorway(V(95, 0, 108), V(95, 0, 108))
     L.set_block(V(95, 2, 109), f"{L.LANTERN}[hanging=true]")
     L.sign(V(94, 1, 107), "oak_wall_sign[facing=north]", "DUNGEONS", "mind your step")
@@ -974,11 +990,12 @@ def catacombs() -> None:
     L.fill(V(101, y, 112), V(102, y, 113), "minecraft:raw_gold_block")
     L.set_block(V(105, y + 2, 109), f"{L.SOUL_LANTERN}[hanging=true]")
     L.set_block(V(101, y, 109), "minecraft:skeleton_skull[rotation=4]")
-    # the ladder down from the smithy (built by smithy()) arrives at (107, y,
-    # 105), on the north wall: carry it through this room's ceiling
-    L.fill(V(107, y + 1, 105), V(107, y + 3, 105), "minecraft:ladder[facing=south]")
+    # the ladder down from the smithy (built by smithy()) arrives at the
+    # hatch's x, z on the north wall: carry it through this room's ceiling
+    hx, hz = SMITHY_HATCH
+    L.fill(V(hx, y + 1, hz), V(hx, y + 3, hz), "minecraft:ladder[facing=south]")
     L.sign(
-        V(106, y + 1, 105),
+        V(hx - 1, y + 1, hz),
         "dark_oak_wall_sign[facing=south]",
         "Up: the smithy",
         "(the ladder)",
@@ -1169,10 +1186,9 @@ def lighting() -> None:
         L.set_block(V(bx1 + 5, YU + k, bz1 + 3), "minecraft:wall_torch[facing=west]")
     # the attics under the gable roofs (barracks, smithy, chapel): sealed,
     # dark, and roomy enough for a mob
-    for x, z in ((9, 75), (9, 83)):
-        L.set_block(V(x, 5, z), f"{L.LANTERN}[hanging=false]")
-    for x, z in ((110, 100), (110, 110)):
-        L.set_block(V(x, 5, z), f"{L.LANTERN}[hanging=false]")
+    for x1, z1, x2, z2 in (BARRACKS, SMITHY):
+        for z in (z1 + 5, z2 - 5):
+            L.set_block(V((x1 + x2) // 2, 5, z), f"{L.LANTERN}[hanging=false]")
     for x, z in ((98, 20), (98, 34)):
         L.set_block(V(x, YU + 7, z), f"{L.LANTERN}[hanging=false]")
     # and inside the bell tower's hip roof, which is hollow
@@ -1224,13 +1240,7 @@ def details() -> None:
         armour_stand(V(x, 0, ZS - 9) + Vec3(0.5, 0, 0.5), "iron")
         armour_stand(V(x, YU, KZ2 + 2) + Vec3(0.5, 0, 0.5), "iron")
     # a flagpole on the keep's lantern tower is the banner; signs at the main places
-    L.sign(V(XG + 4, 0, ZS - 10), "oak_sign[rotation=0]", "Welcome to", "Castle", NAME)
-    L.sign(
-        V(XG + 5, YU, UD - 8),
-        "oak_sign[rotation=0]",
-        "The Keep",
-        "Chapel: east",
-        "Alchemist: west",
-    )
+    standing_sign("Welcome to", "Castle", NAME)
+    standing_sign("The Keep", "Chapel: east", "Alchemist: west")
     mob("iron_golem", V(XG, 0, ZS - 12))
     mob("cat", V(IX1 + 9, F1 + 1, 27))  # on the hall's carpet, clear of the columns

@@ -34,7 +34,15 @@ sys.path.insert(0, str(Path(__file__).parent))
 import build_inner  # noqa: E402
 import build_outer  # noqa: E402
 import castle_lib as L  # noqa: E402
-from castle_layout import NAME, ORIGIN, SPAWN, SUMMONED, TAG, site_box  # noqa: E402
+from castle_layout import (  # noqa: E402
+    NAME,
+    ORIGIN,
+    SPAWN,
+    SUMMONED,
+    TAG,
+    layout_problems,
+    site_box,
+)
 
 from mciwb.imports import Volume  # noqa: E402
 
@@ -114,6 +122,9 @@ def settle_entities(stages: list[str]) -> None:
 
 
 def main() -> None:
+    problems = layout_problems()
+    if problems:
+        raise SystemExit("the layout overlaps itself:\n  " + "\n  ".join(problems))
     a, b = site_box()
     site = Volume.from_corners(a, b)
     if site.inside(SPAWN):

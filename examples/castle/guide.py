@@ -33,10 +33,13 @@ from castle_layout import (  # noqa: E402
     LIBRARY_DOOR,
     LIBRARY_LADDER,
     MAIN_GATE,
+    MID_Z,
     MIDDLE_GATE,
     NAME,
     ORIGIN,
     PIT_TRAP,
+    SMITHY,
+    SMITHY_HATCH,
     SPAWN,
     TELEPORTS,
     UD,
@@ -177,7 +180,7 @@ coordinates in the scripts are offsets from it (x east, z south, y up).
 | Chapel | {xyz(XG + 38, YU, cz2)} door on the south end; altar at the north end; bell tower at the SW corner |
 | Alchemist's tower | centre {xyz(ex, YU, ez)}, door on the south; the Engine is on the top floor (y {ORIGIN.y + ey}) |
 | Stables, barracks | west side of the bailey |
-| Smithy | {xyz(104, 0, 105)} door on its west side |
+| Smithy | {xyz(SMITHY[0], 0, MID_Z)} door on its west side |
 | Well | {xyz(wx, 0, wz)} |
 | Dungeon entrance | hut at {xyz(95, 0, 108)}, door on its north side |
 
@@ -217,7 +220,7 @@ coordinates in the scripts are offsets from it (x east, z south, y up).
    with a skull, a sign and a lever on the west wall at {p(crypt["trigger"])}.
    The lever opens the chamber's west wall into the vault.
 7. **The smithy's trapdoor.** By the rug inside the smithy, at
-   {xyz(107, -1, 105)}, a spruce trapdoor covers a ladder 15 blocks down into
+   {xyz(SMITHY_HATCH[0], -1, SMITHY_HATCH[1])}, a spruce trapdoor covers a ladder 15 blocks down into
    the lower treasury behind the arrow trap.
 8. **The Engine** (alchemist's tower, top floor): eight hoppers pass
    amethyst shards round a ring; the comparators around it chase the lamps,

@@ -25,6 +25,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent))
 
+import castle_layout  # noqa: E402
 import castle_lib as L  # noqa: E402
 from build_outer import ground_heights_retry, wait_loaded  # noqa: E402
 
@@ -75,6 +76,35 @@ def is_empty(b: Vec3, e: Vec3) -> bool:
     columns = [(x, z) for x in range(b.x, e.x + 1) for z in range(b.z, e.z + 1)]
     tops = ground_heights_retry(columns, Heightmap.WORLD_SURFACE)
     return all(top < b.y for top in tops.values())
+
+
+def test_layout() -> None:
+    """no bailey building, stair, path or sign overlaps a tower or another
+    building; and the check finds the overlaps it is there to catch (the
+    stables, wall stairs and smithy of earlier rounds cut the mid-wall towers)"""
+    problems = castle_layout.layout_problems()
+    check(f"layout: nothing overlaps {problems[:3]}", not problems)
+    saved = castle_layout.STABLES, castle_layout.SMITHY, dict(castle_layout.WALL_STAIRS)
+    try:
+        castle_layout.STABLES = (3, 92, 15, 122)
+        castle_layout.SMITHY = (104, 95, 117, 115)
+        castle_layout.WALL_STAIRS["west wall stair"] = ([(3, -1, 100), (3, 9, 110)], 2)
+        found = "\n".join(castle_layout.layout_problems())
+        check(
+            "layout: the check finds the old stables, smithy and stair in the towers",
+            all(
+                f"{what} overlaps the {tower}" in found
+                for what, tower in (
+                    ("stables", "west mid-wall tower"),
+                    ("smithy", "east mid-wall tower"),
+                    ("west wall stair", "west mid-wall tower"),
+                )
+            ),
+        )
+    finally:
+        castle_layout.STABLES, castle_layout.SMITHY = saved[0], saved[1]
+        castle_layout.WALL_STAIRS.clear()
+        castle_layout.WALL_STAIRS.update(saved[2])
 
 
 def test_portcullis(x: int, y0: int, z: int) -> None:
@@ -217,6 +247,7 @@ def test_arrow_trap(x: int, y0: int, zw: int) -> None:
 
 
 def main() -> None:
+    test_layout()  # arithmetic only: before the rig
     b = rig_corner()
     e = b + SIZE - Vec3(1, 1, 1)
     near = L.players_near(b, e, 200)

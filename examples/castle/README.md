@@ -90,6 +90,14 @@ catacombs' floor) to 62 (the keep's lightning rod). Everything underground
 is cut out of a lining of brick or cobble, so a cave or an aquifer in the
 hill cannot break into it.
 
+The bailey's buildings, wall stairs, paths and signs are placed by
+constants in `castle_layout.py` (`STABLES`, `BARRACKS`, `SMITHY`,
+`WALL_STAIRS` ...), and `castle_layout.layout_problems()` checks them
+against the bailey's round towers (`BAILEY_TOWERS`, out to radius + 1, so
+the walls and the ground doors stay clear) and against each other.
+`build_castle.py` refuses to build a layout that fails it; `test_modules.py`
+and `verify_castle.py` run it too.
+
 ## Mechanisms
 
 All plain redstone, so they work for players without mciwb running. Their
@@ -124,7 +132,9 @@ by setting a redstone block in place of its frame, a stand-in for a button
 press, since a button placed with `setblock` does not update its
 neighbours), checks that the levers, buttons, torches and
 banners are mounted on solid blocks and that every roofed tower's banner
-hangs in the open beside its top, then checks the passages, the treasure,
+hangs in the open beside its top, that the layout check passes, the
+mid-wall towers stand whole and every standing sign stands on a solid
+block, then checks the passages, the treasure,
 the teleport targets of the guide, the road to spawn and its signpost, and
 that the castle's entities are exactly the ones it summoned. A portcullis
 a visitor left closed is reported as found, tested, and left closed. It clears hostile mobs from the site and anything from
