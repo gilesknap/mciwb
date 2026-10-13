@@ -8,7 +8,9 @@ Castle 2 is Castle Fable (``examples/castle``, which must sit beside this
 folder) with a bailey of depth 162: this driver runs castle's build
 (``build_castle.main``) with castle2's layout and castle2's stages added to
 castle's, and its own furniture in castle's rooms (``interiors``,
-``chapel``: rooms.py) in place of castle's: ``village`` (the lanes, the square and the houses) after
+``chapel``, ``bailey_buildings``: rooms.py) in place of castle's, with
+``furnish`` (more detail in the alchemist's tower, the dungeon, the vault
+and the winch room) after ``dungeons``: ``village`` (the lanes, the square and the houses) after
 ``bailey_buildings``, then ``pens`` (the animals, the allotments and
 the bee hives), and ``people`` (the castle's people, the shopkeepers,
 the villagers and the guards) after castle's ``details``. The stages, the site's forceload, the player check and the
@@ -80,12 +82,28 @@ def chapel() -> None:
     rooms.chapel_furnishing()
 
 
+def bailey_buildings() -> None:
+    """the bailey's paths and buildings (castle's), castle2's furniture"""
+    build_inner.bailey_shell()
+    rooms.bailey_furnishing()
+
+
 build_castle.STAGES["interiors"] = interiors
 build_castle.STAGES["chapel"] = chapel
+build_castle.STAGES["bailey_buildings"] = bailey_buildings
+_insert_after("dungeons", "furnish", rooms.extras)
 
 # what each of these stages summons, learnt by running it against a fake
 # client: the build checks they are all there, verify counts them
-for _stage in ("village", "pens", "people", "interiors", "chapel"):
+for _stage in (
+    "village",
+    "pens",
+    "people",
+    "interiors",
+    "chapel",
+    "bailey_buildings",
+    "furnish",
+):
     castle2_layout.SUMMONED[_stage] = summon_counts(build_castle.STAGES[_stage])
     if not castle2_layout.SUMMONED[_stage]:
         del castle2_layout.SUMMONED[_stage]

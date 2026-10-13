@@ -566,3 +566,186 @@ def crypt_furnishing() -> None:
     L.set_block(V(96, 8, 23), "minecraft:cobweb")
     L.set_block(V(104, 10, 19), "minecraft:cobweb")
     L.set_block(V(75, 8, 20), "minecraft:skeleton_skull[rotation=12]")
+
+
+# ---------------------------------------------------------------- the bailey
+
+
+def bailey_furnishing() -> None:
+    """castle2's furniture for the bailey's buildings (`build_inner.bailey_shell`):
+    tack and feed in the stables, the forge's tools, bunks and kit in the
+    barracks, and castle's market goods"""
+    from build_inner import market
+
+    stables()
+    smithy()
+    barracks()
+    market()
+
+
+def stables() -> None:
+    """a horse in each stall, with hay, water, oats and its tack on the wall
+    (nothing beside the stall's front fence, which is one high)"""
+    from castle2_layout import STABLES
+
+    x1, z1, x2, z2 = STABLES
+    for s in range(z1 + 1, z2, 5):  # each stall's interior is z s..s+3
+        L.fill(V(x1 + 1, 0, s), V(x2 - 1, 2, s + 3), L.AIR)  # castle's shell leaves it
+        L.fill(V(x1 + 1, 0, s + 1), V(x1 + 1, 0, s + 2), "minecraft:hay_block")
+        L.set_block(V(x1 + 1, 0, s + 3), "minecraft:water_cauldron[level=3]")
+        L.set_block(V(x1 + 1, 0, s), "minecraft:barrel[facing=up]")
+        item_frame(V(x1 + 1, 2, s + 1), 5, "saddle")
+        item_frame(V(x1 + 1, 2, s + 2), 5, "lead")
+        L.summon(
+            "horse", V(x1 + 6, 0, s + 1) + Vec3(0.5, 0, 0.5), f"{L.PERSIST},Tame:1b"
+        )
+
+
+def smithy() -> None:
+    """the forge with a lava pot, anvils, a grindstone, a smithing table, a
+    quenching trough, racks of tools and weapons, barrels of coal, armour on
+    stands; the smith stands at his anvil (people.py)"""
+    from castle2_layout import SMITHY
+
+    x1, z1, x2, z2 = SMITHY
+    y = 0
+    L.set_block(V(x2 - 3, y, z1 + 1), "minecraft:lava_cauldron")  # in the forge
+    L.set_block(V(x2 - 1, y, z1 + 3), "minecraft:blast_furnace[facing=west]")
+    L.set_block(V(x2 - 1, y, z1 + 4), "minecraft:blast_furnace[facing=west]")
+    L.set_block(V(x2 - 1, y, z1 + 6), "minecraft:anvil[facing=north]")
+    L.set_block(V(x2 - 1, y, z1 + 8), "minecraft:grindstone[face=floor,facing=west]")
+    L.set_block(V(x2 - 1, y, z1 + 11), "minecraft:smithing_table")
+    L.set_block(V(x2 - 1, y, z1 + 12), "minecraft:water_cauldron[level=3]")
+    L.set_block(V(x1 + 2, y, z1 + 2), "minecraft:anvil[facing=east]")
+    tools = [
+        "iron_pickaxe",
+        "iron_shovel",
+        "iron_axe",
+        "iron_hoe",
+        "shears",
+        "flint_and_steel",
+    ]
+    for k, x in enumerate(range(x1 + 1, x1 + 5)):
+        shelf(V(x, y + 1, z1 + 1), "south", tools[k : k + 3])
+    for k, item in enumerate(("iron_sword", "iron_spear", "mace")):
+        item_frame(V(x1 + 1, y + 2, z1 + 6 + k), 5, item)
+    L.fill(
+        V(x1 + 1, y, z2 - 4), V(x1 + 1, y + 1, z2 - 1), "minecraft:barrel[facing=up]"
+    )
+    chest(
+        V(x1 + 1, y, z1 + 4),
+        "east",
+        [
+            ("iron_ingot", 16),
+            ("coal", 32),
+            ("iron_pickaxe", 1),
+            ("iron_horse_armor", 1),
+        ],
+    )
+    armour_stand(V(x1 + 4, y, z2 - 2) + Vec3(0.5, 0, 0.5), "iron")
+    armour_stand(V(x1 + 6, y, z2 - 2) + Vec3(0.5, 0, 0.5), "chainmail")
+    L.set_block(V(x1 + 3, y, z2 - 1), "minecraft:iron_block")
+
+
+def barracks() -> None:
+    """bunks (a bed on a bed), a chest at each, a weapon rack, a mess table
+    with benches, the soldiers' kit on stands"""
+    from castle2_layout import BARRACKS
+
+    x1, z1, x2, z2 = BARRACKS
+    for z in range(z1 + 2, z2 - 2, 3):
+        bed(V(x1 + 2, 0, z), "west", "white")
+        L.fill(V(x1 + 1, 1, z), V(x1 + 2, 1, z), "minecraft:spruce_slab[type=bottom]")
+        bed(V(x1 + 2, 2, z), "west", "light_gray")
+        L.set_block(V(x1 + 3, 0, z), "minecraft:chest[facing=east]")
+    for x in range(x1 + 4, x2 - 2, 2):
+        item_frame(
+            V(x, 2, z1 + 1),
+            3,
+            ("iron_spear", "bow", "iron_sword", "crossbow", "shield")[x % 5],
+        )
+    table(V(x2 - 4, 0, 80), V(x2 - 4, 0, 85))
+    L.seat(V(x2 - 5, 0, 80), "east", V(x2 - 5, 0, 85))
+    L.seat(V(x2 - 3, 0, 80), "west", V(x2 - 3, 0, 85))
+    for z in (82, 84):
+        L.set_block(V(x2 - 4, 1, z), "minecraft:candle[candles=2,lit=true]")
+    armour_stand(V(x2 - 2, 0, z1 + 2) + Vec3(0.5, 0, 0.5), "chainmail", rotation=90)
+    armour_stand(V(x2 - 4, 0, z1 + 2) + Vec3(0.5, 0, 0.5), "iron", rotation=0)
+
+
+# ---------------------------------------------------------------- the rest
+
+
+def extras() -> str:
+    """detail added to rooms castle furnishes as it builds them: the
+    alchemist's tower, prisoners in the dungeon, treasure in the vault,
+    a guard at the gate's winch"""
+    alchemist()
+    dungeon()
+    vault()
+    winch_room()
+    return "the alchemist's, the dungeon, the vault, the winch room"
+
+
+def alchemist() -> None:
+    from castle2_layout import ALCH, YU
+
+    cx, cz = ALCH
+    y, f = YU, YU + 8
+    # specimen jars on the bookcase, a cauldron of powdered snow
+    for k, plant in enumerate(("crimson_fungus", "warped_fungus", "wither_rose")):
+        L.set_block(V(cx + 1 + k, y + 3, cz - 3), f"minecraft:potted_{plant}")
+    L.set_block(V(cx - 2, y, cz + 3), "minecraft:powder_snow_cauldron[level=3]")
+    # a parrot on a perch and a star chart on the second floor
+    L.set_block(V(cx + 1, f, cz + 3), "minecraft:dark_oak_fence")
+    L.summon(
+        "parrot", V(cx + 1, f + 1, cz + 3) + Vec3(0.5, 0, 0.5), f"{STATIC},Variant:2"
+    )
+    tapestry(
+        V(cx, f + 2, cz + 4),
+        "north",
+        "black",
+        [("flower", "white"), ("circle", "yellow"), ("border", "blue")],
+    )
+    tapestry(
+        V(cx - 1, f + 2, cz + 4),
+        "north",
+        "black",
+        [("small_stripes", "white"), ("border", "blue")],
+    )
+
+
+def dungeon() -> None:
+    """prisoners in two cells, chained"""
+    from castle2_layout import CELL_ROWS, DUNGEON_Y
+
+    for (zc, _zdoor, into, xs), k in zip(CELL_ROWS, (2, 2), strict=True):
+        x = list(xs)[k]
+        person(
+            V(x + 1, DUNGEON_Y, zc + 1),
+            "south" if into > 0 else "north",
+            "nitwit",
+            "a prisoner",
+        )
+        L.set_block(V(x, DUNGEON_Y + 1, zc + 1), L.CHAIN)
+
+
+def vault() -> None:
+    """heaps of treasure on the floor"""
+    from castle2_layout import VAULT_Y
+
+    y = VAULT_Y
+    for x1, z1 in ((54, 25), (62, 25)):
+        L.fill(V(x1, y, z1), V(x1 + 2, y, z1 + 1), "minecraft:raw_gold_block")
+        L.set_block(V(x1 + 1, y + 1, z1), "minecraft:gold_block")
+        L.set_block(V(x1, y + 1, z1 + 1), "minecraft:emerald_block")
+        L.set_block(V(x1 + 2, y + 1, z1 + 1), "minecraft:diamond_block")
+        L.set_block(V(x1 + 1, y + 2, z1), "minecraft:yellow_candle[candles=4,lit=true]")
+
+
+def winch_room() -> None:
+    """a guard at the main gate's winch"""
+    from castle2_layout import GATEHOUSE
+
+    x1, z1, _x2, _z2 = GATEHOUSE
+    armour_stand(V(x1 + 9, 4, z1 + 4) + Vec3(0.5, 0, 0.5), "chainmail", rotation=-90)
