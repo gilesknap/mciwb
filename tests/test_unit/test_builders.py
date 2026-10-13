@@ -734,6 +734,15 @@ def test_ground_heights_give_up(mock_client: MockClient):
     assert mock_client.markers == {}
 
 
+def test_failed_summon_leaves_no_markers(mock_client: MockClient):
+    """every marker from the summon retries is removed, even on failure"""
+    mock_client.garble("summon", times=100)
+    with pytest.raises(BuildError, match="summon"):
+        ground_height(1, 1)
+    assert sum(c.startswith("summon") for c in mock_client.commands) == 5
+    assert mock_client.markers == {}
+
+
 def test_foundation_survives_a_lost_reply(mock_client: MockClient):
     mock_client.fill(Vec3(0, -10, 0), Vec3(9, 0, 9), Item.DIRT)
     mock_client.garble("execute positioned 2 0 1 ")

@@ -39,7 +39,9 @@ class Heightmap(str, Enum):  # noqa: UP042 - str, like mcwb.Item
     OCEAN_FLOOR = "ocean_floor"
 
 
-_teleported = re.compile(r"Teleported \S+ to (-?[\d.]+), (-?[\d.]+), (-?[\d.]+)")
+_teleported = re.compile(
+    r"Teleported \S+ to (-?[\d.]+), (-?[\d.]+), (-?[\d.]+)(?![\d.])"
+)
 
 
 def ground_heights(
@@ -71,16 +73,16 @@ def ground_heights(
     # Every reply is checked and the command sent again if another RCON
     # client garbled it (see mciwb.threads.retry_command). Summoning is not
     # usually safe to repeat, but here a second marker does no harm: tp picks
-    # one of them, and kill removes them all.
+    # one of them, and kill removes them all (even if summoning fails).
     x, z = columns[0]
     summon = f'summon minecraft:marker {x} 0 {z} {{Tags:["{tag}"]}}'
-    result = retry_command(
-        lambda: client.run(summon), reply_matches(r"Summoned new \S+"), summon
-    )
-    if not result.startswith("Summoned"):
-        raise BuildError(f"could not summon a marker at {x} 0 {z}: {result}")
     heights = {}
     try:
+        result = retry_command(
+            lambda: client.run(summon), reply_matches(r"Summoned new \S+"), summon
+        )
+        if not result.startswith("Summoned"):
+            raise BuildError(f"could not summon a marker at {x} 0 {z}: {result!r}")
         for x, z in columns:
             command = (
                 f"execute positioned {x} 0 {z} positioned over {heightmap} "
