@@ -130,7 +130,8 @@ class MockClient:
     ):
         """
         fill a volume, including both corners, like the Minecraft command.
-        Supports block states, and the keep and replace (with a filter) modes
+        Supports block states, the keep, hollow and outline modes, and replace
+        (with a filter); destroy acts like replace
         """
         lo = [floor(min(a, b)) for a, b in zip(start, end, strict=True)]
         hi = [floor(max(a, b)) for a, b in zip(start, end, strict=True)]
@@ -144,7 +145,8 @@ class MockClient:
         keys = itertools.product(
             *(range(a, b + 1) for a, b in zip(lo, hi, strict=True))
         )
-        simple = mode in (None, FillMode.REPLACE) and filter is None
+        mode = FillMode(mode) if mode is not None else None
+        simple = mode in (None, FillMode.REPLACE, FillMode.DESTROY) and filter is None
         if simple and "[" not in block and min(lo) >= 0:
             # the common case, quickly (slices do not wrap negative indexes)
             self.world[lo[0] : hi[0] + 1, lo[1] : hi[1] + 1, lo[2] : hi[2] + 1] = Item(
@@ -158,11 +160,17 @@ class MockClient:
         else:
             count = 0
             for key in keys:
+                inside = all(lo[i] < key[i] < hi[i] for i in range(3))
                 if mode == FillMode.KEEP and self.world[key] != Item.AIR:
+                    continue
+                if mode == FillMode.OUTLINE and inside:
                     continue
                 if filter is not None and not self.matches(Vec3(*key), filter):
                     continue
-                self._set(key, str(block))
+                if mode == FillMode.HOLLOW and inside:
+                    self._set(key, str(Item.AIR))
+                else:
+                    self._set(key, str(block))
                 count += 1
         if count == 0:
             return "No blocks were filled"
