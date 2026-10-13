@@ -57,16 +57,20 @@ LOTS = (4, 120, 116, 189)
 TOP = 40  # above the highest chimney
 
 
+def _box(x1: int, z1: int, x2: int, z2: int) -> set[tuple[int, int]]:
+    return {(x, z) for x in range(x1, x2 + 1) for z in range(z1, z2 + 1)}
+
+
 def lot_cells() -> set[tuple[int, int]]:
     from castle_layout import ROUND_TOWERS, footprints
 
     x1, z1, x2, z2 = LOTS
-    cells = C._cells(x1, z1, x2, z2)
+    cells = _box(x1, z1, x2, z2)
     for taken in footprints().values():
         cells -= taken
     for lane in LANES.values():
-        cells -= C._cells(*lane)
-    cells -= C._cells(*SQUARE)
+        cells -= _box(*lane)
+    cells -= _box(*SQUARE)
     for cx, cz, r in ROUND_TOWERS.values():
         rr = (r + 1 + 0.5) ** 2
         cells = {(x, z) for x, z in cells if (x - cx) ** 2 + (z - cz) ** 2 > rr}
@@ -84,7 +88,7 @@ def relight() -> None:
     """castle's lantern posts on the lots (its 16-block grid), where they
     are in the open: clear_lots took them away"""
     import build_inner
-    from castle_layout import UD, W, ZS
+    from castle_layout import UD, ZS, W
 
     cells = lot_cells()
     for x in range(8, W - 4, 16):
