@@ -27,8 +27,9 @@ sys.path.insert(0, str(Path(__file__).parent))
 
 import castle_layout  # noqa: E402
 import castle_lib as L  # noqa: E402
-from build_outer import ground_heights_retry, wait_loaded  # noqa: E402
+from build_outer import wait_loaded  # noqa: E402
 
+from mciwb.builders import ground_heights  # noqa: E402
 from mciwb.imports import Heightmap, Vec3, get_world  # noqa: E402
 
 world = get_world()
@@ -74,7 +75,7 @@ def check(name: str, ok: bool) -> None:
 def is_empty(b: Vec3, e: Vec3) -> bool:
     """is the box all air? (the highest block of every column is below it)"""
     columns = [(x, z) for x in range(b.x, e.x + 1) for z in range(b.z, e.z + 1)]
-    tops = ground_heights_retry(columns, Heightmap.WORLD_SURFACE)
+    tops = ground_heights(columns, Heightmap.WORLD_SURFACE)
     return all(top < b.y for top in tops.values())
 
 
@@ -113,21 +114,36 @@ def test_layout() -> None:
         castle_layout.WALL_STAIRS.update(saved[2])
 
 
+def pull(g: dict, on: bool) -> None:
+    """a portcullis's lever, set by command: then its wall block is changed
+    (to stone and back) to give the torch on it the update a player's pull
+    gives (a lever set by command updates only its own neighbours)"""
+    L.lever(g["lever"], g["lever_facing"], "wall", powered=on)
+    b = g["lever_block"]
+    c(f"setblock {b.x} {b.y} {b.z} {L.STONE}")
+    c(f"setblock {b.x} {b.y} {b.z} {L.BRICK}")
+
+
 def test_portcullis(x: int, y0: int, z: int) -> None:
     """passage x..x+2 through z, floor at y0-1"""
     L.fill(Vec3(x, y0, z - 14), Vec3(x + 2, y0 + 1, z + 14), L.AIR)
     g = L.portcullis(x, x + 2, z, y0)
     advance()
     check("portcullis starts open", all(is_block(p, L.AIR) for p in g["closed_cells"]))
+    check(
+        "its lever is in the passage, beside the bars",
+        is_block(g["lever"], "minecraft:lever")
+        and g["lever"] + Vec3(0, 0, 1) in g["closed_cells"],
+    )
     pistons = g["ceiling_pistons"] + g["floor_pistons"]
-    L.lever(g["lever"], "north", "floor", powered=True)
+    pull(g, True)
     advance()
     check(
         "portcullis closes (6 pistons extended, 6 cells barred)",
         all(is_block(p, "minecraft:sticky_piston[extended=true]") for p in pistons)
         and all(is_block(p, L.BARS) for p in g["closed_cells"]),
     )
-    L.lever(g["lever"], "north", "floor", powered=False)
+    pull(g, False)
     advance()
     check(
         "portcullis opens again",
@@ -199,28 +215,66 @@ def test_lever_door(x: int, y0: int, zw: int) -> None:
     check("lever closes the door", all(is_block(p, L.BRICK) for p in ld["door"]))
 
 
-def test_pit_trap(x: int, y0: int, zt: int) -> None:
-    """corridor at x running north-south, the pit at zt"""
-    L.fill(Vec3(x, y0, zt - 14), Vec3(x, y0 + 1, zt + 14), L.AIR)
-    t = L.pit_trap(x, y0, zt, 6)
+def stand_y() -> float | None:
+    m = re.search(
+        r"\[[-\d.]+d, (-?[\d.]+)d, ",
+        c("data get entity @e[tag=castle_test,limit=1] Pos"),
+    )
+    return float(m.group(1)) if m else None
+
+
+def test_pit_trap(x: int, y0: int, zw: int) -> None:
+    """corridor at x running north-south, the wire at zw"""
+    L.fill(Vec3(x, y0, zw - 14), Vec3(x, y0 + 1, zw + 14), L.AIR)
+    t = L.pit_trap(x, y0, zw, 6)
     advance()
+    doors = t["trapdoors"]
     check(
         "pit trap starts closed",
-        all(is_block(p, "minecraft:iron_trapdoor[open=false]") for p in t["trapdoors"]),
+        all(is_block(p, "minecraft:iron_trapdoor[open=false]") for p in doors),
     )
-    w = t["wire"]
-    c(f'summon minecraft:armor_stand {w.x} {w.y} {w.z} {{Tags:["castle_test"]}}')
-    advance()
+    for travel in (1, -1):
+        r, on = L.pit_timing(zw, [d.z for d in doors], travel)
+        check(
+            f"a walker ({travel:+d}) is over the pit in {r:.1f} <= {on:.1f} ticks",
+            r <= on,
+        )
+    w = t["wire"] + Vec3(0.5, 0, 0.5)
+    # a walker: on the string until the floor opens, then gone on along the
+    # corridor at once; the floor is still open under where they were
+    c(
+        f'summon minecraft:armor_stand {w.x} {w.y} {w.z} {{Tags:["castle_test"],Invulnerable:1b}}'
+    )
+    opened = L.wait_until(
+        lambda: all(is_block(p, "minecraft:iron_trapdoor[open=true]") for p in doors),
+        20,
+    )
+    c(f"tp @e[tag=castle_test] {w.x} {w.y} {w.z + 3}")
     check(
-        "walking onto the wire opens the pit",
-        all(is_block(p, "minecraft:iron_trapdoor[open=true]") for p in t["trapdoors"]),
+        f"the wire opens the pit ({opened}), and it stays open after the walker steps off",
+        opened
+        and all(is_block(p, "minecraft:iron_trapdoor[open=true]") for p in doors),
     )
     c("kill @e[tag=castle_test]")
     advance()
     check(
         "pit closes again",
-        all(is_block(p, "minecraft:iron_trapdoor[open=false]") for p in t["trapdoors"]),
+        all(is_block(p, "minecraft:iron_trapdoor[open=false]") for p in doors),
     )
+    # and whoever is on the wire falls in
+    c(
+        f'summon minecraft:armor_stand {w.x} {w.y} {w.z} {{Tags:["castle_test"],Invulnerable:1b}}'
+    )
+    advance()
+    y = stand_y()
+    check(
+        f"what steps on the wire falls to the bottom (y {y}, bottom {t['bottom']}), and the pit shuts over it",
+        y is not None
+        and y < t["bottom"] + 1
+        and is_block(t["wire"], "minecraft:tripwire")
+        and all(is_block(p, "minecraft:iron_trapdoor[open=false]") for p in doors),
+    )
+    c("kill @e[tag=castle_test]")
 
 
 def test_arrow_trap(x: int, y0: int, zw: int) -> None:

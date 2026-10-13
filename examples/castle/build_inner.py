@@ -19,6 +19,7 @@ Secrets (see the README for the full list):
 from __future__ import annotations
 
 import castle_lib as L
+from build_outer import tower
 from castle_layout import (
     ALCH,
     ARROW_TRAP,
@@ -31,6 +32,7 @@ from castle_layout import (
     CHAPEL,
     CRYPT_DOOR,
     DUNGEON_HUT,
+    HALL_TABLES,
     KEEP,
     KEEP_ROOF,
     LIBRARY_DOOR,
@@ -67,6 +69,9 @@ F1, F2, F3, FR = YU - 1, YU + 9, YU + 18, KEEP_ROOF - 1  # the keep's floor slab
 KX1, KZ1, KX2, KZ2 = KEEP
 IX1, IZ1, IX2, IZ2 = KX1 + 3, KZ1 + 3, KX2 - 3, KZ2 - 3  # the keep's interior
 LX, LZ = LIBRARY_LADDER  # the ladder shaft from the library's secret room to the vault
+# the z range of the opening in the roof over the stair hall's top flight
+# (x 75..76, which climbs south from z 29 to the roof at z 38)
+ROOF_STAIR = (35, 37)
 
 
 def door(pos: Vec3, facing: str, kind: str = "dark_oak") -> None:
@@ -182,7 +187,7 @@ def keep_interiors() -> None:
         support=L.BRICK,
         clearance=3,
     )
-    for fy in (F2, F3, FR):
+    for fy in (F2, F3):
         L.fill(
             V(69, fy + 1, 30), V(70, fy + 1, 38), L.BRICK_WALL
         )  # a rail round the stairwell
@@ -192,8 +197,15 @@ def keep_interiors() -> None:
     library()
     armoury()
     chambers()
-    # the roof terrace
+    # the roof terrace, and the top flight's way out through it (its last
+    # three steps need the headroom), railed on three sides
     L.fill(V(IX1, FR, IZ1), V(IX2, FR, IZ2), L.ANDESITE)
+    L.fill(V(75, FR, ROOF_STAIR[0]), V(76, FR, ROOF_STAIR[1]), L.AIR)
+    L.fill(V(74, FR + 1, ROOF_STAIR[0] - 1), V(74, FR + 1, ROOF_STAIR[1]), L.BRICK_WALL)
+    L.fill(
+        V(75, FR + 1, ROOF_STAIR[0] - 1), V(77, FR + 1, ROOF_STAIR[0] - 1), L.BRICK_WALL
+    )
+    L.fill(V(77, FR + 1, ROOF_STAIR[0]), V(77, FR + 1, ROOF_STAIR[1]), L.BRICK_WALL)
     for x in (IX1 + 4, IX2 - 4):
         for z in (IZ1 + 4, IZ2 - 4):
             L.set_block(V(x, FR + 1, z), "minecraft:campfire[lit=true]")
@@ -208,24 +220,33 @@ def great_hall() -> None:
     # dais and thrones at the west end
     L.fill(V(IX1, F1, 22), V(IX1 + 3, F1, 32), L.DARK)
     L.fill(V(IX1, y, 22), V(IX1 + 3, y, 32), L.DARK)
-    L.fill(V(IX1 + 4, y, 26), V(IX1 + 4, y, 28), f"{L.BRICK_STAIRS}[facing=east]")
+    L.fill(V(IX1 + 4, y, 26), V(IX1 + 4, y, 28), f"{L.BRICK_STAIRS}[facing=west]")
     for z in (26, 28):
-        L.set_block(V(IX1 + 1, y + 1, z), "minecraft:dark_oak_stairs[facing=east]")
+        L.set_block(V(IX1 + 1, y + 1, z), "minecraft:dark_oak_stairs[facing=west]")
         L.set_block(V(IX1, y + 2, z), f"minecraft:{BANNER}_wall_banner[facing=east]")
     L.set_block(V(IX1, y + 3, 27), "minecraft:gold_block")
     # a pier against the north wall hides the library's ladder shaft on its way down
     L.fill(V(LX - 1, y, LZ - 1), V(LX + 1, F2 - 1, LZ + 1), L.BRICK)
-    # two long tables with benches, and candles
+    # two long tables with benches, and candles; each in two pieces, either
+    # side of the aisle the carpet runs down from the door (XG-1..XG+1)
     for z in (20, 34):
-        table(V(50, y, z), V(64, y, z))
-        L.fill(
-            V(50, y, z - 1), V(64, y, z - 1), "minecraft:dark_oak_stairs[facing=south]"
-        )
-        L.fill(
-            V(50, y, z + 1), V(64, y, z + 1), "minecraft:dark_oak_stairs[facing=north]"
-        )
+        for x1, x2 in HALL_TABLES:
+            table(V(x1, y, z), V(x2, y, z))
+            L.fill(
+                V(x1, y, z - 1),
+                V(x2, y, z - 1),
+                "minecraft:dark_oak_stairs[facing=north]",
+            )
+            L.fill(
+                V(x1, y, z + 1),
+                V(x2, y, z + 1),
+                "minecraft:dark_oak_stairs[facing=south]",
+            )
         for x in range(51, 64, 4):
-            L.set_block(V(x, y + 1, z), "minecraft:white_candle[candles=3,lit=true]")
+            if any(x1 <= x <= x2 for x1, x2 in HALL_TABLES):
+                L.set_block(
+                    V(x, y + 1, z), "minecraft:white_candle[candles=3,lit=true]"
+                )
         L.set_block(V(57, y + 1, z), "minecraft:cake")
     # columns down the hall and chandeliers between them
     for x in (49, 58):
@@ -250,7 +271,7 @@ def great_hall() -> None:
     for x in range(IX1 + 2, 67, 6):
         L.set_block(V(x, y + 4, IZ2), f"minecraft:{BANNER2}_wall_banner[facing=north]")
     carpet(XG - 1, 24, XG + 1, IZ2, F1 + 1)
-    carpet(IX1 + 4, 26, XG + 1, 28, F1 + 1)
+    carpet(IX1 + 5, 26, XG + 1, 28, F1 + 1)  # up to the dais's step at IX1+4
     # the great door's inside: a lintel lantern
     L.set_block(V(XG, y + 4, IZ2), f"{L.LANTERN}[hanging=false]")
 
@@ -312,8 +333,8 @@ def library() -> None:
     # reading tables, lecterns, candles and a globe
     for z in (21, 27, 33):
         table(V(48, y, z), V(52, y, z))
-        L.set_block(V(47, y, z), "minecraft:dark_oak_stairs[facing=east]")
-        L.set_block(V(53, y, z), "minecraft:dark_oak_stairs[facing=west]")
+        L.set_block(V(47, y, z), "minecraft:dark_oak_stairs[facing=west]")
+        L.set_block(V(53, y, z), "minecraft:dark_oak_stairs[facing=east]")
         L.set_block(V(50, y + 1, z), "minecraft:white_candle[candles=2,lit=true]")
     L.set_block(V(50, y, 24), "minecraft:lectern[facing=south,has_book=true]")
     L.set_block(V(50, y, 30), "minecraft:lectern[facing=north,has_book=true]")
@@ -349,12 +370,14 @@ def armoury() -> None:
     ):
         item_frame(V(x2, y + 1 + (i % 2), z1 + 2 + i), 4, item)  # on the east wall
     L.fill(V(x1, y, 22), V(x1, y + 1, 24), L.BARS)  # a weapons rack
+    # two chests against the west wall, south of the rack and west of the
+    # armour stands (x1+1, x1+3 ...): not where a stand stands
     chest(
-        V(x1 + 1, y, 26),
-        "north",
+        V(x1, y, 25),
+        "east",
         [("arrow", 64), ("iron_ingot", 32), ("shield", 1), ("iron_helmet", 1)],
     )
-    L.set_block(V(x1 + 2, y, 26), "minecraft:chest[facing=north]")
+    L.set_block(V(x1, y, 26), "minecraft:chest[facing=east]")
     # the gallery between library and armoury: x 63..66, with the windows and banners
     for z in range(IZ1 + 1, IZ2, 4):
         L.set_block(V(66, y + 3, z), f"minecraft:{BANNER}_wall_banner[facing=west]")
@@ -379,7 +402,7 @@ def chambers() -> None:
     L.set_block(V(IX1, y, 33), "minecraft:chest[facing=east]")
     table(V(52, y, 18), V(54, y, 18))
     L.set_block(V(53, y + 1, 18), "minecraft:white_candle[candles=4,lit=true]")
-    L.set_block(V(53, y, 19), "minecraft:dark_oak_stairs[facing=north]")
+    L.set_block(V(53, y, 19), "minecraft:dark_oak_stairs[facing=south]")
     L.set_block(V(50, y, 36), "minecraft:jukebox")
     L.set_block(V(IX1, y + 3, 27), f"minecraft:{BANNER2}_wall_banner[facing=east]")
     # a fireplace in the south wall
@@ -439,11 +462,11 @@ def chapel() -> None:
     )
     carpet(97, z1 + 1, 99, z2 - 1, y, "purple")
     for z in range(z2 - 4, z1 + 8, -2):
-        L.fill(V(x1 + 3, y, z), V(95, y, z), "minecraft:dark_oak_stairs[facing=north]")
-        L.fill(V(101, y, z), V(x2 - 3, y, z), "minecraft:dark_oak_stairs[facing=north]")
+        L.fill(V(x1 + 3, y, z), V(95, y, z), "minecraft:dark_oak_stairs[facing=south]")
+        L.fill(V(101, y, z), V(x2 - 3, y, z), "minecraft:dark_oak_stairs[facing=south]")
     # the altar on a dais at the north end
     L.fill(V(93, y, z1 + 1), V(103, y, z1 + 4), L.DARK)
-    L.fill(V(93, y, z1 + 4), V(103, y, z1 + 4), f"{L.BRICK_STAIRS}[facing=south]")
+    L.fill(V(93, y, z1 + 4), V(103, y, z1 + 4), f"{L.BRICK_STAIRS}[facing=north]")
     L.fill(
         V(96, y + 1, z1 + 2), V(100, y + 1, z1 + 2), "minecraft:chiseled_quartz_block"
     )
@@ -480,9 +503,6 @@ def chapel() -> None:
         "minecraft:deepslate_tile_stairs",
         overhang=1,
     )
-    L.fill(
-        V(bx1 + 3, y + 28, bz1 + 3), V(bx1 + 3, y + 29, bz1 + 3), L.DARK_TILES
-    )  # workaround: hip_roof leaves a hole in its top ring (gilesknap/mciwb#166, item 5)
     L.set_block(V(bx1 + 3, y + 30, bz1 + 3), "minecraft:lightning_rod")
     # the crypt under the altar: a trapdoor behind it and a ladder down a
     # lined shaft
@@ -542,17 +562,13 @@ def crypt() -> None:
 
 def alchemist_tower() -> None:
     cx, cz = ALCH
-    r = 6
     y = YU
     floors = [y, y + 8, y + 16, y + 24]
-    L.round_tower(
-        V(cx, 0, cz).x,
-        V(cx, 0, cz).z,
-        r,
-        V(0, y - 2, 0).y,
-        V(0, y + 31, 0).y,
-        floors=[V(0, f, 0).y for f in floors],
-        doors=[(V(0, y, 0).y, S, 0)],
+    tower(
+        "alchemist's tower",
+        y - 2,
+        y + 31,
+        floors,
         roof="minecraft:oxidized_copper",
         banner="purple",
         stair=False,
@@ -887,15 +903,15 @@ def dungeons() -> None:
     L.fill(V(95, y - 1, 121), V(95, y - 1, 133), L.COBBLE)
     L.fill(V(95, y, 121), V(95, y + 1, 133), L.AIR)
     px, py, pz, depth = PIT_TRAP
-    L.pit_trap(*V(px, py, pz), depth, travel=1)
+    L.pit_trap(*V(px, py, pz), depth)
     # the guard room
     L.fill(V(90, y - 1, 134), V(100, y + 3, 140), L.BRICK)
     L.fill(V(91, y, 135), V(99, y + 2, 139), L.AIR)
     doorway(V(95, y, 134), V(95, y, 134))
     table(V(94, y, 137), V(96, y, 137))
     L.set_block(V(95, y + 1, 137), "minecraft:white_candle[candles=2,lit=true]")
-    L.set_block(V(93, y, 137), "minecraft:dark_oak_stairs[facing=east]")
-    L.set_block(V(97, y, 137), "minecraft:dark_oak_stairs[facing=west]")
+    L.set_block(V(93, y, 137), "minecraft:dark_oak_stairs[facing=west]")
+    L.set_block(V(97, y, 137), "minecraft:dark_oak_stairs[facing=east]")
     chest(V(99, y, 135), "west", [("bread", 3), ("iron_sword", 1), ("lead", 2)])
     L.set_block(V(91, y, 139), "minecraft:water_cauldron[level=2]")
     L.set_block(V(95, y + 2, 137), f"{L.LANTERN}[hanging=true]")
@@ -957,8 +973,9 @@ def catacombs() -> None:
     L.fill(
         V(98, y - 1, 105), V(99, y + 4, 120), L.DARK_BRICK
     )  # thick east wall for the wiring
+    px, _, pz, _ = PIT_TRAP
     L.fill(
-        V(95, y + 3, 127), V(95, y + 5, 128), L.AIR
+        V(px, y + 3, pz - 1), V(px, y + 5, pz + 1), L.AIR
     )  # the pit's shaft through the oubliette's ceiling
     ax1, ax2, ay, zw, zd = ARROW_TRAP
     L.arrow_trap(

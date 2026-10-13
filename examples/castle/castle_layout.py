@@ -94,8 +94,12 @@ SITE_BOTTOM = -20
 
 # ---- the mechanisms (local): the build places them here and
 # verify_castle.py exercises them here. castle_lib has the geometry of each.
-MAIN_GATE = (GATE_X1, GATE_X2, GATE_Z, 0)  # portcullis: x1, x2, z, standing level
-MIDDLE_GATE = (GATE_X1, GATE_X2, UD - 2, YU)
+# portcullises: x1, x2, z, standing level, and which side of the bars the
+# lever is on, in the passage (-1 north, +1 south): the main gate's on the
+# bailey's side; the middle gate's in the passage through its facade, the
+# only walled part (north of the bars is the open ward)
+MAIN_GATE = (GATE_X1, GATE_X2, GATE_Z, 0, -1)
+MIDDLE_GATE = (GATE_X1, GATE_X2, UD - 2, YU, 1)
 # hidden doors: the lower door cell, the direction into the hidden space,
 # the direction along the wall, the trigger and the lever's offset
 LIBRARY_DOOR = (58, YU + 10, 16)  # base; u east, v south, bookshelf trigger
@@ -105,7 +109,9 @@ CELL_DOOR = (69, -8, 137)  # base; u west, v south, lever at CELL_LEVER
 # the cell door's lever: in the middle of the first north cell's west wall,
 # clear of that cell's grille (a lever beside an iron trapdoor powers it)
 CELL_LEVER = -4
-PIT_TRAP = (95, -8, 127, 7)  # corridor x, standing level, first trapdoor z, depth
+# the pit trap: corridor x, standing level, the wire's z (the trapdoors are
+# under it and either side), depth
+PIT_TRAP = (95, -8, 127, 7)
 ARROW_TRAP = (94, 96, -15, 118, 108)  # x1, x2, standing level, wire z, dispenser z
 WELL = (60, 105)
 # ---- the lower bailey's buildings and features, x1, z1, x2, z2 (local).
@@ -214,6 +220,53 @@ CHAPEL = (86, 14, 110, 40)
 VAULT = (50, 16, 70, 30)
 VAULT_Y = 8
 
+# the seats (stairs to sit on), as (x1, z1, x2, z2, standing level, the way
+# the sitter faces), and the steps up onto the daises, as (..., the way up).
+# A stair's facing is the side of its tall back: a seat's stair faces away
+# from where its sitter looks (`seat_facing`), and a step faces the way up.
+# build_inner places them; verify checks their facings
+_KX = KEEP[0] + 3  # the keep's interior's west side
+# the great hall's tables (x1, x2), either side of the aisle down from the
+# keep's door (XG-1..XG+1); there are two rows of them, at z 20 and 34
+HALL_TABLES = ((50, XG - 2), (XG + 2, 64))
+SEATS = {
+    "great hall thrones": [
+        (_KX + 1, z, _KX + 1, z, YU + 1, "east") for z in (26, 28)
+    ],  # on the dais at the west end, looking down the hall
+    "great hall benches": [  # either side of the two tables, facing them
+        (x1, z + dz, x2, z + dz, YU, face)
+        for z in (20, 34)
+        for x1, x2 in HALL_TABLES
+        for dz, face in ((-1, "south"), (1, "north"))
+    ],
+    "library reading chairs": [  # at each end of the three reading tables
+        (x, z, x, z, YU + 10, face)
+        for z in (21, 27, 33)
+        for x, face in ((47, "east"), (53, "west"))
+    ],
+    "lord's chair": [(53, 19, 53, 19, YU + 19, "north")],  # at his table
+    "chapel pews": [  # either side of the aisle, facing the altar (north)
+        (x1, z, x2, z, YU, "north")
+        for z in range(CHAPEL[3] - 4, CHAPEL[1] + 8, -2)
+        for x1, x2 in ((CHAPEL[0] + 3, 95), (101, CHAPEL[2] - 3))
+    ],
+    "dungeon guard room stools": [  # at each end of the guards' table
+        (93, 137, 93, 137, DUNGEON_Y, "east"),
+        (97, 137, 97, 137, DUNGEON_Y, "west"),
+    ],
+}
+STEPS = {
+    "great hall dais": [(_KX + 4, 26, _KX + 4, 28, YU, "west")],
+    "chapel altar dais": [(93, CHAPEL[1] + 4, 103, CHAPEL[1] + 4, YU, "north")],
+}
+OPPOSITE = {"north": "south", "south": "north", "east": "west", "west": "east"}
+
+
+def seat_facing(faces: str) -> str:
+    """the facing of a seat's stair whose sitter faces ``faces``"""
+    return OPPOSITE[faces]
+
+
 # what each stage summons, by entity type: the build checks they are all
 # there before it finishes (an entity summoned into a chunk whose entities
 # have not finished loading can be lost) and verify counts them
@@ -224,6 +277,108 @@ SUMMONED = {
     "bailey_buildings": {"horse": 6, "armor_stand": 2},
     "details": {"armor_stand": 4, "iron_golem": 1, "cat": 1},
 }
+
+# the round towers' doorways: centre x, z, radius, wall thickness and the
+# doors as (standing level, direction, offset), as castle_lib.round_tower
+# takes them: a 2-high opening from the tower's floor out through its wall,
+# shifted sideways by offset to the right of the direction (east of a door
+# facing north, west of one facing south) to meet a wall walk. The curtains'
+# walks are their two inner rows (x 1..2 and W-3..W-2, z 1..2, and the
+# south curtains' z ZS-2..ZS-1 and UD-3..UD-2), and the ground doors keep
+# off the curtains. Every door opens onto something to stand on at its
+# level on both sides: a floor inside, and outside the walk, the ward or
+# the keep's roof (reach.door_problems checks it). The mid-wall towers'
+# walls are one thick, so that there is a floor between their spiral stair
+# and the wall for the walk's doors to open onto
+_N, _S, _E, _W = Vec3(0, 0, -1), Vec3(0, 0, 1), Vec3(1, 0, 0), Vec3(-1, 0, 0)
+_WALK, _UWALK = WALL_H, YU + WALL_H
+TOWER_DOORS = {
+    "south-west corner tower": (
+        *BAILEY_TOWERS["south-west corner tower"],
+        2,
+        [(_WALK, _N, -1), (_WALK, _E, 1), (0, _N, 1)],
+    ),
+    "south-east corner tower": (
+        *BAILEY_TOWERS["south-east corner tower"],
+        2,
+        [(_WALK, _N, 1), (_WALK, _W, -1), (0, _N, -1)],
+    ),
+    "west mid-wall tower": (
+        *BAILEY_TOWERS["west mid-wall tower"],
+        1,
+        [(_WALK, _N, -1), (_WALK, _S, 1), (0, _E, 0)],
+    ),
+    "east mid-wall tower": (
+        *BAILEY_TOWERS["east mid-wall tower"],
+        1,
+        [(_WALK, _N, 1), (_WALK, _S, -1), (0, _W, 0)],
+    ),
+    # the junction towers: the bailey's walk, the bailey, the upper ward and
+    # its west (east) and south walks
+    "west junction tower": (
+        *BAILEY_TOWERS["west junction tower"],
+        2,
+        [
+            (_WALK, _S, 1),
+            (0, _S, -1),
+            (YU, _N, 1),
+            (_UWALK, _N, -1),
+            (_UWALK, _E, -1),
+        ],
+    ),
+    "east junction tower": (
+        *BAILEY_TOWERS["east junction tower"],
+        2,
+        [
+            (_WALK, _S, -1),
+            (0, _S, 1),
+            (YU, _N, -1),
+            (_UWALK, _N, 1),
+            (_UWALK, _W, 1),
+        ],
+    ),
+    "west drum tower": (*GATE_TOWERS["west drum tower"], 2, [(0, _N, 0), (16, _E, 0)]),
+    "east drum tower": (*GATE_TOWERS["east drum tower"], 2, [(0, _N, 0), (16, _W, 0)]),
+    "north-west corner tower": (
+        *UPPER_TOWERS["north-west corner tower"],
+        2,
+        [(_UWALK, _S, 1), (_UWALK, _E, -1), (YU, _S, -1)],
+    ),
+    "north-east corner tower": (
+        *UPPER_TOWERS["north-east corner tower"],
+        2,
+        [(_UWALK, _S, -1), (_UWALK, _W, 1), (YU, _S, 1)],
+    ),
+    "upper west mid-wall tower": (
+        *UPPER_TOWERS["upper west mid-wall tower"],
+        1,
+        [(_UWALK, _N, -1), (_UWALK, _S, 1), (YU, _E, 0)],
+    ),
+    "upper east mid-wall tower": (
+        *UPPER_TOWERS["upper east mid-wall tower"],
+        1,
+        [(_UWALK, _N, 1), (_UWALK, _S, -1), (YU, _W, 0)],
+    ),
+    # the keep's turrets: from the roof terrace, one row in from the parapet
+    # on either side, and from the ward, away from the keep (not north: the
+    # ladder is on the north wall inside)
+    "keep turret 40,12": (
+        KEEP[0], KEEP[1], 4, 2, [(KEEP_ROOF, _E, 1), (KEEP_ROOF, _S, -1), (YU, _W, 0)]
+    ),
+    "keep turret 80,12": (
+        KEEP[2], KEEP[1], 4, 2, [(KEEP_ROOF, _W, -1), (KEEP_ROOF, _S, 1), (YU, _E, 0)]
+    ),
+    "keep turret 40,42": (
+        KEEP[0], KEEP[3], 4, 2, [(KEEP_ROOF, _E, -1), (KEEP_ROOF, _N, 1), (YU, _S, 0)]
+    ),
+    "keep turret 80,42": (
+        KEEP[2], KEEP[3], 4, 2, [(KEEP_ROOF, _W, 1), (KEEP_ROOF, _N, -1), (YU, _S, 0)]
+    ),
+    "keep's lantern tower": (
+        XG, (KEEP[1] + KEEP[3]) // 2, 3, 2, [(KEEP_ROOF, _S, 0)]
+    ),
+    "alchemist's tower": (*ALCH, 6, 2, [(YU, _S, 0)]),
+}  # fmt: skip
 
 # every round tower standing on a ward's ground, for `layout_problems`
 ROUND_TOWERS = {

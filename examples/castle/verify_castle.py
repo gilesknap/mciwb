@@ -31,6 +31,7 @@ sys.path.insert(0, str(Path(__file__).parent))
 
 import build_outer  # noqa: E402
 import castle_lib as L  # noqa: E402
+import reach  # noqa: E402
 from castle_layout import (  # noqa: E402
     ARROW_TRAP,
     BAILEY_TOWERS,
@@ -56,12 +57,15 @@ from castle_layout import (  # noqa: E402
     ORIGIN,
     PIT_TRAP,
     ROOFED_TOWERS,
+    SEATS,
     SMITHY_HATCH,
     SPAWN,
     STANDING_SIGNS,
+    STEPS,
     SUMMONED,
     TAG,
     TELEPORTS,
+    TOWER_DOORS,
     VAULT,
     VAULT_Y,
     WALL_H,
@@ -73,6 +77,7 @@ from castle_layout import (  # noqa: E402
     ZS,
     V,
     layout_problems,
+    seat_facing,
     site_box,
 )
 
@@ -140,11 +145,77 @@ def set_lever(pos: Vec3, facing: str, face: str, on: bool) -> None:
     L.lever(pos, facing, face, powered=on)
 
 
-def portcullis(name: str, gate: tuple[int, int, int, int]) -> None:
+def pull_gate_lever(g: dict, on: bool) -> None:
+    """set a portcullis's lever, then change its wall block (to stone and
+    back): a lever set by command updates only its own neighbours, and the
+    torch on the wall block above it needs the update a player's pull gives"""
+    set_lever(g["lever"], g["lever_facing"], "wall", on)
+    b = g["lever_block"]
+    c(f"setblock {b.x} {b.y} {b.z} {L.STONE}")
+    c(f"setblock {b.x} {b.y} {b.z} {L.BRICK}")
+
+
+# blocks that redstone power changes: nothing of these may touch a lever
+# or its block except what it is meant to drive
+POWERED_KINDS = (
+    "minecraft:redstone_wire",
+    "minecraft:repeater",
+    "minecraft:comparator",
+    "#minecraft:redstone_ores",
+    "minecraft:piston",
+    "minecraft:sticky_piston",
+    "minecraft:redstone_lamp",
+    "minecraft:dispenser",
+    "minecraft:dropper",
+    "minecraft:note_block",
+    "#minecraft:doors",
+    "#minecraft:trapdoors",
+    "#minecraft:fence_gates",
+    "minecraft:redstone_torch",
+    "minecraft:redstone_wall_torch",
+    "minecraft:hopper",
+)
+
+NEIGHBOURS = [Vec3(1, 0, 0), Vec3(-1, 0, 0), Vec3(0, 1, 0), Vec3(0, -1, 0), S, S * -1]
+
+
+def powered_neighbours(p: Vec3, allowed: list[Vec3]) -> list[tuple[int, int, int]]:
+    """the redstone-driven blocks next to p, other than ``allowed``"""
+    found = []
+    for d in NEIGHBOURS:
+        q = p + d
+        if q in allowed:
+            continue
+        if any(is_block(q, k) for k in POWERED_KINDS):
+            found.append((q.x, q.y, q.z))
+    return found
+
+
+def portcullis(name: str, gate: tuple[int, int, int, int, int]) -> None:
     g = L.portcullis_cells(*build_outer.portcullis_args(gate))
     lever, cells = g["lever"], g["closed_cells"]
     pistons = g["ceiling_pistons"] + g["floor_pistons"]
+    torch1, torch2 = g["torches"]
     check(f"{name}: lever present", is_block(lever, "minecraft:lever"))
+    # the lever is in the passage beside the bars, where its puller sees them
+    beside = [q for q in cells if q.y == lever.y and abs(q.z - lever.z) == 1]
+    check(
+        f"{name}: lever at {tuple(lever)} in the passage, next to the bars at {[tuple(q) for q in beside]}",
+        bool(beside)
+        and all(is_block(lever + Vec3(0, dy, 0) + Wd, L.AIR) for dy in (-1, 0)),
+    )
+    # it drives only the first torch (on its block); the torches drive only
+    # the next torch and the winch line
+    bad = powered_neighbours(lever, [g["lever_block"]])
+    bad += powered_neighbours(g["lever_block"], [lever, torch1])
+    bad += powered_neighbours(torch1, [g["lever_block"]])
+    bad += powered_neighbours(
+        torch2, [torch2 + S * (-1 if torch2.z > cells[0].z else 1)]
+    )
+    check(
+        f"{name}: the lever and its torches touch nothing else redstone drives{' (' + str(bad) + ')' if bad else ''}",
+        not bad,
+    )
     was_on = is_block(lever, "minecraft:lever[powered=true]")
     barred = all(is_block(p, L.BARS) for p in cells)
     open_ = all(is_block(p, L.AIR) for p in cells)
@@ -154,14 +225,14 @@ def portcullis(name: str, gate: tuple[int, int, int, int]) -> None:
         (barred and was_on) or (open_ and not was_on),
     )
     try:
-        set_lever(lever, "north", "floor", True)
+        pull_gate_lever(g, True)
         advance()
         check(
             f"{name}: lever on closes it (6 pistons, 6 cells barred)",
             all(is_block(p, "minecraft:sticky_piston[extended=true]") for p in pistons)
             and all(is_block(p, L.BARS) for p in cells),
         )
-        set_lever(lever, "north", "floor", False)
+        pull_gate_lever(g, False)
         advance()
         check(
             f"{name}: lever off opens it",
@@ -170,7 +241,7 @@ def portcullis(name: str, gate: tuple[int, int, int, int]) -> None:
         )
     finally:
         if was_on:  # leave it as found
-            set_lever(lever, "north", "floor", True)
+            pull_gate_lever(g, True)
             advance()
 
 
@@ -248,11 +319,20 @@ def library() -> None:
         advance()
 
 
+def stand_y() -> float | None:
+    """the height of the checks' armour stand"""
+    m = re.search(
+        r"\[[-\d.]+d, (-?[\d.]+)d, ",
+        c("data get entity @e[tag=castle_verify,limit=1] Pos"),
+    )
+    return float(m.group(1)) if m else None
+
+
 def traps() -> None:
     px, py, pz, depth = PIT_TRAP
-    t = L.pit_trap_cells(*V(px, py, pz), depth, travel=1)
+    t = L.pit_trap_cells(*V(px, py, pz), depth)
     wire, doors = t["wire"], t["trapdoors"]
-    clear(V(px - 3, py - 1, pz - 10), V(px + 3, py + 3, pz + 10))
+    clear(V(px - 3, py - depth - 1, pz - 10), V(px + 3, py + 3, pz + 10))
     advance()
     check(
         "pit trap: tripwire present and not already tripped",
@@ -262,22 +342,71 @@ def traps() -> None:
         "pit trap: trapdoors start closed",
         all(is_block(p, "minecraft:iron_trapdoor[open=false]") for p in doors),
     )
-    try:
-        trip(wire)
+    # a walker is on the string for a moment only: they must be wholly over
+    # the opening by the time they step off it, from either side
+    reach = 0.0
+    for travel, way in ((1, "south"), (-1, "north")):
+        r, on = L.pit_timing(wire.z, [d.z for d in doors], travel)
+        reach = max(reach, r)
         check(
-            "pit trap: walking onto the wire opens the floor",
-            all(is_block(p, "minecraft:iron_trapdoor[open=true]") for p in doors),
+            f"pit trap: walking {way}, wholly over the opening {r:.1f} ticks after touching the wire, while still on the string ({on:.1f} ticks)",
+            r <= on,
+        )
+    centre = wire + Vec3(0.5, 0, 0.5)
+    try:
+        # the walker: on the string until the floor opens, then moved on
+        # along the corridor at once (as if stepping off); the floor must
+        # still be open when they would be wholly over it
+        c(
+            f"summon minecraft:armor_stand {centre.x} {centre.y} {centre.z} "
+            '{Tags:["castle_verify"],Invulnerable:1b}'
+        )
+        opened = L.wait_until(
+            lambda: all(
+                is_block(p, "minecraft:iron_trapdoor[open=true]") for p in doors
+            ),
+            20,
+        )
+        c(f"tp @e[tag=castle_verify] {centre.x} {centre.y} {centre.z + 3}")
+        if reach > 0:
+            L.tick(int(reach + 0.5))
+        check(
+            f"pit trap: the wire opens the floor ({opened}), still open after the walker has stepped off",
+            opened
+            and all(is_block(p, "minecraft:iron_trapdoor[open=true]") for p in doors),
+        )
+        untrip()
+        check(
+            "pit trap: shuts again by itself",
+            all(is_block(p, "minecraft:iron_trapdoor[open=false]") for p in doors),
+        )
+        # the victim: on the wire, and down the shaft into the oubliette
+        c(
+            f"summon minecraft:armor_stand {centre.x} {centre.y} {centre.z} "
+            '{Tags:["castle_verify"],Invulnerable:1b}'
+        )
+        opened = L.wait_until(
+            lambda: all(
+                is_block(p, "minecraft:iron_trapdoor[open=true]") for p in doors
+            ),
+            20,
+        )
+        advance()
+        y = stand_y()
+        check(
+            f"pit trap: whoever is on the wire falls into the oubliette (the floor opens: {opened}; landed at y {y}, the bottom is {t['bottom']})",
+            opened and y is not None and y < t["bottom"] + 1,
         )
         check(
             "pit trap: the shaft drops into the oubliette",
             all(is_block(p, L.AIR) for p in t["shaft"]),
         )
+        check(
+            "pit trap: and shuts again over them",
+            all(is_block(p, "minecraft:iron_trapdoor[open=false]") for p in doors),
+        )
     finally:
         untrip()
-    check(
-        "pit trap: closes again",
-        all(is_block(p, "minecraft:iron_trapdoor[open=false]") for p in doors),
-    )
 
     ax1, ax2, ay, zw, zd = ARROW_TRAP
     o = V(0, 0, 0)
@@ -502,6 +631,11 @@ def mounts() -> None:
         )
     for x in (XG - GATE_BANNER_DX, XG + GATE_BANNER_DX):
         pairs.append((V(x, 5, gz2 + 1), "#minecraft:banners", V(x, 5, gz2)))
+    for gate in (MAIN_GATE, MIDDLE_GATE):
+        g = L.portcullis_cells(*build_outer.portcullis_args(gate))
+        pairs.append((g["lever"], "minecraft:lever", g["lever_block"]))
+        for t in g["torches"]:
+            pairs.append((t, "minecraft:redstone_torch", t - up))
     bad = [
         (p.x, p.y, p.z, what)
         for p, what, s_ in pairs
@@ -540,6 +674,31 @@ def walk_step(x: int, walk: int, z: int) -> bool:
     )
 
 
+def seats() -> None:
+    """every seat's stair has its back behind its sitter (a stair faces
+    its tall back), and every dais step faces the way up"""
+    for kind, table, facing in (
+        ("seat", SEATS, seat_facing),
+        ("step", STEPS, lambda up: up),
+    ):
+        for name, rects in table.items():
+            bad = []
+            for x1, z1, x2, z2, y, way in rects:
+                want = facing(way)
+                for x in range(x1, x2 + 1):
+                    for z in range(z1, z2 + 1):
+                        p = V(x, y, z)
+                        if not is_block(
+                            p, f"#minecraft:stairs[facing={want},half=bottom]"
+                        ):
+                            bad.append((p.x, p.y, p.z))
+            what = "sitters face" if kind == "seat" else "the way up is"
+            check(
+                f"{kind}s: {name} ({what} {', '.join(sorted({r[5] for r in rects}))}){' (wrong at ' + str(bad[:4]) + ')' if bad else ''}",
+                not bad,
+            )
+
+
 def bailey() -> None:
     """the layout keeps clear of the round towers, the mid-wall towers
     (which buildings and stairs once cut) stand whole, every wall stair
@@ -552,14 +711,8 @@ def bailey() -> None:
     bad = []
     for name in ("west mid-wall tower", "east mid-wall tower"):
         cx, cz, r = BAILEY_TOWERS[name]
-        # the pillar, and the north and south walls below the wall-walk doors
-        for x, z in (
-            (cx, cz),
-            (cx, cz - r),
-            (cx, cz - r + 1),
-            (cx, cz + r),
-            (cx, cz + r - 1),
-        ):
+        # the pillar, and the north and south walls beside the wall-walk doors
+        for x, z in ((cx, cz), (cx, cz - r), (cx, cz + r)):
             bad += [
                 (name, x, y, z) for y in range(0, WALL_H) if is_block(V(x, y, z), L.AIR)
             ]
@@ -755,6 +908,137 @@ def road() -> None:
     )
 
 
+# how verify reads a block's class (reach.kind) over RCON: the first test
+# that passes; anything else is solid
+_KIND_TESTS = [
+    ("minecraft:air", reach.OPEN),
+    ("minecraft:cave_air", reach.OPEN),
+    ("#minecraft:planks", reach.SOLID),
+    ("#minecraft:stone_bricks", reach.SOLID),
+    ("#minecraft:doors", reach.DOOR),
+    ("#minecraft:fence_gates", reach.DOOR),
+    ("minecraft:iron_trapdoor[open=true]", reach.BLOCK),
+    ("minecraft:iron_trapdoor", reach.SOLID),
+    ("#minecraft:trapdoors", reach.HATCH),
+    ("#minecraft:climbable", reach.CLIMB),
+    ("minecraft:water", reach.SWIM),
+    ("minecraft:bubble_column", reach.SWIM),
+    ("#minecraft:fences", reach.BLOCK),
+    ("#minecraft:walls", reach.BLOCK),
+    ("minecraft:lava", reach.BLOCK),
+    ("minecraft:iron_bars", reach.PANE),
+    ("minecraft:iron_chain", reach.PANE),
+    ("minecraft:glass_pane", reach.PANE),
+    ("#minecraft:replaceable", reach.OPEN),
+    ("#minecraft:wool_carpets", reach.OPEN),
+    ("#minecraft:all_signs", reach.OPEN),
+    ("#minecraft:banners", reach.OPEN),
+    ("#minecraft:buttons", reach.OPEN),
+    ("#minecraft:candles", reach.OPEN),
+    *(
+        (f"minecraft:{b}", reach.OPEN)
+        for b in (
+            "lantern", "soul_lantern", "redstone_wire", "lever", "torch",
+            "wall_torch", "redstone_torch", "redstone_wall_torch", "repeater",
+            "comparator", "tripwire", "tripwire_hook", "cobweb",
+        )
+    ),
+]  # fmt: skip
+_kinds: dict[tuple[int, int, int], int] = {}
+
+
+def rcon_kind(p: Vec3) -> int:
+    """the class (reach.kind) of the block at p, read over RCON"""
+    key = (int(p.x), int(p.y), int(p.z))
+    if key not in _kinds:
+        _kinds[key] = next(
+            (k for test, k in _KIND_TESTS if is_block(p, test)), reach.SOLID
+        )
+    return _kinds[key]
+
+
+POS = re.compile(r"\[(-?[\d.]+)d, (-?[\d.]+)d, (-?[\d.]+)d\]")
+FACING = {
+    0: Vec3(0, -1, 0),
+    1: Vec3(0, 1, 0),
+    2: Vec3(0, 0, -1),
+    3: Vec3(0, 0, 1),
+    4: Vec3(-1, 0, 0),
+    5: Vec3(1, 0, 0),
+}
+
+
+def summoned_clear(kind_at) -> None:
+    """no armour stand stands in a block (a chest, a wall ...) and every
+    item frame hangs in an open cell on a solid block"""
+    from math import floor
+
+    bad = []
+    stands = c(
+        f"execute as @e[type=minecraft:armor_stand,tag={TAG}] run data get entity @s Pos"
+    )
+    n_stands = 0
+    for m in POS.finditer(stands):
+        n_stands += 1
+        x, y, z = (float(v) for v in m.groups())
+        cells = {
+            Vec3(floor(x + dx), floor(y + dy), floor(z + dz))
+            for dx in (-0.25, 0.25)
+            for dz in (-0.25, 0.25)
+            for dy in (0.1, 1.0, 1.9)
+        }
+        if any(kind_at(q) not in reach.PASS for q in cells):
+            bad.append(("armour stand", round(x, 1), round(y, 1), round(z, 1)))
+    frames = c(
+        f"execute as @e[type=minecraft:item_frame,tag={TAG}] run data get entity @s Pos"
+    )
+    n_frames = 0
+    for m in POS.finditer(frames):
+        n_frames += 1
+        x, y, z = (float(v) for v in m.groups())
+        r = c(
+            f"data get entity @e[type=minecraft:item_frame,tag={TAG},"
+            f"x={x},y={y},z={z},distance=..0.2,limit=1] Facing"
+        )
+        f = re.search(r"(\d)b", r)
+        own = Vec3(floor(x), floor(y), floor(z))
+        on = own - FACING[int(f.group(1))] if f else None
+        if on is None or kind_at(own) not in reach.PASS or kind_at(on) in reach.PASS:
+            bad.append(("item frame", round(x, 1), round(y, 1), round(z, 1)))
+    check(
+        f"entities: none of the {n_stands} armour stands is in a block, and the {n_frames} item frames hang in the open on solid blocks{' (not ' + str(bad[:6]) + ')' if bad else ''}",
+        not bad and n_stands > 0 and n_frames > 0,
+    )
+
+
+def towers(kind_at, describe=None) -> None:
+    """every round tower's doorway opens onto somewhere to stand at its
+    level on both sides"""
+    for name, (_cx, _cz, _r, _wall, doors) in TOWER_DOORS.items():
+        bad = [
+            b
+            for b in reach.door_problems(kind_at, describe)
+            if b.startswith(name + ",")
+        ]
+        check(
+            f"towers: the {name}'s {len(doors)} doors open onto floors at their levels on both sides{' (' + '; '.join(bad) + ')' if bad else ''}",
+            not bad,
+        )
+
+
+def reachable(g: reach.Grid) -> None:
+    """a visitor can walk from the bridge to every room (the secret doors
+    opened)"""
+    problems = reach.problems(g)
+    for line in problems:
+        check(f"reach: {line}", False)
+    n = len(reach.spaces())
+    check(
+        f"reach: {n - len(problems)} of the {n} rooms and spaces can be walked to from the gate",
+        not problems,
+    )
+
+
 def entities() -> None:
     a, b = site_box()
     box = L.box_selector(a, b)
@@ -799,10 +1083,27 @@ def main() -> None:
         places()
         cells()
         mounts()
+        seats()
         banners()
         bailey()
         road()
         entities()
+        world_folder = os.environ.get("WORLD_FOLDER")
+        if world_folder:
+            # read the site from the world files (RCON is too slow for a
+            # flood fill over it): doors and reachability
+            c("save-all flush")
+            g = reach.load_world(world_folder)
+            summoned_clear(reach.grid_kind(g))
+            towers(reach.grid_kind(g), g.name)
+            reachable(g)
+        else:
+            summoned_clear(rcon_kind)
+            towers(rcon_kind)
+            print(
+                "INFO reach: not checked (set WORLD_FOLDER to the server's world "
+                "folder to walk the castle from its files)"
+            )
     finally:
         c("kill @e[tag=castle_verify]")
         build_outer.forceload(False)

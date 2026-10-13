@@ -74,7 +74,7 @@ check after a build (observed, not explained: gilesknap/mciwb#166, item 9).
 | --- | --- | --- |
 | Upper ward | x 0..120, z 0..64, standing level 18 | keep, chapel, alchemist's tower, garden |
 | Lower bailey | x 0..120, z 65..145, standing level 0 | gatehouse, stables, smithy, barracks, well, market |
-| Gatehouse | x 46..74, z 137..145 | passage x 59..61; portcullis at z 141; winch room above |
+| Gatehouse | x 46..74, z 137..145 | passage x 59..61; portcullis at z 141, its lever beside it; winch room above |
 | Grand stair | x 57..63, z 65..83 | up to the middle gate (second portcullis at z 63) |
 | Keep | x 40..80, z 12..42 | three storeys and a roof terrace; turrets at the corners |
 | Chapel | x 86..110, z 14..40 | crypt underneath (y 8..11) |
@@ -111,14 +111,21 @@ for each that gives the positions of its parts, used by the build and by
 
 - **Portcullises** (`castle_lib.portcullis`): sticky pistons above and
   below a 3-wide, 2-high passage drop and raise iron bars. The lever is in
-  the winch room above the passage; the wiring runs in a diagonal dust
-  channel inside the wall.
+  the passage, on its wall one block from the bars, so whoever pulls it
+  sees them move; two redstone torches inside the wall carry its signal up
+  to the dust over the ceiling pistons in the winch room above, and a
+  diagonal dust channel inside the wall takes it down to the floor's.
 - **Hidden doors** (`castle_lib.hidden_door`): two sticky pistons hold a
   2-high section of wall; a redstone torch keeps them extended until its
   block is powered, by a chiseled bookshelf's comparator (only the 6th
   book's signal of 6 reaches the end of a 6-dust line) or by a lever.
-- **Pit trap** (`castle_lib.pit_trap`): a tripwire opens two iron
-  trapdoors set flush in a corridor floor.
+- **Pit trap** (`castle_lib.pit_trap`): a tripwire opens three iron
+  trapdoors set flush in a corridor floor, under the wire and either side
+  of it. A walker is on the string for only about 7 ticks and the hooks
+  hold their signal for 10, so the floor has to open under the wire, not
+  further on: `castle_lib.pit_timing` works out when a walker would be
+  over the opening, and the checks require it to be before they step off
+  the string. It shuts again once its victim has fallen.
 - **Arrow trap** (`castle_lib.arrow_trap`): a tripwire powers dispensers
   in the end wall of a corridor.
 - **The engine**: eight hoppers pass amethyst shards round a ring; twelve
@@ -130,7 +137,9 @@ for each that gives the positions of its parts, used by the build and by
   both sides, so nobody gets shut in.
 
 `verify_castle.py` toggles each of them over RCON and reads the result
-back (the arrow trap by its dispensers' stock going down: an arrow that
+back (the pit trap with an armour stand that is moved off the wire as soon
+as the floor opens, as a walker steps off it, and another that must fall
+to the oubliette's floor) (the arrow trap by its dispensers' stock going down: an arrow that
 hits the armour stand on the wire breaks it and vanishes; each cell door
 by setting a redstone block in place of its frame, a stand-in for a button
 press, since a button placed with `setblock` does not update its
@@ -141,36 +150,43 @@ mid-wall towers stand whole, every wall stair's top step is at its walk
 with headroom and the walk goes on beyond it, and every standing sign
 stands on a solid block, then checks the passages, the treasure,
 the teleport targets of the guide, the road to spawn and its signpost, and
-that the castle's entities are exactly the ones it summoned. A portcullis
+that the castle's entities are exactly the ones it summoned and that no
+armour stand stands in a block or item frame hangs in one, that every round
+tower's doorway opens onto somewhere to stand on both sides at its level
+(`castle_layout.TOWER_DOORS`, `reach.door_problems`), and, given the
+server's world folder in `WORLD_FOLDER`, that a visitor can walk from the
+bridge to every room (`reach.py`, below). A portcullis
 a visitor left closed is reported as found, tested, and left closed. It clears hostile mobs from the site and anything from
 the tripwires first, and leaves everything as it found it: the levers off,
 the bookshelf untouched, the dispensers reloaded. Two things it has to work round: the server pauses
 when nobody is online (ticks are advanced with `tick sprint`), and a lever
 or hook set with `setblock` only updates its own neighbours, so levers get a
-dust block beside them and tripwires are tripped by summoning an armour
-stand onto them.
+dust block beside them (a portcullis lever's wall block is swapped for
+another block and back, to update the torch on it) and tripwires are tripped
+by summoning an armour stand onto them (one that can fall: an entity that
+does not move does not touch the blocks it is in).
 
 `test_modules.py` builds each mechanism in a 70 x 22 x 30 block of stone in
 the air at `RIG=x,y,z` (its north-west bottom corner, default `0,160,-40`),
 toggles it and reads it back. It refuses to run unless the rig's box is
 empty, and always clears the rig again.
 
-## Workarounds
+## Other RCON clients
 
 The Minecraft server keeps one output buffer for all its RCON connections,
 so when another client (a dashboard polling `list`, say) runs a command at
 the same moment, a reply comes back empty or with the other client's output
-in front of ours: about one command in 10k (gilesknap/mciwb#166, item 2).
-`build_outer.py` wraps mciwb's `ground_heights`, `Placer.fill` and
-`Placer.setblock` to accept a polluted reply and retry an empty one;
-`castle_lib.run` does the same for summons and signs, and the checks read
-a block again when the reply is empty. Signs are placed with a raw
-`setblock`, which works, but `Placer.setblock` now takes block-entity NBT
-and could place them instead (item 3). The
-chapel's bell tower fills the hole that `hip_roof` used to leave in its top
-ring (item 5); `hip_roof` no longer leaves it, so that fill is now harmless
-but redundant. Each workaround is marked in the code with the issue; delete them when
-the fixes are released.
+in it: about one command in 10k. mciwb checks and resends the commands that
+are safe to send twice (`setblock`, `fill`, `loot` and its own
+`ground_heights`), and signs go through `Placer.setblock`, which takes
+their text as block entity data. Two things here it does not cover:
+`castle_lib.is_block` reads a block with `execute if block`, a read that is
+safe to repeat, so it checks the reply and reads again with mciwb's
+`retry_command`; and `castle_lib.summon` is sent once, as mciwb sends a
+summon (a lost reply does not mean it failed, and sending it again could
+make two): it takes a reply that holds "Summoned" and lets an empty one
+pass, since the build counts what each stage summoned and summons what is
+missing again.
 
 The ticks that the checks sprint through also bring night, and hostile
 mobs spawn wherever the light is 0. The castle lights every dark place of
@@ -208,4 +224,14 @@ lightning rod may be `exposed_lightning_rod` by the time you visit.
 - `build_inner.py`: rooms, chapel and crypt, alchemist's tower, bailey
   buildings, dungeons, vault, details.
 - `build_castle.py`: the staged driver. `verify_castle.py`: the checks.
+- `reach.py`: can a visitor walk to every room? A flood fill over the
+  site's blocks (read from the world files: RCON is far too slow) from the
+  bridge, walking, climbing a block, dropping at most 3, up ladders and
+  through water, opening every door and with the hidden doors open, then
+  each space in `reach.spaces()` (every keep room, tower floor, wall walk,
+  the chapel and crypt, the bailey's buildings, the dungeons, catacombs,
+  vault and treasury) must have been reached. `verify_castle.py` runs it
+  when `WORLD_FOLDER` is set (it must be able to read the world, e.g. as
+  root on the server's host); `DUMP=site.npz python reach.py` runs it on a
+  saved copy (`reach.dump`).
 - `test_modules.py`: the mechanism modules alone. `guide.py`: the guide.

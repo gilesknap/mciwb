@@ -52,8 +52,10 @@ world.cmd("time set day")  # any console command, without the /
   take a `BlockState`). `Volume.fill`, `polygon` and `Volume.walls` need an
   `Item`.
 - Facing: stairs, doors, chests, furnaces and the like take `facing=` a
-  `Direction` (`NORTH` -z, `SOUTH` +z, `EAST` +x, `WEST` -x). Stairs face
-  the way you walk up them. Slabs take `nbt=["type=top"]`, logs
+  `Direction` (`NORTH` -z, `SOUTH` +z, `EAST` +x, `WEST` -x). A stair's
+  facing is the side of its tall back: it faces the way you walk up it, and
+  someone sitting on it faces the opposite way (a chair facing a table to
+  its north is `facing=south`). Slabs take `nbt=["type=top"]`, logs
   `nbt=["axis=x"]`, lanterns `nbt=["hanging=true"]`.
 - Thin panels: a closed door's panel and an open trapdoor's lie against
   the edge of their block opposite their `facing`; iron bars, glass panes
@@ -336,9 +338,19 @@ the script ends (in a `finally`), so the server does not keep them loaded.
   `setblock` does not press: to test the circuit, set a `redstone_block` in
   place of the block the button is on, as a stand-in for a press, then put
   that block back.
-- A tripwire is only tripped by an entity standing on it: summon one onto
+  When the lever's block carries a redstone torch (to take the signal up),
+  re-placing dust is no help: change the lever's block to another block and
+  back instead. A redstone torch set by command keeps the `lit` state it is
+  given until a neighbour changes, so give it the state its power implies.
+- A tripwire is only tripped by an entity moving on it: summon one onto
   the wire (an `Invulnerable:1b` armour stand, so arrows from a trap do not
-  break it), tick, check, then kill it.
+  break it; not `NoGravity:1b`, which never touches the blocks it is in),
+  tick, check, then kill it.
+- Tripwire timing: the hooks hold their signal 10 ticks from the first
+  touch, and a walking player is on the string for about 7, so whatever the
+  wire sets off must act on them while they are on it (a pit's trapdoors
+  under the wire, not two blocks on). A test stand that stays on the wire
+  hides this: move it off as soon as the trap fires.
 - Block entity data is not a block state: a chiseled bookshelf's
   `last_interacted_slot` (what its comparator reads), a sign's text or a
   container's items are set with

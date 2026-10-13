@@ -66,9 +66,11 @@ def xyz(x: int, y: int, z: int) -> str:
     return p(V(x, y, z))
 
 
-def local_gate(gate: tuple[int, int, int, int]) -> dict:
-    x1, x2, z, y0 = gate
-    return L.portcullis_cells(ORIGIN.x + x1, ORIGIN.x + x2, ORIGIN.z + z, ORIGIN.y + y0)
+def local_gate(gate: tuple[int, int, int, int, int]) -> dict:
+    x1, x2, z, y0, lever_dz = gate
+    return L.portcullis_cells(
+        ORIGIN.x + x1, ORIGIN.x + x2, ORIGIN.z + z, ORIGIN.y + y0, lever_dz
+    )
 
 
 def main() -> None:
@@ -81,7 +83,7 @@ def main() -> None:
     )
     crypt = L.hidden_door_cells(V(*CRYPT_DOOR), Wd, S, trigger="lever", lever_b=-1)
     px, py, pz, depth = PIT_TRAP
-    pit = L.pit_trap_cells(*V(px, py, pz), depth, travel=1)
+    pit = L.pit_trap_cells(*V(px, py, pz), depth)
     ax1, ax2, ay, zw, zd = ARROW_TRAP
     arrow = L.arrow_trap_cells(
         ORIGIN.x + ax1, ORIGIN.x + ax2, ORIGIN.y + ay, ORIGIN.z + zw, ORIGIN.z + zd
@@ -169,14 +171,15 @@ coordinates in the scripts are offsets from it (x east, z south, y up).
 | Place | World position (entrance) |
 | --- | --- |
 | Main gate and portcullis | passage x {V(GATE_X1, 0, 0).x}..{V(GATE_X2, 0, 0).x}, z {V(0, 0, gz1).z}..{V(0, 0, gz2).z}; portcullis line z {V(0, 0, GATE_Z).z} |
-| Gatehouse winch room (portcullis lever) | lever at {p(main_gate["lever"])}; stair up from the west guard room (door from the passage at {xyz(GATE_X1 - 1, 0, gz1 + 3)}) |
-| Grand stair and middle gate | x {V(XG - 3, 0, 0).x}..{V(XG + 3, 0, 0).x}, z {V(0, 0, UD + YU).z}..{V(0, 0, UD).z}, up to y {ORIGIN.y + YU}; second portcullis at z {V(0, 0, UD - 2).z}, lever at {p(middle_gate["lever"])} in its winch room: enter the west gate tower from the ward at {xyz(XG - 7, YU, UD - 6)}, up the stair, then east |
+| Main portcullis lever | in the gate passage at {p(main_gate["lever"])}, on its east wall beside the bars |
+| Gatehouse winch room | over the passage: stair up from the west guard room (door from the passage at {xyz(GATE_X1 - 1, 0, gz1 + 3)}) |
+| Grand stair and middle gate | x {V(XG - 3, 0, 0).x}..{V(XG + 3, 0, 0).x}, z {V(0, 0, UD + YU).z}..{V(0, 0, UD).z}, up to y {ORIGIN.y + YU}; second portcullis at z {V(0, 0, UD - 2).z}, lever at {p(middle_gate["lever"])} in the passage beside it; its winch room is over the gate: enter the west gate tower from the ward at {xyz(XG - 7, YU, UD - 6)}, up the stair, then east |
 | Keep great door | {xyz(XG, YU, kz2)}, facing south |
 | Great hall / kitchen | ground floor (y {ORIGIN.y + KEEP_FLOORS[0]}); stair hall in the east wing |
 | Library (secret bookshelf) | 2nd floor (y {ORIGIN.y + KEEP_FLOORS[1]}), west half; the chiseled bookshelf at {p(lib["trigger"])} |
 | Armoury, gallery | 2nd floor, east |
 | Lord's chamber, map room, guest rooms | 3rd floor (y {ORIGIN.y + KEEP_FLOORS[2]}) |
-| Roof terrace and turrets | y {ORIGIN.y + KEEP_ROOF}, up the stair hall; lantern tower in the middle; the four turrets are entered from the terrace |
+| Roof terrace and turrets | y {ORIGIN.y + KEEP_ROOF}, up the stair hall; lantern tower in the middle; the four turrets have doors onto the terrace and the ward, and ladders between their floors |
 | Chapel | {xyz(XG + 38, YU, cz2)} door on the south end; altar at the north end; bell tower at the SW corner |
 | Alchemist's tower | centre {xyz(ex, YU, ez)}, door on the south; the Engine is on the top floor (y {ORIGIN.y + ey}) |
 | Stables, barracks | west side of the bailey |
@@ -186,15 +189,19 @@ coordinates in the scripts are offsets from it (x east, z south, y up).
 
 ## Mechanisms and how to trigger them
 
-1. **Main portcullis.** From the gate passage take the door in the west
-   wall into the guard room, climb the wooden stair to the winch room above
-   the passage. The lever on the floor at {p(main_gate["lever"])} (dust runs
-   through it) drops iron bars from the ceiling *and* raises them from the
-   floor, sealing the passage. Flip it back to open. The grille in the
-   winch-room floor is the murder hole over the passage.
-2. **Middle gate portcullis.** Same mechanism at the top of the grand stair.
-   Enter the west gate tower from the upper ward at {xyz(XG - 7, YU, UD - 6)},
-   climb the stair and go east into the winch room; lever at {p(middle_gate["lever"])}.
+1. **Main portcullis.** In the gate passage, on the east wall one block on
+   the bailey's side of the bars, the lever at {p(main_gate["lever"])} drops
+   iron bars from the ceiling *and* raises them from the floor in front of
+   you, sealing the passage. Flip it back to open. Its signal climbs inside
+   the wall to the winch room over the passage (the door in the passage's
+   west wall leads to the guard room and the stair up), where you can watch
+   the winch: the redstone over the pistons. The grille in the winch-room
+   floor is the murder hole over the passage.
+2. **Middle gate portcullis.** The same at the top of the grand stair: the
+   lever at {p(middle_gate["lever"])} is in the passage through the gate's
+   facade, on the stair's side of the bars. Its winch room is over the gate:
+   enter the west gate tower from the upper ward at {xyz(XG - 7, YU, UD - 6)},
+   climb the stair and go east.
 3. **The library's secret door.** On the keep's second floor, the east wall
    of the library is bookcases. One block is a *chiseled* bookshelf
    (at {p(lib["trigger"])}, head height, full of books). Take out the **last
@@ -231,9 +238,10 @@ coordinates in the scripts are offsets from it (x east, z south, y up).
 
 - **Pit trap**, dungeon approach: the one-wide corridor south of the
   entrance stair has a tripwire at {p(pit["wire"])} with its hooks in two
-  alcoves. Cross it and the two iron trapdoors in the floor two blocks on
-  swing open; you fall {depth} blocks into the oubliette. Jump over the
-  wire, or break the string.
+  alcoves. Step on it and the floor under it (three iron trapdoors, under
+  the wire and either side) swings open: you fall {depth} blocks into the
+  oubliette, and the floor shuts over you. Jump over the wire, or break the
+  string.
 - **Arrow trap**, catacombs: from the oubliette the only way out is the
   three-wide corridor north. The tripwire at {p(arrow["wire"])} sets off
   three dispensers in the corridor's end wall (z {arrow["dispensers"][0].z}),
@@ -267,10 +275,13 @@ coordinates in the scripts are offsets from it (x east, z south, y up).
 `verify_castle.py` drives all of the above over RCON (advancing ticks with
 `tick sprint`, since the server pauses with no players online): both
 portcullises close and reopen, the three secret doors open and close, the
-pit opens when the wire is crossed, the dispensers fire (and are reloaded),
+pit opens under whoever steps on the wire and drops them into the
+oubliette, the dispensers fire (and are reloaded),
 the engine's shards circulate and its lamp blinks, the chests hold their
 items, every teleport above lands on a floor with head room, and the
-castle's entities are exactly the ones it summoned.
+castle's entities are exactly the ones it summoned, every tower door opens
+onto a floor on both sides, and a visitor can walk from the gate to every
+room.
 
 ## Forceloaded chunks
 
