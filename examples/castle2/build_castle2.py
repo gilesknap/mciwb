@@ -10,7 +10,10 @@ folder) with a bailey of depth 162: this driver runs castle's build
 castle's, and its own furniture in castle's rooms (``interiors``,
 ``chapel``, ``bailey_buildings``: rooms.py) in place of castle's, with
 ``furnish`` (more detail in the alchemist's tower, the dungeon, the vault
-and the winch room) after ``dungeons``: ``village`` (the lanes, the square and the houses) after
+and the winch room) after ``dungeons``, then ``machines`` (machines_upper and
+organ: the lectern lock, the copper puzzle, the astrolabe, the engine's
+bell, the transmuter, the organ; rebuild it after rebuilding the rooms it
+stands in); ``village`` (the lanes, the square and the houses) after
 ``bailey_buildings``, then ``pens`` (the animals, the allotments and
 the bee hives), ``bailey_machines`` (machines_bailey: the clock tower, the
 archery lock, the mill, the listening door), and ``people`` (the castle's people, the shopkeepers,
