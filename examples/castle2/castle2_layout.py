@@ -559,6 +559,119 @@ TELEPORTS.update(
 # verify checks every clue is in place and works every machine.
 SECRETS: dict[str, dict] = {}
 
+# ---- phase 6: the machines of machines_upper.py and organ.py (local)
+# the lectern lock: the base of its sliding bookcase door in the library's
+# east bookcase wall (frame: a east, b south); the lectern is at b = 7
+LECTERN_LOCK = (58, YU + 10, 28)
+LECTERN_PAGE = 13  # the page (1..15) that opens it
+LECTERN_PAGES = 15
+# the astrolabe: floor levers in the alchemist's laboratory, (x, z): on?
+ASTROLABE_LEVERS = {
+    (16, 20): True,
+    (16, 22): False,
+    (16, 24): True,
+    (20, 20): False,
+    (20, 22): True,
+    (20, 24): True,
+}
+ASTROLABE_PANEL = (19, 25)  # the floor panel (x, z) that slides open
+# the star chart on the laboratory's west wall: a sea lantern for each lever
+# that must be on, black for one that must be off (the near row high)
+ASTROLABE_CHART = {
+    (x, z): (13, YU + (3 if x == 16 else 2), z) for (x, z) in ASTROLABE_LEVERS
+}
+ENGINE_BELL = (23, YU + 25, 23)
+# the transmuter on the tower's third floor: its filter hopper
+TRANSMUTER = (20, YU + 18, 22)
+TRANSMUTER_KEY = "amethyst_shard"
+TRANSMUTER_REWARD = "nether_star"
+# the copper puzzle: the vault's west wall, row 0 at y 9, columns z 23..28
+COPPER_GRID = (49, VAULT_Y + 1, 23)
+# lit at the start (column b, row h); the solution presses the buttons
+COPPER_START = {(2, 0), (1, 1)}
+COPPER_SOLUTION = [(1, 0), (5, 0), (2, 1)]
+INNER_VAULT_DOOR = (49, VAULT_Y, 18)  # frame: a west, b south
+
+SECRETS.update(
+    {
+        "the hidden study": {
+            "machine": "lectern lock",
+            "where": (57, YU + 10, 35),
+            "opens": "a bookcase in the library's east wall slides aside onto a "
+            "study hidden in the wall, with a chest (amethyst shards, "
+            "diamonds, gold)",
+            "solution": f"turn the Book of Hours on the lectern by the east "
+            f"bookcases to page {LECTERN_PAGE}",
+            "page": LECTERN_PAGE,
+            "clues": [
+                (
+                    "book",
+                    (58, YU + 10, 35),
+                    f"the Book of Hours: page {LECTERN_PAGE} speaks of the "
+                    "thirteenth hour that opens what the twelve keep shut",
+                ),
+            ],
+        },
+        "the alchemist's cellar": {
+            "machine": "astrolabe",
+            "where": (18, YU, 22),
+            "opens": "a floor panel by the laboratory's door slides aside "
+            "onto a ladder down to a cellar with a chest",
+            "solution": "levers on at "
+            + ", ".join(f"({x}, {z})" for (x, z), on in ASTROLABE_LEVERS.items() if on)
+            + "; off at "
+            + ", ".join(
+                f"({x}, {z})" for (x, z), on in ASTROLABE_LEVERS.items() if not on
+            ),
+            "levers": dict(ASTROLABE_LEVERS),
+            "clues": [
+                (
+                    "chart",
+                    (13, YU + 2, 22),
+                    "the star chart on the laboratory's west wall: lit stars "
+                    "for the levers that must be on (upper row: the levers by "
+                    "the wall, lower row: the far ones)",
+                ),
+                ("sign", (14, YU + 4, 22), "As above, so below"),
+            ],
+        },
+        "the engine's bell": {
+            "machine": "engine",
+            "where": ENGINE_BELL,
+            "opens": "the engine's east chase ends in a lamp and a bell that "
+            "ring while the astrolabe is set",
+            "solution": "set the astrolabe; a copper pipe of torches carries it "
+            "up the tower",
+            "clues": [("pipe", (22, YU, 24), "a copper pipe up the tower's east wall")],
+        },
+        "the transmuter": {
+            "machine": "transmuter",
+            "where": (TRANSMUTER[0] - 1, TRANSMUTER[1] + 1, TRANSMUTER[2] - 1),
+            "opens": f"gives back the {TRANSMUTER_KEY} with a {TRANSMUTER_REWARD} "
+            "in its tray (16 in stock)",
+            "solution": f"drop an {TRANSMUTER_KEY} into the transmuter's hopper",
+            "key": TRANSMUTER_KEY,
+            "reward": TRANSMUTER_REWARD,
+            "clues": [
+                ("chest", (59, YU + 12, 39), "amethyst shards in the hidden study"),
+                ("chest", (20, 11, 21), "amethyst shards in the alchemist's cellar"),
+            ],
+        },
+        "the inner vault": {
+            "machine": "copper puzzle",
+            "where": (50, VAULT_Y, 25),
+            "opens": "a door in the vault's west wall slides aside onto the "
+            "inner vault",
+            "solution": "press the buttons at (column, row) "
+            + ", ".join(str(b) for b in COPPER_SOLUTION)
+            + " (columns from the north, row 0 the lower) to light every bulb",
+            "start": sorted(COPPER_START),
+            "presses": list(COPPER_SOLUTION),
+            "clues": [],
+        },
+    }
+)
+
 BAILEY_DEPTH_NOTE = (
     f"Its lower bailey is {LD} blocks deep (BAILEY_DEPTH), with a village in it."
 )

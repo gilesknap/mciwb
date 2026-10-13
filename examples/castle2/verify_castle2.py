@@ -40,8 +40,13 @@ on castle2's layout, then castle2's own:
   the pens' kinds in the site, listed with where they are, before they are
   removed (an untagged villager inside the walls fails it).
 
+- machines: every machine of phase 6 (machines_upper.py, organ.py) is
+  worked over RCON in place (a lectern page turned, levers set, buttons
+  pressed, an ingredient put in the transmuter) and put back as built; each
+  one's trigger is an interaction an adventure-mode player has.
+
 ``CHECKS=seats,pens`` runs only some of them (strays, castle, seats,
-signs, rooms, houses, pens, people, gate, reach).
+signs, rooms, houses, pens, people, gate, reach, machines).
 Refuses to run while a player is within 200 blocks of the site, unless
 FORCE=1. Exits non-zero if any check fails.
 """
@@ -567,6 +572,23 @@ def people_checks() -> None:
     )
 
 
+def machines_checks() -> None:
+    """work every machine in place and put it back (machines_upper.py and
+    organ.py hold the cells and the steps, shared with machines_rig.py)"""
+    import machines_upper as M
+
+    M.work_lectern(check)
+    M.work_copper(check)
+    M.work_astrolabe(check)
+    M.work_engine(check)
+    M.work_transmuter(check)
+    try:
+        import organ
+    except ImportError:
+        return
+    organ.work_organ(check)
+
+
 # the groups of checks, in order (CHECKS=... picks some)
 GROUPS = {
     "strays": strays,
@@ -579,6 +601,7 @@ GROUPS = {
     "people": people_checks,
     "gate": gate_checks,
     "reach": reach_checks,
+    "machines": machines_checks,
 }
 
 

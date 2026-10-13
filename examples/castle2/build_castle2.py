@@ -30,6 +30,7 @@ import build_castle  # noqa: E402
 import build_inner  # noqa: E402
 import build_outer  # noqa: E402
 import castle_lib as L  # noqa: E402
+import machines_upper  # noqa: E402
 import main_gate  # noqa: E402
 import pens  # noqa: E402
 import people  # noqa: E402
@@ -103,6 +104,9 @@ build_castle.STAGES["interiors"] = interiors
 build_castle.STAGES["chapel"] = chapel
 build_castle.STAGES["bailey_buildings"] = bailey_buildings
 _insert_after("dungeons", "furnish", rooms.extras)
+# phase 6: the machines (the lectern lock, the copper puzzle, the astrolabe,
+# the engine's bell, the transmuter, the organ), after the rooms they stand in
+_insert_after("furnish", "machines", machines_upper.machines)
 
 # what each of these stages summons, learnt by running it against a fake
 # client: the build checks they are all there, verify counts them
@@ -114,6 +118,7 @@ for _stage in (
     "chapel",
     "bailey_buildings",
     "furnish",
+    "machines",
 ):
     castle2_layout.SUMMONED[_stage] = summon_counts(build_castle.STAGES[_stage])
     if not castle2_layout.SUMMONED[_stage]:
