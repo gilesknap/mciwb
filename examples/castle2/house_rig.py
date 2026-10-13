@@ -235,6 +235,13 @@ def problems(h: House) -> list[str]:
         ]
         if f"facing={back}" not in s:
             out.append(f"seat at {p} looking {looks} is {s}")
+        dx, dz = {"north": (0, -1), "south": (0, 1), "east": (1, 0), "west": (-1, 0)}[
+            looks
+        ]
+        if "slab[type=top]" in b.get((p.x - dx, p.y, p.z - dz), ""):
+            out.append(f"seat at {p} looking {looks} has its back to a table")
+        if "slab[type=top]" not in b.get((p.x + dx, p.y, p.z + dz), ""):
+            out.append(f"seat at {p} looking {looks} has no table in front")
     for name, p in h.stands.items():
         if not (
             is_air(b, p)

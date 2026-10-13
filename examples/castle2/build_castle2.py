@@ -9,7 +9,8 @@ folder) with a bailey of depth 162: this driver runs castle's build
 (``build_castle.main``) with castle2's layout and castle2's stages added to
 castle's: ``village`` (the lanes, the square and the houses) after
 ``bailey_buildings``, then ``pens`` (the animals, the allotments and
-the bee hives). The stages, the site's forceload, the player check and the
+the bee hives), and ``people`` (the castle's people, the shopkeepers,
+the villagers and the guards) after castle's ``details``. The stages, the site's forceload, the player check and the
 entity checks are castle's (see its README). The defaults (site, name,
 banner) are in castle2_layout.DEFAULTS; the environment overrides them.
 """
@@ -26,6 +27,7 @@ import build_castle  # noqa: E402
 import build_inner  # noqa: E402
 import castle_lib as L  # noqa: E402
 import pens  # noqa: E402
+import people  # noqa: E402
 import village  # noqa: E402
 
 from mciwb.imports import Vec3  # noqa: E402
@@ -61,6 +63,8 @@ _insert_after("bailey_buildings", "village", village.village)
 castle2_layout.SUMMONED["village"] = {"item_frame": village.frames()}
 _insert_after("village", "pens", pens.pens)
 castle2_layout.SUMMONED["pens"] = {**castle2_layout.pen_animals(), "armor_stand": 1}
+_insert_after("details", "people", people.people)
+castle2_layout.SUMMONED["people"] = people.counts()
 
 
 def main() -> None:

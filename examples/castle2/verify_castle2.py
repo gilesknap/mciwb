@@ -16,7 +16,12 @@ on castle2's layout, then castle2's own:
   all inside it. (castle's entity check counts every animal and item frame
   the stages summoned, castle2's included.)
 
-``CHECKS=seats,pens`` runs only some of them (castle, seats, houses, pens).
+- every static person is at their spot, and every villager is inside the
+  castle's walls (stray cats and iron golems, which villages bring, are
+  removed first).
+
+``CHECKS=seats,pens`` runs only some of them (castle, seats, houses, pens,
+people).
 Refuses to run while a player is within 200 blocks of the site, unless
 FORCE=1. Exits non-zero if any check fails.
 """
@@ -183,6 +188,39 @@ def pens() -> None:
         )
 
 
+def people_checks() -> None:
+    """every static person at their spot, every mobile one inside the
+    castle's walls"""
+    import people as P
+
+    def at(p: Vec3, extra: str = "") -> int:
+        box = L.box_selector(p, p + Vec3(0, 1, 0))
+        return VC.count(f"type=minecraft:villager,tag={TAG}.people,{box}{extra}")
+
+    missing = []
+    for what, (x, y, z), _facing, _seated, *_rest in P.CASTLE_PEOPLE:
+        if not at(V(x, y, z)) and not at(V(x, y, z)):
+            missing.append(what)
+    for name, h in castle2_layout.village_houses().items():
+        if "counter" in h.stands and h.contents in P.KEEPER:
+            if not at(h.stands["counter"]) and not at(h.stands["counter"]):
+                missing.append(f"{name}'s keeper")
+    check(
+        "people: everyone in their place (the king and queen, the cook, the"
+        " librarian, the monk, the alchemist, the smith, the jailer, the"
+        " shopkeepers)" + (f" (missing {missing})" if missing else ""),
+        not missing,
+    )
+    walls = L.box_selector(V(0, -20, 0), V(castle2_layout.W - 1, 80, castle2_layout.ZS))
+    total = VC.count(f"type=minecraft:villager,tag={TAG}.people")
+    inside = VC.count(f"type=minecraft:villager,tag={TAG}.people,{walls}")
+    want = castle2_layout.SUMMONED["people"]["villager"]
+    check(
+        f"people: all {want} villagers inside the walls (found {inside} of {total})",
+        inside == total == want,
+    )
+
+
 def main() -> None:
     a, b = castle2_layout.site_box()
     near = L.players_near(a, b, 200)
@@ -192,12 +230,16 @@ def main() -> None:
         )
     build_outer.forceload(True)
     try:
-        wanted = os.environ.get("CHECKS", "castle,seats,houses,pens").split(",")
+        import people as P
+
+        P.kill_strays()  # the cats and golems a village brings: not ours
+        wanted = os.environ.get("CHECKS", "castle,seats,houses,pens,people").split(",")
         for name, func in (
             ("castle", VC.checks),
             ("seats", seats),
             ("houses", houses),
             ("pens", pens),
+            ("people", people_checks),
         ):
             if name in wanted:
                 func()

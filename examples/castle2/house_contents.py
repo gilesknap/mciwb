@@ -192,10 +192,18 @@ def _table_with_seats(room: Room, info: dict, chairs: int = 2) -> bool:
         if len(sides) < chairs:
             continue
         room.put(x, z, TABLE)
+        used = [(x, z)]
         for side, (sx, sz) in sides[:chairs]:
             looks = OPP[side]  # the sitter looks back at the table
             room.put(sx, sz, f"{SEAT}[facing={OPP[looks]}]")
             info["seats"].append(((sx, room.y, sz), looks))
+            used.append((sx, sz))
+        # keep the next table and its seats a block away: no seat may have
+        # its back to another table
+        for ux, uz in used:
+            room.reserved |= {
+                (ux + dx, uz + dz) for dx in (-1, 0, 1) for dz in (-1, 0, 1)
+            }
         room.c.set(x, room.y + 1, z, "minecraft:candle[candles=2,lit=true]")
         return True
     return False
