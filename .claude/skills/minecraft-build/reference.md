@@ -267,12 +267,12 @@ In a script `world.render(a, b, "out.png", views=["top", "iso"])` returns the
 | `mciwb stop` | stop it |
 | `mciwb backup [--backup-name NAME]` | zip the world to `~/mciwb-backups` (flushes it first) |
 | `mciwb restore [NAME]` | stop, restore the backup (default: the latest), start |
-| `mciwb run SCRIPT [--player NAME]` | run a build script |
+| `mciwb run SCRIPT [--player NAME]` | run a build script; `--player` makes NAME an operator in creative mode |
 | `mciwb render ...` | render a region to PNG |
 
 The server's files are in `~/mciwb-server` (`--folder`). Pass the
 `--port`/`--password` of `mciwb start` to `backup`, `restore`, `render` and
-`run` (`run` spells it `--passwd`). `mciwb restore` takes all the options
+`run`. `mciwb restore` takes all the options
 of `mciwb start`, as it starts the server again. Existing backups:
 `ls ~/mciwb-backups`.
 

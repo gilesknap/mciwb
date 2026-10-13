@@ -7,7 +7,7 @@ as ``X Z [RADIUS [YMIN YMAX]]`` (RADIUS defaults to 16, YMIN YMAX to the whole
 world height)::
 
     SURVEY="632 -1658 24" mciwb run survey.py
-    mciwb run survey.py --player NAME     # or survey around a player
+    mciwb run survey.py --player NAME     # or around a player: ops them, creative
 
 It prints a report and writes ``survey.png`` (set SURVEY_PNG to change it).
 Reading the whole world height needs the world files on this machine (the

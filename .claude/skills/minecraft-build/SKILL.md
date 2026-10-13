@@ -18,14 +18,17 @@ the image to check every step.
    `--password` to every other mciwb command if `mciwb start` had them.
 2. **Backup** before any big or risky change:
    `mciwb backup --backup-name before-<what>`.
-3. **Survey** the site, around a player or a point:
+3. **Survey** the site, around a point (`X Z RADIUS`) or a player:
 
    ```bash
-   mciwb run ${CLAUDE_SKILL_DIR}/scripts/survey.py --player NAME
    SURVEY="632 -1658 24" mciwb run ${CLAUDE_SKILL_DIR}/scripts/survey.py
+   mciwb run ${CLAUDE_SKILL_DIR}/scripts/survey.py --player NAME
    ```
 
-   It prints where the players are, the ground height (min, median, max), the
+   Use the `SURVEY` form when the user gave coordinates: `--player` (on any
+   `mciwb run`) makes that player an operator, switches them to creative
+   mode and gives them action signs, so only use it when the user asked to
+   build around them and is happy with that. It prints where the players are, the ground height (min, median, max), the
    ground blocks and a text height map, and writes `survey.png` (top and iso
    views): read it. Build on ground y + 1. With no world files on this
    machine it reads over RCON, near the ground only: if that is too many
