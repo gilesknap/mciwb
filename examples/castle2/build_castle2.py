@@ -28,7 +28,9 @@ sys.path.insert(0, str(Path(__file__).parent))
 import castle2_layout  # noqa: E402, I001  (first: it sets up castle's layout)
 import build_castle  # noqa: E402
 import build_inner  # noqa: E402
+import build_outer  # noqa: E402
 import castle_lib as L  # noqa: E402
+import main_gate  # noqa: E402
 import pens  # noqa: E402
 import people  # noqa: E402
 import rooms  # noqa: E402
@@ -88,6 +90,15 @@ def bailey_buildings() -> None:
     rooms.bailey_furnishing()
 
 
+def gatehouse() -> dict:
+    """the gatehouse (castle's), its passage closed to villagers by fence
+    gates (main_gate)"""
+    g = build_outer.gatehouse()
+    main_gate.close()
+    return g
+
+
+build_castle.STAGES["gatehouse"] = gatehouse
 build_castle.STAGES["interiors"] = interiors
 build_castle.STAGES["chapel"] = chapel
 build_castle.STAGES["bailey_buildings"] = bailey_buildings
