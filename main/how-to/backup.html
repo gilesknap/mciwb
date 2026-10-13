@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Backup and Restore &#8212; mciwb 0.9.2.dev54+g0d4dd0756 documentation</title>
+    <title>Backup and Restore &#8212; mciwb 0.9.2.dev62+gd0bb83fba documentation</title>
   
   
   
@@ -40,7 +40,7 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be" />
 
-    <script src="../_static/documentation_options.js?v=41282005"></script>
+    <script src="../_static/documentation_options.js?v=68d1cc1e"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -495,7 +495,7 @@
 <h1>Backup and Restore<a class="headerlink" href="#backup-and-restore" title="Link to this heading">#</a></h1>
 <p>The default MCIWB Minecraft server provides a backup and restore facility
 described below.</p>
-<p>If you are and advanced Minecraft user running your own server instead of the
+<p>If you are an advanced Minecraft user running your own server instead of the
 default provided by MCIWB then you will need some extra config to make backups
 work. Jump to <a class="reference internal" href="../explanations/server-config.html#my-server-backups"><span class="std std-ref">Backups of your own custom server</span></a> to see how to do this.</p>
 <section id="backups-of-mciwb-server">
@@ -509,8 +509,9 @@ world.</p>
 </pre></div>
 </div>
 <p>This will create a backup with a name that is the current date and time. You
-can also specify a name if you want. Let’s do that now:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">world</span><span class="o">.</span><span class="n">backup</span><span class="p">(</span><span class="s1">'my-first-backup'</span><span class="p">)</span>
+can also specify a name if you want. Let’s do that now, naming the backup
+after the flat area that we made in <a class="reference internal" href="../tutorials/02-orientation.html#signs-try"><span class="std std-ref">Try out Some Action Signs</span></a>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">world</span><span class="o">.</span><span class="n">backup</span><span class="p">(</span><span class="s1">'flat-area-backup'</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>It is better not to use spaces in backup names so I used dash to separate
@@ -545,14 +546,15 @@ list of backups e.g</p>
 </pre></div>
 </div>
 <p>Shows my backup files like this:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mi">22</span><span class="o">-</span><span class="mi">07</span><span class="o">-</span><span class="mf">13.06.26.01</span><span class="o">.</span><span class="n">zip</span>  <span class="mi">22</span><span class="o">-</span><span class="mi">07</span><span class="o">-</span><span class="mf">13.06.34.06</span><span class="o">.</span><span class="n">zip</span>  <span class="n">my</span><span class="o">-</span><span class="n">first</span><span class="o">-</span><span class="n">backup</span><span class="o">.</span><span class="n">zip</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mi">22</span><span class="o">-</span><span class="mi">07</span><span class="o">-</span><span class="mf">13.06.26.01</span><span class="o">.</span><span class="n">zip</span>  <span class="n">flat</span><span class="o">-</span><span class="n">area</span><span class="o">-</span><span class="n">backup</span><span class="o">.</span><span class="n">zip</span>  <span class="n">my</span><span class="o">-</span><span class="n">second</span><span class="o">-</span><span class="n">backup</span><span class="o">.</span><span class="n">zip</span>
 </pre></div>
 </div>
-<p>You backups are stored in a folder called $HOME/mciwb-backups and <code class="docutils literal notranslate"><span class="pre">ls</span></code> is
+<p>Your backups are stored in a folder called $HOME/mciwb-backups and <code class="docutils literal notranslate"><span class="pre">ls</span></code> is
 a terminal command that lists the contents of that folder.</p>
 <p>Note
-that the backup files all end in <code class="docutils literal notranslate"><span class="pre">.zip</span></code>. Some of them are dated but you also
-see the <code class="docutils literal notranslate"><span class="pre">flat-area-backup.zip</span></code> file that we named explicitly.</p>
+that the backup files all end in <code class="docutils literal notranslate"><span class="pre">.zip</span></code>. One of them is dated but you also
+see the <code class="docutils literal notranslate"><span class="pre">flat-area-backup.zip</span></code> and <code class="docutils literal notranslate"><span class="pre">my-second-backup.zip</span></code> files that we
+named explicitly.</p>
 <p>Now you can restore from backup with the following command:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">mciwb</span> <span class="n">restore</span> <span class="n">flat</span><span class="o">-</span><span class="n">area</span><span class="o">-</span><span class="n">backup</span>
 </pre></div>

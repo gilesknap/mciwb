@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Contribute to the project &#8212; mciwb 0.9.2.dev54+g0d4dd0756 documentation</title>
+    <title>Contribute to the project &#8212; mciwb 0.9.2.dev62+gd0bb83fba documentation</title>
   
   
   
@@ -40,7 +40,7 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be" />
 
-    <script src="../_static/documentation_options.js?v=41282005"></script>
+    <script src="../_static/documentation_options.js?v=68d1cc1e"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -583,6 +583,10 @@ PyPI rejects direct URL dependencies, so before the next mciwb release:</p>
 <ol class="arabic simple">
 <li><p>Release mcwb (from mcipc-tools/mcwb, which publishes to PyPI).</p></li>
 <li><p>Replace the git dependency with <code class="docutils literal notranslate"><span class="pre">mcwb&gt;=&lt;new</span> <span class="pre">version&gt;</span></code> and run <code class="docutils literal notranslate"><span class="pre">uv</span> <span class="pre">lock</span></code>.</p></li>
+<li><p>Set the repository variable <code class="docutils literal notranslate"><span class="pre">PUBLISH_PYPI</span></code> to <code class="docutils literal notranslate"><span class="pre">true</span></code> (Settings &gt; Secrets
+and variables &gt; Actions &gt; Variables). Until then the <code class="docutils literal notranslate"><span class="pre">pypi</span></code> job in
+<code class="docutils literal notranslate"><span class="pre">.github/workflows/ci.yml</span></code> is skipped on tags: a tag whose CI passes still
+makes a GitHub release and container image, but publishes nothing to PyPI.</p></li>
 </ol>
 <p>To try local mcwb changes, run <code class="docutils literal notranslate"><span class="pre">uv</span> <span class="pre">pip</span> <span class="pre">install</span> <span class="pre">-e</span> <span class="pre">../mcwb</span></code> in the mciwb venv
 (and <code class="docutils literal notranslate"><span class="pre">uv</span> <span class="pre">sync</span></code> afterwards to return to the pinned commit).</p>

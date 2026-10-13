@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Minecraft’s Coordinate System &#8212; mciwb 0.9.2.dev54+g0d4dd0756 documentation</title>
+    <title>Minecraft’s Coordinate System &#8212; mciwb 0.9.2.dev62+gd0bb83fba documentation</title>
   
   
   
@@ -40,7 +40,7 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be" />
 
-    <script src="../_static/documentation_options.js?v=41282005"></script>
+    <script src="../_static/documentation_options.js?v=68d1cc1e"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -596,7 +596,7 @@ in to X , Y, Z in that order:</p>
 </div>
 <p>You can use a Vec3 to ask for information about a block in the world e.g.:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">In</span> <span class="p">[</span><span class="mi">3</span><span class="p">]:</span> <span class="n">world</span><span class="o">.</span><span class="n">get_block</span><span class="p">(</span><span class="n">Vec3</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="mi">646</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mi">72</span><span class="p">,</span> <span class="n">z</span><span class="o">=-</span><span class="mi">1638</span><span class="p">))</span>
-<span class="n">Out</span><span class="p">[</span><span class="mi">3</span><span class="p">]:</span> <span class="o">&lt;</span><span class="n">Item</span><span class="o">.</span><span class="n">CACTUS</span><span class="p">:</span> <span class="s1">'cactus'</span><span class="o">&gt;</span>
+<span class="n">Out</span><span class="p">[</span><span class="mi">3</span><span class="p">]:</span> <span class="o">&lt;</span><span class="n">Item</span><span class="o">.</span><span class="n">CACTUS</span><span class="p">:</span> <span class="s1">'minecraft:cactus'</span><span class="o">&gt;</span>
 </pre></div>
 </div>
 <p>Also you can get the location of things, like the player:</p>
@@ -607,7 +607,7 @@ in to X , Y, Z in that order:</p>
 <p>You can combine the above two commands and find out what type of block the
 player is standing on:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">In</span> <span class="p">[</span><span class="mi">5</span><span class="p">]:</span> <span class="n">world</span><span class="o">.</span><span class="n">get_block</span><span class="p">(</span><span class="n">world</span><span class="o">.</span><span class="n">player</span><span class="o">.</span><span class="n">pos</span> <span class="o">+</span> <span class="n">Direction</span><span class="o">.</span><span class="n">DOWN</span><span class="p">)</span>
-<span class="n">Out</span><span class="p">[</span><span class="mi">5</span><span class="p">]:</span> <span class="o">&lt;</span><span class="n">Item</span><span class="o">.</span><span class="n">SAND</span><span class="p">:</span> <span class="s1">'sand'</span><span class="o">&gt;</span>
+<span class="n">Out</span><span class="p">[</span><span class="mi">5</span><span class="p">]:</span> <span class="o">&lt;</span><span class="n">Item</span><span class="o">.</span><span class="n">SAND</span><span class="p">:</span> <span class="s1">'minecraft:sand'</span><span class="o">&gt;</span>
 </pre></div>
 </div>
 <p>Note the use of addition of the Direction.DOWN to get the block below the

@@ -41,9 +41,10 @@ Here’s an example:
 
 .. code-block:: python
 
-   fruits.remove("banana")
+   fruits.remove("cherry")
 
-This will remove ``banana`` from the fruits list.
+This will remove ``cherry`` from the ``fruits`` list, which is now
+``["apple", "kiwi", "orange"]``.
 
 TODO: Build on the above until we demonstrate by building castle walls around
 our village using this code:

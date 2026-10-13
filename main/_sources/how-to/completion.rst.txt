@@ -22,9 +22,9 @@ Tab
 
 Pressing Tab will attempt to complete the current command. When you have
 typed the name of an object followed by a ``.`` Tab will show you all
-the properties ahd methods of that object.
+the properties and methods of that object.
 
-This feature is particularly useful with the MCIWB built in object ``Items`` as
+This feature is particularly useful with the MCIWB built in object ``Item`` as
 it means you don't need to remember the names of all of types of blocks and 
 items in Minecraft.
 

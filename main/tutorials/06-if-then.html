@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>If - Else &#8212; mciwb 0.9.2.dev54+g0d4dd0756 documentation</title>
+    <title>If - Else &#8212; mciwb 0.9.2.dev62+gd0bb83fba documentation</title>
   
   
   
@@ -40,7 +40,7 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be" />
 
-    <script src="../_static/documentation_options.js?v=41282005"></script>
+    <script src="../_static/documentation_options.js?v=68d1cc1e"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -672,7 +672,7 @@ code<span class="w"> </span>buildings/gate.py
     <span class="n">Switch</span><span class="o">.</span><span class="n">remove_named</span><span class="p">(</span><span class="s2">"portcullis"</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Note that the <code class="docutils literal notranslate"><span class="pre">build_gate</span></code> function has a default value for position. I
+<p>Note that the <code class="docutils literal notranslate"><span class="pre">make_gate</span></code> function has a default value for position. I
 chose this as a likely entrance point to the village (we will add a
 drawbridge later!). If you want to change this you can pass a different
 position to the make_gate function. For help in choosing position coordinates
@@ -703,13 +703,15 @@ and one step SOUTH (back if you are looking North).</p>
 <p>Next we load in the file we downloaded earlier. This uses the world function
 <code class="docutils literal notranslate"><span class="pre">load</span></code>. In order to get the world object inside of a module we use
 the get_world(). Because we need world only once I did not bother to
-assign it to a variable, see the equivalent approaches below.</p>
+assign it to a variable, see the equivalent approaches below. <code class="docutils literal notranslate"><span class="pre">blocks</span></code> is
+the path of the <code class="docutils literal notranslate"><span class="pre">blocks</span></code> folder next to <code class="docutils literal notranslate"><span class="pre">gate.py</span></code> (set at the top of the
+module) and <code class="docutils literal notranslate"><span class="pre">gate_pos</span></code> is the corner of the gate that we just calculated.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># using a variable to do world.load()</span>
 <span class="n">w</span> <span class="o">=</span> <span class="n">get_world</span><span class="p">()</span>
-<span class="n">w</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">"gate.json"</span><span class="p">)</span>
+<span class="n">w</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">blocks</span> <span class="o">/</span> <span class="s2">"gate.json"</span><span class="p">,</span> <span class="n">gate_pos</span><span class="p">)</span>
 
 <span class="c1"># A shortcut to do the same thing</span>
-<span class="n">get_world</span><span class="p">()</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">"gate.json"</span><span class="p">)</span>
+<span class="n">get_world</span><span class="p">()</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">blocks</span> <span class="o">/</span> <span class="s2">"gate.json"</span><span class="p">,</span> <span class="n">gate_pos</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>When loading blocks into the world with <code class="docutils literal notranslate"><span class="pre">world.load</span></code> the position always

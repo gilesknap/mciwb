@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Modules and Packages &#8212; mciwb 0.9.2.dev54+g0d4dd0756 documentation</title>
+    <title>Modules and Packages &#8212; mciwb 0.9.2.dev62+gd0bb83fba documentation</title>
   
   
   
@@ -40,7 +40,7 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be" />
 
-    <script src="../_static/documentation_options.js?v=41282005"></script>
+    <script src="../_static/documentation_options.js?v=68d1cc1e"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -537,7 +537,7 @@ this:</p>
 code.</p>
 <p>A package is simply a folder (directory) that contains python modules.</p>
 <p>We are going to create a package called <code class="docutils literal notranslate"><span class="pre">buildings</span></code> with a single module
-to start with called <code class="docutils literal notranslate"><span class="pre">build_pagoda</span></code>. Type the following commands at the
+to start with called <code class="docutils literal notranslate"><span class="pre">pagoda</span></code>. Type the following commands at the
 bash prompt:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>cd $HOME/my_world
 mkdir buildings
@@ -633,7 +633,7 @@ blocks to make a door for you to exit the pagoda!</p>
 function.</p>
 <section id="import">
 <h3>Import<a class="headerlink" href="#import" title="Link to this heading">#</a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">mciwb.imports</span><span class="w"> </span><span class="kn">import</span> <span class="n">Direction</span><span class="p">,</span> <span class="n">Item</span><span class="p">,</span> <span class="n">get_client</span><span class="p">,</span> <span class="n">polygon</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">mciwb.imports</span><span class="w"> </span><span class="kn">import</span> <span class="n">Direction</span><span class="p">,</span> <span class="n">FillMode</span><span class="p">,</span> <span class="n">Item</span><span class="p">,</span> <span class="n">get_client</span><span class="p">,</span> <span class="n">polygon</span>
 </pre></div>
 </div>
 <p><code class="docutils literal notranslate"><span class="pre">import</span></code> allows us to access code from other modules.</p>
@@ -649,7 +649,8 @@ Luckily, you don’t need to know anything about the mathematics of polygon
 construction because the <code class="docutils literal notranslate"><span class="pre">polygon</span></code> function has done all that for you!</p>
 <p>So, <code class="docutils literal notranslate"><span class="pre">Direction</span></code> and
 <code class="docutils literal notranslate"><span class="pre">Item</span></code> are already familiar, we have previously used them in
-<strong>iPython</strong> without needing to import them.
+<strong>iPython</strong> without needing to import them (<code class="docutils literal notranslate"><span class="pre">FillMode</span></code> is new, we
+explain it below).
 But we need to import them here because we are
 writing a new module called <code class="docutils literal notranslate"><span class="pre">pagoda</span></code> (in the file pagoda.py).
 <code class="docutils literal notranslate"><span class="pre">import</span></code> is the command to share
@@ -716,6 +717,7 @@ each successive <code class="docutils literal notranslate"><span class="pre">lev
     <span class="n">diameter</span><span class="o">=</span><span class="n">floor_width</span><span class="p">,</span>
     <span class="n">sides</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
     <span class="n">item</span><span class="o">=</span><span class="n">item</span><span class="p">,</span>
+    <span class="n">mode</span><span class="o">=</span><span class="n">FillMode</span><span class="o">.</span><span class="n">REPLACE</span><span class="p">,</span>
 <span class="p">)</span>
 </pre></div>
 </div>
@@ -733,7 +735,7 @@ each successive <code class="docutils literal notranslate"><span class="pre">lev
 </dd>
 <dt>item is set to item(which was passed to <code class="docutils literal notranslate"><span class="pre">build_pagoda</span></code>):</dt><dd><p>the blocks to use for the polygon, defaulted to GOLD_BLOCK</p>
 </dd>
-<dt>mode is set to FIllMode.REPLACE</dt><dd><p>this means that all pagoda blocks replace existing blocks. You
+<dt>mode is set to FillMode.REPLACE:</dt><dd><p>this means that all pagoda blocks replace existing blocks. You
 could also use FillMode.KEEP which only places blocks if the current
 block is Item.AIR.</p>
 </dd>

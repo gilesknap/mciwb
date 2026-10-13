@@ -4,7 +4,7 @@ Backup and Restore
 The default MCIWB Minecraft server provides a backup and restore facility
 described below.
 
-If you are and advanced Minecraft user running your own server instead of the
+If you are an advanced Minecraft user running your own server instead of the
 default provided by MCIWB then you will need some extra config to make backups
 work. Jump to `my_server_backups` to see how to do this.
 
@@ -23,9 +23,10 @@ To backup the world type this at the Python Prompt::
     world.backup()
 
 This will create a backup with a name that is the current date and time. You
-can also specify a name if you want. Let's do that now::
+can also specify a name if you want. Let's do that now, naming the backup
+after the flat area that we made in `signs_try`::
 
-    world.backup('my-first-backup')
+    world.backup('flat-area-backup')
 
 It is better not to use spaces in backup names so I used dash to separate
 the words.
@@ -64,14 +65,15 @@ This command::
 
 Shows my backup files like this::
 
-    22-07-13.06.26.01.zip  22-07-13.06.34.06.zip  my-first-backup.zip
+    22-07-13.06.26.01.zip  flat-area-backup.zip  my-second-backup.zip
 
-You backups are stored in a folder called $HOME/mciwb-backups and ``ls`` is
+Your backups are stored in a folder called $HOME/mciwb-backups and ``ls`` is
 a terminal command that lists the contents of that folder.
 
 Note
-that the backup files all end in ``.zip``. Some of them are dated but you also
-see the ``flat-area-backup.zip`` file that we named explicitly.
+that the backup files all end in ``.zip``. One of them is dated but you also
+see the ``flat-area-backup.zip`` and ``my-second-backup.zip`` files that we
+named explicitly.
 
 Now you can restore from backup with the following command::
 
