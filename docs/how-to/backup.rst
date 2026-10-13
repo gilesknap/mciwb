@@ -44,10 +44,12 @@ running, the world folder is simply copied.
 
 ``mciwb backup`` looks for the server on port 20100 with the password
 ``default_pass``, the defaults of ``mciwb start``. If you started your
-server with a different ``--port`` or ``--password``, give the same options
+server with a different ``--port`` or password, give the same options
 to ``mciwb backup``::
 
-    mciwb backup --port 20101 --password my_password
+    mciwb backup --port 20101 --password-file ~/.mciwb-password
+
+See `rcon_password` for the ways to give the password.
 
 If the password is wrong, ``mciwb backup`` warns you and copies the world
 without asking the server to save it first. Use ``--folder`` and

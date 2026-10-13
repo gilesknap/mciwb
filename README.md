@@ -44,6 +44,10 @@ world.set_block(pos, Item.GOLD_BLOCK)
 polygon(get_client(), pos + Direction.EAST * 10, height=5, diameter=7)
 ```
 
+The commands use the RCON password `default_pass` unless you give one. Give
+it with `--password-file FILE` or the `MCIWB_PASSWORD` environment variable
+rather than `--password`, which other users can see with `ps`.
+
 ## Example Build
 
 The pagoda and castle with working portcullis were all created programmatically
