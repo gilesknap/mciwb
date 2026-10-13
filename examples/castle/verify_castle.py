@@ -35,9 +35,13 @@ from castle_layout import (  # noqa: E402
     ARROW_TRAP,
     BRIDGE_END,
     CELL_DOOR,
+    CELL_ROWS,
     CHAPEL,
     CRYPT_DOOR,
+    DUNGEON_Y,
     ENGINE,
+    GATE_BANNER_DX,
+    GATEHOUSE,
     HIGHEST,
     KEEP,
     KEEP_ROOF,
@@ -47,11 +51,14 @@ from castle_layout import (  # noqa: E402
     MAIN_GATE,
     MIDDLE_GATE,
     NAME,
+    ORIGIN,
     PIT_TRAP,
+    ROOFED_TOWERS,
     SPAWN,
     SUMMONED,
     TAG,
     TELEPORTS,
+    VAULT,
     VAULT_Y,
     WELL,
     WELL_TUNNEL_X,
@@ -131,21 +138,33 @@ def portcullis(name: str, gate: tuple[int, int, int, int]) -> None:
     lever, cells = g["lever"], g["closed_cells"]
     pistons = g["ceiling_pistons"] + g["floor_pistons"]
     check(f"{name}: lever present", is_block(lever, "minecraft:lever"))
-    check(f"{name}: starts open", all(is_block(p, L.AIR) for p in cells))
-    set_lever(lever, "north", "floor", True)
-    advance()
+    was_on = is_block(lever, "minecraft:lever[powered=true]")
+    barred = all(is_block(p, L.BARS) for p in cells)
+    open_ = all(is_block(p, L.AIR) for p in cells)
+    state = "closed" if barred else "open" if open_ else "half way"
     check(
-        f"{name}: lever on closes it (6 pistons, 6 cells barred)",
-        all(is_block(p, "minecraft:sticky_piston[extended=true]") for p in pistons)
-        and all(is_block(p, L.BARS) for p in cells),
+        f"{name}: found {state}, lever {'on' if was_on else 'off'} (a visitor may leave it closed)",
+        (barred and was_on) or (open_ and not was_on),
     )
-    set_lever(lever, "north", "floor", False)
-    advance()
-    check(
-        f"{name}: lever off opens it",
-        all(is_block(p, "minecraft:sticky_piston[extended=false]") for p in pistons)
-        and all(is_block(p, L.AIR) for p in cells),
-    )
+    try:
+        set_lever(lever, "north", "floor", True)
+        advance()
+        check(
+            f"{name}: lever on closes it (6 pistons, 6 cells barred)",
+            all(is_block(p, "minecraft:sticky_piston[extended=true]") for p in pistons)
+            and all(is_block(p, L.BARS) for p in cells),
+        )
+        set_lever(lever, "north", "floor", False)
+        advance()
+        check(
+            f"{name}: lever off opens it",
+            all(is_block(p, "minecraft:sticky_piston[extended=false]") for p in pistons)
+            and all(is_block(p, L.AIR) for p in cells),
+        )
+    finally:
+        if was_on:  # leave it as found
+            set_lever(lever, "north", "floor", True)
+            advance()
 
 
 def lever_door(name: str, base: Vec3, lever_b: int, material: str) -> None:
@@ -357,6 +376,128 @@ def engine() -> None:
     )
 
 
+def cells() -> None:
+    """every dungeon cell: door in the front's plane, buttons on both sides
+    attached to the frame, and power at the frame opens the door"""
+    y = DUNGEON_Y
+    for zc, zdoor, into, xs in CELL_ROWS:
+        for x in xs:
+            c_ = L.cell_cells(*V(x, y, zc), zdoor + ORIGIN.z, into)
+            door, bars, frame = c_["door"], c_["bars"], c_["frame"]
+            name = f"cell {x},{zc}"
+            check(
+                f"{name}: iron door in the line of the bars, closed",
+                all(is_block(p, "minecraft:iron_door[open=false]") for p in door)
+                and all(is_block(p, L.BARS) for p in bars)
+                and all(p.z == door[0].z for p in bars + frame),
+            )
+            check(
+                f"{name}: a button on each side, attached to the solid frame",
+                all(
+                    is_block(p, f"minecraft:stone_button[face=wall,facing={f}]")
+                    and is_block(s_, L.BRICK)
+                    for p, f, s_ in c_["buttons"]
+                ),
+            )
+            try:
+                # press: the frame the buttons power becomes a power source
+                c(
+                    f"setblock {frame[1].x} {frame[1].y} {frame[1].z} minecraft:redstone_block"
+                )
+                advance(10)
+                check(
+                    f"{name}: power at the frame opens both halves of the door",
+                    all(is_block(p, "minecraft:iron_door[open=true]") for p in door),
+                )
+            finally:
+                c(f"setblock {frame[1].x} {frame[1].y} {frame[1].z} {L.BRICK}")
+                for p, f, _ in c_["buttons"]:  # the frame's change knocked them off
+                    c(
+                        f"setblock {p.x} {p.y} {p.z} minecraft:stone_button[face=wall,facing={f}]"
+                    )
+                advance(10)
+            check(
+                f"{name}: closes again",
+                all(is_block(p, "minecraft:iron_door[open=false]") for p in door),
+            )
+
+
+def mounts() -> None:
+    """every wall-mounted block the build places that a player can reach is
+    on a solid block: levers, buttons, torches, the gate's banners"""
+    cx1, cz1, cx2, cz2 = CHAPEL
+    bx1, bz1 = cx1 - 2, cz2 - 1
+    gx1, gz1, gx2, gz2 = GATEHOUSE
+    up = Vec3(0, 1, 0)
+    pairs: list[tuple[Vec3, str, Vec3]] = []  # (block, what, its support)
+    for base, lever_b in ((V(*CELL_DOOR), -3), (V(*CRYPT_DOOR), -1)):
+        d = L.hidden_door_cells(base, Wd, S, trigger="lever", lever_b=lever_b)
+        pairs.append((d["trigger"], "minecraft:lever", d["trigger"] + Wd))
+        pairs.append(
+            (
+                base + Wd + up + S * 2,
+                "minecraft:redstone_wall_torch",
+                base + Wd * 2 + up + S * 2,
+            )
+        )
+    lib = L.hidden_door_cells(V(*LIBRARY_DOOR), E, S)
+    pairs.append((lib["trigger"], "minecraft:chiseled_bookshelf", lib["trigger"] - up))
+    pairs.append(
+        (
+            V(*LIBRARY_DOOR) + E + up + S * 2,
+            "minecraft:redstone_wall_torch",
+            V(*LIBRARY_DOOR) + E * 2 + up + S * 2,
+        )
+    )
+    tx = WELL_TUNNEL_X
+    for z in (VAULT[3], VAULT[3] + 2):
+        pairs.append(
+            (
+                V(tx + 1, VAULT_Y + 1, z),
+                "minecraft:stone_button",
+                V(tx + 1, VAULT_Y + 1, VAULT[3] + 1),
+            )
+        )
+    for k in (4, 11, 18):
+        pairs.append(
+            (
+                V(bx1 + 5, YU + k, bz1 + 3),
+                "minecraft:wall_torch",
+                V(bx1 + 6, YU + k, bz1 + 3),
+            )
+        )
+    for x in (XG - GATE_BANNER_DX, XG + GATE_BANNER_DX):
+        pairs.append((V(x, 5, gz2 + 1), "#minecraft:banners", V(x, 5, gz2)))
+    bad = [
+        (p.x, p.y, p.z, what)
+        for p, what, s_ in pairs
+        if not is_block(p, what) or is_block(s_, L.AIR) or is_block(s_, L.BARS)
+    ]
+    check(
+        f"mounts: levers, buttons, torches and banners are on solid blocks{' (not ' + str(bad[:4]) + ')' if bad else ''}",
+        not bad,
+    )
+
+
+def banners() -> None:
+    """each roofed tower's banner hangs beside the top of its cone, in the
+    open, on the step it is attached to"""
+    bad = []
+    for cx, cz, r, y_top in ROOFED_TOWERS:
+        o = V(cx, y_top, cz)
+        p = L.cone_banner(o.x, o.z, r, o.y)
+        if not (
+            is_block(p, "#minecraft:banners")
+            and not is_block(Vec3(p.x - 1, p.y, p.z), L.AIR)
+            and is_block(p + Vec3(1, 0, 0), L.AIR)
+        ):
+            bad.append((p.x, p.y, p.z))
+    check(
+        f"towers: every cone's banner hangs beside its top{' (not ' + str(bad) + ')' if bad else ''}",
+        not bad,
+    )
+
+
 def places() -> None:
     kx1, kz1, kx2, kz2 = KEEP
     chest = V(54, VAULT_Y, 17)
@@ -406,12 +547,12 @@ def top_is(x: int, z: int, block: str) -> bool:
 
 def road_block(x: int, z: int, d: Vec3) -> bool:
     """is this centre cell of a leg running in direction ``d`` the road's
-    path? Cobble is allowed only where another road crosses: then the
-    cells two to either side, beyond this road's own edges, are road too"""
+    path? Cobble is allowed only where another road crosses or ends: then
+    the cells two to the side, beyond this road's own edges, are road too"""
     if top_is(x, z, "minecraft:dirt_path"):
         return True
     px, pz = -int(d.z), int(d.x)
-    return top_is(x, z, "minecraft:cobblestone") and all(
+    return top_is(x, z, "minecraft:cobblestone") and any(  # any: a road may end here
         top_is(x + s * 2 * px, z + s * 2 * pz, "minecraft:dirt_path")
         or top_is(x + s * 2 * px, z + s * 2 * pz, "minecraft:cobblestone")
         for s in (1, -1)
@@ -482,6 +623,37 @@ def road() -> None:
         f"road: every lamp post is a single post{' (not ' + str(bad[:6]) + ')' if bad else ''}",
         not bad,
     )
+    # and nothing post-shaped (a lantern over fences) within 4 blocks of the
+    # road that is not one of them: a stray from an older route. Another
+    # castle's road may share a leg, and its posts stand in the same lane
+    # (3 to the side) at its own spacing: those are allowed if they are
+    # single posts; anything post-shaped out of the lane is a stray
+    wanted = {(q.x, q.z) for q in build_outer.lamp_post_cells(points)}
+    strays = []
+    for a, b in zip(points, points[1:], strict=False):
+        d, right, length = build_outer.leg_of(a, b)
+        for k in range(length + 1):
+            for o in range(-4, 5):
+                q = a + d * k + right * o
+                x, z = int(q.x), int(q.z)
+                if (x, z) in wanted or not top_is(x, z, L.LANTERN):
+                    continue
+                top = ground_height(x, z)
+                if not is_block(Vec3(x, top - 1, z), "minecraft:dark_oak_fence"):
+                    continue
+                single = all(
+                    is_block(Vec3(x, top - j, z), "minecraft:dark_oak_fence")
+                    for j in range(1, h + 1)
+                ) and not any(
+                    is_block(Vec3(x, top - h - 1, z), blk)
+                    for blk in ("minecraft:dark_oak_fence", L.LANTERN)
+                )
+                if o != 3 or not single:
+                    strays.append((x, top, z))
+    check(
+        f"road: no stray posts within 4 blocks of it{' (found ' + str(strays[:6]) + ')' if strays else ''}",
+        not strays,
+    )
 
 
 def entities() -> None:
@@ -526,6 +698,9 @@ def main() -> None:
         passages()
         engine()
         places()
+        cells()
+        mounts()
+        banners()
         road()
         entities()
     finally:

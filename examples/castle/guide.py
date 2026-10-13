@@ -203,8 +203,8 @@ coordinates in the scripts are offsets from it (x east, z south, y up).
    under the cliff to an iron door (buttons either side) into the vault.
    Swim back up the column to leave.
 5. **The dungeon's escape door.** Down the dungeon stair, through the guard
-   room and along the cell block (press the stone button by each cell's
-   iron door). In the **last cell on the north side** (x {V(70, 0, 0).x}..{V(72, 0, 0).x},
+   room and along the cell block. Each cell's iron door has a stone button
+   on its frame on both sides, so nobody gets shut in: no cell is a trap. In the **last cell on the north side** (x {V(70, 0, 0).x}..{V(72, 0, 0).x},
    z {V(0, 0, 132).z}..{V(0, 0, 134).z}) a lever on its west wall at
    {p(cell["trigger"])} opens the corridor's end wall (two stone bricks at
    ({cell["door"][0].x}, {cell["door"][0].y}..{cell["door"][1].y}, {cell["door"][0].z})):

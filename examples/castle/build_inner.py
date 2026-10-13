@@ -25,6 +25,7 @@ from castle_layout import (
     BANNER,
     BANNER2,
     CELL_DOOR,
+    CELL_ROWS,
     CHAPEL,
     CRYPT_DOOR,
     KEEP,
@@ -679,8 +680,9 @@ def stables() -> None:
     L.fill(V(x1, 4, z2), V(x2, 4, z2), L.PLANKS)
     for z in range(z1, z2 + 1, 5):
         L.fill(V(x2, 0, z), V(x2, 3, z), "minecraft:stripped_dark_oak_log")
-        if z not in (z1, z2):  # fences between the stalls
-            L.fill(V(x1, 0, z), V(x2 - 1, 0, z), "minecraft:dark_oak_fence")
+        if z not in (z1, z2):  # fences between the stalls, two high: a horse
+            # on the hay or the cauldron beside them could step over one
+            L.fill(V(x1, 0, z), V(x2 - 1, 1, z), "minecraft:dark_oak_fence")
         if z < z2:  # a fence and a gate across each stall's front: the horses stay in
             L.fill(V(x2, 0, z + 1), V(x2, 0, z + 4), "minecraft:dark_oak_fence")
             L.set_block(V(x2, 0, z + 2), "minecraft:dark_oak_fence_gate[facing=east]")
@@ -879,26 +881,10 @@ def dungeons() -> None:
     # the cell block: a corridor west with cells both sides
     L.fill(V(69, y - 1, 131), V(90, y + 3, 143), L.BRICK)
     L.fill(V(70, y, 136), V(90, y + 2, 138), L.AIR)
-    for i, x in enumerate(range(70, 87, 4)):
-        for zc, zdoor, facing in ((132, 135, "south"), (140, 139, "north")):
-            L.fill(V(x, y, zc), V(x + 2, y + 1, zc + 2), L.AIR)
-            L.fill(V(x, y, zdoor), V(x + 2, y + 1, zdoor), L.BARS)
-            L.set_block(
-                V(x + 1, y, zdoor), f"minecraft:iron_door[facing={facing},half=lower]"
-            )
-            L.set_block(
-                V(x + 1, y + 1, zdoor),
-                f"minecraft:iron_door[facing={facing},half=upper]",
-            )
-            # a button on the corridor side opens the door
-            zb = zdoor + (1 if facing == "south" else -1)
-            L.set_block(
-                V(x + 2, y + 1, zb),
-                f"minecraft:stone_button[face=wall,facing={facing}]",
-            )
-            L.set_block(
-                V(x, y, zc if facing == "south" else zc + 2), "minecraft:hay_block"
-            )
+    for zc, zdoor, into, xs in CELL_ROWS:
+        for i, x in enumerate(xs):
+            L.cell(*V(x, y, zc), zdoor + ORIGIN.z, into)
+            L.set_block(V(x, y, zc if into > 0 else zc + 2), "minecraft:hay_block")
             if i % 2 == 0:
                 L.set_block(V(x + 2, y + 1, zc + 1), L.CHAIN)
                 L.set_block(V(x + 2, y, zc + 1), "minecraft:skeleton_skull[rotation=4]")
@@ -1183,6 +1169,8 @@ def lighting() -> None:
         L.set_block(V(x, 5, z), f"{L.LANTERN}[hanging=false]")
     for x, z in ((98, 20), (98, 34)):
         L.set_block(V(x, YU + 7, z), f"{L.LANTERN}[hanging=false]")
+    # and inside the bell tower's hip roof, which is hollow
+    L.set_block(V(CHAPEL[0] + 1, YU + 25, CHAPEL[3] + 2), f"{L.LANTERN}[hanging=false]")
     # the dungeons: the pit corridor, the hidden chamber, the oubliette, the
     # trap corridor and the lower treasury (lanterns hang in the ceilings)
     for z in (122, 131):

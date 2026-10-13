@@ -96,10 +96,11 @@ def settle_entities(stages: list[str]) -> None:
     L.tick(60)
     time.sleep(2)
     L.cmd("save-all flush")
-    build_outer.forceload(False)
-    L.tick(100)
-    time.sleep(3)
-    build_outer.forceload(True)
+    for _ in range(2):  # the loss has shown on the first or second reload
+        build_outer.forceload(False)
+        L.tick(100)
+        time.sleep(3)
+        build_outer.forceload(True)
     for stage in stages:
         missing = missing_entities(stage)
         if missing:

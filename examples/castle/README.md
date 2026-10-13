@@ -46,7 +46,11 @@ ORIGIN=-80,82,-230 SPAWN=32,74,-64 NAME=Fable BANNER=red mciwb run build_castle.
   road) already is, and each castle's signpost stands a different distance
   back from spawn (chosen from its `ORIGIN`, stepping further back if
   another castle's sign is there), so none overwrites another's. Rebuilding
-  a road is idempotent: the same posts and sign, once.
+  a road is idempotent: the same posts and sign, once. `verify_castle.py`
+  checks the path is continuous, the sign is there, every post is a single
+  post, and nothing post-shaped stands within 4 blocks of the road except
+  single posts in the lamp lane (3 to the side), where another castle's
+  posts may share the leg at its own spacing.
 - `NAME` goes on the sign inside the gate, the vault's sign and the
   signpost; `BANNER` is the colour of the castle's banners (the second
   colour, blue, is fixed).
@@ -107,13 +111,19 @@ for each that gives the positions of its parts, used by the build and by
   in the end wall of a corridor.
 - **The engine**: eight hoppers pass amethyst shards round a ring; twelve
   comparators chase lamps, a piston and note blocks.
+- **Cell doors** (`castle_lib.cell`): each dungeon cell's iron door stands
+  in the line of its bars, flush with the corridor face, in a brick frame
+  that carries a stone button on both sides, so nobody gets shut in.
 
 `verify_castle.py` toggles each of them over RCON and reads the result
 back (the arrow trap by its dispensers' stock going down: an arrow that
-hits the armour stand on the wire breaks it and vanishes), then checks the
-passages, the treasure, the teleport targets of the guide, the road to
-spawn and its signpost, and that the castle's entities are exactly the
-ones it summoned. It clears hostile mobs from the site and anything from
+hits the armour stand on the wire breaks it and vanishes; each cell door
+by powering its frame), checks that the levers, buttons, torches and
+banners are mounted on solid blocks and that every roofed tower's banner
+hangs in the open beside its top, then checks the passages, the treasure,
+the teleport targets of the guide, the road to spawn and its signpost, and
+that the castle's entities are exactly the ones it summoned. A portcullis
+a visitor left closed is reported as found, tested, and left closed. It clears hostile mobs from the site and anything from
 the tripwires first, and leaves everything as it found it: the levers off,
 the bookshelf untouched, the dispensers reloaded. Two things it has to work round: the server pauses
 when nobody is online (ticks are advanced with `tick sprint`), and a lever
@@ -148,8 +158,9 @@ dry ditch, on the moat's bank, on the flat tops, on every tower floor and
 roofed tower's steps, along the keep's string courses, in the attics under
 the gable roofs and in the dungeons' corners; arrow slits are one block
 high so nothing fits in them. That covers the castle, not the natural caves
-in the hill under it (the dungeons and tunnels are sealed from them): mobs
-go on spawning there. The build's cleanup and the checks kill whatever has
+in the hill under it (the dungeons and tunnels are sealed from them, but
+the caves stay dark): hostile mobs go on spawning in those caves, and a
+count of mobs in the site will find them there, below the castle's floors. The build's cleanup and the checks kill whatever has
 spawned in the site anyway.
 
 With a player online the scripts never `tick sprint` (it would run the

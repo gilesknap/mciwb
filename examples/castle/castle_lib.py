@@ -382,6 +382,13 @@ def curtain(
 # ---------------------------------------------------------------- towers
 
 
+def cone_banner(cx: int, cz: int, r: int, y_top: int) -> Vec3:
+    """where a roofed tower's banner hangs: beside the top step of its cone
+    (the apex is at y_top + 2 * (r + 1); the banner is two below, on the
+    east face of the top step)"""
+    return Vec3(cx + 1, y_top + 2 * (r + 1) - 2, cz)
+
+
 def spiral_points(cx: int, cz: int, y1: int, y2: int, rad: int = 2) -> list[Vec3]:
     """points for a `stairway` spiralling up round a square pillar"""
     corners = [(rad, rad), (-rad, rad), (-rad, -rad), (rad, -rad)]
@@ -513,16 +520,18 @@ def round_tower(
             level += 2
             rr -= 1
         set_block(Vec3(cx, level, cz), "minecraft:lightning_rod")
-        # lanterns on the eaves and every other step, at the compass points:
-        # the steps are ledges a mob could spawn on in the dark
-        for level, rr in [(y_top, r + 1)] + steps[1::2]:
-            for dx, dz in ((rr, 0), (-rr, 0), (0, rr), (0, -rr)):
-                set_block(
-                    Vec3(cx + dx, level + 1, cz + dz), f"{LANTERN}[hanging=false]"
-                )
+        # lanterns standing on the eaves (one block high) and on every other
+        # step (two high), at the compass points: the steps are ledges a mob
+        # could spawn on in the dark. Not the top step: the rod is there.
+        ledges = [(y_top + 1, r + 1)] + [
+            (lv + 2, rr) for lv, rr in steps[1::2] if rr > 0
+        ]
+        for stand, step_r in ledges:
+            for dx, dz in ((step_r, 0), (-step_r, 0), (0, step_r), (0, -step_r)):
+                set_block(Vec3(cx + dx, stand, cz + dz), f"{LANTERN}[hanging=false]")
         if banner:
             set_block(
-                Vec3(cx + 1, level - 2, cz),
+                cone_banner(cx, cz, r, y_top),
                 f"minecraft:{banner}_wall_banner[facing=east]",
             )
 
@@ -626,6 +635,54 @@ def _facing(d: Vec3) -> str:
     return {(0, -1): "north", (0, 1): "south", (1, 0): "east", (-1, 0): "west"}[
         (int(d.x), int(d.z))
     ]
+
+
+def cell_cells(x: int, y: int, zc: int, zdoor: int, into: int) -> dict:
+    """
+    The parts of a dungeon cell (see `cell`): the iron door in the cell's
+    front at ``x+1``, the bars beside it at ``x``, the brick frame at ``x+2``
+    that carries a stone button on each side (so nobody is shut in), and
+    which block each button is attached to.
+    """
+    corridor = "south" if into > 0 else "north"
+    inside = "north" if into > 0 else "south"
+    frame = [Vec3(x + 2, y, zdoor), Vec3(x + 2, y + 1, zdoor)]
+    return {
+        "door": [Vec3(x + 1, y, zdoor), Vec3(x + 1, y + 1, zdoor)],
+        "bars": [Vec3(x, y, zdoor), Vec3(x, y + 1, zdoor)],
+        "frame": frame,
+        # (button position, its facing, the block it is attached to)
+        "buttons": [
+            (Vec3(x + 2, y + 1, zdoor + into), corridor, frame[1]),
+            (Vec3(x + 2, y + 1, zdoor - into), inside, frame[1]),
+        ],
+        "inside": Vec3(x + 1, y, zc + 1),
+    }
+
+
+def cell(x: int, y: int, zc: int, zdoor: int, into: int) -> dict:
+    """
+    A dungeon cell, 3 wide from ``x``, with its 3-deep interior from ``zc``
+    and its front at ``zdoor`` (people stand at ``y``): bars, an iron door
+    whose closed panel is flush with the corridor face of the front, and a
+    brick frame with a stone button on each side of it, each attached to
+    the frame and powering it, so that the door opens from either side.
+    """
+    p = placer()
+    c = cell_cells(x, y, zc, zdoor, into)
+    p.fill(Vec3(x, y, zc), Vec3(x + 2, y + 1, zc + 2), AIR)
+    for q in c["bars"]:
+        p.setblock(q, BARS)
+    for q in c["frame"]:
+        p.setblock(q, BRICK)
+    # a door's closed panel lies against the edge opposite its facing: face
+    # it into the cell, and the panel is on the corridor side
+    facing = "north" if into > 0 else "south"
+    p.setblock(c["door"][0], f"minecraft:iron_door[facing={facing},half=lower]")
+    p.setblock(c["door"][1], f"minecraft:iron_door[facing={facing},half=upper]")
+    for q, f, _ in c["buttons"]:
+        p.setblock(q, f"minecraft:stone_button[face=wall,facing={f}]")
+    return c
 
 
 def hidden_door(

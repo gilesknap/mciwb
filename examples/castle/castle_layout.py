@@ -105,6 +105,13 @@ CELL_DOOR = (69, -8, 137)  # base; u west, v south, lever at -3
 PIT_TRAP = (95, -8, 127, 7)  # corridor x, standing level, first trapdoor z, depth
 ARROW_TRAP = (94, 96, -15, 118, 108)  # x1, x2, standing level, wire z, dispenser z
 WELL = (60, 105)
+DUNGEON_Y = -8  # the dungeon's standing level
+# the two rows of cells: interior z, the z of the cell front (bars, door and
+# its frame), +1 if the corridor is south of the front, -1 if north, and the
+# west x of each cell (3 wide). The south row starts a cell further east:
+# the hidden door's pilaster at the corridor's west end takes that space
+CELL_ROWS = ((132, 135, 1, range(70, 87, 4)), (140, 139, -1, range(74, 87, 4)))
+GATE_BANNER_DX = 6  # the gate's banners hang this far either side of the arch
 WELL_TUNNEL_X = (
     65  # the tunnel from the well: south to the dungeons, north to the vault
 )
@@ -124,6 +131,19 @@ SUMMONED = {
     "bailey_buildings": {"horse": 6, "armor_stand": 2},
     "details": {"armor_stand": 4, "iron_golem": 1, "cat": 1},
 }
+
+# the roofed towers (centre x, z, radius, standing level of the top floor):
+# each flies a banner beside the top of its cone (castle_lib.cone_banner)
+ROOFED_TOWERS = [
+    (3, 3, TR, YU + WALL_H + 12),
+    (W - 4, 3, TR, YU + WALL_H + 12),
+    (KEEP[0], KEEP[1], 4, KEEP_ROOF + 10),
+    (KEEP[2], KEEP[1], 4, KEEP_ROOF + 10),
+    (KEEP[0], KEEP[3], 4, KEEP_ROOF + 10),
+    (KEEP[2], KEEP[3], 4, KEEP_ROOF + 10),
+    (XG, (KEEP[1] + KEEP[3]) // 2, 3, KEEP_ROOF + 8),
+    (ALCH[0], ALCH[1], 6, YU + 31),
+]
 
 # where visitors are teleported to (local, standing positions); verify checks
 # that each has free feet and head on a solid floor

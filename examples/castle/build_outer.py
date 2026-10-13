@@ -14,6 +14,7 @@ from castle_layout import (
     BANNER2,
     BRIDGE_END,
     DITCH_FLOOR,
+    GATE_BANNER_DX,
     GATE_X1,
     GATE_X2,
     GATEHOUSE,
@@ -484,8 +485,8 @@ def gatehouse() -> dict:
             doors=[(ORIGIN.y + dy, d, o) for dy, d, o in doors],
             banner=BANNER,
         )
-    # a lamp and banners over the arch
-    for x in (XG - 4, XG + 4):
+    # a lamp and banners over the arch (clear of the drawbridge chains at XG +- 4)
+    for x in (XG - GATE_BANNER_DX, XG + GATE_BANNER_DX):
         L.set_block(V(x, 5, z2 + 1), f"minecraft:{BANNER}_wall_banner[facing=south]")
     L.set_block(V(XG, 6, z2 + 1), f"{L.LANTERN}[hanging=true]")
     L.set_block(V(XG, 7, z2 + 1), L.CHAIN)
@@ -565,7 +566,7 @@ def lamp_posts(points: list[Vec3]) -> None:
         y = top + 1
         foot = Vec3(p.x, y, p.z)
         if L.is_block(Vec3(p.x, top, p.z), "minecraft:dirt_path") or not all(
-            L.is_block(Vec3(p.x, yy, p.z), L.AIR)
+            L.is_block(Vec3(p.x, yy, p.z), "#minecraft:replaceable")  # air or a plant
             for yy in range(y, y + POST_HEIGHT + 1)
         ):
             continue
