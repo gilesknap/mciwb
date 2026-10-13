@@ -142,11 +142,77 @@ def set_lever(pos: Vec3, facing: str, face: str, on: bool) -> None:
     L.lever(pos, facing, face, powered=on)
 
 
-def portcullis(name: str, gate: tuple[int, int, int, int]) -> None:
+def pull_gate_lever(g: dict, on: bool) -> None:
+    """set a portcullis's lever, then change its wall block (to stone and
+    back): a lever set by command updates only its own neighbours, and the
+    torch on the wall block above it needs the update a player's pull gives"""
+    set_lever(g["lever"], g["lever_facing"], "wall", on)
+    b = g["lever_block"]
+    c(f"setblock {b.x} {b.y} {b.z} {L.STONE}")
+    c(f"setblock {b.x} {b.y} {b.z} {L.BRICK}")
+
+
+# blocks that redstone power changes: nothing of these may touch a lever
+# or its block except what it is meant to drive
+POWERED_KINDS = (
+    "minecraft:redstone_wire",
+    "minecraft:repeater",
+    "minecraft:comparator",
+    "#minecraft:redstone_ores",
+    "minecraft:piston",
+    "minecraft:sticky_piston",
+    "minecraft:redstone_lamp",
+    "minecraft:dispenser",
+    "minecraft:dropper",
+    "minecraft:note_block",
+    "#minecraft:doors",
+    "#minecraft:trapdoors",
+    "#minecraft:fence_gates",
+    "minecraft:redstone_torch",
+    "minecraft:redstone_wall_torch",
+    "minecraft:hopper",
+)
+
+NEIGHBOURS = [Vec3(1, 0, 0), Vec3(-1, 0, 0), Vec3(0, 1, 0), Vec3(0, -1, 0), S, S * -1]
+
+
+def powered_neighbours(p: Vec3, allowed: list[Vec3]) -> list[tuple[int, int, int]]:
+    """the redstone-driven blocks next to p, other than ``allowed``"""
+    found = []
+    for d in NEIGHBOURS:
+        q = p + d
+        if q in allowed:
+            continue
+        if any(is_block(q, k) for k in POWERED_KINDS):
+            found.append((q.x, q.y, q.z))
+    return found
+
+
+def portcullis(name: str, gate: tuple[int, int, int, int, int]) -> None:
     g = L.portcullis_cells(*build_outer.portcullis_args(gate))
     lever, cells = g["lever"], g["closed_cells"]
     pistons = g["ceiling_pistons"] + g["floor_pistons"]
+    torch1, torch2 = g["torches"]
     check(f"{name}: lever present", is_block(lever, "minecraft:lever"))
+    # the lever is in the passage beside the bars, where its puller sees them
+    beside = [q for q in cells if q.y == lever.y and abs(q.z - lever.z) == 1]
+    check(
+        f"{name}: lever at {tuple(lever)} in the passage, next to the bars at {[tuple(q) for q in beside]}",
+        bool(beside)
+        and all(is_block(lever + Vec3(0, dy, 0) + Wd, L.AIR) for dy in (-1, 0)),
+    )
+    # it drives only the first torch (on its block); the torches drive only
+    # the next torch and the winch line
+    bad = powered_neighbours(lever, [g["lever_block"]])
+    bad += powered_neighbours(g["lever_block"], [lever, torch1])
+    bad += powered_neighbours(torch1, [g["lever_block"]])
+    bad += powered_neighbours(
+        torch2, [torch2 + S * (-1 if torch2.z > cells[0].z else 1)]
+    )
+    check(
+        f"{name}: the lever and its torches touch nothing else redstone drives{' (' + str(bad) + ')' if bad else ''}",
+        not bad,
+    )
     was_on = is_block(lever, "minecraft:lever[powered=true]")
     barred = all(is_block(p, L.BARS) for p in cells)
     open_ = all(is_block(p, L.AIR) for p in cells)
@@ -156,14 +222,14 @@ def portcullis(name: str, gate: tuple[int, int, int, int]) -> None:
         (barred and was_on) or (open_ and not was_on),
     )
     try:
-        set_lever(lever, "north", "floor", True)
+        pull_gate_lever(g, True)
         advance()
         check(
             f"{name}: lever on closes it (6 pistons, 6 cells barred)",
             all(is_block(p, "minecraft:sticky_piston[extended=true]") for p in pistons)
             and all(is_block(p, L.BARS) for p in cells),
         )
-        set_lever(lever, "north", "floor", False)
+        pull_gate_lever(g, False)
         advance()
         check(
             f"{name}: lever off opens it",
@@ -172,7 +238,7 @@ def portcullis(name: str, gate: tuple[int, int, int, int]) -> None:
         )
     finally:
         if was_on:  # leave it as found
-            set_lever(lever, "north", "floor", True)
+            pull_gate_lever(g, True)
             advance()
 
 
@@ -504,6 +570,11 @@ def mounts() -> None:
         )
     for x in (XG - GATE_BANNER_DX, XG + GATE_BANNER_DX):
         pairs.append((V(x, 5, gz2 + 1), "#minecraft:banners", V(x, 5, gz2)))
+    for gate in (MAIN_GATE, MIDDLE_GATE):
+        g = L.portcullis_cells(*build_outer.portcullis_args(gate))
+        pairs.append((g["lever"], "minecraft:lever", g["lever_block"]))
+        for t in g["torches"]:
+            pairs.append((t, "minecraft:redstone_torch", t - up))
     bad = [
         (p.x, p.y, p.z, what)
         for p, what, s_ in pairs

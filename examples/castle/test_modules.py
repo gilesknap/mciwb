@@ -113,21 +113,36 @@ def test_layout() -> None:
         castle_layout.WALL_STAIRS.update(saved[2])
 
 
+def pull(g: dict, on: bool) -> None:
+    """a portcullis's lever, set by command: then its wall block is changed
+    (to stone and back) to give the torch on it the update a player's pull
+    gives (a lever set by command updates only its own neighbours)"""
+    L.lever(g["lever"], g["lever_facing"], "wall", powered=on)
+    b = g["lever_block"]
+    c(f"setblock {b.x} {b.y} {b.z} {L.STONE}")
+    c(f"setblock {b.x} {b.y} {b.z} {L.BRICK}")
+
+
 def test_portcullis(x: int, y0: int, z: int) -> None:
     """passage x..x+2 through z, floor at y0-1"""
     L.fill(Vec3(x, y0, z - 14), Vec3(x + 2, y0 + 1, z + 14), L.AIR)
     g = L.portcullis(x, x + 2, z, y0)
     advance()
     check("portcullis starts open", all(is_block(p, L.AIR) for p in g["closed_cells"]))
+    check(
+        "its lever is in the passage, beside the bars",
+        is_block(g["lever"], "minecraft:lever")
+        and g["lever"] + Vec3(0, 0, 1) in g["closed_cells"],
+    )
     pistons = g["ceiling_pistons"] + g["floor_pistons"]
-    L.lever(g["lever"], "north", "floor", powered=True)
+    pull(g, True)
     advance()
     check(
         "portcullis closes (6 pistons extended, 6 cells barred)",
         all(is_block(p, "minecraft:sticky_piston[extended=true]") for p in pistons)
         and all(is_block(p, L.BARS) for p in g["closed_cells"]),
     )
-    L.lever(g["lever"], "north", "floor", powered=False)
+    pull(g, False)
     advance()
     check(
         "portcullis opens again",

@@ -183,10 +183,12 @@ def tower(name: str, y_bottom: int, y_top: int, floors: list[int], **kwargs) -> 
     )
 
 
-def portcullis_args(gate: tuple[int, int, int, int]) -> tuple[int, int, int, int]:
-    """a gate's (x1, x2, z, standing level) from local to world"""
-    x1, x2, z, y0 = gate
-    return ORIGIN.x + x1, ORIGIN.x + x2, ORIGIN.z + z, ORIGIN.y + y0
+def portcullis_args(
+    gate: tuple[int, int, int, int, int],
+) -> tuple[int, int, int, int, int]:
+    """a gate's (x1, x2, z, standing level, lever side) from local to world"""
+    x1, x2, z, y0, lever_dz = gate
+    return ORIGIN.x + x1, ORIGIN.x + x2, ORIGIN.z + z, ORIGIN.y + y0, lever_dz
 
 
 def foundation_cells(cells: L.Cells, top_y: int, block: str) -> None:

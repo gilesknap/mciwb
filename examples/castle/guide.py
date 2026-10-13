@@ -66,9 +66,11 @@ def xyz(x: int, y: int, z: int) -> str:
     return p(V(x, y, z))
 
 
-def local_gate(gate: tuple[int, int, int, int]) -> dict:
-    x1, x2, z, y0 = gate
-    return L.portcullis_cells(ORIGIN.x + x1, ORIGIN.x + x2, ORIGIN.z + z, ORIGIN.y + y0)
+def local_gate(gate: tuple[int, int, int, int, int]) -> dict:
+    x1, x2, z, y0, lever_dz = gate
+    return L.portcullis_cells(
+        ORIGIN.x + x1, ORIGIN.x + x2, ORIGIN.z + z, ORIGIN.y + y0, lever_dz
+    )
 
 
 def main() -> None:
@@ -169,8 +171,9 @@ coordinates in the scripts are offsets from it (x east, z south, y up).
 | Place | World position (entrance) |
 | --- | --- |
 | Main gate and portcullis | passage x {V(GATE_X1, 0, 0).x}..{V(GATE_X2, 0, 0).x}, z {V(0, 0, gz1).z}..{V(0, 0, gz2).z}; portcullis line z {V(0, 0, GATE_Z).z} |
-| Gatehouse winch room (portcullis lever) | lever at {p(main_gate["lever"])}; stair up from the west guard room (door from the passage at {xyz(GATE_X1 - 1, 0, gz1 + 3)}) |
-| Grand stair and middle gate | x {V(XG - 3, 0, 0).x}..{V(XG + 3, 0, 0).x}, z {V(0, 0, UD + YU).z}..{V(0, 0, UD).z}, up to y {ORIGIN.y + YU}; second portcullis at z {V(0, 0, UD - 2).z}, lever at {p(middle_gate["lever"])} in its winch room: enter the west gate tower from the ward at {xyz(XG - 7, YU, UD - 6)}, up the stair, then east |
+| Main portcullis lever | in the gate passage at {p(main_gate["lever"])}, on its east wall beside the bars |
+| Gatehouse winch room | over the passage: stair up from the west guard room (door from the passage at {xyz(GATE_X1 - 1, 0, gz1 + 3)}) |
+| Grand stair and middle gate | x {V(XG - 3, 0, 0).x}..{V(XG + 3, 0, 0).x}, z {V(0, 0, UD + YU).z}..{V(0, 0, UD).z}, up to y {ORIGIN.y + YU}; second portcullis at z {V(0, 0, UD - 2).z}, lever at {p(middle_gate["lever"])} in the passage beside it; its winch room is over the gate: enter the west gate tower from the ward at {xyz(XG - 7, YU, UD - 6)}, up the stair, then east |
 | Keep great door | {xyz(XG, YU, kz2)}, facing south |
 | Great hall / kitchen | ground floor (y {ORIGIN.y + KEEP_FLOORS[0]}); stair hall in the east wing |
 | Library (secret bookshelf) | 2nd floor (y {ORIGIN.y + KEEP_FLOORS[1]}), west half; the chiseled bookshelf at {p(lib["trigger"])} |
@@ -186,15 +189,19 @@ coordinates in the scripts are offsets from it (x east, z south, y up).
 
 ## Mechanisms and how to trigger them
 
-1. **Main portcullis.** From the gate passage take the door in the west
-   wall into the guard room, climb the wooden stair to the winch room above
-   the passage. The lever on the floor at {p(main_gate["lever"])} (dust runs
-   through it) drops iron bars from the ceiling *and* raises them from the
-   floor, sealing the passage. Flip it back to open. The grille in the
-   winch-room floor is the murder hole over the passage.
-2. **Middle gate portcullis.** Same mechanism at the top of the grand stair.
-   Enter the west gate tower from the upper ward at {xyz(XG - 7, YU, UD - 6)},
-   climb the stair and go east into the winch room; lever at {p(middle_gate["lever"])}.
+1. **Main portcullis.** In the gate passage, on the east wall one block on
+   the bailey's side of the bars, the lever at {p(main_gate["lever"])} drops
+   iron bars from the ceiling *and* raises them from the floor in front of
+   you, sealing the passage. Flip it back to open. Its signal climbs inside
+   the wall to the winch room over the passage (the door in the passage's
+   west wall leads to the guard room and the stair up), where you can watch
+   the winch: the redstone over the pistons. The grille in the winch-room
+   floor is the murder hole over the passage.
+2. **Middle gate portcullis.** The same at the top of the grand stair: the
+   lever at {p(middle_gate["lever"])} is in the passage through the gate's
+   facade, on the stair's side of the bars. Its winch room is over the gate:
+   enter the west gate tower from the upper ward at {xyz(XG - 7, YU, UD - 6)},
+   climb the stair and go east.
 3. **The library's secret door.** On the keep's second floor, the east wall
    of the library is bookcases. One block is a *chiseled* bookshelf
    (at {p(lib["trigger"])}, head height, full of books). Take out the **last

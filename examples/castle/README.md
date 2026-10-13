@@ -74,7 +74,7 @@ check after a build (observed, not explained: gilesknap/mciwb#166, item 9).
 | --- | --- | --- |
 | Upper ward | x 0..120, z 0..64, standing level 18 | keep, chapel, alchemist's tower, garden |
 | Lower bailey | x 0..120, z 65..145, standing level 0 | gatehouse, stables, smithy, barracks, well, market |
-| Gatehouse | x 46..74, z 137..145 | passage x 59..61; portcullis at z 141; winch room above |
+| Gatehouse | x 46..74, z 137..145 | passage x 59..61; portcullis at z 141, its lever beside it; winch room above |
 | Grand stair | x 57..63, z 65..83 | up to the middle gate (second portcullis at z 63) |
 | Keep | x 40..80, z 12..42 | three storeys and a roof terrace; turrets at the corners |
 | Chapel | x 86..110, z 14..40 | crypt underneath (y 8..11) |
@@ -111,8 +111,10 @@ for each that gives the positions of its parts, used by the build and by
 
 - **Portcullises** (`castle_lib.portcullis`): sticky pistons above and
   below a 3-wide, 2-high passage drop and raise iron bars. The lever is in
-  the winch room above the passage; the wiring runs in a diagonal dust
-  channel inside the wall.
+  the passage, on its wall one block from the bars, so whoever pulls it
+  sees them move; two redstone torches inside the wall carry its signal up
+  to the dust over the ceiling pistons in the winch room above, and a
+  diagonal dust channel inside the wall takes it down to the floor's.
 - **Hidden doors** (`castle_lib.hidden_door`): two sticky pistons hold a
   2-high section of wall; a redstone torch keeps them extended until its
   block is powered, by a chiseled bookshelf's comparator (only the 6th
@@ -152,8 +154,10 @@ the tripwires first, and leaves everything as it found it: the levers off,
 the bookshelf untouched, the dispensers reloaded. Two things it has to work round: the server pauses
 when nobody is online (ticks are advanced with `tick sprint`), and a lever
 or hook set with `setblock` only updates its own neighbours, so levers get a
-dust block beside them and tripwires are tripped by summoning an armour
-stand onto them.
+dust block beside them (a portcullis lever's wall block is swapped for
+another block and back, to update the torch on it) and tripwires are tripped
+by summoning an armour stand onto them (one that can fall: an entity that
+does not move does not touch the blocks it is in).
 
 `test_modules.py` builds each mechanism in a 70 x 22 x 30 block of stone in
 the air at `RIG=x,y,z` (its north-west bottom corner, default `0,160,-40`),

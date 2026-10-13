@@ -596,10 +596,17 @@ def dust(*positions: Vec3) -> None:
         p.setblock(pos, DUST)
 
 
-def portcullis_cells(x1: int, x2: int, z: int, y0: int) -> dict:
+def portcullis_cells(x1: int, x2: int, z: int, y0: int, lever_dz: int = -1) -> dict:
     """the positions of a `portcullis`'s parts: what to check"""
+    zl = z + lever_dz
     return {
-        "lever": Vec3(x2 + 2, y0 + 4, z),
+        # the lever on the passage's east wall, beside the bars, facing west
+        "lever": Vec3(x2, y0 + 1, zl),
+        "lever_facing": "west",
+        "lever_block": Vec3(x2 + 1, y0 + 1, zl),
+        # the two torches that carry its signal up to the winch room
+        "torches": [Vec3(x2 + 1, y0 + 2, zl), Vec3(x2 + 1, y0 + 4, zl)],
+        "winch_dust": [Vec3(x, y0 + 4, z) for x in range(x1, x2 + 4)],
         "ceiling_pistons": [Vec3(x, y0 + 3, z) for x in range(x1, x2 + 1)],
         "floor_pistons": [Vec3(x, y0 - 2, z) for x in range(x1, x2 + 1)],
         "closed_cells": [
@@ -608,7 +615,7 @@ def portcullis_cells(x1: int, x2: int, z: int, y0: int) -> dict:
     }
 
 
-def portcullis(x1: int, x2: int, z: int, y0: int) -> dict:
+def portcullis(x1: int, x2: int, z: int, y0: int, lever_dz: int = -1) -> dict:
     """
     A piston portcullis across a passage ``x1..x2`` wide running north-south
     through ``z``, whose floor is at ``y0 - 1`` (people stand at ``y0``; the
@@ -619,15 +626,21 @@ def portcullis(x1: int, x2: int, z: int, y0: int) -> dict:
     (dust on top of them), sticky pistons at y0-2 face up, powered through
     repeaters from a dust line at y0-3, two blocks south of the gate line.
 
-    The lever stands in the "winch room" above the passage, whose floor is
-    the row of ceiling pistons: at (x2+2, y0+4, z), with the dust line
-    running through it. A diagonal dust channel descends inside the wall mass
-    east of the passage (x2+4 .. x2+10) to the floor line. Everything from
-    x1-1 .. x2+10, y0-4 .. y0+6, z-1 .. z+3 must be solid wall mass before
-    this is called (the module carves what it needs).
-    Returns the positions to check.
+    The lever is in the passage, on its east wall at head height one block
+    from the bars (``lever_dz``: -1 north of them, +1 south), so whoever
+    pulls it watches the bars move. Its wall block carries a redstone torch
+    inside the wall above it, and that torch's block above it a second
+    torch, standing on the floor of the "winch room" over the passage,
+    beside the dust line that runs over the ceiling pistons (two
+    inversions: the second torch is lit while the lever is on). A diagonal
+    dust channel descends from that line inside the wall mass east of the
+    passage (x2+4 .. x2+10) to the floor line. Everything from x1-1 ..
+    x2+10, y0-4 .. y0+6, z-1 .. z+3 must be solid wall mass before this is
+    called, and the passage's east wall (x2+1) beside the lever: the module
+    carves what it needs. Returns the positions to check.
     """
     p = placer()
+    c = portcullis_cells(x1, x2, z, y0, lever_dz)
     xr = x2 + 10  # the bottom of the diagonal channel
     for x in range(x1, x2 + 1):
         p.setblock(Vec3(x, y0 + 3, z), PISTON_DOWN)
@@ -649,11 +662,18 @@ def portcullis(x1: int, x2: int, z: int, y0: int) -> dict:
     )  # its floor (the pistons are re-set below)
     for x in range(x1, x2 + 1):
         p.setblock(Vec3(x, y0 + 3, z), PISTON_DOWN)
-        p.setblock(Vec3(x, y0 + 4, z), DUST)
-    p.setblock(Vec3(x2 + 1, y0 + 4, z), DUST)
-    lever(Vec3(x2 + 2, y0 + 4, z), "north", "floor")
-    p.setblock(Vec3(x2 + 3, y0 + 4, z), DUST)
-    p.setblock(Vec3(x2 + 2, y0 + 5, z), LANTERN)  # light over the lever
+    for q in c["winch_dust"]:
+        p.setblock(q, DUST)
+    p.setblock(Vec3(x2 + 2, y0 + 5, z), LANTERN)  # light over the winch
+    # the lever, its wall block and the two torches over it
+    lever_block, (torch1, torch2) = c["lever_block"], c["torches"]
+    p.setblock(lever_block, BRICK)
+    p.setblock(torch1, "minecraft:redstone_torch")
+    p.setblock(torch1 + Vec3(0, 1, 0), BRICK)
+    # unlit: its block is powered by the first torch (a torch set by
+    # command keeps the state it is given until a neighbour changes)
+    p.setblock(torch2, "minecraft:redstone_torch[lit=false]")
+    lever(c["lever"], c["lever_facing"], "wall")
     # the diagonal channel down: dust at (x2+3+k, y0+4-k, z) for k = 1..7, air above each
     for k in range(1, 8):
         x = x2 + 3 + k
@@ -670,7 +690,7 @@ def portcullis(x1: int, x2: int, z: int, y0: int) -> dict:
     p.fill(Vec3(x2 + 1, y0 - 4, z + 2), Vec3(xr, y0 - 4, z + 2), STONE)
     for x in range(x2 + 1, xr + 1):
         p.setblock(Vec3(x, y0 - 3, z + 2), DUST)
-    return portcullis_cells(x1, x2, z, y0)
+    return c
 
 
 def _facing(d: Vec3) -> str:

@@ -94,8 +94,12 @@ SITE_BOTTOM = -20
 
 # ---- the mechanisms (local): the build places them here and
 # verify_castle.py exercises them here. castle_lib has the geometry of each.
-MAIN_GATE = (GATE_X1, GATE_X2, GATE_Z, 0)  # portcullis: x1, x2, z, standing level
-MIDDLE_GATE = (GATE_X1, GATE_X2, UD - 2, YU)
+# portcullises: x1, x2, z, standing level, and which side of the bars the
+# lever is on, in the passage (-1 north, +1 south): the main gate's on the
+# bailey's side; the middle gate's in the passage through its facade, the
+# only walled part (north of the bars is the open ward)
+MAIN_GATE = (GATE_X1, GATE_X2, GATE_Z, 0, -1)
+MIDDLE_GATE = (GATE_X1, GATE_X2, UD - 2, YU, 1)
 # hidden doors: the lower door cell, the direction into the hidden space,
 # the direction along the wall, the trigger and the lever's offset
 LIBRARY_DOOR = (58, YU + 10, 16)  # base; u east, v south, bookshelf trigger
