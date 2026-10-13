@@ -88,13 +88,16 @@ def retry_command(
                     f"RCON reply recovered after {attempt} attempts: {description}"
                 )
             return output
+        # the same garbled reply twice is very unlikely, so take it as the
+        # server's real reply. (Rarely, a client polling one command could
+        # garble ours the same way twice: then we give up early.)
         if reply and reply == previous:
             break
         previous = reply
         if attempt < attempts:
             log.warning(
                 f"RCON reply to '{description}' looks lost or garbled by "
-                f"another client, retrying: {reply!r}"
+                f"another client, retrying: {reply[:200]!r}"
             )
     return reply
 
@@ -102,29 +105,40 @@ def retry_command(
 # checks for the replies of the commands that the client retries itself:
 # commands that mciwb and mcwb use a lot, that do the same thing when sent
 # twice, and always reply with a message that says they ran. The patterns are
-# the Minecraft 26.3 messages (commands.<name>.* in its en_us.json).
+# the Minecraft 26.3 messages (commands.<name>.* in its en_us.json). Each ends
+# in a lookahead, so that output another client appends can not merge into
+# its last number or name: a reply that does not match is just sent again.
+#
+# clone is not retried: 'clone ... move' empties its source, and a clone
+# whose source and destination overlap (as CopyPaste.paste allows) reads a
+# source that the first clone changed, so sending it again does harm.
 _REPLIES: dict[str, ReplyCheck] = {
     "setblock": reply_matches(
-        r"Changed the block at -?\d+, -?\d+, -?\d+|Could not set the block"
+        r"Changed the block at -?\d+, -?\d+, -?\d+(?!\d)|Could not set the block"
     ),
     "fill": reply_matches(r"Successfully filled \d+ block\(s\)|No blocks were filled"),
-    "clone": reply_matches(r"Successfully cloned \d+ block\(s\)|No blocks were cloned"),
     # mcwb.get_block reads blocks with 'loot spawn <dump> mine <pos>', which
     # drops the block's loot into the void
     "loot": reply_matches(
-        r"Dropped [^\n]*? from loot table minecraft:[\w/.-]+"
+        r"Dropped [^\n]*? from loot table minecraft:[\w/.-]+(?=\n|$)"
         r"|Block [^\n]+? has no loot table"
     ),
 }
 
+# 'destroy' mode drops the old block as an item, and a second send would
+# destroy the block just placed: such commands are sent once
+_destroy = re.compile(r" destroy(?= |$)")
+
 _setblock_at = re.compile(r"setblock (-?\d+) (-?\d+) (-?\d+) ")
-_changed_at = re.compile(r"Changed the block at (-?\d+), (-?\d+), (-?\d+)")
+_changed_at = re.compile(r"Changed the block at (-?\d+), (-?\d+), (-?\d+)(?!\d)")
 _could_not_set = "Could not set the block"
 
 
 def _reply_check(command: str) -> ReplyCheck | None:
     """the check for the reply to *command*, or None to send it just once"""
     check = _REPLIES.get(command.partition(" ")[0])
+    if check is not None and _destroy.search(command):
+        return None
     if check is None or not (at := _setblock_at.match(command)):
         return check
 
@@ -152,12 +166,12 @@ class Client(_McipcClient):
 
     Other processes can still run commands at the same moment, which can
     empty our reply or add theirs to it (about 1 in 10000 commands while
-    another client polls the server). So the replies of ``setblock``,
-    ``fill``, ``clone`` and ``loot`` (as used by ``mcwb.get_block``) are
-    checked, the command is sent again if the reply is lost, and only the
-    command's own output is returned. Other commands are sent once: use
-    ``retry_command``, or ``Iwb.cmd(..., expect=...)``, for those that are
-    safe to send again.
+    another client polls the server). So the replies of ``setblock`` and
+    ``fill`` (except in ``destroy`` mode) and ``loot`` (as used by
+    ``mcwb.get_block``) are checked, the command is sent again if the reply
+    is lost, and only the command's own output is returned. Other commands,
+    including ``clone``, are sent once: use ``retry_command``, or
+    ``Iwb.cmd(..., expect=...)``, for those that are safe to send again.
     """
 
     def run(self, command: str, *arguments: str) -> str:
@@ -181,6 +195,8 @@ class Client(_McipcClient):
             with _rcon_lock:
                 if raw:
                     return _RawClient.run(self, text)
+                # mcipc's check_result may raise here on another client's
+                # error text, with no retry: acceptable, as it is rare
                 return super(Client, self).run(text)
 
         check = _reply_check(text)

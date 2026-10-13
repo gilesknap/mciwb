@@ -6,6 +6,7 @@ import threading
 from time import sleep
 
 import pytest
+from mcipc.rcon.enumerations import CloneMode, FillMode, MaskMode, SetblockMode
 from mcipc.rcon.exceptions import InvalidArgument
 from mcipc.rcon.je.client import Client as McipcClient
 from mcwb import Item, Vec3
@@ -144,6 +145,48 @@ def test_retries_are_bounded(monkeypatch: pytest.MonkeyPatch, client: Client):
     server = FakeServer(monkeypatch, "")
     assert client.fill(Vec3(0, 0, 0), Vec3(1, 1, 1), "minecraft:stone") == ""
     assert len(server.sent) == RCON_ATTEMPTS
+
+
+def test_harmful_repeats_are_not_retried(
+    monkeypatch: pytest.MonkeyPatch, client: Client
+):
+    """
+    destroy mode would destroy what the first send placed, and clone may move
+    blocks or overlap its source: these are sent once, whatever the reply
+    """
+    server = FakeServer(monkeypatch, "")
+    stone = "minecraft:stone"
+    assert client.setblock(Vec3(1, 2, 3), stone, SetblockMode.DESTROY) == ""
+    assert client.fill(Vec3(0, 0, 0), Vec3(1, 1, 1), stone, FillMode.DESTROY) == ""
+    a, b, dest = Vec3(0, 0, 0), Vec3(4, 4, 4), Vec3(2, 0, 0)
+    for mode in CloneMode:
+        assert (
+            client.clone(a, b, dest, mask_mode=MaskMode.REPLACE, clone_mode=mode) == ""
+        )
+    assert len(server.sent) == 2 + len(CloneMode)
+    assert server.sent[0] == "setblock 1 2 3 minecraft:stone destroy"
+    assert server.sent[1] == "fill 0 0 0 1 1 1 minecraft:stone destroy"
+    # other modes are retried
+    client.fill(Vec3(0, 0, 0), Vec3(1, 1, 1), stone, FillMode.KEEP)
+    assert len(server.sent) == 2 + len(CloneMode) + RCON_ATTEMPTS
+
+
+def test_appended_output_is_not_merged(monkeypatch: pytest.MonkeyPatch, client: Client):
+    """output appended to ours, with no separator, makes the reply retried"""
+    FakeServer(
+        monkeypatch,
+        "Changed the block at 1, 2, 35 players",
+        "Changed the block at 1, 2, 3",
+    )
+    assert client.setblock(Vec3(1, 2, 3), "minecraft:stone") == (
+        "Changed the block at 1, 2, 3"
+    )
+    FakeServer(
+        monkeypatch,
+        "Dropped 1 [Stone] from loot table minecraft:blocks/stoneThere are 0",
+        "Dropped 1 [Stone] from loot table minecraft:blocks/stone\nThere are 0",
+    )
+    assert get_block(client, Vec3(1, 2, 3)) == Item.STONE
 
 
 def test_run_raw_returns_errors(monkeypatch: pytest.MonkeyPatch, client: Client):
