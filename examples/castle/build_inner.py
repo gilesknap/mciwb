@@ -37,6 +37,7 @@ from castle_layout import (
     UD,
     VAULT,
     VAULT_Y,
+    WALL_H,
     WELL,
     WELL_TUNNEL_X,
     XG,
@@ -680,6 +681,9 @@ def stables() -> None:
         L.fill(V(x2, 0, z), V(x2, 3, z), "minecraft:stripped_dark_oak_log")
         if z not in (z1, z2):  # fences between the stalls
             L.fill(V(x1, 0, z), V(x2 - 1, 0, z), "minecraft:dark_oak_fence")
+        if z < z2:  # a fence and a gate across each stall's front: the horses stay in
+            L.fill(V(x2, 0, z + 1), V(x2, 0, z + 4), "minecraft:dark_oak_fence")
+            L.set_block(V(x2, 0, z + 2), "minecraft:dark_oak_fence_gate[facing=east]")
         L.set_block(V(x2 - 1, 3, z), "minecraft:lantern")
     L.fill(V(x1, 0, z1), V(x2 - 1, 2, z1), L.PLANKS)
     L.fill(V(x1, 0, z2), V(x2 - 1, 2, z2), L.PLANKS)
@@ -1117,6 +1121,69 @@ def vault() -> None:
     )
 
 
+# ---------------------------------------------------------------- lighting
+
+
+def post(x: int, y: int, z: int) -> None:
+    """a lantern on a post, if the ground there is free"""
+    p = V(x, y, z)
+    floor = p - Vec3(0, 1, 0)
+    if (
+        all(L.is_block(p + Vec3(0, k, 0), L.AIR) for k in range(5))  # not indoors
+        and not L.is_block(floor, L.AIR)
+        and not L.is_block(floor, L.WATER)
+    ):
+        L.fill(p, p + Vec3(0, 2, 0), "minecraft:dark_oak_fence")
+        L.set_block(p + Vec3(0, 3, 0), L.LANTERN)
+
+
+def lighting() -> None:
+    """
+    Light every dark place a mob could spawn: hostile mobs spawn where the
+    light is 0, and a server with no players ticks into night while a
+    verify runs. The rooms, tunnels, towers and wall walks have their own
+    lights; this adds posts over the open grounds, lanterns in the dry
+    ditch, on the bank, on the flat tops, and in the dungeons' corners.
+    """
+    from castle_layout import DITCH_FLOOR, GATEHOUSE, MOAT_W
+
+    # lantern posts on a 16-block grid over both wards (skipping buildings)
+    for x in range(8, W - 4, 16):
+        for z in range(UD + 6, ZS - 4, 16):
+            post(x, 0, z)
+        for z in range(6, UD - 4, 16):
+            post(x, YU, z)
+    # the dry ditch round the upper ward and the bank round the moat
+    for z in range(-4, UD - 2, 12):
+        for x in (-4, W + 3):
+            L.set_block(V(x, DITCH_FLOOR + 1, z), L.LANTERN)
+    for x in range(-4, W + 4, 12):
+        L.set_block(V(x, DITCH_FLOOR + 1, -4), L.LANTERN)
+    for z in range(UD + 5, ZS + MOAT_W + 2, 12):
+        for x in (-MOAT_W - 2, W + MOAT_W + 1):
+            L.set_block(V(x, 0, z), L.LANTERN)
+    for x in range(-MOAT_W - 2, W + MOAT_W + 1, 12):
+        L.set_block(V(x, 0, ZS + MOAT_W + 2), L.LANTERN)
+    # the gatehouse top and the middle gate's tower tops
+    gx1, gz1, gx2, gz2 = GATEHOUSE
+    for x in range(gx1 + 3, gx2 - 2, 8):
+        for z in (gz1 + 3, gz2 - 3):
+            L.set_block(V(x, 16, z), f"{L.LANTERN}[hanging=false]")
+    for x1 in (XG - 9, XG + 5):
+        L.set_block(V(x1 + 2, YU + WALL_H + 6, UD - 2), f"{L.LANTERN}[hanging=false]")
+    # the chapel's bell tower: torches up its east wall
+    bx1, bz1 = CHAPEL[0] - 2, CHAPEL[3] - 1
+    for k in (4, 11, 18):
+        L.set_block(V(bx1 + 5, YU + k, bz1 + 3), "minecraft:wall_torch[facing=west]")
+    # the dungeons: the pit corridor, the hidden chamber, the oubliette, the
+    # trap corridor and the lower treasury (lanterns hang in the ceilings)
+    for z in (122, 131):
+        L.set_block(V(95, -6, z), f"{L.SOUL_LANTERN}[hanging=true]")
+    L.set_block(V(67, -5, 136), f"{L.SOUL_LANTERN}[hanging=true]")
+    for x, z in ((93, 129), (97, 130), (94, 110), (95, 121), (102, 106), (108, 112)):
+        L.set_block(V(x, -13, z), f"{L.SOUL_LANTERN}[hanging=true]")
+
+
 # ---------------------------------------------------------------- details
 
 
@@ -1128,13 +1195,7 @@ def details() -> None:
     for z in range(UD + 10, ZS - 10, 20):
         L.set_block(V(3, 8, z), f"minecraft:{BANNER}_wall_banner[facing=east]")
         L.set_block(V(W - 4, 8, z), f"minecraft:{BANNER}_wall_banner[facing=west]")
-    # courtyard lanterns on posts
-    for x, z in ((40, 90), (80, 90), (40, 125), (80, 125), (30, 110), (90, 110)):
-        L.fill(V(x, 0, z), V(x, 2, z), "minecraft:dark_oak_fence")
-        L.set_block(V(x, 3, z), L.LANTERN)
-    for x, z in ((30, 30), (30, 50), (85, 50), (110, 8)):
-        L.fill(V(x, YU, z), V(x, YU + 2, z), "minecraft:dark_oak_fence")
-        L.set_block(V(x, YU + 3, z), L.LANTERN)
+    lighting()
     # a garden in the upper ward, south-west of the keep
     for x, z in ((12, 40), (20, 48), (30, 56), (8, 56)):
         L.fill(V(x, YU, z), V(x, YU + 3, z), "minecraft:dark_oak_log")

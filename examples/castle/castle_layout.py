@@ -46,9 +46,15 @@ ORIGIN = _vec("ORIGIN", Vec3(-80, 82, -230))
 # the world spawn point, where the road from the gate leads
 SPAWN = _vec("SPAWN", Vec3(32, 74, -64))
 # the castle's name, on the sign inside the gate and the signpost at spawn
-NAME = os.environ.get("NAME", "Fable")
+NAME = os.environ.get("NAME") or "Fable"
 # the colour of the castle's banners (the second colour is fixed)
-BANNER = os.environ.get("BANNER", "red")
+COLOURS = (
+    "white", "orange", "magenta", "light_blue", "yellow", "lime", "pink", "gray",
+    "light_gray", "cyan", "purple", "blue", "brown", "green", "red", "black",
+)  # fmt: skip
+BANNER = os.environ.get("BANNER") or "red"
+if BANNER not in COLOURS:
+    raise SystemExit(f"BANNER must be a dye colour, not {BANNER!r}: {COLOURS}")
 BANNER2 = "blue"
 # every entity the castle summons carries this tag, unique to the site, so
 # that a rebuild can remove the old ones (see castle_lib.summon)
@@ -107,6 +113,17 @@ ALCH = (18, 22)  # the alchemist's tower's centre
 CHAPEL = (86, 14, 110, 40)
 VAULT = (50, 16, 70, 30)
 VAULT_Y = 8
+
+# what each stage summons, by entity type: the build checks they are all
+# there before it finishes (an entity summoned into a chunk whose entities
+# have not finished loading can be lost) and verify counts them
+SUMMONED = {
+    "interiors": {"armor_stand": 4, "item_frame": 12},
+    "vault": {"armor_stand": 2, "item_frame": 6},
+    "alchemist": {"item_frame": 6},
+    "bailey_buildings": {"horse": 6, "armor_stand": 2},
+    "details": {"armor_stand": 4, "iron_golem": 1, "cat": 1},
+}
 
 # where visitors are teleported to (local, standing positions); verify checks
 # that each has free feet and head on a solid floor

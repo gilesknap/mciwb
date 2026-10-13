@@ -185,20 +185,36 @@ ROAD_MARGIN = 5  # how far the road keeps from the site
 FORCELOAD_LIMIT = 256  # chunks per forceload command
 
 
+def bridge_foot() -> Vec3:
+    """the first block beyond the bridge, where the stair to the ground starts"""
+    return V(XG, -1, BRIDGE_END + 1)
+
+
 def road_start() -> Vec3:
-    """where the road leaves the castle: just beyond the bridge (y ignored)"""
-    return V(XG, 0, BRIDGE_END + 1)
+    """
+    Where the road begins: at the ground, beyond the stair that runs down
+    (or up) from the bank at the end of the bridge, one block per block of
+    height. Needs the chunks loaded; `bridge_foot` is the stair's top.
+    """
+    foot = bridge_foot()
+    ground = ground_height(foot.x, foot.z + 6)
+    run = abs(foot.y - ground)
+    if run > MAX_STAIR:
+        raise BuildError(f"the ground at the bridge is {run} blocks from the bank")
+    return Vec3(foot.x, ground, foot.z + run + 1)
 
 
-def road_points(start: Vec3 | None = None) -> list[Vec3]:
+MAX_STAIR = 48  # the most the stair can drop or climb (foundation.max_depth)
+
+
+def road_points(start: Vec3) -> list[Vec3]:
     """
-    The corners of the road from the foot of the bridge to SPAWN, round the
-    castle's site and never through it: south from the gate until clear of
-    the site, then, unless spawn is south of there, north along the side of
-    the site nearer spawn as far as spawn's row, then along it to spawn. y
-    is ignored: the road follows the ground.
+    The corners of the road from ``start`` (see `road_start`) to SPAWN,
+    round the castle's site and never through it: south until clear of the
+    site, then, unless spawn is south of there, north along the side of the
+    site nearer spawn as far as spawn's row, then along it to spawn. y is
+    ignored: the road follows the ground.
     """
-    start = start or road_start()
     a, b = site_box()
     x1, x2 = a.x - ROAD_MARGIN, b.x + ROAD_MARGIN
     zs = max(int(start.z), b.z + ROAD_MARGIN)
@@ -267,7 +283,10 @@ def forceload(add: bool = True, with_road: bool = True) -> None:
     a, b = site_box()
     xs, zs = [a.x, b.x], [a.z, b.z]
     if with_road:
-        for p in road_points():
+        # the road's start depends on the ground, not known until the
+        # chunks are loaded: allow for the longest stair
+        foot = bridge_foot()
+        for p in road_points(Vec3(foot.x, 0, foot.z + MAX_STAIR + 1)):
             xs += [p.x - 4, p.x + 4]
             zs += [p.z - 4, p.z + 4]
     x1, z1, x2, z2 = min(xs), min(zs), max(xs), max(zs)
@@ -494,20 +513,16 @@ def bridge_and_road() -> None:
             V(x, 7, z1), "minecraft:dark_oak_trapdoor[facing=south,half=top,open=false]"
         )
     # a stair from the bank down (or up) to the ground, then the road to spawn
-    foot = road_start()
-    gx, gz = foot.x, foot.z
-    top = ORIGIN.y - 1  # the bank's top block
-    ground = ground_height(gx, gz + 6)
-    run = abs(top - ground)  # the stair climbs or drops one block per block
-    if run:
+    foot, start = bridge_foot(), road_start()
+    if start.z > foot.z + 1:  # the stair climbs or drops one block per block
         stairway(
-            [Vec3(gx, top, gz), Vec3(gx, ground, gz + run)],
+            [foot, Vec3(start.x, start.y, start.z - 1)],
             L.BRICK_STAIRS,
             width=5,
             support=L.COBBLE,
             clearance=3,
         )
-    points = road_points(Vec3(gx, ground, gz + run + 1))
+    points = road_points(start)
     road(points, "minecraft:dirt_path", width=3, border=L.COBBLE)
     lamp_posts(points)
     signpost(points)
@@ -521,14 +536,47 @@ def _unit(a: Vec3, b: Vec3) -> tuple[Vec3, Vec3, int]:
 
 
 def lamp_posts(points: list[Vec3], every: int = 12) -> None:
-    """lantern posts beside the road, on the right of the way to spawn"""
+    """lantern posts beside the road, on the right of the way to spawn,
+    except where another castle's road or post is already"""
     for a, b in zip(points, points[1:], strict=False):
         d, right, length = _unit(a, b)
         for k in range(every // 2, length - 2, every):
             p = a + d * k + right * 3
             y = ground_height(p.x, p.z) + 1
-            L.fill(Vec3(p.x, y, p.z), Vec3(p.x, y + 1, p.z), "minecraft:dark_oak_fence")
-            L.set_block(Vec3(p.x, y + 2, p.z), L.LANTERN)
+            foot, top = Vec3(p.x, y, p.z), Vec3(p.x, y + 2, p.z)
+            if L.is_block(foot - Vec3(0, 1, 0), "minecraft:dirt_path") or not all(
+                L.is_block(Vec3(p.x, yy, p.z), L.AIR) for yy in range(y, y + 3)
+            ):
+                continue
+            L.fill(foot, foot + Vec3(0, 1, 0), "minecraft:dark_oak_fence")
+            L.set_block(top, L.LANTERN)
+
+
+def road_centre(points: list[Vec3]) -> list[tuple[int, int]]:
+    """the (x, z) cells of the road's centre line: what verify checks"""
+    cells = []
+    for a, b in zip(points, points[1:], strict=False):
+        d, _, length = _unit(a, b)
+        for k in range(length + 1):
+            p = a + d * k
+            cells.append((int(p.x), int(p.z)))
+    return cells
+
+
+def signpost_position(points: list[Vec3]) -> tuple[Vec3, int]:
+    """
+    Where the castle's signpost stands, and its rotation: beside the end of
+    the road's last leg, on the right, a few blocks back along the leg. How
+    many differs per castle (from its ORIGIN), so that castles whose roads
+    arrive by the same leg do not overwrite each other's signs. y is 0:
+    the sign stands on the ground.
+    """
+    d, right, _ = _unit(points[-2], points[-1])
+    back = 2 + 2 * ((ORIGIN.x // 16 + ORIGIN.z // 16) % 5)
+    p = points[-1] - d * back + right * 2
+    # the sign faces the road, i.e. left: rotation 0 south, 4 west, 8 north, 12 east
+    rotation = {(0, 1): 0, (-1, 0): 4, (0, -1): 8, (1, 0): 12}[(-right.x, -right.z)]
+    return Vec3(p.x, 0, p.z), rotation
 
 
 def compass(dx: int, dz: int) -> str:
@@ -544,11 +592,8 @@ def compass(dx: int, dz: int) -> str:
 
 def signpost(points: list[Vec3]) -> None:
     """a signpost at spawn beside the road's end, pointing the way"""
-    d, right, _ = _unit(points[-2], points[-1])
-    p = points[-1] - d * 2 + right * 2
+    p, rotation = signpost_position(points)
     y = ground_height(p.x, p.z) + 1
-    # the sign faces the road, i.e. left: rotation 0 south, 4 west, 8 north, 12 east
-    rotation = {(0, 1): 0, (-1, 0): 4, (0, -1): 8, (1, 0): 12}[(-right.x, -right.z)]
     middle = centre()
     L.sign(
         Vec3(p.x, y, p.z),

@@ -18,6 +18,7 @@ neighbours, so every lever has a dust block beside it.
 from __future__ import annotations
 
 import os
+import re
 import sys
 import time
 from pathlib import Path
@@ -47,12 +48,16 @@ def c(command: str) -> str:
     return world.cmd(command)
 
 
-def is_block(pos: Vec3, block: str) -> bool:
-    for _attempt in range(3):  # an empty reply is another RCON client's doing
-        r = c(f"execute if block {pos.x} {pos.y} {pos.z} {block}")
-        if r.strip():
-            break
-    return "Test passed" in r
+is_block = L.is_block
+
+
+def arrows_in(dispensers: list[Vec3]) -> list[int]:
+    """how many arrows each dispenser holds"""
+    counts = []
+    for p in dispensers:
+        items = c(f"data get block {p.x} {p.y} {p.z} Items")
+        counts.append(sum(int(n) for n in re.findall(r"count: (\d+)", items)))
+    return counts
 
 
 def advance(ticks: int = 40) -> None:
@@ -186,16 +191,26 @@ def test_arrow_trap(x: int, y0: int, zw: int) -> None:
     """corridor x..x+2, the wire at zw, the dispensers 8 north of it"""
     L.fill(Vec3(x, y0, zw - 14), Vec3(x + 2, y0 + 1, zw + 14), L.AIR)
     a = L.arrow_trap(x, x + 2, y0, zw, zw - 8)
-    arrows = f"type=minecraft:arrow,x={x + 1},y={y0},z={zw},distance=..30"
-    c(f"kill @e[{arrows}]")
+    w, dispensers = a["wire"], a["dispensers"]
+    box = f"x={x - 2},y={y0 - 2},z={zw - 14},dx=7,dy=6,dz=29"
     advance()
-    w = a["wire"]
-    c(f'summon minecraft:armor_stand {w.x} {w.y} {w.z} {{Tags:["castle_test"]}}')
-    advance()
-    r = c(f"execute if entity @e[{arrows}]")
-    check(f"tripping the wire fires arrows ({r})", r.startswith("Test passed"))
-    c(f"kill @e[{arrows}]")
-    c("kill @e[tag=castle_test]")
+    for trial in ("first", "second"):  # it must fire again, not just once
+        c(f"kill @e[type=!minecraft:player,{box}]")
+        advance()
+        before = arrows_in(dispensers)
+        c(f'summon minecraft:armor_stand {w.x} {w.y} {w.z} {{Tags:["castle_test"]}}')
+        after = before
+        for _ in range(6):
+            advance(10)
+            after = arrows_in(dispensers)
+            if all(n < m for n, m in zip(after, before, strict=True)):
+                break
+        check(
+            f"tripping the wire fires every dispenser, {trial} time ({before} -> {after})",
+            all(n < m for n, m in zip(after, before, strict=True)),
+        )
+        c("kill @e[tag=castle_test]")
+    c(f"kill @e[type=!minecraft:player,{box}]")
 
 
 def main() -> None:

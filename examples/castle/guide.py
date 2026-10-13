@@ -13,9 +13,10 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent))
 
 import castle_lib as L  # noqa: E402
-from build_outer import compass, road_points, road_start  # noqa: E402
+from build_outer import bridge_foot, compass, road_points, signpost_position  # noqa: E402
 from castle_layout import (  # noqa: E402
     ARROW_TRAP,
+    BANNER,
     BRIDGE_END,
     CELL_DOOR,
     CHAPEL,
@@ -86,13 +87,41 @@ def main() -> None:
     vx1, vz1, vx2, vz2 = VAULT
     ex, ez, ey = ENGINE
     wx, wz = WELL
-    gate = road_start()
+    gate = bridge_foot()
+    route = road_points(gate)
     middle = centre()
+    width = 45
+    rows = [
+        "(T)  Alchemist's".ljust(width - 3) + "(T)",
+        "      tower   +------KEEP------+  CHAPEL",
+        "  garden      |  turret  turret|  +------+",
+        "  & pond      |   great hall   |  | nave |",
+        "              |  turret  turret|  | bell |",
+        "              +-------door-----+  +------+",
+        "(T)  stair down   MIDDLE GATE (portcullis)".ljust(width - 3) + "(T)",
+        "================[grand stair]".ljust(width, "="),
+        "(J)                      |||".ljust(width - 3) + "(J)",
+        "  barracks            [stair]",
+        "  stables    well o   path     smithy x",
+        "(T)                   dungeon hut".ljust(width - 3) + "(T)",
+        "            market    [gatehouse]",
+    ]
+    notes = {
+        2: f"UPPER WARD  (y {ORIGIN.y + YU})",
+        6: f"z {ORIGIN.z + UD - 1}",
+        7: f"<- {YU}-block cliff",
+        10: f"LOWER BAILEY (y {ORIGIN.y})",
+    }
+    box = "\n".join(
+        f"   |{r:<{width}}|   {notes.get(i, '')}".rstrip() for i, r in enumerate(rows)
+    )
+    edge = "+" + "-" * width + "+"
     bearing = compass(middle.x - SPAWN.x, middle.z - SPAWN.z)
     legs = " then ".join(
-        f"{compass(b.x - a.x, b.z - a.z)} to {p(b)}"
-        for a, b in zip(road_points(), road_points()[1:], strict=False)
+        f"{compass(b.x - a.x, b.z - a.z)} to x {b.x}, z {b.z}"
+        for a, b in zip(route, route[1:], strict=False)
     )
+    sign, _ = signpost_position(route)
     door = lib["door"]
     tps = "\n".join(
         f"| {where[0].upper()}{where[1:]} | `/tp @s {V(*pos).x} {V(*pos).y} {V(*pos).z}` |"
@@ -101,13 +130,14 @@ def main() -> None:
     print(f"""# Castle {NAME}: visitor's guide
 
 Built with mciwb from `examples/castle/` in the mciwb repo; rebuildable with
-`ORIGIN={ORIGIN.x},{ORIGIN.y},{ORIGIN.z} SPAWN={SPAWN.x},{SPAWN.y},{SPAWN.z} NAME={NAME} mciwb run build_castle.py`.
+`ORIGIN={ORIGIN.x},{ORIGIN.y},{ORIGIN.z} SPAWN={SPAWN.x},{SPAWN.y},{SPAWN.z} NAME={NAME} BANNER={BANNER} mciwb run build_castle.py`.
 
 ## Getting there
 
 World spawn is {p(SPAWN)}. The castle is to the {bearing}: follow the
-cobble-edged dirt road from the signpost at spawn, which leads to the foot
-of the bridge at {p(gate)} (from there the road runs {legs}). Or teleport:
+cobble-edged dirt road from the signpost at ({sign.x}, {sign.z}) beside spawn,
+which leads to the stair at the foot of the bridge at ({gate.x}, {gate.z})
+(from there the road runs {legs}). Or teleport:
 
 | Where | Command |
 | --- | --- |
@@ -122,21 +152,9 @@ coordinates in the scripts are offsets from it (x east, z south, y up).
 
 ```
             N
-   +-------------------------------------------+   z {ORIGIN.z}  (dry ditch all round)
-   |(T)  Alchemist's                        (T) |
-   |      tower   +------KEEP------+  CHAPEL     |
-   |  garden      |  turret  turret|  +------+   |   UPPER WARD  (y {ORIGIN.y + YU})
-   |  & pond      |   great hall   |  | nave |   |
-   |              |  turret  turret|  | bell |   |
-   |              +-------door-----+  +------+   |
-   |(T)   stair down    MIDDLE GATE (2nd portcullis)    (T)|   z {ORIGIN.z + UD - 1}
-   +=====================[grand stair]=========+   <- {YU}-block cliff
-   |(J)                      |||                (J)|
-   |  barracks            [stair]                  |
-   |  stables    well o   path     smithy x        |   LOWER BAILEY (y {ORIGIN.y})
-   |(T)                   dungeon hut           (T)|
-   |            market    [gatehouse]              |
-   +-----------------[==drawbridge==]--------------+   z {ORIGIN.z + ZS}  (water moat)
+   {edge}   z {ORIGIN.z}  (dry ditch all round)
+{box}
+   {edge}   z {ORIGIN.z + ZS}  (water moat)
                             |
                         road to spawn {p(SPAWN)}
 ```

@@ -10,6 +10,7 @@ All block names are 26.3 ids (``minecraft:iron_chain`` not ``chain``).
 from __future__ import annotations
 
 import random
+import re
 from collections.abc import Iterable
 
 from castle_layout import TAG
@@ -142,6 +143,64 @@ def summon(kind: str, pos: Vec3, nbt: str = "") -> None:
 def kill_tagged(tag: str) -> str:
     """kill every entity with a tag, wherever it has wandered to"""
     return cmd(f"kill @e[tag={tag}]")
+
+
+# the hostile mobs that spawn in the dark (the night a verify's ticks bring)
+HOSTILES = (
+    "zombie",
+    "husk",
+    "drowned",
+    "zombie_villager",
+    "skeleton",
+    "stray",
+    "bogged",
+    "creeper",
+    "spider",
+    "cave_spider",
+    "enderman",
+    "witch",
+    "slime",
+    "phantom",
+    "breeze",
+)
+
+
+def box_selector(a: Vec3, b: Vec3) -> str:
+    """the ``x=,y=,z=,dx=,dy=,dz=`` of an entity selector for a box"""
+    lo = Vec3(min(a.x, b.x), min(a.y, b.y), min(a.z, b.z))
+    hi = Vec3(max(a.x, b.x), max(a.y, b.y), max(a.z, b.z))
+    return (
+        f"x={lo.x},y={lo.y},z={lo.z},"
+        f"dx={hi.x - lo.x + 1},dy={hi.y - lo.y + 1},dz={hi.z - lo.z + 1}"
+    )
+
+
+def kill_hostiles(a: Vec3, b: Vec3) -> int:
+    """kill the hostile mobs in a box; returns how many"""
+    killed = 0
+    for kind in HOSTILES:
+        r = cmd(f"kill @e[type=minecraft:{kind},{box_selector(a, b)}]")
+        if r.startswith("Killed"):  # "Killed 3 entities", or "Killed Skeleton"
+            m = re.match(r"Killed (\d+) entities", r)
+            killed += int(m.group(1)) if m else 1
+    return killed
+
+
+def count_entities(selector: str) -> int:
+    """how many entities a selector matches"""
+    r = cmd(f"execute if entity @e[{selector}]")
+    m = re.search(r"[Cc]ount: (\d+)", r)
+    return int(m.group(1)) if m else 0
+
+
+def is_block(pos: Vec3, block: str) -> bool:
+    """is this block (or block tag) at pos? an empty reply is another RCON
+    client's doing (gilesknap/mciwb#166, item 2) and is read again"""
+    for _attempt in range(3):
+        r = cmd(f"execute if block {pos.x} {pos.y} {pos.z} {block}")
+        if r.strip():
+            break
+    return "Test passed" in r
 
 
 def shell(a: Vec3, b: Vec3, block: str) -> None:
@@ -375,7 +434,7 @@ def round_tower(
                     Vec3(cx + 3, fy, cz), f"{LANTERN}[hanging=false]"
                 )  # standing on the floor
     elif floors:
-        # a ladder up the north inside wall
+        # a ladder up the north inside wall, and a lantern on every floor
         q = Vec3(cx, 0, cz - (r - wall))
         fill(
             Vec3(q.x, floors[0], q.z),
@@ -388,12 +447,15 @@ def round_tower(
                 Vec3(q.x, fy - 1, q.z),
                 "minecraft:ladder[facing=south]",
             )
+        for fy in floors:
+            set_block(Vec3(cx + 1, fy, cz), f"{LANTERN}[hanging=false]")
     # top: battlements or a stepped cone (clearing anything left above the top floor first)
     fill_cells(inner, y_top - 1, y_top - 1, BRICK)
     fill_cells(disc(cx, cz, r + 1), y_top, y_top + 4, AIR)
     if roof is None:
         fill_cells(ring(cx, cz, r, 1), y_top, y_top, block)
         merlons(perimeter_order(ring(cx, cz, r, 1)), y_top + 1, block)
+        set_block(Vec3(cx + 1, y_top, cz), f"{LANTERN}[hanging=false]")
         if banner:
             set_block(Vec3(cx, y_top, cz), f"minecraft:{banner}_banner[rotation=0]")
     else:
@@ -709,7 +771,10 @@ def arrow_trap(x1: int, x2: int, y: int, zw: int, zdisp: int) -> dict:
     at ``y``) at ``zdisp``, firing arrows along the corridor when a tripwire
     at ``zw`` is crossed. The wiring climbs inside the corridor's east wall
     (which must be solid 2 thick, x2+1 and x2+2, from y-1 to y+4) and runs
-    at y+3, above head height, so doorways through that wall are fine.
+    at y+3, above head height, so doorways through that wall are fine, then
+    drops to a dust line lying directly on the dispensers: a dispenser only
+    fires again once it has had a block update while unpowered, and dust on
+    the block above it (the usual trick) left the end one stuck "triggered".
     """
     p = placer()
     side = -1 if zdisp < zw else 1  # from the wire towards the dispensers
@@ -721,11 +786,14 @@ def arrow_trap(x1: int, x2: int, y: int, zw: int, zdisp: int) -> dict:
             f"item replace block {x} {y + 1} {zdisp} container.4 with minecraft:arrow 64"
         )
         cells.append(Vec3(x, y + 1, zdisp))
-    # the dispensers are powered by the blocks above them, with dust on top
-    p.fill(Vec3(x1, y + 2, zdisp), Vec3(x2 + 2, y + 2, zdisp), STONE)
+    # the dust line lies on the dispensers themselves (and on the wall
+    # beyond them), under a stone ceiling; its last cell, under the drop
+    # from the run at y+3, stays open so that the dust connects down
+    p.fill(Vec3(x1, y + 3, zdisp), Vec3(x2 + 1, y + 3, zdisp), STONE)
+    p.setblock(Vec3(x2 + 2, y + 3, zdisp), AIR)
     p.fill(Vec3(x1, y + 4, zdisp), Vec3(x2 + 2, y + 4, zdisp), STONE)
     for x in range(x1, x2 + 3):
-        p.setblock(Vec3(x, y + 3, zdisp), DUST)
+        p.setblock(Vec3(x, y + 2, zdisp), DUST)
     # the tripwire
     p.setblock(Vec3(x1 - 1, y, zw), STONE)
     p.setblock(Vec3(x2 + 1, y, zw), STONE)

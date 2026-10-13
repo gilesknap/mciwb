@@ -11,8 +11,10 @@ their first dust re-placed ("poked"), and tripwires are tripped by summoning
 an armour stand onto them, which runs the real tripwire logic.
 
 The site is forceloaded for the checks and unloaded again afterwards.
-Exits non-zero if any check fails. Leaves everything as it found it: the
-levers off, the bookshelf untouched, the dispensers reloaded.
+Hostile mobs in the site (the night its ticks bring spawns them where it
+is dark) and anything on a tripwire are cleared first. Exits non-zero if
+any check fails. Leaves everything as it found it: the levers off, the
+bookshelf untouched, the dispensers reloaded, its own armour stands gone.
 """
 
 from __future__ import annotations
@@ -41,7 +43,10 @@ from castle_layout import (  # noqa: E402
     LOWEST,
     MAIN_GATE,
     MIDDLE_GATE,
+    NAME,
     PIT_TRAP,
+    SPAWN,
+    SUMMONED,
     TAG,
     TELEPORTS,
     VAULT_Y,
@@ -54,38 +59,42 @@ from castle_layout import (  # noqa: E402
     site_box,
 )
 
+from mciwb.builders import ground_height  # noqa: E402
 from mciwb.imports import Vec3, get_world  # noqa: E402
 
 E, S, Wd = Vec3(1, 0, 0), Vec3(0, 0, 1), Vec3(-1, 0, 0)
 world = get_world()
 results: list[bool] = []
 # what the build summons, by type: a rerun must not add to them
-ENTITIES = {
-    "horse": 6,
-    "armor_stand": 12,
-    "item_frame": 24,
-    "iron_golem": 1,
-    "cat": 1,
-}
+ENTITIES: dict[str, int] = {}
+for _counts in SUMMONED.values():
+    for _kind, _n in _counts.items():
+        ENTITIES[_kind] = ENTITIES.get(_kind, 0) + _n
 
 
 def c(command: str) -> str:
     return world.cmd(command)
 
 
-def is_block(pos: Vec3, block: str) -> bool:
-    for _attempt in range(3):  # an empty reply is another RCON client's doing
-        r = c(f"execute if block {pos.x} {pos.y} {pos.z} {block}")
-        if r.strip():
-            break
-    return "Test passed" in r
+is_block = L.is_block
 
 
-def count(selector: str) -> int:
-    """how many entities a selector matches"""
-    r = c(f"execute if entity @e[{selector}]")
-    m = re.search(r"[Cc]ount: (\d+)", r)
-    return int(m.group(1)) if m else 0
+def arrows_in(dispensers: list[Vec3]) -> list[int]:
+    """how many arrows each dispenser holds"""
+    counts = []
+    for p in dispensers:
+        items = c(f"data get block {p.x} {p.y} {p.z} Items")
+        counts.append(sum(int(n) for n in re.findall(r"count: (\d+)", items)))
+    return counts
+
+
+def clear(a: Vec3, b: Vec3) -> None:
+    """remove everything but players and the castle's own entities from a
+    box: hostile mobs, stray armour stands, arrows, items"""
+    c(f"kill @e[type=!minecraft:player,tag=!{TAG},{L.box_selector(a, b)}]")
+
+
+count = L.count_entities
 
 
 def advance(ticks: int = 40) -> None:
@@ -203,21 +212,28 @@ def traps() -> None:
     px, py, pz, depth = PIT_TRAP
     t = L.pit_trap_cells(*V(px, py, pz), depth, travel=1)
     wire, doors = t["wire"], t["trapdoors"]
-    check("pit trap: tripwire present", is_block(wire, "minecraft:tripwire"))
+    clear(V(px - 3, py - 1, pz - 10), V(px + 3, py + 3, pz + 10))
+    advance()
+    check(
+        "pit trap: tripwire present and not already tripped",
+        is_block(wire, "minecraft:tripwire[powered=false]"),
+    )
     check(
         "pit trap: trapdoors start closed",
         all(is_block(p, "minecraft:iron_trapdoor[open=false]") for p in doors),
     )
-    trip(wire)
-    check(
-        "pit trap: walking onto the wire opens the floor",
-        all(is_block(p, "minecraft:iron_trapdoor[open=true]") for p in doors),
-    )
-    check(
-        "pit trap: the shaft drops into the oubliette",
-        all(is_block(p, L.AIR) for p in t["shaft"]),
-    )
-    untrip()
+    try:
+        trip(wire)
+        check(
+            "pit trap: walking onto the wire opens the floor",
+            all(is_block(p, "minecraft:iron_trapdoor[open=true]") for p in doors),
+        )
+        check(
+            "pit trap: the shaft drops into the oubliette",
+            all(is_block(p, L.AIR) for p in t["shaft"]),
+        )
+    finally:
+        untrip()
     check(
         "pit trap: closes again",
         all(is_block(p, "minecraft:iron_trapdoor[open=false]") for p in doors),
@@ -227,36 +243,40 @@ def traps() -> None:
     o = V(0, 0, 0)
     a = L.arrow_trap_cells(o.x + ax1, o.x + ax2, o.y + ay, o.z + zw, o.z + zd)
     wire, dispensers = a["wire"], a["dispensers"]
-    arrows = f"type=minecraft:arrow,x={wire.x},y={wire.y},z={wire.z},distance=..40"
-    c(f"kill @e[{arrows}]")
-    check("arrow trap: tripwire present", is_block(wire, "minecraft:tripwire"))
+    # the corridor and the oubliette behind it: nothing on the wire, no
+    # mob in the way, no arrows about
+    clear(V(ax1 - 3, ay - 2, zd - 4), V(ax2 + 3, ay + 4, zw + 16))
+    advance()
     check(
-        "arrow trap: dispensers loaded with arrows",
-        all(
-            is_block(p, "minecraft:dispenser")
-            and "minecraft:arrow" in c(f"data get block {p.x} {p.y} {p.z} Items")
-            for p in dispensers
+        "arrow trap: tripwire present and not already tripped",
+        is_block(wire, "minecraft:tripwire[powered=false]")
+        and all(
+            is_block(h, "minecraft:tripwire_hook[powered=false]") for h in a["hooks"]
         ),
     )
+    before = arrows_in(dispensers)
+    check(
+        f"arrow trap: dispensers loaded with arrows ({before})",
+        all(is_block(p, "minecraft:dispenser") for p in dispensers)
+        and all(n > 0 for n in before),
+    )
     try:
-        c(
-            f'summon minecraft:armor_stand {wire.x} {wire.y} {wire.z} {{Tags:["castle_verify"]}}'
-        )
-        r = "Test failed"
-        for _ in range(
-            8
-        ):  # the dispensers fire within a few ticks; poll in short steps
-            advance(10)
-            r = c(f"execute if entity @e[{arrows}]")
-            if r.startswith("Test passed"):
+        # arrows that hit the stand on the wire break it and vanish, so the
+        # proof of firing is the dispensers' stock going down, not arrows
+        trip(wire)
+        after = before
+        for _ in range(8):
+            after = arrows_in(dispensers)
+            if all(n < m for n, m in zip(after, before, strict=True)):
                 break
+            advance(10)
         check(
-            f"arrow trap: crossing the wire fires arrows ({r})",
-            r.startswith("Test passed"),
+            f"arrow trap: crossing the wire fires every dispenser ({before} -> {after})",
+            all(n < m for n, m in zip(after, before, strict=True)),
         )
     finally:
-        c(f"kill @e[{arrows}]")
         untrip()
+        clear(V(ax1 - 3, ay - 2, zd - 4), V(ax2 + 3, ay + 4, zw + 16))
         for p in dispensers:  # reload them
             c(
                 f"item replace block {p.x} {p.y} {p.z} container.4 with minecraft:arrow 64"
@@ -362,9 +382,58 @@ def places() -> None:
         )
 
 
+def road_block(x: int, z: int) -> bool:
+    """is the top block of this column the road's path (or, where another
+    castle's road crosses, its cobble edge)?"""
+    for block in ("minecraft:dirt_path", "minecraft:cobblestone"):
+        r = c(
+            f"execute positioned {x} 0 {z} positioned over motion_blocking_no_leaves "
+            f"if block ~ ~-1 ~ {block}"
+        )
+        if "Test passed" in r:
+            return True
+    return False
+
+
+def road_start() -> Vec3 | None:
+    """where the road leaves the stair at the foot of the bridge: the first
+    path block south of the bridge (the ground there is the stair now, so
+    the build's reading cannot be repeated)"""
+    foot = build_outer.bridge_foot()
+    for dz in range(1, build_outer.MAX_STAIR + 3):
+        p = Vec3(foot.x, 0, foot.z + dz)
+        if "Test passed" in c(
+            f"execute positioned {p.x} 0 {p.z} positioned over motion_blocking_no_leaves "
+            "if block ~ ~-1 ~ minecraft:dirt_path"
+        ):
+            return p
+    return None
+
+
+def road() -> None:
+    start = road_start()
+    check("road: a path leaves the stair at the foot of the bridge", start is not None)
+    if start is None:
+        return
+    points = build_outer.road_points(start)
+    gaps = [(x, z) for x, z in build_outer.road_centre(points) if not road_block(x, z)]
+    check(
+        f"road: dirt path all the way from the castle to spawn {tuple(SPAWN)}"
+        + (f" ({len(gaps)} gaps, first at {gaps[:6]})" if gaps else ""),
+        not gaps,
+    )
+    p, _ = build_outer.signpost_position(points)
+    y = ground_height(p.x, p.z) + 1
+    text = c(f"data get block {p.x} {y} {p.z} front_text.messages")
+    check(
+        f"road: signpost at ({p.x}, {y}, {p.z}) names Castle {NAME}",
+        is_block(Vec3(p.x, y, p.z), "#minecraft:all_signs") and NAME in text,
+    )
+
+
 def entities() -> None:
     a, b = site_box()
-    box = f"x={a.x},y={a.y},z={a.z},dx={b.x - a.x + 1},dy={b.y - a.y + 1},dz={b.z - a.z + 1}"
+    box = L.box_selector(a, b)
     for kind, n in ENTITIES.items():
         tagged = count(f"type=minecraft:{kind},tag={TAG}")
         strays = count(f"type=minecraft:{kind},tag=!{TAG},{box}")
@@ -375,8 +444,9 @@ def entities() -> None:
 
 
 def main() -> None:
-    build_outer.forceload(True, with_road=False)
+    build_outer.forceload(True)
     try:
+        print(f"killed {L.kill_hostiles(*site_box())} hostile mobs in the site")
         portcullis("main gate", MAIN_GATE)
         portcullis("middle gate", MIDDLE_GATE)
         blocked = [z for z in range(ZS - 8, ZS + 1) if not is_block(V(XG, 0, z), L.AIR)]
@@ -397,10 +467,11 @@ def main() -> None:
         passages()
         engine()
         places()
+        road()
         entities()
     finally:
         c("kill @e[tag=castle_verify]")
-        build_outer.forceload(False, with_road=False)
+        build_outer.forceload(False)
     print(f"{sum(results)}/{len(results)} checks passed")
     if not all(results):
         raise SystemExit(1)

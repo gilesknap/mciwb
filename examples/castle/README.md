@@ -6,9 +6,10 @@ upper ward with a four-turreted keep, chapel and alchemist's tower, and
 dungeons, a treasure vault, traps and secret passages underneath. About
 140 x 165 blocks and 80 blocks tall, with a road to spawn. A build is
 about 30,000 RCON commands (most of them reading the ground under the
-earthworks and the road, one command per column) and takes 5-10 seconds
-with mciwb on the server's own host, plus a few seconds waiting for the
-chunks to load; over a network allow a round trip per command.
+earthworks and the road, one command per column) and takes 10-15 seconds
+with mciwb on the server's own host, plus about ten seconds waiting for
+chunks to load and for the summoned entities to be checked across an
+unload; over a network allow a round trip per command.
 
 ```
 mciwb run build_castle.py                        # everything, in order
@@ -40,7 +41,10 @@ ORIGIN=-80,82,-230 SPAWN=32,74,-64 NAME=Fable BANNER=red mciwb run build_castle.
 - `SPAWN` is where the road from the gate leads. The gate faces south; the
   road goes south until it is clear of the site, then round the side of the
   site nearer spawn, then to spawn, with lantern posts along it and a
-  signpost at the end.
+  signpost at the end. Several castles may share the last leg: the roads
+  re-lay the same path, a lamp post is skipped where another road or post
+  already is, and each castle's signpost stands a different distance back
+  from spawn (chosen from its `ORIGIN`), so none overwrites another's.
 - `NAME` goes on the sign inside the gate, the vault's sign and the
   signpost; `BANNER` is the colour of the castle's banners (the second
   colour, blue, is fixed).
@@ -52,7 +56,11 @@ golem and the cat) is tagged `castle_<x>_<z>` of its origin, and with its
 stage. A stage removes its own entities before it runs and the earthworks
 stage (a fresh site) removes every entity in the site, so rebuilding all or
 part of a castle never duplicates them. Mobs are summoned with
-`PersistenceRequired`, so they do not despawn.
+`PersistenceRequired`, so they do not despawn, and the horses are fenced in
+their stalls. Before it finishes, the build counts what each stage summoned
+(`castle_layout.SUMMONED`) and runs a stage again if anything is missing:
+an entity summoned into a chunk whose entities have not finished loading
+(they load after the blocks) is lost when they do.
 
 ## Layout (local coordinates, x east, z south, y above the bailey floor)
 
@@ -99,10 +107,13 @@ for each that gives the positions of its parts, used by the build and by
   comparators chase lamps, a piston and note blocks.
 
 `verify_castle.py` toggles each of them over RCON and reads the result
-back, then checks the passages, the treasure, the teleport targets of the
-guide and that the castle's entities are exactly the ones it summoned. It
-leaves everything as it found it: the levers off, the bookshelf untouched,
-the dispensers reloaded. Two things it has to work round: the server pauses
+back (the arrow trap by its dispensers' stock going down: an arrow that
+hits the armour stand on the wire breaks it and vanishes), then checks the
+passages, the treasure, the teleport targets of the guide, the road to
+spawn and its signpost, and that the castle's entities are exactly the
+ones it summoned. It clears hostile mobs from the site and anything from
+the tripwires first, and leaves everything as it found it: the levers off,
+the bookshelf untouched, the dispensers reloaded. Two things it has to work round: the server pauses
 when nobody is online (ticks are advanced with `tick sprint`), and a lever
 or hook set with `setblock` only updates its own neighbours, so levers get a
 dust block beside them and tripwires are tripped by summoning an armour
@@ -127,6 +138,13 @@ a block again when the reply is empty. Signs are placed with a raw
 chapel's bell tower fills the hole `hip_roof` leaves in its top ring (item
 5). Each workaround is marked in the code with the issue; delete them when
 the fixes are released.
+
+The ticks that the checks sprint through also bring night, and hostile
+mobs spawn wherever the light is 0, so the `details` stage lights every
+dark place: lantern posts on a 16-block grid over both wards, lanterns in
+the dry ditch, on the moat's bank, on the flat tops and on every tower
+floor, and in the dungeons' corners; the build's cleanup and the checks
+kill whatever has spawned in the site anyway.
 
 Two more things about a server with no players on it: it does not tick, so
 after a `forceload` the scripts wait for the chunks and make it tick a

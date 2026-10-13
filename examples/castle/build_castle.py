@@ -7,8 +7,8 @@ Build the castle, stage by stage::
 Stages, in order: earthworks, bailey, gatehouse, bridge, upper, stair, keep,
 interiors, vault, chapel, alchemist, bailey_buildings, dungeons, details.
 The site and the road to spawn are forceloaded while the build runs and
-unloaded again when it ends, however it ends; dropped items in the site are
-removed too (``STAGES=cleanup`` does just that).
+unloaded again when it ends, however it ends; dropped items and hostile mobs
+in the site are removed too (``STAGES=cleanup`` does just that).
 
 Where to build, and the castle's name and colour, come from the
 environment (see castle_layout.py)::
@@ -33,9 +33,9 @@ sys.path.insert(0, str(Path(__file__).parent))
 import build_inner  # noqa: E402
 import build_outer  # noqa: E402
 import castle_lib as L  # noqa: E402
-from castle_layout import NAME, ORIGIN, SPAWN, TAG, site_box  # noqa: E402
+from castle_layout import NAME, ORIGIN, SPAWN, SUMMONED, TAG, site_box  # noqa: E402
 
-from mciwb.imports import Player, Vec3, Volume, get_client  # noqa: E402
+from mciwb.imports import Player, Volume, get_client  # noqa: E402
 
 STAGES = {
     "earthworks": build_outer.earthworks,
@@ -60,14 +60,9 @@ def players_inside(vol: Volume) -> list[str]:
     return [name for name in names if vol.inside(Player(name).pos, 2, 2, 2)]
 
 
-def box_selector(a: Vec3, b: Vec3) -> str:
-    """the ``x=,y=,z=,dx=,dy=,dz=`` of an entity selector for a box"""
-    return f"x={a.x},y={a.y},z={a.z},dx={b.x - a.x + 1},dy={b.y - a.y + 1},dz={b.z - a.z + 1}"
-
-
 def kill_in_site(selector: str) -> None:
     a, b = site_box()
-    print(f"   {L.cmd(f'kill @e[{selector},{box_selector(a, b)}]')}")
+    print(f"   {L.cmd(f'kill @e[{selector},{L.box_selector(a, b)}]')}")
 
 
 def run_stage(name: str) -> None:
@@ -81,6 +76,42 @@ def run_stage(name: str) -> None:
     if result:
         print(f"   {result}")
     print(f"   {name} done in {time.time() - t0:.0f} s")
+
+
+def missing_entities(stage: str) -> list[str]:
+    """the entity types a stage summoned that are not all there"""
+    return [
+        f"{kind} {found}/{n}"
+        for kind, n in SUMMONED.get(stage, {}).items()
+        if (found := L.count_entities(f"type=minecraft:{kind},tag={TAG}.{stage}")) < n
+    ]
+
+
+def settle_entities(stages: list[str]) -> None:
+    """
+    Make sure every entity the stages summoned survives its chunk being
+    unloaded and loaded again, and summon the missing ones again: now and
+    then one summoned into a freshly loaded chunk is lost (the chunk's
+    entities load after its blocks), and it only shows once the chunk has
+    been unloaded.
+    """
+    L.cmd("tick sprint 60")
+    time.sleep(2)
+    L.cmd("save-all flush")
+    build_outer.forceload(False)
+    L.cmd("tick sprint 100")
+    time.sleep(3)
+    build_outer.forceload(True)
+    for stage in stages:
+        missing = missing_entities(stage)
+        if missing:
+            print(f"== {stage} again: missing {', '.join(missing)}")
+            run_stage(stage)
+            L.cmd("tick sprint 20")
+            time.sleep(2)
+            missing = missing_entities(stage)
+            if missing:
+                raise SystemExit(f"{stage}: still missing {', '.join(missing)}")
 
 
 def main() -> None:
@@ -104,9 +135,11 @@ def main() -> None:
         for name in wanted:
             if name != "cleanup":
                 run_stage(name)
+        settle_entities([s for s in wanted if s in SUMMONED])
     finally:
         print("== cleanup")
         kill_in_site("type=minecraft:item")
+        print(f"   killed {L.kill_hostiles(*site_box())} hostile mobs")
         build_outer.forceload(False)
     print(f"castle {NAME} built in {time.time() - t_start:.0f} s")
 
