@@ -6,7 +6,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>mciwb.iwb &#8212; mciwb 0.9.2.dev94+gcd908e35d documentation</title>
+    <title>mciwb.iwb &#8212; mciwb 0.9.2.dev108+gc44f139eb documentation</title>
   
   
   
@@ -39,7 +39,7 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be" />
 
-    <script src="../../_static/documentation_options.js?v=e0fa92aa"></script>
+    <script src="../../_static/documentation_options.js?v=d3c839ed"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -796,11 +796,14 @@
         <span class="n">open_str</span> <span class="o">=</span> <span class="s2">"true"</span> <span class="k">if</span> <span class="nb">open</span> <span class="k">else</span> <span class="s2">"false"</span>
         <span class="n">common</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">"hinge=</span><span class="si">{</span><span class="n">hinge</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span> <span class="sa">f</span><span class="s2">"open=</span><span class="si">{</span><span class="n">open_str</span><span class="si">}</span><span class="s2">"</span><span class="p">]</span>
 
-        <span class="c1"># doors wont replace doors with different states so need to clear first</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">set_block</span><span class="p">(</span><span class="n">pos</span><span class="p">,</span> <span class="n">Item</span><span class="o">.</span><span class="n">AIR</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">set_block</span><span class="p">(</span><span class="n">pos</span><span class="p">,</span> <span class="n">door_type</span><span class="p">,</span> <span class="n">facing</span><span class="o">=</span><span class="n">facing</span><span class="p">,</span> <span class="n">nbt</span><span class="o">=</span><span class="p">[</span><span class="s2">"half=lower"</span><span class="p">,</span> <span class="o">*</span><span class="n">common</span><span class="p">])</span>
+        <span class="c1"># doors wont replace doors with different states so need to clear first.</span>
+        <span class="c1"># Clear both halves before placing either: a lower half breaks if the</span>
+        <span class="c1"># block above it changes to anything but its upper half (e.g. when</span>
+        <span class="c1"># clearing a doorway in a wall)</span>
         <span class="n">top</span> <span class="o">=</span> <span class="n">pos</span> <span class="o">+</span> <span class="n">Direction</span><span class="o">.</span><span class="n">UP</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_block</span><span class="p">(</span><span class="n">pos</span><span class="p">,</span> <span class="n">Item</span><span class="o">.</span><span class="n">AIR</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">set_block</span><span class="p">(</span><span class="n">top</span><span class="p">,</span> <span class="n">Item</span><span class="o">.</span><span class="n">AIR</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_block</span><span class="p">(</span><span class="n">pos</span><span class="p">,</span> <span class="n">door_type</span><span class="p">,</span> <span class="n">facing</span><span class="o">=</span><span class="n">facing</span><span class="p">,</span> <span class="n">nbt</span><span class="o">=</span><span class="p">[</span><span class="s2">"half=lower"</span><span class="p">,</span> <span class="o">*</span><span class="n">common</span><span class="p">])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">set_block</span><span class="p">(</span><span class="n">top</span><span class="p">,</span> <span class="n">door_type</span><span class="p">,</span> <span class="n">facing</span><span class="o">=</span><span class="n">facing</span><span class="p">,</span> <span class="n">nbt</span><span class="o">=</span><span class="p">[</span><span class="s2">"half=upper"</span><span class="p">,</span> <span class="o">*</span><span class="n">common</span><span class="p">])</span></div>
 
 
