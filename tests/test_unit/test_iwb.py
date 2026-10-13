@@ -6,6 +6,7 @@ from pathlib import Path
 
 import pytest
 from mcipc.rcon.exceptions import NoPlayerFound
+from PIL import Image
 
 import mciwb.iwb
 from mciwb.imports import (
@@ -219,6 +220,12 @@ def test_scan_and_render_rcon(world: Iwb, mock_client: MockClient, tmp_path: Pat
     grid = world.render(Vec3(2, 2, 2), Vec3(0, 0, 0), file, views=["top"])
     assert grid.origin == Vec3(0, 0, 0)
     assert file.exists()
+
+    # one view may be given as a bare name
+    one = tmp_path / "one.png"
+    world.render(Vec3(2, 2, 2), Vec3(0, 0, 0), one, views="top")
+    with Image.open(one) as a, Image.open(file) as b:
+        assert a.size == b.size
 
 
 def test_scan_default_server(default_world, mock_client: MockClient, tmp_path: Path):

@@ -442,12 +442,14 @@ class Iwb:
         :param end: the opposite corner of the region
         :param file: the image file to write
         :param views: the views to draw: top, iso, north, south, east, west,
-            iso_ne, iso_nw or iso_sw
+            iso_ne, iso_nw or iso_sw; a list, or the name of one view
         :param scale: pixels per block, chosen automatically by default
         :param labels: add titles and world coordinate labels
 
         :returns: the blocks that were rendered, see `scan`
         """
+        if isinstance(views, str):
+            views = [views]
         grid = self.scan(start, end)
         render(grid, views, scale, labels).save(file)
         log.info(f"rendered {', '.join(views)} to {file}")

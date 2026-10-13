@@ -166,7 +166,8 @@ def render(
     Draw one or more views of a region side by side in one image.
 
     :param grid: the blocks, from `scan`
-    :param views: the views to draw, see the module documentation
+    :param views: the views to draw, see the module documentation, or the
+        name of one view
     :param scale: pixels per block for every view. By default each view gets
         its own scale, chosen to make it about 512 pixels across, or smaller
         if needed to keep the image under 1500 pixels wide
@@ -176,6 +177,8 @@ def render(
 
     :returns: a Pillow image: call its ``save("file.png")`` method to save it
     """
+    if isinstance(views, str):
+        views = [views]
     if not views:
         raise ValueError("no views requested")
     if scale is not None:
