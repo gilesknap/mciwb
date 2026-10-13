@@ -65,10 +65,10 @@ the bridge, west along z ~52 / x 545, then along z -64 to spawn
 mciwb 694358f (origin/main with #167, #169, #170 and #174), from
 this branch's examples copied to nuc2:~/castle2-run/{castle,castle2}.
 
-Last full verify (`verify_castle2.py`, all checks, player online so real
-ticks): 127/128, the one failure (two tavern seats backing onto the next
-table) fixed since and re-checked: `CHECKS=seats,houses,people` 4/4,
-`CHECKS=pens` 7/7.
+Last full verify (`verify_castle2.py`, all checks: castle's 140-odd and
+castle2's seats, houses, pens and people), after a full build and stage
+rebuilds of keep/interiors and pens on the rebased branch, nobody online:
+**167/167 passed**. The house rig: 13/13 offline and (earlier) in the world.
 
 ## How to run (from this sandbox)
 
@@ -93,9 +93,16 @@ table) fixed since and re-checked: `CHECKS=seats,houses,people` 4/4,
   ring (5 high) over a 3-high fence. Animals step over a fence from any
   block beside it, so nothing in a pen stands next to its fence.
 - RCON replies get mixed with the dashboard's (`list`) now and then
-  (#166 item 2): castle's workarounds are kept; castle2's checks read a
-  failing block again. #170 (library retries) should make this go away:
-  rebase and reinstall when it lands.
+  (#166 item 2): mciwb now retries setblock/fill/loot/ground reads (#170);
+  castle2's checks read a failing block again.
+- Wild animals wander into the site (it reaches 10 blocks outside the
+  walls): `people.kill_strays` (run by the people stage and before the
+  checks) removes untagged animals of the kinds castle2 keeps, and stray
+  cats and iron golems.
+- castle's verify leaves out marker armour stands from its "no armour
+  stand in a block" check (castle2's seated people ride markers in their
+  seats); castle's own seat check is given castle2's seats by
+  verify_castle2.
 - Hostile mobs still spawn somewhere in the site at night (cleanup kills
   ~10): probably natural caves under the platform, as castle notes. Not
   investigated.
