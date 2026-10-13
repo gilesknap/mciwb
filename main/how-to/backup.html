@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Backup and Restore &#8212; mciwb 0.9.2.dev112+gfd30379e1 documentation</title>
+    <title>Backup and Restore &#8212; mciwb 0.9.2.dev114+g0940fd4dc documentation</title>
   
   
   
@@ -40,7 +40,7 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be" />
 
-    <script src="../_static/documentation_options.js?v=21d1766e"></script>
+    <script src="../_static/documentation_options.js?v=e704940e"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -531,11 +531,12 @@ the backup is complete, so the backup is consistent. If the server is not
 running, the world folder is simply copied.</p>
 <p><code class="docutils literal notranslate"><span class="pre">mciwb</span> <span class="pre">backup</span></code> looks for the server on port 20100 with the password
 <code class="docutils literal notranslate"><span class="pre">default_pass</span></code>, the defaults of <code class="docutils literal notranslate"><span class="pre">mciwb</span> <span class="pre">start</span></code>. If you started your
-server with a different <code class="docutils literal notranslate"><span class="pre">--port</span></code> or <code class="docutils literal notranslate"><span class="pre">--password</span></code>, give the same options
+server with a different <code class="docutils literal notranslate"><span class="pre">--port</span></code> or password, give the same options
 to <code class="docutils literal notranslate"><span class="pre">mciwb</span> <span class="pre">backup</span></code>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">mciwb</span> <span class="n">backup</span> <span class="o">--</span><span class="n">port</span> <span class="mi">20101</span> <span class="o">--</span><span class="n">password</span> <span class="n">my_password</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">mciwb</span> <span class="n">backup</span> <span class="o">--</span><span class="n">port</span> <span class="mi">20101</span> <span class="o">--</span><span class="n">password</span><span class="o">-</span><span class="n">file</span> <span class="o">~/.</span><span class="n">mciwb</span><span class="o">-</span><span class="n">password</span>
 </pre></div>
 </div>
+<p>See <a class="reference internal" href="../explanations/server-config.html#rcon-password"><span class="std std-ref">The RCON password</span></a> for the ways to give the password.</p>
 <p>If the password is wrong, <code class="docutils literal notranslate"><span class="pre">mciwb</span> <span class="pre">backup</span></code> warns you and copies the world
 without asking the server to save it first. Use <code class="docutils literal notranslate"><span class="pre">--folder</span></code> and
 <code class="docutils literal notranslate"><span class="pre">--backup-folder</span></code> if your server or backups are not in the default folders.</p>

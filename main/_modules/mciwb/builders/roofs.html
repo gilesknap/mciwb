@@ -6,7 +6,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>mciwb.builders.roofs &#8212; mciwb 0.9.2.dev112+gfd30379e1 documentation</title>
+    <title>mciwb.builders.roofs &#8212; mciwb 0.9.2.dev114+g0940fd4dc documentation</title>
   
   
   
@@ -39,7 +39,7 @@
   <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be" />
 <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be" />
 
-    <script src="../../../_static/documentation_options.js?v=21d1766e"></script>
+    <script src="../../../_static/documentation_options.js?v=e704940e"></script>
     <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -497,6 +497,18 @@
     <span class="k">return</span> <span class="n">state</span>
 
 
+<span class="k">def</span><span class="w"> </span><span class="nf">_ridge_core</span><span class="p">(</span><span class="n">ridge</span><span class="p">:</span> <span class="n">BlockState</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BlockState</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    The block under a ridge, between the stairs of the course below it: the</span>
+<span class="sd">    ridge as a full block (a double slab) so that there is no hole under it</span>
+<span class="sd">    """</span>
+    <span class="k">if</span> <span class="n">ridge</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">"_slab"</span><span class="p">):</span>
+        <span class="c1"># a double slab fills its block, so it cannot hold water</span>
+        <span class="n">props</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"waterlogged"</span><span class="p">:</span> <span class="kc">False</span><span class="p">}</span> <span class="k">if</span> <span class="s2">"waterlogged"</span> <span class="ow">in</span> <span class="n">ridge</span><span class="o">.</span><span class="n">props</span> <span class="k">else</span> <span class="p">{}</span>
+        <span class="k">return</span> <span class="n">ridge</span><span class="o">.</span><span class="n">with_props</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s2">"double"</span><span class="p">,</span> <span class="o">**</span><span class="n">props</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">ridge</span>
+
+
 <div class="viewcode-block" id="gable_roof">
 <a class="viewcode-back" href="../../../_api/mciwb.builders.html#mciwb.builders.gable_roof">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">gable_roof</span><span class="p">(</span>
@@ -527,7 +539,9 @@
 <span class="sd">    :param stairs: the stairs to build the slopes from</span>
 <span class="sd">    :param ridge: the block along the ridge when the footprint is an odd</span>
 <span class="sd">        number of blocks across. Defaults to the slab matching *stairs*,</span>
-<span class="sd">        placed as a bottom slab</span>
+<span class="sd">        placed as a bottom slab. The gap under it, between the stairs of</span>
+<span class="sd">        the course below, is filled with the same block as a double slab</span>
+<span class="sd">        (or with *ridge* itself if it is not a slab)</span>
 <span class="sd">    :param gable: if given, fill the triangular gable ends under the roof</span>
 <span class="sd">        with this block, above the footprint's end walls</span>
 <span class="sd">    :param axis: ``"x"`` or ``"z"``, the direction that the ridge runs.</span>
@@ -561,6 +575,8 @@
     <span class="n">base_y</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">start</span><span class="o">.</span><span class="n">y</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
     <span class="n">slope</span> <span class="o">=</span> <span class="n">BlockState</span><span class="o">.</span><span class="n">of</span><span class="p">(</span><span class="n">stairs</span><span class="p">,</span> <span class="n">half</span><span class="o">=</span><span class="s2">"bottom"</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="s2">"straight"</span><span class="p">)</span>
     <span class="n">ridge_state</span> <span class="o">=</span> <span class="n">_ridge_state</span><span class="p">(</span><span class="n">stairs</span><span class="p">,</span> <span class="n">ridge</span><span class="p">)</span>
+    <span class="n">core_state</span> <span class="o">=</span> <span class="n">_ridge_core</span><span class="p">(</span><span class="n">ridge_state</span><span class="p">)</span>
+    <span class="n">gable_ends</span> <span class="o">=</span> <span class="p">(</span><span class="n">a1</span> <span class="o">+</span> <span class="n">overhang</span><span class="p">,</span> <span class="n">a2</span> <span class="o">-</span> <span class="n">overhang</span><span class="p">)</span>
 
     <span class="n">course</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="k">while</span> <span class="n">c1</span> <span class="o">+</span> <span class="n">course</span> <span class="o">&lt;=</span> <span class="n">c2</span> <span class="o">-</span> <span class="n">course</span><span class="p">:</span>
@@ -573,12 +589,15 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">cells</span><span class="p">[</span><span class="n">to_world</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">lo</span><span class="p">)]</span> <span class="o">=</span> <span class="n">slope</span><span class="o">.</span><span class="n">with_props</span><span class="p">(</span><span class="n">facing</span><span class="o">=</span><span class="n">rising</span><span class="p">)</span>
                 <span class="n">cells</span><span class="p">[</span><span class="n">to_world</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">hi</span><span class="p">)]</span> <span class="o">=</span> <span class="n">slope</span><span class="o">.</span><span class="n">with_props</span><span class="p">(</span><span class="n">facing</span><span class="o">=</span><span class="n">falling</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">hi</span> <span class="o">-</span> <span class="n">lo</span> <span class="o">==</span> <span class="mi">2</span> <span class="ow">and</span> <span class="ow">not</span> <span class="p">(</span><span class="n">gable</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">gable_ends</span><span class="p">):</span>
+                <span class="c1"># the ridge goes on the next course: fill the gap under it</span>
+                <span class="n">cells</span><span class="p">[</span><span class="n">to_world</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">lo</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)]</span> <span class="o">=</span> <span class="n">core_state</span>
         <span class="n">placer</span><span class="o">.</span><span class="n">layer</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">cells</span><span class="p">)</span>
 
         <span class="c1"># the gable ends: inside the slopes, above the footprint's ends</span>
         <span class="n">g_lo</span><span class="p">,</span> <span class="n">g_hi</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">lo</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">c1</span> <span class="o">+</span> <span class="n">overhang</span><span class="p">),</span> <span class="nb">min</span><span class="p">(</span><span class="n">hi</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">c2</span> <span class="o">-</span> <span class="n">overhang</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">gable</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">g_lo</span> <span class="o">&lt;=</span> <span class="n">g_hi</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="p">(</span><span class="n">a1</span> <span class="o">+</span> <span class="n">overhang</span><span class="p">,</span> <span class="n">a2</span> <span class="o">-</span> <span class="n">overhang</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">gable_ends</span><span class="p">:</span>
                 <span class="n">wx1</span><span class="p">,</span> <span class="n">wz1</span> <span class="o">=</span> <span class="n">to_world</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">g_lo</span><span class="p">)</span>
                 <span class="n">wx2</span><span class="p">,</span> <span class="n">wz2</span> <span class="o">=</span> <span class="n">to_world</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">g_hi</span><span class="p">)</span>
                 <span class="n">placer</span><span class="o">.</span><span class="n">fill</span><span class="p">(</span><span class="n">Vec3</span><span class="p">(</span><span class="n">wx1</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">wz1</span><span class="p">),</span> <span class="n">Vec3</span><span class="p">(</span><span class="n">wx2</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">wz2</span><span class="p">),</span> <span class="n">gable</span><span class="p">)</span>
@@ -603,14 +622,17 @@
 <span class="sd">    with outer corner stairs where they meet. Each course is a ring of stairs</span>
 <span class="sd">    one block in and one block up from the course below. Where the slopes</span>
 <span class="sd">    meet along a line one block wide (the ridge) the roof is finished with</span>
-<span class="sd">    *ridge* blocks.</span>
+<span class="sd">    *ridge* blocks, on a line of full blocks (the ridge slab doubled) that</span>
+<span class="sd">    fills the middle of the course below.</span>
 
 <span class="sd">    :param start: a corner of the footprint, e.g. the top of a corner of the</span>
 <span class="sd">        walls; the roof starts at ``start.y + 1``</span>
 <span class="sd">    :param end: the opposite corner of the footprint (only x and z are used)</span>
 <span class="sd">    :param stairs: the stairs to build the slopes from</span>
 <span class="sd">    :param ridge: the block for a ridge one block wide, defaults to the slab</span>
-<span class="sd">        matching *stairs*, placed as a bottom slab</span>
+<span class="sd">        matching *stairs*, placed as a bottom slab. The middle of the course</span>
+<span class="sd">        below it is filled with the same block as a double slab (or with</span>
+<span class="sd">        *ridge* itself if it is not a slab)</span>
 <span class="sd">    :param overhang: extend the roof this many blocks past the footprint on</span>
 <span class="sd">        every side</span>
 <span class="sd">    :returns: the bounding box of the roof</span>
@@ -620,6 +642,7 @@
     <span class="n">base_y</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">start</span><span class="o">.</span><span class="n">y</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
     <span class="n">slope</span> <span class="o">=</span> <span class="n">BlockState</span><span class="o">.</span><span class="n">of</span><span class="p">(</span><span class="n">stairs</span><span class="p">,</span> <span class="n">half</span><span class="o">=</span><span class="s2">"bottom"</span><span class="p">)</span>
     <span class="n">ridge_state</span> <span class="o">=</span> <span class="n">_ridge_state</span><span class="p">(</span><span class="n">stairs</span><span class="p">,</span> <span class="n">ridge</span><span class="p">)</span>
+    <span class="n">core_state</span> <span class="o">=</span> <span class="n">_ridge_core</span><span class="p">(</span><span class="n">ridge_state</span><span class="p">)</span>
 
     <span class="n">course</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="k">while</span> <span class="n">x1</span> <span class="o">+</span> <span class="n">course</span> <span class="o">&lt;=</span> <span class="n">x2</span> <span class="o">-</span> <span class="n">course</span> <span class="ow">and</span> <span class="n">z1</span> <span class="o">+</span> <span class="n">course</span> <span class="o">&lt;=</span> <span class="n">z2</span> <span class="o">-</span> <span class="n">course</span><span class="p">:</span>
@@ -642,13 +665,17 @@
             <span class="n">facings</span><span class="p">[(</span><span class="n">lx</span><span class="p">,</span> <span class="n">z</span><span class="p">)]</span> <span class="o">=</span> <span class="s2">"east"</span>
             <span class="n">facings</span><span class="p">[(</span><span class="n">hx</span><span class="p">,</span> <span class="n">z</span><span class="p">)]</span> <span class="o">=</span> <span class="s2">"west"</span>
         <span class="n">shapes</span> <span class="o">=</span> <span class="n">stair_shapes</span><span class="p">(</span><span class="n">facings</span><span class="p">)</span>
-        <span class="n">placer</span><span class="o">.</span><span class="n">layer</span><span class="p">(</span>
-            <span class="n">y</span><span class="p">,</span>
-            <span class="p">{</span>
-                <span class="n">pos</span><span class="p">:</span> <span class="n">slope</span><span class="o">.</span><span class="n">with_props</span><span class="p">(</span><span class="n">facing</span><span class="o">=</span><span class="n">facing</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="n">shapes</span><span class="p">[</span><span class="n">pos</span><span class="p">])</span>
-                <span class="k">for</span> <span class="n">pos</span><span class="p">,</span> <span class="n">facing</span> <span class="ow">in</span> <span class="n">facings</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
-            <span class="p">},</span>
-        <span class="p">)</span>
+        <span class="n">cells</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="n">pos</span><span class="p">:</span> <span class="n">slope</span><span class="o">.</span><span class="n">with_props</span><span class="p">(</span><span class="n">facing</span><span class="o">=</span><span class="n">facing</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="n">shapes</span><span class="p">[</span><span class="n">pos</span><span class="p">])</span>
+            <span class="k">for</span> <span class="n">pos</span><span class="p">,</span> <span class="n">facing</span> <span class="ow">in</span> <span class="n">facings</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+        <span class="p">}</span>
+        <span class="k">if</span> <span class="n">hx</span> <span class="o">-</span> <span class="n">lx</span> <span class="o">==</span> <span class="mi">2</span> <span class="ow">or</span> <span class="n">hz</span> <span class="o">-</span> <span class="n">lz</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="c1"># the ridge goes on the next course, over the middle of this</span>
+            <span class="c1"># ring: fill the middle so that there is no hole under it</span>
+            <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">lx</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">hx</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">z</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">lz</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">hz</span><span class="p">):</span>
+                    <span class="n">cells</span><span class="p">[(</span><span class="n">x</span><span class="p">,</span> <span class="n">z</span><span class="p">)]</span> <span class="o">=</span> <span class="n">core_state</span>
+        <span class="n">placer</span><span class="o">.</span><span class="n">layer</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">cells</span><span class="p">)</span>
         <span class="n">course</span> <span class="o">+=</span> <span class="mi">1</span>
 
     <span class="k">return</span> <span class="n">placer</span><span class="o">.</span><span class="n">volume</span></div>

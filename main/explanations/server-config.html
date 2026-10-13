@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Minecraft Server Config &#8212; mciwb 0.9.2.dev112+gfd30379e1 documentation</title>
+    <title>Minecraft Server Config &#8212; mciwb 0.9.2.dev114+g0940fd4dc documentation</title>
   
   
   
@@ -40,7 +40,7 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be" />
 
-    <script src="../_static/documentation_options.js?v=21d1766e"></script>
+    <script src="../_static/documentation_options.js?v=e704940e"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -514,6 +514,38 @@ container. <code class="docutils literal notranslate"><span class="pre">mciwb</s
 <code class="docutils literal notranslate"><span class="pre">mciwb</span> <span class="pre">start</span></code> starts it with the settings it was created with, and warns
 about any options that differ. Run <code class="docutils literal notranslate"><span class="pre">mciwb</span> <span class="pre">stop</span></code> first to change them.</p>
 </section>
+<section id="the-rcon-password">
+<span id="rcon-password"></span><h2>The RCON password<a class="headerlink" href="#the-rcon-password" title="Link to this heading">#</a></h2>
+<p>mciwb talks to the server over RCON, which needs a password. <code class="docutils literal notranslate"><span class="pre">mciwb</span> <span class="pre">start</span></code>
+sets the server’s password, and the other commands (<code class="docutils literal notranslate"><span class="pre">shell</span></code>, <code class="docutils literal notranslate"><span class="pre">run</span></code>,
+<code class="docutils literal notranslate"><span class="pre">backup</span></code>, <code class="docutils literal notranslate"><span class="pre">restore</span></code> and <code class="docutils literal notranslate"><span class="pre">render</span></code>) must use the same one. Every one of
+these commands takes the password from the first of these that is given:</p>
+<ol class="arabic simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">--password</span> <span class="pre">PASSWORD</span></code> (or <code class="docutils literal notranslate"><span class="pre">--passwd</span></code>) on the command line;</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--password-file</span> <span class="pre">FILE</span></code> (or <code class="docutils literal notranslate"><span class="pre">--passwd-file</span></code>): the first line of FILE;</p></li>
+<li><p>the <code class="docutils literal notranslate"><span class="pre">MCIWB_PASSWORD</span></code> environment variable;</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">default_pass</span></code>.</p></li>
+</ol>
+<p>The default is fine for a server that only you can reach. To choose your
+own password, put it in a file that only you can read, or set
+<code class="docutils literal notranslate"><span class="pre">MCIWB_PASSWORD</span></code> in your shell:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">echo</span> <span class="s1">'my_password'</span> <span class="o">&gt;</span> <span class="o">~/.</span><span class="n">mciwb</span><span class="o">-</span><span class="n">password</span>
+<span class="n">chmod</span> <span class="mi">600</span> <span class="o">~/.</span><span class="n">mciwb</span><span class="o">-</span><span class="n">password</span>
+<span class="n">mciwb</span> <span class="n">start</span> <span class="o">--</span><span class="n">password</span><span class="o">-</span><span class="n">file</span> <span class="o">~/.</span><span class="n">mciwb</span><span class="o">-</span><span class="n">password</span>
+<span class="n">mciwb</span> <span class="n">run</span> <span class="n">build</span><span class="o">.</span><span class="n">py</span> <span class="o">--</span><span class="n">password</span><span class="o">-</span><span class="n">file</span> <span class="o">~/.</span><span class="n">mciwb</span><span class="o">-</span><span class="n">password</span>
+
+<span class="n">export</span> <span class="n">MCIWB_PASSWORD</span><span class="o">=</span><span class="s1">'my_password'</span>
+<span class="n">mciwb</span> <span class="n">start</span>
+<span class="n">mciwb</span> <span class="n">run</span> <span class="n">build</span><span class="o">.</span><span class="n">py</span>
+</pre></div>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Avoid <code class="docutils literal notranslate"><span class="pre">--password</span></code>: any user on the same computer can read a command
+line, for example with <code class="docutils literal notranslate"><span class="pre">ps</span></code>. It still works, for compatibility.</p>
+</div>
+<p>mciwb never prints or logs the password, even with <code class="docutils literal notranslate"><span class="pre">--debug</span></code>.</p>
+</section>
 <section id="minecraft-version">
 <span id="id1"></span><h2>Minecraft version<a class="headerlink" href="#minecraft-version" title="Link to this heading">#</a></h2>
 <p><code class="docutils literal notranslate"><span class="pre">mciwb</span> <span class="pre">start</span></code> runs the Minecraft Java Edition release that this version of
@@ -593,6 +625,7 @@ release opens it. Worlds cannot be downgraded, so take a backup first
   <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="pst-show_toc_level nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#configuration-of-the-default-server">Configuration of the default server</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-rcon-password">The RCON password</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#minecraft-version">Minecraft version</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#running-your-own-server">Running your own Server</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#backups-of-your-own-custom-server">Backups of your own custom server</a></li>

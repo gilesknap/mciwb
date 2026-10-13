@@ -6,7 +6,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>mciwb.builders.placer &#8212; mciwb 0.9.2.dev112+gfd30379e1 documentation</title>
+    <title>mciwb.builders.placer &#8212; mciwb 0.9.2.dev114+g0940fd4dc documentation</title>
   
   
   
@@ -39,7 +39,7 @@
   <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be" />
 <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be" />
 
-    <script src="../../../_static/documentation_options.js?v=21d1766e"></script>
+    <script src="../../../_static/documentation_options.js?v=e704940e"></script>
     <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -551,7 +551,13 @@
 <div class="viewcode-block" id="Placer.setblock">
 <a class="viewcode-back" href="../../../_api/mciwb.builders.html#mciwb.builders.Placer.setblock">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">setblock</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pos</span><span class="p">:</span> <span class="n">Vec3</span><span class="p">,</span> <span class="n">block</span><span class="p">:</span> <span class="n">Block</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">"""Set one block, e.g. ``placer.setblock(pos, "oak_stairs[half=top]")``"""</span>
+<span class="w">        </span><span class="sd">"""</span>
+<span class="sd">        Set one block, e.g. ``placer.setblock(pos, "oak_stairs[half=top]")``.</span>
+<span class="sd">        The block may carry block entity data, e.g. a sign's text::</span>
+
+<span class="sd">            text = '''{front_text:{messages:['"Hi"','""','""','""']}}'''</span>
+<span class="sd">            placer.setblock(pos, "oak_sign[rotation=4]" + text)</span>
+<span class="sd">        """</span>
         <span class="n">pos</span> <span class="o">=</span> <span class="n">_ints</span><span class="p">(</span><span class="n">pos</span><span class="p">)</span>
         <span class="n">state</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">BlockState</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">block</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">include</span><span class="p">(</span><span class="n">pos</span><span class="p">)</span>
@@ -569,7 +575,8 @@
         <span class="nb">filter</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""</span>
-<span class="sd">        Fill the box between two opposite corners, inclusive.</span>
+<span class="sd">        Fill the box between two opposite corners, inclusive. Block entity</span>
+<span class="sd">        data in *block* (``chest{Items:[...]}``) is given to every block.</span>
 
 <span class="sd">        :param mode: e.g. ``FillMode.KEEP`` to only replace air</span>
 <span class="sd">        :param filter: only replace these blocks, e.g. ``"minecraft:stone"``</span>

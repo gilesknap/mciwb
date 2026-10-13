@@ -104,10 +104,10 @@ Over RCON
     one block at a time. It is used when there is no world folder, or with
     ``mciwb render --rcon``. It is limited to 32768 blocks.
 
-Pass the ``--port`` and ``--password`` that you gave to ``mciwb start``,
-just as for ``mciwb backup``. Chunks that have never been generated read as
-air. Only block names are read: block states, such as which way stairs face,
-are not.
+Pass the ``--port`` and password (see `rcon_password`) that you gave to
+``mciwb start``, just as for ``mciwb backup``. Chunks that have never been
+generated read as air. Only block names are read: block states, such as which
+way stairs face, are not.
 
 In a script, ``world.scan`` and ``world.render`` read the world files of
 ``world.world_folder``. mciwb sets it for the server of ``mciwb start``,

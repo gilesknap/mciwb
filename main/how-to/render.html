@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Render a Build to an Image &#8212; mciwb 0.9.2.dev112+gfd30379e1 documentation</title>
+    <title>Render a Build to an Image &#8212; mciwb 0.9.2.dev114+g0940fd4dc documentation</title>
   
   
   
@@ -40,7 +40,7 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be" />
 
-    <script src="../_static/documentation_options.js?v=21d1766e"></script>
+    <script src="../_static/documentation_options.js?v=e704940e"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -595,10 +595,10 @@ one block at a time. It is used when there is no world folder, or with
 <code class="docutils literal notranslate"><span class="pre">mciwb</span> <span class="pre">render</span> <span class="pre">--rcon</span></code>. It is limited to 32768 blocks.</p>
 </dd>
 </dl>
-<p>Pass the <code class="docutils literal notranslate"><span class="pre">--port</span></code> and <code class="docutils literal notranslate"><span class="pre">--password</span></code> that you gave to <code class="docutils literal notranslate"><span class="pre">mciwb</span> <span class="pre">start</span></code>,
-just as for <code class="docutils literal notranslate"><span class="pre">mciwb</span> <span class="pre">backup</span></code>. Chunks that have never been generated read as
-air. Only block names are read: block states, such as which way stairs face,
-are not.</p>
+<p>Pass the <code class="docutils literal notranslate"><span class="pre">--port</span></code> and password (see <a class="reference internal" href="../explanations/server-config.html#rcon-password"><span class="std std-ref">The RCON password</span></a>) that you gave to
+<code class="docutils literal notranslate"><span class="pre">mciwb</span> <span class="pre">start</span></code>, just as for <code class="docutils literal notranslate"><span class="pre">mciwb</span> <span class="pre">backup</span></code>. Chunks that have never been
+generated read as air. Only block names are read: block states, such as which
+way stairs face, are not.</p>
 <p>In a script, <code class="docutils literal notranslate"><span class="pre">world.scan</span></code> and <code class="docutils literal notranslate"><span class="pre">world.render</span></code> read the world files of
 <code class="docutils literal notranslate"><span class="pre">world.world_folder</span></code>. mciwb sets it for the server of <code class="docutils literal notranslate"><span class="pre">mciwb</span> <span class="pre">start</span></code>,
 whatever its <code class="docutils literal notranslate"><span class="pre">--port</span></code>, when it uses the default <code class="docutils literal notranslate"><span class="pre">--folder</span></code>

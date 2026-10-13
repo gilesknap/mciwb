@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>mciwb.builders &#8212; mciwb 0.9.2.dev112+gfd30379e1 documentation</title>
+    <title>mciwb.builders &#8212; mciwb 0.9.2.dev114+g0940fd4dc documentation</title>
   
   
   
@@ -40,7 +40,7 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be" />
 
-    <script src="../_static/documentation_options.js?v=21d1766e"></script>
+    <script src="../_static/documentation_options.js?v=e704940e"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -507,7 +507,7 @@ or a position in an unloaded chunk) raises <a class="reference internal" href="#
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table">
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#mciwb.builders.BlockState" title="mciwb.builders.BlockState"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BlockState</span></code></a></p></td>
-<td><p>A block id and its block state properties.</p></td>
+<td><p>A block id, its block state properties and optionally its block entity data (the contents of a chest, the text of a sign ...).</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#mciwb.builders.BuildError" title="mciwb.builders.BuildError"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BuildError</span></code></a></p></td>
 <td><p>The server rejected a building command, e.g. an unknown block or a position that is not loaded.</p></td>
@@ -577,8 +577,9 @@ or a position in an unloaded chunk) raises <a class="reference internal" href="#
 </div>
 <dl class="py class">
 <dt class="sig sig-object py" id="mciwb.builders.BlockState">
-<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">mciwb.builders.</span></span><span class="sig-name descname"><span class="pre">BlockState</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">props</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Mapping[str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">str]</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">&lt;factory&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mciwb/builders/blockstate.html#BlockState"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.builders.BlockState" title="Link to this definition">#</a></dt>
-<dd><p>A block id and its block state properties.</p>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">mciwb.builders.</span></span><span class="sig-name descname"><span class="pre">BlockState</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">props</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Mapping[str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">str]</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nbt</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mciwb/builders/blockstate.html#BlockState"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.builders.BlockState" title="Link to this definition">#</a></dt>
+<dd><p>A block id, its block state properties and optionally its block entity
+data (the contents of a chest, the text of a sign …).</p>
 <p><code class="docutils literal notranslate"><span class="pre">str(state)</span></code> gives the form that <code class="docutils literal notranslate"><span class="pre">setblock</span></code> and <code class="docutils literal notranslate"><span class="pre">fill</span></code> accept, and
 that Sponge schematic palettes use:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">state</span> <span class="o">=</span> <span class="n">BlockState</span><span class="o">.</span><span class="n">of</span><span class="p">(</span><span class="n">Item</span><span class="o">.</span><span class="n">OAK_STAIRS</span><span class="p">,</span> <span class="n">facing</span><span class="o">=</span><span class="s2">"east"</span><span class="p">,</span> <span class="n">half</span><span class="o">=</span><span class="s2">"bottom"</span><span class="p">)</span>
@@ -588,6 +589,9 @@ that Sponge schematic palettes use:</p>
 <span class="go">'minecraft:oak_stairs[facing=south,half=bottom]'</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">BlockState</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s2">"stone"</span><span class="p">)</span><span class="o">.</span><span class="n">name</span>
 <span class="go">'minecraft:stone'</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sign</span> <span class="o">=</span> <span class="n">BlockState</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s2">"oak_sign[rotation=4]{front_text:</span><span class="si">{}</span><span class="s2">}"</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sign</span><span class="o">.</span><span class="n">nbt</span>
+<span class="go">'{front_text:{}}'</span>
 </pre></div>
 </div>
 <dl class="field-list simple">
@@ -596,6 +600,11 @@ that Sponge schematic palettes use:</p>
 <li><p><strong>name</strong> – the namespaced block id, e.g. <code class="docutils literal notranslate"><span class="pre">minecraft:oak_stairs</span></code></p></li>
 <li><p><strong>props</strong> – the block state properties, e.g. <code class="docutils literal notranslate"><span class="pre">{&quot;facing&quot;:</span> <span class="pre">&quot;east&quot;}</span></code>.
 Properties that are not given take the block’s default value.</p></li>
+<li><p><strong>nbt</strong> – the block entity data as SNBT text, including its braces,
+e.g. <code class="docutils literal notranslate"><span class="pre">{Items:[{Slot:0b,id:&quot;minecraft:apple&quot;,count:3}]}</span></code>, or <code class="docutils literal notranslate"><span class="pre">&quot;&quot;</span></code>
+for none. <code class="docutils literal notranslate"><span class="pre">setblock</span></code> and <code class="docutils literal notranslate"><span class="pre">fill</span></code> give it to every block they
+place. It is compared as text, so states that differ only in the
+spacing or order of their NBT are not equal.</p></li>
 </ul>
 </dd>
 </dl>
@@ -603,7 +612,13 @@ Properties that are not given take the block’s default value.</p></li>
 <dt class="sig sig-object py" id="mciwb.builders.BlockState.parse">
 <span class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">parse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">block</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Item</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="#mciwb.builders.BlockState" title="mciwb.builders.blockstate.BlockState"><span class="pre">BlockState</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#mciwb.builders.BlockState" title="mciwb.builders.blockstate.BlockState"><span class="pre">BlockState</span></a></span></span><a class="reference internal" href="../_modules/mciwb/builders/blockstate.html#BlockState.parse"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.builders.BlockState.parse" title="Link to this definition">#</a></dt>
 <dd><p>Make a BlockState from an <code class="docutils literal notranslate"><span class="pre">Item</span></code>, a block state string or a BlockState.
-Block entity data (<code class="docutils literal notranslate"><span class="pre">{...}</span></code>) at the end of a string is not supported.</p>
+A string may end with block entity data in SNBT, as <code class="docutils literal notranslate"><span class="pre">setblock</span></code>
+takes it, e.g. <code class="docutils literal notranslate"><span class="pre">chest[facing=west]{Items:[...]}</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#ValueError" title="(in Python v3.15)"><strong>ValueError</strong></a> – if the string is not a valid block state</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
@@ -613,7 +628,8 @@ Block entity data (<code class="docutils literal notranslate"><span class="pre">
 <code class="docutils literal notranslate"><span class="pre">BlockState.of(Item.OAK_STAIRS,</span> <span class="pre">facing=Direction.EAST)</span></code>. A Direction
 is converted to its name, a bool to <code class="docutils literal notranslate"><span class="pre">true</span></code>/<code class="docutils literal notranslate"><span class="pre">false</span></code> and an int to
 its digits, e.g. <code class="docutils literal notranslate"><span class="pre">BlockState.of(Item.SNOW,</span> <span class="pre">layers=3)</span></code>. The new
-properties replace any that the block already has.</p>
+properties replace any that the block already has, and any block
+entity data is kept.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -621,6 +637,19 @@ properties replace any that the block already has.</p>
 <span class="sig-name descname"><span class="pre">with_props</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">props</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><span class="pre">bool</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Vec3</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#mciwb.builders.BlockState" title="mciwb.builders.blockstate.BlockState"><span class="pre">BlockState</span></a></span></span><a class="reference internal" href="../_modules/mciwb/builders/blockstate.html#BlockState.with_props"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.builders.BlockState.with_props" title="Link to this definition">#</a></dt>
 <dd><p>A copy of this state with some properties added or replaced, e.g.
 <code class="docutils literal notranslate"><span class="pre">.with_props(half=&quot;top&quot;,</span> <span class="pre">waterlogged=True,</span> <span class="pre">rotation=4)</span></code></p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mciwb.builders.BlockState.with_nbt">
+<span class="sig-name descname"><span class="pre">with_nbt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nbt</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#mciwb.builders.BlockState" title="mciwb.builders.blockstate.BlockState"><span class="pre">BlockState</span></a></span></span><a class="reference internal" href="../_modules/mciwb/builders/blockstate.html#BlockState.with_nbt"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.builders.BlockState.with_nbt" title="Link to this definition">#</a></dt>
+<dd><p>A copy of this state with its block entity data replaced, e.g.
+<code class="docutils literal notranslate"><span class="pre">.with_nbt('{Items:[{Slot:0b,id:&quot;minecraft:apple&quot;,count:3}]}')</span></code>.
+<code class="docutils literal notranslate"><span class="pre">None</span></code> or <code class="docutils literal notranslate"><span class="pre">&quot;&quot;</span></code> removes it.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#ValueError" title="(in Python v3.15)"><strong>ValueError</strong></a> – if <em>nbt</em> is not one SNBT compound <code class="docutils literal notranslate"><span class="pre">{...}</span></code></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py property">
@@ -640,7 +669,8 @@ properties replace any that the block already has.</p>
 <dd><p>Rotate the block about the Y axis by <em>steps</em> quarter turns clockwise,
 viewed from above (north becomes east). Updates <code class="docutils literal notranslate"><span class="pre">facing</span></code>, <code class="docutils literal notranslate"><span class="pre">axis</span></code>,
 <code class="docutils literal notranslate"><span class="pre">rotation</span></code> (signs, banners, heads), direction named connections
-(fences, walls, panes, redstone) and rail <code class="docutils literal notranslate"><span class="pre">shape</span></code>.</p>
+(fences, walls, panes, redstone) and rail <code class="docutils literal notranslate"><span class="pre">shape</span></code>. Block entity
+data is kept unchanged.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -739,13 +769,19 @@ bounding box of every block placed.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="mciwb.builders.Placer.setblock">
 <span class="sig-name descname"><span class="pre">setblock</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pos</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Vec3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">block</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Item</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="#mciwb.builders.BlockState" title="mciwb.builders.blockstate.BlockState"><span class="pre">BlockState</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></span><a class="reference internal" href="../_modules/mciwb/builders/placer.html#Placer.setblock"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.builders.Placer.setblock" title="Link to this definition">#</a></dt>
-<dd><p>Set one block, e.g. <code class="docutils literal notranslate"><span class="pre">placer.setblock(pos,</span> <span class="pre">&quot;oak_stairs[half=top]&quot;)</span></code></p>
+<dd><p>Set one block, e.g. <code class="docutils literal notranslate"><span class="pre">placer.setblock(pos,</span> <span class="pre">&quot;oak_stairs[half=top]&quot;)</span></code>.
+The block may carry block entity data, e.g. a sign’s text:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">text</span> <span class="o">=</span> <span class="s1">'''{front_text:{messages:['"Hi"','""','""','""']}}'''</span>
+<span class="n">placer</span><span class="o">.</span><span class="n">setblock</span><span class="p">(</span><span class="n">pos</span><span class="p">,</span> <span class="s2">"oak_sign[rotation=4]"</span> <span class="o">+</span> <span class="n">text</span><span class="p">)</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="mciwb.builders.Placer.fill">
 <span class="sig-name descname"><span class="pre">fill</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Vec3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Vec3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">block</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Item</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="#mciwb.builders.BlockState" title="mciwb.builders.blockstate.BlockState"><span class="pre">BlockState</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">FillMode</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></span><a class="reference internal" href="../_modules/mciwb/builders/placer.html#Placer.fill"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.builders.Placer.fill" title="Link to this definition">#</a></dt>
-<dd><p>Fill the box between two opposite corners, inclusive.</p>
+<dd><p>Fill the box between two opposite corners, inclusive. Block entity
+data in <em>block</em> (<code class="docutils literal notranslate"><span class="pre">chest{Items:[...]}</span></code>) is given to every block.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -897,6 +933,13 @@ states that turn with it.</p>
 <dt class="sig sig-object py" id="mciwb.builders.Schematic.save">
 <span class="sig-name descname"><span class="pre">save</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.15)"><span class="pre">Path</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/mciwb/builders/schematic.html#Schematic.save"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.builders.Schematic.save" title="Link to this definition">#</a></dt>
 <dd><p>Save as a Sponge schematic version 3 file (<code class="docutils literal notranslate"><span class="pre">.schem</span></code>).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#ValueError" title="(in Python v3.15)"><strong>ValueError</strong></a> – if a block state carries block entity data
+(<code class="docutils literal notranslate"><span class="pre">BlockState.nbt</span></code>): a Sponge palette holds block states only,
+and its block entities are NBT compounds in <code class="docutils literal notranslate"><span class="pre">block_entities</span></code></p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
@@ -1087,7 +1130,9 @@ walls; the roof starts at <code class="docutils literal notranslate"><span class
 <li><p><strong>stairs</strong> – the stairs to build the slopes from</p></li>
 <li><p><strong>ridge</strong> – the block along the ridge when the footprint is an odd
 number of blocks across. Defaults to the slab matching <em>stairs</em>,
-placed as a bottom slab</p></li>
+placed as a bottom slab. The gap under it, between the stairs of
+the course below, is filled with the same block as a double slab
+(or with <em>ridge</em> itself if it is not a slab)</p></li>
 <li><p><strong>gable</strong> – if given, fill the triangular gable ends under the roof
 with this block, above the footprint’s end walls</p></li>
 <li><p><strong>axis</strong> – <code class="docutils literal notranslate"><span class="pre">&quot;x&quot;</span></code> or <code class="docutils literal notranslate"><span class="pre">&quot;z&quot;</span></code>, the direction that the ridge runs.
@@ -1141,7 +1186,8 @@ the bottom of the world</p>
 with outer corner stairs where they meet. Each course is a ring of stairs
 one block in and one block up from the course below. Where the slopes
 meet along a line one block wide (the ridge) the roof is finished with
-<em>ridge</em> blocks.</p>
+<em>ridge</em> blocks, on a line of full blocks (the ridge slab doubled) that
+fills the middle of the course below.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -1150,7 +1196,9 @@ walls; the roof starts at <code class="docutils literal notranslate"><span class
 <li><p><strong>end</strong> – the opposite corner of the footprint (only x and z are used)</p></li>
 <li><p><strong>stairs</strong> – the stairs to build the slopes from</p></li>
 <li><p><strong>ridge</strong> – the block for a ridge one block wide, defaults to the slab
-matching <em>stairs</em>, placed as a bottom slab</p></li>
+matching <em>stairs</em>, placed as a bottom slab. The middle of the course
+below it is filled with the same block as a double slab (or with
+<em>ridge</em> itself if it is not a slab)</p></li>
 <li><p><strong>overhang</strong> – extend the roof this many blocks past the footprint on
 every side</p></li>
 </ul>
@@ -1332,6 +1380,7 @@ block for each block along</p>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mciwb.builders.BlockState.parse"><code class="docutils literal notranslate"><span class="pre">BlockState.parse()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mciwb.builders.BlockState.of"><code class="docutils literal notranslate"><span class="pre">BlockState.of()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mciwb.builders.BlockState.with_props"><code class="docutils literal notranslate"><span class="pre">BlockState.with_props()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mciwb.builders.BlockState.with_nbt"><code class="docutils literal notranslate"><span class="pre">BlockState.with_nbt()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mciwb.builders.BlockState.item"><code class="docutils literal notranslate"><span class="pre">BlockState.item</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mciwb.builders.BlockState.rotate"><code class="docutils literal notranslate"><span class="pre">BlockState.rotate()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mciwb.builders.BlockState.mirror"><code class="docutils literal notranslate"><span class="pre">BlockState.mirror()</span></code></a></li>
