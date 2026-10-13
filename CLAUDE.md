@@ -147,10 +147,10 @@ From `mciwb.imports` (all re-exported from mcwb or mciwb):
   2D profile (list of rows of Items).
 - `Blocks(client, position, cuboid, anchor=Anchor3.BOTTOM_NW)`: render a 3D
   array of Items, indexed `cuboid[x][y][z]`. `Volume`, `Anchor3` position it.
-- `Volume.from_corners(a, b).fill(client, item)`: fill a box of any size.
-  Above 32768 blocks it only fills air (mcwb uses keep mode), so it cannot
-  clear a big box: `Placer().fill(a, b, Item.AIR)` splits big fills instead;
-  add `filter="minecraft:stone"` to replace only those blocks.
+- `Volume.from_corners(a, b).fill(client, item)`: fill a box of any size,
+  replacing everything in it (`item=Item.AIR` clears it). To replace only
+  some blocks, `Placer().fill(a, b, item, filter="minecraft:stone")` also
+  splits big boxes into several `/fill`s.
 - `world.save(file, vol)` / `world.load(file, position)`: save blocks to
   JSON and load them elsewhere. `grab(client, vol)` reads blocks as a cuboid.
 - `Wall(height=3, item=...)` or `Wall(profile=[...])`, then `set_start(pos)`

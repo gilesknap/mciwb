@@ -21,7 +21,7 @@ from mciwb.builders import (
     trace_path,
 )
 from mciwb.builders.placer import rectangles
-from mciwb.imports import Direction, FillMode, Item, Vec3
+from mciwb.imports import Direction, FillMode, Item, Vec3, Volume
 from tests.mockclient import MockClient
 
 
@@ -161,6 +161,22 @@ def test_placer_splits_large_fills(mock_client: MockClient):
     assert len(fills) == 2
     assert fills[0] == "fill 0 0 0 19 39 39 minecraft:stone"
     assert fills[1] == "fill 20 0 0 39 39 39 minecraft:stone"
+
+
+def test_large_volume_fill_replaces(mock_client: MockClient):
+    """Volume.fill of more than one /fill's worth replaces existing blocks"""
+    vol = Volume.from_corners(Vec3(0, 0, 0), Vec3(39, 39, 39))
+    assert vol.size.volume > 32768
+    mock_client.fill(Vec3(0, 0, 0), Vec3(39, 9, 39), Item.STONE)  # terrain
+    mock_client.block_commands.clear()
+
+    vol.fill(mock_client, Item.GOLD_BLOCK)  # type: ignore[arg-type]
+    assert len(mock_client.block_commands) > 1
+    assert all(c.endswith(" replace") for c in mock_client.block_commands)
+    assert (mock_client.world[0:40, 0:40, 0:40] == Item.GOLD_BLOCK).all()
+
+    vol.fill(mock_client, Item.AIR)  # type: ignore[arg-type]
+    assert (mock_client.world[0:40, 0:40, 0:40] == Item.AIR).all()
 
 
 def test_placer_fill_filter_implies_replace(mock_client: MockClient):
