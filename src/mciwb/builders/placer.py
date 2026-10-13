@@ -79,7 +79,7 @@ class Placer:
             raise BuildError(f"{command} failed: {result}")
         return result
 
-    def setblock(self, pos: Vec3, block: Block | BlockState) -> str:
+    def setblock(self, pos: Vec3, block: Block) -> str:
         """Set one block, e.g. ``placer.setblock(pos, "oak_stairs[half=top]")``"""
         pos = _ints(pos)
         state = str(BlockState.parse(block))
@@ -90,7 +90,7 @@ class Placer:
         self,
         start: Vec3,
         end: Vec3,
-        block: Block | BlockState,
+        block: Block,
         mode: FillMode | None = None,
         filter: str | None = None,
     ) -> str:
@@ -120,7 +120,7 @@ class Placer:
             result = self.client.fill(start, end, state, mode=mode, filter=filter)
         return self._check(f"fill {start} {end} {state}", result)
 
-    def layer(self, y: int, cells: Mapping[tuple[int, int], Block | BlockState]):
+    def layer(self, y: int, cells: Mapping[tuple[int, int], Block]):
         """
         Place one horizontal layer of blocks at height *y*, given as a mapping
         of ``(x, z)`` to block. Uses one ``fill`` for each rectangle of the

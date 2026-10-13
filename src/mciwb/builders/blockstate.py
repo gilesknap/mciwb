@@ -24,10 +24,6 @@ __all__ = [
     "stair_shapes",
 ]
 
-Block = Item | str
-"""A block: an ``Item``, or a block state string such as ``"minecraft:stone"``
-or ``"oak_stairs[facing=east]"``"""
-
 # the four horizontal directions in clockwise order, viewed from above
 _CLOCKWISE = ["north", "east", "south", "west"]
 _VECTORS = {
@@ -91,7 +87,7 @@ class BlockState:
     props: Mapping[str, str] = field(default_factory=dict)
 
     @classmethod
-    def parse(cls, block: Block | BlockState) -> BlockState:
+    def parse(cls, block: Block) -> BlockState:
         """
         Make a BlockState from an ``Item``, a block state string or a BlockState.
         Block entity data (``{...}``) at the end of a string is not supported.
@@ -114,7 +110,7 @@ class BlockState:
         return cls(_block_id(name), props)
 
     @classmethod
-    def of(cls, block: Block | BlockState, **props: str | Vec3) -> BlockState:
+    def of(cls, block: Block, **props: str | Vec3) -> BlockState:
         """
         Make a BlockState from a block and extra properties, e.g.
         ``BlockState.of(Item.OAK_STAIRS, facing=Direction.EAST)``. A Direction
@@ -221,6 +217,11 @@ class BlockState:
         return BlockState(self.name, props)
 
 
+Block = Item | str | BlockState
+"""A block: an ``Item``, a block state string such as ``"minecraft:stone"``
+or ``"oak_stairs[facing=east]"``, or a `BlockState`"""
+
+
 def _turn(name: str, quarter_turns: int) -> str:
     return _CLOCKWISE[(_CLOCKWISE.index(name) + quarter_turns) % 4]
 
@@ -271,14 +272,14 @@ def stair_shapes(stairs: Mapping[tuple[int, int], str]) -> dict[tuple[int, int],
     return shapes
 
 
-def _stairs_base(stairs: Block | BlockState) -> str:
+def _stairs_base(stairs: Block) -> str:
     name = BlockState.parse(stairs).name
     if not name.endswith("_stairs"):
         raise ValueError(f"{name} is not a stairs block")
     return name.removeprefix("minecraft:").removesuffix("_stairs")
 
 
-def slab_of(stairs: Block | BlockState) -> Item:
+def slab_of(stairs: Block) -> Item:
     """
     The slab made of the same material as a stairs block, e.g.
     ``Item.OAK_SLAB`` for ``Item.OAK_STAIRS``
@@ -292,7 +293,7 @@ def slab_of(stairs: Block | BlockState) -> Item:
         raise ValueError(f"no slab matches {stairs}, give one explicitly") from None
 
 
-def full_block_of(stairs: Block | BlockState) -> Item:
+def full_block_of(stairs: Block) -> Item:
     """
     The full block made of the same material as a stairs block, e.g.
     ``Item.OAK_PLANKS`` for ``Item.OAK_STAIRS``, ``Item.STONE_BRICKS`` for

@@ -685,6 +685,35 @@ def test_foundation_max_depth(mock_client: MockClient):
     assert mock_client.block_commands == ["fill 0 8 0 1 10 1 minecraft:cobblestone"]
 
 
+def test_builders_take_block_states(mock_client: MockClient):
+    """Every builder takes a BlockState wherever it takes a block (pyright
+    checks these calls too)."""
+    planks = BlockState.of(Item.OAK_PLANKS)
+    stone = BlockState.parse("minecraft:stone_bricks")
+    oak = BlockState.of(Item.OAK_STAIRS)
+    gable_roof(Vec3(0, 10, 0), Vec3(4, 10, 2), oak, gable=planks, ridge=planks)
+    assert mock_client.getblock(Vec3(0, 11, 1)) == Item.OAK_PLANKS
+    hip_roof(Vec3(10, 10, 0), Vec3(14, 10, 2), oak)
+    assert mock_client.getblock(Vec3(12, 11, 0)) == Item.OAK_STAIRS
+    flat_roof(Vec3(20, 10, 0), Vec3(22, 10, 2), stone, parapet=planks)
+    assert mock_client.getblock(Vec3(21, 11, 1)) == Item.STONE_BRICKS
+    arch(Vec3(0, 20, 0), Vec3(4, 20, 0), stone)
+    assert mock_client.getblock(Vec3(0, 20, 0)) == Item.STONE_BRICKS
+    column(Vec3(10, 20, 0), 4, stone, plinth=planks, capital=planks)
+    assert mock_client.getblock(Vec3(10, 21, 0)) == Item.STONE_BRICKS
+    stairway([Vec3(0, 30, 0), Vec3(2, 31, 0)], oak, landing=planks, support=stone)
+    assert mock_client.getblock(Vec3(0, 30, 0)) == Item.OAK_PLANKS
+    assert mock_client.getblock(Vec3(1, 31, 0)) == Item.OAK_STAIRS
+    mock_client.fill(Vec3(40, -10, 40), Vec3(49, 0, 49), Item.GRASS_BLOCK)
+    road([Vec3(41, 0, 41), Vec3(48, 0, 41)], stone, width=3, border=planks)
+    assert mock_client.getblock(Vec3(42, 0, 41)) == Item.STONE_BRICKS
+    assert mock_client.getblock(Vec3(42, 0, 40)) == Item.OAK_PLANKS
+    foundation(Vec3(30, 40, 0), Vec3(31, 40, 1), stone, max_depth=1)
+    assert mock_client.getblock(Vec3(30, 40, 0)) == Item.STONE_BRICKS
+    assert slab_of(oak) == Item.OAK_SLAB
+    assert full_block_of(oak) == Item.OAK_PLANKS
+
+
 def test_imports_reexports_all_builders():
     """CLAUDE.md and the docs promise every builders name is in mciwb.imports."""
     from mciwb import builders, imports
