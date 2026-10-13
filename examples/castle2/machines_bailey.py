@@ -338,7 +338,8 @@ def archery(at: At = V) -> dict:
     c = archery_cells(at)
     b1, b2 = c["butt"]
     x, y, z = ARCHERY_TARGET
-    L.fill(at(x - 1, y - 1, z - 3), at(x + 5, y + 3, z + 3), L.AIR)
+    # clear the range's end (x 50..55: the grand stair's balustrade is at 56)
+    L.fill(at(x - 1, y - 1, z - 3), at(x + 4, y + 3, z + 3), L.AIR)
     L.fill(b1, b2, "minecraft:hay_block")
     L.set_block(c["post"], "minecraft:stripped_oak_log")
     L.set_block(c["target"], "minecraft:target")
@@ -784,6 +785,10 @@ def mill_wheel(at: At = V) -> None:
     L.fill(
         at(hx + 1, hy - 1, z1), at(hx + 1, hy - 1, zr2 + 1), "minecraft:spruce_fence"
     )
+    # lanterns on the bank: the site's water freezes at night where the
+    # block light is under 10, and these keep every cell of the race at 10+
+    for zz in range(zr1, zr2 + 1, 5):
+        L.set_block(at(hx + 1, hy, zz), L.LANTERN)
     # the annex's wiring: a dust stair per phase in the plane x = hx - 3,
     # a repeater behind each paddle (x = hx - 2) into the wall (x = hx - 1)
     stairs = {
@@ -874,7 +879,7 @@ def _open(p: Vec3) -> bool:
 def check_mill(at: At = V, tunnel_z: int | None = None) -> Result:
     c = mill_cells(at, tunnel_z)
     yield (
-        "mill: the race is still water (sources) round the wheel",
+        "mill: the race is still water (sources, not ice) round the wheel",
         all(
             L.is_block(p, "minecraft:water[level=0]")
             or L.is_block(p, "minecraft:stripped_spruce_wood")
