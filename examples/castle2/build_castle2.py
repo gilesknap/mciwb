@@ -109,6 +109,26 @@ for _stage in (
         del castle2_layout.SUMMONED[_stage]
 
 
+def wrong_entities(stage: str) -> list[str]:
+    """the entity types a stage summoned that are not all there, or that
+    are there too many times (an old one that survived the stage's kill in
+    a chunk whose entities had not loaded): castle's build runs the stage
+    again for either"""
+    return [
+        f"{kind} {found}/{n}"
+        for kind, n in castle2_layout.SUMMONED.get(stage, {}).items()
+        if (
+            found := L.count_entities(
+                f"type=minecraft:{kind},tag={castle2_layout.TAG}.{stage}"
+            )
+        )
+        != n
+    ]
+
+
+build_castle.missing_entities = wrong_entities
+
+
 def main() -> None:
     build_castle.main()
 

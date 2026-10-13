@@ -268,3 +268,26 @@ def village_problems() -> list[str]:
             if feet[fixture] & cells:
                 problems.append(f"the {fixture} overlaps {name}")
     return problems
+
+
+def _tavern_door() -> tuple[int, int, int]:
+    from mciwb.imports import Vec3
+
+    h = village_houses(Vec3(0, 0, 0))["tavern"]
+    return (int(h.outside.x), 0, int(h.outside.z))
+
+
+# castle2's places for visitors, added to castle's (castle's verify checks
+# each lands on a floor with head room, and the guide lists them)
+TELEPORTS.update(  # noqa: F405
+    {
+        "the market square, by the cross": (55, 0, 152),
+        "the tavern's door": _tavern_door(),
+        "the pens, on the pen lane": (34, 0, 190),
+        "the allotments' gate": (70, 0, 191),
+    }
+)
+
+BAILEY_DEPTH_NOTE = (
+    f"Its lower bailey is {LD} blocks deep (BAILEY_DEPTH), with a village in it."
+)

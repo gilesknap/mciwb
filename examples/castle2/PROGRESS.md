@@ -39,6 +39,18 @@ The state of the work on castle2 (gilesknap/mciwb#173, plan in
   paths, stairs, signs, lanes, the square and each other.
 - **Phase 3** (pens): `pens.py`; `PENS`, `GARDEN`, `BEEHIVES` in the layout.
 - **Phase 4** (people): `people.py`.
+- **Phase 5** (rooms in full detail): `rooms.py` replaces castle's
+  furniture in the `interiors`, `chapel` and `bailey_buildings` stages
+  (castle's shells kept; see `build_castle2`), and a new `furnish` stage
+  (after `dungeons`) adds detail where castle furnishes as it builds
+  (alchemist's tower, dungeon prisoners, vault treasure, winch-room guard).
+  All seats go through `castle_lib.seat`. What each castle2 stage summons
+  is counted by running it against a fake client
+  (`record_build.summon_counts`), so `SUMMONED` stays right.
+- **Docs**: README.md; `guide2.py` (castle's guide for castle2, plus the
+  village, shops and keepers, pens and people); castle2's teleports are
+  added to castle's `TELEPORTS` (checked by castle's verify, listed in the
+  guide).
 
 ## In the world (mciwb-test, Minecraft 26.3)
 
@@ -90,16 +102,42 @@ table) fixed since and re-checked: `CHECKS=seats,houses,people` 4/4,
 
 ## Next steps
 
-1. Phase 5: castle2's own furnishing for the keep (great hall with
-   tapestries, high table, minstrels' gallery, fireplace with a spit,
-   rushes, hounds, servants), kitchen, library, armoury, chambers, chapel
-   and crypt, alchemist's tower, barracks, smithy, stables, dungeons,
-   vault, winch room: swap castle's `*_furnishing` functions in
-   build_castle2's STAGES (keep the shells), every seat through
-   `castle_lib.seat`, and update `SUMMONED` for the swapped stages
-   (consider computing it with `record_build.dry_run`, counting summons).
-2. Phase 6: the ten machines and the clue trail (`SECRETS` in the layout,
-   `*_cells` functions, checks in verify). Test written-book NBT on a
-   lectern in 26.3 first.
-3. Guide (`guide2.py` with teleports to the village, market and pens, a
-   Rumours section and spoilers), a docs image.
+1. Phase 6: the ten machines and the clue trail. Build each in a rig
+   first (as castle's test_modules.py: a stone block in the air over the
+   site, toggled over RCON and read back), with a `*_cells` function used
+   by the build and verify alike, then place it. `SECRETS` in the layout
+   lists each secret, its machine and its clues; verify checks the clues
+   (book on lectern, sign text, map in a trade) and works each machine.
+   Formats tested in 26.3 (all work through Placer, NBT included):
+   written books on lecterns
+   (`lectern[...]{Book:{id:"minecraft:written_book",count:1,components:
+   {"minecraft:written_book_content":{title:"T",author:"A",pages:["p1","p2"]}}}}`),
+   patterned banners (`{patterns:[{color:"yellow",pattern:"minecraft:border"}]}`),
+   chiseled bookshelves with Items, shelves with Items, hanging signs with
+   front_text/back_text, villagers with VillagerData and Offers, a
+   villager riding a marker armour stand. Paintings' `facing` is 0 south,
+   1 west, 2 north, 3 east (item frames' 3D: 2 north, 3 south, 4 west,
+   5 east). Ideas for the hard ones:
+   - lectern lock: a comparator reads the page (a 15-page book gives
+     page = signal); exact match with two subtract-mode comparators
+     against constant signals (dust from a redstone block, 16 - c long)
+     ANDed, or "≥ P" by dust length with "≥ P+1" cutting it via a torch;
+     the result drives a castle_lib.hidden_door (its lever-variant dust).
+   - astrolabe: an item frame's comparator output is its rotation + 1;
+     three frames each through an exact-match, ANDed, open a floor panel.
+   - organ: buttons as keys beside the note blocks (a hit note block gives
+     no signal); a sequence lock from copper bulbs (they toggle on each
+     pulse and a comparator reads them), a wrong key resetting them.
+   - copper puzzle (lights-out): copper bulbs toggled by buttons wired to
+     their neighbours; all lit, ANDed by comparators, opens the inner door.
+   - archery lock: a target's output is 15 only for a bullseye: a dust
+     line 15 long passes only that to a hatch.
+   - clock tower (the plot at `CLOCK_TOWER`, 5x5 in the square):
+     daylight detector and its inverse, observers pulsing a bell at dawn
+     and dusk, lamps at night. The mill: an observer chain moving pistons.
+   - verify over RCON: lectern page by `data modify block ... Page`, frame
+     rotation by `data modify entity ... ItemRotation`, arrows summoned at
+     the target, redstone blocks in place of button presses.
+2. The gate: PLAN wants it "portcullised" against wandering villagers;
+   none have left so far (checked), but nothing stops them.
+3. A docs image of castle2 (top render of the site).

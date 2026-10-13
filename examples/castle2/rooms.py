@@ -42,7 +42,9 @@ from mciwb.imports import Vec3
 _rng = random.Random(173)
 YAW = {"south": 0, "west": 90, "north": 180, "east": -90}
 STATIC = "NoAI:1b,Invulnerable:1b,Silent:1b,PersistenceRequired:1b"
-FACING_BYTE = {"north": 2, "south": 3, "west": 4, "east": 5}  # paintings, frames
+# a painting's facing is a horizontal direction: 0 south, 1 west, 2 north,
+# 3 east (an item frame's is a 3D one: 2 north, 3 south, 4 west, 5 east)
+PAINTING_FACING = {"south": 0, "west": 1, "north": 2, "east": 3}
 
 
 # ---------------------------------------------------------------- helpers
@@ -93,7 +95,9 @@ def bookcase(pos: Vec3, facing: str, books: int) -> None:
 def painting(pos: Vec3, facing: str, variant: str) -> None:
     """a 1x1 painting hung in the cell at pos, on the wall behind it"""
     L.summon(
-        "painting", pos, f'facing:{FACING_BYTE[facing]}b,variant:"minecraft:{variant}"'
+        "painting",
+        pos,
+        f'facing:{PAINTING_FACING[facing]}b,variant:"minecraft:{variant}"',
     )
 
 
