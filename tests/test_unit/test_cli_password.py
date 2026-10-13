@@ -196,10 +196,9 @@ def test_unreadable_file(seen: list[str], tmp_path: Path):
     else:
         pytest.skip("root can read any file")
     result = invoke("run", tmp_path, "--password-file", str(file))
-    # click's Path check finds it (a usage error), else mciwb fails to read it
-    assert result.exit_code in (1, 2), (result.output, result.exception)
-    output = " ".join(result.output.split())
-    assert "not readable" in output or "Permission denied" in output
+    assert result.exit_code == 1, (result.output, result.exception)
+    assert "cannot read the password file" in result.output
+    assert "Permission denied" in result.output
     assert seen == []
     assert SECRET not in result.output
 

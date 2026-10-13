@@ -61,6 +61,8 @@ PasswordFileOption = Annotated[
         "--passwd-file",
         help="a file holding the RCON password (on its first line)",
         show_default=False,
+        # _password reports a file that it cannot read
+        readable=False,
     ),
 ]
 
