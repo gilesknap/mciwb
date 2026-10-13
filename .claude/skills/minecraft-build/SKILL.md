@@ -27,12 +27,15 @@ the image to check every step.
 
    It prints where the players are, the ground height (min, median, max), the
    ground blocks and a text height map, and writes `survey.png` (top and iso
-   views): read it. Build on ground y + 1. Over RCON (no world files on this
-   machine) add a Y range: `SURVEY="X Z RADIUS YMIN YMAX"`.
+   views): read it. Build on ground y + 1. With no world files on this
+   machine it reads over RCON, near the ground only: if that is too many
+   blocks give a smaller RADIUS or a Y range, `SURVEY="X Z RADIUS YMIN YMAX"`.
 4. **Write a build script.** Copy
-   `${CLAUDE_SKILL_DIR}/scripts/build_template.py` into the user's project, set `ORIGIN` and `SIZE`, and replace `build()` and `check()`.
-   It clears the site, refuses to build over a player, builds, renders the
-   build beside the script and asserts on the blocks.
+   `${CLAUDE_SKILL_DIR}/scripts/build_template.py` into the user's project,
+   set `ORIGIN` and `SIZE`, and replace `build()` and `check()`. It clears
+   the site, refuses to build over a player, builds a hut (foundation,
+   walls, door, gable roof), renders it beside the script and asserts on the
+   blocks and the roof's stair states.
 5. **Run it:** `mciwb run build.py`. It exits non-zero if a check fails.
 6. **Look.** Read the PNG. Render other angles if needed:
    `mciwb render X1 Y1 Z1 X2 Y2 Z2 --view top --view iso --view south`
@@ -57,6 +60,14 @@ the image to check every step.
   boxes. Use `FillMode.HOLLOW`/`OUTLINE` for walls and shells, `polygon` for
   towers, `Blocks` for a 3D array. Each `set_block` is an RCON round trip,
   so keep per-block loops for details.
+- Use the builders rather than placing stairs by hand: `gable_roof`,
+  `hip_roof`, `flat_roof`, `arch`, `column`, `stairway`, `road`. On uneven
+  ground, build a `foundation` first (a level platform filled down to the
+  ground); `ground_height(x, z)` gives the ground under one column. Each
+  builder returns the `Volume` it placed: render or check that.
+- Save a finished piece with `world.save("piece.schem", vol)` and place
+  copies with `world.load("piece.schem", pos)`, or `Schematic.load(...)`
+  `.rotate(1)` / `.mirror("x")` then `.paste(pos)` for turned copies.
 - Safety: never build where a player is without checking (the survey and
   the template report players in the site). Never clear or fill a region you
   have not surveyed. Keep builds inside chunks near a player, or
@@ -65,12 +76,15 @@ the image to check every step.
 - Check facts in code, not by eye: `grid = world.scan(a, b)`, then
   `grid[pos]` is a block name and `grid.counts()` counts blocks.
 - Renders show average colours, not textures, and not block states (stairs
-  look like full blocks). Keep regions under about 100 blocks across.
+  and slabs look like full blocks): check stairs with
+  `Schematic.from_world(vol).blocks[x, y, z].props["facing"]` on a small
+  region. Keep renders under about 100 blocks across.
 
 ## More
 
 - [reference.md](reference.md): the build API (`world`, `Volume`, `polygon`,
-  `Blocks`, `Wall`, saving structures), render views and options,
+  `Blocks`, `Wall`), the builders (roofs, arches, stairways, roads,
+  foundations, schematics) with their arguments, render views and options,
   performance numbers and troubleshooting.
 - For other helpers, read `CLAUDE.md` in the mciwb repository and the API
   docs at https://gilesknap.github.io/mciwb/main/_api/mciwb.html. Every

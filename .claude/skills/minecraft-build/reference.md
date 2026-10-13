@@ -9,6 +9,9 @@ template imports it anyway, to keep linters and editors happy).
 - [Scripts and the world object](#scripts-and-the-world-object)
 - [Placing blocks](#placing-blocks)
 - [Bulk building](#bulk-building)
+- [Builders: roofs, arches, stairways, roads](#builders-roofs-arches-stairways-roads)
+- [Terrain: ground heights and foundations](#terrain-ground-heights-and-foundations)
+- [Schematics: saving and reusing pieces](#schematics-saving-and-reusing-pieces)
 - [Reading blocks back](#reading-blocks-back)
 - [Rendering](#rendering)
 - [Server, backups and options](#server-backups-and-options)
@@ -43,8 +46,9 @@ world.cmd("time set day")  # any console command, without the /
   e.g. an unknown block or state, or an unloaded chunk.
 - Blocks: `Item.<NAME>` has every block of the server's Minecraft release
   (`Item.CHERRY_PLANKS`, `Item.RED_WOOL`). A string `"minecraft:name[state]"`
-  works with `client.fill` and `client.setblock`. `Volume.fill`, `polygon`
-  and `Volume.walls` need an `Item`.
+  works with `client.fill`, `client.setblock` and the builders (which also
+  take a `BlockState`). `Volume.fill`, `polygon` and `Volume.walls` need an
+  `Item`.
 - Facing: stairs, doors, chests, furnaces and the like take `facing=` a
   `Direction` (`NORTH` -z, `SOUTH` +z, `EAST` +x, `WEST` -x). Stairs face
   the way you walk up them. Slabs take `nbt=["type=top"]`, logs
@@ -88,14 +92,124 @@ From mcwb (geometry) and mciwb:
   (each column listed top down, repeated along the wall):
   `wall.set_start(ground)`, `wall.draw(ground2)`, `wall.draw(ground3)` ...
   draws connected walls standing on those ground blocks.
-- `world.save("piece.json", vol)` and `world.load("piece.json", position)`:
-  copy a structure to a file and place it elsewhere (or many times).
-- Higher level builders may be added: check `mciwb.imports` and `CLAUDE.md`
-  for what this version has.
 
 Write each part of a build as a function taking a position, so it can be
 moved, repeated and rebuilt. The demos in `src/mciwb/demo` of the mciwb
 repository (`pagoda.py`, `house.py`, `village.py`) are worked examples.
+
+## Builders: roofs, arches, stairways, roads
+
+Each builder sends `setblock`/`fill` commands with the stair and slab states
+worked out, returns the bounding `Volume` of what it placed (to render,
+check, save or clear) and raises `BuildError` if the server rejects a
+command (unknown block, unloaded chunk). Blocks may be an `Item`, a state
+string or a `BlockState`. Arguments after the block are keyword only.
+
+```python
+# roofs: start/end are opposite corners of the footprint, usually the top
+# corners of the walls; the roof starts at start.y + 1
+gable_roof(start, end, Item.SPRUCE_STAIRS, gable=Item.SPRUCE_PLANKS, overhang=1)
+hip_roof(start, end, Item.DARK_OAK_STAIRS, overhang=1)
+flat_roof(start, end, Item.SMOOTH_STONE, parapet=Item.STONE_BRICK_WALL)
+
+# an arch in a wall: start/end are its two feet, in line along x or z
+arch(foot1, foot2, Item.STONE_BRICKS, style="pointed", depth=2, clear=True)
+column(
+    base,
+    6,
+    Item.QUARTZ_PILLAR,
+    plinth=Item.SMOOTH_QUARTZ,
+    capital=Item.CHISELED_QUARTZ_BLOCK,
+)
+
+# paths: a list of points, each straight section along x or z
+stairway(
+    [Vec3(0, 64, 0), Vec3(10, 70, 0), Vec3(10, 72, 6)],
+    Item.STONE_BRICK_STAIRS,
+    width=3,
+    support=Item.STONE_BRICKS,
+    clearance=3,
+)
+road(
+    [Vec3(0, 0, 0), Vec3(30, 0, 0), Vec3(30, 0, 20)],
+    Item.DIRT_PATH,
+    width=3,
+    border=Item.COBBLESTONE,
+)
+```
+
+- `gable_roof(start, end, stairs=OAK_STAIRS, *, ridge=None, gable=None,
+  axis=None, overhang=0)`: two slopes; the ridge runs along the longer side
+  (or `axis="x"`/`"z"`), with a slab ridge over an odd width; `gable=` fills
+  the triangular ends. A footprint W across the ridge is about W/2 high.
+- `hip_roof(start, end, stairs=OAK_STAIRS, *, ridge=None, overhang=0)`:
+  four slopes. `flat_roof(start, end, block=SMOOTH_STONE, *, parapet=None,
+  parapet_height=1, overhang=0)`.
+- `arch(start, end, block=STONE_BRICKS, *, style="round"|"pointed",
+  thickness=1, depth=1, clear=False)`: `depth` goes south or east;
+  `clear=True` cuts the opening to air (a doorway through an existing
+  wall). Its legs are short: put it on a wall or columns for a taller
+  opening. `arch_profile(span, thickness, style)` gives its cells without
+  building.
+- `column(base, height, block=QUARTZ_PILLAR, *, width=1, plinth=None,
+  capital=None)`: `height` includes the plinth and capital, which are one
+  block wider all round.
+- `stairway(points, stairs=STONE_BRICK_STAIRS, *, landing=None, width=1,
+  support=None, clearance=0)`: points are the blocks people stand on, at
+  the start, each corner and the end; a section climbs at most 1 per block.
+  Stairs face up the slope, level parts are `landing` (default: the stairs'
+  full block). It may pass over itself (spiral round a tower, switchback).
+  Wide stairways: keep corners level, as the inside of a climbing corner is
+  too steep.
+- `road(points, block=DIRT_PATH, *, width=3, border=None, clearance=2,
+  heightmap=...)`: ignores the points' y and replaces the top ground block of
+  each column, stepping with the terrain. Keep it out from under roofs and
+  overhangs, which count as the ground.
+- Widths are centred on the points (even widths have the extra lane on the
+  right of the direction of travel).
+
+## Terrain: ground heights and foundations
+
+- `ground_height(x, z, heightmap=Heightmap.MOTION_BLOCKING_NO_LEAVES)`: the
+  y of the top ground block of a column (build on y + 1). `ground_heights(
+  [(x, z), ...], heightmap)` returns a dict keyed by `(x, z)`. One RCON
+  command per column, so sample a grid for big sites. `Heightmap`:
+  `OCEAN_FLOOR` ignores water, `MOTION_BLOCKING_NO_LEAVES` ignores leaves and
+  plants but stops at water, `WORLD_SURFACE` stops at anything.
+- `foundation(start, end, block=COBBLESTONE, *, heightmap=OCEAN_FLOOR,
+  max_depth=64)`: fills each column of the footprint from the ground up to a
+  level platform at `start.y`; build on `start.y + 1`. Build it first:
+  anything standing on the site counts as the ground.
+- A building on a slope: pick the floor y from the survey's median ground
+  (or `ground_height` at the door), lay a `foundation` under the whole
+  footprint, then build on it. For a terraced site, one foundation per
+  terrace, joined with a `stairway`.
+
+## Schematics: saving and reusing pieces
+
+```python
+world.save("tower.schem", vol)  # Sponge .schem, with stair/slab/log states
+world.load("tower.schem", pos)  # pos is the bottom SOUTH west corner
+piece = Schematic.load("tower.schem").rotate(1)  # a quarter turn clockwise
+piece.paste(pos)  # pos is the bottom NORTH west corner; returns the Volume
+Schematic.from_world(vol).blocks[x, y, z]  # a BlockState, from vol.start
+```
+
+- `.schem` files are the format of WorldEdit and other tools. A filename
+  ending `.json` saves the older mcwb format (blocks only, no states).
+- `rotate(steps)` and `mirror("x"|"z")` turn block states too (stairs,
+  doors, logs, fences). `paste(pos, air=False)` leaves the world alone where
+  the schematic has air; `air=True` clears the box.
+- Reading the world is slow (a few RCON commands per block) and only reads
+  the states of stairs, slabs and log-like blocks; other blocks come back
+  in their default state.
+- Checking stairs: renders draw stairs as full blocks, so read a small
+  region back and look at `state.name` and `state.props` (`facing`, `half`,
+  `shape`). Stairs `facing` is the side of the tall step, the way you walk
+  up them.
+- `BlockState.parse("minecraft:oak_stairs[facing=east]")`,
+  `BlockState.of(Item.OAK_STAIRS, facing=Direction.EAST, half="top")`,
+  `.with_props(...)` and `str(state)` build state strings for `setblock`.
 
 ## Reading blocks back
 
@@ -131,8 +245,8 @@ In a script `world.render(a, b, "out.png", views=["top", "iso"])` returns the
   three views per row). For detail, render a smaller region or fewer views;
   `--scale N` sets pixels per block with no width limit.
 - Colours are averages, with no textures and no block states (stairs and
-  slabs look like full blocks): check orientation in code or by placing a
-  test block, not from the image.
+  slabs look like full blocks): check their states with
+  `Schematic.from_world` (see above), not from the image.
 - Blocks are read from the world files after `save-all flush` (fast, needs
   the world folder on this machine: `~/mciwb-server/world` for `mciwb start`,
   or `--folder`). Otherwise, or with `--rcon`, over RCON at most 32768
@@ -178,4 +292,6 @@ of `mciwb start`, as it starts the server again. Existing backups:
 | Fill: "Too many blocks" | over 32768 blocks: use `Volume.fill` or split the box |
 | Render warns "no server ... recent changes may be missing" | pass the `--port`/`--password` of `mciwb start` so it can flush the world first |
 | Render is all pale blue | the region is air, or chunks were never generated: check coordinates with the survey |
-| Build has floating or buried parts | re-survey: ground height varies; build on ground y + 1 per column, or level the site first with a `fill` |
+| Build has floating or buried parts | re-survey: ground height varies; lay a `foundation` under it, or place each column at `ground_height(x, z) + 1` |
+| `BuildError` from a builder | the message has the server's reply: an unknown block or state, or an unloaded chunk |
+| Stairs face the wrong way | `facing` is the side of the tall step: read them back with `Schematic.from_world` and fix the `facing` you sent |

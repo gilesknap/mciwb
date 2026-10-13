@@ -12,7 +12,9 @@ blocks north of me, my player is called steve"*, and it follows this loop:
 2. back up the world (``mciwb backup``)
 3. survey the site: where the players are, the ground height and what the
    ground is made of, and an image of the area
-4. write a Python build script, starting from the skill's template
+4. write a Python build script, starting from the skill's template and
+   using the builders (see :doc:`builders`) for roofs, arches, stairways,
+   roads and foundations that follow the terrain
 5. run it with ``mciwb run``
 6. render the build to an image (see `render_howto`) and look at it
 7. fix the script and run it again until the build is right, or restore the
@@ -26,16 +28,20 @@ The skill is in the mciwb repository, in
     The workflow and the rules (coordinates, ground levels, block names,
     performance, safety). Claude reads it when you ask for a build.
 ``reference.md``
-    The build API, render options, performance numbers and
-    troubleshooting, which Claude reads when it needs them.
+    The build API and the builders, schematics, render options, performance
+    numbers and troubleshooting, which Claude reads when it needs them.
 ``scripts/survey.py``
     Surveys a site. Run it yourself with
     ``SURVEY="X Z RADIUS" mciwb run survey.py`` or
-    ``mciwb run survey.py --player NAME``.
+    ``mciwb run survey.py --player NAME``. Without the world files (a
+    server on another machine) it finds the ground with Minecraft's
+    heightmaps and reads only the blocks near it over RCON.
 ``scripts/build_template.py``
     A template build script: it clears the site, refuses to build over a
-    player, builds a small hut, renders it to a PNG beside the script and
-    checks the blocks.
+    player, builds a small hut on a foundation with a gable roof, renders it
+    to a PNG beside the script and checks the blocks, reading the roof's
+    stairs back with ``Schematic.from_world`` because the images draw stairs
+    as full blocks.
 
 Install the skill
 -----------------
@@ -80,4 +86,6 @@ Tips
 - Tell Claude your player name, so it can survey around you and keep its
   builds away from where you stand.
 - Ask Claude to show you the rendered images: they are ordinary PNG files.
+- Ask Claude to save a piece you like as a ``.schem`` file, to place copies
+  of it elsewhere, turned or mirrored, or to open it in WorldEdit.
 - Backups are in ``~/mciwb-backups``. ``mciwb restore NAME`` brings one back.
