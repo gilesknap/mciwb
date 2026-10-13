@@ -41,14 +41,22 @@ def test_survey_then_build(
     client.fill(SITE + Vec3(-13, 0, -13), SITE + Vec3(13, 20, 13), Item.AIR)
     monkeypatch.chdir(tmp_path)
 
-    # survey over RCON (the test server's world is not where Iwb looks), so
-    # give a small Y range
+    # survey over RCON (the test server's world is not where Iwb looks), with
+    # a Y range
     monkeypatch.setenv("SURVEY", f"{SITE.x} {SITE.z} 6 -64 -45")
     out = run_script(SCRIPTS / "survey.py")
 
     assert "min -61, median -61, max -61" in out
     assert "ground blocks: minecraft:grass_block 169" in out
     assert (tmp_path / "survey.png").is_file()
+
+    # and without: it finds the ground from the heightmap, and reads only
+    # the blocks near it
+    monkeypatch.setenv("SURVEY", f"{SITE.x} {SITE.z} 6")
+    out = run_script(SCRIPTS / "survey.py")
+
+    assert "(y -61..-61), reading y -64..-55" in out
+    assert "min -61, median -61, max -61" in out
 
     # build the template's hut on the surveyed ground
     template = (SCRIPTS / "build_template.py").read_text()
@@ -58,10 +66,13 @@ def test_survey_then_build(
     script.write_text(
         template.replace(origin, f"ORIGIN = Vec3({SITE.x}, {SITE.y}, {SITE.z})")
     )
-    run_script(script)
+    out = run_script(script)
 
     assert (tmp_path / "hut.png").is_file()
-    door = SITE + Vec3(3, 1, 5)
-    grid = grab_blocks(client, Volume.from_corners(SITE, door))
+    # the template checked the roof's stairs: they face up the slopes
+    assert "facing=south" in out
+    door = SITE + Vec3(4, 1, 6)
+    grid = grab_blocks(client, Volume.from_corners(SITE, door + Vec3(0, 1, 0)))
     assert grid[SITE] == "minecraft:cobblestone"
     assert grid[door] == "minecraft:oak_door"
+    assert grid[door + Vec3(0, 1, 0)] == "minecraft:oak_door"
