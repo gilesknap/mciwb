@@ -591,6 +591,9 @@ COPPER_GRID = (49, VAULT_Y + 1, 23)
 COPPER_START = {(2, 0), (1, 1)}
 COPPER_SOLUTION = [(1, 0), (5, 0), (2, 1)]
 INNER_VAULT_DOOR = (49, VAULT_Y, 18)  # frame: a west, b south
+# the organ: keys C D E F G A at x 87..92 on the chapel's north wall (z 16)
+ORGAN_KEYS = (87, 92)
+ORGAN_TUNE = ("F", "C", "G", "D")
 
 SECRETS.update(
     {
@@ -655,6 +658,24 @@ SECRETS.update(
             "clues": [
                 ("chest", (59, YU + 12, 39), "amethyst shards in the hidden study"),
                 ("chest", (20, 11, 21), "amethyst shards in the alchemist's cellar"),
+            ],
+        },
+        "the crypt's second chamber": {
+            "machine": "organ",
+            "where": (89, YU, 18),
+            "opens": "a door in the crypt's south wall slides aside onto the "
+            "second chamber: the organist's tomb and a chest",
+            "solution": "play " + " ".join(ORGAN_TUNE) + " on the chapel's organ "
+            "(keys C D E F G A from the west); a wrong key starts again",
+            "tune": list(ORGAN_TUNE),
+            "clues": [
+                (
+                    "sign",
+                    (97, 8, 27),
+                    "Brother Cantor's tomb in the crypt: Play me home: "
+                    + "  ".join(ORGAN_TUNE),
+                ),
+                ("sign", (88, YU + 2, 17), "the organ's keys: C D E / F G A"),
             ],
         },
         "the inner vault": {

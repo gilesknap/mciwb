@@ -961,10 +961,7 @@ def machines() -> str:
     astrolabe()
     engine_purpose()
     transmuter()
-    try:
-        import organ
+    import organ
 
-        organ.organ()
-    except ImportError:
-        pass
+    organ.organ()
     return "the lectern lock, the copper puzzle, the astrolabe, the engine, the transmuter, the organ"

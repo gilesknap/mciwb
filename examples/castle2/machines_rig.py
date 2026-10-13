@@ -44,7 +44,7 @@ BOXES = {
     "copper": (39, 6, 11, 51, 14, 34),
     "astrolabe": (12, 11, 17, 25, 43, 30),
     "transmuter": (17, 33, 18, 24, 39, 25),
-    "organ": (80, 6, 0, 112, 25, 22),
+    "organ": (70, 5, 3, 108, 26, 37),
 }
 BOXES["engine"] = BOXES["astrolabe"]
 
@@ -85,6 +85,8 @@ def surroundings(name: str, pos) -> None:
             finally:
                 build_inner.V = saved
             L.fill(pos(23, ey, 21), pos(24, ey + 2, 25), stone)
+    elif name == "organ":
+        L.fill(pos(86, 17, 15), pos(93, 17, 21), "minecraft:polished_andesite")
     elif name == "transmuter":
         L.fill(pos(17, 33, 18), pos(23, 33, 25), "minecraft:dark_oak_planks")
         L.fill(pos(23, 34, 18), pos(23, 39, 25), L.BRICK)
@@ -118,7 +120,7 @@ def work(name: str, pos) -> None:
 
 
 def main() -> None:
-    which = os.environ.get("WHICH", "lectern,copper,astrolabe,engine,transmuter")
+    which = os.environ.get("WHICH", "lectern,copper,astrolabe,engine,transmuter,organ")
     for name in which.split(","):
         box = BOXES[name]
         pos = mover(box)

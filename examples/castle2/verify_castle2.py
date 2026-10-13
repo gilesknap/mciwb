@@ -582,10 +582,8 @@ def machines_checks() -> None:
     M.work_astrolabe(check)
     M.work_engine(check)
     M.work_transmuter(check)
-    try:
-        import organ
-    except ImportError:
-        return
+    import organ
+
     organ.work_organ(check)
 
 
