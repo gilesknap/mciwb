@@ -27,7 +27,13 @@ from mciwb.server import (
     default_server_folder,
 )
 from mciwb.signs import Signs
-from mciwb.threads import Client, get_client, set_client
+from mciwb.threads import (
+    Client,
+    get_client,
+    reply_matches,
+    retry_command,
+    set_client,
+)
 
 
 def _rcon_port(server_folder: Path) -> int | None:
@@ -472,13 +478,34 @@ class Iwb:
         log.info(f"rendered {', '.join(views)} to {file}")
         return grid
 
-    def cmd(self, cmd: str) -> str:
+    def cmd(self, cmd: str, expect: str | None = None) -> str:
         """
         Run any arbitrary Minecraft console command on the server.
 
+        The server's reply is returned as it is, including error messages
+        such as ``Incorrect argument for command...<--[HERE]``. (On Minecraft
+        26.x, for example, game rules have snake case names, so
+        ``gamerule doDaylightCycle`` is an error: use
+        ``gamerule advance_time``. And ``time query daytime`` is an error
+        too: use ``time query day`` for the ticks into the current day, and
+        ``time query day repetition`` for the number of days.)
+
+        Another RCON client of the server (e.g. a dashboard) can, rarely,
+        garble the reply: empty it or add its own output to it. Pass
+        *expect* to check the reply and send the command again if needed.
+        Only do that for a command that is safe to send twice (e.g.
+        ``setblock``, ``tp`` to a fixed place, ``gamerule ...``, but not
+        ``give`` or ``summon``).
+
         :param cmd: the command to run, without the leading slash
             e.g. "time set day"
+        :param expect: a regular expression that the reply must contain,
+            e.g. ``r"Game rule \\S+ is currently set to \\S+"``
 
-        :returns: the server's response
+        :returns: the server's response. With *expect*, just the part of it
+            that matched, or the whole response if it never matched
         """
-        return get_client().run(cmd)
+        client = get_client()
+        if expect is None:
+            return client.run_raw(cmd)
+        return retry_command(lambda: client.run_raw(cmd), reply_matches(expect), cmd)
