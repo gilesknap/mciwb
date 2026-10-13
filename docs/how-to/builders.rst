@@ -15,6 +15,15 @@ How they work
 - Blocks are ``Item`` members (``Item.OAK_STAIRS``), block state strings
   (``"minecraft:oak_stairs[facing=east]"``) or `mciwb.builders.BlockState`
   objects.
+- A block state string or ``BlockState`` may end with block entity data in
+  SNBT, as ``setblock`` takes it: a sign's text or a chest's contents.
+  ``Placer().setblock`` and ``Placer().fill`` send it with the block::
+
+      sign = BlockState.of(Item.OAK_SIGN, rotation=4).with_nbt(
+          """{front_text:{messages:['"Hi"','""','""','""']}}""")
+      Placer().setblock(Vec3(0, 70, 0), sign)
+      Placer().setblock(Vec3(1, 70, 0),
+                        'chest[facing=west]{Items:[{Slot:0b,id:"minecraft:apple",count:3}]}')
 - Each function builds with ``setblock`` and ``fill`` commands over RCON,
   using one ``fill`` for each rectangle of the same block where it can.
 - Each function returns the bounding box of the blocks it placed, as a
@@ -105,6 +114,10 @@ the top corners of the walls. The roof starts one block above them.
 
 `mciwb.builders.hip_roof`
     four slopes, with outer corner stairs where they meet.
+
+Over an odd width, both sloping roofs finish with a ridge of slabs (or the
+``ridge`` block), on a full block (a double slab) that fills the gap between
+the top stairs.
 
 `mciwb.builders.flat_roof`
     one layer of a block or slab, with an optional ``parapet`` around the

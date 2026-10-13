@@ -15,6 +15,21 @@ from mcwb.types import Items
 from mciwb.imports import Item, Player, Vec3, Volume
 
 
+def split_block(block: str) -> tuple[str, str, str]:
+    """
+    Split a block argument e.g. 'oak_sign[rotation=4]{front_text:...}' into
+    its name, its block state text ('rotation=4') and its NBT ('{...}')
+    """
+    end = min((i for i in (block.find("["), block.find("{")) if i >= 0), default=-1)
+    if end < 0:
+        return block, "", ""
+    name, rest = block[:end], block[end:]
+    state = ""
+    if rest.startswith("["):
+        state, _, rest = rest[1:].partition("]")
+    return name, state, rest
+
+
 class MockClient:
     """
     A mock version of the RCON client for unit testing.
@@ -40,6 +55,8 @@ class MockClient:
             state["world"] = np.full((100, 100, 100), Item.AIR, dtype=Item)
             # the block states (e.g. "powered=true") of blocks, keyed by position
             state["states"] = {}
+            # the block entity data (SNBT) set with setblock or fill, by position
+            state["block_nbt"] = {}
             # the text of signs in the mock world, keyed by block position
             state["signs"] = {}
             # the rotation of the mock player 'georgeTest' (yaw, pitch)
@@ -62,6 +79,7 @@ class MockClient:
 
     world = property(lambda self: self._state["world"])
     states = property(lambda self: self._state["states"])
+    block_nbt = property(lambda self: self._state["block_nbt"])
     signs = property(lambda self: self._state["signs"])
     given = property(lambda self: self._state["given"])
     gamerules = property(lambda self: self._state["gamerules"])
@@ -107,7 +125,7 @@ class MockClient:
         """set the block at position in the world"""
         key = (int(pos.x), int(pos.y), int(pos.z))
         self.block_commands.append(f"setblock {key[0]} {key[1]} {key[2]} {block}")
-        name = str(block).partition("[")[0].split("{")[0]
+        name = split_block(str(block))[0]
         changed = self.world[key] != Item(name)
         self._set(key, str(block))
         # like Minecraft, a lower door half breaks when the block above it
@@ -120,13 +138,16 @@ class MockClient:
 
     def _set(self, key: tuple[int, ...], block: str):
         # split e.g. 'minecraft:oak_door[half=lower]' into item and state
-        name, _, state = block.partition("[")
-        name = name.split("{")[0]
+        name, state, nbt = split_block(block)
         self.world[key] = Item(name)
         if state:
-            self.states[key] = state.rstrip("]")
+            self.states[key] = state
         else:
             self.states.pop(key, None)
+        if nbt:
+            self.block_nbt[key] = nbt
+        else:
+            self.block_nbt.pop(key, None)
 
     def fill(
         self,
@@ -155,15 +176,16 @@ class MockClient:
         )
         mode = FillMode(mode) if mode is not None else None
         simple = mode in (None, FillMode.REPLACE, FillMode.DESTROY) and filter is None
-        if simple and "[" not in block and min(lo) >= 0:
+        if simple and not any(c in block for c in "[{") and min(lo) >= 0:
             # the common case, quickly (slices do not wrap negative indexes)
             self.world[lo[0] : hi[0] + 1, lo[1] : hi[1] + 1, lo[2] : hi[2] + 1] = Item(
                 block
             )
-            for key in [
-                k for k in self.states if all(lo[i] <= k[i] <= hi[i] for i in range(3))
-            ]:
-                del self.states[key]
+            for states in (self.states, self.block_nbt):
+                for key in [
+                    k for k in states if all(lo[i] <= k[i] <= hi[i] for i in range(3))
+                ]:
+                    del states[key]
             count = int(np.prod(np.subtract(hi, lo) + 1))
         else:
             count = 0

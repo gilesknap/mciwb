@@ -138,6 +138,15 @@ def test_schematic_save_load(tmp_path: Path):
     assert repr(loaded) == "<Schematic 2x3x4, 5 block states>"
 
 
+def test_schematic_save_rejects_block_entity_nbt(tmp_path: Path):
+    schematic = make_schematic()
+    schematic.blocks[1, 1, 1] = BlockState.parse("chest{Items:[]}")
+    file = tmp_path / "test.schem"
+    with pytest.raises(ValueError, match="block entity data"):
+        schematic.save(file)
+    assert not file.exists()
+
+
 def test_schematic_load_version_2(tmp_path: Path):
     file = tmp_path / "v2.schem"
     # a version 2 file is not nested, and keeps its blocks in BlockData

@@ -375,10 +375,21 @@ class Schematic:
     def save(self, filename: Path | str) -> None:
         """
         Save as a Sponge schematic version 3 file (``.schem``).
+
+        :raises ValueError: if a block state carries block entity data
+            (``BlockState.nbt``): a Sponge palette holds block states only,
+            and its block entities are NBT compounds in ``block_entities``
         """
         palette: dict[BlockState, int] = {}
         ordered = self.blocks.transpose(1, 2, 0).ravel()
         indices = [palette.setdefault(state, len(palette)) for state in ordered]
+        with_nbt = [str(state) for state in palette if state.nbt]
+        if with_nbt:
+            raise ValueError(
+                "cannot save block states with block entity data in a "
+                f"schematic palette: {with_nbt[0]} ({len(with_nbt)} states). "
+                "Remove it with state.with_nbt(None)"
+            )
         width, height, length = self.blocks.shape
         blocks: dict[str, Any] = {
             "Palette": {str(state): Int(index) for state, index in palette.items()},

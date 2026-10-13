@@ -80,7 +80,13 @@ class Placer:
         return result
 
     def setblock(self, pos: Vec3, block: Block) -> str:
-        """Set one block, e.g. ``placer.setblock(pos, "oak_stairs[half=top]")``"""
+        """
+        Set one block, e.g. ``placer.setblock(pos, "oak_stairs[half=top]")``.
+        The block may carry block entity data, e.g. a sign's text::
+
+            text = '''{front_text:{messages:['"Hi"','""','""','""']}}'''
+            placer.setblock(pos, "oak_sign[rotation=4]" + text)
+        """
         pos = _ints(pos)
         state = str(BlockState.parse(block))
         self.include(pos)
@@ -95,7 +101,8 @@ class Placer:
         filter: str | None = None,
     ) -> str:
         """
-        Fill the box between two opposite corners, inclusive.
+        Fill the box between two opposite corners, inclusive. Block entity
+        data in *block* (``chest{Items:[...]}``) is given to every block.
 
         :param mode: e.g. ``FillMode.KEEP`` to only replace air
         :param filter: only replace these blocks, e.g. ``"minecraft:stone"``

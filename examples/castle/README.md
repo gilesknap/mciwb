@@ -165,9 +165,11 @@ in front of ours: about one command in 10k (gilesknap/mciwb#166, item 2).
 `Placer.setblock` to accept a polluted reply and retry an empty one;
 `castle_lib.run` does the same for summons and signs, and the checks read
 a block again when the reply is empty. Signs are placed with a raw
-`setblock` (item 3: `Placer` does not parse block-entity NBT) and the
-chapel's bell tower fills the hole `hip_roof` leaves in its top ring (item
-5). Each workaround is marked in the code with the issue; delete them when
+`setblock`, which works, but `Placer.setblock` now takes block-entity NBT
+and could place them instead (item 3). The
+chapel's bell tower fills the hole that `hip_roof` used to leave in its top
+ring (item 5); `hip_roof` no longer leaves it, so that fill is now harmless
+but redundant. Each workaround is marked in the code with the issue; delete them when
 the fixes are released.
 
 The ticks that the checks sprint through also bring night, and hostile
