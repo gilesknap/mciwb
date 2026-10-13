@@ -168,11 +168,30 @@ def test_iso_turns(view: str, west_end_on_left: bool):
 
 
 def test_iso_glass_shows_what_is_behind():
-    grid = make_grid((1, 1, 2), {(0, 0, 0): "gold_block", (0, 0, 1): "glass"})
-    image = render_view(grid, "iso", 8, labels=False)
-    # the gold block's top is drawn, the glass in front of it blends with
-    # the background
-    assert GOLD in [c for _, c in image.getcolors(1000)]  # type: ignore
+    # from the south east, glass one block east, south and up from a gold
+    # block covers it exactly on screen
+    gold, glass = (0, 0, 0), (1, 1, 1)
+    both = {gold: "gold_block", glass: "glass"}
+    opaque = Palette({"glass": (*BLOCK_COLOURS["glass"][:3], 255)})
+
+    def draw(blocks: dict, palette: Palette | None = None) -> Image.Image:
+        return render_view(make_grid((2, 2, 2), blocks), "iso", 8, False, palette)
+
+    # the middle of the gold block's top face, when it is drawn alone
+    alone = np.asarray(draw({gold: "gold_block"}))
+    rows, columns = np.nonzero((alone == GOLD).all(axis=2))
+    x, y = int(columns.mean()), int(rows.mean())
+    assert alone[y, x].tolist() == list(GOLD)
+
+    # opaque glass hides the gold completely
+    solid = at(draw(both, opaque), x, y)
+    assert solid == at(draw({glass: "glass"}, opaque), x, y)
+    # translucent glass is a blend of the gold and the glass
+    assert GLASS_ALPHA < 255
+    seen = at(draw(both), x, y)
+    assert seen != GOLD
+    assert seen != solid
+    assert seen != at(draw({glass: "glass"}), x, y)
 
 
 def test_render_layout():
@@ -196,6 +215,8 @@ def test_render_layout():
     bracket = np.asarray(tiny)[PAD : PAD + _text_height(), right - 4 : right]
     assert (bracket != CANVAS).any()
 
+    # a bare view name is one view, not a list of letters
+    assert render(grid, "top", scale=SCALE).size == labelled.size
     with pytest.raises(ValueError, match="unknown view"):
         render(grid, ["sideways"])
     with pytest.raises(ValueError, match="no views"):
