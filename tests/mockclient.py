@@ -107,7 +107,15 @@ class MockClient:
         """set the block at position in the world"""
         key = (int(pos.x), int(pos.y), int(pos.z))
         self.block_commands.append(f"setblock {key[0]} {key[1]} {key[2]} {block}")
+        name = str(block).partition("[")[0].split("{")[0]
+        changed = self.world[key] != Item(name)
         self._set(key, str(block))
+        # like Minecraft, a lower door half breaks when the block above it
+        # changes to anything but a door
+        below = (key[0], key[1] - 1, key[2])
+        lower_door = "half=lower" in self.states.get(below, "")
+        if changed and lower_door and not name.endswith("_door"):
+            self._set(below, str(Item.AIR))
         return f"Changed the block at {key[0]}, {key[1]}, {key[2]}"
 
     def _set(self, key: tuple[int, ...], block: str):

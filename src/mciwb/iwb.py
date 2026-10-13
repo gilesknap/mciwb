@@ -307,11 +307,14 @@ class Iwb:
         open_str = "true" if open else "false"
         common = [f"hinge={hinge}", f"open={open_str}"]
 
-        # doors wont replace doors with different states so need to clear first
-        self.set_block(pos, Item.AIR)
-        self.set_block(pos, door_type, facing=facing, nbt=["half=lower", *common])
+        # doors wont replace doors with different states so need to clear first.
+        # Clear both halves before placing either: a lower half breaks if the
+        # block above it changes to anything but its upper half (e.g. when
+        # clearing a doorway in a wall)
         top = pos + Direction.UP
+        self.set_block(pos, Item.AIR)
         self.set_block(top, Item.AIR)
+        self.set_block(pos, door_type, facing=facing, nbt=["half=lower", *common])
         self.set_block(top, door_type, facing=facing, nbt=["half=upper", *common])
 
     def get_block(self, pos: Vec3) -> Item:
