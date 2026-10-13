@@ -9,6 +9,7 @@ from typing import Annotated
 
 import typer
 from IPython.terminal.embed import InteractiveShellEmbed
+from mcwb import Vec3, Volume
 from rcon.exceptions import WrongPassword
 
 from mciwb import __version__, imports
@@ -19,6 +20,7 @@ from mciwb.backup import Backup
 from mciwb.imports import *  # noqa: F401, F403
 from mciwb.iwb import Iwb
 from mciwb.logging import exception_handler, init_logging, log
+from mciwb.render import VIEWS, render, scan
 from mciwb.server import (
     HOST,
     MINECRAFT_VERSION,
@@ -241,7 +243,12 @@ def backup(
     init_logging(debug)
 
     backup = Backup(world_folder=folder / "world", backup_folder=backup_folder)
-    client = _rcon_client(port, password)
+    client, wrong_password = _rcon_client(port, password)
+    if wrong_password:
+        log.warning(
+            f"wrong RCON password for {HOST}:{port}: copying the world files "
+            "without asking the server to save them first"
+        )
     try:
         if client:
             set_client(client)
@@ -254,16 +261,18 @@ def backup(
             client.close()
 
 
-def _rcon_client(port: int, password: str) -> Client | None:
-    """Connect to a running server, or return None if there is none"""
+def _rcon_client(port: int, password: str) -> tuple[Client | None, bool]:
+    """
+    Connect to a running server. Return the client, or None if there is no
+    server or the password is wrong, and whether the password was wrong (for
+    the caller to report: there is a server, but it was not asked to save)
+    """
     client = Client(HOST, port, passwd=password, timeout=10)
     try:
         client.connect(True)
     except WrongPassword:
-        log.warning(
-            f"Wrong RCON password for server {HOST}:{port}, so the world is "
-            "copied without asking the server to save it first"
-        )
+        client.close()
+        return None, True
     except Exception as e:
         log.debug(f"no server on {HOST}:{port}: {e!r}")
     else:
@@ -271,9 +280,9 @@ def _rcon_client(port: int, password: str) -> Client | None:
         # can take longer, so wait for commands as long as they need (rcon
         # types the timeout as float, but the socket accepts None)
         client.timeout = None  # pyright: ignore[reportAttributeAccessIssue]
-        return client
+        return client, False
     client.close()
-    return None
+    return None, False
 
 
 @cli.command()
@@ -317,6 +326,120 @@ def restore(
         minecraft_version=minecraft_version,
         debug=debug,
     )
+
+
+@cli.command(
+    "render",
+    # let corners have negative coordinates, e.g. 632 73 -1658
+    context_settings={"ignore_unknown_options": True},
+)
+def render_cmd(
+    corners: Annotated[
+        list[int] | None,
+        typer.Argument(
+            help="two opposite corners of the region: X1 Y1 Z1 X2 Y2 Z2",
+            show_default=False,
+        ),
+    ] = None,
+    centre: Annotated[
+        tuple[int, int, int] | None,
+        typer.Option(help="the centre of the region, with --size", show_default=False),
+    ] = None,
+    size: Annotated[
+        tuple[int, int, int] | None,
+        typer.Option(help="the size of the region in blocks, with --centre"),
+    ] = None,
+    view: Annotated[
+        list[str] | None,
+        typer.Option(help=f"repeat for several views: {', '.join(VIEWS)}"),
+    ] = None,
+    output: Annotated[Path, typer.Option(help="the PNG file to write")] = Path(
+        "render.png"
+    ),
+    scale: Annotated[
+        int | None, typer.Option(help="pixels per block (default: automatic)")
+    ] = None,
+    labels: Annotated[
+        bool, typer.Option(help="add titles and world coordinate labels")
+    ] = True,
+    folder: Annotated[
+        Path, typer.Option(help="the server folder, as for mciwb start")
+    ] = default_server_folder,
+    rcon: Annotated[
+        bool, typer.Option(help="read blocks over RCON, not from the world files")
+    ] = False,
+    port: int = def_port,
+    password: str = def_pass,
+    debug: bool = False,
+):
+    """
+    Render a region of the world to a PNG image, to see what you built.
+
+    Give the region as two corners, or as --centre and --size. Blocks are
+    read from the world files in --folder (after asking a running server to
+    save), or over RCON one block at a time (with --rcon, or when --folder
+    has no world): use the --port and --password that you gave to
+    `mciwb start`.
+    """
+    init_logging(debug)
+
+    try:
+        vol = _region(corners, centre, size)
+        views = view or ["top", "iso"]
+        unknown = [v for v in views if v not in VIEWS]
+        if unknown:
+            raise ValueError(f"unknown view {unknown[0]}, use {', '.join(VIEWS)}")
+    except ValueError as e:
+        log.error(e)
+        raise typer.Exit(1) from None
+
+    client, wrong_password = _rcon_client(port, password)
+    world_folder = None if rcon else folder / "world"
+    if client is None and world_folder and (world_folder / "level.dat").exists():
+        # unlike backup, render expects a running server: without one the
+        # world files may be minutes behind what was just built
+        if wrong_password:
+            problem, options = "wrong RCON password for", "--password"
+        else:
+            problem, options = "no server on", "--port/--password"
+        log.warning(
+            f"{problem} {HOST}:{port}: reading the world files without "
+            "asking the server to save, so recent changes may be missing; "
+            f"pass the {options} of mciwb start"
+        )
+    elif wrong_password:
+        log.warning(f"wrong RCON password for {HOST}:{port}")
+    try:
+        grid = scan(vol, world_folder, client)
+    except ValueError as e:
+        log.error(e)
+        raise typer.Exit(1) from None
+    finally:
+        if client:
+            client.close()
+
+    render(grid, views, scale, labels).save(output)
+    log.info(f"rendered {', '.join(views)} of {vol.start} to {vol.end} to {output}")
+
+
+def _region(
+    corners: list[int] | None,
+    centre: tuple[int, int, int] | None,
+    size: tuple[int, int, int] | None,
+) -> Volume:
+    """the region given to mciwb render, as corners or centre and size"""
+    if corners:
+        if len(corners) != 6 or centre or size:
+            raise ValueError(
+                "give two corners X1 Y1 Z1 X2 Y2 Z2, or --centre and --size"
+            )
+        return Volume.from_corners(Vec3(*corners[:3]), Vec3(*corners[3:]))
+    if centre is None or size is None:
+        raise ValueError("give two corners X1 Y1 Z1 X2 Y2 Z2, or --centre and --size")
+    if min(size) < 1:
+        raise ValueError(f"--size must be at least 1 in each direction, not {size}")
+    start = Vec3(*centre) - Vec3(*size) // 2
+    return Volume.from_corners(start, start + Vec3(*size) - 1)
 
 
 if __name__ == "__main__":

@@ -6,6 +6,7 @@ from pathlib import Path
 
 import pytest
 from mcipc.rcon.exceptions import NoPlayerFound
+from PIL import Image
 
 import mciwb.iwb
 from mciwb.imports import (
@@ -19,6 +20,7 @@ from mciwb.imports import (
     get_world,
 )
 from mciwb.monitor import Monitor
+from tests.anvil_writer import write_world
 from tests.conftest import ENTITY_NAME
 from tests.mockclient import MockClient
 
@@ -204,3 +206,57 @@ def test_wall_maker(world: Iwb, mock_client: MockClient):
 
     maker.remove()
     assert WallMaker.start not in world.signs.signs
+
+
+def test_scan_and_render_rcon(world: Iwb, mock_client: MockClient, tmp_path: Path):
+    """with no world folder, blocks are read over RCON"""
+    mock_client.setblock(Vec3(1, 1, 1), Item.GOLD_BLOCK)
+    assert world.world_folder is None
+
+    grid = world.scan(Vec3(0, 0, 0), Vec3(2, 2, 2))
+    assert grid.counts() == {"minecraft:gold_block": 1}
+
+    file = tmp_path / "render.png"
+    grid = world.render(Vec3(2, 2, 2), Vec3(0, 0, 0), file, views=["top"])
+    assert grid.origin == Vec3(0, 0, 0)
+    assert file.exists()
+
+    # one view may be given as a bare name
+    one = tmp_path / "one.png"
+    world.render(Vec3(2, 2, 2), Vec3(0, 0, 0), one, views="top")
+    with Image.open(one) as a, Image.open(file) as b:
+        assert a.size == b.size
+
+
+def test_scan_default_server(default_world, mock_client: MockClient, tmp_path: Path):
+    """the default server's world is read from its files"""
+    world_folder = write_world(
+        tmp_path / "server" / "world", {(1, 2, 3): "minecraft:gold_block"}
+    )
+    world = default_world()
+    assert world.world_folder == world_folder
+
+    grid = world.scan(Vec3(0, 2, 3), Vec3(2, 2, 3))
+
+    assert grid[Vec3(1, 2, 3)] == "minecraft:gold_block"
+    assert "save-all flush" in mock_client.commands
+
+
+def test_scan_mciwb_server_other_port(
+    default_world, mock_client: MockClient, monkeypatch: pytest.MonkeyPatch, tmp_path
+):
+    """mciwb start --port N still uses the default folder: find it by its port"""
+    monkeypatch.setattr(mciwb.iwb, "def_port", mock_client.port + 100)
+    world_folder = write_world(
+        tmp_path / "server" / "world", {(1, 2, 3): "minecraft:gold_block"}
+    )
+    assert default_world().world_folder is None
+
+    properties = tmp_path / "server" / "server.properties"
+    properties.write_text(f"motd=hi\nrcon.port={mock_client.port}\n")
+    world = default_world()
+    assert world.world_folder == world_folder
+
+    grid = world.scan(Vec3(0, 2, 3), Vec3(2, 2, 3))
+    assert grid[Vec3(1, 2, 3)] == "minecraft:gold_block"
+    assert "save-all flush" in mock_client.commands

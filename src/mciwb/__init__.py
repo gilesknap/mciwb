@@ -6,18 +6,25 @@ building blocks (``Vec3``, ``Item``, ``Direction``, ``Volume``, ``polygon``
 etc.) come from the mcwb library. These and the classes below can all be
 imported from ``mciwb.imports``.
 
+Read and draw regions with ``scan`` and ``render`` from the :py:mod:`mciwb.render`
+module (or ``mciwb.imports``). They are not imported here, where a function
+called ``render`` would hide the ``mciwb.render`` module.
+
 .. data:: __version__
     :type: str
 
     Version number as calculated by https://github.com/pypa/setuptools_scm
 """
 
+from . import render
 from ._version import __version__
 from .backup import Backup
+from .blockgrid import BlockGrid
 from .copier import CopyPaste
 from .iwb import Iwb, get_world
 from .monitor import Monitor
 from .nbt import parse_nbt
+from .palette import Palette
 from .player import Player, PlayerNotInWorldError
 from .server import MinecraftServer
 from .signs import Signs
@@ -44,4 +51,7 @@ __all__ = [
     "parse_nbt",
     "Backup",
     "MinecraftServer",
+    "BlockGrid",
+    "Palette",
+    "render",
 ]

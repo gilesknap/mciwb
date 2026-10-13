@@ -3,6 +3,7 @@ from pathlib import Path
 from subprocess import check_output
 
 import pytest
+from PIL import Image
 from rcon.exceptions import WrongPassword
 from typer.testing import CliRunner
 
@@ -10,6 +11,8 @@ import mciwb.__main__
 from mciwb import __version__
 from mciwb.__main__ import cli
 from mciwb.imports import Item, Vec3
+from mciwb.palette import BLOCK_COLOURS
+from tests.anvil_writer import write_world
 from tests.mockclient import MockClient
 
 runner = CliRunner()
@@ -183,7 +186,9 @@ def test_backup_stopped_server(
 
 
 def test_backup_not_a_world(monkeypatch: pytest.MonkeyPatch, tmp_path: Path):
-    monkeypatch.setattr(mciwb.__main__, "_rcon_client", lambda port, password: None)
+    monkeypatch.setattr(
+        mciwb.__main__, "_rcon_client", lambda port, password: (None, False)
+    )
 
     result = runner.invoke(cli, backup_args(tmp_path))
 
@@ -201,3 +206,104 @@ def test_start_wrong_password(monkeypatch: pytest.MonkeyPatch, tmp_path: Path):
 
     assert result.exit_code == 1
     assert isinstance(result.exception, SystemExit)
+
+
+def render_args(tmp_path: Path, *args: str) -> list[str]:
+    output = str(tmp_path / "render.png")
+    return ["render", *args, "--folder", str(tmp_path / "server"), "--output", output]
+
+
+def test_render_world_files(
+    mock_client: MockClient, monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+):
+    """render from the world files, after asking the server to save"""
+    monkeypatch.setattr(mciwb.__main__, "Client", MockClient)
+    write_world(tmp_path / "server" / "world", {(1, -2, 3): "minecraft:gold_block"})
+
+    args = ["0", "-3", "2", "2", "-1", "4", "--view", "south", "--view", "iso"]
+    result = runner.invoke(cli, render_args(tmp_path, *args, "--port", "20400"))
+
+    assert result.exit_code == 0, (result.output, result.exception)
+    assert mock_client.commands == ["save-all flush"]
+    image = Image.open(tmp_path / "render.png")
+    colours = [c for _, c in image.getcolors(100000)]  # type: ignore
+    assert BLOCK_COLOURS["gold_block"] in colours
+
+
+def test_render_rcon(
+    mock_client: MockClient, monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+):
+    """render over RCON, giving the region as centre and size"""
+    monkeypatch.setattr(mciwb.__main__, "Client", MockClient)
+    mock_client.setblock(Vec3(1, 2, 3), Item.GOLD_BLOCK)
+
+    args = ["--centre", "1", "2", "3", "--size", "3", "3", "3", "--rcon"]
+    args += ["--scale", "5", "--no-labels", "--view", "top"]
+    result = runner.invoke(cli, render_args(tmp_path, *args, "--port", "20400"))
+
+    assert result.exit_code == 0, (result.output, result.exception)
+    image = Image.open(tmp_path / "render.png")
+    assert image.size == (15, 15)
+    assert image.getpixel((7, 7)) == BLOCK_COLOURS["gold_block"]
+
+
+@pytest.mark.parametrize(
+    "error, problem, options",
+    [
+        (ConnectionRefusedError, "no server on", "--port/--password"),
+        (WrongPassword, "wrong RCON password for", "--password of"),
+    ],
+)
+def test_render_no_server(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+    caplog: pytest.LogCaptureFixture,
+    error: type,
+    problem: str,
+    options: str,
+):
+    """with no server, render reads the world files but warns they may be stale"""
+
+    class Unreachable(MockClient):
+        def connect(self, retry=True):
+            raise error()
+
+    monkeypatch.setattr(mciwb.__main__, "Client", Unreachable)
+    write_world(tmp_path / "server" / "world", {(1, -2, 3): "minecraft:gold_block"})
+
+    args = ["0", "-3", "2", "2", "-1", "4", "--port", "20499"]
+    result = runner.invoke(cli, render_args(tmp_path, *args))
+
+    assert result.exit_code == 0, (result.output, result.exception)
+    assert (tmp_path / "render.png").exists()
+    warnings = [r.getMessage() for r in caplog.records if r.levelname == "WARNING"]
+    assert len(warnings) == 1, warnings
+    assert warnings[0].startswith(f"{problem} localhost:20499:")
+    assert "recent changes may be missing" in warnings[0]
+    assert f"pass the {options}" in warnings[0]
+
+
+@pytest.mark.parametrize(
+    "args",
+    [
+        ["1", "2", "3"],
+        ["1", "2", "3", "4", "5", "6", "--centre", "1", "2", "3"],
+        ["--centre", "1", "2", "3"],
+        ["--centre", "1", "2", "3", "--size", "0", "1", "1"],
+        ["1", "2", "3", "4", "5", "6", "--view", "sideways"],
+        # no world and no server
+        ["1", "2", "3", "4", "5", "6"],
+    ],
+)
+def test_render_errors(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path, args: list[str]
+):
+    monkeypatch.setattr(
+        mciwb.__main__, "_rcon_client", lambda port, password: (None, False)
+    )
+
+    result = runner.invoke(cli, render_args(tmp_path, *args))
+
+    assert result.exit_code == 1
+    assert isinstance(result.exception, SystemExit)
+    assert not (tmp_path / "render.png").exists()

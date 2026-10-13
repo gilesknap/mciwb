@@ -78,6 +78,8 @@ nitpick_ignore = [
     ("py:class", "mcwb.types.Anchor3"),
     ("py:class", "mcipc.rcon.je.client.Client"),
     ("py:exc", "SessionTimeout"),
+    ("py:class", "numpy.ndarray"),
+    ("py:class", "PIL.Image.Image"),
 ]
 
 # Both the class’ and the __init__ method’s docstring are concatenated and

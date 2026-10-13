@@ -3,6 +3,7 @@ The Interactive World Builder: the main entry point for building in a
 Minecraft world
 """
 
+from collections.abc import Sequence
 from pathlib import Path
 
 from mcipc.rcon.exceptions import NoPlayerFound
@@ -11,10 +12,12 @@ from mcwb.itemlists import grab, load_items, save_items
 from rcon.exceptions import SessionTimeout
 
 from mciwb.backup import Backup
+from mciwb.blockgrid import BlockGrid
 from mciwb.copier import CopyPaste
 from mciwb.logging import init_logging, log
 from mciwb.monitor import Monitor
 from mciwb.player import Player
+from mciwb.render import render, scan
 from mciwb.server import (
     HOST,
     backup_folder_default,
@@ -24,6 +27,22 @@ from mciwb.server import (
 )
 from mciwb.signs import Signs
 from mciwb.threads import Client, get_client, set_client
+
+
+def _rcon_port(server_folder: Path) -> int | None:
+    """The RCON port in a server folder's server.properties, if there is one"""
+    try:
+        lines = (server_folder / "server.properties").read_text().splitlines()
+    except OSError:
+        return None
+    for line in lines:
+        key, _, value = line.partition("=")
+        if key.strip() == "rcon.port":
+            try:
+                return int(value)
+            except ValueError:
+                return None
+    return None
 
 
 def get_world() -> "Iwb":
@@ -47,6 +66,11 @@ class Iwb:
     :ivar player: The default `Player` object.
     :ivar copier: `CopyPaste` object for the above player.
     :ivar signs: The `Signs` object for the above player.
+    :ivar world_folder: The server's world folder, if it is on this machine.
+        ``scan`` and ``render`` read blocks from its files, which is much faster
+        than over RCON. Set for the server of ``mciwb start`` when it uses
+        the default ``--folder``: for another folder, set it yourself, e.g.
+        ``world.world_folder = Path("/my/server/world")``.
     """
 
     the_world: "Iwb" = None  # type: ignore
@@ -80,13 +104,17 @@ class Iwb:
         self._players: dict[str, Player] = {}
         self._copiers: dict[str, CopyPaste] = {}
 
-        # if we are using the default server created by mciwb then we know
-        # where the folders are for doing backups
+        # if we are using the server created by mciwb start (with its default
+        # folder) then we know where the folders are for doing backups
         self._backup: Backup | None = None
-        if server == HOST and port == def_port:
+        self.world_folder: Path | None = None
+        if server == HOST and (
+            port == def_port or _rcon_port(default_server_folder) == port
+        ):
             world_folder = default_server_folder / "world"
             if (world_folder / "level.dat").exists():
                 self._backup = Backup(world_folder, backup_folder_default)
+                self.world_folder = world_folder
             else:
                 # e.g. the server's folder is elsewhere, or not yet saved
                 log.warning(
@@ -383,6 +411,49 @@ class Iwb:
 
         if self.copier:
             self.copier.apply_volume(blocks.volume)
+
+    def scan(self, start: Vec3, end: Vec3) -> BlockGrid:
+        """
+        Read the blocks between two opposite corners of a region, from the
+        world's files if ``world_folder`` is set, otherwise over RCON.
+
+        :param start: a corner of the region
+        :param end: the opposite corner of the region
+
+        :returns: the blocks, e.g. ``world.scan(a, b).counts()`` counts them
+        """
+        vol = Volume.from_corners(Vec3(*start), Vec3(*end))
+        return scan(vol, self.world_folder, get_client())
+
+    def render(
+        self,
+        start: Vec3,
+        end: Vec3,
+        file: str | Path = "render.png",
+        views: Sequence[str] = ("top", "iso"),
+        scale: int | None = None,
+        labels: bool = True,
+    ) -> BlockGrid:
+        """
+        Render the region between two opposite corners to a PNG image, to
+        see what a build looks like. See `render_howto` for the views.
+
+        :param start: a corner of the region
+        :param end: the opposite corner of the region
+        :param file: the image file to write
+        :param views: the views to draw: top, iso, north, south, east, west,
+            iso_ne, iso_nw or iso_sw; a list, or the name of one view
+        :param scale: pixels per block, chosen automatically by default
+        :param labels: add titles and world coordinate labels
+
+        :returns: the blocks that were rendered, see `scan`
+        """
+        if isinstance(views, str):
+            views = [views]
+        grid = self.scan(start, end)
+        render(grid, views, scale, labels).save(file)
+        log.info(f"rendered {', '.join(views)} to {file}")
+        return grid
 
     def cmd(self, cmd: str) -> str:
         """
