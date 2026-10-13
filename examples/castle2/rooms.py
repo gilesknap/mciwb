@@ -8,9 +8,29 @@ and verify_castle2 reads each one back. Renders draw stairs as full blocks,
 so they cannot show which way a seat faces: that check can.
 
 Rooms (local coordinates, castle's layout): the keep's great hall, kitchen,
-library, armoury, the lord's chamber, the map room and the guest rooms
-with a nursery and a privy; the chapel and its crypt. Kept clear for the
-machines of phase 6: the chapel's north-west corner (the organ).
+library, gallery and armoury, the lord's bedchamber, the solar, the map
+room, the guest room, the nursery and the privy; the chapel and its crypt;
+the barracks and its training yard, the stables, the smithy; detail in the
+alchemist's tower, the dungeon, the vault and the winch room.
+
+Kept clear for the machines of phase 6 (local coordinates):
+
+- the chapel's north wall west of the altar, x 87..92 (z 14, y 18..23),
+  and the floor before it (x 87..92, z 15..21): the organ;
+- the library's east wall (castle's bookshelf wall, x 58) from z 28 to 38
+  and the floor before it (x 54..57, z 28..38): the lectern lock and a
+  hidden door;
+- the barracks yard east of the training ground, x 37..55, z 66..86: the
+  archery range;
+- the alchemist's tower: castle2 adds only a powder snow cauldron and
+  specimen jars (ground floor), a parrot and a star chart on the south
+  wall (second floor); the third floor's walls are bare;
+- the vault's west wall (x 50, z 18..28) and the catacombs, which castle2
+  does not furnish.
+
+`KEYS` and `KEY_ENTITIES` list the key pieces (the kitchen's hearth and
+oven, the effigies, the dummies, the beds ...) for verify_castle2's rooms
+check.
 """
 
 from __future__ import annotations
@@ -46,8 +66,41 @@ STATIC = "NoAI:1b,Invulnerable:1b,Silent:1b,PersistenceRequired:1b"
 # 3 east (an item frame's is a 3D one: 2 north, 3 south, 4 west, 5 east)
 PAINTING_FACING = {"south": 0, "west": 1, "north": 2, "east": 3}
 
+# the key pieces of the rooms, which verify_castle2's rooms check reads back:
+# (what, world position, block) and (what, entity type, box corners)
+KEYS: list[tuple[str, Vec3, str]] = []
+KEY_ENTITIES: list[tuple[str, str, Vec3, Vec3]] = []
+
 
 # ---------------------------------------------------------------- helpers
+
+
+def key(what: str, pos: Vec3, block: str) -> None:
+    """place a block that the rooms check reads back"""
+    L.set_block(pos, block)
+    keyed(what, pos, block)
+
+
+def keyed(what: str, pos: Vec3, block: str) -> None:
+    """record a block placed already (a bed, a shelf of goods ...) for the
+    rooms check, which reads back only its name"""
+    KEYS.append((what, pos, block))
+
+
+def key_entities(
+    what: str, kind: str, a: tuple[int, int, int], b: tuple[int, int, int]
+) -> None:
+    """the rooms check counts the entities of a kind in a box (local corners)"""
+    KEY_ENTITIES.append((what, kind, V(*a), V(*b)))
+
+
+def hanging_frame(pos: Vec3, item: str) -> None:
+    """an invisible item frame under the block above pos: the item hangs"""
+    L.summon(
+        "item_frame",
+        pos,
+        f'Facing:0b,Invisible:1b,Item:{{id:"minecraft:{item}",count:1}}',
+    )
 
 
 def tapestry(
@@ -267,24 +320,14 @@ def great_hall() -> None:
 
 
 def kitchen() -> None:
-    """a hearth among smokers and ovens, shelves of food, a pantry, a table,
-    lanterns on chains; the cook stands at (72, 17) (people.py)"""
+    """the hearth (a spit over the fire under a brick hood, smokers and
+    cauldrons either side), a bread oven, a work counter and a long work
+    table, a pantry of barrels and shelves, hams and herbs hanging from a
+    beam, lanterns on chains; the cook stands at the hearth, (72, 17)
+    (people.py). The doorways (x 68, z 20..21; x 70..71, z 27) stay clear."""
     y = F1 + 1
     x1, z1, x2, z2 = 68, IZ1, IX2, 27
-    row = {
-        68: "minecraft:smoker[facing=south]",
-        69: "minecraft:smoker[facing=south]",
-        70: "minecraft:furnace[facing=south]",
-        71: "minecraft:campfire[lit=true]",
-        72: "minecraft:campfire[lit=true]",
-        73: "minecraft:furnace[facing=south]",
-        74: "minecraft:smoker[facing=south]",
-        75: "minecraft:water_cauldron[level=3]",
-        76: "minecraft:water_cauldron[level=3]",
-        77: "minecraft:barrel[facing=south]",
-    }
-    for x, block in row.items():
-        L.set_block(V(x, y, z1), block)
+    L.fill(V(x1, y, z1), V(x2, F2 - 1, z2), L.AIR)  # a rebuild starts clear
     food = [
         "bread",
         "apple",
@@ -293,36 +336,104 @@ def kitchen() -> None:
         "baked_potato",
         "pumpkin_pie",
         "cookie",
+        "cooked_mutton",
+        "beetroot",
     ]
+    # the hearth along the north wall
+    row = {
+        68: "minecraft:water_cauldron[level=3]",
+        69: "minecraft:smoker[facing=south]",
+        70: "minecraft:smoker[facing=south]",
+        71: "minecraft:campfire[lit=true]",
+        72: "minecraft:campfire[lit=true]",
+        73: "minecraft:smoker[facing=south]",
+        74: "minecraft:water_cauldron[level=2]",
+        75: "minecraft:cauldron",
+        76: "minecraft:water_cauldron[level=3]",
+        77: "minecraft:barrel[facing=south]",
+    }
+    for x, block in row.items():
+        key("the kitchen's hearth", V(x, y, z1), block)
     for x in (68, 69, 70, 73, 74, 75, 76):
         shelf(V(x, y + 1, z1), "south", _rng.sample(food, 3))
-    L.fill(V(71, y + 1, z1), V(72, y + 2, z1), "minecraft:bricks")  # the hood
-    L.fill(V(70, y + 2, z1), V(73, y + 2, z1), "minecraft:brick_slab[type=bottom]")
-    for x in (70, 75):  # lanterns on chains
-        L.fill(V(x, y + 5, 21), V(x, y + 8, 21), L.CHAIN)
-        L.set_block(V(x, y + 4, 21), f"{L.LANTERN}[hanging=true]")
-    # the table, with a meal laid on it
+    for x in (71, 72):  # the spit over the fire
+        key(
+            "the kitchen's spit",
+            V(x, y + 1, z1),
+            "minecraft:lightning_rod[facing=east]",
+        )
+    L.fill(V(70, y + 2, z1), V(73, y + 3, z1), "minecraft:bricks")  # the hood
+    L.fill(V(70, y + 2, z1 + 1), V(73, y + 2, z1 + 1), "minecraft:brick_slab[type=top]")
+    L.fill(V(71, y + 4, z1), V(72, F2 - 1, z1), "minecraft:bricks")  # its chimney
+    # the bread oven in the south-west corner: a brick dome, its mouth east
+    L.fill(V(x1, y, 24), V(x1 + 1, y + 1, 26), "minecraft:bricks")
+    key("the bread oven", V(x1 + 1, y, 25), "minecraft:furnace[facing=east,lit=true]")
+    L.fill(V(x1, y + 2, 24), V(x1 + 1, y + 2, 26), "minecraft:brick_slab[type=bottom]")
+    L.fill(V(x1, y + 2, 25), V(x1, y + 3, 25), "minecraft:brick_wall")
+    for h in (0, 1):  # the loaves, cooling on a shelf by the oven
+        shelf(V(x1, y + h, 23), "east", ["bread", "bread", "bread"])
+    # the work counter by the west wall, between the hearth and the door
+    L.fill(V(x1, y, 16), V(x1, y, 18), "minecraft:spruce_slab[type=top]")
+    L.set_block(V(x1, y + 1, 16), "minecraft:decorated_pot")
+    L.set_block(V(x1, y + 1, 17), "minecraft:potted_red_mushroom")
+    L.set_block(V(x1, y + 1, 18), "minecraft:white_candle[candles=2,lit=true]")
+    L.set_block(V(x1, y, 19), "minecraft:barrel[facing=up]")
+    # the long work table, with a meal being made on it
     table(V(71, y, 20), V(74, y, 21))
+    keyed("the kitchen's work table", V(71, y, 20), "minecraft:dark_oak_slab[type=top]")
     L.set_block(V(71, y + 1, 21), "minecraft:cake")
     L.set_block(V(73, y + 1, 21), "minecraft:melon")
     L.set_block(V(74, y + 1, 20), "minecraft:carved_pumpkin[facing=west]")
     L.set_block(V(72, y + 1, 20), "minecraft:white_candle[candles=2,lit=true]")
+    L.set_block(V(73, y + 1, 20), "minecraft:decorated_pot[facing=south]")
+    L.set_block(V(72, y + 1, 21), "minecraft:potted_brown_mushroom")
+    # lanterns on chains over the table
+    for x in (70, 75):
+        L.fill(V(x, y + 5, 21), V(x, F2 - 1, 21), L.CHAIN)
+        key("the kitchen's lanterns", V(x, y + 4, 21), f"{L.LANTERN}[hanging=true]")
+    # hams and fowl hanging from a beam on chains, herbs drying beside them
+    # (clear of the ceiling's lanterns at x 71, 77, z 18, 24)
+    bz = 23
+    L.fill(V(72, y + 6, bz), V(75, y + 6, bz), "minecraft:stripped_spruce_log[axis=x]")
+    keyed("the ham beam", V(73, y + 6, bz), "minecraft:stripped_spruce_log[axis=x]")
+    for x in (72, 75):
+        L.fill(V(x, y + 7, bz), V(x, F2 - 1, bz), L.CHAIN)
+    for x, item in (
+        (72, "porkchop"),
+        (73, "porkchop"),
+        (74, "chicken"),
+        (75, "rabbit"),
+    ):
+        hanging_frame(V(x, y + 5, bz), item)
+    key_entities("the hams", "item_frame", (72, y + 5, bz), (75, y + 5, bz))
+    for x, z in ((69, 22), (76, 18), (69, 17)):
+        L.set_block(V(x, F2 - 1, z), "minecraft:hanging_roots")
     # the pantry along the east wall
-    L.fill(V(x2, y, 17), V(x2, y + 1, 19), "minecraft:barrel[facing=west]")
+    L.fill(V(x2, y, 16), V(x2, y, 20), "minecraft:barrel[facing=west]")
+    L.fill(V(x2, y + 1, 17), V(x2, y + 1, 19), "minecraft:barrel[facing=up]")
+    key("the pantry", V(x2, y, 17), "minecraft:barrel[facing=west]")
     for z in range(21, 25):
         shelf(V(x2, y, z), "west", _rng.sample(food, 3))
         shelf(V(x2, y + 1, z), "west", _rng.sample(food, 3))
+    keyed("the pantry's shelves", V(x2, y, 22), "minecraft:spruce_shelf[facing=west]")
     chest(
         V(x2, y, 25),
         "west",
         [("bread", 16), ("cooked_beef", 8), ("apple", 16), ("golden_carrot", 4)],
     )
-    # sacks of grain, the scraps and the chopping block
-    L.fill(V(x1, y, 24), V(x1, y, 26), "minecraft:hay_block")
-    L.fill(V(x1, y + 1, 25), V(x1, y + 1, 26), "minecraft:hay_block")
-    L.set_block(V(73, y, z2), "minecraft:composter")
-    L.set_block(V(74, y, z2), "minecraft:crafting_table")
-    L.set_block(V(76, y, z2), "minecraft:stripped_oak_log")
+    L.fill(V(x2, y, 26), V(x2, y + 1, z2), "minecraft:barrel[facing=up]")
+    L.set_block(V(x2 - 1, y, z2), "minecraft:barrel[facing=up]")
+    # sacks of grain, the scraps and the chopping block (an axe in it)
+    L.fill(V(74, y, z2), V(75, y, z2), "minecraft:hay_block")
+    L.set_block(V(75, y, z2 - 1), "minecraft:hay_block")
+    L.set_block(V(75, y + 1, z2), "minecraft:hay_block")
+    L.set_block(V(72, y, z2), "minecraft:composter[level=4]")
+    L.set_block(V(73, y, z2), "minecraft:stripped_oak_log")
+    L.summon(
+        "item_frame",
+        V(73, y + 1, z2),
+        'Facing:1b,Invisible:1b,Item:{id:"minecraft:iron_axe",count:1}',
+    )
 
 
 HISTORY = [
@@ -339,6 +450,9 @@ def library() -> None:
     history (people.py)"""
     y = F2 + 1
     x1, z1, x2, z2 = IX1, IZ1, 57, IZ2
+    # a rebuild starts clear, under the ceiling's lanterns (library_shell)
+    L.fill(V(x1, y, z1), V(x2, F3 - 2, z2), L.AIR)
+    carpet(x1, z1, x2, z2, y, "blue")
     windows_z = {18, 19, 24, 25, 30, 31, 36, 37}  # the west wall's windows (from y + 2)
     windows_x = {46, 47, 52, 53}  # the north and south walls' windows
     for z in range(z1, z2 + 1):
@@ -356,8 +470,9 @@ def library() -> None:
                     bookcase(V(x, y + h, zz), facing, _rng.randint(1, 6))
                 else:
                     L.set_block(V(x, y + h, zz), "minecraft:bookshelf")
-    # reading desks with a chair at each end, and candles
+    # reading desks on rugs, with a chair at each end, and candles
     for z in (21, 27, 33):
+        carpet(46, z - 1, 54, z + 1, y, "light_blue")
         table(V(48, y, z), V(52, y, z))
         L.seat(V(47, y, z), "east")
         L.seat(V(53, y, z), "west")
@@ -373,7 +488,16 @@ def library() -> None:
     )
     L.set_block(V(45, y, 27), "minecraft:enchanting_table")
     L.set_block(V(55, y, 17), "minecraft:cartography_table")
-    L.set_block(V(55, y, 37), "minecraft:loom")
+    L.set_block(V(IX1 + 1, y, 37), "minecraft:loom[facing=east]")
+    # the scribe's desk in the north-west corner: a candle, ink and a quill
+    table(V(45, y, 17), V(46, y, 17))
+    keyed("the scribe's desk", V(46, y, 17), "minecraft:dark_oak_slab[type=top]")
+    L.set_block(V(45, y + 1, 17), "minecraft:white_candle[candles=1,lit=true]")
+    L.set_block(V(46, y + 1, 17), "minecraft:decorated_pot[facing=south]")
+    L.seat(V(45, y, 18), "north")
+    for z, item in ((21, "writable_book"), (27, "feather"), (33, "ink_sac")):
+        item_frame(V(x1, y + 3, z), 5, item)  # over the west bookcases
+    # (the floor x 54..57, z 28..38 by the east wall is kept clear for phase 6)
     # the map wall: maps in frames over the north bookcases, between the windows
     for x in (44, 49, 50, 55):
         item_frame(V(x, y + 3, z1), 3, "map")
@@ -427,53 +551,149 @@ def armoury() -> None:
     for z in range(IZ1 + 1, IZ2, 4):
         L.set_block(V(66, y + 3, z), f"minecraft:{BANNER}_wall_banner[facing=west]")
     carpet(63, IZ1, 66, IZ2, F2 + 1, "red")
+    # the gallery's portraits (on the library's partition) and pots on plinths
+    for z, variant in ((17, "kebab"), (25, "aztec"), (29, "bomb"), (37, "wasteland")):
+        painting(V(63, y + 2, z), "east", variant)
+    for z in (23, 31):
+        L.set_block(V(63, y, z), "minecraft:chiseled_stone_bricks")
+        L.set_block(V(63, y + 1, z), "minecraft:decorated_pot[facing=east]")
 
 
 def chambers() -> None:
-    """the lord's chamber (a four-poster bed, wardrobes, a dressing table,
-    a desk, armchairs by the fire, paintings, a rug), the map room, and the
-    east wing's guest room, nursery and privy"""
+    """the top storey: the lord's bedchamber and the solar (the west half,
+    split by a wall of wardrobes), the map room, and the east wing's guest
+    room, nursery and privy"""
     y = F3 + 1
-    # a rug: red with a yellow border
+    L.fill(V(IX1, y, IZ1), V(57, FR - 1, IZ2), L.AIR)  # a rebuild starts clear
     carpet(IX1, IZ1, 57, IZ2, y, "red")
-    carpet(47, 21, 55, 33, y, "yellow")
-    carpet(48, 22, 54, 32, y, "red")
-    # the four-poster bed, its head to the west wall
-    for z in (26, 27):
-        bed(V(IX1 + 2, y, z), "west", "red")
-    for x, z in ((IX1, 25), (IX1, 28), (IX1 + 3, 25), (IX1 + 3, 28)):
+    # the wardrobe wall between the bedchamber (north) and the solar
+    # (south): the way through is by the door, x 54..57
+    L.fill(V(IX1, y, 28), V(53, y + 3, 28), "minecraft:spruce_planks")
+    L.fill(V(IX1, y + 4, 28), V(53, y + 4, 28), "minecraft:spruce_slab[type=bottom]")
+    for x in range(48, 52):  # the wardrobes' doors, on the bedchamber's side
+        for h in (0, 1):
+            L.set_block(
+                V(x, y + h, 27), "minecraft:spruce_trapdoor[facing=north,open=true]"
+            )
+    key("the wardrobe wall", V(50, y + 2, 28), "minecraft:spruce_planks")
+    bedchamber()
+    solar()
+    map_room()
+    east_wing()
+
+
+def bedchamber() -> None:
+    """a four-poster bed, bedside cupboards, chests at its foot, an armoire
+    and a dressing table, the lord's desk and his armour, paintings, a rug"""
+    y = F3 + 1
+    carpet(48, 17, 55, 25, y, "yellow")
+    carpet(49, 18, 54, 24, y, "orange")
+    carpet(50, 19, 53, 23, y, "red")
+    # the four-poster bed, its head to the west wall, a red canopy on posts
+    for z in (20, 21):
+        bed(V(IX1 + 1, y, z), "west", "red")
+    keyed("the four-poster bed", V(IX1, y, 20), "minecraft:red_bed[part=head]")
+    for x, z in ((IX1, 19), (IX1, 22), (IX1 + 2, 19), (IX1 + 2, 22)):
         L.fill(V(x, y, z), V(x, y + 2, z), "minecraft:dark_oak_fence")
-    L.fill(V(IX1, y + 3, 25), V(IX1 + 3, y + 3, 28), "minecraft:red_wool")
-    L.set_block(V(IX1, y + 4, 27), f"minecraft:{BANNER2}_wall_banner[facing=east]")
-    # wardrobes and chests along the north wall
-    L.fill(V(46, y, IZ1), V(47, y + 1, IZ1), "minecraft:barrel[facing=south]")
-    chest(
-        V(48, y, IZ1),
-        "south",
-        [("golden_apple", 2), ("gold_ingot", 12), ("emerald", 6), ("book", 3)],
-    )
-    # the dressing table, its mirror and stool
-    table(V(54, y, IZ1 + 1), V(55, y, IZ1 + 1))
-    L.set_block(V(54, y + 1, IZ1 + 1), "minecraft:potted_allium")
-    L.set_block(V(55, y + 1, IZ1 + 1), "minecraft:candle[candles=1,lit=true]")
+    L.fill(V(IX1, y + 3, 19), V(IX1 + 2, y + 3, 22), "minecraft:red_wool")
+    key("the bed's canopy", V(IX1 + 1, y + 3, 20), "minecraft:red_wool")
+    for z in (20, 21):
+        tapestry(
+            V(IX1, y + 2, z),
+            "east",
+            BANNER2,
+            [("border", "yellow"), ("flower", "white")],
+        )
+    for z, top in ((18, "minecraft:white_candle[candles=3,lit=true]"),
+                   (23, "minecraft:potted_lily_of_the_valley")):  # fmt: skip
+        L.set_block(V(IX1, y, z), "minecraft:barrel[facing=up]")
+        L.set_block(V(IX1, y + 1, z), top)
+    for z in (20, 21):  # chests at the bed's foot
+        chest(
+            V(IX1 + 3, y, z),
+            "east",
+            [("golden_apple", 2), ("gold_ingot", 12), ("emerald", 6), ("book", 3)]
+            if z == 20
+            else [("white_wool", 8), ("red_wool", 4), ("candle", 6)],
+        )
+    # the armoire against the north wall (between its windows), doors open
+    L.fill(V(48, y, IZ1), V(51, y + 2, IZ1), "minecraft:spruce_planks")
+    L.fill(V(48, y + 3, IZ1), V(51, y + 3, IZ1), "minecraft:spruce_slab[type=bottom]")
+    for x in range(48, 52):
+        for h in (0, 1):
+            L.set_block(
+                V(x, y + h, IZ1 + 1),
+                "minecraft:spruce_trapdoor[facing=south,open=true]",
+            )
+    key("the armoire", V(49, y + 1, IZ1), "minecraft:spruce_planks")
+    # the dressing table, its drawers, mirror and stool
+    L.fill(V(55, y, IZ1), V(56, y, IZ1), "minecraft:barrel[facing=south]")
     L.fill(
-        V(54, y + 1, IZ1), V(55, y + 2, IZ1), "minecraft:light_blue_stained_glass_pane"
+        V(55, y + 1, IZ1), V(56, y + 2, IZ1), "minecraft:light_blue_stained_glass_pane"
     )
-    L.seat(V(54, y, IZ1 + 2), "north")
-    # the lord's desk by the east wall
-    table(V(56, y, 20), V(56, y, 22))
-    L.seat(V(55, y, 21), "east")
-    L.set_block(V(56, y + 1, 21), "minecraft:lectern[facing=west,has_book=true]")
-    # armchairs facing the fireplace in the south wall
-    L.seat(V(50, y, 37), "south")
-    L.seat(V(52, y, 37), "south")
-    L.set_block(V(51, y, 37), "minecraft:jukebox")
-    # paintings
-    for x, variant in ((44, "kebab"), (51, "aztec"), (56, "alban")):
-        painting(V(x, y + 2, IZ1), "south", variant)
-    for x, variant in ((45, "bomb"), (56, "plant")):
-        painting(V(x, y + 2, IZ2), "north", variant)
-    # the map room, x 59..66: a map table with chairs, maps on the walls
+    table(V(55, y, IZ1 + 1), V(56, y, IZ1 + 1))
+    L.set_block(V(55, y + 1, IZ1 + 1), "minecraft:potted_allium")
+    L.set_block(V(56, y + 1, IZ1 + 1), "minecraft:candle[candles=1,lit=true]")
+    L.seat(V(55, y, IZ1 + 2), "north")
+    # the lord's desk by the east wall, his treasure chest and his armour
+    table(V(57, y, 19), V(57, y, 21))
+    L.set_block(V(57, y + 1, 19), "minecraft:white_candle[candles=3,lit=true]")
+    L.set_block(V(57, y + 1, 21), "minecraft:decorated_pot[facing=west]")
+    L.seat(V(56, y, 20), "east")
+    chest(V(57, y, 17), "west", [("gold_block", 4), ("emerald", 16), ("map", 1)])
+    armour_stand(V(57, y, 24) + Vec3(0.5, 0, 0.5), "golden", rotation=90)
+    # paintings on the north wall and the wardrobe wall
+    painting(V(IX1 + 1, y + 2, IZ1), "south", "kebab")
+    painting(V(55, y + 3, IZ1), "south", "alban")
+    painting(V(IX1 + 1, y + 2, 27), "north", "bomb")
+    painting(V(53, y + 2, 27), "north", "plant")
+
+
+def solar() -> None:
+    """the lord and lady's sitting room: armchairs at the fire, a card table,
+    the lady's loom and wool, a harp, bookshelves, tapestries, paintings"""
+    y = F3 + 1
+    carpet(47, 34, 55, IZ2, y, "yellow")
+    carpet(48, 35, 54, IZ2, y, "brown")
+    # armchairs facing the fireplace in the south wall, a side table between
+    for x in (50, 52):
+        L.seat(V(x, y, IZ2 - 1), "south")
+        L.set_block(V(x, y, IZ2 + 2), "minecraft:campfire[lit=true]")
+    L.set_block(V(51, y, IZ2 - 1), "minecraft:spruce_slab[type=top]")
+    L.set_block(V(51, y + 1, IZ2 - 1), "minecraft:decorated_pot[facing=south]")
+    # the card table, a chair either side
+    table(V(IX1 + 1, y, 32), V(IX1 + 2, y, 33))
+    L.seat(V(IX1, y, 32), "east", V(IX1, y, 33))
+    L.seat(V(IX1 + 3, y, 32), "west", V(IX1 + 3, y, 33))
+    L.set_block(V(IX1 + 1, y + 1, 32), "minecraft:white_candle[candles=2,lit=true]")
+    L.set_block(V(IX1 + 2, y + 1, 33), "minecraft:potted_azure_bluet")
+    # the lady's corner: a loom, a spinning wheel, bales of wool
+    key("the lady's loom", V(56, y, 38), "minecraft:loom[facing=north]")
+    L.set_block(V(55, y, IZ2), "minecraft:grindstone[face=floor,facing=east]")
+    L.fill(V(57, y, 38), V(57, y, IZ2), "minecraft:white_wool")
+    L.set_block(V(57, y + 1, IZ2), "minecraft:light_blue_wool")
+    L.set_block(V(56, y, IZ2), "minecraft:pink_wool")
+    # the harp and the music box, bookshelves against the wardrobe wall
+    L.set_block(V(57, y, 33), "minecraft:note_block[instrument=harp]")
+    L.set_block(V(57, y, 34), "minecraft:jukebox")
+    L.fill(V(IX1, y, 29), V(IX1 + 2, y + 2, 29), "minecraft:bookshelf")
+    bookcase(V(IX1 + 3, y, 29), "south", 4)
+    for z in (36, IZ2):
+        L.set_block(V(IX1, y, z), "minecraft:potted_orange_tulip")
+    for x, colour in ((49, BANNER), (52, BANNER2)):
+        tapestry(
+            V(x, y + 2, 29),
+            "south",
+            colour,
+            [("stripe_middle", "yellow"), ("flower", "white"), ("border", "black")],
+        )
+    painting(V(IX1 + 1, y + 2, IZ2), "north", "aztec")
+    painting(V(56, y + 2, IZ2), "north", "wasteland")
+
+
+def map_room() -> None:
+    """a map table with chairs, maps and a compass on the walls"""
+    y = F3 + 1
     carpet(59, IZ1, 66, IZ2, y, "green")
     table(V(61, y, 22), V(64, y, 31))
     for x, z in ((61, 22), (64, 31), (61, 31), (64, 22)):
@@ -485,17 +705,76 @@ def chambers() -> None:
         item_frame(V(66, y + 2, z), 4, "map")  # on the partition
     item_frame(V(66, y + 2, 26), 4, "compass")
     L.set_block(V(60, y, IZ1), "minecraft:lectern[facing=south,has_book=true]")
-    # the east wing: a guest bed, a nursery with a cot, and a privy
-    bed(V(IX2, y, 18), "west", "blue")
-    chest(V(IX2, y, 20), "west", [("book", 1), ("candle", 2)])
-    bed(V(IX2, y, 24), "west", "white")  # the nursery's cot, with a rail round it
-    L.fill(V(IX2 - 2, y, 23), V(IX2 - 2, y, 25), "minecraft:oak_fence")
-    L.seat(V(73, y, 26), "east", block="minecraft:oak_stairs")  # the nurse's chair
-    item_frame(V(IX2, y + 2, 24), 4, "rabbit_foot")
+
+
+def east_wing() -> None:
+    """the east wing (its door at x 70, z 28): a guest room behind a
+    planked wall (x 73..77, z 15..21), the privy closet in the north-west
+    corner, and the nursery in the rest: a cot behind a rail, the child's
+    bed, a toy chest and toys, the nurse's chair, a cat"""
+    y = F3 + 1
+    # the nursery's carpet, then the guest room's, then the guest room's walls
+    # a rebuild starts clear (but the wall closing the partition's doorway)
+    L.fill(V(68, y, IZ1), V(IX2, FR - 1, 27), L.AIR)
+    L.fill(V(68, y, 20), V(68, y + 1, 21), L.BRICK)
+    carpet(68, 18, IX2, 27, y, "light_blue")
+    carpet(69, 24, 71, 26, y, "pink")
+    carpet(73, 15, IX2, 21, y, "blue")
+    L.fill(V(72, y, 15), V(72, y + 3, 22), "minecraft:spruce_planks")
+    L.fill(V(73, y, 22), V(IX2, y + 3, 22), "minecraft:spruce_planks")
+    L.set_block(
+        V(72, y, 19), "minecraft:spruce_door[facing=east,half=lower,hinge=left]"
+    )
+    L.set_block(
+        V(72, y + 1, 19), "minecraft:spruce_door[facing=east,half=upper,hinge=left]"
+    )
+    # the guest room: a bed, a chest, a desk and chair, a wardrobe, a painting
+    bed(V(IX2 - 1, y, 16), "east", "blue")
+    keyed("the guest bed", V(IX2, y, 16), "minecraft:blue_bed[part=head]")
+    chest(V(IX2, y, 18), "west", [("book", 1), ("candle", 2), ("bread", 3)])
+    table(V(IX2, y, 20), V(IX2, y, 20))
+    L.set_block(V(IX2, y + 1, 20), "minecraft:candle[candles=1,lit=true]")
+    L.seat(V(IX2 - 1, y, 20), "east")
+    L.fill(V(73, y, 15), V(74, y + 1, 15), "minecraft:barrel[facing=south]")
+    L.set_block(V(73, y, 21), "minecraft:potted_cornflower")
+    painting(V(75, y + 2, 15), "south", "aztec2")
+    # the nursery's cot, railed round, against the east wall
+    bed(V(IX2 - 1, y, 25), "east", "white")
+    keyed("the nursery's cot", V(IX2, y, 25), "minecraft:white_bed[part=head]")
+    for x, z in ((75, 24), (75, 25), (75, 26), (76, 24), (77, 24), (76, 26), (77, 26)):
+        L.set_block(V(x, y, z), "minecraft:oak_fence")
+    L.set_block(V(IX2, y, 27), "minecraft:note_block[instrument=bell]")  # a music box
+    # the child's bed, the toy chest and a heap of toy blocks
+    bed(V(69, y, 23), "west", "pink")
+    keyed("the child's bed", V(68, y, 23), "minecraft:pink_bed[part=head]")
+    chest(
+        V(68, y, 22),
+        "east",
+        [("stick", 2), ("slime_ball", 3), ("snowball", 8), ("rabbit_foot", 1),
+         ("feather", 4), ("music_disc_cat", 1)],
+    )  # fmt: skip
+    for p, block in (
+        ((69, y, 20), "minecraft:yellow_wool"),
+        ((69, y, 21), "minecraft:light_blue_wool"),
+        ((69, y + 1, 20), "minecraft:red_wool"),
+    ):
+        L.set_block(V(*p), block)
+    # the nurse's chair at a little table, near the door
+    table(V(73, y, 27), V(73, y, 27))
+    L.set_block(V(73, y + 1, 27), "minecraft:potted_blue_orchid")
+    L.seat(V(72, y, 27), "east", block="minecraft:oak_stairs")
+    # a rabbit's foot for luck and a painting on the guest room's wall
+    item_frame(V(74, y + 2, 23), 3, "rabbit_foot")
+    painting(V(76, y + 2, 23), "south", "kebab")
+    L.summon(
+        "cat",
+        V(70, y, 25) + Vec3(0.5, 0, 0.5),
+        f'{STATIC},Rotation:[90f,0f],variant:"minecraft:calico",CustomName:"Whiskers"',
+    )
     # the privy in the north-west corner: a closet with a lid
     L.fill(V(69, y, IZ1), V(69, y + 2, IZ1 + 1), "minecraft:spruce_planks")
     L.set_block(V(68, y, IZ1), "minecraft:composter")
-    L.set_block(V(68, y + 1, IZ1), "minecraft:spruce_trapdoor[half=bottom,open=false]")
+    key("the privy", V(68, y + 1, IZ1), "minecraft:spruce_trapdoor[half=bottom]")
     L.set_block(
         V(68, y, IZ1 + 2), "minecraft:spruce_door[facing=south,half=lower,hinge=left]"
     )
@@ -551,17 +830,35 @@ def chapel_furnishing() -> None:
 
 
 def crypt_furnishing() -> None:
-    """tombs with effigies (a skull on a stone lid), skulls in niches in the
-    walls, cobwebs, candles"""
+    """two rows of tombs, each with an effigy lying on its lid (a stone
+    knight: his skull at the wall end, his body a slab, his feet a stair
+    standing up at the aisle end) and his sword in a frame on the tomb's
+    side; skulls in niches in the walls, cobwebs, candles"""
     x1, z1, x2, z2 = 88, 16, 108, 30
+    y = 8
+    L.fill(
+        V(x1 + 1, y, z1 + 1), V(x2 - 1, y + 2, z2 - 1), L.AIR
+    )  # a rebuild starts clear
     for x in range(x1 + 3, x2 - 2, 4):
-        for z in (z1 + 3, z2 - 4):
-            L.fill(V(x, 8, z), V(x, 8, z + 1), "minecraft:polished_deepslate")
-            L.set_block(V(x, 9, z), "minecraft:skeleton_skull[rotation=0]")
-            L.set_block(
-                V(x, 9, z + 1), "minecraft:polished_deepslate_slab[type=bottom]"
+        # (head, body, feet) z, and the way the feet point (to the aisle)
+        for zs, toes, rot in (((18, 19, 20), "south", 0), ((28, 27, 26), "north", 8)):
+            head, body, feet = zs
+            L.fill(V(x, y, min(zs)), V(x, y, max(zs)), "minecraft:polished_deepslate")
+            key(
+                "an effigy's head",
+                V(x, y + 1, head),
+                f"minecraft:skeleton_skull[rotation={rot}]",
             )
-            L.set_block(V(x + 1, 8, z), "minecraft:white_candle[candles=1,lit=true]")
+            key(
+                "an effigy's body",
+                V(x, y + 1, body),
+                "minecraft:smooth_stone_slab[type=bottom]",
+            )
+            key("an effigy's feet", V(x, y + 1, feet),
+                f"minecraft:stone_brick_stairs[facing={toes},half=bottom]")  # fmt: skip
+            item_frame(V(x - 1, y, body), 4, "iron_sword")  # on the tomb's west side
+            L.set_block(V(x + 1, y, head), "minecraft:white_candle[candles=1,lit=true]")
+    key_entities("the effigies' swords", "item_frame", (x1, y, z1), (x2, y, z2))
     # skulls in niches cut into the side walls (clear of the ladder at x 94)
     for x in range(x1 + 2, x2 - 1, 4):
         if x == 94:
@@ -676,6 +973,38 @@ def barracks() -> None:
         L.set_block(V(x2 - 4, 1, z), "minecraft:candle[candles=2,lit=true]")
     armour_stand(V(x2 - 2, 0, z1 + 2) + Vec3(0.5, 0, 0.5), "chainmail", rotation=90)
     armour_stand(V(x2 - 4, 0, z1 + 2) + Vec3(0.5, 0, 0.5), "iron", rotation=0)
+    barracks_yard()
+
+
+def barracks_yard() -> None:
+    """the training ground east of the barracks (x 27..35, z 68..76):
+    beaten earth, two straw dummies (a carved pumpkin on hay on a post),
+    two armour-stand dummies with their arms out, a rack of practice
+    weapons. The yard east of it (x 37..55, z 66..86) is kept clear for
+    the archery range of phase 6."""
+    rx1, rz1, rx2, rz2 = 27, 68, 35, 76
+    L.fill(V(rx1, -1, rz1), V(rx2, -1, rz2), "minecraft:coarse_dirt")
+    for x in (29, 33):
+        L.set_block(V(x, 0, 70), "minecraft:dark_oak_fence")
+        key("a straw dummy", V(x, 1, 70), "minecraft:hay_block")
+        L.set_block(V(x, 2, 70), "minecraft:carved_pumpkin[facing=south]")
+        L.summon(
+            "armor_stand",
+            V(x, 0, 74) + Vec3(0.5, 0, 0.5),
+            "Rotation:[180f,0f],ShowArms:1b,NoBasePlate:1b,"
+            "Pose:{LeftArm:[0f,0f,-90f],RightArm:[0f,0f,90f]},"
+            'equipment:{head:{id:"minecraft:carved_pumpkin",count:1},'
+            'chest:{id:"minecraft:leather_chestplate",count:1},'
+            'mainhand:{id:"minecraft:wooden_sword",count:1}}',
+        )
+    key_entities("the practice dummies", "armor_stand", (rx1, 0, rz1), (rx2, 2, rz2))
+    # the rack of practice weapons on the north side
+    for x in (30, 32):
+        L.set_block(V(x, 0, rz1), "minecraft:dark_oak_fence")
+    L.fill(V(30, 1, rz1), V(32, 1, rz1), "minecraft:stripped_spruce_log[axis=x]")
+    for x, item in ((30, "wooden_sword"), (31, "shield"), (32, "stone_sword")):
+        item_frame(V(x, 1, rz1 + 1), 3, item)
+    L.set_block(V(34, 0, rz1), "minecraft:barrel[facing=up]")
 
 
 # ---------------------------------------------------------------- the rest
