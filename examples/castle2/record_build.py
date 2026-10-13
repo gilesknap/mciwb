@@ -13,6 +13,9 @@ refactor of phase 0 must leave castle's blocks exactly as they were::
     python record_build.py ../castle /tmp/before            # castle
     python record_build.py . /tmp/c2 build_castle2          # castle2
 
+Set RECORD_PNG=file.png to render what was built (RECORD_BOX="x1 y1 z1 x2
+y2 z2" for part of the site, RECORD_VIEWS=top,iso for the views).
+
 The ground is a gentle deterministic slope (``ground``); nothing is read
 from a real world, so this checks the build's logic, not the terrain.
 The environment (ORIGIN, BAILEY_DEPTH ...) is passed through.
@@ -20,6 +23,7 @@ The environment (ORIGIN, BAILEY_DEPTH ...) is passed through.
 
 from __future__ import annotations
 
+import importlib
 import os
 import re
 import sys
@@ -93,6 +97,24 @@ class World:
             return np.vectorize(lambda n: words in n)(names)
         return names == filter.partition("[")[0]
 
+    def grid(self, lo=None, hi=None):
+        """the blocks (without their states) as a BlockGrid, to render"""
+        from mciwb.blockgrid import BlockGrid
+
+        box = self._box(lo, hi) if lo is not None else (slice(None),) * 3
+        assert box is not None
+        names = np.vectorize(lambda s: s.partition("[")[0].partition("{")[0])(
+            self.blocks[box]
+        )
+        names[names == ""] = "minecraft:air"
+        origin = [int(b.start or 0) + int(o) for b, o in zip(box, self.lo, strict=True)]
+        return BlockGrid.from_blocks(names, origin)
+
+    def at(self, pos) -> str:
+        """the block placed at pos ("" if none, or outside the box)"""
+        box = self._box(pos, pos)
+        return "" if box is None else self.blocks[box][0, 0, 0]
+
     def dump(self) -> list[str]:
         out = []
         for idx in zip(*np.nonzero(self.blocks != ""), strict=True):
@@ -152,6 +174,32 @@ class Recorder:
         pass
 
 
+def dry_run(*funcs, box: tuple | None = None) -> Recorder:
+    """
+    Run build functions against a fake client, without touching the world,
+    and give back the recorder (its ``commands``). Used by the checks to
+    learn what a build places, e.g. ``castle_lib.SEATS``. The thread's real
+    client is put back afterwards. Give a ``box`` (two corners) to simulate
+    the blocks placed in it (``recorder.world.blocks``).
+    """
+    from mciwb.threads import get_client, set_client
+
+    try:
+        real = get_client()
+    except AttributeError:
+        real = None
+    lo, hi = box if box is not None else ((0, 0, 0), (0, 0, 0))
+    rec = Recorder(World(_ints(lo), _ints(hi)))
+    set_client(rec)  # type: ignore[arg-type]
+    try:
+        for func in funcs:
+            func()
+    finally:
+        if real is not None:
+            set_client(real)
+    return rec
+
+
 def main() -> None:
     if len(sys.argv) < 3:
         raise SystemExit(__doc__)
@@ -159,9 +207,11 @@ def main() -> None:
     script = sys.argv[3] if len(sys.argv) > 3 else "build_castle"
     sys.path.insert(0, str(folder))
     sys.path.insert(1, str(Path(__file__).parent.parent / "castle"))
-    import castle_layout
-
     from mciwb.threads import set_client
+
+    # castle2's build sets up the layout: import it before castle_layout
+    module = importlib.import_module(script)
+    castle_layout = importlib.import_module("castle_layout")
 
     a, b = castle_layout.site_box()
     world = World(_ints(a), _ints(b))
@@ -169,11 +219,20 @@ def main() -> None:
     set_client(rec)  # type: ignore[arg-type]
     time.sleep = lambda _s: None
     os.environ.setdefault("FORCE", "1")
-    module = __import__(script)
     module.main()
     Path(f"{out}.commands").write_text("\n".join(rec.commands) + "\n")
     Path(f"{out}.blocks").write_text("\n".join(world.dump()) + "\n")
     print(f"{len(rec.commands)} commands, site {a}..{b}")
+    if png := os.environ.get("RECORD_PNG"):
+        # RECORD_PNG=file.png [RECORD_BOX="x1 y1 z1 x2 y2 z2"] [RECORD_VIEWS=top,iso]
+        from mciwb.render import render
+
+        box = os.environ.get("RECORD_BOX")
+        corners = [int(v) for v in box.split()] if box else None
+        grid = world.grid(corners[:3], corners[3:]) if corners else world.grid()
+        views = os.environ.get("RECORD_VIEWS", "top,iso").split(",")
+        render(grid, views).save(png)
+        print(f"rendered {png}")
 
 
 if __name__ == "__main__":
