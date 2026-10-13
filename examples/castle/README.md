@@ -119,8 +119,13 @@ for each that gives the positions of its parts, used by the build and by
   2-high section of wall; a redstone torch keeps them extended until its
   block is powered, by a chiseled bookshelf's comparator (only the 6th
   book's signal of 6 reaches the end of a 6-dust line) or by a lever.
-- **Pit trap** (`castle_lib.pit_trap`): a tripwire opens two iron
-  trapdoors set flush in a corridor floor.
+- **Pit trap** (`castle_lib.pit_trap`): a tripwire opens three iron
+  trapdoors set flush in a corridor floor, under the wire and either side
+  of it. A walker is on the string for only about 7 ticks and the hooks
+  hold their signal for 10, so the floor has to open under the wire, not
+  further on: `castle_lib.pit_timing` works out when a walker would be
+  over the opening, and the checks require it to be before they step off
+  the string. It shuts again once its victim has fallen.
 - **Arrow trap** (`castle_lib.arrow_trap`): a tripwire powers dispensers
   in the end wall of a corridor.
 - **The engine**: eight hoppers pass amethyst shards round a ring; twelve
@@ -132,7 +137,9 @@ for each that gives the positions of its parts, used by the build and by
   both sides, so nobody gets shut in.
 
 `verify_castle.py` toggles each of them over RCON and reads the result
-back (the arrow trap by its dispensers' stock going down: an arrow that
+back (the pit trap with an armour stand that is moved off the wire as soon
+as the floor opens, as a walker steps off it, and another that must fall
+to the oubliette's floor) (the arrow trap by its dispensers' stock going down: an arrow that
 hits the armour stand on the wire breaks it and vanishes; each cell door
 by setting a redstone block in place of its frame, a stand-in for a button
 press, since a button placed with `setblock` does not update its

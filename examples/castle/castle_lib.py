@@ -187,6 +187,27 @@ def tick(ticks: int) -> None:
         time.sleep(min(0.15 + ticks / 100, 3))
 
 
+def wait_until(cond, ticks: int) -> bool:
+    """wait up to ``ticks`` game ticks for ``cond()``, looking after every
+    tick (sprinted one at a time when nobody is online; with a player online
+    the game ticks by itself, and it is polled)"""
+    import time
+
+    if players_online():
+        end = time.time() + ticks / 20 + 0.5
+        while time.time() < end:
+            if cond():
+                return True
+            time.sleep(0.01)
+        return cond()
+    for _ in range(ticks):
+        if cond():
+            return True
+        cmd("tick sprint 1")
+        time.sleep(0.05)
+    return cond()
+
+
 def kill_tagged(tag: str) -> str:
     """kill every entity with a tag, wherever it has wandered to"""
     return cmd(f"kill @e[tag={tag}]")
@@ -882,68 +903,93 @@ def bookshelf_door(xw: int, y: int, zd: int) -> dict:
     return hidden_door(Vec3(xw, y, zd), Vec3(1, 0, 0), Vec3(0, 0, 1))
 
 
-def pit_trap(x: int, y: int, zt: int, depth: int, travel: int = -1) -> dict:
+def pit_trap(x: int, y: int, zw: int, depth: int) -> dict:
     """
     A pit trap in a 1-wide corridor running north-south at ``x`` with its
-    floor at ``y - 1`` (people stand at ``y``): a tripwire across the corridor
-    two blocks before the pit (people walk in direction ``travel`` along z:
-    -1 north, +1 south) opens two iron trapdoors set flush in the floor at
-    ``zt`` and ``zt + travel``, over a shaft ``depth`` deep. The corridor walls must be
-    solid from x-3 to x-1 and x+1 to x+2 (the hooks sit in alcoves, and the
-    wiring runs inside the west wall).
+    floor at ``y - 1`` (people stand at ``y``): a tripwire across the
+    corridor at ``zw`` opens three iron trapdoors set flush in the floor,
+    under the wire and either side of it, over a shaft ``depth`` deep.
+
+    Whoever sets the wire off is standing over the opening, from either
+    direction: a walker's feet are on the string for about 7 ticks (a block
+    and a half at 4.3 blocks a second), the hooks hold their signal at least
+    10 ticks, and the trapdoors open 2 ticks after the wire (one repeater),
+    so the floor is open under them while they are still on the string. A
+    trap two blocks on from the wire would need its walker to arrive within
+    the hold: a walker takes about 12 ticks to be wholly over it, by when
+    the trapdoors are shutting. Nothing holds the floor open longer, so it
+    shuts again (resets) once the victim has fallen off the string.
+
+    The wiring runs inside the west wall: the west hook's block powers a
+    dust line along x-3 (on stone), and under each dust a repeater facing
+    east powers the stone beside its trapdoor. The corridor's walls must be
+    solid from x-3 to x-1 and x+1 to x+2 (the hooks sit in alcoves).
     """
     p = placer()
-    s = 1 if travel > 0 else -1
-    doors = (zt, zt + s)
-    # the shaft under the two trapdoor cells
-    p.fill(Vec3(x, y - depth - 1, doors[0]), Vec3(x, y - 2, doors[1]), AIR)
-    p.fill(Vec3(x, y - depth - 1, doors[0]), Vec3(x, y - depth - 1, doors[1]), COBBLE)
-    for zz in doors:
+    c = pit_trap_cells(x, y, zw, depth)
+    z1, z2 = zw - 1, zw + 1
+    # the shaft under the trapdoors
+    p.fill(Vec3(x, y - depth - 1, z1), Vec3(x, y - 2, z2), AIR)
+    p.fill(Vec3(x, y - depth - 1, z1), Vec3(x, y - depth - 1, z2), COBBLE)
+    for t in c["trapdoors"]:
+        z = t.z
+        p.setblock(t, "minecraft:iron_trapdoor[facing=north,half=top,open=false]")
+        p.setblock(Vec3(x - 1, y - 1, z), STONE)  # beside the trapdoor: its power
+        p.setblock(Vec3(x - 2, y - 2, z), STONE)
         p.setblock(
-            Vec3(x, y - 1, zz),
-            "minecraft:iron_trapdoor[facing=north,half=top,open=false]",
-        )
-        p.setblock(
-            Vec3(x - 1, y - 1, zz), STONE
-        )  # the wall block beside the trapdoor: its power block
-        p.setblock(
-            Vec3(x - 2, y - 1, zz), "minecraft:repeater[facing=west]"
+            Vec3(x - 2, y - 1, z), "minecraft:repeater[facing=west]"
         )  # input from x-3, output east
-        p.setblock(Vec3(x - 2, y - 2, zz), STONE)
-        p.setblock(Vec3(x - 3, y - 2, zz), STONE)
-        p.setblock(Vec3(x - 3, y - 1, zz), DUST)
-        p.setblock(Vec3(x - 3, y, zz), AIR)  # headroom for the dust channel
-        p.setblock(Vec3(x - 3, y + 1, zz), STONE)
-    # tripwire: alcoves either side, two blocks before the pit, hooks on the alcove backs
-    zh = zt - 2 * s
-    p.setblock(Vec3(x - 2, y, zh), STONE)
-    p.setblock(Vec3(x + 2, y, zh), STONE)
-    p.setblock(Vec3(x - 1, y, zh), "minecraft:tripwire_hook[facing=east,attached=true]")
-    p.setblock(Vec3(x + 1, y, zh), "minecraft:tripwire_hook[facing=west,attached=true]")
-    p.setblock(Vec3(x, y, zh), "minecraft:tripwire[attached=true,east=true,west=true]")
-    # the west hook powers (x-2, y, zh); dust beside it (towards the pit) runs west then steps down
-    zn = zh + s
-    p.setblock(Vec3(x - 2, y - 1, zn), STONE)
-    p.setblock(Vec3(x - 2, y, zn), DUST)
-    p.setblock(Vec3(x - 2, y + 1, zn), STONE)
-    p.setblock(Vec3(x - 3, y - 1, zn), STONE)
-    p.setblock(Vec3(x - 3, y, zn), DUST)
-    p.setblock(
-        Vec3(x - 3, y + 1, zn), AIR
-    )  # so the dust can step down to (x-3, y-1, zt)
-    return pit_trap_cells(x, y, zt, depth, travel)
+        p.setblock(Vec3(x - 3, y - 1, z), STONE)  # powered by the dust on it
+        p.setblock(Vec3(x - 3, y, z), DUST)
+        p.setblock(Vec3(x - 2, y, z), STONE)
+    # the tripwire: hooks in alcoves either side, on the alcove backs; the
+    # west hook powers its block (x-2, y, zw), and the dust line beside it
+    p.setblock(Vec3(x + 2, y, zw), STONE)
+    p.setblock(Vec3(x - 1, y, zw), "minecraft:tripwire_hook[facing=east,attached=true]")
+    p.setblock(Vec3(x + 1, y, zw), "minecraft:tripwire_hook[facing=west,attached=true]")
+    p.setblock(Vec3(x, y, zw), "minecraft:tripwire[attached=true,east=true,west=true]")
+    return c
 
 
-def pit_trap_cells(x: int, y: int, zt: int, depth: int, travel: int = -1) -> dict:
+def pit_trap_cells(x: int, y: int, zw: int, depth: int) -> dict:
     """the positions of a `pit_trap`'s parts: what to check and trigger"""
-    s = 1 if travel > 0 else -1
-    zh = zt - 2 * s
     return {
-        "hooks": [Vec3(x - 1, y, zh), Vec3(x + 1, y, zh)],
-        "wire": Vec3(x, y, zh),
-        "trapdoors": [Vec3(x, y - 1, z) for z in (zt, zt + s)],
-        "shaft": [Vec3(x, yy, zt) for yy in range(y - depth, y - 1)],
+        "hooks": [Vec3(x - 1, y, zw), Vec3(x + 1, y, zw)],
+        "wire": Vec3(x, y, zw),
+        "trapdoors": [Vec3(x, y - 1, z) for z in (zw - 1, zw, zw + 1)],
+        "shaft": [Vec3(x, yy, zw) for yy in range(y - depth, y - 1)],
+        "bottom": y - depth,  # where a victim lands
     }
+
+
+WALK_SPEED = 4.317 / 20  # a walking player, in blocks per tick
+PLAYER_HALF_WIDTH = 0.3
+
+
+def pit_timing(wire_z: int, trapdoor_zs: list[int], travel: int) -> tuple[float, float]:
+    """
+    For a player walking along z in direction ``travel`` (+1 or -1) across a
+    pit trap: (ticks from first touching the wire's block to standing wholly
+    over the opening, ticks until they step off the string). The first must
+    not be later than the second: the hook holds its signal only a few ticks
+    after they step off (10 at least from the first touch), and once off the
+    string they keep walking (inf if they never stand wholly over it).
+    """
+    lo, hi = min(trapdoor_zs), max(trapdoor_zs) + 1  # the opening, z lo..hi
+    if travel > 0:
+        touch = wire_z - PLAYER_HALF_WIDTH  # centre when the front edge arrives
+        leave = wire_z + 1 + PLAYER_HALF_WIDTH
+        over = lo + PLAYER_HALF_WIDTH  # first centre wholly over the opening
+        if over + PLAYER_HALF_WIDTH > hi:
+            return float("inf"), (leave - touch) / WALK_SPEED
+    else:
+        touch = wire_z + 1 + PLAYER_HALF_WIDTH
+        leave = wire_z - PLAYER_HALF_WIDTH
+        over = hi - PLAYER_HALF_WIDTH
+        if over - PLAYER_HALF_WIDTH < lo:
+            return float("inf"), (touch - leave) / WALK_SPEED
+    reach = max(0.0, (over - touch) * travel) / WALK_SPEED
+    return reach, abs(leave - touch) / WALK_SPEED
 
 
 def arrow_trap(x1: int, x2: int, y: int, zw: int, zdisp: int) -> dict:

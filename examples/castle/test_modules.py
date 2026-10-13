@@ -214,28 +214,66 @@ def test_lever_door(x: int, y0: int, zw: int) -> None:
     check("lever closes the door", all(is_block(p, L.BRICK) for p in ld["door"]))
 
 
-def test_pit_trap(x: int, y0: int, zt: int) -> None:
-    """corridor at x running north-south, the pit at zt"""
-    L.fill(Vec3(x, y0, zt - 14), Vec3(x, y0 + 1, zt + 14), L.AIR)
-    t = L.pit_trap(x, y0, zt, 6)
+def stand_y() -> float | None:
+    m = re.search(
+        r"\[[-\d.]+d, (-?[\d.]+)d, ",
+        c("data get entity @e[tag=castle_test,limit=1] Pos"),
+    )
+    return float(m.group(1)) if m else None
+
+
+def test_pit_trap(x: int, y0: int, zw: int) -> None:
+    """corridor at x running north-south, the wire at zw"""
+    L.fill(Vec3(x, y0, zw - 14), Vec3(x, y0 + 1, zw + 14), L.AIR)
+    t = L.pit_trap(x, y0, zw, 6)
     advance()
+    doors = t["trapdoors"]
     check(
         "pit trap starts closed",
-        all(is_block(p, "minecraft:iron_trapdoor[open=false]") for p in t["trapdoors"]),
+        all(is_block(p, "minecraft:iron_trapdoor[open=false]") for p in doors),
     )
-    w = t["wire"]
-    c(f'summon minecraft:armor_stand {w.x} {w.y} {w.z} {{Tags:["castle_test"]}}')
-    advance()
+    for travel in (1, -1):
+        r, on = L.pit_timing(zw, [d.z for d in doors], travel)
+        check(
+            f"a walker ({travel:+d}) is over the pit in {r:.1f} <= {on:.1f} ticks",
+            r <= on,
+        )
+    w = t["wire"] + Vec3(0.5, 0, 0.5)
+    # a walker: on the string until the floor opens, then gone on along the
+    # corridor at once; the floor is still open under where they were
+    c(
+        f'summon minecraft:armor_stand {w.x} {w.y} {w.z} {{Tags:["castle_test"],Invulnerable:1b}}'
+    )
+    opened = L.wait_until(
+        lambda: all(is_block(p, "minecraft:iron_trapdoor[open=true]") for p in doors),
+        20,
+    )
+    c(f"tp @e[tag=castle_test] {w.x} {w.y} {w.z + 3}")
     check(
-        "walking onto the wire opens the pit",
-        all(is_block(p, "minecraft:iron_trapdoor[open=true]") for p in t["trapdoors"]),
+        f"the wire opens the pit ({opened}), and it stays open after the walker steps off",
+        opened
+        and all(is_block(p, "minecraft:iron_trapdoor[open=true]") for p in doors),
     )
     c("kill @e[tag=castle_test]")
     advance()
     check(
         "pit closes again",
-        all(is_block(p, "minecraft:iron_trapdoor[open=false]") for p in t["trapdoors"]),
+        all(is_block(p, "minecraft:iron_trapdoor[open=false]") for p in doors),
     )
+    # and whoever is on the wire falls in
+    c(
+        f'summon minecraft:armor_stand {w.x} {w.y} {w.z} {{Tags:["castle_test"],Invulnerable:1b}}'
+    )
+    advance()
+    y = stand_y()
+    check(
+        f"what steps on the wire falls to the bottom (y {y}, bottom {t['bottom']}), and the pit shuts over it",
+        y is not None
+        and y < t["bottom"] + 1
+        and is_block(t["wire"], "minecraft:tripwire")
+        and all(is_block(p, "minecraft:iron_trapdoor[open=false]") for p in doors),
+    )
+    c("kill @e[tag=castle_test]")
 
 
 def test_arrow_trap(x: int, y0: int, zw: int) -> None:

@@ -894,7 +894,7 @@ def dungeons() -> None:
     L.fill(V(95, y - 1, 121), V(95, y - 1, 133), L.COBBLE)
     L.fill(V(95, y, 121), V(95, y + 1, 133), L.AIR)
     px, py, pz, depth = PIT_TRAP
-    L.pit_trap(*V(px, py, pz), depth, travel=1)
+    L.pit_trap(*V(px, py, pz), depth)
     # the guard room
     L.fill(V(90, y - 1, 134), V(100, y + 3, 140), L.BRICK)
     L.fill(V(91, y, 135), V(99, y + 2, 139), L.AIR)
@@ -964,8 +964,9 @@ def catacombs() -> None:
     L.fill(
         V(98, y - 1, 105), V(99, y + 4, 120), L.DARK_BRICK
     )  # thick east wall for the wiring
+    px, _, pz, _ = PIT_TRAP
     L.fill(
-        V(95, y + 3, 127), V(95, y + 5, 128), L.AIR
+        V(px, y + 3, pz - 1), V(px, y + 5, pz + 1), L.AIR
     )  # the pit's shaft through the oubliette's ceiling
     ax1, ax2, ay, zw, zd = ARROW_TRAP
     L.arrow_trap(

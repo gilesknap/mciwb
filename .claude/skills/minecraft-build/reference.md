@@ -61,6 +61,16 @@ world.cmd("time set day")  # any console command, without the /
   grille beside it, use open iron trapdoors with the door's facing. An iron
   trapdoor follows its redstone power, so a lever or button touching it
   closes it when the power goes.
+- Redstone set by command: a lever set with `setblock` updates only its
+  own neighbours, not those of the block it is on (a player's pull does
+  both), and a redstone torch keeps the `lit` state it is given until a
+  neighbour changes, so set a torch's state to match its power. A tripwire
+  is tripped by an entity that moves into it: an armour stand summoned onto
+  it works, a `NoGravity` one does not.
+- Tripwire timing: the hooks hold their signal 10 ticks after the first
+  touch, and a walking player is on the string for about 7, so whatever
+  the wire triggers must act on them while they are on it (a pit trap's
+  trapdoors under the wire, not two blocks on).
 - Vec3 arithmetic: `pos + Direction.UP * 3`, `a - b`, `pos.with_ints()`.
   `Direction.cardinals()` lists the four compass directions.
 

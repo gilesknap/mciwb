@@ -83,7 +83,7 @@ def main() -> None:
     )
     crypt = L.hidden_door_cells(V(*CRYPT_DOOR), Wd, S, trigger="lever", lever_b=-1)
     px, py, pz, depth = PIT_TRAP
-    pit = L.pit_trap_cells(*V(px, py, pz), depth, travel=1)
+    pit = L.pit_trap_cells(*V(px, py, pz), depth)
     ax1, ax2, ay, zw, zd = ARROW_TRAP
     arrow = L.arrow_trap_cells(
         ORIGIN.x + ax1, ORIGIN.x + ax2, ORIGIN.y + ay, ORIGIN.z + zw, ORIGIN.z + zd
@@ -238,9 +238,10 @@ coordinates in the scripts are offsets from it (x east, z south, y up).
 
 - **Pit trap**, dungeon approach: the one-wide corridor south of the
   entrance stair has a tripwire at {p(pit["wire"])} with its hooks in two
-  alcoves. Cross it and the two iron trapdoors in the floor two blocks on
-  swing open; you fall {depth} blocks into the oubliette. Jump over the
-  wire, or break the string.
+  alcoves. Step on it and the floor under it (three iron trapdoors, under
+  the wire and either side) swings open: you fall {depth} blocks into the
+  oubliette, and the floor shuts over you. Jump over the wire, or break the
+  string.
 - **Arrow trap**, catacombs: from the oubliette the only way out is the
   three-wide corridor north. The tripwire at {p(arrow["wire"])} sets off
   three dispensers in the corridor's end wall (z {arrow["dispensers"][0].z}),
@@ -274,10 +275,13 @@ coordinates in the scripts are offsets from it (x east, z south, y up).
 `verify_castle.py` drives all of the above over RCON (advancing ticks with
 `tick sprint`, since the server pauses with no players online): both
 portcullises close and reopen, the three secret doors open and close, the
-pit opens when the wire is crossed, the dispensers fire (and are reloaded),
+pit opens under whoever steps on the wire and drops them into the
+oubliette, the dispensers fire (and are reloaded),
 the engine's shards circulate and its lamp blinks, the chests hold their
 items, every teleport above lands on a floor with head room, and the
-castle's entities are exactly the ones it summoned.
+castle's entities are exactly the ones it summoned, every tower door opens
+onto a floor on both sides, and a visitor can walk from the gate to every
+room.
 
 ## Forceloaded chunks
 

@@ -316,11 +316,20 @@ def library() -> None:
         advance()
 
 
+def stand_y() -> float | None:
+    """the height of the checks' armour stand"""
+    m = re.search(
+        r"\[[-\d.]+d, (-?[\d.]+)d, ",
+        c("data get entity @e[tag=castle_verify,limit=1] Pos"),
+    )
+    return float(m.group(1)) if m else None
+
+
 def traps() -> None:
     px, py, pz, depth = PIT_TRAP
-    t = L.pit_trap_cells(*V(px, py, pz), depth, travel=1)
+    t = L.pit_trap_cells(*V(px, py, pz), depth)
     wire, doors = t["wire"], t["trapdoors"]
-    clear(V(px - 3, py - 1, pz - 10), V(px + 3, py + 3, pz + 10))
+    clear(V(px - 3, py - depth - 1, pz - 10), V(px + 3, py + 3, pz + 10))
     advance()
     check(
         "pit trap: tripwire present and not already tripped",
@@ -330,22 +339,71 @@ def traps() -> None:
         "pit trap: trapdoors start closed",
         all(is_block(p, "minecraft:iron_trapdoor[open=false]") for p in doors),
     )
-    try:
-        trip(wire)
+    # a walker is on the string for a moment only: they must be wholly over
+    # the opening by the time they step off it, from either side
+    reach = 0.0
+    for travel, way in ((1, "south"), (-1, "north")):
+        r, on = L.pit_timing(wire.z, [d.z for d in doors], travel)
+        reach = max(reach, r)
         check(
-            "pit trap: walking onto the wire opens the floor",
-            all(is_block(p, "minecraft:iron_trapdoor[open=true]") for p in doors),
+            f"pit trap: walking {way}, wholly over the opening {r:.1f} ticks after touching the wire, while still on the string ({on:.1f} ticks)",
+            r <= on,
+        )
+    centre = wire + Vec3(0.5, 0, 0.5)
+    try:
+        # the walker: on the string until the floor opens, then moved on
+        # along the corridor at once (as if stepping off); the floor must
+        # still be open when they would be wholly over it
+        c(
+            f"summon minecraft:armor_stand {centre.x} {centre.y} {centre.z} "
+            '{Tags:["castle_verify"],Invulnerable:1b}'
+        )
+        opened = L.wait_until(
+            lambda: all(
+                is_block(p, "minecraft:iron_trapdoor[open=true]") for p in doors
+            ),
+            20,
+        )
+        c(f"tp @e[tag=castle_verify] {centre.x} {centre.y} {centre.z + 3}")
+        if reach > 0:
+            L.tick(int(reach + 0.5))
+        check(
+            f"pit trap: the wire opens the floor ({opened}), still open after the walker has stepped off",
+            opened
+            and all(is_block(p, "minecraft:iron_trapdoor[open=true]") for p in doors),
+        )
+        untrip()
+        check(
+            "pit trap: shuts again by itself",
+            all(is_block(p, "minecraft:iron_trapdoor[open=false]") for p in doors),
+        )
+        # the victim: on the wire, and down the shaft into the oubliette
+        c(
+            f"summon minecraft:armor_stand {centre.x} {centre.y} {centre.z} "
+            '{Tags:["castle_verify"],Invulnerable:1b}'
+        )
+        opened = L.wait_until(
+            lambda: all(
+                is_block(p, "minecraft:iron_trapdoor[open=true]") for p in doors
+            ),
+            20,
+        )
+        advance()
+        y = stand_y()
+        check(
+            f"pit trap: whoever is on the wire falls into the oubliette (the floor opens: {opened}; landed at y {y}, the bottom is {t['bottom']})",
+            opened and y is not None and y < t["bottom"] + 1,
         )
         check(
             "pit trap: the shaft drops into the oubliette",
             all(is_block(p, L.AIR) for p in t["shaft"]),
         )
+        check(
+            "pit trap: and shuts again over them",
+            all(is_block(p, "minecraft:iron_trapdoor[open=false]") for p in doors),
+        )
     finally:
         untrip()
-    check(
-        "pit trap: closes again",
-        all(is_block(p, "minecraft:iron_trapdoor[open=false]") for p in doors),
-    )
 
     ax1, ax2, ay, zw, zd = ARROW_TRAP
     o = V(0, 0, 0)

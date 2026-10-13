@@ -109,7 +109,9 @@ CELL_DOOR = (69, -8, 137)  # base; u west, v south, lever at CELL_LEVER
 # the cell door's lever: in the middle of the first north cell's west wall,
 # clear of that cell's grille (a lever beside an iron trapdoor powers it)
 CELL_LEVER = -4
-PIT_TRAP = (95, -8, 127, 7)  # corridor x, standing level, first trapdoor z, depth
+# the pit trap: corridor x, standing level, the wire's z (the trapdoors are
+# under it and either side), depth
+PIT_TRAP = (95, -8, 127, 7)
 ARROW_TRAP = (94, 96, -15, 118, 108)  # x1, x2, standing level, wire z, dispenser z
 WELL = (60, 105)
 # ---- the lower bailey's buildings and features, x1, z1, x2, z2 (local).
