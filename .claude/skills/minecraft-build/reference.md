@@ -397,8 +397,9 @@ by a separate verify script. Its lessons:
 | `mciwb render ...` | render a region to PNG |
 
 The server's files are in `~/mciwb-server` (`--folder`). Pass the
-`--port`/`--password` of `mciwb start` to `backup`, `restore`, `render` and
-`run`. `mciwb restore` takes all the options
+`--port` and password of `mciwb start` to `backup`, `restore`, `render` and
+`run`: the password goes in `--password-file FILE` or `$MCIWB_PASSWORD`
+(`--password` also works, but shows in `ps`). `mciwb restore` takes all the options
 of `mciwb start`, as it starts the server again. Existing backups:
 `ls ~/mciwb-backups`.
 
@@ -419,10 +420,10 @@ of `mciwb start`, as it starts the server again. Existing backups:
 | --- | --- |
 | `No Podman socket found` / `not responding` | ask the user to run `systemctl --user enable --now podman.socket`, then `mciwb start` |
 | `Could not connect to server localhost:20100` | the server is not running: `mciwb start`, or wrong `--port` |
-| `Wrong RCON password` | use the `--password` given to `mciwb start` (`rcon.password` in `~/mciwb-server/server.properties`) |
+| `Wrong RCON password` | use the password given to `mciwb start` (`--password-file`, `$MCIWB_PASSWORD`) (`rcon.password` in `~/mciwb-server/server.properties`) |
 | `set_block` returns False with a "not loaded" error | the chunk is unloaded: build near a player or `forceload add` |
 | Fill: "Too many blocks" | over 32768 blocks: use `Volume.from_corners(a, b).fill(client, item)`, or `Placer().fill(a, b, item, mode, filter)` for a mode or filter; both split the box |
-| Render warns "no server ... recent changes may be missing" | pass the `--port`/`--password` of `mciwb start` so it can flush the world first |
+| Render warns "no server ... recent changes may be missing" | pass the `--port` and password of `mciwb start` so it can flush the world first |
 | Render is all pale blue | the region is air, or chunks were never generated: check coordinates with the survey |
 | Build has floating or buried parts | re-survey: ground height varies; lay a `foundation` under it, or place each column at `ground_height(x, z) + 1` |
 | `BuildError` from a builder | the message has the server's reply: an unknown block or state, or an unloaded chunk |

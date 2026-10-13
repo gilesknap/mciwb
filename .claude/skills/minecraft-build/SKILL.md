@@ -15,7 +15,9 @@ the image to check every step.
    `--world-type flat` for a flat test world). It needs the Podman service:
    on "No Podman socket found" ask the user to run
    `systemctl --user enable --now podman.socket`. Give the same `--port` and
-   `--password` to every other mciwb command if `mciwb start` had them.
+   password to every other mciwb command if `mciwb start` had them; pass a
+   password as `--password-file FILE` or `$MCIWB_PASSWORD`, not
+   `--password` (visible in `ps`).
 2. **Backup** before any big or risky change:
    `mciwb backup --backup-name before-<what>`.
 3. **Survey** the site, around a point (`X Z RADIUS`) or a player:

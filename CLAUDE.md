@@ -48,6 +48,12 @@ mciwb run build.py --player NAME   # NAME is optional: a player in the world
 (flushing it first over RCON if the server is running) and `mciwb restore
 [NAME]` restores it; give both the `--port`/`--password` used with `mciwb start`.
 
+Every command takes the RCON password from `--password` (visible to other
+users in `ps`, so avoid it), else `--password-file FILE` (its first line),
+else `$MCIWB_PASSWORD`, else `default_pass`. It is never logged. A
+standalone script's `Iwb()` uses `default_pass`: pass it
+`Iwb(passwd=os.environ["MCIWB_PASSWORD"])` for a server with another password.
+
 `mciwb run` and `mciwb shell` provide `world` (an `Iwb`) plus every name in
 `mciwb.imports`. A standalone script does the setup itself:
 

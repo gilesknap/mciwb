@@ -22,6 +22,41 @@ container. ``mciwb stop`` removes the container, so while it exists
 ``mciwb start`` starts it with the settings it was created with, and warns
 about any options that differ. Run ``mciwb stop`` first to change them.
 
+.. _rcon_password:
+
+The RCON password
+-----------------
+
+mciwb talks to the server over RCON, which needs a password. ``mciwb start``
+sets the server's password, and the other commands (``shell``, ``run``,
+``backup``, ``restore`` and ``render``) must use the same one. Every one of
+these commands takes the password from the first of these that is given:
+
+1. ``--password PASSWORD`` (or ``--passwd``) on the command line;
+2. ``--password-file FILE`` (or ``--passwd-file``): the first line of FILE;
+3. the ``MCIWB_PASSWORD`` environment variable;
+4. ``default_pass``.
+
+The default is fine for a server that only you can reach. To choose your
+own password, put it in a file that only you can read, or set
+``MCIWB_PASSWORD`` in your shell::
+
+    echo 'my_password' > ~/.mciwb-password
+    chmod 600 ~/.mciwb-password
+    mciwb start --password-file ~/.mciwb-password
+    mciwb run build.py --password-file ~/.mciwb-password
+
+    export MCIWB_PASSWORD='my_password'
+    mciwb start
+    mciwb run build.py
+
+.. warning::
+
+    Avoid ``--password``: any user on the same computer can read a command
+    line, for example with ``ps``. It still works, for compatibility.
+
+mciwb never prints or logs the password, even with ``--debug``.
+
 .. _minecraft_version:
 
 Minecraft version
