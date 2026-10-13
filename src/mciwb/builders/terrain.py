@@ -19,7 +19,7 @@ from mcwb import Item, Vec3, Volume
 
 from mciwb.builders.blockstate import Block
 from mciwb.builders.placer import BuildError, Placer, rectangles
-from mciwb.threads import get_client
+from mciwb.threads import ReplyCheck, get_client, reply_matches, retry_command
 
 __all__ = ["Heightmap", "foundation", "ground_height", "ground_heights"]
 
@@ -39,7 +39,9 @@ class Heightmap(str, Enum):  # noqa: UP042 - str, like mcwb.Item
     OCEAN_FLOOR = "ocean_floor"
 
 
-_teleported = re.compile(r"Teleported .* to (-?[\d.]+), (-?[\d.]+), (-?[\d.]+)")
+_teleported = re.compile(
+    r"Teleported \S+ to (-?[\d.]+), (-?[\d.]+), (-?[\d.]+)(?![\d.])"
+)
 
 
 def ground_heights(
@@ -68,25 +70,52 @@ def ground_heights(
     tag = f"mciwb_{uuid4().hex[:8]}"
     entity = f"@e[type=minecraft:marker,tag={tag},limit=1]"
 
+    # Every reply is checked and the command sent again if another RCON
+    # client garbled it (see mciwb.threads.retry_command). Summoning is not
+    # usually safe to repeat, but here a second marker does no harm: tp picks
+    # one of them, and kill removes them all (even if summoning fails).
     x, z = columns[0]
-    result = client.run(f'summon minecraft:marker {x} 0 {z} {{Tags:["{tag}"]}}')
-    if not result.startswith("Summoned"):
-        raise BuildError(f"could not summon a marker at {x} 0 {z}: {result}")
+    summon = f'summon minecraft:marker {x} 0 {z} {{Tags:["{tag}"]}}'
     heights = {}
     try:
+        result = retry_command(
+            lambda: client.run(summon), reply_matches(r"Summoned new \S+"), summon
+        )
+        if not result.startswith("Summoned"):
+            raise BuildError(f"could not summon a marker at {x} 0 {z}: {result!r}")
         for x, z in columns:
-            result = client.run(
+            command = (
                 f"execute positioned {x} 0 {z} positioned over {heightmap} "
                 f"run tp {entity} ~ ~ ~"
             )
-            match = _teleported.search(result)
+            result = retry_command(
+                lambda command=command: client.run(command),
+                _teleported_to(x, z),
+                command,
+            )
+            match = _teleported.match(result)
             if not match:
-                raise BuildError(f"could not read the ground at {x}, {z}: {result}")
+                raise BuildError(f"could not read the ground at {x}, {z}: {result!r}")
             # the heightmap is the first block above the ground
             heights[(x, z)] = round(float(match.group(2))) - 1
     finally:
         client.run(f"kill @e[type=minecraft:marker,tag={tag}]")
     return heights
+
+
+def _teleported_to(x: int, z: int) -> ReplyCheck:
+    """
+    A check for the reply to teleporting the marker to column x, z. It must
+    name the column, so that another client's tp reply is not taken for ours
+    """
+
+    def check(reply: str) -> str | None:
+        for match in _teleported.finditer(reply):
+            if (floor(float(match.group(1))), floor(float(match.group(3)))) == (x, z):
+                return match.group(0)
+        return None
+
+    return check
 
 
 def ground_height(

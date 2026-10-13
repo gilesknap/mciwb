@@ -89,6 +89,33 @@ def test_cmd(world: Iwb, mock_client: MockClient):
     assert mock_client.commands[-1] == "time set day"
 
 
+def test_cmd_returns_errors(world: Iwb, mock_client: MockClient):
+    """
+    gilesknap/mciwb#166: the server's error replies are returned as text,
+    not raised as mcipc exceptions (game rules are snake case since 1.21.11)
+    """
+    reply = world.cmd("gamerule doDaylightCycle")
+    assert reply.startswith("Incorrect argument for command")
+    assert world.cmd("gamerule advance_time") == (
+        "Game rule advance_time is currently set to true"
+    )
+
+
+def test_cmd_expect(world: Iwb, mock_client: MockClient):
+    """with expect, a garbled reply is retried and just our output returned"""
+    expect = r"Game rule \S+ is currently set to \S+"
+    mock_client.garble("gamerule")
+    mock_client.garble("gamerule", "There are 0 of a max of 20 players online: ")
+    mock_client.garble(
+        "gamerule",
+        "There are 0 of a max of 20 players online: "
+        "Game rule advance_time is currently set to true",
+    )
+    reply = world.cmd("gamerule advance_time", expect=expect)
+    assert reply == "Game rule advance_time is currently set to true"
+    assert mock_client.commands.count("gamerule advance_time") == 3
+
+
 def test_add_player(world: Iwb, mock_client: MockClient):
     world.add_player(ENTITY_NAME)
 

@@ -853,6 +853,57 @@ def test_ground_height_errors(mock_client: MockClient, monkeypatch: pytest.Monke
     assert mock_client.markers == {}
 
 
+def test_ground_heights_survive_garbled_replies(mock_client: MockClient):
+    """
+    gilesknap/mciwb#166: another RCON client can empty a reply, or add its
+    own output to it. Each column is read again rather than aborting the job
+    """
+    mock_client.fill(Vec3(0, -20, 0), Vec3(9, 3, 9), Item.STONE)
+    mock_client.setblock(Vec3(4, 7, 4), Item.STONE)
+    tp = r"execute positioned {} 0 {} "
+    # lost replies, to the summon and to a column
+    mock_client.garble("summon")
+    mock_client.garble(tp.format(1, 1))
+    # the reply to another client's tp, alone or with ours
+    mock_client.garble(tp.format(4, 4), "Teleported Marker to 1.500000, 4.0, 1.5")
+    mock_client.garble(
+        tp.format(2, 2),
+        "There are 0 of a max of 20 players online: "
+        "Teleported Marker to 2.500000, 4.000000, 2.500000",
+    )
+    columns = [(1, 1), (4, 4), (2, 2)]
+    assert ground_heights(columns) == {(1, 1): 3, (4, 4): 7, (2, 2): 3}
+    assert mock_client.garbled == []
+    # a second marker from the repeated summon is removed too
+    assert mock_client.markers == {}
+
+
+def test_ground_heights_give_up(mock_client: MockClient):
+    """a column whose replies stay garbled fails, after a few attempts"""
+    mock_client.garble("execute positioned", times=100)
+    with pytest.raises(BuildError, match="could not read the ground at 1, 1: ''"):
+        ground_height(1, 1)
+    assert sum(c.startswith("execute") for c in mock_client.commands) == 5
+    assert mock_client.markers == {}
+
+
+def test_failed_summon_leaves_no_markers(mock_client: MockClient):
+    """every marker from the summon retries is removed, even on failure"""
+    mock_client.garble("summon", times=100)
+    with pytest.raises(BuildError, match="summon"):
+        ground_height(1, 1)
+    assert sum(c.startswith("summon") for c in mock_client.commands) == 5
+    assert mock_client.markers == {}
+
+
+def test_foundation_survives_a_lost_reply(mock_client: MockClient):
+    mock_client.fill(Vec3(0, -10, 0), Vec3(9, 0, 9), Item.DIRT)
+    mock_client.garble("execute positioned 2 0 1 ")
+    volume = foundation(Vec3(1, 3, 1), Vec3(4, 3, 2), Item.COBBLESTONE)
+    assert (volume.start, volume.end) == (Vec3(1, 1, 1), Vec3(4, 3, 2))
+    assert mock_client.getblock(Vec3(2, 1, 1)) == Item.COBBLESTONE
+
+
 def test_foundation(mock_client: MockClient):
     # ground at y = 0, with a hump at x = 3 up to y = 4
     mock_client.fill(Vec3(0, -10, 0), Vec3(9, 0, 9), Item.DIRT)

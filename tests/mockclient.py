@@ -10,6 +10,7 @@ from typing import Any
 
 import numpy as np
 from mcipc.rcon.enumerations import CloneMode, FillMode, MaskMode
+from mcipc.rcon.errors import check_result
 from mcwb.types import Items
 
 from mciwb.imports import Item, Player, Vec3, Volume
@@ -70,6 +71,10 @@ class MockClient:
             state["block_commands"] = []
             # positions of the marker entities summoned, keyed by tag
             state["markers"] = {}
+            # (command regex, reply) pairs: the next command that matches a
+            # regex gets the reply in place of its real one, as when another
+            # RCON client garbles it. The command still runs. See garble()
+            state["garbled"] = []
         self._state = state
 
     @classmethod
@@ -86,6 +91,7 @@ class MockClient:
     commands = property(lambda self: self._state["commands"])
     block_commands = property(lambda self: self._state["block_commands"])
     markers = property(lambda self: self._state["markers"])
+    garbled = property(lambda self: self._state["garbled"])
 
     @property
     def rotation(self) -> tuple[float, float]:
@@ -383,8 +389,32 @@ class MockClient:
         return "Automatic saving is now enabled"
 
     def run(self, command: str, *args: str) -> str:
+        """run a command, raising mcipc's exceptions as mcipc's client does"""
+        return check_result(self.run_raw(command, *args))
+
+    def run_raw(self, command: str, *args: str) -> str:
+        """run a command and return the reply, as Client.run_raw does"""
         command = " ".join((command, *args))
         self.commands.append(command)
+        reply = self._reply(command)
+        for i, (pattern, garbled) in enumerate(self.garbled):
+            if re.search(pattern, command):
+                del self.garbled[i]
+                return garbled
+        return reply
+
+    def _reply(self, command: str) -> str:
+        """run a command and return the reply of a Minecraft 26.3 server"""
+        if match := re.fullmatch(r"gamerule (\S+)(?: (\S+))?", command):
+            rule, value = match.groups()
+            if not re.fullmatch(r"(minecraft:)?[a-z_]+", rule):
+                # since 1.21.11 game rules have snake case names
+                return f"Incorrect argument for command...{command[-10:]}<--[HERE]"
+            if value is not None:
+                self.gamerules[rule] = value
+                return f"Game rule {rule} is now set to {value}"
+            value = str(self.gamerules.get(rule, "true")).lower()
+            return f"Game rule {rule} is currently set to {value}"
         if match := re.match(
             r"summon minecraft:marker (\S+) (\S+) (\S+) .*\"(\w+)\"", command
         ):
@@ -405,6 +435,14 @@ class MockClient:
                 return "No entity was found"
             return "Killed Marker"
         return f"ran {command}"
+
+    def garble(self, pattern: str, reply: str = "", times: int = 1):
+        """
+        Make the next *times* commands that match the regex *pattern* reply
+        *reply* (default: an empty reply), as when another RCON client runs
+        a command at the same moment
+        """
+        self.garbled.extend([(pattern, reply)] * times)
 
     def height(self, x: int, z: int) -> int:
         """
