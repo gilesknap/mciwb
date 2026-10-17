@@ -92,4 +92,15 @@ Tips
 - For a large build with working redstone, see `examples/castle
   <https://github.com/gilesknap/mciwb/tree/main/examples/castle>`_: a castle
   that a Claude agent built with the skill, in stages, with a script that
-  checks every mechanism.
+  checks every mechanism. `examples/castle2
+  <https://github.com/gilesknap/mciwb/tree/main/examples/castle2>`_ builds on
+  it: a bailey twice as deep with a village of 28 timber-framed houses, farm
+  animals in pens, people at work, and ten puzzle machines joined by a trail
+  of clues:
+
+.. figure:: ../images/castle2.png
+   :alt: Castle Fable II seen from the south west: the keep and its towers
+         on the upper ward, the village inside the lower bailey's walls, the
+         moat and the gate
+
+   Castle Fable II, rendered with ``mciwb render --view iso_sw``.

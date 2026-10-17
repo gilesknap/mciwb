@@ -180,4 +180,6 @@ sunrise: it now rings at 1000 (6/6 since).
      the target, redstone blocks in place of button presses.
 2. Done: the gate (fence gates, main_gate.py) and the `roam` check that
    the villagers stay in.
-3. A docs image of castle2 (top render of the site).
+3. Done: the docs image (docs/images/castle2.png: `mciwb render 545 48 -205
+   695 161 52 --view iso_sw --no-labels --scale 4 --folder /data`, in the
+   pod, cropped), shown in docs/how-to/claude-skill.rst and the README.

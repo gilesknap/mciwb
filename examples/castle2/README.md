@@ -7,6 +7,8 @@ bigger layout, adds its own stages to castle's and checks them. The plan
 is in [PLAN.md](PLAN.md) (gilesknap/mciwb#173), and how far it has got in
 [PROGRESS.md](PROGRESS.md).
 
+![Castle Fable II from the south west](../../docs/images/castle2.png)
+
 ```
 mciwb run build_castle2.py                        # everything, in order
 STAGES=village,pens mciwb run build_castle2.py    # just some stages
