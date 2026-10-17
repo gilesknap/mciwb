@@ -75,9 +75,16 @@ KEEPER = {
 
 
 def offers(trades: list[tuple[int, str, int]]) -> str:
+    """a villager's Offers NBT; an item is a name, or a whole item's SNBT
+    (``{id:...,count:1,components:...}``, e.g. a written book)"""
     recipes = ",".join(
         f'{{buy:{{id:"minecraft:emerald",count:{price}}},'
-        f'sell:{{id:"minecraft:{item}",count:{n}}},maxUses:9999,rewardExp:0b}}'
+        + (
+            f"sell:{item}"
+            if item.startswith("{")
+            else f'sell:{{id:"minecraft:{item}",count:{n}}}'
+        )
+        + ",maxUses:9999,rewardExp:0b}"
         for price, item, n in trades
     )
     return f"Offers:{{Recipes:[{recipes}]}}"

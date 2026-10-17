@@ -49,9 +49,11 @@ on castle2's layout, then castle2's own:
   worked over RCON in place (a lectern page turned, levers set, buttons
   pressed, an ingredient put in the transmuter) and put back as built; each
   one's trigger is an interaction an adventure-mode player has.
+- clues: the clue trail's books (clues.py) on their lecterns, in the reward
+  chests and in Mercator's trades.
 
 ``CHECKS=seats,pens`` runs only some of them (strays, castle, seats,
-signs, rooms, houses, pens, people, gate, reach, bailey_machines, machines).
+signs, rooms, houses, pens, people, gate, reach, bailey_machines, machines, clues).
 Refuses to run while a player is within 200 blocks of the site, unless
 FORCE=1. Exits non-zero if any check fails.
 """
@@ -592,6 +594,14 @@ def machines_checks() -> None:
     organ.work_organ(check)
 
 
+def clues_check() -> None:
+    """the clue trail's books (clues.py) on their lecterns, in the reward
+    chests and in Mercator's trades"""
+    import clues
+
+    clues.check(check)
+
+
 # the groups of checks, in order (CHECKS=... picks some)
 def bailey_machines_check() -> None:
     """the bailey's machines (machines_bailey), each worked in place and
@@ -618,6 +628,7 @@ GROUPS = {
     "reach": reach_checks,
     "bailey_machines": bailey_machines_check,
     "machines": machines_checks,
+    "clues": clues_check,
 }
 
 

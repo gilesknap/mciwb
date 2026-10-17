@@ -17,7 +17,8 @@ stands in); ``village`` (the lanes, the square and the houses) after
 ``bailey_buildings``, then ``pens`` (the animals, the allotments and
 the bee hives), ``bailey_machines`` (machines_bailey: the clock tower, the
 archery lock, the mill, the listening door), and ``people`` (the castle's people, the shopkeepers,
-the villagers and the guards) after castle's ``details``. The stages, the site's forceload, the player check and the
+the villagers and the guards) after castle's ``details``, then ``clues`` (clues.py: the
+clue trail's books and notes, some in the machines' chests: rebuild it after them). The stages, the site's forceload, the player check and the
 entity checks are castle's (see its README). The defaults (site, name,
 banner) are in castle2_layout.DEFAULTS; the environment overrides them.
 """
@@ -34,6 +35,7 @@ import build_castle  # noqa: E402
 import build_inner  # noqa: E402
 import build_outer  # noqa: E402
 import castle_lib as L  # noqa: E402
+import clues  # noqa: E402
 import machines_bailey  # noqa: E402
 import machines_upper  # noqa: E402
 import main_gate  # noqa: E402
@@ -118,6 +120,11 @@ _insert_after("furnish", "machines", machines_upper.machines)
 # stage builds the oubliette's and the guard room's walls again, so the
 # listening door and the tunnel's doorway are built again after it
 _insert_after("pens", "bailey_machines", machines_bailey.bailey_machines)
+# phase 6's clue trail (clues.py): its books go on lecterns in the houses
+# and the cells and into the machines' reward chests, so it comes after
+# them all; Mercator the cartographer sells its chart of the castle
+_insert_after("people", "clues", clues.clues)
+people.TRADES["cartographer"].append((2, clues.book_snbt("chart"), 1))
 _castle_dungeons = build_castle.STAGES["dungeons"]
 
 
