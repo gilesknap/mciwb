@@ -27,6 +27,8 @@ on castle2's layout, then castle2's own:
 - every static person is at their spot, and every villager is inside the
   castle's walls (stray cats and iron golems, which villages bring, are
   removed first).
+- roam: after the game has run ROAM_TICKS (6000) the villagers are all
+  still inside the walls and the main gate's fence gates still shut.
 
 - every bee hive's tagged bees, in the hive or out of it;
 - gate: the main gate's fence gates (main_gate) closed and walled either
@@ -53,7 +55,8 @@ on castle2's layout, then castle2's own:
   chests and in Mercator's trades.
 
 ``CHECKS=seats,pens`` runs only some of them (strays, castle, seats,
-signs, rooms, houses, pens, people, gate, reach, bailey_machines, machines, clues).
+signs, rooms, houses, pens, people, roam, gate, reach, bailey_machines,
+machines, clues).
 Refuses to run while a player is within 200 blocks of the site, unless
 FORCE=1. Exits non-zero if any check fails.
 """
@@ -579,6 +582,39 @@ def people_checks() -> None:
     )
 
 
+def roam_check() -> None:
+    """the mobile villagers stay in: let the game run ROAM_TICKS (default
+    6000, a morning; sprinted when nobody is online, else real time) and
+    count them inside the walls again, the main gate's fence gates still
+    shut"""
+    import main_gate
+
+    ticks = int(os.environ.get("ROAM_TICKS", "6000"))
+    walls = L.box_selector(V(0, -20, 0), V(castle2_layout.W - 1, 80, castle2_layout.ZS))
+    want = castle2_layout.SUMMONED["people"]["villager"]
+    L.tick(ticks)
+    if not L.players_online():
+        # a sprint returns before it is done: wait for the time to stop moving
+        import time
+
+        last = None
+        while (now := VC.c("time query gametime")) != last:
+            last = now
+            time.sleep(1)
+    total = VC.count(f"type=minecraft:villager,tag={TAG}.people")
+    inside = VC.count(f"type=minecraft:villager,tag={TAG}.people,{walls}")
+    opened = [
+        g.x
+        for g in main_gate.cells()["gates"]
+        if not is_block(g, "#minecraft:fence_gates[open=false]")
+    ]
+    check(
+        f"roam: after {ticks} ticks all {want} villagers still inside the walls"
+        f" (found {inside} of {total}), the main gate shut (open: {opened})",
+        inside == total == want and not opened,
+    )
+
+
 def machines_checks() -> None:
     """work every machine in place and put it back (machines_upper.py and
     organ.py hold the cells and the steps, shared with machines_rig.py)"""
@@ -624,6 +660,7 @@ GROUPS = {
     "houses": houses,
     "pens": pens,
     "people": people_checks,
+    "roam": roam_check,
     "gate": gate_checks,
     "reach": reach_checks,
     "bailey_machines": bailey_machines_check,

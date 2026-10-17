@@ -131,8 +131,11 @@ sunrise: it now rings at 1000 (6/6 since).
 - Hostile mobs still spawn somewhere in the site at night (cleanup kills
   ~10): probably natural caves under the platform, as castle notes. Not
   investigated.
-- The mobile villagers can walk out of the open main gate; none had after
-  a few minutes, but PLAN says the gate should be "portcullised". Not done.
+- The main gate is closed to villagers by a row of fence gates outside
+  castle's portcullis (main_gate.py; villagers cannot open them). verify's
+  `roam` check sprints ROAM_TICKS (6000) and counts the villagers inside
+  again: all 31 (9 of them mobile, which do move: ~20 blocks in 1200
+  ticks) stayed in over 6000 and over 24000 ticks.
 - The castle's own great hall carpet covers the dais step and cuts the
   benches (castle quirk, kept in castle; castle2's phase 5 should redo it).
 
@@ -175,6 +178,6 @@ sunrise: it now rings at 1000 (6/6 since).
    - verify over RCON: lectern page by `data modify block ... Page`, frame
      rotation by `data modify entity ... ItemRotation`, arrows summoned at
      the target, redstone blocks in place of button presses.
-2. The gate: PLAN wants it "portcullised" against wandering villagers;
-   none have left so far (checked), but nothing stops them.
+2. Done: the gate (fence gates, main_gate.py) and the `roam` check that
+   the villagers stay in.
 3. A docs image of castle2 (top render of the site).
