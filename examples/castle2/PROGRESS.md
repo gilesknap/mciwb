@@ -51,6 +51,16 @@ The state of the work on castle2 (gilesknap/mciwb#173, plan in
   All seats go through `castle_lib.seat`. What each castle2 stage summons
   is counted by running it against a fake client
   (`record_build.summon_counts`), so `SUMMONED` stays right.
+- **Phase 6** (machines and the clue trail): all ten machines, each with
+  its `*_cells` and a check that works it in place: `machines_upper.py`
+  (lectern lock, copper puzzle, astrolabe, engine bell, transmuter),
+  `organ.py`, `machines_bailey.py` (clock tower, archery lock, mill,
+  listening door); `SECRETS` in the layout. `clues.py` (stage `clues`,
+  after `people`) lays the trail: books on lecterns (tavern, fletcher, the
+  prisoner's cell) and in the secrets' reward chests (slot 13), a plaque in
+  the smithy, and Mercator's chart (his last trade). `clues.TRAIL` orders
+  it and adds each book to its secrets' `clues`; every secret has 2+.
+  `guide2.py` prints Rumours, then the whole trail as Spoilers.
 - **Docs**: README.md; `guide2.py` (castle's guide for castle2, plus the
   village, shops and keepers, pens and people); castle2's teleports are
   added to castle's `TELEPORTS` (checked by castle's verify, listed in the
@@ -61,28 +71,43 @@ The state of the work on castle2 (gilesknap/mciwb#173, plan in
 Castle Fable II is built at ORIGIN 560,68,-190: site x 550..690,
 z -200..47, entities tagged `castle_560_-190`; its road runs south from
 the bridge, west along z ~52 / x 545, then along z -64 to spawn
-(32,74,-64), sharing the last leg with the castle at 148,-262. Built with
-mciwb 694358f (origin/main with #167, #169, #170 and #174), from
-this branch's examples copied to nuc2:~/castle2-run/{castle,castle2}.
+(32,74,-64), sharing the last leg with the castle at 148,-262. Rebuilt
+2026-10-17 in full from this branch (machines and clues included) on
+mciwb 694358f.
 
-Last full verify (`verify_castle2.py`, all checks: castle's 140-odd and
-castle2's seats, houses, pens and people), after a full build and stage
-rebuilds of keep/interiors and pens on the rebased branch, nobody online:
-**167/167 passed**. The house rig: 13/13 offline and (earlier) in the world.
+Last full verify (2026-10-17, all checks, nobody online, from the dev
+pod): **259/259 passed** in 105 s, after a full build (63 s). The clock
+tower's dawn check was flaky (2 of 4 runs) at time 23500, on the edge of
+sunrise: it now rings at 1000 (6/6 since).
 
-## How to run (from this sandbox)
+## How to run (the dev pod on nuc2)
 
-- RCON only from nuc2 at 127.0.0.1:30600. Password: `kubectl get secret
-  mciwb-test-rcon -n minecraft -o jsonpath='{.data.rcon-password}' | base64
-  -d`; pass it to nuc2 only in `MCIWB_PASSWORD` on the ssh command line.
-- Copy: `tar czf - castle castle2 | ssh nuc2 'cd ~/castle2-run && rm -rf
-  castle castle2 && tar xzf -'` (from examples/, excluding __pycache__).
-- Build: `cd ~/castle2-run/castle2 && FORCE=1 mciwb run build_castle2.py
-  --server 127.0.0.1 --port 30600` (about 75 s). FORCE=1 only because the
-  watching player hovers about 100 blocks above the site (y 163..170);
-  check where they are first (`data get entity NAME Pos`).
-- Verify: same with `verify_castle2.py` (20+ minutes with a player online:
-  the ticks are real time). `CHECKS=pens,people` for a subset.
+- The kubeconfig is `.devcontainer/config` (cluster-admin; kept out of git
+  by `.git/info/exclude`). There is no kubectl in the sandbox: the helper
+  `/cache/mciwb-devpod/kpod.py` (Python `kubernetes` client) drives a pod
+  `minecraft/mciwb-dev` on nuc2 with hostNetwork, so RCON is
+  `127.0.0.1:30600` (about 0.05 ms a command), `MCIWB_PASSWORD` comes from
+  the `mciwb-test-rcon` secret, and the world's PVC is mounted read-only
+  at `/data` (region files under `/data/world/dimensions/...`).
+  `K="uv run --python 3.13 --no-project --with kubernetes python
+  /cache/mciwb-devpod/kpod.py"`, then:
+  - `$K create`, then once: `$K sync src examples pyproject.toml uv.lock
+    README.md LICENSE` and `$K sh 'apt-get update -qq && apt-get install -y
+    -qq git && SETUPTOOLS_SCM_PRETEND_VERSION=0.0.0+dev uv sync --python
+    3.13 --no-dev'`. `$K delete` when done.
+  - After each edit: `$K sync examples`.
+  - Build: `$K bg build 'cd /work/examples/castle2 && ../../.venv/bin/mciwb
+    run build_castle2.py --server 127.0.0.1 --port 30600'` (about 63 s),
+    then `$K log build`. Long jobs must go through `bg`: an exec stream
+    that is quiet for a minute times out and kills its command.
+  - Verify: the same with `verify_castle2.py` (about 100 s with nobody
+    online; 20+ minutes with a player on, the ticks are real time).
+    `CHECKS=clues,signs` for a subset; FORCE=1 if a player is near.
+  - Look: `peek.py X1 Y1 Z1 X2 Y2 Z2` (copy it into /work) prints block
+    names from the region files, a table per y; the chunks are not loaded
+    outside a build or verify, so RCON block tests fail there.
+- The sandbox's Python is 3.13 (`.python-version` says 3.11): use
+  `uv run --python 3.13 ...` for ruff, pyright and `record_build.py`.
 - See: `top_render.py` (plan of a large area, ~10 s), `render_rcon.py`
   (a small region), or offline `RECORD_PNG=x.png python record_build.py .
   /tmp/c2 build_castle2`.
@@ -113,10 +138,11 @@ rebuilds of keep/interiors and pens on the rebased branch, nobody online:
 
 ## Next steps
 
-1. Phase 6: the ten machines and the clue trail. Build each in a rig
-   first (as castle's test_modules.py: a stone block in the air over the
-   site, toggled over RCON and read back), with a `*_cells` function used
-   by the build and verify alike, then place it. `SECRETS` in the layout
+1. Done (the notes kept for reference): phase 6, the ten machines and
+   the clue trail. Build each in a rig first (as castle's
+   test_modules.py: a stone block in the air over the site, toggled
+   over RCON and read back), with a `*_cells` function used by the build
+   and verify alike, then place it. `SECRETS` in the layout
    lists each secret, its machine and its clues; verify checks the clues
    (book on lectern, sign text, map in a trade) and works each machine.
    Formats tested in 26.3 (all work through Placer, NBT included):

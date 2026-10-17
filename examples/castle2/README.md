@@ -44,7 +44,8 @@ tunnel.
 
 ## Stages
 
-castle2 runs castle's stages (see castle's README) with three of its own:
+castle2 runs castle's stages (see castle's README), with its own
+furniture in castle's rooms (`rooms.py`) and these of its own:
 
 - `village` (after `bailey_buildings`): the lanes, the square, the market
   cross and the houses of `castle2_layout.HOUSES`.
@@ -56,6 +57,17 @@ castle2 runs castle's stages (see castle's README) with three of its own:
   shopkeepers with trades that match their shops, drinkers in the tavern,
   villagers and children round the square, cats, loose chickens, a copper
   golem at the market and guards with spears on the walls.
+- `furnish` (after `dungeons`): more detail in the alchemist's tower, the
+  dungeon, the vault and the winch room.
+- `machines` (after `furnish`, `machines_upper.py` and `organ.py`) and
+  `bailey_machines` (after `pens`, `machines_bailey.py`): phase 6's ten
+  machines, each opening a secret (`castle2_layout.SECRETS`).
+- `clues` (after `people`, `clues.py`): the clue trail. Books on lecterns
+  and in the secrets' chests lead from the tavern down to the inner vault,
+  and Mercator the cartographer sells a chart with a hint for each secret.
+  Rebuild it after `machines`, `bailey_machines` or `people`.
+  `python guide2.py` prints the guide, with rumours and then the whole
+  trail as spoilers.
 
 castle2 also only puts castle's lantern posts where the sky is clear (not
 under a house's eaves or between the chapel's pews).

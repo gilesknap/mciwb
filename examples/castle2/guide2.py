@@ -102,6 +102,42 @@ brewing stands, the smith at his anvil and the jailer in the guard room,
 with two prisoners in the cells. Guards with spears watch from the walls;
 the captain is on the keep's roof and the gate sergeant on the gatehouse.
 """)
+    print(rumours_and_spoilers())
+
+
+def rumours_and_spoilers() -> str:
+    """the clue trail (clues.py): vague rumours, then every step in full"""
+    import clues
+
+    rumours = "\n".join(f"- {r}" for r in clues.RUMOURS)
+    steps = []
+    for k, (key, where, secrets) in enumerate(clues.TRAIL, start=1):
+        title, author, pages = clues.BOOKS[key]
+        p = clues.found_at(key)
+        at = "" if p is None else f" at ({p.x}, {p.y}, {p.z})"
+        lines = [f"{k}. **{title}** by {author}, {where}{at}: “{' '.join(pages)}”"]
+        for name in secrets if key != "chart" else []:
+            s = C.SECRETS[name]
+            lines.append(
+                f"   - **{name.capitalize()}** ({s['machine']}, worked at "
+                f"{xyz(*s['where'])}): {s['solution'].rstrip('.')}. Then: {s['opens']}."
+            )
+        steps.append("\n".join(lines))
+    return f"""
+## Rumours
+
+Castle {C.NAME} keeps more secrets than Castle Fable. Its people talk:
+
+{rumours}
+
+## Spoilers: the clue trail
+
+Each clue leads to a secret, and each secret holds the clue to the next,
+from the village down to the inner vault. The books are on lecterns or in
+the secrets' chests (in the middle slot).
+
+{chr(10).join(steps)}
+"""
 
 
 if __name__ == "__main__":
