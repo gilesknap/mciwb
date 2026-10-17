@@ -623,7 +623,10 @@ def check_clock_tower(at: At = V) -> Result:
             "clock tower: by night the lamps are lit",
             _block_is(rep, "minecraft:repeater[powered=false]") and lit(True),
         )
-        L.cmd("time set 23500")
+        # well into the morning: at sunrise (23500) the detector is on the
+        # edge of its first level and rain keeps it there, so the bell rang
+        # only some of the times
+        L.cmd("time set 1000")
         ok = L.wait_until(rang, 50)
         yield "clock tower: the bell rings at dawn", ok
     finally:
