@@ -34,6 +34,7 @@ How it works, all plain redstone under the chapel's floor and the ward:
 from __future__ import annotations
 
 import castle_lib as L
+import loot
 from castle2_layout import ORGAN_KEYS, ORGAN_TUNE, V
 from machines_upper import (
     AIR,
@@ -44,9 +45,9 @@ from machines_upper import (
     door_cells,
     door_open,
     door_shut,
-    item_list,
     slide_door,
     wall_torch,
+    work_release,
 )
 
 from mciwb.imports import Vec3
@@ -90,7 +91,7 @@ def chamber_frame(pos=V) -> Frame:
 
 def organ_cells(pos=V) -> dict:
     f = chamber_frame(pos)
-    c = door_cells(f, "torch")
+    c = door_cells(f)
     c.update(
         {
             "keys": {n: pos(key_x(n), KEY_Y, KEY_Z) for n in NOTES},
@@ -105,6 +106,16 @@ def organ_cells(pos=V) -> dict:
             "tomb_signs": [pos(x, y, z - 1) for x, y, z in TOMB],
             "chamber": f(3, -2, 0),
             "chest": f(4, -3, 0),
+            "chest_block": "minecraft:chest[facing=north]",
+            # for play.py's commands: the dust that carries a reset (a key
+            # that does not move the tune on) and the one that carries an
+            # advance (a key in its turn), each 15 for the pulse; and a
+            # block of the reset row's bed, west of its first dust, where a
+            # redstone block resets the latches
+            "reset_dust": pos(R2[0], R2[1], R2[2] - 2),
+            "advance_dust": pos(LINE_REPEATERS[1] - 1, ADV_Y, ADV_Z),
+            "reset_block": pos(R2[0] - 1, PLANE_Y, R_Z),
+            "above_keys": pos(key_x("E"), KEY_Y + 2, KEY_Z + 1),
         }
     )
     return c
@@ -302,7 +313,7 @@ def chamber(pos, c: dict) -> None:
         for b in range(-4, 2):
             for h in range(0, 3):
                 L.set_block(f(a, b, h), AIR)
-    slide_door(f, CHAMBER_MATERIAL, "torch", pilaster=CHAMBER_MATERIAL)
+    slide_door(f, CHAMBER_MATERIAL, pilaster=CHAMBER_MATERIAL)
     for b in (1, 2):
         L.set_block(f(-1, b, 2), "minecraft:deepslate_brick_slab[type=bottom]")
     # the organist's tomb in the chamber, a chest at its foot, candles
@@ -310,16 +321,7 @@ def chamber(pos, c: dict) -> None:
         L.set_block(f(3, b, 0), "minecraft:polished_deepslate")
     L.set_block(f(3, -3, 1), "minecraft:skeleton_skull[rotation=4]")
     L.set_block(f(3, -2, 1), "minecraft:white_candle[candles=3,lit=true]")
-    treasure = [
-        ("music_disc_otherside", 1),
-        ("enchanted_golden_apple", 1),
-        ("diamond", 8),
-        ("emerald", 16),
-        ("golden_helmet", 1),
-    ]
-    L.set_block(
-        c["chest"], f"minecraft:chest[facing=north]{{Items:[{item_list(treasure)}]}}"
-    )
+    L.set_block(c["chest"], loot.container(c["chest_block"], loot.CHAMBER))
     L.set_block(f(2, -4, 2), f"{L.SOUL_LANTERN}[hanging=true]")
     # Brother Cantor's tomb in the crypt, by the door, with the tune
     for x, y, z in TOMB:
@@ -374,6 +376,7 @@ def work_organ(check, pos=V) -> None:
     try:
         play(c, [wrong_key()])
         check("organ: the chamber's door starts shut", door_shut(c, m))
+        work_release(check, "organ", c, lambda: door_open(c), lambda: door_shut(c, m))
         play(c, tune)
         check(
             f"organ: playing {' '.join(tune)} opens the crypt's chamber", door_open(c)

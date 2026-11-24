@@ -22,13 +22,22 @@ the build and by verify_castle2 alike, and each opens a secret
   and four barriers, a subtract comparator and a torch lock) and a dropper.
 - the copper puzzle (vault, west wall): two rows of waxed copper bulbs and
   buttons on a checkerboard; each button toggles the bulbs beside it (above,
-  below, left, right). With every bulb lit the inner vault's door slides open.
+  below, left, right). With every bulb lit the inner vault's door slides
+  open: the end of the clue trail, with the Founder's hoard (`hoard`).
 - the organ (chapel): see organ.py.
+
+Nobody stays shut in a secret: each one's door has a wooden button on the
+inside (``release`` in its cells) that opens it for as long as the button
+stays in, whatever its lock says. The containers that visitors must not
+empty (the transmuter's dropper of rewards; the engine's hoppers, locked by
+protect.py) carry `LOCK`: they open only to a key nobody has, and go on
+passing items.
 """
 
 from __future__ import annotations
 
 import castle_lib as L
+import loot
 from castle2_layout import (
     ASTROLABE_CHART,
     ASTROLABE_LEVERS,
@@ -67,6 +76,12 @@ ADVENTURE_OK = (
 )
 
 UP = Vec3(0, 1, 0)
+# the way out of a secret: a wooden button (it stays in for 30 ticks)
+RELEASE = "dark_oak_button"
+# a container's lock (block data): it opens only to someone holding a
+# barrier with this name, which nobody in survival or adventure mode can
+# have. Hoppers and droppers go on moving items while locked
+LOCK = f'lock:{{items:"minecraft:barrier",components:{{"minecraft:custom_name":"{L.TAG}"}}}}'
 COMPASS = {(1, 0): "east", (-1, 0): "west", (0, 1): "south", (0, -1): "north"}
 STONE = "minecraft:stone"
 AIR = L.AIR
@@ -119,7 +134,7 @@ def wall_torch(facing: str, lit: bool = True) -> str:
 # ---------------------------------------------------------------- the sliding door
 
 
-def door_cells(f: Frame, mode: str) -> dict:
+def door_cells(f: Frame) -> dict:
     """the parts of a `slide_door`"""
     cells = {
         "door": [f(0, 0, 0), f(0, 0, 1)],
@@ -127,28 +142,27 @@ def door_cells(f: Frame, mode: str) -> dict:
         "pistons": [f(0, 2, 0), f(0, 2, 1)],
         "inside": f(1, 0, 0),
     }
-    if mode == "torch":
-        cells["torch"] = f(1, 2, 1)
-        cells["input"] = f(2, 2, 1)  # the block whose power opens the door
-    else:
-        cells["repeater"] = f(1, 2, 1)
-        cells["input"] = f(2, 2, 1)  # the cell whose power (dust) closes it
+    cells["torch"] = f(1, 2, 1)
+    cells["input"] = f(2, 2, 1)  # the block whose power opens the door
+    # the way out: a button inside, on the input block
+    cells["release"] = f(2, 1, 1)
+    cells["release_facing"] = f.face("-v")
     return cells
 
 
-def slide_door(f: Frame, material: str, mode: str, pilaster: str = "") -> dict:
+def slide_door(f: Frame, material: str, pilaster: str = "") -> dict:
     """
     A two-high door of ``material`` in a wall plane (a = 0), opening into the
     space behind (a > 0) as castle_lib.hidden_door's: sticky pistons at b = 2
-    (extended into b = 1) hold the door at b = 0 and pull it to b = 1.
-    ``mode="torch"``: a redstone torch at (1, 2, 1) on the block (2, 2, 1)
-    powers the pistons, so the door is shut until that block is powered.
-    ``mode="direct"``: a repeater at (1, 2, 1) fed from (2, 2, 1) powers them,
-    so the door is shut while (2, 2, 1) is powered. The caller builds the
-    wall round it and wires the input. ``pilaster``: blocks at a = -1,
-    b = 1..2 that hide the piston faces from the room.
+    (extended into b = 1) hold the door at b = 0 and pull it to b = 1. A
+    redstone torch at (1, 2, 1) on the block (2, 2, 1) powers the pistons, so
+    the door is shut until that block is powered: by its lock (the caller
+    wires it and builds the wall round it), or by the button on the block's
+    face inside, at (2, 1, 1), which must be open space: the way out for
+    someone shut in. ``pilaster``: blocks at a = -1, b = 1..2 that hide the
+    piston faces from the room.
     """
-    c = door_cells(f, mode)
+    c = door_cells(f)
     for h in (0, 1):
         set_at(f(0, 2, h), f"minecraft:sticky_piston[facing={f.face('-v')}]")
         set_at(f(0, 1, h), AIR)
@@ -156,13 +170,17 @@ def slide_door(f: Frame, material: str, mode: str, pilaster: str = "") -> dict:
     if pilaster:
         for b in (1, 2):
             fill(f(-1, b, 0), f(-1, b, 1), pilaster)
-    if mode == "torch":
-        set_at(f(2, 2, 1), STONE)
-        set_at(f(1, 2, 1), wall_torch(f.face("-u")))
-    else:
-        set_at(f(1, 2, 0), STONE)
-        set_at(f(1, 2, 1), diode("repeater", f.face("u")))
+    set_at(f(2, 2, 1), STONE)
+    set_at(f(1, 2, 1), wall_torch(f.face("-u")))
+    set_at(c["release"], button(RELEASE, c["release_facing"]))
     return c
+
+
+def button(block: str, facing: str, powered: bool = False) -> str:
+    """a button on a wall, facing away from it"""
+    return (
+        f"minecraft:{block}[face=wall,facing={facing},powered={str(powered).lower()}]"
+    )
 
 
 def door_shut(c: dict, material: str) -> bool:
@@ -209,15 +227,23 @@ def book_nbt(title: str, author: str, pages: list[str]) -> str:
     )
 
 
+def hours_lectern(facing: str) -> str:
+    """the lectern with the Book of Hours on it, shut (protect.py keeps a
+    master copy of it to put the book back from)"""
+    book = book_nbt(LECTERN_BOOK_TITLE, "Brother Bede", LECTERN_TEXT)
+    return f"minecraft:lectern[facing={facing},has_book=true]{{Book:{book},Page:0}}"
+
+
 def lectern_cells(pos=V) -> dict:
     """the lectern lock's parts: the lectern (trigger), the comparators, the
     door, the study"""
     f = lectern_frame(pos)
-    c = door_cells(f, "torch")
+    c = door_cells(f)
     c.update(
         {
             "trigger": f(0, 7, 0),
             "trigger_kind": "minecraft:lectern",
+            "lectern": hours_lectern(f.face("-u")),
             "reader": f(1, 7, 0),  # subtract: page - (LECTERN_PAGE - 1)
             "constant": [f(1, b, 0) for b in range(8, 12)],
             "source": f(1, 12, 0),
@@ -225,6 +251,10 @@ def lectern_cells(pos=V) -> dict:
             "gate": f(2, 5, 0),
             "study": f(2, 8, 2),
             "chest": f(1, 11, 2),
+            "chest_block": f"minecraft:chest[facing={f.face('u')}]",
+            # the dust from the lock to the door: play.py's commands cut it
+            # (`PATIENCE_CUT` in its place) while the book is being turned
+            "patience": f(2, 4, 0),
             "material": "minecraft:bookshelf",
         }
     )
@@ -258,11 +288,11 @@ def lectern_lock(pos=V) -> dict:
     fill(f(1, -1, 0), f(3, 12, 6), brick)
     # the bookcase wall face, the door and its pistons
     fill(f(0, -1, 0), f(0, 11, 2), shelf)
-    slide_door(f, shelf, "torch", pilaster=shelf)
-    for b in (1, 2):
-        set_at(f(-1, b, 2), f"{L.BRICK_SLAB}[type=bottom]")
     # the vestibule behind the door, and the stairwell up to the study
     fill(f(1, 0, 0), f(3, 1, 3), AIR)
+    slide_door(f, shelf, pilaster=shelf)
+    for b in (1, 2):
+        set_at(f(-1, b, 2), f"{L.BRICK_SLAB}[type=bottom]")
     fill(f(1, 2, 2), f(3, 4, 4), AIR)
     set_at(f(3, 2, 0), f"minecraft:stone_brick_stairs[facing={f.face('v')}]")
     set_at(f(3, 2, 1), AIR)
@@ -272,11 +302,7 @@ def lectern_lock(pos=V) -> dict:
     set_at(f(1, 2, 0), brick)
     # the wiring, at the library's floor level
     set_at(f(0, 7, 0), AIR)
-    book = book_nbt(LECTERN_BOOK_TITLE, "Brother Bede", LECTERN_TEXT)
-    set_at(
-        f(0, 7, 0),
-        f"minecraft:lectern[facing={f.face('-u')},has_book=true]{{Book:{book},Page:0}}",
-    )
+    set_at(f(0, 7, 0), c["lectern"])
     set_at(f(1, 7, 0), diode("comparator", f.face("-u"), "mode=subtract"))
     for p in c["constant"]:
         set_at(p, DUST)
@@ -300,18 +326,7 @@ def lectern_lock(pos=V) -> dict:
     set_at(f(3, 10, 3), "minecraft:white_candle[candles=3,lit=true]")
     set_at(f(1, 6, 2), "minecraft:bookshelf")
     set_at(f(1, 7, 2), "minecraft:bookshelf")
-    chest = c["chest"]
-    items = [
-        ("amethyst_shard", 4),  # the transmuter's ingredient
-        ("diamond", 6),
-        ("gold_ingot", 12),
-        ("map", 1),
-        ("spyglass", 1),
-    ]
-    data = ",".join(
-        f'{{Slot:{k}b,id:"minecraft:{i}",count:{n}}}' for k, (i, n) in enumerate(items)
-    )
-    set_at(chest, f"minecraft:chest[facing={f.face('u')}]{{Items:[{data}]}}")
+    set_at(c["chest"], loot.container(c["chest_block"], loot.STUDY))
     return c
 
 
@@ -359,9 +374,18 @@ def copper_cells(pos=V) -> dict:
         if not bulb_at(b, h)
     }
     g = inner_door_frame(pos)
-    c = door_cells(g, "direct")
+    c = door_cells(g)
     c.update(
         {
+            # the lines' end (powered while a bulb is dark), the block it
+            # powers, the torch on that block (lit when no bulb is dark),
+            # the dust beside the torch, over the door's input block, and
+            # the grate that keeps that dust's power from the pistons
+            "dark": [g(5, 2, 1), g(4, 2, 1)],
+            "dark_block": g(3, 2, 1),
+            "inverter": g(3, 2, 2),
+            "lit_dust": g(2, 2, 2),
+            "guard": g(1, 2, 2),
             "bulbs": bulbs,
             "buttons": buttons,
             "button_facing": f.face("-u"),
@@ -369,6 +393,9 @@ def copper_cells(pos=V) -> dict:
             "trigger_kind": "#minecraft:buttons",
             "material": "minecraft:polished_blackstone_bricks",
             "inner": g(4, 0, 0),
+            # the Founder's hoard (play.py builds it): the trail's last chest
+            "hoard": g(6, -2, 0),
+            "hoard_block": f"minecraft:chest[facing={g.face('-u')}]",
         }
     )
     return c
@@ -384,8 +411,13 @@ def copper_puzzle(pos=V) -> dict:
     button blocks; row 0's through a block, one further back), its output
     block carries a torch (lit while the bulb is dark), and the torches feed
     two dust lines: row 0's at a = 4, row 1's (through the blocks over its
-    torches) at a = 3, h = 3. Either line, while any bulb is dark, powers the
-    inner vault's door shut (a "direct" slide_door north of the grid).
+    torches) at a = 3, h = 3. They meet and end in the inner vault's south
+    wall, powered while any bulb is dark, at a block with a torch on top:
+    lit only when every bulb is, the torch powers the dust beside it, which
+    lies on the input block of the inner vault's door (a slide_door north of
+    the grid), and the door opens. The button inside the vault, on that
+    input block, opens it too. (The torch must not power a block next to the
+    lines' dust: it would feed itself and flicker.)
     """
     f = copper_frame(pos)
     c = copper_cells(pos)
@@ -430,17 +462,48 @@ def copper_puzzle(pos=V) -> dict:
     set_at(f(5, -1, 0), DUST)
     set_at(f(5, -1, 1), AIR)
     set_at(f(5, -3, 1), AIR)
-    for a in (5, 4, 3, 2):
-        set_at(f(a, -3, 0), DUST)
+    for p in c["dark"]:
+        set_at(p, DUST)
     g = inner_door_frame(pos)
     # the inner vault behind the door
     fill(g(1, -6, -1), g(7, 1, 3), shell)
     fill(g(1, -5, 0), g(6, 1, 2), AIR)
     fill(g(1, -5, -1), g(6, 1, -1), "minecraft:polished_blackstone")
-    slide_door(g, shell, "direct", pilaster=shell)
+    slide_door(g, shell, pilaster=shell)
+    # "no bulb is dark" into the door's input block: the torch is off while
+    # the lines power its block (as built: two bulbs are lit)
+    set_at(c["dark_block"], STONE)
+    set_at(c["inverter"], "minecraft:redstone_torch[lit=false]")
+    set_at(c["guard"], "minecraft:waxed_copper_grate")
+    set_at(c["lit_dust"], DUST)
     set_at(g(-1, 1, 2), "minecraft:polished_blackstone_brick_slab[type=bottom]")
     set_at(g(-1, 2, 2), "minecraft:polished_blackstone_brick_slab[type=bottom]")
+    hoard(pos)
     return c
+
+
+def hoard(pos=V) -> None:
+    """the end of the trail, against the inner vault's west wall: the
+    Founder's chest (the best of the old vault's treasure, loot.INNER_VAULT;
+    clues.py adds his last word), netherite either side under end rods,
+    and a plaque over it"""
+    c = copper_cells(pos)
+    g = inner_door_frame(pos)
+    set_at(c["hoard"], AIR)  # (a chest set over itself keeps its old stacks)
+    set_at(c["hoard"], loot.container(c["hoard_block"], loot.INNER_VAULT))
+    for b in (-3, -1):
+        set_at(g(6, b, 0), "minecraft:netherite_block")
+        set_at(g(6, b, 1), "minecraft:end_rod[facing=up]")
+    for b in (-5, 1):
+        set_at(g(6, b, 0), "minecraft:diamond_block")
+    L.sign(
+        g(6, -2, 1),
+        f"dark_oak_wall_sign[facing={g.face('-u')}]",
+        "Here ends",
+        "the trail.",
+        "The Founder",
+        "kept it for you.",
+    )
 
 
 # ---------------------------------------------------------------- the astrolabe
@@ -457,10 +520,21 @@ def astrolabe_cells(pos=V) -> dict:
         "trigger": next(iter(levers.values())),
         "trigger_kind": "minecraft:lever",
         "piston": pos(px + 2, YU - 1, pz),
+        # the way out: a button in a niche south of the ladder's top, a
+        # repeater from it into the side of the piston's comparator
+        "release": pos(px, YU - 2, pz + 1),
+        "release_facing": "north",
+        "release_repeater": pos(px + 1, YU - 2, pz + 1),
+        "gate": pos(px + 2, YU - 2, pz + 1),
         "panel": pos(px, YU - 1, pz),
         "hole": pos(px, YU - 1, pz),
         "panel_block": "minecraft:dark_oak_planks",
         "cellar": pos(18, 11, 22),
+        "chest": pos(20, 11, 21),
+        "chest_block": "minecraft:chest[facing=west]",
+        # the dust under each lever's plank (a lever set by command shows
+        # only once its dust is placed again)
+        "dusts": (pos(16, 16, 20), pos(20, 16, 24)),
         "column": [pos(22, y, 24) for y in range(13, 42)],
         "top": pos(22, YU + 24, 24),  # the dust beside the engine's gate
     }
@@ -478,6 +552,11 @@ def astrolabe(pos=V, cellar: bool = True) -> dict:
     which holds the floor panel at (19, 17, 25) shut; all right, it pulls the
     panel aside and the ladder below leads down to the cellar. The bus also
     feeds a copper pipe of torches up the tower's east wall to the engine.
+
+    The bus reaches the piston through a comparator in subtract mode
+    (21, 16, 26). A button in a niche beside the top of the ladder, under
+    the panel, powers a repeater into that comparator's side, which cuts
+    the piston's power: the panel opens for someone shut in the cellar.
     """
     c = astrolabe_cells(pos)
     # solid under the laboratory: y 12..16, then carve
@@ -503,7 +582,7 @@ def astrolabe(pos=V, cellar: bool = True) -> dict:
         set_at(pos(x, 15, 28), DUST)
     set_at(pos(21, 16, 28), AIR)
     set_at(pos(21, 16, 27), DUST)
-    set_at(pos(21, 16, 26), diode("repeater", "south"))
+    set_at(c["gate"], diode("comparator", "south", "mode=subtract"))
     set_at(pos(21, 16, 25), STONE)  # under the piston
     set_at(pos(22, 15, 27), AIR)
     set_at(pos(22, 14, 27), DUST)
@@ -520,26 +599,18 @@ def astrolabe(pos=V, cellar: bool = True) -> dict:
         set_at(pos(px, y, pz), AIR)
     for y in range(14, 17):
         set_at(pos(px, y, pz), "minecraft:ladder[facing=west]")
+    set_at(c["release"], button(RELEASE, c["release_facing"]))
+    set_at(c["release_repeater"], diode("repeater", "west"))
     fill(pos(15, 11, 19), pos(21, 13, 25), AIR)
     if cellar:  # (a rig leaves out the cellar's floor)
         fill(pos(15, 10, 19), pos(21, 10, 25), "minecraft:polished_deepslate")
     set_at(pos(18, 13, 22), f"{L.SOUL_LANTERN}[hanging=true]")
     set_at(pos(15, 11, 19), "minecraft:brewing_stand")
     set_at(pos(16, 11, 19), "minecraft:cauldron")
-    items = [
-        ("amethyst_shard", 4),
-        ("blaze_rod", 3),
-        ("experience_bottle", 16),
-        ("golden_apple", 2),
-        ("ender_pearl", 4),
-    ]
-    data = ",".join(
-        f'{{Slot:{k}b,id:"minecraft:{i}",count:{n}}}' for k, (i, n) in enumerate(items)
-    )
-    set_at(pos(20, 11, 21), f"minecraft:chest[facing=west]{{Items:[{data}]}}")
+    set_at(c["chest"], loot.container(c["chest_block"], loot.CELLAR))
     # the gnomon in the middle of the levers
     set_at(pos(18, YU, 22), "minecraft:gold_block")
-    set_at(pos(18, YU + 1, 22), "minecraft:lightning_rod")
+    set_at(pos(18, YU + 1, 22), "minecraft:waxed_lightning_rod")
     # the star chart on the west wall: a lit star for each lever that must be on
     for (x, z), want in ASTROLABE_LEVERS.items():
         cx, cy, cz = ASTROLABE_CHART[(x, z)]
@@ -622,6 +693,7 @@ def transmuter_cells(pos=V) -> dict:
         "tray": pos(x - 1, y - 2, z),  # the key and the reward come back here
         "reject": pos(x - 1, y, z + 1),  # anything else comes back here
         "reward_dropper": pos(x - 1, y - 2, z + 1),
+        "rewards": [(TRANSMUTER_REWARD, 16)],
         "reader": pos(x + 1, y, z),
         "lock": pos(x, y - 1, z - 1),
         "lamp": pos(x, y - 1, z + 2),
@@ -651,7 +723,9 @@ def transmuter(pos=V) -> dict:
     under that takes it (a hopper pulls from a locked one) and passes it
     west into the tray chest. The collector's comparator fires the reward
     dropper into the tray, lights a lamp and plays a note block. Any other
-    item runs on to the reject chest. Casing of waxed copper and gold.
+    item runs on to the reject chest. Casing of waxed copper and gold. The
+    dropper shows in the casing's west face: it is locked (`LOCK`), so a
+    star comes out only when it fires.
     """
     c = transmuter_cells(pos)
     x, y, z = TRANSMUTER
@@ -698,7 +772,7 @@ def transmuter(pos=V) -> dict:
     rewards = [(TRANSMUTER_REWARD, 16)]
     set_at(
         pos(x - 1, y - 2, z + 1),
-        f"minecraft:dropper[facing=north]{{Items:[{item_list(rewards)}]}}",
+        f"minecraft:dropper[facing=north]{{Items:[{item_list(rewards)}],{LOCK}}}",
     )
     set_at(pos(x, y - 2, z + 1), diode("comparator", "north"))
     set_at(pos(x, y - 2, z + 2), cut)
@@ -730,6 +804,41 @@ def trigger_ok(c: dict) -> bool:
     return L.is_block(c["trigger"], c["trigger_kind"])
 
 
+def work_release(check, name: str, c: dict, is_open, is_shut) -> None:
+    """the way out of a shut secret: its button inside (``release``) is
+    there, opens it while it is in, and lets it shut again"""
+    p, facing = c["release"], c["release_facing"]
+    there = L.is_block(p, f"minecraft:{RELEASE}[face=wall,facing={facing}]")
+
+    def nudge() -> None:
+        # a pressed button updates its block's neighbours; one set by
+        # command only its own. A sliding door's torch and its lock's dust
+        # are beside the button's block (the door's input): placing that
+        # block again updates them, as the press would
+        if "input" in c:
+            L.set_block(c["input"], "minecraft:smooth_stone")
+            L.set_block(c["input"], STONE)
+
+    try:
+        L.set_block(p, button(RELEASE, facing, powered=True))
+        nudge()
+        opened = wait_for(is_open, 20)
+    finally:
+        L.set_block(p, button(RELEASE, facing))
+        nudge()
+    shut = wait_for(is_shut, 40)
+    check(
+        f"{name}: the button inside opens it (button {there}, opened {opened}),"
+        f" and it shuts again ({shut})",
+        there and opened and shut,
+    )
+
+
+def locked(p: Vec3) -> bool:
+    """does the container at p carry the castle's `LOCK`?"""
+    return L.TAG in L.cmd(f"data get block {p.x} {p.y} {p.z} lock")
+
+
 def set_page(p: Vec3, page: int) -> None:
     """turn a lectern's book to a page (1..)"""
     L.cmd(f"data modify block {p.x} {p.y} {p.z} Page set value {page - 1}")
@@ -740,6 +849,13 @@ def work_lectern(check, pos=V) -> None:
     shelf = c["material"]
     check("lectern lock: the lectern holds the Book of Hours", trigger_ok(c))
     check("lectern lock: the bookcase door starts shut", door_shut(c, shelf))
+    work_release(
+        check,
+        "lectern lock",
+        c,
+        lambda: door_open(c),
+        lambda: door_shut(c, shelf),
+    )
     try:
         for page in (LECTERN_PAGE - 1, LECTERN_PAGE + 1):
             set_page(c["trigger"], page)
@@ -784,6 +900,7 @@ def work_astrolabe(check, pos=V) -> None:
     c = astrolabe_cells(pos)
     check("astrolabe: its levers are levers", trigger_ok(c))
     check("astrolabe: the floor panel starts shut", panel_shut(c))
+    work_release(check, "astrolabe", c, lambda: panel_open(c), lambda: panel_shut(c))
     try:
         astrolabe_set(c, ASTROLABE_LEVERS, pos)
         check(
@@ -860,6 +977,10 @@ def transmuter_reset(c: dict) -> None:
 def work_transmuter(check, pos=V) -> None:
     c = transmuter_cells(pos)
     check("transmuter: its input is a hopper", trigger_ok(c))
+    check(
+        "transmuter: the reward dropper is locked (it opens to nobody)",
+        locked(c["reward_dropper"]),
+    )
     p = c["input"]
     try:
         L.cmd(
@@ -925,6 +1046,13 @@ def work_copper(check, pos=V) -> None:
         lit_bulbs(c) == set(COPPER_START),
     )
     check("copper puzzle: the inner vault's door starts shut", door_shut(c, material))
+    work_release(
+        check,
+        "copper puzzle",
+        c,
+        lambda: door_open(c),
+        lambda: door_shut(c, material),
+    )
     try:
         for k, key in enumerate(COPPER_SOLUTION):
             press(c["buttons"][key], c["button_facing"])

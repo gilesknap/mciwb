@@ -39,6 +39,7 @@ import re
 from collections.abc import Callable, Iterator
 
 import castle_lib as L
+import loot
 from castle2_layout import (
     ARCHERY_LINE,
     ARCHERY_TARGET,
@@ -67,6 +68,7 @@ N, S, E, Wd, UP = (
 )
 BELL_FREQUENCY = 11  # a bell's vibration (block_change)
 BULB = "minecraft:waxed_copper_bulb"  # waxed: it does not age
+BARREL = "minecraft:barrel[facing=up]"
 MILL_STONE = "minecraft:cobblestone"  # the mill's ground storey (house.STONE)
 # the mill's lever, 4 east of its door: castle_lib.hidden_door's lever dust
 # turns the corner into the torch's block only for lever_b >= 4 (at 3 its
@@ -173,6 +175,7 @@ def listening_door_cells(at: At = V) -> dict:
         "inner_bell": at(86, y, 123),
         "inner_bell_floor": at(86, y - 1, 123),
         "reliquary": at(81, y, 124),
+        "reliquary_block": "minecraft:chest[facing=east]",
         "ossuary": (at(81, y, 120), at(87, y + 2, 128)),
         "trigger": p(-1, 5, 0),
         "trigger_kind": "minecraft:bell",
@@ -229,6 +232,9 @@ def ossuary(at: At, c: dict) -> None:
     _x, y, _z = LISTENING_DOOR
     L.fill(at(80, y - 1, 119), at(87, y + 3, 129), L.DARK_BRICK)
     L.fill(at(81, y, 120), at(87, y + 2, 128), L.AIR)
+    # an east wall north of the door's hidden space (the rock there had a
+    # cave's mouth in it: the restless dead next door must not get out)
+    L.fill(at(88, y - 1, 119), at(88, y + 3, 123), L.DARK_BRICK)
     L.fill(at(81, y - 1, 120), at(87, y - 1, 128), "minecraft:soul_soil")
     for z in range(120, 129, 2):  # skulls in the west wall's niches
         L.set_block(at(80, y + 1, z), L.AIR)
@@ -243,17 +249,7 @@ def ossuary(at: At, c: dict) -> None:
     L.set_block(at(81, y + 1, 128), "minecraft:white_candle[candles=4,lit=true]")
     L.set_block(at(84, y + 2, 124), f"{L.SOUL_LANTERN}[hanging=true]")
     L.set_block(at(86, y + 2, 127), f"{L.SOUL_LANTERN}[hanging=true]")
-    L.set_block(
-        c["reliquary"],
-        "minecraft:chest[facing=east]"
-        + items(
-            ("golden_apple", 2),
-            ("echo_shard", 3),
-            ("recovery_compass", 1),
-            ("paper", 1),
-            name={3: "The founder: the miller keeps a way below"},
-        ),
-    )
+    L.set_block(c["reliquary"], loot.container(c["reliquary_block"], loot.RELIQUARY))
     L.set_block(c["inner_bell_floor"], "minecraft:soul_soil")
     L.set_block(c["inner_bell"], "minecraft:bell[attachment=floor,facing=east]")
 
@@ -324,6 +320,7 @@ def archery_cells(at: At = V) -> dict:
         "hatch": at(x + 4, y - 1, z),
         "cache": at(x + 4, y - 2, z),
         "butt": (at(x + 1, y - 1, z - 2), at(x + 3, y + 1, z + 2)),
+        "lamps": [at(x + 1, y + 2, zz) for zz in (z - 1, z, z + 1)],
         "line": [at(ARCHERY_LINE, -1, zz) for zz in range(z - 3, z + 4)],
         "kit": at(ARCHERY_LINE - 1, 0, z - 2),  # a barrel of bows
         "dropper": at(ARCHERY_LINE - 1, 0, z + 2),  # arrows, one per press
@@ -347,17 +344,7 @@ def archery(at: At = V) -> dict:
     L.set_block(c["comparator"], "minecraft:comparator[facing=west,mode=compare]")
     L.set_block(c["bulb"], f"{BULB}[lit=false]")
     L.set_block(c["reader"], "minecraft:comparator[facing=west]")
-    L.set_block(
-        c["cache"],
-        "minecraft:barrel[facing=up]"
-        + items(
-            ("spectral_arrow", 32),
-            ("bow", 1),
-            ("arrow", 64),
-            ("paper", 1),
-            name={3: "Stop the wheel? No: the sluice opens the stones"},
-        ),
-    )
+    L.set_block(c["cache"], loot.container(BARREL, loot.ARCHERY_CACHE))
     L.set_block(
         c["hatch"], "minecraft:iron_trapdoor[facing=west,half=bottom,open=false]"
     )
@@ -365,15 +352,15 @@ def archery(at: At = V) -> dict:
     # the shooting line, the kit and the sign
     for p in c["line"]:
         L.set_block(p, "minecraft:smooth_stone")
-    L.set_block(
-        c["kit"],
-        "minecraft:barrel[facing=up]"
-        + items(("bow", 1), ("bow", 1), ("bow", 1), ("arrow", 64)),
-    )
+    L.set_block(c["kit"], loot.container(BARREL, loot.ARCHERY_KIT))
     L.set_block(
         c["dropper"],
-        "minecraft:dropper[facing=east]" + items(*[("arrow", 64)] * 9),
+        loot.container("minecraft:dropper[facing=east]", loot.ARCHERY_ARROWS),
     )
+    # three lamps on the butt, lit by play.py's commands for a hit, a hit in
+    # the inner half and a near miss (copper bulbs: they stay as they are set)
+    for lamp in c["lamps"]:
+        L.set_block(lamp, f"{BULB}[lit=false]")
     L.set_block(c["button"], "minecraft:oak_button[face=floor,facing=east]")
     L.sign(
         c["sign"],
@@ -386,7 +373,7 @@ def archery(at: At = V) -> dict:
     return c
 
 
-def _shoot(c: dict, dy: float = 0.5, dz: float = 0.5) -> None:
+def shoot(c: dict, dy: float = 0.5, dz: float = 0.5) -> None:
     """an arrow at the target from just in front of it (tried in 26.3: from
     1.3 blocks at 1 block a tick, aimed at the middle, it hits the bullseye;
     an arrow that starts on a block boundary from the face can miss)"""
@@ -421,30 +408,30 @@ def check_archery(at: At = V) -> Result:
     was_open = _block_is(c["bulb"], f"{BULB}[lit=true]")
     try:
         if was_open:
-            _shoot(c)
+            shoot(c)
             L.tick(30)
             arrows_away()
         yield "archery: the hatch starts shut", not is_open()
-        _shoot(c, 0.92, 0.92)  # near the edge
+        shoot(c, 0.92, 0.92)  # near the edge
         ok = not L.wait_until(is_open, 25)
         arrows_away()
         yield "archery: an outer ring does not open the hatch", ok
         L.tick(10)
-        _shoot(c)
+        shoot(c)
         ok = L.wait_until(is_open, 25)
         yield (
             "archery: a bullseye opens the hatch (and it stays open)",
             ok and (L.tick(30) or is_open()),
         )
         arrows_away()
-        _shoot(c)
+        shoot(c)
         ok = L.wait_until(lambda: not is_open(), 25)
         yield "archery: another bullseye shuts it", ok
     finally:
         L.tick(30)
         arrows_away()
         if was_open != _block_is(c["bulb"], f"{BULB}[lit=true]"):
-            _shoot(c)
+            shoot(c)
             L.tick(30)
             arrows_away()
 
@@ -546,7 +533,7 @@ def clock_tower(at: At = V) -> dict:
     L.set_block(c["bell"], "minecraft:bell[attachment=ceiling,facing=south]")
     for x, z in ((x1, z1), (x1, z2), (x2, z1), (x2, z2)):
         L.set_block(at(x, 17, z), L.BRICK_WALL)
-    L.set_block(at(x2, 18, z2), "minecraft:lightning_rod")
+    L.set_block(at(x2, 18, z2), "minecraft:waxed_lightning_rod")
     # the door (west, onto the square), the ladder up the east wall
     L.fill(at(x1, 0, cz), at(x1, 1, cz), L.AIR)
     L.set_block(
@@ -583,6 +570,14 @@ def _day() -> int | None:
     return int(m.group(1)) if m else None
 
 
+def _raining() -> bool:
+    """is it raining? Rain darkens the sky: at noon the inverted detectors
+    still give 3, and the lamps beside them stay lit all day"""
+    return "Test passed" in L.cmd(
+        'execute if predicate {type:"minecraft:weather_check",raining:true}'
+    )
+
+
 def check_clock_tower(at: At = V) -> Result:
     c = clock_tower_cells(at)
     bell, rep = c["bell"], c["repeater"]
@@ -611,9 +606,13 @@ def check_clock_tower(at: At = V) -> Result:
     try:
         L.cmd("time set 6000")
         L.tick(45)
+        rain = _raining()
         yield (
-            "clock tower: by day the repeater is on and the lamps are out",
-            _block_is(rep, "minecraft:repeater[powered=true]") and lit(False),
+            "clock tower: by day the repeater is on and the lamps are out"
+            + (
+                " (it is raining: the lamps stay lit, and are not read)" if rain else ""
+            ),
+            _block_is(rep, "minecraft:repeater[powered=true]") and (rain or lit(False)),
         )
         L.cmd("time set 18000")
         ok = L.wait_until(rang, 50)
