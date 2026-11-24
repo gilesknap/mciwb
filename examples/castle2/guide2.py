@@ -241,7 +241,9 @@ chamber, the button on the pillar wakes the dead: three waves ({waves}),
 the next as soon as the last of a wave is dead. Each wave pays on the
 altar beside the pillar: {pay}. They cannot follow you out, and if
 everyone leaves the chamber the fight is over and they are gone: go back
-in and start again. The Steward's bell ends it too.
+in and start again. The Steward's bell ends it too. The fight needs a
+difficulty above Peaceful: on Peaceful the dead vanish as they are
+summoned, and every wave pays at once.
 
 ## Spoilers: the prospector's pick
 

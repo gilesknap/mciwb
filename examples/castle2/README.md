@@ -36,7 +36,7 @@ the bailey is x 0..120, z 65..226, in three parts:
 | Part | Local z | What |
 | --- | --- | --- |
 | North | 65..120 | castle's barracks, stables, smithy, well and cross paths, as in castle |
-| Village | 120..190 | the market square (x 44..76, z 147..165) with a market cross and a bell, a ring of lanes, 28 houses |
+| Village | 120..190 | the market square (x 44..76, z 147..165) with a market cross and a bell, a ring of lanes, 32 houses |
 | South | 190..226 | the pens, the allotments, a frog pond, castle's market stalls by the gate |
 
 The second pair of mid-wall towers stands at z 164. Everything under the
@@ -129,7 +129,8 @@ farm or mine. What the castle gives them to do (`play.py`, with
   altar, the last a sword. The dead cannot leave (walls, an iron door,
   and a command that puts back any that is out), and are gone when
   nobody is in the chamber. The sexton's chest by the door has swords
-  and shields.
+  and shields. The fight needs a difficulty above Peaceful: on Peaceful
+  the summoned dead vanish at once, so every wave pays straight away.
 - **The prospector's pick**, in the ossuary's reliquary, breaks cracked
   deepslate bricks and nothing else (`can_break`); four caches are walled
   up with that block (`castle2_layout.CACHES`), which the castle uses
@@ -225,16 +226,53 @@ castle's own, and none are left when a check ends.
   per column), for servers whose world files are not on this machine.
 - `render_rcon.py`: renders a small region over RCON, forceloading it.
 
+## Removing it from a world
+
+Clearing the site's blocks and entities does not remove everything: the
+protect and play stages also leave a forceloaded chunk, a scoreboard
+objective and two tags on players. At the default site (the names follow
+`ORIGIN`: `castle_<x>_<z>`):
+
+```
+forceload remove 593 -143                       # the command bank's chunk
+scoreboard objectives remove castle_560_-190    # the bank's numbers (#wave)
+tag @a remove castle_560_-190.zone              # the adventure zone's tag
+tag @a remove castle_560_-190.purse             # "has had the purse"
+```
+
+Run them once the command bank's blocks are gone: while it stands in a
+loaded chunk its commands tag whoever is in the zone again. `tag @a`
+reaches only the players who are online; a tag left on anyone else does
+nothing without the bank. A player who was inside the zone when the bank
+went is still in adventure mode: `gamemode survival NAME`.
+
 ## Files
 
-- `castle2_layout.py`: the defaults, the village, the pens and their checks.
+- `castle2_layout.py`: the defaults, the village, the pens, the secrets,
+  the command bank's box and their checks.
 - `build_castle2.py`: castle's build with castle2's stages and checks.
-- `house.py`, `house_contents.py`, `house_rig.py`: the house.
-- `village.py`, `pens.py`, `people.py`: castle2's stages.
-- `protect.py`: the protect stage and its checks. `cmdblocks.py`: the
-  command bank, for any stage that needs hidden command blocks (a row of
-  repeating and chain blocks per feature, master copies of blocks to
-  clone, numbers and timers, read back by verify).
+- `house.py`, `house_contents.py`, `house_rig.py`: the house, its
+  furniture by trade, and the rig that checks every variant.
+- `village.py`, `pens.py`, `people.py`: castle2's stages of those names.
+- `rooms.py`: castle2's furniture in castle's rooms (the `interiors`,
+  `chapel`, `bailey_buildings` and `furnish` stages).
+- `machines_upper.py`: the upper ward's machines (lectern lock, copper
+  puzzle, astrolabe, engine bell, transmuter).
+- `organ.py`: the chapel's organ, a sequence lock.
+- `machines_bailey.py`: the bailey's machines (clock tower, archery lock,
+  mill, listening door).
+- `clues.py`: the clue trail's books, notes and plaque.
+- `main_gate.py`: the fence gates across the gate passage and the postern.
+- `protect.py`: the protect stage and its checks.
+- `cmdblocks.py`: the command bank, for any stage that needs hidden
+  command blocks (a row of repeating and chain blocks per feature, master
+  copies of blocks to clone, numbers and timers, read back by verify).
 - `play.py`: the play stage, its rows of the bank and its checks.
-  `loot.py`: what every restocked container holds.
+- `loot.py`: what every restocked container holds.
+- `guide2.py`: prints the visitor's guide, with the spoilers.
+- `fake_client.py`: a fake RCON client, so that a build can be run and
+  recorded without a server (`record_build.py`, `summon_counts`).
+- `machines_rig.py`, `rig_bailey.py`: build the upper ward's and the
+  bailey's machines on their own in the air, work them and clear them.
+- `record_build.py`, `top_render.py`, `render_rcon.py`: see Tools.
 - `verify_castle2.py`: the checks.

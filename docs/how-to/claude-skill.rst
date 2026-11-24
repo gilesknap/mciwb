@@ -94,7 +94,7 @@ Tips
   that a Claude agent built with the skill, in stages, with a script that
   checks every mechanism. `examples/castle2
   <https://github.com/gilesknap/mciwb/tree/main/examples/castle2>`_ builds on
-  it: a bailey twice as deep with a village of 28 timber-framed houses, farm
+  it: a bailey twice as deep with a village of 32 timber-framed houses, farm
   animals in pens, people at work, and ten puzzle machines joined by a trail
   of clues:
 

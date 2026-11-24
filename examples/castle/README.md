@@ -89,7 +89,7 @@ check after a build (observed, not explained: gilesknap/mciwb#166, item 9).
 | Keep | x 40..80, z 12..42 | three storeys and a roof terrace; turrets at the corners |
 | Chapel | x 86..110, z 14..40 | crypt underneath (y 8..11) |
 | Alchemist's tower | centre (18, 22) | the engine on the top floor |
-| Well | (60, 105) | bubble column down to the tunnels |
+| Well | (60, 105) | bubble column up from the tunnels; a fence gate in the rim (`WELL_GATE`) is the way out |
 | Dungeons | x 69..100, z 131..143, standing level -8 | cells, guard room, pit trap |
 | Catacombs | x 91..110, z 104..132, standing level -15 | oubliette, arrow trap, lower treasury |
 | Vault | x 50..70, z 16..30, standing level 8 | under the keep |
@@ -165,7 +165,12 @@ armour stand stands in a block or item frame hangs in one, that every round
 tower's doorway opens onto somewhere to stand on both sides at its level
 (`castle_layout.TOWER_DOORS`, `reach.door_problems`), and, given the
 server's world folder in `WORLD_FOLDER`, that a visitor can walk from the
-bridge to every room (`reach.py`, below). A portcullis
+bridge to every room (`reach.py`, below). Every round
+tower's stair or ladder comes out on its top floor (the top of a tower
+with battlements, the floor under a cone: `castle_layout.TOWER_LEVELS`),
+and `reach.stair_top_problems` checks the headroom over its last steps.
+Signs take their text as plain SNBT strings (`castle_lib.sign`), the form
+Minecraft 1.21.5 and later want. A portcullis
 a visitor left closed is reported as found, tested, and left closed. It clears hostile mobs from the site and anything from
 the tripwires first, and leaves everything as it found it: the levers off,
 the bookshelf untouched, the dispensers reloaded. Two things it has to work round: the server pauses
