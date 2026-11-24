@@ -19,12 +19,17 @@ The state of the work on castle2 (gilesknap/mciwb#173, plan in
   from #174 lists castle's seats for its verify). The branch was rebuilt on
   694358f (#174, which reworked castle: tower doors, levers by the gates,
   pit trap, seats): the refactor was redone on top of it, dropping our own
-  seat fix (#174 has it). Proof: `record_build.py` records a full castle
-  build against a fake client; the sorted commands and the final blocks
-  are identical to 694358f's. Re-check after touching castle with
-  `python record_build.py ../castle /tmp/after` and diffing against a
-  recording of `git archive 694358f examples/castle` (the old branch, before
-  the rebuild, is the local branch `castle2-pre174`).
+  seat fix (#174 has it). Proof at the time: `record_build.py` records a
+  full castle build against a fake client, and the sorted commands and the
+  final blocks were identical to 694358f's. They no longer are, and that
+  is intended: castle has since changed on this branch. Against main's
+  castle the recording differs in 608 block lines (every tower's stair or
+  ladder now comes out on its top floor, the well's rim has a gate so the
+  bubble column has a way out, and sign text is plain SNBT strings, as
+  26.x wants it: the quotes showed on every sign), and 44 summons gain
+  `Invulnerable` (fittings, people and pets). To see what a change to
+  castle does, run `python record_build.py ../castle /tmp/after` and diff
+  it against a recording of `git archive origin/main examples/castle`.
   Decision taken: the underground complex (dungeons, catacombs, lower
   treasury) does NOT move with the gate: it hangs off the smithy's hatch and
   the well's tunnel, so it is counted from the junction. (PLAN.md put the
@@ -37,7 +42,7 @@ The state of the work on castle2 (gilesknap/mciwb#173, plan in
 - **Phase 2** (`medieval_house`): `house.py`, `house_contents.py`,
   `house_rig.py`. All 13 rig variants pass offline and in the world (the
   rig was built over the site at y 150+ and cleared).
-- **Village layout**: `castle2_layout.HOUSES` (28 houses), `LANES`,
+- **Village layout**: `castle2_layout.HOUSES` (32 houses), `LANES`,
   `SQUARE`, `MARKET_CROSS`, `CLOCK_TOWER` plot (empty, for phase 6);
   `village_problems()` checks houses against towers, castle's buildings,
   paths, stairs, signs, lanes, the square and each other.
@@ -177,7 +182,7 @@ The state of the work on castle2 (gilesknap/mciwb#173, plan in
   added to castle's `TELEPORTS` (checked by castle's verify, listed in the
   guide).
 
-## In the world (mciwb-test, Minecraft 26.3)
+## In the world (a test world, Minecraft 26.3)
 
 Castle Fable II is built at ORIGIN 560,68,-190: site x 550..690,
 z -200..47, entities tagged `castle_560_-190`; its road runs south from
@@ -194,8 +199,8 @@ The play pass (2026-11-24): stages `bailey_machines`, `machines`,
 bank now reaches down to local y 0). The world also holds the scoreboard
 objective `castle_560_-190` (one number, `#wave`).
 
-Last full verify (2026-11-24, all checks, nobody online, from the pod
-`minecraft/mciwb-client`): **300/300 passed** (about 8 minutes: a sprint
+Last full verify (2026-11-24, all checks, nobody online, from the
+server's own host): **300/300 passed** (about 8 minutes: a sprint
 keeps the empty server awake for another minute, and the roam and the
 reset each wait for it). The full run before it gave 299/300: "roam:
 after 6000 ticks all 32 villagers still inside the walls (found 30 of
@@ -257,33 +262,27 @@ The `unless dimension` commands were accepted but never had anything to
 act on. And that a locked hopper or dropper refuses a player (the locks
 are read back, and the Engine and the transmuter work with them on).
 
-## How to run (the dev pod on nuc2)
+## How to run
 
-- The kubeconfig is `.devcontainer/config` (cluster-admin; kept out of git
-  by `.git/info/exclude`). There is no kubectl in the sandbox: the helper
-  `/cache/mciwb-devpod/kpod.py` (Python `kubernetes` client) drives a pod
-  `minecraft/mciwb-dev` on nuc2 with hostNetwork, so RCON is
-  `127.0.0.1:30600` (about 0.05 ms a command), `MCIWB_PASSWORD` comes from
-  the `mciwb-test-rcon` secret, and the world's PVC is mounted read-only
-  at `/data` (region files under `/data/world/dimensions/...`).
-  `K="uv run --python 3.13 --no-project --with kubernetes python
-  /cache/mciwb-devpod/kpod.py"`, then:
-  - `$K create`, then once: `$K sync src examples pyproject.toml uv.lock
-    README.md LICENSE` and `$K sh 'apt-get update -qq && apt-get install -y
-    -qq git && SETUPTOOLS_SCM_PRETEND_VERSION=0.0.0+dev uv sync --python
-    3.13 --no-dev'`. `$K delete` when done.
-  - After each edit: `$K sync examples`.
-  - Build: `$K bg build 'cd /work/examples/castle2 && ../../.venv/bin/mciwb
-    run build_castle2.py --server 127.0.0.1 --port 30600'` (about 63 s),
-    then `$K log build`. Long jobs must go through `bg`: an exec stream
-    that is quiet for a minute times out and kills its command.
+- Run the scripts on any host that can reach the server's RCON port, the
+  nearer the better (a build is about 63 s on the server's own host, at
+  about 0.05 ms a command; over a network allow a round trip per command).
+  Give `mciwb run` the server with `--server` and `--port`, and the
+  password in `MCIWB_PASSWORD`:
+  - Build: `cd examples/castle2 && mciwb run build_castle2.py --server
+    HOST --port PORT`.
   - Verify: the same with `verify_castle2.py` (about 100 s with nobody
-    online; 20+ minutes with a player on, the ticks are real time).
-    `CHECKS=clues,signs` for a subset; FORCE=1 if a player is near.
-  - Look: `peek.py X1 Y1 Z1 X2 Y2 Z2` (copy it into /work) prints block
-    names from the region files, a table per y; the chunks are not loaded
-    outside a build or verify, so RCON block tests fail there.
-- The sandbox's Python is 3.13 (`.python-version` says 3.11): use
+    online, more with the roam and the reset checks; 20+ minutes with a
+    player on, the ticks are real time). `CHECKS=clues,signs` for a
+    subset; FORCE=1 if a player is near.
+  - Run long jobs in the background with their output in a log file: a
+    remote shell that is quiet for a minute may time out and kill its
+    command.
+- The world's files, if the host can read them, make the renders fast
+  (`mciwb render --folder`, and `WORLD_FOLDER` for castle's `reach.py`).
+  Without them use the RCON tools below; the chunks are not loaded outside
+  a build or verify, so RCON block tests fail there.
+- With Python 3.13 where `.python-version` says 3.11: use
   `uv run --python 3.13 ...` for ruff, pyright and `record_build.py`.
 - See: `top_render.py` (plan of a large area, ~10 s), `render_rcon.py`
   (a small region), or offline `RECORD_PNG=x.png python record_build.py .
@@ -386,5 +385,5 @@ are read back, and the Engine and the transmuter work with them on).
 2. Done: the gate (fence gates, main_gate.py) and the `roam` check that
    the villagers stay in.
 3. Done: the docs image (docs/images/castle2.png: `mciwb render 545 48 -205
-   695 161 52 --view iso_sw --no-labels --scale 4 --folder /data`, in the
-   pod, cropped), shown in docs/how-to/claude-skill.rst and the README.
+   695 161 52 --view iso_sw --no-labels --scale 4 --folder <the world's folder>`,
+   cropped), shown in docs/how-to/claude-skill.rst and the README.
