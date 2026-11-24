@@ -253,10 +253,11 @@ def great_hall() -> None:
                 )
         L.set_block(V(52, y + 1, z), "minecraft:cake")
         L.set_block(V(55, y + 1, z), "minecraft:decorated_pot")
-    # the fireplace: a spit over the fire, a pot, and two hounds before it
-    L.set_block(V(53, y, IZ1 - 2), "minecraft:lightning_rod[facing=up]")
-    L.set_block(V(55, y, IZ1 - 2), "minecraft:lightning_rod[facing=up]")
-    L.set_block(V(54, y + 1, IZ1 - 2), "minecraft:lightning_rod[facing=east]")
+    # the fireplace: a spit over the fire (waxed rods: a plain one ages, and
+    # the rooms check reads it back), a pot, and two hounds before it
+    L.set_block(V(53, y, IZ1 - 2), "minecraft:waxed_lightning_rod[facing=up]")
+    L.set_block(V(55, y, IZ1 - 2), "minecraft:waxed_lightning_rod[facing=up]")
+    L.set_block(V(54, y + 1, IZ1 - 2), "minecraft:waxed_lightning_rod[facing=east]")
     L.set_block(V(52, y, IZ1 - 1), "minecraft:water_cauldron[level=2]")
     hound(V(53, y, IZ1 + 1), "north", "pale")
     hound(V(55, y, IZ1 + 1), "north", "woods")
@@ -360,7 +361,7 @@ def kitchen() -> None:
         key(
             "the kitchen's spit",
             V(x, y + 1, z1),
-            "minecraft:lightning_rod[facing=east]",
+            "minecraft:waxed_lightning_rod[facing=east]",
         )
     L.fill(V(70, y + 2, z1), V(73, y + 3, z1), "minecraft:bricks")  # the hood
     L.fill(V(70, y + 2, z1 + 1), V(73, y + 2, z1 + 1), "minecraft:brick_slab[type=top]")

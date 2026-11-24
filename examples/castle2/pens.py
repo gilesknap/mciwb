@@ -25,6 +25,14 @@ _rng = random.Random(162)
 
 # the pens whose fence is higher: goats and frogs leap
 TALL = {"goat pen": 3, "frog pond": 3}
+# how far the invisible barrier rises over a tall pen's fence; its top
+# layer is a lid over the whole pen
+BARRIER_RISE = 5
+
+
+def lid_y(name: str) -> int:
+    """the level of a tall pen's barrier lid (local)"""
+    return TALL[name] + BARRIER_RISE - 1
 
 
 def gate_x(name: str) -> int:
@@ -43,12 +51,16 @@ def fence_ring(name: str) -> None:
         L.fill(V(x2, y, z1), V(x2, y, z2), FENCE)
     if tall > 1:
         # goats and frogs leap higher than any fence a visitor would like
-        # to look over: an invisible barrier rises above theirs
-        for y in range(tall, tall + 5):
+        # to look over: an invisible barrier rises above theirs, with a lid
+        # over the pen. (Without the lid they got out all the same, onto
+        # the top of the barrier ring and off it: a ring of any height has
+        # a top to land on.)
+        for y in range(tall, tall + BARRIER_RISE):
             L.fill(V(x1, y, z1), V(x2, y, z1), "minecraft:barrier")
             L.fill(V(x1, y, z2), V(x2, y, z2), "minecraft:barrier")
             L.fill(V(x1, y, z1), V(x1, y, z2), "minecraft:barrier")
             L.fill(V(x2, y, z1), V(x2, y, z2), "minecraft:barrier")
+        L.fill(V(x1, lid_y(name), z1), V(x2, lid_y(name), z2), "minecraft:barrier")
     gx = gate_x(name)
     L.set_block(V(gx, 0, z1), GATE)
     if tall > 1:  # a lintel over the gate, so that the upper fence ends
