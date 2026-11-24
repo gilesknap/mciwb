@@ -15,7 +15,9 @@ column, default 1) and a y range to clip to: ``TOP="x1 z1 x2 z2 step ymin ymax"`
 from __future__ import annotations
 
 import os
+import sys
 import time
+from pathlib import Path
 
 import numpy as np
 from mcwb.api import get_block
@@ -23,6 +25,11 @@ from mcwb.api import get_block
 from mciwb.blockgrid import BlockGrid
 from mciwb.imports import Heightmap, Vec3, get_client, ground_heights
 from mciwb.render import render
+
+sys.path.insert(0, str(Path(__file__).parent))
+
+import castle2_layout  # noqa: E402, F401, I001  (first: castle's layout)
+from protect import keep_loaded  # noqa: E402
 
 
 def block_at(client, pos: Vec3):
@@ -73,6 +80,7 @@ def main() -> None:
                 names[i, y - lo, k] = block.value
     finally:
         client.run(f"forceload remove {x1} {z1} {x2} {z2}")
+        keep_loaded()  # the command bank's chunk, if this unloaded it
     grid = BlockGrid.from_blocks(names, Vec3(x1, lo, z1))
     if step > 1:  # the labels would be wrong: say so
         print(f"note: every {step}th column; labels count columns, not blocks")

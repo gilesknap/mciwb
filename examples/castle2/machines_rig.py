@@ -22,6 +22,7 @@ import castle2_layout  # noqa: E402, F401, I001  (first: castle's layout)
 import castle_lib as L  # noqa: E402
 import machines_upper as M  # noqa: E402
 from build_outer import wait_loaded  # noqa: E402
+from protect import keep_loaded  # noqa: E402
 
 from mciwb.imports import Vec3  # noqa: E402
 
@@ -142,6 +143,7 @@ def main() -> None:
                     f"dx={b.x - a.x},dy={b.y - a.y},dz={b.z - a.z}]"
                 )
             L.cmd(f"forceload remove {a.x} {a.z} {b.x} {b.z}")
+            keep_loaded()  # the command bank's chunk, if this unloaded it
     print(f"{sum(results)}/{len(results)} checks passed")
 
 

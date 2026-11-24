@@ -239,6 +239,7 @@ def in_world() -> None:
     import castle2_layout  # noqa: F401  (castle's modules on the path)
     import castle_lib as L
     from build_outer import wait_loaded
+    from protect import keep_loaded
 
     from mciwb.imports import Volume
 
@@ -304,6 +305,7 @@ def in_world() -> None:
             L.kill_tagged(f"{L.TAG}.house_rig")
             L.fill(box.start, box.end, L.AIR)
         L.cmd(f"forceload remove {lo.x} {lo.z} {hi.x} {hi.z}")
+        keep_loaded()  # the command bank's chunk, if this unloaded it
 
 
 def connected() -> bool:

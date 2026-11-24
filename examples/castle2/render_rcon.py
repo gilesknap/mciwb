@@ -6,9 +6,16 @@ while it reads, for a server whose world files are not on this machine::
 """
 
 import os
+import sys
 import time
+from pathlib import Path
 
 from mciwb.imports import Vec3, get_world
+
+sys.path.insert(0, str(Path(__file__).parent))
+
+import castle2_layout  # noqa: E402, F401, I001  (first: castle's layout)
+from protect import keep_loaded  # noqa: E402
 
 world = get_world()
 
@@ -27,3 +34,4 @@ try:
     )
 finally:
     world.cmd(f"forceload remove {x1} {z1} {x2} {z2}")
+    keep_loaded()  # the command bank's chunk, if this unloaded it

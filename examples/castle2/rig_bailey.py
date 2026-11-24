@@ -23,6 +23,7 @@ sys.path.insert(0, str(Path(__file__).parent))
 import castle2_layout  # noqa: E402, F401, I001  (first: it sets up castle's layout)
 import castle_lib as L  # noqa: E402
 import machines_bailey as M  # noqa: E402
+from protect import keep_loaded  # noqa: E402
 
 from mciwb.imports import Vec3, get_world  # noqa: E402
 
@@ -120,6 +121,7 @@ def main() -> None:
         if not os.environ.get("KEEP"):
             clear(a, b)
         world.cmd(f"forceload remove {a.x} {a.z} {b.x} {b.z}")
+        keep_loaded()  # the command bank's chunk, if this unloaded it
     print(f"{sum(results)}/{len(results)} checks passed")
     if not all(results):
         raise SystemExit(1)
