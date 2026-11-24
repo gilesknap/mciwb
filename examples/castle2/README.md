@@ -70,6 +70,96 @@ furniture in castle's rooms (`rooms.py`) and these of its own:
   Rebuild it after `machines`, `bailey_machines` or `people`.
   `python guide2.py` prints the guide, with rumours and then the whole
   trail as spoilers.
+- `play` (after `clues`, `play.py`): what makes the castle a game for
+  more than one visitor (see "Playing" below). It builds the Steward's
+  bell in the gatehouse's winch room, a notice board inside the gate, the
+  chamber of the restless dead south of the ossuary, four caches behind
+  weak walls and the main vault's lesser hoard, and plans the command
+  blocks that run them. Rebuild it after castle's `vault`, `gatehouse` or
+  `dungeons`, or `bailey_machines`.
+- `protect` (last, `protect.py`): what keeps the castle as built while
+  visitors play in it. Hidden command blocks (in the command bank, a box
+  of stone bricks buried under the upper ward) put survival players in
+  adventure mode while they are in the site, and back in survival when
+  they leave; and put a book back on the Book of Hours' lectern and the
+  three clue lecterns when one is taken. It locks the Engine's hoppers,
+  and places every row of the bank, play's included. Rebuild it after
+  `machines`, `clues`, `play` or castle's `alchemist`.
+
+Protection that is built where it belongs: every armour stand, item
+frame, painting, person, cat, hound, horse and golem is summoned
+invulnerable, the stands' armour and the frames' items fixed
+(`castle_lib.protected`, so in castle too); each secret room has a way out
+from inside (a wooden button, or its own bell, lever, stone button or iron
+door); the transmuter's dropper of stars is
+locked; the gate has a postern round the portcullis (an iron door with a
+button each side, `main_gate.py`); the goats' and frogs' pens have a
+barrier lid; the copper that must not age is waxed.
+
+## Playing
+
+A visitor in adventure mode cannot break or place a block, so cannot
+farm or mine. What the castle gives them to do (`play.py`, with
+`loot.py` for what every container holds):
+
+- **A start.** Hal the Crier stands inside the gate, with a notice board
+  across the street: welcome, nothing here can be broken, begin at the
+  tavern, buy Mercator's chart. A player's first time through the gate
+  brings a word from Hal and a purse of 5 emeralds (once each: the tag
+  `castle_560_-190.purse`).
+- **Emeralds.** The keepers buy what such a visitor can come by
+  (`people.BUYS`): white wool (the tailor and the weaver; the tailor
+  sells shears), eggs and milk (the baker; the smith sells a bucket), cod
+  and salmon (the butcher; the fletcher sells a fishing rod), rotten
+  flesh and bones (the apothecary), spectral arrows (the fletcher).
+- **An end to the trail.** The inner vault holds the Founder's chest:
+  the nether star, the elytra, the trident, the netherite and the rest
+  of the best of castle's vault, with his last word. The main vault
+  keeps a lesser hoard.
+- **Feedback.** The organ gives a sour low note and smoke for a key that
+  starts the tune again and a chime and green sparks for a key in its
+  turn (two or three seconds after the key: as long as its works take).
+  Three lamps on the archery butt show a hit, a hit in the inner half
+  and a near miss. The lectern lock opens only when the book has lain
+  open at its page for 4 seconds: someone leafing through for the page
+  that works turns past it.
+- **The restless dead.** Through an iron door in the ossuary's south
+  wall: a button on the pillar wakes three rising waves of zombies and
+  skeletons (3, 5, then 7). Each wave, once dead, pays emeralds on the
+  altar, the last a sword. The dead cannot leave (walls, an iron door,
+  and a command that puts back any that is out), and are gone when
+  nobody is in the chamber. The sexton's chest by the door has swords
+  and shields.
+- **The prospector's pick**, in the ossuary's reliquary, breaks cracked
+  deepslate bricks and nothing else (`can_break`); four caches are walled
+  up with that block (`castle2_layout.CACHES`), which the castle uses
+  nowhere else.
+- **The Steward's bell**, a button in the gatehouse's winch room, sets
+  the castle to rights for the next visitor: every secret door shut,
+  every machine as built, every reward chest, dropper and dispenser
+  filled, the trail's books back in their chests, the caches walled up,
+  the dead gone. It takes 6 seconds, and loads the whole site while it
+  works. A book of the trail taken from its chest also comes back by
+  itself.
+
+All of it is command blocks in the command bank (`cmdblocks.py`: rows of
+commands, master copies of blocks, one scoreboard objective named after
+the castle's tag, which the protect stage adds to the world, and timers),
+written so that every command fails while
+there is nothing to do: a command block's success is logged, and shown to
+operators. The redstone machines are as they were: the commands read
+them (a dust's power, a lectern's pulse, a target's signal) and never
+drive them, except for the lectern lock's wait, which takes a dust out
+of its line and puts it back.
+
+## The forceloaded chunk
+
+The command bank's chunk, (37, -9) at the default site, stays forceloaded
+after a build: the command blocks must run wherever the players are. It is
+the only one (`forceload query`): the build and the checks load the rest
+of the site while they run and unload it again, and put this one back
+(`build_castle2.forceload`). A rig or a render that unloads a region over
+it puts it back itself (`protect.keep_loaded`).
 
 castle2 also only puts castle's lantern posts where the sky is clear (not
 under a house's eaves or between the chapel's pews).
@@ -106,10 +196,24 @@ then castle2's:
 - houses: each door, the floor either side of it, and every stand;
 - pens: each fence ring closed and all its animals inside it;
 - people: every static person at their spot, every villager inside the
-  walls (stray cats and iron golems, which villages bring, are removed).
+  walls (stray cats and iron golems, which villages bring, are removed);
+- gate: the fence gates, and the postern: its door, the way through and
+  both buttons;
+- machines: each machine worked in place, and each secret's button inside;
+- play: what the play stage builds, the buying trades, the purse's
+  selector, the organ's signs, the range's lamps, the lectern's wait, the
+  fight (wave by wave, with an armour stand for the player), the books
+  put back in their chests, and the reset: the castle scrambled, the
+  Steward's bell rung, everything read back;
+- protect: the command bank as planned and running, each book put back
+  when taken, the locks, every protected entity's flags, and the bank's
+  chunk the only one forceloaded. The change of game mode itself needs a
+  player and is not tested.
 
 castle's entity check counts what every stage summoned, castle2's
-included (`castle_layout.SUMMONED`).
+included (`castle_layout.SUMMONED`). The restless dead are not the
+build's: they carry only the tag `castle_560_-190.fight`, never the
+castle's own, and none are left when a check ends.
 
 ## Tools
 
@@ -127,4 +231,10 @@ included (`castle_layout.SUMMONED`).
 - `build_castle2.py`: castle's build with castle2's stages and checks.
 - `house.py`, `house_contents.py`, `house_rig.py`: the house.
 - `village.py`, `pens.py`, `people.py`: castle2's stages.
+- `protect.py`: the protect stage and its checks. `cmdblocks.py`: the
+  command bank, for any stage that needs hidden command blocks (a row of
+  repeating and chain blocks per feature, master copies of blocks to
+  clone, numbers and timers, read back by verify).
+- `play.py`: the play stage, its rows of the bank and its checks.
+  `loot.py`: what every restocked container holds.
 - `verify_castle2.py`: the checks.
