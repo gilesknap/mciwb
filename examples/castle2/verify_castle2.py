@@ -21,19 +21,22 @@ on castle2's layout, then castle2's own:
   (counter, bedside, hearth) free, and every step of its stairs (or rung of
   its ladder) in place with the headroom a player needs to climb it;
 - every pen's fence ring is whole with its gate closed, and its animals are
-  all inside it. (castle's entity check counts every animal and item frame
-  the stages summoned, castle2's included.)
+  all inside it; the goats' and the frogs' pens have their barrier lid.
+  (castle's entity check counts every animal and item frame the stages
+  summoned, castle2's included.)
 
 - every static person is at their spot, and every villager is inside the
   castle's walls (stray cats and iron golems, which villages bring, are
   removed first).
 - roam: after the game has run ROAM_TICKS (6000) the villagers are all
-  still inside the walls and the main gate's fence gates still shut.
+  still inside the walls, the main gate's fence gates still shut, and
+  every pen's animals still in their pen.
 
 - every bee hive's tagged bees, in the hive or out of it;
 - gate: the main gate's fence gates (main_gate) closed and walled either
   side, so the villagers stay in, with room to open them from both sides;
-  the well's gate closed;
+  the postern round the portcullis: its iron door, a way through on foot,
+  and a button on each side that opens it; the well's gate closed;
 - reach: over RCON (castle's flood fill needs the world files), the places
   visitors got stuck: the well's bubble column comes up beside its gate
   onto the bailey, and every tower's stair or ladder (and the keep's) comes
@@ -51,12 +54,32 @@ on castle2's layout, then castle2's own:
   worked over RCON in place (a lectern page turned, levers set, buttons
   pressed, an ingredient put in the transmuter) and put back as built; each
   one's trigger is an interaction an adventure-mode player has.
+  Each secret's way out is worked too: the button inside opens it.
 - clues: the clue trail's books (clues.py) on their lecterns, in the reward
   chests and in Mercator's trades.
+- play: the play stage (play.py). What it builds is in place (the
+  Steward's bell, the notice board, the Founder's hoard in the inner vault
+  and the lesser one in the main vault, the prospector's pick and its
+  can_break, the caches behind their weak walls, the chamber of the
+  restless dead closed all round with a button each side of its door);
+  the keepers' buying trades; the purse's selector (on an armour stand);
+  the organ's sour and sweet signs; the range's lamps; the lectern lock's
+  wait; the fight (an armour stand for the player: each wave woken,
+  counted, killed and paid for, one of the dead taken out and put back,
+  the dead gone when nobody is there); the trail's books put back in
+  their chests; and the reset: every machine worked, every container
+  emptied and every weak wall broken, the Steward's bell rung, and all of
+  it read back. What only a player can do is printed as INFO.
+- protect: the command bank (protect.py, cmdblocks.py) is as planned and
+  runs, each lectern's book is put back when taken (and the Book of Hours
+  still works its lock), the engine's hoppers are locked, every armour
+  stand, item frame, person and pet is invulnerable; and the bank's chunk
+  is the only chunk forceloaded, before the checks and after them. The
+  zone's change of game mode needs a player and is not tested.
 
 ``CHECKS=seats,pens`` runs only some of them (strays, castle, seats,
 signs, rooms, houses, pens, people, roam, gate, reach, bailey_machines,
-machines, clues).
+machines, clues, play, protect).
 Refuses to run while a player is within 200 blocks of the site, unless
 FORCE=1. Exits non-zero if any check fails.
 """
@@ -294,11 +317,15 @@ def rooms_check() -> None:
 
 
 def free(p: Vec3) -> bool:
-    """room to stand: feet and head free (air or carpet), something under"""
+    """room to stand: feet and head free (air or carpet; fallen snow at
+    the feet), something under"""
     up = Vec3(0, 1, 0)
-    return all(
-        is_block(q, L.AIR) or is_block(q, "#minecraft:wool_carpets")
-        for q in (p, p + up)
+    return (
+        all(
+            is_block(q, L.AIR) or is_block(q, "#minecraft:wool_carpets")
+            for q in (p, p + up)
+        )
+        or (VC.feet_free(p) and is_block(p + up, L.AIR))
     ) and not is_block(p - up, L.AIR)
 
 
@@ -347,13 +374,32 @@ def houses() -> None:
     )
 
 
-def pens() -> None:
-    """every pen: its fence ring whole (fences, a closed gate) and its
-    animals inside it"""
+def pen_counts(name: str) -> tuple[dict[str, int], dict[str, int]]:
+    """a pen's animals: (found inside its fence, wanted), by kind"""
     import pens as P
     from castle2_layout import PENS
 
-    for name, ((x1, z1, x2, z2), animals) in PENS.items():
+    (x1, z1, x2, z2), animals = PENS[name]
+    high = P.TALL.get(name, 1)
+    counts: dict[str, int] = {}
+    a, b = V(x1, -3, z1), V(x2, high + 2, z2)  # (frogs swim in the pond)
+    for what, n in animals.items():
+        kind = what.split()[0]
+        counts[kind] = counts.get(kind, 0) + n
+    found = {
+        kind: VC.count(f"type=minecraft:{kind},tag={TAG},{L.box_selector(a, b)}")
+        for kind in counts
+    }
+    return found, counts
+
+
+def pens() -> None:
+    """every pen: its fence ring whole (fences, a closed gate), a barrier
+    lid over the pens of the animals that leap, and its animals inside it"""
+    import pens as P
+    from castle2_layout import PENS
+
+    for name, ((x1, z1, x2, z2), _animals) in PENS.items():
         gaps = []
         ring = [(x, z) for x in range(x1, x2 + 1) for z in (z1, z2)]
         ring += [(x, z) for z in range(z1 + 1, z2) for x in (x1, x2)]
@@ -365,18 +411,27 @@ def pens() -> None:
                 or is_block(p, "#minecraft:fences")  # read again (#166)
             ):
                 gaps.append((p.x, p.z))
-        high = P.TALL.get(name, 1)
-        counts = {}
-        a, b = V(x1, -3, z1), V(x2, high + 2, z2)  # (frogs swim in the pond)
-        for what, n in animals.items():
-            kind = what.split()[0]
-            counts[kind] = counts.get(kind, 0) + n
-        found = {
-            kind: VC.count(f"type=minecraft:{kind},tag={TAG},{L.box_selector(a, b)}")
-            for kind in counts
-        }
+        lid = ""
+        if name in P.TALL:
+            # the lid's corners, middle and edges (it is one fill)
+            y = P.lid_y(name)
+            spots = [
+                V(x, y, z)
+                for x in (x1, (x1 + x2) // 2, x2)
+                for z in (z1, (z1 + z2) // 2, z2)
+            ]
+            holes = [
+                (p.x, p.z)
+                for p in spots
+                if not (
+                    is_block(p, "minecraft:barrier") or is_block(p, "minecraft:barrier")
+                )
+            ]
+            gaps += holes
+            lid = ", a barrier lid over it"
+        found, counts = pen_counts(name)
         check(
-            f"{name}: fence closed{' (gaps ' + str(gaps[:4]) + ')' if gaps else ''}, "
+            f"{name}: fence closed{lid}{' (gaps ' + str(gaps[:4]) + ')' if gaps else ''}, "
             f"animals inside {found} of {counts}",
             not gaps and found == counts,
         )
@@ -435,11 +490,53 @@ def gate_checks() -> None:
         f" walk through (no room at {sides}, no headroom over {shut})",
         not sides["inside"] and not sides["outside"] and not shut,
     )
+    postern_check()
     gx, gz = WELL_GATE
     check(
         "well: its gate closed (villagers stay out of the well)",
         is_block(V(gx, 0, gz), "#minecraft:fence_gates[open=false]"),
     )
+
+
+def postern_check() -> None:
+    """the postern round the main gate's portcullis: its iron door shut,
+    room to walk from the passage through the nook and the guard room onto
+    the bailey, and a button on each side that opens the door while it is
+    in (pressed here by command)"""
+    import main_gate
+
+    c = main_gate.postern_cells()
+    lower, upper = c["door"]
+    f = c["door_facing"]
+
+    def door(open_: bool) -> bool:
+        state = f"facing={f},open={str(open_).lower()}"
+        return is_block(lower, f"minecraft:iron_door[half=lower,{state}]") and is_block(
+            upper, f"minecraft:iron_door[half=upper,{state}]"
+        )
+
+    blocked = [(p.x, p.y, p.z) for p in c["way"] if not (stand(p) or stand(p))]
+    check(
+        "postern: an iron door in the gate passage's wall, shut, and a way on"
+        f" foot from the passage through the guard room to the bailey"
+        f" (no room at {blocked})",
+        door(False) and not blocked,
+    )
+    for side, (p, state, on) in c["buttons"].items():
+        there = is_block(p, f"minecraft:stone_button[{state}]") and not is_block(
+            on, L.AIR
+        )
+        try:
+            L.set_block(p, f"minecraft:stone_button[{state},powered=true]")
+            opened = L.wait_until(lambda: door(True), 10)
+        finally:
+            L.set_block(p, f"minecraft:stone_button[{state},powered=false]")
+        shut = L.wait_until(lambda: door(False), 10)
+        check(
+            f"postern: the button on the {side} side opens the door (button"
+            f" {there}, opened {opened}) and it shuts again ({shut})",
+            there and opened and shut,
+        )
 
 
 def stand(p: Vec3) -> bool:
@@ -586,11 +683,15 @@ def roam_check() -> None:
     """the mobile villagers stay in: let the game run ROAM_TICKS (default
     6000, a morning; sprinted when nobody is online, else real time) and
     count them inside the walls again, the main gate's fence gates still
-    shut"""
+    shut; and every pen's animals again (the goats and the frogs got out of
+    theirs before they had a lid)"""
     import main_gate
 
     ticks = int(os.environ.get("ROAM_TICKS", "6000"))
-    walls = L.box_selector(V(0, -20, 0), V(castle2_layout.W - 1, 80, castle2_layout.ZS))
+    # (the round towers' floors reach one row past the walls' outer faces)
+    walls = L.box_selector(
+        V(-1, -20, -1), V(castle2_layout.W, 80, castle2_layout.ZS + 1)
+    )
     want = castle2_layout.SUMMONED["people"]["villager"]
     L.tick(ticks)
     if not L.players_online():
@@ -613,6 +714,17 @@ def roam_check() -> None:
         f" (found {inside} of {total}), the main gate shut (open: {opened})",
         inside == total == want and not opened,
     )
+    out = {
+        name: found
+        for name in castle2_layout.PENS
+        for found, counts in [pen_counts(name)]
+        if found != counts
+    }
+    check(
+        f"roam: after {ticks} ticks every pen's animals are still in their pen"
+        f" (not: {out})",
+        not out,
+    )
 
 
 def machines_checks() -> None:
@@ -630,12 +742,45 @@ def machines_checks() -> None:
     organ.work_organ(check)
 
 
+def protect_check() -> None:
+    """the protect stage (protect.py): the command bank, the books that
+    come back, the locks, the entities"""
+    import protect
+
+    protect.checks(check)
+
+
+def forceload_check(before: list[tuple[int, int]]) -> None:
+    """the command bank's chunk, and no other, is forceloaded: before the
+    checks loaded the site and after they unloaded it"""
+    import cmdblocks
+
+    want = [cmdblocks.bank_chunk()]
+    after = cmdblocks.forceloaded()
+    check(
+        f"protect: only the command bank's chunk {want[0]} is left forceloaded"
+        f" (before the checks: {before}, after: {after})",
+        before == want and after == want,
+    )
+
+
 def clues_check() -> None:
     """the clue trail's books (clues.py) on their lecterns, in the reward
     chests and in Mercator's trades"""
     import clues
 
     clues.check(check)
+
+
+def play_check() -> None:
+    """the play stage (play.py): what it builds, the trades, the purse, the
+    feedback, the fight, the notes, and the Steward's bell, which resets a
+    scrambled castle"""
+    import loot
+    import play
+
+    weak = int(np.count_nonzero(dry_build().world.blocks == loot.WEAK_WALL))
+    play.checks(check, lambda: build_outer.forceload(True), weak)
 
 
 # the groups of checks, in order (CHECKS=... picks some)
@@ -666,6 +811,8 @@ GROUPS = {
     "bailey_machines": bailey_machines_check,
     "machines": machines_checks,
     "clues": clues_check,
+    "play": play_check,
+    "protect": protect_check,
 }
 
 
@@ -676,11 +823,14 @@ def main() -> None:
         raise SystemExit(
             f"{', '.join(near)} within 200 blocks of the site: not verifying"
         )
+    import cmdblocks
+
+    wanted = os.environ.get("CHECKS", ",".join(GROUPS)).split(",")
+    loaded_before = cmdblocks.forceloaded()
     build_outer.forceload(True)
     try:
         import people as P
 
-        wanted = os.environ.get("CHECKS", ",".join(GROUPS)).split(",")
         if "strays" in wanted:
             strays()  # listed before they go
         P.kill_strays()  # the cats and golems a village brings: not ours
@@ -699,6 +849,8 @@ def main() -> None:
     finally:
         VC.c("kill @e[tag=castle_verify]")
         build_outer.forceload(False)
+    if "protect" in wanted:
+        forceload_check(loaded_before)
     print(f"{sum(VC.results)}/{len(VC.results)} checks passed")
     if not all(VC.results):
         raise SystemExit(1)
