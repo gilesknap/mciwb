@@ -788,7 +788,7 @@ def held(p: Vec3, item: str, n: int | None = None) -> bool:
 
 
 def is_shut(door: list[Vec3], material: str) -> bool:
-    return all(L.is_block(p, material) or L.is_block(p, material) for p in door)
+    return all(L.is_block(p, material) for p in door)
 
 
 def is_open(door: list[Vec3]) -> bool:

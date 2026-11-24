@@ -144,6 +144,20 @@ def layout_problems() -> list[str]:
         problems.append(f"the command bank has room for {rows} rows only")
     if len(STORE) > x2 - x1 - 1:
         problems.append("the command bank's store is full")
+    # a row's commands run in order, rows in no known order: the command
+    # that lets the site go must have the one that loads the bank's chunk
+    # again next to it in its row, or the bank could be left unloaded
+    blocks = plan().blocks
+    for cb, after in zip(blocks, blocks[1:] + [None], strict=True):
+        if "forceload remove" in cb.command and not (
+            after is not None
+            and "forceload add" in after.command
+            and after.kind == "chain"
+            and tuple(after.pos) == tuple(cb.pos + Vec3(1, 0, 0))
+        ):
+            problems.append(
+                f"{cb.name}: no forceload add follows the forceload remove in its row"
+            )
     return problems
 
 

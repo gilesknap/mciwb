@@ -657,11 +657,11 @@ def people_checks() -> None:
 
     missing = []
     for what, (x, y, z), _facing, _seated, *_rest in P.CASTLE_PEOPLE:
-        if not at(V(x, y, z)) and not at(V(x, y, z)):
+        if not at(V(x, y, z)):
             missing.append(what)
     for name, h in castle2_layout.village_houses().items():
         if "counter" in h.stands and h.contents in P.KEEPER:
-            if not at(h.stands["counter"]) and not at(h.stands["counter"]):
+            if not at(h.stands["counter"]):
                 missing.append(f"{name}'s keeper")
     check(
         "people: everyone in their place (the king and queen, the cook, the"
