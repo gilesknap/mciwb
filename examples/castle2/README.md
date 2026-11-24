@@ -67,7 +67,10 @@ furniture in castle's rooms (`rooms.py`) and these of its own:
 - `clues` (after `people`, `clues.py`): the clue trail. Books on lecterns
   and in the secrets' chests lead from the tavern down to the inner vault,
   and Mercator the cartographer sells a chart with a hint for each secret.
-  Rebuild it after `machines`, `bailey_machines` or `people`.
+  Rebuild it after `machines`, `bailey_machines` or `people`, and after
+  `village` or castle's `dungeons` (they build the tavern's and the
+  fletcher's lots and the ossuary's reliquary afresh, without their
+  books), then `protect`.
   `python guide2.py` prints the guide, with rumours and then the whole
   trail as spoilers.
 - `play` (after `clues`, `play.py`): what makes the castle a game for

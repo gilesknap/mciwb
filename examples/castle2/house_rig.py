@@ -256,6 +256,7 @@ def in_world() -> None:
     )
     box = Volume.from_corners(lo, hi)
     L.cmd(f"forceload add {lo.x} {lo.z} {hi.x} {hi.z}")
+    ours = False  # the box is the rig's to clear only once it was found empty
     try:
         wait_loaded([(int(lo.x), int(lo.z)), (int(hi.x), int(hi.z))], 20)
         from mciwb.imports import Heightmap, ground_heights
@@ -269,6 +270,7 @@ def in_world() -> None:
         tops = ground_heights(columns, Heightmap.WORLD_SURFACE)
         if max(tops.values()) >= lo.y and not os.environ.get("REUSE"):
             raise SystemExit(f"the rig's box {lo}..{hi} is not empty: not building")
+        ours = True
         L.STAGE = "house_rig"
         L.kill_tagged(f"{L.TAG}.house_rig")
         L.fill(box.start, box.end, L.AIR)
@@ -301,7 +303,7 @@ def in_world() -> None:
         if not ok or bad:
             raise SystemExit(1)
     finally:
-        if not os.environ.get("KEEP"):
+        if ours and not os.environ.get("KEEP"):
             L.kill_tagged(f"{L.TAG}.house_rig")
             L.fill(box.start, box.end, L.AIR)
         L.cmd(f"forceload remove {lo.x} {lo.z} {hi.x} {hi.z}")

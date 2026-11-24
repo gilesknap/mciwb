@@ -18,7 +18,9 @@ stands in); ``village`` (the lanes, the square and the houses) after
 the bee hives), ``bailey_machines`` (machines_bailey: the clock tower, the
 archery lock, the mill, the listening door), and ``people`` (the castle's people, the shopkeepers,
 the villagers and the guards) after castle's ``details``, then ``clues`` (clues.py: the
-clue trail's books and notes, some in the machines' chests: rebuild it after them),
+clue trail's books and notes, some in the machines' chests: rebuild it after them,
+and after ``village`` or ``dungeons``, which build two lecterns' houses and the
+ossuary's reliquary afresh),
 then ``play`` (play.py: the Steward's bell that resets the castle, the
 notice board at the gate, the restless dead under the dungeon, the caches
 behind weak walls, the main vault's lesser hoard; rebuild it after
