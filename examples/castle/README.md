@@ -66,7 +66,9 @@ ORIGIN=-80,82,-230 SPAWN=32,74,-64 NAME=Fable BANNER=red mciwb run build_castle.
   check and describe the right castle.
 
 Every entity the castle summons (horses, armour stands, item frames, the
-golem and the cat) is tagged `castle_<x>_<z>` of its origin, and with its
+golem and the cat) is invulnerable (`castle_lib.protected`: armour stands
+have their slots disabled and item frames are fixed, to keep their armour
+and items on them), and is tagged `castle_<x>_<z>` of its origin, and with its
 stage. A stage removes its own entities before it runs and the earthworks
 stage (a fresh site) removes every entity in the site, so rebuilding all or
 part of a castle never duplicates them. Mobs are summoned with

@@ -679,10 +679,19 @@ def banners() -> None:
     )
 
 
+def feet_free(p: Vec3) -> bool:
+    """room for a visitor's feet: air, or the layer of snow that falls in a
+    cold biome (reach counts snow as open too)"""
+    return is_block(p, L.AIR) or is_block(p, "minecraft:snow")
+
+
 def walk_step(x: int, walk: int, z: int) -> bool:
-    """somewhere to stand at a wall walk's level: solid under, air for feet and head"""
-    return not is_block(V(x, walk - 1, z), L.AIR) and all(
-        is_block(V(x, walk + k, z), L.AIR) for k in (0, 1)
+    """somewhere to stand at a wall walk's level: solid under, air for feet
+    (or snow) and head"""
+    return (
+        not is_block(V(x, walk - 1, z), L.AIR)
+        and feet_free(V(x, walk, z))
+        and is_block(V(x, walk + 1, z), L.AIR)
     )
 
 
@@ -793,7 +802,7 @@ def places() -> None:
         p = V(x, y, z)
         check(
             f"teleport to {name} ({p.x} {p.y} {p.z}) lands on a floor with head room",
-            is_block(p, L.AIR)
+            feet_free(p)
             and is_block(p + Vec3(0, 1, 0), L.AIR)
             and not is_block(p - Vec3(0, 1, 0), L.AIR)
             and not is_block(p - Vec3(0, 1, 0), L.WATER),

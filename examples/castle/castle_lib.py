@@ -117,11 +117,50 @@ STAGE = "build"
 PERSIST = "PersistenceRequired:1b"
 
 
+# what a visitor must not be able to kill, knock off its wall or strip:
+# the castle's fittings and people (not farm animals). An armour stand's
+# armour and an item frame's item can be taken in adventure mode too, so
+# the stands that wear something have every slot disabled and the frames
+# are fixed. (A player in creative mode can still remove them all.)
+PROTECTED = (
+    "armor_stand",
+    "item_frame",
+    "painting",
+    "villager",
+    "cat",
+    "wolf",
+    "parrot",
+    "horse",
+    "iron_golem",
+    "copper_golem",
+)
+# an armour stand's DisabledSlots with every bit set for its six slots
+# (0x3F3F3F: nothing taken, placed or swapped)
+ALL_SLOTS_DISABLED = 4144959
+
+
+def protected(kind: str, nbt: str) -> str:
+    """``nbt`` with what keeps an entity of this kind safe from visitors"""
+    if kind not in PROTECTED:
+        return nbt
+    extra = []
+    if "Invulnerable:" not in nbt:
+        extra.append("Invulnerable:1b")
+    if kind == "item_frame" and "Fixed:" not in nbt:
+        extra.append("Fixed:1b")
+    if kind == "armor_stand" and "equipment:" in nbt.split("Passengers:")[0]:
+        extra.append(f"DisabledSlots:{ALL_SLOTS_DISABLED}")
+    if kind == "copper_golem" and "next_weather_age:" not in nbt:
+        extra.append("next_weather_age:-2L")  # waxed: it never turns to a statue
+    return ",".join([*extra, nbt] if nbt else extra)
+
+
 def summon(kind: str, pos: Vec3, nbt: str = "") -> None:
     """
     Summon an entity, tagged ``TAG`` (the castle's) and ``TAG.STAGE`` so that
     a rebuild of the castle or of a stage removes the old ones first (see
-    build_castle.kill_stage_entities). ``nbt`` is extra NBT, without braces.
+    build_castle.kill_stage_entities). ``nbt`` is extra NBT, without braces;
+    the kinds in `PROTECTED` are made invulnerable (`protected`).
 
     Another RCON client can empty our reply or add its output to it, and
     mciwb sends a summon once (a lost reply does not mean it failed, and a
@@ -130,6 +169,7 @@ def summon(kind: str, pos: Vec3, nbt: str = "") -> None:
     summons it again if it is missing), and anything else is an error.
     """
     tags = f'Tags:["{TAG}","{TAG}.{STAGE}"]'
+    nbt = protected(kind, nbt)
     data = f"{{{tags},{nbt}}}" if nbt else f"{{{tags}}}"
     command = f"summon minecraft:{kind} {pos.x} {pos.y} {pos.z} {data}"
     r = cmd(command)
