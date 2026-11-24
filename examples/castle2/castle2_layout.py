@@ -104,7 +104,9 @@ def castle2_problems() -> list[str]:
     if LD != 162:
         problems.append(f"castle2 is laid out for BAILEY_DEPTH=162, not {LD}")
         return problems
-    return problems + village_problems()
+    import cmdblocks
+
+    return problems + village_problems() + cmdblocks.layout_problems()
 
 
 # ---------------------------------------------------------------- the village
@@ -572,6 +574,10 @@ SECRETS: dict[str, dict] = {}
 LECTERN_LOCK = (58, YU + 10, 28)
 LECTERN_PAGE = 13  # the page (1..15) that opens it
 LECTERN_PAGES = 15
+# how long (ticks) the book must lie open at the page before the door moves
+# (play.py: someone leafing through the book for the page that works turns
+# past it; the Founder's Testament says to wait)
+LECTERN_PATIENCE = 80
 # the astrolabe: floor levers in the alchemist's laboratory, (x, z): on?
 ASTROLABE_LEVERS = {
     (16, 20): True,
@@ -611,7 +617,9 @@ SECRETS.update(
             "study hidden in the wall, with a chest (amethyst shards, "
             "diamonds, gold)",
             "solution": f"turn the Book of Hours on the lectern by the east "
-            f"bookcases to page {LECTERN_PAGE}",
+            f"bookcases to page {LECTERN_PAGE} and leave it open there for "
+            f"{LECTERN_PATIENCE // 20} seconds: the shelves do not move while "
+            "the pages are being turned",
             "page": LECTERN_PAGE,
             "clues": [
                 (
@@ -673,7 +681,8 @@ SECRETS.update(
             "opens": "a door in the crypt's south wall slides aside onto the "
             "second chamber: the organist's tomb and a chest",
             "solution": "play " + " ".join(ORGAN_TUNE) + " on the chapel's organ "
-            "(keys C D E F G A from the west); a wrong key starts again",
+            "(keys C D E F G A from the west); a wrong key starts again, with "
+            "a sour note and a puff of smoke; a key in its turn chimes",
             "tune": list(ORGAN_TUNE),
             "clues": [
                 (
@@ -689,7 +698,8 @@ SECRETS.update(
             "machine": "copper puzzle",
             "where": (50, VAULT_Y, 25),
             "opens": "a door in the vault's west wall slides aside onto the "
-            "inner vault",
+            "inner vault: the Founder's hoard (a nether star, an elytra, a "
+            "trident, netherite) and his last word, the end of the trail",
             "solution": "press the buttons at (column, row) "
             + ", ".join(str(b) for b in COPPER_SOLUTION)
             + " (columns from the north, row 0 the lower) to light every bulb",
@@ -724,7 +734,8 @@ SECRETS.update(
             "where": (92, -15, 130),
             "opens": "a sliding door in the oubliette's west wall (91, -15, 125)"
             " onto a hidden ossuary (x 81..87, z 120..128) with the founder's"
-            " reliquary (a chest)",
+            " reliquary (a chest, with the prospector's pick in it) and, through"
+            " an iron door in its south wall, the restless dead",
             "solution": "In the oubliette, ring the bell before the carved face"
             " in the west wall: a calibrated sculk sensor behind the face hears"
             " only bells (vibration frequency 11) and the wall beside it slides"
@@ -750,7 +761,8 @@ SECRETS.update(
             " with a button are there) hit the target's bullseye: only a"
             " bullseye gives 15, the comparator behind it passes nothing less,"
             " and a copper bulb latches the hatch open. Another bullseye shuts"
-            " it.",
+            " it. Three lamps on the butt show how near a shot came: one for"
+            " a hit, two for the inner half, three for a near miss.",
             "clues": [
                 ("sign", (37, 0, 77), "Archery range / a true eye / opens the stores"),
             ],
@@ -776,6 +788,69 @@ SECRETS.update(
         },
     }
 )
+
+# ---- protection (protect.py, cmdblocks.py). Visitors in survival mode are
+# put in adventure mode while they are in the zone: the site box and this
+# much round it, at any height. Each is tagged with ZONE_TAG while the zone
+# holds them, and put back in survival when they leave it
+ZONE_MARGIN = 8
+ZONE_TAG = f"{TAG}.zone"
+DIMENSION = "minecraft:overworld"
+# the command bank (local x1, y1, z1, x2, y2, z2): a box of stone bricks in
+# the upper ward's fill, south-west of the keep, that holds every command
+# block (its top layer the store of master copies, rows of commands on
+# every second layer below). It must lie in one chunk (cmdblocks.layout_problems), which the
+# protect stage leaves forceloaded: the only chunk that is
+COMMAND_BANK = (33, 0, 47, 46, 12, 60)
+
+
+def zone_box() -> tuple[int, int, int, int]:
+    """the adventure zone in the world: x1, z1, x2, z2 (every height)"""
+    a, b = site_box()
+    return (
+        int(a.x) - ZONE_MARGIN,
+        int(a.z) - ZONE_MARGIN,
+        int(b.x) + ZONE_MARGIN,
+        int(b.z) + ZONE_MARGIN,
+    )
+
+
+def zone_selector() -> str:
+    """the zone as an entity selector's box, bedrock to the build limit"""
+    x1, z1, x2, z2 = zone_box()
+    return f"x={x1},y=-64,z={z1},dx={x2 - x1},dy=384,dz={z2 - z1}"
+
+
+# ---- play (play.py): what makes the castle a game for more than one
+# visitor. Local coordinates
+# the Steward's bell: a button on the north wall of the gatehouse's winch
+# room (over the guard room, up its stair) that sets the castle to rights
+STEWARD_BELL = (GATEHOUSE[0] + 10, 5, GATEHOUSE[1] + 1)
+# Hal the Crier, just inside the gate west of the main street, and his
+# notice board east of it (its west post; the signs face the gate)
+CRIER = (GATE_X1 - 2, 0, GATEHOUSE[1] - 5)
+NOTICE_BOARD = (GATE_X2 + 2, 0, GATEHOUSE[1] - 5)
+# the starter purse: emeralds, once for each player (tag PURSE_TAG), on
+# coming into this box (x1, y1, z1, x2, y2, z2): the gate passage, the
+# guard room and the bailey just inside, where the crier stands
+PURSE_BOX = (GATEHOUSE[0] + 7, -1, GATEHOUSE[1] - 7, GATE_X2 + 5, 3, GATEHOUSE[3])
+PURSE = 5
+PURSE_TAG = f"{TAG}.purse"
+# the restless dead: a chamber south of the ossuary (its inside, x1, y1, z1,
+# x2, y2, z2), its iron door in its north wall (the lower cell; the cell
+# north of it is the way through the ossuary's wall)
+CHARNEL = (77, -15, 131, 86, -12, 141)
+CHARNEL_DOOR = (85, -15, 130)
+FIGHT_TAG = f"{TAG}.fight"  # on every mob of a wave, and on nothing else
+# the caches behind weak walls (loot.WEAK_WALL), which only the prospector's
+# pick breaks: (the wall block, the barrel behind it, the way the barrel
+# faces: towards whoever broke the wall)
+CACHES = {
+    "the restless dead": ((76, -15, 138), (75, -15, 138), "east"),
+    "the miller's way": ((94, -8, 170), (93, -8, 170), "east"),
+    "the guard room": ((100, -8, 137), (101, -8, 137), "west"),
+    "the alchemist's cellar": ((14, 11, 22), (13, 11, 22), "east"),
+}
 
 BAILEY_DEPTH_NOTE = (
     f"Its lower bailey is {LD} blocks deep (BAILEY_DEPTH), with a village in it."
