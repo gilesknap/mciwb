@@ -18,9 +18,18 @@ stands in); ``village`` (the lanes, the square and the houses) after
 the bee hives), ``bailey_machines`` (machines_bailey: the clock tower, the
 archery lock, the mill, the listening door), and ``people`` (the castle's people, the shopkeepers,
 the villagers and the guards) after castle's ``details``, then ``clues`` (clues.py: the
-clue trail's books and notes, some in the machines' chests: rebuild it after them). The stages, the site's forceload, the player check and the
-entity checks are castle's (see its README). The defaults (site, name,
-banner) are in castle2_layout.DEFAULTS; the environment overrides them.
+clue trail's books and notes, some in the machines' chests: rebuild it after them),
+then ``play`` (play.py: the Steward's bell that resets the castle, the
+notice board at the gate, the restless dead under the dungeon, the caches
+behind weak walls, the main vault's lesser hoard; rebuild it after
+``vault``, ``gatehouse``, ``dungeons`` or ``bailey_machines``),
+and last ``protect`` (protect.py: the command bank with every hidden
+command block, the adventure zone's, the books' and play's; the engine's
+locks; rebuild it after ``machines``, ``clues``, ``play`` or ``alchemist``). The stages, the site's forceload,
+the player check and the entity checks are castle's (see its README),
+except that the command bank's chunk stays forceloaded once ``protect`` has
+built it. The defaults (site, name, banner) are in castle2_layout.DEFAULTS;
+the environment overrides them.
 """
 
 from __future__ import annotations
@@ -41,6 +50,8 @@ import machines_upper  # noqa: E402
 import main_gate  # noqa: E402
 import pens  # noqa: E402
 import people  # noqa: E402
+import play  # noqa: E402
+import protect  # noqa: E402
 import rooms  # noqa: E402
 import village  # noqa: E402
 from fake_client import summon_counts  # noqa: E402
@@ -100,9 +111,10 @@ def bailey_buildings() -> None:
 
 def gatehouse() -> dict:
     """the gatehouse (castle's), its passage closed to villagers by fence
-    gates (main_gate)"""
+    gates, and a postern round the portcullis (main_gate)"""
     g = build_outer.gatehouse()
     main_gate.close()
+    main_gate.postern()
     return g
 
 
@@ -125,6 +137,30 @@ _insert_after("pens", "bailey_machines", machines_bailey.bailey_machines)
 # them all; Mercator the cartographer sells its chart of the castle
 _insert_after("people", "clues", clues.clues)
 people.TRADES["cartographer"].append((2, clues.book_snbt("chart"), 1))
+# the play stage (play.py): the main vault's lesser hoard, the Steward's
+# bell, the notice board, the restless dead and the caches. It builds over
+# castle's vault and gatehouse and the ossuary's wall
+_insert_after("clues", "play", play.play)
+# the protect stage, last: it reaches into the machines' and the clues'
+# lecterns and castle's engine, and places the command bank, play's rows
+# included
+_insert_after("play", "protect", protect.protect)
+
+# castle unloads the whole site when a build or a verify ends: the command
+# bank's chunk must stay loaded (its command blocks run the adventure zone
+# wherever the players are), so it is forceloaded again if the bank is built
+_castle_forceload = build_outer.forceload
+
+
+def forceload(add: bool = True, with_road: bool = True) -> None:
+    """castle's forceload, which leaves the command bank's chunk loaded"""
+    keep = not add and protect.installed()  # (read while it is still loaded)
+    _castle_forceload(add, with_road)
+    if keep:
+        protect.keep_loaded()
+
+
+build_outer.forceload = forceload
 _castle_dungeons = build_castle.STAGES["dungeons"]
 
 
