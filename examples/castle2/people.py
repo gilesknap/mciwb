@@ -2,7 +2,8 @@
 The people stage (phase 4): who lives in castle2, from `castle2_layout`.
 
 - Static people (``NoAI``, invulnerable, facing set): the shopkeepers at
-  their counters with trades that match their shops, the king and queen on
+  their counters with trades that match their shops (and `BUYS`: what they
+  pay emeralds for), Hal the Crier by the gate, the king and queen on
   their thrones, the cook, the librarian, the monk, the alchemist, the
   blacksmith, the jailer, and drinkers in the tavern. Seated people ride an
   invisible marker armour stand on their seat.
@@ -41,22 +42,43 @@ TRADES = {
         (1, "cooked_beef", 5),
         (1, "rabbit_stew", 1),
     ],
-    "tailor": [(2, "white_wool", 8), (3, "leather_chestplate", 1), (1, "shears", 1)],
+    "tailor": [(1, "shears", 1), (2, "white_wool", 8), (3, "leather_chestplate", 1)],
     "apothecary": [(3, "potion", 1), (2, "glowstone_dust", 4), (1, "glass_bottle", 4)],
     "candlemaker": [(1, "candle", 4), (1, "white_candle", 4), (2, "honeycomb", 3)],
     "carpenter": [(1, "oak_planks", 16), (1, "spruce_log", 8), (2, "iron_axe", 1)],
-    "fletcher": [(1, "arrow", 16), (2, "bow", 1), (3, "crossbow", 1)],
+    "fletcher": [
+        (1, "arrow", 16),
+        (1, "fishing_rod", 1),
+        (2, "bow", 1),
+        (3, "crossbow", 1),
+    ],
     "cartographer": [(2, "map", 1), (3, "compass", 1), (1, "paper", 8)],
     "cobbler": [(2, "leather_boots", 1), (5, "iron_boots", 1), (1, "leather", 4)],
     "weaver": [(1, "white_carpet", 8), (2, "blue_wool", 8), (1, "string", 6)],
     "tavern": [(1, "honey_bottle", 2), (1, "bread", 4), (1, "cooked_beef", 2)],
     "blacksmith": [
+        (1, "bucket", 1),
         (3, "iron_sword", 1),
         (4, "iron_helmet", 1),
         (5, "iron_chestplate", 1),
     ],
     "librarian": [(5, "book", 1), (8, "enchanted_book", 1), (2, "lantern", 1)],
     "alchemist": [(4, "potion", 1), (8, "experience_bottle", 2), (3, "ender_pearl", 1)],
+}
+# what each keeper buys, for emeralds: (item, how many, emeralds paid).
+# Nothing else in the castle pays emeralds to a newcomer, and a visitor in
+# adventure mode cannot harvest or mine, so these are things they can come
+# by: wool (shears from the tailor, the sheep pen), eggs (the chicken run),
+# milk (a bucket from the smith, the cow pen), fish (a rod from the
+# fletcher, the moat), what the restless dead drop, and the spectral
+# arrows won at the range (not plain arrows: the range gives those away)
+BUYS = {
+    "tailor": [("white_wool", 4, 1)],
+    "weaver": [("white_wool", 4, 1)],
+    "baker": [("egg", 4, 1), ("milk_bucket", 1, 2)],
+    "butcher": [("cod", 3, 1), ("salmon", 3, 1)],
+    "apothecary": [("rotten_flesh", 6, 1), ("bone", 4, 1)],
+    "fletcher": [("spectral_arrow", 8, 1)],
 }
 # the profession (villager data) and a name for each keeper
 KEEPER = {
@@ -74,10 +96,21 @@ KEEPER = {
 }
 
 
-def offers(trades: list[tuple[int, str, int]]) -> str:
-    """a villager's Offers NBT; an item is a name, or a whole item's SNBT
+def buying(item: str, n: int, paid: int) -> str:
+    """the trade that buys ``n`` of an item for ``paid`` emeralds"""
+    return (
+        f'{{buy:{{id:"minecraft:{item}",count:{n}}},'
+        f'sell:{{id:"minecraft:emerald",count:{paid}}},maxUses:9999,rewardExp:0b}}'
+    )
+
+
+def offers(trades: list[tuple[int, str, int]], buys=()) -> str:
+    """a villager's Offers NBT: what they buy (`BUYS`) first, then what
+    they sell; an item sold is a name, or a whole item's SNBT
     (``{id:...,count:1,components:...}``, e.g. a written book)"""
-    recipes = ",".join(
+    recipes = ",".join(buying(*b) for b in buys)
+    recipes += "," if buys and trades else ""
+    recipes += ",".join(
         f'{{buy:{{id:"minecraft:emerald",count:{price}}},'
         + (
             f"sell:{item}"
@@ -152,6 +185,9 @@ CASTLE_PEOPLE = [
         "blacksmith",
     ),
     ("jailer", (93, -8, 137), "east", True, "nitwit", "Grimsby the Jailer", None),
+    # by the gate, facing the main street: he welcomes visitors (play.py's
+    # notice board stands across the street, and its commands speak for him)
+    ("crier", C.CRIER, "east", False, "nitwit", "Hal the Crier", None),
 ]
 # the mobile people and creatures round the square (local block positions)
 WANDERERS = [(48, 150), (72, 150), (47, 163), (73, 163), (56, 160), (64, 150)]
@@ -224,7 +260,8 @@ def people() -> str:
     for h in houses.values():
         if "counter" in h.stands and h.contents in KEEPER:
             profession, name = KEEPER[h.contents]
-            nbt = villager(profession, name) + f",{offers(TRADES[h.contents])}"
+            trades = offers(TRADES[h.contents], BUYS.get(h.contents, ()))
+            nbt = villager(profession, name) + f",{trades}"
             stand_at(h.stands["counter"], h.facing, nbt)
     tavern = houses.get("tavern")
     if tavern:
@@ -256,7 +293,8 @@ def people() -> str:
         L.summon("chicken", V(x, 0, z) + Vec3(0.5, 0, 0.5), L.PERSIST)
     # the copper golem and the market's chests
     (cx, cz), (dx, dz) = MARKET_CHESTS
-    L.set_block(V(cx, 0, cz), "minecraft:copper_chest[facing=south]")
+    # (waxed, as the golem is: castle_lib.protected. Neither ages)
+    L.set_block(V(cx, 0, cz), "minecraft:waxed_copper_chest[facing=south]")
     L.set_block(V(dx, 0, dz), "minecraft:chest[facing=south]")
     gx, gz = COPPER_GOLEM
     L.summon("copper_golem", V(gx, 0, gz) + Vec3(0.5, 0, 0.5), L.PERSIST)

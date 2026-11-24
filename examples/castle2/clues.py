@@ -21,6 +21,8 @@ inner vault::
       -> the crypt's second chamber (the organ)
     its chest      the steward's reckoning: which copper lights to press
       -> the inner vault (the copper puzzle)
+    its chest      the founder's last word: the end of the trail, and the
+                   Steward's bell that sets the castle to rights
 
 and, off the trail, the fletcher's rules of the range (the archery cache),
 a plaque in the smithy (its trapdoor) and Mercator's chart of the castle,
@@ -38,6 +40,7 @@ import re
 
 import castle2_layout as C  # noqa: I001  (first: it sets up castle's layout)
 import castle_lib as L
+import loot
 from castle2_layout import CELL_ROWS, DUNGEON_Y, V
 from castle_layout import SMITHY_HATCH
 
@@ -49,7 +52,7 @@ STEP = {
     "east": Vec3(1, 0, 0),
     "west": Vec3(-1, 0, 0),
 }
-NOTE_SLOT = 13  # the middle of a chest: the reward chests fill from slot 0
+NOTE_SLOT = loot.NOTE_SLOT  # the middle of a chest
 
 
 def _ordinal(k: int) -> str:
@@ -107,8 +110,11 @@ BOOKS: dict[str, tuple[str, str, list[str]]] = {
         [
             "I raised this castle and hid its heart. My Book of Hours stands "
             "on a lectern in the library, by the east bookcases.",
-            "Twelve hours keep my doors shut. Turn to the thirteenth and the "
-            "shelves will let you into my study.",
+            "Twelve hours keep my doors shut. Turn to the thirteenth and let "
+            "it lie open while you count to five: the shelves will not move "
+            "for one who leafs through. Then they let you into my study.",
+            "My pick I leave you with this. It breaks cracked dark brick and "
+            "nothing else, and there is always something behind a crack.",
         ],
     ),
     "alchemist": (
@@ -136,6 +142,20 @@ BOOKS: dict[str, tuple[str, str, list[str]]] = {
         ],
     ),
     "steward": ("The Steward's Reckoning", "the Steward", _copper_hint()),
+    "last": (
+        "The Founder's Last Word",
+        "the Founder",
+        [
+            "You found the miller's way and woke my bones. You kept my "
+            "thirteenth hour, set the stars, played the monk home and lit "
+            "every light. Then you know my castle as I did.",
+            "What lies in this chest is the heart I hid. It was kept for "
+            "whoever came this far: take it, and go well.",
+            "One thing more. The Steward's bell is in the winch room over "
+            "the gate. Ring it as you leave and the castle forgets you: every "
+            "door shut and every chest filled, for the next to come.",
+        ],
+    ),
     "fletcher": (
         "Rules of the Range",
         "Robin the Fletcher",
@@ -159,6 +179,10 @@ BOOKS: dict[str, tuple[str, str, list[str]]] = {
             "The alchemist's tower: as above, so below.",
             "The chapel: the dead monk's tune. The vault: let every lamp be lit.",
             "The barracks: a true eye. The smithy: mind the rug.",
+            # (Mercator's summon, chart and all, must stay under RCON's
+            # 1446 bytes a command: keep these short)
+            "The gate: Hal has a purse for you. Above him, the Steward's bell.",
+            "Cracked dark brick hides a cache. Only the prospector's pick breaks it.",
         ],
     ),
 }
@@ -180,6 +204,7 @@ TRAIL: list[tuple[str, str, list[str]]] = [
     ),
     ("cantor", "in the alchemist's cellar's chest", ["the crypt's second chamber"]),
     ("steward", "in the crypt's second chamber's chest", ["the inner vault"]),
+    ("last", "in the inner vault's chest: the end of the trail", []),
     ("fletcher", "on a lectern in the fletcher's shop", ["the archery cache"]),
     (
         "chart",
@@ -196,8 +221,11 @@ TRAIL: list[tuple[str, str, list[str]]] = [
     ),
 ]
 
-# the guide's rumours: vague, one for each step of the trail
+# the guide's rumours: vague, for the gate, each step of the trail and
+# what play.py adds
 RUMOURS = [
+    "Hal the Crier, at the gate, has a purse for every newcomer.",
+    "The keepers pay in emeralds for wool, eggs, milk, fish and worse.",
     "The tavern's regulars say old Wat knows more than he lets on, and writes "
     "it all down.",
     "The prisoners keep a diary. They have time enough.",
@@ -206,8 +234,15 @@ RUMOURS = [
     "The alchemist trusted nobody, but he wrote everything in his notebook.",
     "Brother Cantor, the organist, wrote a last letter before he died.",
     "The steward counted the treasure, and how to reach the rest of it.",
+    "The Founder had the last word, they say, and kept the best for it.",
     "The fletcher has rules for his range, and a reason for them.",
     "Mercator the cartographer sells a chart with more on it than the roads.",
+    "The dead under the dungeon do not all lie still, and they pay whoever "
+    "puts them back to rest.",
+    "An old prospector's pick is buried with the Founder. Mind the cracks in "
+    "the dark brick.",
+    "The Steward keeps a bell over the gate. Ring it, and it is as if you "
+    "had never come.",
 ]
 
 
@@ -231,8 +266,9 @@ def chests() -> dict[str, Vec3]:
     return {
         "founder": machines_bailey.listening_door_cells()["reliquary"],
         "alchemist": machines_upper.lectern_cells()["chest"],
-        "cantor": V(20, 11, 21),  # the alchemist's cellar (machines_upper.astrolabe)
+        "cantor": machines_upper.astrolabe_cells()["chest"],
         "steward": organ.organ_cells()["chest"],
+        "last": machines_upper.copper_cells()["hoard"],
     }
 
 
@@ -275,10 +311,14 @@ def found_at(key: str) -> Vec3 | None:
     return spots.get(key)
 
 
+def lectern_block(facing: str, key: str) -> str:
+    """a lectern with a book of the trail on it (protect.py keeps a master
+    copy of each, to put the book back from)"""
+    return f"minecraft:lectern[facing={facing},has_book=true]{{Book:{book_snbt(key)}}}"
+
+
 def place_lectern(p: Vec3, facing: str, key: str) -> None:
-    L.set_block(
-        p, f"minecraft:lectern[facing={facing},has_book=true]{{Book:{book_snbt(key)}}}"
-    )
+    L.set_block(p, lectern_block(facing, key))
 
 
 def note(chest: Vec3, key: str) -> None:
@@ -309,7 +349,7 @@ def clues() -> str:
     return f"{len(BOOKS)} books, a plaque"
 
 
-def _title_at(where: str) -> str:
+def title_at(where: str) -> str:
     """the title of the book a ``data get`` path points at, or ''"""
     r = L.cmd(f'data get {where}.components."minecraft:written_book_content".title')
     # a text component: {raw: "..."} (a plain string reads back that way)
@@ -322,17 +362,17 @@ def check(check_fn) -> None:
     in Mercator's trades"""
     bad = []
     for key, (p, _facing) in lecterns().items():
-        found = _title_at(f"block {p.x} {p.y} {p.z} Book")
+        found = title_at(f"block {p.x} {p.y} {p.z} Book")
         if found != BOOKS[key][0]:
             bad.append(f"{key} lectern {tuple(p)}: {found!r}")
     for key, chest in chests().items():
-        found = _title_at(
+        found = title_at(
             f"block {chest.x} {chest.y} {chest.z} Items[{{Slot:{NOTE_SLOT}b}}]"
         )
         if found != BOOKS[key][0]:
             bad.append(f"{key} note in {tuple(chest)}: {found!r}")
     sel = f"@e[type=minecraft:villager,tag={C.TAG},name=Mercator,limit=1]"
-    found = _title_at(f"entity {sel} Offers.Recipes[-1].sell")
+    found = title_at(f"entity {sel} Offers.Recipes[-1].sell")
     if found != BOOKS["chart"][0]:
         bad.append(f"Mercator's last trade: {found!r}")
     check_fn(
