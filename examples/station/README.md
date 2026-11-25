@@ -68,7 +68,8 @@ world, the layout and the datapack under construction.
 | `dome_4_inside` | the Foundry |
 | `dome_5_inside` | the Signal Room |
 | `dome_7_inside` | the Engine (phase 1; phase 2, the Master, behind `PHASE_2` in `dome_boss.py`, off) |
-| `dome_2_inside`, `dome_6_inside` | not built yet (a stub: a BYPASS lever) |
+| `dome_6_inside` | the Clockwork Maze (after `datapack`: it ends with the pack's `dome/6/reset`; lifts on, behind `LIFTS` in `dome_maze.py`) |
+| `dome_2_inside` | not built yet (a stub: a BYPASS lever) |
 | `tunnel_0` ... `tunnel_7` | each tunnel, flooded and shut, with its pump engine; the two that slope have stairs. `STAGES=tunnels` is short for all eight |
 
 A stage that is not written says so and does nothing: the list is the

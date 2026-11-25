@@ -14,7 +14,7 @@ played it: each entry says which.
 | 1 | The playable slice: shore, boat, dock, lift, start dome, Boiler Room, its tunnel, reset, recall, kit | built and played once: the way in, the Pump House, the Boiler Room, tunnels 0 and 1, the Gearworks' empty shell. The owner's first play-test (25 Nov 2026) asked for changes: see "The first play-test" |
 | 2 | Gearworks and the Flooded Dome | the shells, tunnels 2 and 3 are built; the Flooded Dome built and checked live (see "The Flooded Dome (dome 3): findings"), not yet played; the Gearworks a stub (a BYPASS lever) |
 | 3 | Foundry and the Signal Room | shells, tunnels 4 and 5; the Signal Room and the Foundry built and checked live (see "The Signal Room (dome 5): findings" and "The Foundry (dome 4): findings"), not yet played |
-| 4 | Clockwork Maze, the boss dome, the return tunnel, the win, the Wall of Fame | shells, tunnels 6 and 7; the Engine (dome 7) built and checked live with its phase 2 (the Master) switched off, see "The Engine (dome 7): findings"; the Maze a stub; the win is the core's and is checked, the trophy sign is given at the win, nobody has written one |
+| 4 | Clockwork Maze, the boss dome, the return tunnel, the win, the Wall of Fame | shells, tunnels 6 and 7; the Engine (dome 7) built and checked live with its phase 2 (the Master) switched off, see "The Engine (dome 7): findings"; the Clockwork Maze built and checked live (see "The Clockwork Maze (dome 6): findings"), not yet played; the win is the core's and is checked, the trophy sign is given at the win, nobody has written one |
 | 5 | Polish from the play-tests, the guide, the docs image, the PR | not started |
 
 Stages 1 to 5 each end with a play-test by the owner; the next does not
@@ -302,6 +302,11 @@ What RCON cannot stand in for. Each stage adds to the list as it builds.
 | 2 | The Flooded Dome's gates with real bodies: never shutting on you, in its own cells or beyond it; standing against shut bars from outside does not open them; hands on the levers and a player's weight on each plate; the pump lever put back if moved |  no |
 | 2 | The Flooded Dome with two: holder and partner in sight at A, B and C (from plate B only a sliver of gate B shows: review 12); "Hold here. Swap next time." understood; one logging off mid-swim; the second arriving mid-clock (the plate comes only when the spring has run out); is holding three times dull |  no |
 | 2 | The Flooded Dome as a place: the crown (about 10 walkable cells: cramped for two?); the one-block bar rails, which can be hopped (into the tide clock's open cage from the dam's crest, onto the beam engine past the fence's ends: a repeater clicked there can stop a clock for good, review 4); falls from the high walk and the crown once dry (up to 16 blocks); lag when a stage ends or a player enters (about 1000 fills in one tick); titles, the bell, the gate and pump sounds, the bubbles, the drowned lamps under water, the tide clock's noise in the hall; the log's four pages fit; plaque and signs the right way round; labels readable under water; time, about 8 minutes for a first-time pair |  no |
+| 4 | The Clockwork Maze alone, Easy, level 5: is 6 s an hour enough to see a gate open and get through (and at levels 1 and 10)? The three hour colours (oxidised copper, iron, yellow) and the numerals in the tower's light; the Great Dial from the entrance, the atrium's hour lamps on each deck; the bell's three pitches heard over some 25 pistons at a strike (review 6.4: too loud, lost?); about 2 minutes for a clean run |  no |
+| 4 | The Maze's lifts (on) with a real player: riding A, B and C up at the strike of Green (smooth, or a jolt every 3 ticks?), being carried down from a lift's top at the strike of Gold (annoying?), the shutter of trapdoors underfoot, the Ram taking you down from the crown 3 s after the Regulator; and the ladders beside every lift: found, climbed, stepped off sideways (now only into the shaft: a short fall, a slow drift in the Ram's) |  no |
+| 4 | The Maze's timed floors: the thud and sparks over a floor in its last quarter (enough warning, at levels 7 to 10 too?), the drift down a deck read as "caught", not hurt; the wave w1 to w5 alone and as a pair |  no |
+| 4 | The Maze with two: the tower door's and F to K's plates (gold only while there), the signs changing, the Regulator's lever turning into two keys as the second arrives up top and back; stepping into a doorway as a gate shuts (it waits) |  no |
+| 4 | The Maze as a place: the closed bands over the wall tops and the lids on the machine cells (do the cells still read as machinery behind bars?), light under deck 2, the Tally Engine (does it count; its new lid), the pendulum's swing, the Walk (found, used, gives too much away?), the falls from the Walk's stairs (4 to 5 blocks, unrailed); the descent after solving and the pump event on the way; the lever, the recall button and the log by hand |  no |
 
 ## Decisions and findings
 
@@ -1694,6 +1699,105 @@ the fault below); then the whole verify, 46/46 passed (2 TODO: the Gearworks and
   aisles, gate B a sliver from its plate, the entry message, the chase
   beside sluice line A); the `# noqa: E731` lines in the test (as
   `test_station_example.py` has).
+
+### The Clockwork Maze (dome 6): findings
+
+`dome_maze.py` (its docstring has the puzzle and the functions), built
+live with `dome_6_inside` over the shell already there; the BYPASS stub
+is gone. A tower of three decks and a crown on a lattice of 3 x 3 cells:
+38 two-block piston gates (a sticky piston pair in a post, shut by
+filling a valve slot with redstone, opened by clearing it to grating,
+never writing a piston, mended every tick), 7 arches, 6 timed floors of
+grating, 4 lifts each with a ladder always there, the Regulator (a lever,
+or two keys while two are up top) on the crown. A clock of three hours
+(Green, Iron, Gold; 6 s an hour at level 5) opens each gate in the hour
+of its colour. To look at: the Great Dial and its pendulum, the atrium's
+hour lamps, the Tally Engine, tanks, the Walk round the wall. The lifts
+are on (`LIFTS = True`): A, B and C up at the strike of Green and down
+at Gold, the Ram down from the crown once solved.
+
+**What the live check (`CHECKS=clockwork_maze`) proves**, with stand-ins
+and the lever set by command: every block as built, after emptying, and
+after a reset from a scrambled duo room (keys up, a lift moved, floors
+dropped, the log taken); the 80 text displays, the pendulum, the recall
+entity, the log; the Tally Engine showing 3 or more patterns; the level's
+values; two full turns of the clock with all 38 gates read at every hour
+(slot, pistons and doorway shut, or leaves parked and doorway clear),
+the dial and the atrium's lamps; a gate not shutting on a stand-in in its
+doorway; the solo run walked by teleport along the search's route, each
+doorway read open before it is passed; the lever: solved, tunnel 6
+pumping, every gate open, every floor out; **the mend**: a wrecked gate
+and a gate given a short pulse each whole again; the Ram carrying a
+stand-in from the crown to its foot and its shutter closing; the lever
+held over; a second entry changing nothing; a stand-in on T2 at the strike
+of Green found a deck down; duo: the door shut with both outside, opened
+by its plate and not by an item, open with one inside; F to K held, opened
+by its plate, back on the clock with one beyond; the lever with one up
+top, two keys with two, one key not solving, both solving; one leaving:
+solo, the plates gone, the room not set up anew; levels 1 and 10; lift A
+carrying a stand-in up at the strike of Green; tunnel 6 left shut and
+flooded, the other domes' and tunnels' scores untouched, no stand-in.
+Live: `PASS clockwork_maze` on the second run (the first found the fault
+below); then the whole verify, 47/47 passed (1 TODO: the Gearworks).
+
+**Changed from the reviews** (`review_maze`, W1 and A1 to A5; the second
+review's 1.1 and 3.1):
+
+- W1 / 1.1 (would break a game): stepping off a ladder onto a wall top
+  (lift C's, on the way to the crown, and the Ram's), or drifting there
+  as a timed floor went (T2, w5), a player could walk the wall tops and
+  drop into a machine cell with no way out. Now the band between every
+  wall top and the floor over it is closed at foot height with bars
+  (which covers the block beside each ladder at each deck that the
+  second review asked for) and each machine cell has a lid of bars. A new
+  search, `trap_problems` (in `room_problems`, so the build refuses
+  without it), climbs every rung and steps off it sideways, falls from
+  anywhere drifting a block sideways for each block fallen, lands on
+  rails, lets a timed floor go from under a player, with the lifts up and
+  down: no machine cell is reachable and every place reached leads back
+  to the entrance. Without the block beside lift C's ladder and the lid
+  of deck 3's machine cell it finds the review's trap; the unit test
+  checks it does. With the bands closed, the only cells off a deck it
+  reaches are ladder rungs.
+- A1: lift C's ladder and backing ran a block above the crown and
+  replaced the collar's rail, so a climber holding forward stepped out
+  over a 19-block drop (it also led onto the wall tops). Every ladder and
+  backing now ends level with the deck it serves. A step off the Ram's
+  ladder (18 high) is now a slow drift (slow falling in its shaft).
+  **Declined**: rails on the Walk's stairs. A fall of 4 to 5 blocks
+  costs 1 to 2 points of 20 (fall damage is the height less 3); on the
+  play-test list.
+- A2: a timed floor in its last quarter out now thuds under those on it
+  and sparks, every half second (at levels 7 to 10 it goes before the
+  bell's ticks).
+- A3: the check's scramble ran `keys/on` with nobody up top, so the next
+  tick undid it and the check would always fail; now two stand-ins go up.
+- A4: the Tally Engine's cage has a lid of bars.
+- A5: `enter` armed the room on `#first` alone, so a second player
+  walking in after the first had logged back in inside reset the room
+  under them; now not while it is live.
+- 3.1: the Gold hour's block was gold, the station's mark of an input,
+  on 12 lintels, the atrium lamps, the dial and the key. Now yellow
+  concrete. The gold under the four plates is there only while its plate
+  is (`plate_bases`), the floor round it otherwise.
+- Debt, done: the mend is now exercised live (4.1); the lifts are on, as
+  the rig's experiment 9 allows, with the ladders kept as the fallback.
+  The check's walk comment no longer claims ladders.
+- Contract: the check's first line is `game_checks.no_run`; the level is
+  saved and put back with `save_level`/`restore_level`, and the stand-ins
+  killed, whatever happens. Nothing uses the old check site in dome 6.
+- Found live: with the lifts on, a stand-in teleported to a lift's top in
+  the first ticks of Gold fell through the hole the platform had just
+  left (the shutter comes only once it is more than 3 below); a player
+  arriving then drops 1 to 3 blocks onto the platform. The check now
+  waits for the platform to come to rest.
+- **Not done** (debt or nits): the noise of the gates (6.4) and the
+  `fill` fallback; the Regulator's swap waiting for no safe point and its
+  chat line repeating (D2); `mend` run every tick (D4, about 370 cheap
+  lines a tick); the lint suppressions (D7); `reset` killing items by
+  position, as the Boiler Room does (D8); the nits N1 to N7. A player
+  standing on a lift's top at the strike of Gold is carried down a deck
+  (they climb back up the ladder); the pair search does not model it.
 
 ## Known problems / notes
 
