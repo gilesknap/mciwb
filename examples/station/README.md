@@ -39,7 +39,9 @@ one, and the password in `$MCIWB_PASSWORD` (or `--password-file`).
 | `domes.py` | a dome's cells, the build of its shell, its mouths and entrance, and the check that it is dry and whole |
 | `tunnels.py` | a tunnel's cells, its build, its drain, refill and pump event as functions, and its check |
 | `game.py` | the game core's functions, and `Module`: how a part of the station adds its stages, functions and checks |
-| `fittings.py` | what every dome has: a frame to place things by, signs and plaques, a lectern and its book, the recall post, who pressed a button |
+| `fittings.py` | what every dome has: a frame to place things by, input posts and readers, gauges, displays, hints, machinery that runs by itself, signs and plaques, a lectern and its book, the recall post, lent and restricted items |
+| `automatons.py` | the mobs of the fights, made to the plan's rules: the three kinds, waves, leash and fence, a dome's bossbar, the difficulty |
+| `rooms.py` | offline checks of a room's plan: placement, walks, sight lines, inputs on gold, blocks with a meaning |
 | `shore.py`, `dome_start.py`, `dome_boiler.py` | the modules: the way in (shore, boats, dock, lift), the Pump House, the Boiler Room |
 | `game_checks.py` | the live checks of the game core, with stand-ins for players |
 | `build_station.py` | the build, stage by stage |
@@ -141,32 +143,62 @@ MODULE = game.Module(
   docstring; where a dome's floor, mouths, entrance and reserved cells
   are, and the rules for dressing a dome, in `domes.py`'s; the tunnels'
   functions in `tunnels.py`'s; the shared fittings in `fittings.py`'s.
-- What a dome builder gets from the core, beyond the hooks:
-  - progress: call `station:dome/<n>/solved` and the core does the rest
-    (the title, tunnel n's pump event, the next dome opened, respawn
-    points); the last dome's is the win, and functions named in
-    `Module(wins=...)` run then (`#won.best` says whether the run set the
-    level's best time);
-  - `#first` in `enter` (first into an empty dome), `#form<n>` (solo or
-    duo by who is in the dome), `#diff.*` (the level's percentages);
-  - a `dome/<n>/leave` hook, as each player who goes out: take back what
-    the dome lent (`clear @s <item>`);
-  - kits: the core gives a shield and spectral arrows on entering dome 4
-    and brass armour and a sabre on entering dome 7; `st.died` counts a
-    player's deaths for a fight to read and zero;
-  - `automatons.py`: `summon(...)` writes a mob to the plan's rules;
-    `station:mob/dress` scales it, `station:mob/count` says how many by
-    the dome's form and the level, `room_lines` holds a wave to a cap,
-    and the core removes a dome's automatons when it empties;
-  - `fittings.py`: frame, signs, plaque, lectern, recall post, who
-    pressed a button, `restricted(item, place_on=, breaks=)`,
-    `placement_problems`;
-  - `domes.add_opening` for a hole a module cuts in a shell and
-    `domes.add_wet` for water a dome holds on purpose (both called when
-    the module is imported), so the shell's check still means something;
-  - `game_checks`: `stand_at`/`stand_in` (stand-ins for players, with
-    `gravity=True` to press a plate), `as_stand_in`, `fresh`, `scores`,
-    `expect`.
+- **The builders' contract**: what a dome's module gets from the core,
+  and what it must not do for itself.
+  - *Until it exists*, its dome is a stub: a BYPASS lever by the exit
+    that solves the dome, so the ring always plays end to end. The
+    module's file replaces the stub; its build stage runs
+    `game.clear_stub_commands(dome)`.
+  - *Two rules*: leaving a dome never costs more than the stage in
+    progress; a change of form never shuts, removes or restarts
+    something a player is using (it waits for the room's next safe
+    point).
+  - *Progress*: call `station:dome/<n>/solved` and the core does the
+    rest (the title, tunnel n's pump event, the next dome opened, respawn
+    points). The last dome's is the win, and functions named in
+    `Module(wins=...)` run then (`#won.best`: the run set the level's
+    best time).
+  - *Hooks* (define the function, the core calls it): `enter` (with
+    `#first`: first into an empty dome), `leave` (as each player who goes
+    out, by any way), `tick`, `solo` and `duo` (by `#form<n>`: who is in
+    this dome), `died` (as a player alive again after dying: the room's
+    penalty), `empty` (3 s after the last player went), `reset`.
+  - *The level*: `#diff.count`, `.health`, `.damage`, `.timer`, `.seq`,
+    percentages; copy what you need when the room is set up.
+  - *Kits* are the core's alone: a shield and spectral arrows on entering
+    dome 4, brass armour and a sabre on entering dome 7. A dome lends
+    with `fittings.lend_line` and takes back with `take_back_line` in
+    `leave` and `reset`.
+  - *Fights* (`automatons.py`): the three kinds `STOKER`, `RIVETER`,
+    `SLAG_HUSK` (`summon_kind`, `dress_kind_line`); `waves(pack, n,
+    points, ...)` for casting them at spawn points where a player is, up
+    to a cap and a kind's cap, with a leash; `fence_lines`;
+    `station:mob/count`; `bar(pack, n, title)` for a bossbar shown to the
+    dome's players; `sweep_lines`; `#difficulty` (0 is Peaceful: do not
+    start a fight). The core removes a dome's automatons when it empties,
+    clears them from round the entrance when a player respawns, and gives
+    that player 5 s of Resistance.
+  - *Fittings* (`fittings.py`): `frame`; `input_post` (an input on brass
+    with its sign and label); `lever`, `lever_put_lines`,
+    `lever_hold_line`, `button_line`, `plate_held`, `interaction` and
+    `click_line` (who pressed); `gauge_lines`; `display`, `text_line`,
+    `turn_line`; `hint`; `torch_clock` (machinery that runs by itself: a
+    clock, a lamp chase, two plain pistons); signs, `plaque_blocks`,
+    `lectern_with_book`; the recall post (place it; the core answers the
+    click); `restricted` and `lent` items.
+  - *Offline checks of a room's plan* (`rooms.py`): `room_problems`,
+    `walk_problems`, `sight_problems`, `window_problems`,
+    `input_problems`; `rooms.mean(block, n)` for a block that means
+    something in one dome only.
+  - *Exceptions, said by name when the module is imported*:
+    `domes.add_opening` (a hole cut in a shell), `domes.add_wet` (water
+    held on purpose), `domes.allow` (a rule for dressing broken on
+    purpose).
+  - *Live checks* (`game_checks`): `stand_at`/`stand_in` (stand-ins for
+    players; `gravity=True` to press a plate), `as_stand_in`, `scores`,
+    `expect`, `SCAN` and `EMPTY` (ticks to wait for a scan, and for a
+    dome to count as empty). A module's check resets its own dome, not
+    the game.
 - One stage: `STAGES=site,dome_1_inside mciwb run build_station.py`
   (with `datapack` too, and `STATION_DATAPACKS_DIR`, if the functions
   changed). One check: `CHECKS=boiler_room mciwb run verify_station.py`.
@@ -190,8 +222,8 @@ MODULE = game.Module(
 | `names` | every block and item named by the pack's functions and the build's commands is one that mcwb's `Item` knows, for the Minecraft release `Item` was made from |
 
 **Live checks** work each mechanism in place over RCON. They refuse to
-run with a player online, and the core's checks reset the game before and
-after.
+run with a player online or with a run in progress (`FORCE=1` overrides),
+since the core's checks reset the game before and after.
 
 | Check | What |
 | --- | --- |
@@ -206,6 +238,9 @@ after.
 | `reset` | the reset from a run with tunnels open and draining and a vote open |
 | `automatons` | an automaton summoned and dressed as the plan wants it, scaled by the level; nothing dropped; the count by the dome's form; gone when the dome empties |
 | `restricted_items` | the items `fittings.restricted` writes are taken by the game and keep their rules |
+| `fights` | the difficulty read; waves cast where a player is, to the cap, refilled; leash and fence; a death answered; the sweep; a dome's bossbar |
+| `fittings` | the torch clock, its lamp chase and pistons seen running; a gauge; a lever put back and held; a button read once; a plate that wants a player; a display; a lent item; a hint |
+| `ring` | the whole ring's progress walked by a stand-in from the master lever to the win, each stub's BYPASS lever thrown, and the reset |
 | `shore`, `dock`, `lift`, `start_dome`, `boiler_room` | the modules' own checks (see each module) |
 
 The checks of the parts not built yet are listed as `TODO`, and a TODO is

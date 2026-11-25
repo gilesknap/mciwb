@@ -12,9 +12,9 @@ played it: each entry says which.
 | --- | --- | --- |
 | 0 | Ground work: survey, layout, mechanisms proved in a rig, datapack delivery, the skeleton | done |
 | 1 | The playable slice: shore, boat, dock, lift, start dome, Boiler Room, its tunnel, reset, recall, kit | built and played once: the way in, the Pump House, the Boiler Room, tunnels 0 and 1, the Gearworks' empty shell. The owner's first play-test (25 Nov 2026) asked for changes: see "The first play-test" |
-| 2 | Gearworks and the Flooded Dome | not started |
-| 3 | Foundry and the Signal Room | not started |
-| 4 | Clockwork Maze, the boss dome, the return tunnel, the win, the Wall of Fame | not started |
+| 2 | Gearworks and the Flooded Dome | the shells, tunnels 2 and 3 and a stub (a BYPASS lever) in each dome are built; the rooms are designed, not built |
+| 3 | Foundry and the Signal Room | as stage 2: shells, tunnels 4 and 5, stubs |
+| 4 | Clockwork Maze, the boss dome, the return tunnel, the win, the Wall of Fame | as stage 2: shells, tunnels 6 and 7, stubs; the win is the core's and is checked; the Wall of Fame's sign is not written |
 | 5 | Polish from the play-tests, the guide, the docs image, the PR | not started |
 
 Stages 1 to 5 each end with a play-test by the owner; the next does not
@@ -24,8 +24,9 @@ start until the owner has played the last and said what to change.
 
 - **The shared core of stage 1**, built in the world and worked there by
   `verify_station.py`'s live checks (named in brackets), nobody online:
-  - The empty, lit shells of the Pump House, the Boiler Room and the
-    Gearworks (`domes.py`), each on a foundation, its two tunnel mouths
+  - (This entry is the first round's: all eight shells and tunnels are
+    built now, see "The ring's structure".) The empty, lit shells of the
+    Pump House, the Boiler Room and the Gearworks (`domes.py`), each on a foundation, its two tunnel mouths
     plugged with brass doors. Read back: nothing inside or in a mouth
     wet, no hole in shell or floor, nothing but solid ground under the
     floor, the sea over the top, light of 8 or more at nine places at
@@ -47,7 +48,8 @@ start until the owner has played the last and said what to change.
   - The game core (`game.py`): the count of players and which dome each
     is in; each dome's own form: solo with one in it whoever else is in
     the game (one in the Boiler Room and one on the dock: solo), duo at
-    once with two in it, solo again within 4.2 s of one leaving it (and
+    once with two in it, solo again 3 s after one leaves it (read as solo
+    within 4.2 s and
     not within the first 0.6 s) (`player_count`); the vote proposed, counted, shown on its bossbar,
     running out after 60 s, passing with every player's press, a player
     leaving mid-vote, one player one press, both kinds (`vote`); the
@@ -644,11 +646,76 @@ Each was met on the 26.3 server while building or checking the core.
   as its last line and the check counts them, so a function that is
   missing, or cut short by the limit of 65536 commands, is a failure.
 
+### Core, fourth round: stubs, shared helpers, and the stage 1 review
+
+Built for the six rooms to come, each proved by the check named (run in
+the whole verify, alone on the server, nobody online):
+
+- **Stub domes** (`ring`). Domes 2 to 7 each have a BYPASS lever on a
+  brass post by the exit. One stand-in walked the ring from the master
+  lever to the win: through each tunnel (in no dome on the way), into
+  each dome, the Boiler Room's `solved` called and each stub's lever set
+  as a hand would leave it, every tunnel's pump event waited out, the
+  Pump House's far door open at the end; then the reset, every lever
+  back. Not proved: that a player can walk it, or pull a lever.
+- **Fights** (`fights`): the difficulty read into `#difficulty` (Easy is
+  1; `execute store result score ... run difficulty` works; that
+  Peaceful reads 0 is taken from the game's numbering, not tried, since
+  the difficulty stays Easy); waves cast only at a spawn point with a
+  player by it, 3 Stokers and 1 Riveter of the 2 asked (its kind's cap)
+  to a cap of 4, the gap scaled by the level, refilled after a kill,
+  none cast with nobody by a point; an automaton moved into a tunnel
+  back on the leash, and all back inside a fence; a death (a stand-in's
+  `st.died` set by hand) answered within 3 ticks: the automaton by the
+  entrance gone, the one across the dome left, the score back to 0; an
+  arrow and an orb swept; a dome's bossbar hidden, shown at a value,
+  hidden.
+- **Fittings** (`fittings`): the torch clock built and left to run 120
+  ticks: each of its four lamps seen lit and dark and both plain pistons
+  seen out and in; a gauge of three lamps right at five values; a lever
+  put back, left alone when not held and thrown back when held; a
+  button answered once for a press read twice, and let go; a blackstone
+  plate that reads "held" with a stand-in on it and not with another
+  armour stand on it or nothing; a post's label; a display rewritten and
+  turned; a lent item told from the same item not lent; a hint not said
+  at 30 ticks, put off by progress, said once at its time.
+- **Offline** (the unit test): the room checks find a wall across a
+  walk, stone but not glass in a sight line, an unlisted input, one not
+  on gold, one with no sign, a piston touching an input's block, a
+  block that means something in another dome, a screen before the
+  outgoing door's window (and pass it once the dome has said so).
+
+From the review of stage 1 (each finding checked in the code first):
+
+- **A player offline when the game was reset** came back sealed in a
+  shut dome with a stale kit, and then counted in every vote. Now the
+  scan sends anyone whose kit is from an earlier run to the shore with
+  nothing (`players/stale`). Aimed at `@a`: loaded, not exercised.
+- **The recall skipped a dome's `leave` hook** (the start dome is first
+  in the scan, so the player was "in" it before the dome they left was
+  looked at). Every dome's leavers are now found before any dome's
+  comers-in; a player going out of the game from a dome, and the reset,
+  call `leave` too.
+- **A dome emptied half a second after its last player stepped out**, and
+  its room was put back. It is now empty 3 s after (`EMPTY_AFTER`), as a
+  form falls back; the checks wait that long (`game_checks.EMPTY`).
+- **The live checks reset a parked run.** They now refuse while `#run`
+  is 1 unless `FORCE=1`.
+- **The pack was 15 MB, nearly all of it the checks' functions** (a line
+  or five for every cell). They are now a line a row, calling shared row
+  functions: 2.4 MB, 32,000 lines where there were 330,000. The checks
+  read the same counts.
+- The `datapack` stage now says whether the server's log was read (it
+  is, on this server): only the log says that a line did not parse.
+- A click on any recall post is answered by the core; a module places
+  the post and nothing more.
+
 ### The ring's structure (core, third round)
 
 Built in the world and checked there, nobody online, each check run by
-itself under the pod's lock while other agents worked on domes 0 to 2
-(so not yet as one whole verify from scratch):
+itself while other work went on in domes 0 to 2. The whole verify has
+since been run alone on the server, from a rebuild of every stage, and
+again after the fourth round (below):
 
 - **The shells of domes 3 to 7** (`shell_3` ... `shell_7`, all passed):
   nothing wet inside, no hole, nothing but ground under any floor cell,

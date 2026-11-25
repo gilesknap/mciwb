@@ -30,6 +30,8 @@ import station_layout as layout
 import tunnels
 
 SCAN = game.SCAN_TICKS + 2  # ticks that are sure to hold a scan
+#: ticks after which a dome its last player has left is sure to be empty
+EMPTY = (game.EMPTY_AFTER + 1) * game.SCAN_TICKS + 2
 
 
 def stand_at(ctx: Any, tag: str, where: str, gravity: bool = False) -> None:
@@ -59,8 +61,9 @@ def stand_in(ctx: Any, tag: str, dome_index: int, gravity: bool = False) -> None
 
 
 def clear_stand_ins(ctx: Any) -> None:
+    """every stand-in gone, and the domes they were in empty"""
     ctx.cmd(f"kill @e[type=minecraft:armor_stand,tag={game.STANDIN}]")
-    ctx.advance(SCAN)
+    ctx.advance(EMPTY)
 
 
 def as_stand_in(ctx: Any, tag: str, path: str, args: str = "") -> None:
@@ -112,7 +115,8 @@ def check_players(ctx: Any) -> list[str]:
     # the second comes into dome 1: duo at once
     stand_in(ctx, "st.s2", 1)
     got = scores(ctx, "#occ0", "#form0", "#occ1", "#form1")
-    want = {"#occ0": 0, "#form0": 0, "#occ1": 2, "#form1": 2}
+    # (dome 0 has nobody in it, and is not yet empty: see below)
+    want = {"#occ0": 0, "#form0": 1, "#occ1": 2, "#form1": 2}
     expect(problems, "both in dome 1", got, want)
     # and walks on into the tunnel: in no dome, still in the game, and
     # dome 1 solo again within a few seconds, not at once
@@ -126,15 +130,20 @@ def check_players(ctx: Any) -> list[str]:
     ctx.advance(game.SOLO_AFTER * game.SCAN_TICKS + SCAN)
     seconds = (game.SOLO_AFTER * game.SCAN_TICKS + 2 * SCAN) / 20
     expect(problems, f"one left dome 1, {seconds:.1f} s on", ctx.score("#form1"), 1)
+    expect(problems, "dome 0, left a while ago, empty", ctx.score("#form0"), 0)
     # on into the next dome; then one leaves the game
     stand_in(ctx, "st.s2", 2)
     got = scores(ctx, "#occ1", "#occ2", "#form2")
     expect(problems, "one in dome 2", got, {"#occ1": 1, "#occ2": 1, "#form2": 1})
+    # a dome is not empty the moment its last player goes, but 3 s on
     ctx.cmd("kill @e[tag=st.s1]")
     ctx.advance(SCAN)
-    got = scores(ctx, "#players", "#occ1", "#form1", "#form2")
-    want = {"#players": 1, "#occ1": 0, "#form1": 0, "#form2": 1}
-    expect(problems, "one left the game", got, want)
+    got = scores(ctx, "#players", "#occ1", "#was1", "#form2")
+    want = {"#players": 1, "#occ1": 0, "#was1": 1, "#form2": 1}
+    expect(problems, "one left the game, half a second on", got, want)
+    ctx.advance(EMPTY)
+    got = scores(ctx, "#was1", "#form1")
+    expect(problems, "and 3 s on: dome 1 empty", got, {"#was1": 0, "#form1": 0})
     clear_stand_ins(ctx)
     expect(problems, "all gone", ctx.score("#players"), 0)
     return problems
@@ -448,3 +457,273 @@ def check_restricted(ctx: Any) -> list[str]:
     ctx.cmd(f"setblock {at} minecraft:air")
     ctx.cmd(f"kill @e[type=minecraft:item,{domes.sphere(layout.DOMES[-2])}]")
     return problems
+
+
+def check_ring(ctx: Any) -> list[str]:
+    """
+    The whole ring's progress walked by one stand-in, from the master
+    lever to the win: into each dome in turn, the dome solved (a stub's
+    BYPASS lever thrown as a hand would leave it; a built room's
+    ``solved`` called, its puzzle being its own check's business), its
+    tunnel's pump event waited out. Then the reset: every bypass lever
+    back. Not proved: that a player can walk it (see the play-test list).
+    """
+    import build_station as B
+
+    problems: list[str] = []
+    fresh(ctx)
+    names = {m.name for m in B.modules()}
+    stubs = {
+        d.index: game.stub_post(d) for d in layout.DOMES if f"stub_{d.key}" in names
+    }
+    last = layout.DOMES[-1].index
+    stand_in(ctx, "st.s1", 0)
+    ctx.function("run/start")
+    for n in range(1, last + 1):
+        tunnel = layout.TUNNELS[n - 1]
+        expect(problems, f"tunnel {n - 1} pumping", ctx.score(f"#t{n - 1}"), 1)
+        ctx.advance(tunnels.event_ticks(tunnel) + 20)
+        got = scores(ctx, f"#t{n - 1}", f"#d{n}")
+        expect(problems, f"the way into dome {n}", got, {f"#t{n - 1}": 2, f"#d{n}": 1})
+        # through the tunnel: in no dome on the way
+        stand_at(
+            ctx, "st.s1", domes.middle(tunnels.at(tunnel, tunnel.length // 2, 0, 1))
+        )
+        expect(
+            problems,
+            f"in tunnel {n - 1}",
+            ctx.score("@e[tag=st.s1,limit=1]", "st.dome"),
+            -1,
+        )
+        stand_in(ctx, "st.s1", n)
+        expect(problems, f"in dome {n}", ctx.score(f"#occ{n}"), 1)
+        if n in stubs:
+            x, y, z = stubs[n].input
+            lever = stubs[n].attached[stubs[n].input]
+            if not ctx.is_block((x, y, z), lever):
+                problems.append(f"dome {n}: no bypass lever at {(x, y, z)}")
+            ctx.setblock((x, y, z), lever.replace("powered=false", "powered=true"))
+            ctx.advance(3)
+        else:
+            ctx.function(f"dome/{n}/solved")
+        got = scores(ctx, f"#d{n}", "#solved")
+        expect(problems, f"dome {n} solved", got, {f"#d{n}": 2, "#solved": n})
+    got = scores(ctx, "#run", f"#t{last}")
+    expect(problems, "the win", got, {"#run": 2, f"#t{last}": 1})
+    ctx.advance(tunnels.event_ticks(layout.TUNNELS[last]) + 20)
+    expect(problems, "the tunnel home", ctx.score(f"#t{last}"), 2)
+    home = layout.DOMES[0]
+    doors = [c for _, c in domes.door_cells(home, layout.TUNNELS[last])]
+    opened = sum(ctx.is_block(c, domes.AIR) for c in doors)
+    expect(problems, "the Pump House's far door open", opened, len(doors))
+    fresh(ctx)
+    for n, post in stubs.items():
+        if not ctx.is_block(post.input, post.attached[post.input]):
+            problems.append(f"dome {n}: the bypass lever is not back after the reset")
+    names = [f"#d{d.index}" for d in layout.DOMES] + [
+        f"#t{t.index}" for t in layout.TUNNELS
+    ]
+    want = dict.fromkeys(names, 0) | {"#d0": 1}
+    expect(problems, "after the reset", scores(ctx, *names), want)
+    return problems
+
+
+def check_fittings(ctx: Any) -> list[str]:
+    """
+    The fittings (fittings.py) tried in the world, in the way in to the
+    check's dome, which is cleared afterwards: the torch clock with its
+    lamp chase and pistons seen running; a gauge following a score; a
+    lever put back and held over; a button read once a press; a plate
+    that counts only with a player on it; a post's label; a display
+    rewritten and turned; a lent item told from another; a hint said once,
+    after its time. With stand-ins for players, and items in a barrel:
+    not proved is anything in a hand, nor how any of it looks.
+    """
+    import fittings as F
+
+    problems: list[str] = []
+    dome, fr, way = F.check_site()
+    tag = "st.chk"
+    box = (min(way.values()), max(way.values()))
+
+    def clear() -> None:
+        ctx.fill(*box, domes.AIR)
+        ctx.cmd(f"kill @e[tag={tag}]")
+        ctx.cmd(f"kill @e[type=minecraft:item,{domes.sphere(dome)}]")
+
+    def place(*layers: dict) -> None:
+        for layer in layers:
+            for cell, block in layer.items():
+                ctx.setblock(cell, block)
+
+    def run(line: str) -> str:
+        return ctx.cmd(line)
+
+    if not set(way.values()) <= tunnels.reserved_cells(dome):
+        return ["the check's site is not all reserved cells"]
+    clear_stand_ins(ctx)
+    clear()
+
+    # -- the torch clock, a level up on its own bed
+    clock = F.torch_clock(fr, 0, 0, h=2, side=-1, lamps=True, pistons=True)
+    if not clock.cells <= set(way.values()):
+        problems.append("the clock does not fit the check's site")
+    place(clock.bed, clock.solid, clock.attached)
+    lamps: list[set[bool]] = [set() for _ in clock.lamps]
+    heads: list[set[bool]] = [set() for _ in clock.pistons]
+    for _ in range(40):
+        ctx.advance(3)
+        for cell, seen in zip(clock.lamps, lamps, strict=True):
+            seen.add(ctx.is_block(cell, "minecraft:waxed_copper_bulb[lit=true]"))
+        for cell, seen in zip(clock.pistons, heads, strict=True):
+            seen.add(ctx.is_block(cell, "minecraft:piston[extended=true]"))
+    expect(problems, "the clock's lamps seen lit and dark", lamps, [{True, False}] * 4)
+    expect(problems, "its pistons seen out and in", heads, [{True, False}] * 2)
+    clear()
+    ctx.advance(5)
+
+    # -- a gauge
+    lit, dark = (f"minecraft:waxed_copper_bulb[lit={v}]" for v in ("true", "false"))
+    column = [fr.at(-2, 0, h) for h in (1, 2, 3)]
+    for value, want in ((25, 2), (0, 0), (30, 3), (9, 0), (10, 1)):
+        ctx.set_score("#chk.g", value)
+        for line in F.gauge_lines(column, "#chk.g st", 10, lit, dark):
+            run(line)
+        got = sum(ctx.is_block(c, lit) for c in column)
+        expect(problems, f"gauge lamps lit at {value}", got, want)
+    clear()
+
+    # -- a lever on a post: put back, and held over
+    post = F.input_post(
+        fr.at(0, 0, 1),
+        fr.facing(0, 1),
+        F.lever(fr.facing(0, 1)),
+        ("CHECK",),
+        "CHECK",
+        (tag,),
+    )
+    place(post.solid, post.attached)
+    for command in post.summons:
+        run(command)
+    expect(
+        problems,
+        "the post's label",
+        ctx.count(f"@e[type=minecraft:text_display,tag={tag}]"),
+        1,
+    )
+    off = post.attached[post.input]
+    on = off.replace("powered=false", "powered=true")
+    ctx.setblock(post.input, on)
+    for line in F.lever_put_lines(post.input, off):
+        run(line)
+    expect(problems, "the lever put back", ctx.is_block(post.input, off), True)
+    hold = F.lever_hold_line(post.input, on, "if score #chk.h st matches 1")
+    ctx.set_score("#chk.h", 0)
+    run(hold)
+    expect(
+        problems, "the lever not held, left alone", ctx.is_block(post.input, off), True
+    )
+    ctx.set_score("#chk.h", 1)
+    run(hold)
+    expect(problems, "the lever held over", ctx.is_block(post.input, on), True)
+    clear()
+
+    # -- a button read and let go
+    brass, cell, button = F.check_button()
+    ctx.setblock(brass, F.BRASS)
+    ctx.setblock(cell, button)
+    ctx.set_score("#chk.pressed", 0)
+    read = F.button_line(B_pack(), "check/button", cell, button, [])
+    run(read)
+    expect(problems, "a button not pressed", ctx.score("#chk.pressed"), 0)
+    ctx.setblock(cell, button.replace("powered=false", "powered=true"))
+    run(read)
+    run(read)
+    expect(problems, "a button pressed, read twice", ctx.score("#chk.pressed"), 1)
+    expect(problems, "the button let go", ctx.is_block(cell, button), True)
+    clear()
+
+    # -- a plate that counts only with a player on it
+    plate = "minecraft:polished_blackstone_pressure_plate"
+    post = F.input_post(fr.at(0, 0, 1), fr.facing(0, 1), plate)
+    place(post.solid, post.attached)
+    held = f"execute {F.plate_held(post.input)} run scoreboard players set #chk.p st 1"
+
+    def plate_read() -> tuple[bool, int | None]:
+        ctx.set_score("#chk.p", 0)
+        ctx.advance(15)
+        run(held)
+        return ctx.is_block(post.input, f"{plate}[powered=true]"), ctx.score("#chk.p")
+
+    expect(problems, "a plate with nobody on it", plate_read(), (False, 0))
+    run(
+        f"summon minecraft:armor_stand {domes.middle(post.input)} "
+        f'{{Tags:["{tag}"],Invisible:1b}}'
+    )
+    expect(problems, "a plate with something else on it", plate_read(), (True, 0))
+    run(f"kill @e[type=minecraft:armor_stand,tag={tag}]")
+    stand_at(ctx, "st.s1", domes.middle(post.input), gravity=True)
+    expect(problems, "a plate with a player on it", plate_read(), (True, 1))
+    clear_stand_ins(ctx)
+    clear()
+
+    # -- a display rewritten and turned
+    x, y, z = fr.at(0, 0, 2)
+    run(F.display((tag, "st.chk.d"), (x + 0.5, y, z + 0.5), 90, F.label_text("ONE")))
+    run(F.text_line("st.chk.d", F.label_text("ROUND 2", "red")))
+    run(F.turn_line("st.chk.d", 180))
+    shown = ctx.data(f"entity {F.display_selector('st.chk.d')} text")
+    turned = ctx.data(f"entity {F.display_selector('st.chk.d')} Rotation")
+    expect(problems, f"the display's text {shown!r}", "ROUND 2" in shown, True)
+    expect(problems, f"the display's turn {turned!r}", "180" in turned, True)
+
+    # -- lent items: told from others by their mark
+    at = "{} {} {}".format(*fr.at(0, 0, 1))
+    ctx.setblock(fr.at(0, 0, 1), "minecraft:barrel")
+    pipe = F.restricted("minecraft:raw_copper_block", place_on="minecraft:gold_block")
+    run(f"item replace block {at} container.0 with {F.lent(pipe, 'pipe')}")
+    run(f"item replace block {at} container.1 with minecraft:raw_copper_block")
+    for key, want in (("pipe", True), ("other", False)):
+        got = ctx.test(
+            f"execute if items block {at} container.* {F.lent_predicate(key)}"
+        )
+        expect(problems, f"an item lent as {key} found in the barrel", got, want)
+    ctx.set_score("#chk.n", 0)
+    run(
+        f"execute store result score #chk.n st "
+        f"if items block {at} container.* {F.lent_predicate('pipe')}"
+    )
+    expect(problems, "how many items are lent, of two alike", ctx.score("#chk.n"), 1)
+    clear()
+
+    # -- a hint: once, after its time, and not while there is progress
+    saved = ctx.score("#diff.timer")
+    ctx.set_score("#diff.timer", 100)
+    lines = F.hint(B_pack(), dome.index, "check", "", 2)
+    clock_score = f"#hint{dome.index}.check"
+    run(lines.arm)
+    for _ in range(30):
+        run(lines.tick)
+    expect(problems, "the hint's clock after 30 ticks", ctx.score(clock_score), 30)
+    run(lines.progress)
+    for _ in range(39):
+        run(lines.tick)
+    expect(problems, "after progress and 39 ticks", ctx.score(clock_score), 39)
+    run(lines.tick)
+    said = ctx.score(clock_score)
+    expect(problems, "said at 40 ticks (2 s)", said is not None and said < 0, True)
+    run(lines.tick)
+    run(lines.progress)
+    expect(problems, "and not again", ctx.score(clock_score), said)
+    if saved is not None:
+        ctx.set_score("#diff.timer", saved)
+    clear()
+    return problems
+
+
+def B_pack() -> Any:
+    """a pack of our own to write a helper's functions into, when a check
+    wants only the lines the helper gives back"""
+    import datapack
+
+    return datapack.Pack(stamp="check")

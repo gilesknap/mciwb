@@ -24,6 +24,21 @@ commands or function lines; nothing here talks to a server.
 - ``placement_problems(dome, cells)``: are these cells inside the dome
   and off the cells the tunnels reserve? For a room or its dressing to
   check itself offline.
+- **Inputs**: ``input_post`` (a lever, button or plate on brass with its
+  sign and a glowing label, in one call), ``lever``, ``lever_put_lines``
+  (a reset that tells the neighbours), ``lever_hold_line`` (a lever held
+  over), ``button_line`` (read a button and let it go), ``plate_held``
+  (a plate that counts only with a player on it).
+- **Displays**: ``display`` (summon a text display), ``text_line`` and
+  ``turn_line`` (rewrite and turn one), ``label_text``.
+- ``gauge_lines``: lamps that follow a score.
+- ``hint``: a line of chat after a level-scaled time without progress,
+  once per arming.
+- **Lent items**: ``lent``, ``lend_line``, ``take_back_line``,
+  ``lend_again_line``: items marked by ``custom_data`` so that exactly
+  what a dome lent is taken back, whatever it is.
+- **Machinery** that runs by itself: ``torch_clock`` (with a lamp chase
+  and two plain pistons tapped off it).
 """
 
 from __future__ import annotations
@@ -46,6 +61,10 @@ SIGN = "minecraft:bamboo"
 
 COMPASS = domes.COMPASS
 ROTATION = {"south": 0, "west": 4, "north": 8, "east": 12}
+
+#: the tag of every recall post's interaction entity: the core answers a
+#: click on any of them, so a module only places the post
+RECALL_TAG = "st.recall"
 
 #: the last lines of a function run as a clicked ``interaction`` entity:
 #: the click forgotten, so that it is answered once
@@ -258,7 +277,18 @@ def summon_recall(fr: Frame, f: int, r: int, side: int, tags: tuple[str, ...]) -
     # a quarter of a block back towards the post, where the button is
     px = x + 0.5 - 0.25 * side * fr.right[0]
     pz = z + 0.5 - 0.25 * side * fr.right[1]
-    return interaction((px, y + 0.2, pz), tags, 0.6, 0.6)
+    return interaction((px, y + 0.2, pz), (*tags, RECALL_TAG), 0.6, 0.6)
+
+
+def recall_lines(pack: dp.Pack) -> list[str]:
+    """the lines that answer a click on a recall post, run as its
+    interaction entity: the presser recalled, as themselves"""
+    return [
+        "execute on target at @s run playsound "
+        "minecraft:block.stone_button.click_on block @s ~ ~ ~ 1 1",
+        f"execute on target run function {pack.id('recall')}",
+        *CLICK_DONE,
+    ]
 
 
 def recall_functions(pack: dp.Pack, path: str, tag: str) -> str:
@@ -275,3 +305,433 @@ def recall_functions(pack: dp.Pack, path: str, tag: str) -> str:
         ],
     )
     return click_line(tag, pack.id(path))
+
+
+# ------------------------------------------------------------------ inputs
+# What a function needs to read a real lever, button or plate. Every input
+# stands on (or hangs from) ``BRASS`` with a sign: ``input_post``.
+
+STEP = {name: step for step, name in COMPASS.items()}
+
+
+def _xyz(cell: Cell) -> str:
+    return f"{cell[0]} {cell[1]} {cell[2]}"
+
+
+def _base(block: str) -> str:
+    """a block without its states and NBT"""
+    return block.partition("[")[0].partition("{")[0]
+
+
+def lever(facing: str, on: bool = False, face: str = "wall") -> str:
+    """a lever on the side of a block, pointing ``facing`` away from it
+    (``face``: ``floor`` or ``ceiling`` for one on top or underneath)"""
+    powered = "true" if on else "false"
+    return f"minecraft:lever[face={face},facing={facing},powered={powered}]"
+
+
+def lever_put_lines(cell: Cell, block: str) -> list[str]:
+    """lines that put a lever (or any input) back as ``block``, for a
+    reset: taken out first, so that its neighbours (lamps, dust) are told;
+    a lever only set over itself by command does not tell them"""
+    return [f"setblock {_xyz(cell)} minecraft:air", f"setblock {_xyz(cell)} {block}"]
+
+
+def lever_hold_line(cell: Cell, block: str, when: str = "") -> str:
+    """the line that holds a lever over as ``block`` (its thrown state)
+    while ``when`` (``if``/``unless`` clauses) is true: a player who moves
+    it finds it back the next tick"""
+    clause = f"{when} " if when else ""
+    return (
+        f"execute {clause}unless block {_xyz(cell)} {block} "
+        f"run setblock {_xyz(cell)} {block}"
+    )
+
+
+def button_line(pack: dp.Pack, path: str, cell: Cell, block: str, then) -> str:
+    """
+    Read a button and let it go: adds the function ``path`` (the lines
+    ``then``, and the button, ``block`` in its unpressed state, put back
+    out) and gives the line for a ``tick`` function that runs it when the
+    button is in. One press is answered once, however long the button
+    would have stayed in. It does not say who pressed: for that put an
+    ``interaction`` over it.
+    """
+    pack.function(path, [*then, f"setblock {_xyz(cell)} {block}"])
+    return (
+        f"execute if block {_xyz(cell)} {_base(block)}[powered=true] "
+        f"run function {pack.id(path)}"
+    )
+
+
+def plate_held(cell: Cell) -> str:
+    """the clauses that are true while a pressure plate at ``cell`` is
+    down with someone in the game standing in its cell: a dropped item, a
+    mob or an arrow on the plate does not count"""
+    here = dp.box_selector(cell, cell)
+    return (
+        f"if block {_xyz(cell)} #minecraft:pressure_plates[powered=true] "
+        f"if entity @e[tag=st.in,{here}]"
+    )
+
+
+@dataclass
+class Post:
+    """an input and what carries it: blocks to place (``solid`` before
+    ``attached``) and commands that summon its label"""
+
+    solid: dict[Cell, str]
+    attached: dict[Cell, str]
+    summons: list[str]
+    input: Cell  #: where the lever, button or plate is
+
+    @property
+    def cells(self) -> set[Cell]:
+        return set(self.solid) | set(self.attached)
+
+
+def label_text(text: str, color: str = "gold", **more: str) -> str:
+    """a text component for a display: ``{text:"...",color:"..."}``"""
+    extra = "".join(f",{k}:{v}" for k, v in more.items())
+    return f'{{text:{snbt(text)},color:"{color}"{extra}}}'
+
+
+def input_post(
+    cell: Cell,
+    facing: str,
+    block: str,
+    sign: tuple[str, ...] = (),
+    label: str = "",
+    tags: tuple[str, ...] = (),
+) -> Post:
+    """
+    An input on a brass post, in one call. ``cell`` is the post's lowest
+    block (where feet would be), ``facing`` the side the input is on,
+    ``block`` the lever or button as it faces (``lever(facing)``), or a
+    pressure plate, which lies on the floor in front of the post instead.
+    The post is two blocks of ``BRASS`` with the input on the upper one at
+    hand height, a ``CUT`` cap carrying the ``sign`` over it, and a
+    glowing text ``label`` floating above, which reads from any side.
+    """
+    dx, dz = STEP[facing]
+    x, y, z = cell
+    front = (x + dx, y, z + dz)
+    solid = {cell: BRASS, (x, y + 1, z): BRASS}
+    plate = "pressure_plate" in block
+    where = front if plate else (x + dx, y + 1, z + dz)
+    attached = {where: block}
+    top = y + 2
+    if sign:
+        solid[x, y + 2, z] = CUT
+        attached[x + dx, y + 2, z + dz] = wall_sign(facing, *sign)
+        top = y + 3
+    summons = []
+    if label:
+        summons.append(
+            display(
+                tags,
+                (x + 0.5, top + 0.25, z + 0.5),
+                0,
+                label_text(label),
+                0.8,
+                "center",
+            )
+        )
+    return Post(solid, attached, summons, where)
+
+
+# ---------------------------------------------------------------- displays
+
+
+def display(
+    tags,
+    pos: tuple[float, float, float],
+    yaw: float,
+    text: str,
+    scale: float = 1.0,
+    billboard: str = "fixed",
+) -> str:
+    """the command that summons a text display, its text (a component:
+    ``label_text``) standing on ``pos``, lit whatever the light, flat and
+    facing ``yaw`` (0 south, 90 west ...) or with ``billboard="center"``
+    turning to whoever looks"""
+    x, y, z = pos
+    s = f"{scale}f"
+    listed = ",".join(f'"{t}"' for t in tags)
+    return (
+        f"summon minecraft:text_display {x:.2f} {y:.2f} {z:.2f} "
+        f'{{Tags:[{listed}],Rotation:[{yaw}f,0f],billboard:"{billboard}",'
+        f"background:0,line_width:400,brightness:{{sky:15,block:15}},text:{text},"
+        f"transformation:{{translation:[0f,0f,0f],scale:[{s},{s},{s}],"
+        "left_rotation:[0f,0f,0f,1f],right_rotation:[0f,0f,0f,1f]}}"
+    )
+
+
+def display_selector(tag: str) -> str:
+    return f"@e[type=minecraft:text_display,tag={tag},limit=1]"
+
+
+def text_line(tag: str, text: str) -> str:
+    """the line that rewrites the display with this tag (a state label:
+    ``text_line("st.d5.board", label_text("ROUND 2"))``)"""
+    return f"data modify entity {display_selector(tag)} text set value {text}"
+
+
+def turn_line(tag: str, yaw: float, pitch: float = 0) -> str:
+    """the line that turns the display with this tag"""
+    return (
+        f"data modify entity {display_selector(tag)} Rotation "
+        f"set value [{yaw}f,{pitch}f]"
+    )
+
+
+# ------------------------------------------------------------------ gauges
+
+
+def gauge_lines(cells, score: str, per_lamp: int, lit: str, dark: str) -> list[str]:
+    """
+    Lines that make a column or row of lamps follow a score: lamp k (the
+    first of ``cells`` is 1) is ``lit`` while the score (``#name
+    objective``) is ``k * per_lamp`` or more, else ``dark``. A lamp is set
+    only when it is wrong, so the lines can run every tick.
+    """
+    lines = []
+    for k, cell in enumerate(cells, 1):
+        at = _xyz(cell)
+        lines += [
+            f"execute if score {score} matches {k * per_lamp}.. "
+            f"unless block {at} {lit} run setblock {at} {lit}",
+            f"execute unless score {score} matches {k * per_lamp}.. "
+            f"unless block {at} {dark} run setblock {at} {dark}",
+        ]
+    return lines
+
+
+# ------------------------------------------------------------------- hints
+
+
+@dataclass
+class Hint:
+    """the lines of a hint: ``arm`` when the room is set up, ``progress``
+    whenever the players get somewhere, ``tick`` every tick it is live"""
+
+    arm: str
+    progress: str
+    tick: str
+
+
+def hint(pack: dp.Pack, index: int, name: str, text: str, seconds: int) -> Hint:
+    """
+    One line of chat to the players in dome ``index`` when ``seconds``
+    (at level 5; scaled by ``#diff.timer``, so longer at low levels) pass
+    without progress, once per arming. Adds ``dome/<n>/hint/<name>`` and
+    gives the lines the dome's functions use (`Hint`).
+    """
+    obj = "st"
+    clock, at = f"#hint{index}.{name} {obj}", f"#hint{index}.{name}.at {obj}"
+    who = f"@a[tag=st.in,scores={{st.dome={index}}}]"
+    base = f"dome/{index}/hint/{name}"
+    pack.objectives({obj: "dummy"})
+    pack.constants(obj, 100)
+    pack.function(
+        f"{base}/arm",
+        [
+            f"scoreboard players set {clock} 0",
+            f"scoreboard players set {at} {seconds * 20}",
+            f"scoreboard players operation {at} *= #diff.timer {obj}",
+            f"scoreboard players operation {at} /= #100 {obj}",
+        ],
+    )
+    pack.function(
+        f"{base}/say",
+        [
+            f'tellraw {who} {{text:{snbt(text)},color:"gray",italic:true}}',
+            # past its time for good: said once
+            f"scoreboard players set {clock} -2147483648",
+        ],
+    )
+    pack.function(
+        f"{base}/step",
+        [
+            f"scoreboard players add {clock} 1",
+            f"execute if score {clock} >= {at} run function {pack.id(f'{base}/say')}",
+        ],
+    )
+    return Hint(
+        arm=f"function {pack.id(f'{base}/arm')}",
+        progress=(
+            f"execute if score {clock} matches 0.. run scoreboard players set {clock} 0"
+        ),
+        tick=(
+            f"execute if score {clock} matches 0.. "
+            f"run function {pack.id(f'{base}/step')}"
+        ),
+    )
+
+
+# -------------------------------------------------------------- lent items
+
+LENT = "st_lent"
+
+
+def lent(item: str, key: str) -> str:
+    """an item marked as lent by a dome (``key``, e.g. ``pipe2``), by its
+    ``custom_data``: ``item`` may already have components
+    (``restricted(...)``)"""
+    mark = f"minecraft:custom_data={{{LENT}:{snbt(key)}}}"
+    if item.endswith("]"):
+        return f"{item[:-1]},{mark}]"
+    return f"{item}[{mark}]"
+
+
+def lent_predicate(key: str) -> str:
+    """the item predicate that matches whatever was lent under a key"""
+    return f"*[minecraft:custom_data~{{{LENT}:{snbt(key)}}}]"
+
+
+def lend_line(item: str, key: str, count: int = 1, who: str = "@s") -> str:
+    """the line that gives ``who`` a lent item (in a dome's ``enter``)"""
+    return f"give {who} {lent(item, key)} {count}"
+
+
+def take_back_line(key: str, who: str = "@s") -> str:
+    """the line that takes back all that was lent under a key (in a dome's
+    ``leave`` and, for ``@a``-selected players, its ``reset``)"""
+    return f"clear {who} {lent_predicate(key)}"
+
+
+def lend_again_line(index: int, item: str, key: str, count: int = 1) -> str:
+    """the line that gives the item again to any player in dome ``index``
+    who has none left (dropped into a hole, used up)"""
+    who = f"@a[tag=st.in,scores={{st.dome={index}}}]"
+    have = lent_predicate(key)
+    return (
+        f"execute as {who} unless items entity @s container.* {have} "
+        f"unless items entity @s weapon.* {have} run give @s {lent(item, key)} {count}"
+    )
+
+
+# --------------------------------------------------------------- machinery
+# Redstone that runs by itself, for dressing: one proved form (the Boiler
+# Room's feed pump and lamp chaser), to be dressed differently in each
+# room. It has no lever, button or plate, and no reset touches it.
+
+
+@dataclass
+class Machine:
+    """a machine's blocks: ``bed`` (full blocks under it, for where the
+    floor is not), ``solid`` then ``attached`` to place, and ``moving``:
+    the cells whose state changes as it runs (a check must not expect
+    them still)"""
+
+    bed: dict[Cell, str]
+    solid: dict[Cell, str]
+    attached: dict[Cell, str]
+    moving: set[Cell]
+    lamps: tuple[Cell, ...] = ()
+    pistons: tuple[Cell, ...] = ()
+
+    @property
+    def cells(self) -> set[Cell]:
+        return set(self.bed) | set(self.solid) | set(self.attached) | self.moving
+
+
+def torch_clock(
+    fr: Frame,
+    f: int,
+    r: int,
+    h: int = 1,
+    side: int = 1,
+    lamps: bool = False,
+    pistons: bool = False,
+    block: str = "minecraft:waxed_copper_block",
+    bed: str = CUT,
+) -> Machine:
+    """
+    A torch clock at (f, r) of a frame, its parts at height ``h``: a
+    redstone torch on the forward face of ``block``, its light led round
+    through dust and two repeaters (4 ticks each) to the back of the block
+    to put the torch out, and so on for ever: a period of about a second.
+    It covers 5 cells along the frame's forward (f - 2 .. f + 2) by 2
+    across (r and r - ``side``).
+
+    - ``lamps``: a lamp chase: copper bulbs in the bed under the four end
+      dusts, each toggling as its dust comes on, in turn.
+    - ``pistons``: two plain pistons facing up on the other side
+      (r + ``side``, at f and f + 1), tapped off the torch and its block,
+      working in turn. Plain, with nothing on them: a sticky piston drops
+      its load if the clock is cut short. Each needs the cell above it.
+    """
+    ahead, back = fr.facing(1, 0), fr.facing(-1, 0)
+    wire = [(2, 0), (2, -side), (1, -side), (-1, -side), (-2, -side), (-2, 0)]
+    ends = [(2, 0), (2, -side), (-2, -side), (-2, 0)]
+    solid = {fr.at(f, r, h): block}
+    attached = {
+        fr.at(f + 1, r, h): f"minecraft:redstone_wall_torch[facing={ahead}]",
+        # a repeater's facing names the side its input is on
+        fr.at(f, r - side, h): f"minecraft:repeater[facing={ahead},delay=4]",
+        fr.at(f - 1, r, h): f"minecraft:repeater[facing={back},delay=4]",
+    }
+    for df, dr in wire:
+        attached[fr.at(f + df, r + dr, h)] = "minecraft:redstone_wire"
+    under = {
+        fr.at(f + df, r + dr, h - 1): bed for df in range(-2, 3) for dr in (0, -side)
+    }
+    moving = set(attached)
+    lamp_cells: tuple[Cell, ...] = ()
+    if lamps:
+        lamp_cells = tuple(fr.at(f + df, r + dr, h - 1) for df, dr in ends)
+        for cell in lamp_cells:
+            under[cell] = "minecraft:waxed_copper_bulb[lit=false]"
+        moving |= set(lamp_cells)
+    piston_cells: tuple[Cell, ...] = ()
+    if pistons:
+        piston_cells = (fr.at(f + 1, r + side, h), fr.at(f, r + side, h))
+        for cell in piston_cells:
+            solid[cell] = "minecraft:piston[facing=up]"
+            under[cell[0], cell[1] - 1, cell[2]] = bed
+            moving |= {cell, (cell[0], cell[1] + 1, cell[2])}
+    return Machine(under, solid, attached, moving, lamp_cells, piston_cells)
+
+
+# ----------------------------------------------------------- for the checks
+# A place to try these fittings in the world: the way in from the upstream
+# mouth of the last dome but one, which every room keeps clear.
+
+CHECK_DOME = -2  # index into the layout's domes
+
+
+def check_site() -> tuple[Dome, Frame, dict[tuple[int, int, int], Cell]]:
+    """the dome the live checks work in, a frame over the way in from its
+    upstream mouth (f across it, -2 .. 2; r into the dome, -1 .. 1; h
+    above the floor, 1 .. 4) and that way's cells (``tunnels.way_in``)"""
+    dome = tunnels.layout.DOMES[CHECK_DOME]
+    tunnel = tunnels.layout.TUNNELS[dome.index - 1]
+    way = tunnels.way_in(dome, tunnel)
+    out = domes.outward(dome, tunnel)
+    x, y, z = way[1, 0, 1]
+    fr = Frame((x, y - 1, z), domes.across(out), (-out[0], -out[1]))
+    return dome, fr, way
+
+
+def check_button() -> tuple[Cell, Cell, str]:
+    """the check's button: its brass block, its cell and its block"""
+    _, fr, _ = check_site()
+    facing = fr.facing(1, 0)
+    block = f"minecraft:stone_button[face=wall,facing={facing},powered=false]"
+    return fr.at(-2, 0, 1), fr.at(-1, 0, 1), block
+
+
+def add_check_functions(pack: dp.Pack) -> None:
+    """what the live check of these fittings needs in the pack: a button
+    read by ``button_line`` and a hint"""
+    dome, _, _ = check_site()
+    _, cell, block = check_button()
+    button_line(
+        pack,
+        "check/button",
+        cell,
+        block,
+        ["scoreboard players add #chk.pressed st 1"],
+    )
+    hint(pack, dome.index, "check", "A hint, from the check.", 2)

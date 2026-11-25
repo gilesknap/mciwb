@@ -120,7 +120,8 @@ def modules() -> list[game.Module]:
     """
     The modules of the station: each file named in ``game.MODULE_FILES``
     (``shore.py``, ``dome_<key>.py``) that exists beside this one, imported
-    for its ``MODULE``. A part with no file yet is a placeholder stage.
+    for its ``MODULE``. A dome with no file yet is a stub
+    (``game.stub_module``); the way in with none is a placeholder stage.
     """
     global _MODULES
     if _MODULES is None:
@@ -129,6 +130,12 @@ def modules() -> list[game.Module]:
             importlib.import_module(name).MODULE
             for name in game.MODULE_FILES
             if (here / f"{name}.py").is_file()
+        ]
+        # a dome with no module yet is a stub with a bypass lever
+        _MODULES += [
+            game.stub_module(d)
+            for d in station_layout.DOMES[1:]
+            if not (here / f"dome_{d.key}.py").is_file()
         ]
     return _MODULES
 
@@ -427,7 +434,13 @@ def install_datapack(ctx: Context) -> str:
             f"set {DATAPACKS_ENV} to the world's datapacks folder"
         )
     folder = install_pack(ctx.pack, ctx.datapacks_dir)
-    return f"{files} files installed in {folder}, and loaded"
+    if datapack.server_log(ctx.datapacks_dir) is None:
+        # only the log says that a line did not parse
+        return (
+            f"{files} files installed in {folder}, and its load function ran; "
+            "THE SERVER'S LOG WAS NOT FOUND: lines that do not parse were not looked for"
+        )
+    return f"{files} files installed in {folder}, and loaded (the server's log read)"
 
 
 #: the game rules of the plan (Minecraft 26.3 names). The last is a radius

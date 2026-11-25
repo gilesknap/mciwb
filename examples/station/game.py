@@ -55,6 +55,22 @@ in seconds (0: none) and ``#best<level>`` each level's.
 - Players in the game see "Domes 3 of 7, 12:40" above the hotbar while a
   run is on.
 
+**Two rules every room follows.**
+
+- *Leaving a dome never costs more than the stage in progress.* What is
+  finished (a pump thrown, a quarter of a charge, a round won, pipe laid)
+  is kept until the game's reset; ``empty`` puts back at most the stage
+  being worked.
+- *A change of form never shuts, removes or restarts something a player
+  is using.* ``solo`` and ``duo`` say what the room should become; the
+  room takes it up at its next safe point (between rounds, with nobody
+  in the gate), not under a player's feet.
+
+**Stub domes.** A dome with no module yet has a BYPASS lever on a brass
+post by its exit that calls ``dome/<n>/solved`` (``stub_module``): the
+ring is always playable end to end. A module's file replaces the stub;
+its build stage runs ``clear_stub_commands(dome)`` to take the post away.
+
 **Hooks of a dome.** A module defines any of these functions and the core
 calls them; it never calls one that is not defined:
 
@@ -64,16 +80,30 @@ calls them; it never calls one that is not defined:
   this player came (the moment to set a room up anew), else 0. It runs in
   the middle of a scan: ``#occ<n>``, ``#form<n>`` and ``#players`` are
   not yet this scan's;
-- ``dome/<n>/leave``: as a player who has just gone out of dome n (or
-  out of the game from it): take back what the dome lent;
+- ``dome/<n>/leave``: as a player who has just gone out of dome n: on
+  foot, by the recall, out of the game from it, or by the game's reset.
+  Take back what the dome lent;
 - ``dome/<n>/tick``: every tick while anyone in the game is in dome n;
 - ``dome/<n>/solo`` and ``dome/<n>/duo``: when the dome, open and not yet
   solved, gets its first player (after ``enter``, in the same scan), and
   again whenever ``#form<n>`` changes while it is occupied: set the
   puzzle up in that form;
-- ``dome/<n>/empty``: when the last player has left dome n (the core has
-  just removed the dome's automatons, see automatons.py);
+- ``dome/<n>/died``: as a player in dome n who has died and is alive
+  again (the core has just given them 5 s of Resistance and cleared the
+  automatons from round the entrance spot): the room's own penalty;
+- ``dome/<n>/empty``: when dome n has had nobody in it for
+  ``EMPTY_AFTER`` scans (3 s: a step into the tunnel or a dropped
+  connection is not leaving; until then ``#first`` stays 0 for whoever
+  comes back) (the core has
+  just removed the dome's automatons, the arrows stuck in it and its
+  experience orbs, see automatons.py);
 - ``dome/<n>/reset``: put back the blocks and entities that change.
+  ``station:reset/all`` calls it and not ``empty``: it must leave the
+  room as ``empty`` would, and more.
+
+The level's values (``#diff.*``) change whenever anyone comes into any
+dome after a vote: a room copies what it needs when it is set up
+(``#first``), and does not read them in the middle of a fight.
 
 **Death and kit.** ``keep_inventory`` is a game rule (the ``rules``
 stage). A player's respawn point is the entrance (``domes.entrance``) of
@@ -86,9 +116,9 @@ once per player per run on entering its dome (``KITS``):
 ``station:kit/foundry`` (dome 4: a shield in the off hand, 32 spectral
 arrows) and ``station:kit/boss`` (dome 7: an unbreakable brass helm,
 cuirass and sabre). A module does not give them; it may give more of its
-own in its ``enter`` hook. ``st.died`` (criterion ``deathCount``) counts
-each player's deaths: a fight reads it for the players in its dome and
-sets it back to 0 when it has answered; the core clears it on a reset.
+own in its ``enter`` hook (lent, with ``fittings.lend_line``). A death is
+answered by the core (``st.died``, criterion ``deathCount``): see the
+``died`` hook.
 
 **The vote** (reset and difficulty). Run these as the player who pressed:
 
@@ -113,10 +143,14 @@ at level 5: ``#diff.count`` (how many mobs), ``#diff.health``,
 ``scoreboard players operation #x st *= #diff.count st`` then
 ``... /= #100 st``.
 
-**Reset and recall.** ``station:reset/all``: every module's reset
-functions and every tunnel's, the vote closed, progress, clock and tags
+**Reset and recall.** ``station:reset/all``: every tunnel's reset, then
+every dome's and module's (entities killed by tag, never by position), the vote closed, progress, clock and tags
 zeroed, kits taken away, players put on the shore. ``station:recall`` (as
-a player in the game): to the start dome's entrance, nothing lost.
+a player in the game): to the start dome's entrance, nothing lost. A
+module only places a recall post (``fittings.recall_post_blocks`` and
+``summon_recall``): the core answers a click on any of them. A player who
+was offline when the game was reset is put on the shore with nothing when
+they come back (``players/stale``).
 
 **Modules.** A file ``shore.py`` or ``dome_<key>.py`` (``MODULE_FILES``)
 beside this one that defines ``MODULE = game.Module(...)`` is found by the
@@ -132,6 +166,7 @@ from typing import Any
 import automatons
 import datapack as dp
 import domes
+import fittings
 import station_layout as layout
 import tunnels
 
@@ -148,6 +183,7 @@ BAR = "station:vote"
 
 SCAN_TICKS = 10
 SOLO_AFTER = 6  # scans with fewer than two players before duo falls to solo
+EMPTY_AFTER = 6  # scans with nobody in a dome before it counts as empty
 VOTE_SECONDS = 60
 LEVELS = range(1, 11)
 DEFAULT_LEVEL = 5
@@ -161,7 +197,7 @@ SCALED = {
 }
 HOOKS = ("enter", "tick", "solo", "duo", "empty", "reset")
 #: a hook few domes need (those that lend a player something)
-MORE_HOOKS = ("leave",)
+MORE_HOOKS = ("leave", "died")
 #: the kits after the start kit: the dome on entering which each is
 #: given -> its name (``kit/<name>``, and the objective ``st.kit.<name>``)
 KITS = {4: "foundry", 7: "boss"}
@@ -202,6 +238,90 @@ class Module:
     resets: tuple[str, ...] = ()
     wins: tuple[str, ...] = ()
     checks: dict[str, Callable[[Any], list[str]]] = field(default_factory=dict)
+
+
+# ------------------------------------------------------------------ stub domes
+
+STUB_SIGN = ("BYPASS", "This room is", "not built yet.", "Pull to pass.")
+
+
+def stub_tag(index: int) -> str:
+    return f"st.stub{index}"
+
+
+def stub_post(dome) -> fittings.Post:
+    """
+    A stub dome's bypass: a lever on a brass post inside the dome, to the
+    left of its outgoing mouth as you leave (the pump engine is on the
+    right), as near the wall as leaves it inside, facing the room.
+    """
+    tunnel = layout.TUNNELS[dome.index]
+    out = domes.outward(dome, tunnel)
+    facing = domes.COMPASS[-out[0], -out[1]]
+    inside = domes.dome_cells(dome).interior - tunnels.reserved_cells(dome)
+    for s in range(0, -dome.radius, -1):
+        cell = tunnels.at(tunnel, s, -(domes.DOOR_HALF_WIDTH + 2), 1)
+        post = fittings.input_post(
+            cell,
+            facing,
+            fittings.lever(facing),
+            STUB_SIGN,
+            "BYPASS",
+            (stub_tag(dome.index),),
+        )
+        if post.cells <= inside:
+            return post
+    raise ValueError(f"no room for the bypass of {dome.name}")
+
+
+def clear_stub_commands(dome) -> list[str]:
+    """commands that take a stub's bypass away: for the build stage of the
+    module that replaces the stub (unless the dome's shell is rebuilt,
+    which wipes it anyway)"""
+    post = stub_post(dome)
+    return [
+        f"kill @e[tag={stub_tag(dome.index)}]",
+        *(f"setblock {x} {y} {z} minecraft:air" for x, y, z in sorted(post.cells)),
+    ]
+
+
+def stub_module(dome) -> Module:
+    """
+    The module of a dome that has none yet: a BYPASS lever by its exit
+    that solves the dome (``station:dome/<n>/solved``), so the ring can be
+    played end to end whatever is built. It takes the dome's ``_inside``
+    stage; a real module (a file ``dome_<key>.py``) takes its place.
+    """
+    n = dome.index
+    post = stub_post(dome)
+    x, y, z = post.input
+    lever_off = post.attached[post.input]
+
+    def build(ctx: Any) -> str:
+        for command in clear_stub_commands(dome):
+            ctx.cmd(command)
+        for blocks in (post.solid, post.attached):
+            for cell, block in blocks.items():
+                ctx.setblock(cell, block)
+        for command in post.summons:
+            ctx.cmd(command)
+        return f"{dome.name}: a stub, its BYPASS lever at {post.input}"
+
+    def functions(pack: dp.Pack) -> None:
+        pack.function(
+            f"dome/{n}/tick",
+            [
+                f"execute if score #d{n} {OBJ} matches 1 "
+                f"if block {x} {y} {z} minecraft:lever[powered=true] "
+                f"run function {pack.id(f'dome/{n}/solved')}"
+            ],
+        )
+        pack.function(
+            f"dome/{n}/reset", fittings.lever_put_lines(post.input, lever_off)
+        )
+
+    stage = "start_dome_inside" if n == 0 else f"dome_{n}_inside"
+    return Module(f"stub_{dome.key}", stages={stage: build}, functions=functions)
 
 
 def in_dome(index: int) -> str:
@@ -251,6 +371,7 @@ def add_functions(pack: dp.Pack, modules: list[Module]) -> None:
         }
     )
     automatons.add_functions(pack)
+    fittings.add_check_functions(pack)
     pack.constants(OBJ, 10, 60, 100)
     for module in modules:
         if module.functions:
@@ -290,8 +411,19 @@ def _players(pack: dp.Pack, hooks: set[tuple[int, str]]) -> None:
     lines.append("tag @a[tag=st.in] remove st.in")
     for where in (station, route):
         lines.append(f"tag @a[gamemode=adventure,{where}] add st.in")
+    leavers = [d.index for d in layout.DOMES if (d.index, "leave") in hooks]
     lines += [
         f"tag @e[type=minecraft:armor_stand,tag={STANDIN}] add st.in",
+        # a player back from an earlier run (offline when it was reset):
+        # to the shore, with nothing, like everyone else
+        f"execute as @a[tag=st.in,tag=st.kit] unless score @s st.kitrun = "
+        f"#runid {OBJ} run function {pack.id('players/stale')}",
+        # one who has gone out of the game from a dome has left that dome
+        *(
+            f"execute as @a[tag=!st.in,scores={{st.dome={n}}}] "
+            f"run function {pack.id(f'dome/{n}/exited')}"
+            for n in leavers
+        ),
         "scoreboard players reset @a[tag=!st.in] st.dome",
         "scoreboard players reset @a[tag=!st.in] st.vote",
         _set("#players", 0),
@@ -304,6 +436,21 @@ def _players(pack: dp.Pack, hooks: set[tuple[int, str]]) -> None:
         f"$execute store result score #n {OBJ} if entity $(who)]",
         f"scoreboard players operation #players {OBJ} += #n {OBJ}",
     ]
+    # every dome's leavers before any dome's comers-in: a player who is
+    # recalled is in the start dome at once, and must still leave the
+    # dome they were in
+    arriving = []
+    sx, sy, sz = shore_spot()
+    pack.function(
+        "players/stale",
+        [
+            "clear @s",
+            "tag @s remove st.kit",
+            "scoreboard players reset @s st.dome",
+            f"spawnpoint @s {sx} {sy} {sz}",
+            f"execute in minecraft:overworld run tp @s {sx} {sy} {sz}",
+        ],
+    )
     for dome in layout.DOMES:
         n = dome.index
         here = domes.sphere(dome)
@@ -313,9 +460,11 @@ def _players(pack: dp.Pack, hooks: set[tuple[int, str]]) -> None:
         if (n, "leave") in hooks:
             gone.append(f"function {pack.id(f'dome/{n}/leave')}")
         pack.function(f"dome/{n}/exited", gone)
-        locate += [
+        locate.append(
             f"$execute as $(who),scores={{st.dome={n}}}] unless entity @s[{here}] "
-            f"run function {pack.id(f'dome/{n}/exited')}",
+            f"run function {pack.id(f'dome/{n}/exited')}"
+        )
+        arriving += [
             f"$execute as $(who),{here}] unless score @s st.dome matches {n} "
             f"at @s run function {pack.id(f'dome/{n}/entered')}",
             f"$execute store result score #n {OBJ} "
@@ -354,13 +503,23 @@ def _players(pack: dp.Pack, hooks: set[tuple[int, str]]) -> None:
                     ),
                 ],
             )
-        left = [_set(f"#{name}{n}", 0) for name in ("was", "form", "shown", "grace")]
+        left = [
+            _set(f"#{name}{n}", 0) for name in ("was", "form", "shown", "grace", "gone")
+        ]
         left.append(automatons.remove_line(n))
+        left += automatons.sweep_lines(dome)
         if (n, "empty") in hooks:
             left.append(f"function {pack.id(f'dome/{n}/empty')}")
         pack.function(f"dome/{n}/left", left)
+        # a dome is empty EMPTY_AFTER scans after its last player went: a
+        # step into the tunnel, or a connection lost for a moment, is not
+        # leaving
+        gone = f"#gone{n} {OBJ}"
         lines += [
+            f"execute if score {occ} matches 1.. run {_set(f'#gone{n}', 0)}",
             f"execute if score {occ} matches 0 if score {was} matches 1 "
+            f"run scoreboard players add {gone} 1",
+            f"execute if score {gone} matches {EMPTY_AFTER}.. "
             f"run function {pack.id(f'dome/{n}/left')}",
             f"execute if score {occ} matches 1.. run {_set(f'#was{n}', 1)}",
         ]
@@ -391,8 +550,25 @@ def _players(pack: dp.Pack, hooks: set[tuple[int, str]]) -> None:
             ]
         pack.function(f"dome/{n}/entered", entered)
     lines.append(f"function {pack.id('vote/tally')}")
-    pack.function("players/locate", locate)
+    # a death answered, the first tick the player is alive again (``@e``
+    # does not find the dead)
+    respawned = ["effect give @s minecraft:resistance 5 4 true"]
+    for dome in layout.DOMES:
+        n = dome.index
+        after = automatons.respawn_lines(dome)
+        if (n, "died") in hooks:
+            after.append(f"function {pack.id(f'dome/{n}/died')}")
+        pack.function(f"dome/{n}/respawned", after)
+        respawned.append(
+            f"execute if score @s st.dome matches {n} "
+            f"run function {pack.id(f'dome/{n}/respawned')}"
+        )
+    respawned.append("scoreboard players set @s st.died 0")
+    pack.function("fight/respawned", respawned)
+    pack.function("players/locate", locate + arriving)
     pack.function("players/scan", lines)
+    # a click on any recall post (``fittings.summon_recall``), answered here
+    pack.function("recall/click", fittings.recall_lines(pack))
 
 
 def _progress(
@@ -657,7 +833,11 @@ def _difficulty(pack: dp.Pack) -> None:
 
 
 def _reset(pack: dp.Pack, modules: list[Module], hooks: set[tuple[int, str]]) -> None:
-    lines = [
+    # the tunnels first (their doors shut and their water back before a
+    # dome's reset moves anything), then the domes, then the modules' own.
+    # Nothing here kills by position: entities go by their tags
+    lines = [f"function {pack.id(f'tunnel/{t.index}/reset')}" for t in layout.TUNNELS]
+    lines += [
         f"function {pack.id(f'dome/{n}/reset')}"
         for n, h in sorted(hooks)
         if h == "reset"
@@ -665,14 +845,21 @@ def _reset(pack: dp.Pack, modules: list[Module], hooks: set[tuple[int, str]]) ->
     for module in modules:
         for path in module.resets:
             lines.append(f"function {pack.id(path)}")
-    lines += [f"function {pack.id(f'tunnel/{t.index}/reset')}" for t in layout.TUNNELS]
+    lines += [
+        f"function {pack.id(f'dome/{d.index}/bar/hide')}"
+        for d in layout.DOMES
+        if f"dome/{d.index}/bar/hide" in pack.functions
+    ]
     lines.append(f"function {pack.id('vote/close')}")
     lines += [_set(name, 0) for name in ("#run", "#secs", "#solved", "#second")]
     for dome in layout.DOMES:
         n = dome.index
         lines += [
             _set(f"#d{n}", 1 if n == 0 else 0),
-            *(_set(f"#{name}{n}", 0) for name in ("was", "form", "shown", "grace")),
+            *(
+                _set(f"#{name}{n}", 0)
+                for name in ("was", "form", "shown", "grace", "gone")
+            ),
         ]
     x, y, z = shore_spot()
     lines += [
@@ -681,6 +868,13 @@ def _reset(pack: dp.Pack, modules: list[Module], hooks: set[tuple[int, str]]) ->
         "clear @a[tag=st.kit]",
         "tag @a[tag=st.kit] remove st.kit",
         f"scoreboard players add #runid {OBJ} 1",
+        # what a dome lent is taken back from those in it
+        *(
+            f"execute as @a[scores={{st.dome={n}}}] "
+            f"run function {pack.id(f'dome/{n}/leave')}"
+            for n, h in sorted(hooks)
+            if h == "leave"
+        ),
         "scoreboard players reset * st.dome",
         f"spawnpoint {PLAYERS} {x} {y} {z}",
         f"execute in minecraft:overworld run tp {PLAYERS} {x} {y} {z}",
@@ -744,6 +938,12 @@ def _clock(pack: dp.Pack, hooks: set[tuple[int, str]]) -> None:
         f"run function {pack.id('vote/second')}",
         f"function {pack.id('kit/top_up')}",
     ]
+    second += [
+        f"execute if score #bar{d.index} {OBJ} matches 1 run bossbar set "
+        f"{automatons.bar_id(d.index)} players {in_dome(d.index)}"
+        for d in layout.DOMES
+        if f"dome/{d.index}/bar/show" in pack.functions
+    ]
     pack.function("game/second", second)
 
     tick = [
@@ -754,6 +954,11 @@ def _clock(pack: dp.Pack, hooks: set[tuple[int, str]]) -> None:
         f"execute if score #second {OBJ} matches 20.. "
         f"run function {pack.id('game/second')}",
     ]
+    tick.append(fittings.click_line(fittings.RECALL_TAG, pack.id("recall/click")))
+    tick.append(
+        "execute as @e[tag=st.in,scores={st.died=1..}] "
+        f"run function {pack.id('fight/respawned')}"
+    )
     tick += [
         f"execute if score #occ{n} {OBJ} matches 1.. "
         f"run function {pack.id(f'dome/{n}/tick')}"

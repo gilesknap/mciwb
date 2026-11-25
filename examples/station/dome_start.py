@@ -991,15 +991,7 @@ def display(
 ) -> str:
     """the command that summons a text display flat on a wall facing
     ``face``, its text standing on ``pos``"""
-    x, y, z = pos
-    s = f"{scale}f"
-    return (
-        f"summon minecraft:text_display {x:.2f} {y:.2f} {z:.2f} "
-        f'{{Tags:["{TAG}","{tag}"],Rotation:[{_YAW[face]}f,0f],billboard:"{billboard}",'
-        f"background:0,line_width:400,brightness:{{sky:15,block:15}},text:{text},"
-        f"transformation:{{translation:[0f,0f,0f],scale:[{s},{s},{s}],"
-        "left_rotation:[0f,0f,0f,1f],right_rotation:[0f,0f,0f,1f]}}"
-    )
+    return fittings.display((TAG, tag), pos, _YAW[face], text, scale, billboard)
 
 
 def interaction(tag: str, cell: Cell) -> str:

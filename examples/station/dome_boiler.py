@@ -87,7 +87,6 @@ forms and that the gauge can be seen from where it is worked.
 
 from __future__ import annotations
 
-import math
 from dataclasses import dataclass, field
 from functools import cache
 from typing import TYPE_CHECKING, Any
@@ -96,6 +95,7 @@ import datapack as dp
 import domes
 import game
 import game_checks
+import rooms
 import station_layout as layout
 import tunnels
 from domes import AIR, Cell, middle
@@ -736,33 +736,12 @@ def walk_problems(dome: Dome) -> list[str]:
     with something to stand on, and a step is to a cell beside, level or
     one up or down (a stair), with room for the head on the way up.
     """
-    cells = domes.dome_cells(dome)
     problems = []
     for form in (1, 2):
         b = room_blocks(dome, form=form)
         blocked = set(b.solid) | b.swept
         blocked |= {c for c, block in b.attached.items() if _name(block) in IN_THE_WAY}
-        ground = set(cells.floor) | set(b.solid)
-
-        def free(cell: Cell, blocked: set[Cell] = blocked) -> bool:
-            return cell in cells.interior and cell not in blocked
-
-        def stands(cell: Cell, free=free, ground: set[Cell] = ground) -> bool:
-            x, y, z = cell
-            return free(cell) and free((x, y + 1, z)) and (x, y - 1, z) in ground
-
-        x, y, z, _ = domes.entrance(dome)
-        seen, edge = {(x, y, z)}, [(x, y, z)]
-        while edge:
-            x, y, z = edge.pop()
-            for dx, dz in ((1, 0), (-1, 0), (0, 1), (0, -1)):
-                for dy in (0, 1, -1):
-                    to = (x + dx, y + dy, z + dz)
-                    head = (x, y + 2, z) if dy == 1 else (to[0], to[1] + 2, to[2])
-                    if to in seen or not stands(to) or (dy and not free(head)):
-                        continue
-                    seen.add(to)
-                    edge.append(to)
+        seen = rooms.reach(dome, domes.entrance(dome)[:3], b.solid, blocked)
         problems += [
             f"form {form}: no walk from the entrance to {name} at {cell}"
             for name, cell in walks(dome).items()
@@ -798,23 +777,9 @@ def sight_problems(dome: Dome) -> list[str]:
             eyes[name] = (cell, every)
     problems = []
     for name, (cell, lamps) in eyes.items():
-        eye = (cell[0] + 0.5, cell[1] + 1.62, cell[2] + 0.5)
         for k in lamps:
             lamp = place.gauge[k - 1]
-            to = (lamp[0] + 0.5, lamp[1] + 0.5, lamp[2] + 0.5)
-            steps = int(math.dist(eye, to) * 8)
-            hidden = {
-                c
-                for i in range(steps)
-                if (
-                    c := (
-                        math.floor(eye[0] + (to[0] - eye[0]) * i / steps),
-                        math.floor(eye[1] + (to[1] - eye[1]) * i / steps),
-                        math.floor(eye[2] + (to[2] - eye[2]) * i / steps),
-                    )
-                )
-                in solid
-            }
+            hidden = rooms.hidden(cell, lamp, solid)
             if hidden:
                 problems.append(
                     f"lamp {k} of the gauge is hidden from {name} by {min(hidden)}"
@@ -1435,6 +1400,7 @@ def check(ctx: Any) -> list[str]:
     def come_in(tag: str = S1) -> None:
         """a stand-in out of the dome and in again: a new entry"""
         stand(tag, outside)
+        ctx.advance(game_checks.EMPTY)  # (a dome is empty 3 s after its last player)
         stand(tag, entrance)
 
     def throw(valve: Valve, on: bool) -> None:
@@ -1664,6 +1630,7 @@ def check(ctx: Any) -> list[str]:
     if not want - 1 <= made <= want + 1 or seen_out != {True, False}:
         problems.append(f"solved: the governor made {made} strokes in 4 s: {seen_out}")
     stand(S1, outside)
+    ctx.advance(game_checks.EMPTY)  # (a dome is empty 3 s after its last player)
     expect("solved, nobody in: the governor", strokes(40), (0, {False}))
     expect(
         "solved, nobody in: the bell's power",

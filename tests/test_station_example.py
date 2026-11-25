@@ -90,7 +90,9 @@ from fake_client import Recorder, World
 
 assert list(B.STAGES)[:3] == ["site", "datapack", "rules"] == B.written()[:3]
 assert {"start_dome", "dome_7", "tunnel_0", "tunnel_7"} <= set(B.written())
-assert "dome_7_inside" not in B.written()
+# a dome with no module of its own is a stub with a bypass lever
+assert "stub_boss" in {m.name for m in B.modules()}
+assert "dome_7_inside" in B.written()
 
 # the whole build: the site loaded for it, and left loaded for the game;
 # the pack installed
@@ -156,7 +158,7 @@ else:
 """,
         str(tmp_path),
     )
-    assert "not built yet" in out
+    assert "a stub, its BYPASS lever" in out
     assert (tmp_path / "station" / "pack.mcmeta").is_file()
 
 
@@ -768,5 +770,116 @@ def looked_at():
 before = looked_at()
 domes.add_wet(3, cells)
 assert looked_at() == before - 50
+"""
+    )
+
+
+def test_station_shared_room_helpers():
+    run(
+        """
+import automatons
+import build_station as B
+import datapack
+import domes
+import fittings as F
+import game
+import rooms
+import station_layout as L
+import tunnels
+
+dome = L.DOMES[5]
+fr = F.frame(dome)
+cells = domes.dome_cells(dome)
+
+# a stub: its post is inside the dome, off the reserved cells, its lever
+# on gold with a sign, and its functions solve the dome and put it back
+post = game.stub_post(dome)
+blocks = {**post.solid, **post.attached}
+assert not rooms.room_problems(dome, blocks)
+assert not rooms.input_problems(blocks, {post.input})
+pack = B.new_pack("t")
+assert "function station:dome/5/solved" in pack.functions["dome/5/tick"][0]
+assert pack.functions["dome/5/reset"][0].endswith("minecraft:air")
+reset = pack.functions["reset/all"]
+assert reset.index("function station:tunnel/7/reset") < reset.index(
+    "function station:dome/1/reset"
+)
+assert not any(line.startswith("kill") and "distance" in line for line in reset)
+
+# the room checks find faults
+assert rooms.room_problems(dome, {dome.floor_centre: "minecraft:stone"})
+x, y, z, _ = domes.entrance(dome)
+assert any("reserved" in p for p in rooms.room_problems(dome, {(x, y, z): "a"}))
+assert any(
+    "dome 2" in p
+    for p in rooms.room_problems(dome, {fr.at(0, 0, 1): "minecraft:raw_gold_block"})
+)
+track = {F.frame(L.DOMES[2]).at(0, 0, 1): "minecraft:raw_gold_block"}
+assert not rooms.room_problems(L.DOMES[2], track)
+# an input nobody listed, one not on gold, one with a piston on its block
+lever = F.lever("east")
+at = fr.at(0, 0, 1)
+bad = {at: "minecraft:stone", (at[0] + 1, at[1], at[2]): lever}
+found = rooms.input_problems(bad, set())
+assert any("does not list" in p for p in found)
+found = rooms.input_problems(bad, {(at[0] + 1, at[1], at[2])})
+assert any("not on gold" in p for p in found) and any("no sign" in p for p in found)
+good = F.input_post(at, "east", lever, ("VALVE",))
+blocks = {**good.solid, **good.attached}
+assert not rooms.input_problems(blocks, {good.input})
+blocks[at[0], at[1] + 1, at[2] + 1] = "minecraft:piston[facing=up]"
+assert any("touches" in p for p in rooms.input_problems(blocks, {good.input}))
+# a walk: a wall across the dome stops it, a gap in the wall lets it by
+far = fr.at(8, 0, 1)
+wall = {fr.at(4, r, h): "minecraft:stone" for r in range(-20, 21) for h in (1, 2, 3)}
+wall = {c: b for c, b in wall.items() if c in cells.interior}
+assert rooms.walk_problems(dome, wall, {"the far side": far})
+del wall[fr.at(4, 0, 1)], wall[fr.at(4, 0, 2)]
+assert not rooms.walk_problems(dome, wall, {"the far side": far})
+# sight: stone hides, glass does not
+eye, lamp = fr.at(-2, 0, 1), fr.at(6, 0, 2)
+here, there, mid = {"here": eye}, {"lamp": lamp}, fr.at(2, 0, 2)
+assert rooms.sight_problems({mid: "minecraft:stone"}, here, there)
+assert not rooms.sight_problems({mid: "minecraft:glass"}, here, there)
+# the window: a wall before the entrance hides it, unless the dome says so
+screen = {
+    fr.at(-6, r, h): "minecraft:stone" for r in range(-6, 7) for h in range(1, 6)
+}
+assert rooms.window_problems(dome, screen) and not rooms.window_problems(dome, {})
+domes.allow(dome.index, "the screen", "a test")
+assert not rooms.window_problems(dome, screen)
+
+# fittings give what the game takes
+clock = F.torch_clock(fr, 0, 6, lamps=True, pistons=True)
+assert len(clock.lamps) == 4 and len(clock.pistons) == 2
+assert sum("repeater" in b for b in clock.attached.values()) == 2
+assert all("sticky" not in b for b in clock.solid.values())
+lines = F.gauge_lines([(1, 2, 3), (1, 3, 3)], "#p st", 10, "a[on]", "a[off]")
+assert len(lines) == 4 and "matches 20.." in lines[2]
+item = F.lent(F.restricted("minecraft:stick", place_on="minecraft:gold_block"), "k")
+assert item.endswith('minecraft:custom_data={st_lent:"k"}]') and item.count("[") == 2
+plain = F.lent("minecraft:stick", "k")
+assert plain == 'minecraft:stick[minecraft:custom_data={st_lent:"k"}]'
+
+# fights: the three kinds, waves, a death, a bar
+assert [k.name for k in automatons.KINDS] == ["Stoker", "Riveter", "Slag Husk"]
+pack = datapack.Pack(stamp="t")
+
+def functions(p):
+    w = automatons.waves(p, 4, [fr.at(0, 0, 1), fr.at(3, 0, 1)], cap=6)
+    b = automatons.bar(p, 4, "Accumulator")
+    p.function("dome/4/tick", [w.tick, w.leash])
+    p.function("dome/4/died", ["say ouch"])
+    p.function("dome/4/enter", [w.arm, b.show])
+
+game.add_functions(pack, [game.Module("t", functions=functions)])
+f = pack.functions
+assert f["dome/4/respawned"][-1] == "function station:dome/4/died"
+assert any("fight/respawned" in line for line in f["game/tick"])
+shown = "station:d4 players @a[tag=st.in,scores={st.dome=4}]"
+assert any(shown in line for line in f["game/second"])
+assert "function station:dome/4/bar/hide" in f["reset/all"]
+assert sum("spawn/stoker" in l for l in f["dome/4/wave/cast/stoker"]) == 12
+assert all(len(l.encode()) < B.MAX_COMMAND for l in f["dome/4/wave/spawn/stoker_0"])
 """
     )

@@ -35,7 +35,8 @@ listed as TODO with the plan's stage that brings it, and a TODO is not a
 pass. What RCON cannot stand in for is in PROGRESS.md, for the owner's
 play-test.
 
-Refuses to run the live checks while a player is online, unless FORCE=1.
+Refuses to run the live checks while a player is online or a run is in
+progress (someone's parked game: the checks reset it), unless FORCE=1.
 Exits non-zero if any check fails.
 """
 
@@ -170,7 +171,7 @@ _NAMED = (
     re.compile(r"\bfill(?: \S+){6} (\S+)"),
     re.compile(r"\bfill(?: \S+){6} \S.* replace (\S+)"),
     re.compile(r"\b(?:if|unless) block(?: \S+){3} (\S+)"),
-    re.compile(r"\bgive (?:@\w(?:\[[^\]]*\])?|\w+) (\S+)"),
+    re.compile(r"(?<!effect )\bgive (?:@\w(?:\[[^\]]*\])?|\w+) (\S+)"),
 )
 
 
@@ -383,6 +384,9 @@ LIVE: dict[str, Callable[[B.Context], list[str]]] = {
     "progress": game_checks.check_progress,
     "reset": game_checks.check_reset,
     "automatons": automatons.check,
+    "fights": automatons.check_fights,
+    "fittings": game_checks.check_fittings,
+    "ring": game_checks.check_ring,
     "restricted_items": game_checks.check_restricted,
     "boiler_room": todo("the Boiler Room solved and failed, solo and two-player", 1),
     "gearworks": todo("the Gearworks solved and failed, an old attempt cleared", 2),
@@ -414,6 +418,13 @@ def live_checks(world, wanted: list[str] | None = None) -> dict[str, list[str]]:
     if online and not os.environ.get("FORCE"):
         raise SystemExit(f"{', '.join(online)} online: not verifying (FORCE=1 to)")
     ctx = B.Context(world=world, layout=B.station_layout, pack=B.new_pack())
+    # a run that is parked (started, nobody online) is somebody's game: the
+    # core's checks reset the game, and every check sprints the clock
+    if ctx.score("#run") == 1 and not os.environ.get("FORCE"):
+        raise SystemExit(
+            "a run is in progress (#run is 1): not verifying, which would "
+            "reset it (FORCE=1 to)"
+        )
     B.forceload(ctx)
     results = {}
     for name in names:

@@ -262,24 +262,37 @@ def engine_cells(tunnel: Tunnel) -> dict[tuple[int, int], Cell]:
     raise ValueError(f"no room for the engine of tunnel {tunnel.index}")
 
 
+def way_in(dome: Dome, tunnel: Tunnel) -> dict[tuple[int, int, int], Cell]:
+    """
+    The way into a dome from one of its mouths, which is kept clear:
+    (depth, across, height) -> cell, depth 0 nearest the door and 2
+    furthest in, across -2 .. 2 (as ``domes.door_cells``), height 1 .. 4
+    above the floor.
+    """
+    inside = domes.dome_cells(dome).interior
+    ux, uz = domes.outward(dome, tunnel)
+    ax, az = domes.across((ux, uz))
+    ox, oy, oz = dome.floor_centre
+    found = {}
+    for w in range(-DOOR_HALF_WIDTH, DOOR_HALF_WIDTH + 1):
+        for h in range(1, DOOR_HEIGHT + 1):
+            way = [
+                (ox + s * ux + w * ax, oy + h, oz + s * uz + w * az)
+                for s in range(dome.radius, 0, -1)
+            ]
+            for depth, cell in enumerate([c for c in way if c in inside][:3]):
+                found[depth, w, h] = cell
+    return found
+
+
 def reserved_cells(dome: Dome) -> set[Cell]:
     """the cells inside a dome that an interior must keep clear: the spot
     a player is put at, a way in from each mouth, and the pump engine of
     its outgoing tunnel"""
     x, y, z, _ = domes.entrance(dome)
     keep = {(x, y, z), (x, y + 1, z)}
-    inside = domes.dome_cells(dome).interior
     for tunnel in domes.touching(dome):
-        ux, uz = domes.outward(dome, tunnel)
-        ax, az = domes.across((ux, uz))
-        ox, oy, oz = dome.floor_centre
-        for w in range(-DOOR_HALF_WIDTH, DOOR_HALF_WIDTH + 1):
-            for h in range(1, DOOR_HEIGHT + 1):
-                way = [
-                    (ox + s * ux + w * ax, oy + h, oz + s * uz + w * az)
-                    for s in range(dome.radius, 0, -1)
-                ]
-                keep.update([c for c in way if c in inside][:3])
+        keep.update(way_in(dome, tunnel).values())
     keep.update(engine_cells(layout.TUNNELS[dome.index]).values())
     return keep
 
@@ -523,19 +536,7 @@ def add_functions(pack: dp.Pack, tunnel: Tunnel, players: str) -> None:
     # the check's counts, over every cell
     add = f"run scoreboard players add #t_{{}} {domes.CHECK_OBJECTIVE} 1"
     lines = [f"scoreboard players set #t_{k} {domes.CHECK_OBJECTIVE} 0" for k in COUNTS]
-    for x, y, z in sorted(cells.inside):
-        here = f"execute if block {x} {y} {z}"
-        lines += [
-            f"{here} {WATER} {add.format('water')}",
-            f"{here} {WATER}[level=0] {add.format('source')}",
-            f"{here} {AIR} {add.format('air')}",
-            f"execute positioned {x} {y} {z} if predicate {domes.WET} "
-            f"{add.format('wet')}",
-        ]
-        if (x, y + 1, z) in cells.inside:
-            lines.append(
-                f"{here} {AIR} if block {x} {y + 1} {z} {WATER} {add.format('under')}"
-            )
+    lines += domes.row_lines(pack, cells.inside, "tube")
     for x, y, z in cells.lamps:
         lines += [
             f"execute if block {x} {y} {z} {LAMP}[lit=true] {add.format('lit')}",
@@ -544,13 +545,30 @@ def add_functions(pack: dp.Pack, tunnel: Tunnel, players: str) -> None:
     for dome in ends(tunnel):
         for (x, y, z), block in sorted(domes.door_blocks(dome, tunnel).items()):
             lines.append(f"execute if block {x} {y} {z} {block} {add.format('shut')}")
-    for x, y, z in sorted(cells.ring | cells.floor | set(cells.stairs)):
-        lines += [
-            f"execute if block {x} {y} {z} {AIR} {add.format('ring')}",
-            f"execute positioned {x} {y} {z} if predicate {domes.WET} "
-            f"{add.format('ring')}",
-        ]
+    lines += domes.row_lines(
+        pack, cells.ring | cells.floor | set(cells.stairs), "tring"
+    )
     pack.function(f"check/tunnel/{n}", lines)
+
+
+def _count(name: str) -> str:
+    return f"run scoreboard players add #t_{name} {domes.CHECK_OBJECTIVE} 1"
+
+
+# what the tunnels' check does to each cell of a row (``domes.row_lines``):
+# an inside cell counted as water, a source, air, wet, and air under water;
+# a ring, floor or stair cell counted if it is a hole
+domes.ROW_FAMILIES["tube"] = (
+    f"execute if block ~%k ~ ~ {WATER} {_count('water')}",
+    f"execute if block ~%k ~ ~ {WATER}[level=0] {_count('source')}",
+    f"execute if block ~%k ~ ~ {AIR} {_count('air')}",
+    f"execute positioned ~%k ~ ~ if predicate {domes.WET} {_count('wet')}",
+    f"execute if block ~%k ~ ~ {AIR} if block ~%k ~1 ~ {WATER} {_count('under')}",
+)
+domes.ROW_FAMILIES["tring"] = (
+    f"execute if block ~%k ~ ~ {AIR} {_count('ring')}",
+    f"execute positioned ~%k ~ ~ if predicate {domes.WET} {_count('ring')}",
+)
 
 
 def add_stub_functions(pack: dp.Pack, tunnel: Tunnel) -> None:

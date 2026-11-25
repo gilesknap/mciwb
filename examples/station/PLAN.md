@@ -128,6 +128,34 @@ Avoid:
   without loaded chunks, but block changes need them. Decide in stage 0 and
   record it.
 
+## Provisional decisions (taken while the owner was away: confirm or change)
+
+From the review of the six dome designs, 25 Nov 2026. Each is the
+reviewer's recommendation and each is cheap to change back.
+
+- **Leaving a dome** never costs more than the stage in progress: finished
+  stages (a pump, a quarter of charge, a round, a shut main, laid pipe) are
+  kept until the game's reset. So the Gearworks keeps its pipe when left;
+  only the reset clears it (this replaces "Entering clears an old attempt").
+- **A change between the solo and two-player forms** never shuts, removes
+  or restarts something a player is using; it takes effect at the room's
+  next safe point.
+- **Gearworks steam rule:** a pipe is lit if it is within N lengths of the
+  chest along laid pipe; extra pipe never steals steam.
+- **Clockwork Maze:** the two-key Regulator and the held gates apply only
+  while two players are actually there, so a late second player never
+  strands the first.
+- **Story:** the engineer T. Marsh, who wrote the Boiler Room's log, is the
+  Master the boss fight ends with; the later logs are by Chief Engineer
+  O. Finch. Logs are four pages at most.
+- **Automatons:** Stoker (zombie, copper), Riveter (skeleton, bow), Slag
+  Husk (husk, iron).
+- **An unfinished dome** has a BYPASS lever by its exit, so the ring can
+  always be played end to end.
+- **The run** is trimmed towards an hour: the designs summed to about 65
+  minutes; targets are Gearworks 7, Flooded Dome 8, Foundry 7, Signal Room
+  5.5, Maze 7.5, the Engine 10.
+
 ## Stages
 
 Each stage ends with: the offline checks, a build into the world, the verify

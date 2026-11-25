@@ -36,13 +36,44 @@ creeper, an enderman or anything that damages blocks.
   see. ``remove_line(n)`` removes all of dome n's. The core runs it when
   dome n empties and on ``station:reset/all``.
 
-The fights must not be played on Peaceful, where the game removes
-monsters as they are summoned: a fight that starts should see that its
-first automaton is still there a moment later.
+**The three kinds** (``STOKER``, ``RIVETER``, ``SLAG_HUSK``; `Kind`): a
+Stoker is a zombie in copper with a shovel, a Riveter a skeleton in a
+copper helmet with a bow, a Slag Husk a husk in iron. ``summon_kind``
+and ``dress_kind_line`` write them; every fight uses these names.
+
+**Waves** (``waves(pack, n, points, ...)``): the functions of a fight that
+casts automatons at fixed spawn points every so often. The dome's module
+sets how many of each kind a wave wants (``#wave<n>.<kind>``, perhaps
+from ``mob/count``) and calls the lines it is given: ``arm`` when the
+fight starts, ``tick`` every tick it runs, ``leash`` every half second or
+so. A wave is cast only at spawn points with a player within ``near``
+blocks, never beyond the cap of all the dome's automatons alive
+(``#wave<n>.cap``) nor a kind's own cap, and the time between waves
+(``#wave<n>.gap``) is scaled by ``#diff.timer`` when armed. An automaton
+keeps the tag of its spawn point: ``leash`` puts back there any that has
+left the dome, and ``fence_lines`` any that has left a box.
+
+**Fight services** (the core calls or generates these):
+
+- ``#difficulty`` (objective ``st``): the game's difficulty, 0 Peaceful
+  to 3 Hard, read when the pack loads and by
+  ``station:fight/difficulty``. On Peaceful the game removes monsters as
+  they are summoned: a fight must not start unless it is 1 or more.
+- **A death.** The first tick a player in the game is alive again after
+  dying, the core gives them 5 s of Resistance, removes the automatons
+  within ``CLEAR_ROUND`` blocks of the entrance spot of the dome they are
+  in (so nobody respawns into a mob), calls that dome's hook
+  ``dome/<n>/died`` as the player (the room's own penalty), and sets
+  their ``st.died`` back to 0. A module does not read ``st.died``.
+- ``sweep_lines(dome)``: arrows stuck in things and experience orbs in a
+  dome, gone. The core runs them when a dome empties; a fight may too.
+- ``bar(pack, n, title)``: a bossbar of the dome's own (``station:d<n>``)
+  shown only to the players in that dome while it is on (`Bar`).
 """
 
 from __future__ import annotations
 
+from dataclasses import dataclass
 from typing import Any
 
 import datapack as dp
@@ -70,6 +101,45 @@ IRON = {
 }
 #: the mobs that can call reinforcements
 ZOMBIES = ("zombie", "husk", "drowned", "zombie_villager")
+#: how far round a dome's entrance spot a respawn clears of automatons
+CLEAR_ROUND = 7
+
+
+@dataclass(frozen=True)
+class Kind:
+    """a kind of automaton: its mob, name and dress, and its health and
+    ten times its melee damage at level 5 (see ``mob/dress``)"""
+
+    key: str
+    entity: str
+    name: str
+    equipment: tuple[tuple[str, str], ...]
+    health: int
+    damage: int
+
+    @property
+    def tag(self) -> str:
+        return f"st.k.{self.key}"
+
+
+STOKER = Kind(
+    "stoker",
+    "minecraft:zombie",
+    "Stoker",
+    (*COPPER.items(), ("mainhand", "minecraft:iron_shovel")),
+    20,
+    30,
+)
+RIVETER = Kind(
+    "riveter",
+    "minecraft:skeleton",
+    "Riveter",
+    (("head", COPPER["head"]), ("mainhand", "minecraft:bow")),
+    20,
+    20,
+)
+SLAG_HUSK = Kind("husk", "minecraft:husk", "Slag Husk", tuple(IRON.items()), 24, 30)
+KINDS = (STOKER, RIVETER, SLAG_HUSK)
 
 
 def dome_tag(index: int) -> str:
@@ -116,6 +186,25 @@ def summon(
     if entity.removeprefix("minecraft:") in ZOMBIES:
         nbt.append('attributes:[{id:"minecraft:spawn_reinforcements",base:0d}]')
     return f"summon {entity} {where} {{{','.join(nbt)}}}"
+
+
+def summon_kind(
+    kind: Kind, where: str, dome_index: int, tags: tuple[str, ...] = ()
+) -> str:
+    """the command that summons one of the three kinds"""
+    return summon(
+        kind.entity,
+        kind.name,
+        where,
+        dome_index,
+        dict(kind.equipment),
+        (kind.tag, *tags),
+    )
+
+
+def dress_kind_line(dome_index: int, kind: Kind) -> str:
+    """the line that dresses every new automaton of a kind in a dome"""
+    return dress_line(dome_index, kind.health, kind.damage, f"tag={kind.tag}")
 
 
 def dress_line(dome_index: int, health: int, damage: int, more: str = "") -> str:
@@ -213,9 +302,282 @@ def add_functions(pack: dp.Pack) -> None:
     )
     # out of sight first, so that nothing is seen to die
     pack.function("mob/remove", ["tp @s ~ -120 ~", "kill @s"])
+    check_waves(pack)
+    pack.function(
+        "fight/difficulty",
+        [f"execute store result score #difficulty {OBJ} run difficulty"],
+        load=True,
+    )
+
+
+# ----------------------------------------------------------------------- waves
+
+
+def home_tag(point: int) -> str:
+    """the tag of the automatons cast at a wave's spawn point"""
+    return f"st.home{point}"
+
+
+def leash_lines(dome_index: int, points, inside: str) -> list[str]:
+    """lines that put back at its spawn point any of a dome's automatons
+    that is not ``inside`` (selector arguments: ``domes.sphere(dome)``,
+    or a box from ``datapack.box_selector``)"""
+    return [
+        f"execute as {selector(dome_index, f'tag={home_tag(i)}')} "
+        f"unless entity @s[{inside}] run tp @s {domes.middle(point)}"
+        for i, point in enumerate(points)
+    ]
+
+
+def fence_lines(
+    dome_index: int, points, low: domes.Cell, high: domes.Cell
+) -> list[str]:
+    """lines that put back at its spawn point any of a dome's automatons
+    that has left the box of cells from ``low`` to ``high``"""
+    return leash_lines(dome_index, points, dp.box_selector(low, high))
+
+
+@dataclass
+class Waves:
+    """the lines a fight calls: see the module docstring"""
+
+    arm: str
+    tick: str
+    cast: str
+    leash: str
+
+
+def waves(
+    pack: dp.Pack,
+    dome_index: int,
+    points,
+    kinds: tuple[Kind, ...] = KINDS,
+    base: str = "",
+    interval: int = 400,
+    first: int = 100,
+    cap: int = 8,
+    caps: dict[str, int] | None = None,
+    near: int = 12,
+) -> Waves:
+    """
+    Add a dome's wave functions (``dome/<n>/wave/...``, or under ``base``
+    if given) and give the lines
+    that call them. ``points``: the spawn points (cells; an automaton
+    stands in the cell); ``interval`` and ``first``: ticks between waves
+    and before the first, at level 5; ``cap``: the most automatons alive
+    in the dome; ``caps``: a kind's key -> the most of that kind alive;
+    ``near``: a spawn point is used only with a player this close.
+    """
+    n = dome_index
+    dome = domes.layout.DOMES[n]
+    base = base or f"dome/{n}/wave"
+    caps = caps or {}
+    left, room, kroom = f"#wave.left {OBJ}", f"#wave.room {OBJ}", f"#wave.kroom {OBJ}"
+    clock, gap = f"#wave{n} {OBJ}", f"#wave{n}.gap {OBJ}"
+    pack.objectives({OBJ: "dummy"})
+    pack.constants(OBJ, 100)
+    # a pass over the points casts one at each that has a player by it:
+    # as many passes as would fill the cap at a single point
+    rounds = cap
+    cast = []
+    for kind in kinds:
+        for i, point in enumerate(points):
+            pack.function(
+                f"{base}/spawn/{kind.key}_{i}",
+                [
+                    summon_kind(kind, domes.middle(point), n, (home_tag(i),)),
+                    dress_kind_line(n, kind),
+                    f"scoreboard players remove {left} 1",
+                ],
+            )
+        want = f"#wave{n}.{kind.key} {OBJ}"
+        lines = [
+            f"scoreboard players operation {left} = {want}",
+            # no more than the dome's cap leaves room for ...
+            f"execute store result score #mob.alive {OBJ} if entity {selector(n)}",
+            f"scoreboard players operation {room} = #wave{n}.cap {OBJ}",
+            f"scoreboard players operation {room} -= #mob.alive {OBJ}",
+            f"scoreboard players operation {left} < {room}",
+        ]
+        if kind.key in caps:
+            # ... nor than this kind's own
+            lines += [
+                f"execute store result score #mob.alive {OBJ} "
+                f"if entity {selector(n, f'tag={kind.tag}')}",
+                f"scoreboard players set {kroom} {caps[kind.key]}",
+                f"scoreboard players operation {kroom} -= #mob.alive {OBJ}",
+                f"scoreboard players operation {left} < {kroom}",
+            ]
+        for _ in range(rounds):
+            for i, (x, y, z) in enumerate(points):
+                lines.append(
+                    f"execute if score {left} matches 1.. if entity @e[tag=st.in,"
+                    f"x={x + 0.5},y={y},z={z + 0.5},distance=..{near}] "
+                    f"run function {pack.id(f'{base}/spawn/{kind.key}_{i}')}"
+                )
+        pack.function(f"{base}/cast/{kind.key}", lines)
+        cast.append(f"function {pack.id(f'{base}/cast/{kind.key}')}")
+    pack.function(f"{base}/cast", cast)
+    pack.function(
+        f"{base}/go",
+        [
+            f"function {pack.id(f'{base}/cast')}",
+            f"scoreboard players operation {clock} = {gap}",
+        ],
+    )
+    pack.function(
+        f"{base}/arm",
+        [
+            f"scoreboard players set {clock} {first}",
+            f"scoreboard players set {gap} {interval}",
+            f"scoreboard players operation {gap} *= #diff.timer {OBJ}",
+            f"scoreboard players operation {gap} /= #100 {OBJ}",
+            f"scoreboard players set #wave{n}.cap {OBJ} {cap}",
+            *(f"scoreboard players add #wave{n}.{k.key} {OBJ} 0" for k in kinds),
+        ],
+    )
+    pack.function(
+        f"{base}/tick",
+        [
+            f"scoreboard players remove {clock} 1",
+            f"execute if score {clock} matches ..0 run function {pack.id(f'{base}/go')}",
+        ],
+    )
+    pack.function(f"{base}/leash", leash_lines(n, points, domes.sphere(dome)))
+    return Waves(
+        arm=f"function {pack.id(f'{base}/arm')}",
+        tick=f"function {pack.id(f'{base}/tick')}",
+        cast=f"function {pack.id(f'{base}/cast')}",
+        leash=f"function {pack.id(f'{base}/leash')}",
+    )
+
+
+# --------------------------------------------------------------- fight services
+
+
+def sweep_lines(dome: Any) -> list[str]:
+    """lines that remove the arrows stuck in things and the experience
+    orbs in a dome"""
+    here = domes.sphere(dome)
+    return [
+        f"kill @e[type=#minecraft:arrows,nbt={{inGround:1b}},{here}]",
+        f"kill @e[type=minecraft:experience_orb,{here}]",
+    ]
+
+
+def respawn_lines(dome: Any) -> list[str]:
+    """lines that clear the automatons from round a dome's entrance spot"""
+    x, y, z, _ = domes.entrance(dome)
+    near = f"x={x + 0.5},y={y},z={z + 0.5},distance=..{CLEAR_ROUND}"
+    return [f"execute as {selector(dome.index, near)} run function station:mob/remove"]
+
+
+@dataclass
+class Bar:
+    """a dome's bossbar: lines that show it, hide it, and set its value
+    from a score (``#name objective``)"""
+
+    id: str
+    show: str
+    hide: str
+
+    def value_line(self, score: str) -> str:
+        return (
+            f"execute store result bossbar {self.id} value "
+            f"run scoreboard players get {score}"
+        )
+
+    def name_line(self, text: str) -> str:
+        return f"bossbar set {self.id} name {text}"
+
+
+def bar_id(dome_index: int) -> str:
+    return f"station:d{dome_index}"
+
+
+def bar(
+    pack: dp.Pack,
+    dome_index: int,
+    title: str,
+    maximum: int = 100,
+    color: str = "red",
+    style: str = "progress",
+) -> Bar:
+    """
+    Add a dome's own bossbar (``station:d<n>``) and give the lines that
+    work it. While it is on (``#bar<n>`` 1) the core shows it, each
+    second, to the players in that dome and to nobody else, and hides it
+    on ``station:reset/all``.
+    """
+    n = dome_index
+    bid = bar_id(n)
+    base = f"dome/{n}/bar"
+    players = f"@a[tag=st.in,scores={{st.dome={n}}}]"
+    pack.function(
+        f"{base}/load",
+        [
+            f'bossbar add {bid} "{title}"',
+            f"bossbar set {bid} max {maximum}",
+            f"bossbar set {bid} color {color}",
+            f"bossbar set {bid} style {style}",
+            f"execute unless score #bar{n} {OBJ} matches 1 "
+            f"run bossbar set {bid} visible false",
+        ],
+        load=True,
+    )
+    pack.function(
+        f"{base}/show",
+        [
+            f"scoreboard players set #bar{n} {OBJ} 1",
+            f"bossbar set {bid} players {players}",
+            f"bossbar set {bid} visible true",
+        ],
+    )
+    pack.function(
+        f"{base}/hide",
+        [
+            f"scoreboard players set #bar{n} {OBJ} 0",
+            f"bossbar set {bid} visible false",
+            f"bossbar set {bid} players",
+        ],
+    )
+    return Bar(
+        bid,
+        f"function {pack.id(f'{base}/show')}",
+        f"function {pack.id(f'{base}/hide')}",
+    )
 
 
 # ----------------------------------------------------------------------- check
+
+
+def check_points() -> list[domes.Cell]:
+    """the spawn points of the check's waves: in the ways in from the two
+    mouths of the check's dome (``fittings.check_site``), far apart"""
+    import fittings
+    import tunnels
+
+    dome, _, way = fittings.check_site()
+    far = tunnels.way_in(dome, domes.layout.TUNNELS[dome.index])
+    return [way[1, 0, 1], far[1, 0, 1]]
+
+
+def check_waves(pack: dp.Pack) -> Waves:
+    """the waves the live check casts (``check/wave/...``)"""
+    import fittings
+
+    dome, _, _ = fittings.check_site()
+    return waves(
+        pack,
+        dome.index,
+        check_points(),
+        base="check/wave",
+        interval=40,
+        first=5,
+        cap=4,
+        caps={RIVETER.key: 1},
+        near=3,
+    )
 
 
 def check(ctx: Any) -> list[str]:
@@ -337,4 +699,156 @@ def check(ctx: Any) -> list[str]:
     for name, value in saved.items():
         if value is not None:
             ctx.set_score(name, value)
+    return problems
+
+
+def check_fights(ctx: Any) -> list[str]:
+    """
+    Live, in the check's dome: the difficulty read; waves cast only where
+    a player is, up to the cap and a kind's cap, refilled after a kill;
+    the leash and the fence; a death answered (the entrance cleared, the
+    score put back); the sweep; a dome's bossbar. Players are stood in
+    for: a stand-in's death is its ``st.died`` set by hand, so that a
+    real death is found and the Resistance given is not proved.
+    """
+    import fittings
+    import game_checks
+    import tunnels
+
+    dome, _, way = fittings.check_site()
+    n = dome.index
+    problems: list[str] = []
+    points = check_points()
+    scratch = dp.Pack(stamp="check")
+    lines = check_waves(scratch)
+
+    def expect(what: str, got: Any, want: Any) -> None:
+        game_checks.expect(problems, what, got, want)
+
+    def alive(more: str = "") -> int:
+        return ctx.count(selector(n, more))
+
+    def near(point: domes.Cell, reach: float = 2.5) -> str:
+        return f"x={point[0] + 0.5},y={point[1]},z={point[2] + 0.5},distance=..{reach}"
+
+    ctx.cmd(remove_line(n))
+    game_checks.clear_stand_ins(ctx)
+    ctx.function("fight/difficulty")
+    expect("the difficulty (Easy is 1)", ctx.score("#difficulty"), 1)
+    # -- waves: a player at the first spawn point only
+    game_checks.stand_at(ctx, "st.a1", domes.middle(points[0]))
+    saved = ctx.score("#diff.timer")  # (coming in has just set the level's)
+    ctx.set_score("#diff.timer", 150)
+    ctx.cmd(lines.arm)
+    expect("the time between waves at 150%", ctx.score(f"#wave{n}.gap"), 60)
+    for kind, want in ((STOKER, 3), (RIVETER, 2), (SLAG_HUSK, 0)):
+        ctx.set_score(f"#wave{n}.{kind.key}", want)
+    for _ in range(4):
+        ctx.cmd(lines.tick)
+    expect("before the first wave", alive(), 0)
+    ctx.cmd(lines.tick)
+    got = {
+        "all": alive(),
+        "stokers": alive(f"tag={STOKER.tag}"),
+        "riveters": alive(f"tag={RIVETER.tag}"),
+        "at the first point": alive(f"tag={home_tag(0)}"),
+        "new": alive(f"tag={NEW}"),
+    }
+    want = {"all": 4, "stokers": 3, "riveters": 1, "at the first point": 4, "new": 0}
+    expect("the first wave: cap 4, one Riveter at most", got, want)
+    expect("the clock set for the next", ctx.score(f"#wave{n}"), 60)
+    bow = ctx.data(
+        f"entity {selector(n, f'tag={RIVETER.tag},limit=1')} equipment.mainhand.id"
+    )
+    expect(f"the Riveter's bow {bow!r}", "bow" in bow, True)
+    ctx.cmd(lines.cast)
+    expect("cast again at the cap", alive(), 4)
+    ctx.cmd(f"kill {selector(n, f'tag={STOKER.tag},limit=1')}")
+    ctx.cmd(lines.cast)
+    expect("refilled after a kill", alive(f"tag={STOKER.tag}"), 3)
+    # nobody near either point: nothing cast
+    ctx.cmd(remove_line(n))
+    game_checks.stand_at(ctx, "st.a1", domes.middle(dome.floor_centre, 1))
+    ctx.cmd(lines.cast)
+    expect("cast with nobody by a spawn point", alive(), 0)
+    # at the second point: cast there
+    game_checks.stand_at(ctx, "st.a1", domes.middle(points[1]))
+    ctx.cmd(lines.cast)
+    got = {"all": alive(), "at the second point": alive(f"tag={home_tag(1)}")}
+    expect("cast where the player is", got, {"all": 4, "at the second point": 4})
+
+    # -- the leash and the fence
+    tunnel = domes.layout.TUNNELS[n]
+    out = domes.middle(tunnels.at(tunnel, tunnel.length // 2, 0, 1))
+    one = selector(n, "limit=1,sort=nearest")
+    ctx.cmd(f"execute positioned {domes.middle(points[1])} run tp {one} {out}")
+    ctx.cmd(lines.leash)
+    expect("back from the tunnel on the leash", alive(near(points[1], 6)), 4)
+    far = tunnels.way_in(dome, tunnel)
+    low, high = min(far.values()), max(far.values())
+    inside = domes.middle(dome.floor_centre, 1)
+    ctx.cmd(f"tp {selector(n)} {inside}")
+    for line in fence_lines(n, points, low, high):
+        ctx.cmd(line)
+    expect("back inside the fence", alive(near(points[1], 1)), 4)
+
+    # -- a death: the entrance spot cleared, the score put back
+    ctx.cmd(remove_line(n))
+    x, y, z, _ = domes.entrance(dome)
+    ctx.cmd(summon_kind(STOKER, domes.middle((x, y, z)), n))
+    ctx.cmd(summon_kind(STOKER, domes.middle(points[1]), n))
+    ctx.cmd(dress_kind_line(n, STOKER))
+    ctx.cmd(f"execute as {selector(n)} run data merge entity @s {{NoAI:1b}}")
+    game_checks.stand_in(ctx, "st.a1", n)
+    ctx.cmd("scoreboard players set @e[tag=st.a1] st.died 1")
+    ctx.advance(3)
+    got = {
+        "died": ctx.score("@e[tag=st.a1,limit=1]", "st.died"),
+        "by the entrance": alive(near((x, y, z), CLEAR_ROUND)),
+        "across the dome": alive(near(points[1], 3)),
+    }
+    expect(
+        "a death answered", got, {"died": 0, "by the entrance": 0, "across the dome": 1}
+    )
+
+    # -- the sweep
+    spot = domes.middle(points[0], 1)
+    ctx.cmd(f"summon minecraft:arrow {spot} {{inGround:1b,NoGravity:1b}}")
+    ctx.cmd(f"summon minecraft:experience_orb {spot} {{NoGravity:1b}}")
+    kinds = "type=#minecraft:arrows", "type=minecraft:experience_orb"
+    before = [ctx.count(f"@e[{k},{domes.sphere(dome)}]") for k in kinds]
+    for line in sweep_lines(dome):
+        ctx.cmd(line)
+    after = [ctx.count(f"@e[{k},{domes.sphere(dome)}]") for k in kinds]
+    expect("an arrow and an orb, then swept", (before, after), ([1, 1], [0, 0]))
+
+    # -- a dome's bossbar (unless the dome's own room has one)
+    if f"dome/{n}/bar/show" not in ctx.pack.functions:
+        b = bar(scratch, n, "Charge", 50)
+        for line in scratch.functions[f"dome/{n}/bar/load"]:
+            ctx.cmd(line)
+        hidden = ctx.cmd(f"bossbar get {b.id} visible", "currently")
+        for line in scratch.functions[f"dome/{n}/bar/show"]:
+            ctx.cmd(line)
+        ctx.set_score("#chk.bar", 20)
+        ctx.cmd(b.value_line(f"#chk.bar {OBJ}"))
+        shown = ctx.cmd(f"bossbar get {b.id} visible", "currently")
+        value = ctx.cmd(f"bossbar get {b.id} value", "has a value")
+        for line in scratch.functions[f"dome/{n}/bar/hide"]:
+            ctx.cmd(line)
+        gone = ctx.cmd(f"bossbar get {b.id} visible", "currently")
+        got = (
+            "hidden" in hidden,
+            "visible" in shown,
+            "value of 20" in value,
+            "hidden" in gone,
+        )
+        expect("the bar hidden, shown at 20, hidden", got, (True, True, True, True))
+        expect("its name", "Charge" in value, True)
+        ctx.cmd(f"bossbar remove {b.id}")
+
+    ctx.cmd(remove_line(n))
+    game_checks.clear_stand_ins(ctx)
+    if saved is not None:
+        ctx.set_score("#diff.timer", saved)
     return problems

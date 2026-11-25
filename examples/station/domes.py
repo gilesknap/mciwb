@@ -52,7 +52,12 @@ rules that keep it out of the way of the game:
   from a mouth is what a player watches the pump event through: nothing
   may stand in it, and nothing taller than a player's waist just beyond
   it on the line from the entrance to the outgoing door's window.
-- Nothing waterlogged, and no water or lava: the wet check counts any.
+- Nothing waterlogged, and no water or lava: the wet check counts any,
+  but in cells a module has registered with ``add_wet``.
+- A room that must break one of these rules says so by name with
+  ``allow(dome_index, name, why)``; rooms.py has the offline checks of
+  them (``room_problems``, ``walk_problems``, ``sight_problems``,
+  ``window_problems``, ``input_problems``).
 - The floor may be relaid; the shell, the mouths and their frames may not.
 - A machine that only decorates is built by the dome's ``_inside`` stage
   and is left alone by every ``reset`` function (which puts back only
@@ -135,6 +140,20 @@ COMPASS = {(0, -1): "north", (0, 1): "south", (1, 0): "east", (-1, 0): "west"}
 
 #: cells inside a dome that are meant to hold water: dome index -> cells
 WET_OK: dict[int, set[Cell]] = {}
+
+
+#: what a dome's room does against the rules for dressing, on purpose:
+#: dome index -> {name: why}
+ALLOWED: dict[int, dict[str, str]] = {}
+
+
+def allow(index: int, name: str, why: str) -> None:
+    """register a named exception to the rules for dressing a dome (when
+    the module is imported): the Flooded Dome's dam and the Engine's
+    pavilion stand between the entrance and the outgoing door's window on
+    purpose. ``rooms.window_problems`` then passes that dome, and the
+    exception is listed with the checks"""
+    ALLOWED.setdefault(index, {})[name] = why
 
 
 def add_wet(index: int, cells) -> None:
@@ -464,33 +483,54 @@ def build_shell(ctx: Any, dome: Dome) -> str:
 # ---------------------------------------------------------------------- checks
 
 
-def add_row_functions(pack: dp.Pack, longest: int) -> None:
-    """``check/row/<n>``: count the wet cells among the n from here along
-    +x (run it ``positioned`` at the first)"""
-    add = f"run scoreboard players add #wet {CHECK_OBJECTIVE} 1"
-    for n in range(1, longest + 1):
-        if f"check/row/{n}" not in pack.functions:
+def _count(name: str) -> str:
+    return f"run scoreboard players add {name} {CHECK_OBJECTIVE} 1"
+
+
+#: what a check function can do to each cell of a row, by the family's
+#: name: lines with ``%k`` for the cell's place along the row. A function
+#: of rows is a line a row, not a line (or five) a cell: the pack was 15 MB
+#: of checks before these
+ROW_FAMILIES = {
+    # wet: water or a waterlogged block
+    "row": (f"execute positioned ~%k ~ ~ if predicate {WET} {_count('#wet')}",),
+    # a hole: air, or wet
+    "hole": (
+        f"execute if block ~%k ~ ~ {AIR} {_count('#holes')}",
+        f"execute positioned ~%k ~ ~ if predicate {WET} {_count('#holes')}",
+    ),
+    # nothing solid under a floor cell
+    "under": (f"execute if block ~%k ~-1 ~ {NOT_GROUND[0]} {_count('#under')}",),
+}
+
+
+def row_lines(pack: dp.Pack, cells, family: str = "row") -> list[str]:
+    """function lines that apply a family of ``ROW_FAMILIES`` to each of
+    the cells, a line for each row of them along x; the row functions
+    they call (``check/<family>/<length>``) are added to the pack"""
+    lines = []
+    for a, b in runs(cells):
+        n = b[0] - a[0] + 1
+        if f"check/{family}/{n}" not in pack.functions:
             pack.function(
-                f"check/row/{n}",
+                f"check/{family}/{n}",
                 [
-                    f"execute positioned ~{k} ~ ~ if predicate {WET} {add}"
+                    t.replace("%k", str(k))
                     for k in range(n)
+                    for t in ROW_FAMILIES[family]
                 ],
             )
+        lines.append(
+            f"execute positioned {a[0]} {a[1]} {a[2]} "
+            f"run function {pack.id(f'check/{family}/{n}')}"
+        )
+    return lines
 
 
 def wet_lines(pack: dp.Pack, cells) -> list[str]:
     """function lines that add to ``#wet`` for each of the cells that is
-    wet, and the row functions they call added to the pack"""
-    rows = runs(cells)
-    if not rows:
-        return []
-    add_row_functions(pack, max(b[0] - a[0] + 1 for a, b in rows))
-    return [
-        f"execute positioned {a[0]} {a[1]} {a[2]} "
-        f"run function {pack.id(f'check/row/{b[0] - a[0] + 1}')}"
-        for a, b in rows
-    ]
+    wet"""
+    return row_lines(pack, cells, "row")
 
 
 def check_parts(dome: Dome) -> list[list[tuple[Cell, Cell]]]:
@@ -528,17 +568,8 @@ def add_check_functions(pack: dp.Pack, dome: Dome, built_tunnels=()) -> None:
     for index, mouth in openings(dome).items():
         if index in built_tunnels:
             skip |= mouth
-    add = f"run scoreboard players add {{}} {CHECK_OBJECTIVE} 1"
-    lines = []
-    for x, y, z in sorted((cells.shell | cells.floor) - skip):
-        lines += [
-            f"execute if block {x} {y} {z} {AIR} {add.format('#holes')}",
-            f"execute positioned {x} {y} {z} if predicate {WET} {add.format('#holes')}",
-        ]
-    for x, y, z in sorted(cells.floor - skip):
-        lines.append(
-            f"execute if block {x} {y - 1} {z} {NOT_GROUND[0]} {add.format('#under')}"
-        )
+    lines = row_lines(pack, (cells.shell | cells.floor) - skip, "hole")
+    lines += row_lines(pack, cells.floor - skip, "under")
     pack.function(f"check/dome/{dome.index}/holes", [*lines, ran])
 
 
