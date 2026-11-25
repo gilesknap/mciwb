@@ -92,8 +92,9 @@ def test_layout() -> None:
         castle_layout.SMITHY = (104, 95, 117, 115)
         stairs = castle_layout.WALL_STAIRS
         stairs["west wall stair"] = ([(3, -1, 100), (3, 9, 110)], 2, 10)
-        stairs["stair west of the gatehouse"] = ([(32, -1, 142), (42, 9, 142)], 2, 10)
-        stairs["stair east of the gatehouse"] = ([(88, -1, 142), (78, 9, 142)], 2, 10)
+        zs = castle_layout.ZS - 3
+        stairs["stair west of the gatehouse"] = ([(32, -1, zs), (42, 9, zs)], 2, 10)
+        stairs["stair east of the gatehouse"] = ([(88, -1, zs), (78, 9, zs)], 2, 10)
         found = "\n".join(castle_layout.layout_problems())
         check(
             "layout: the check finds the old stables, smithy and stairs in the towers",

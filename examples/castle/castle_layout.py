@@ -19,6 +19,14 @@ The site and the castle's name are set by environment variables, so that
 the same scripts build any number of castles::
 
     ORIGIN=-80,82,-230 SPAWN=32,74,-64 NAME=Fable BANNER=red mciwb run build_castle.py
+
+The lower bailey's depth (north to south) is ``BAILEY_DEPTH``, 81 by
+default. A deeper bailey moves its south end (the south wall, gatehouse,
+market and the wall stairs beside the gatehouse) south and adds pairs of
+mid-wall towers along the side curtains; its north end stays where it is,
+and so does everything under the bailey's east side (the dungeons, the
+catacombs and the lower treasury, tied to the smithy's hatch and the well's
+tunnel), whose positions are counted from the junction (``UD``).
 """
 
 from __future__ import annotations
@@ -62,7 +70,9 @@ TAG = f"castle_{ORIGIN.x}_{ORIGIN.z}"
 
 W = 121  # width of both wards, x 0..W-1 (outer wall faces)
 UD = 65  # upper ward depth: z 0..UD-1
-LD = 81  # lower bailey depth: z UD..UD+LD-1
+LD = int(os.environ.get("BAILEY_DEPTH") or 81)  # lower bailey depth: z UD..UD+LD-1
+if not 81 <= LD <= 400:
+    raise SystemExit(f"BAILEY_DEPTH must be 81..400, not {LD}")
 YU = 18  # the upper ward's standing level above the bailey's
 WALL_H = 10  # curtain walls: solid blocks above the standing level
 MOAT_W = 6  # the width of the water moat round the bailey and the dry ditch round the upper ward
@@ -114,10 +124,22 @@ CELL_LEVER = -4
 PIT_TRAP = (95, -8, 127, 7)
 ARROW_TRAP = (94, 96, -15, 118, 108)  # x1, x2, standing level, wire z, dispenser z
 WELL = (60, 105)
+WELL_GATE = (WELL[0], WELL[1] + 1)  # the fence gate in the well's rim, south
 # ---- the lower bailey's buildings and features, x1, z1, x2, z2 (local).
 # Each keeps clear of the bailey's round towers (BAILEY_TOWERS), with room
 # for a tower's ground door: `layout_problems` checks it before a build.
-MID_Z = 105  # the z of the mid-wall towers
+MID_Z = UD + 40  # the z of the first mid-wall towers, the well and the cross paths
+# the z of each pair of mid-wall towers: the first at MID_Z, the others spaced
+# evenly from there to the south corner towers, one pair per 81 of depth
+MID_TOWERS = max(1, round(LD / 81))
+MID_ZS = [MID_Z + k * (ZS - 3 - MID_Z) // MID_TOWERS for k in range(MID_TOWERS)]
+
+
+def nth(name: str, k: int) -> str:
+    """the name of the k-th (from 0) of a series: the first keeps the plain name"""
+    return name if k == 0 else f"{name} {k + 1}"
+
+
 # the stables (the stall fronts face east at x2), east of the west mid-wall
 # tower and the lane at x 9 that its ground door opens onto
 STABLES = (10, 92, 21, 122)
@@ -130,7 +152,7 @@ SMITHY = (99, 95, 109, 115)
 # the lower treasury (catacombs() carries the ladder through its ceiling)
 SMITHY_HATCH = (107, 105)
 DUNGEON_HUT = (93, 108, 97, 112)  # the dungeon entrance over its stair
-MARKET = (70, 130, 82, 132)  # two stalls by the gate
+MARKET = (70, ZS - 15, 82, ZS - 13)  # two stalls by the gate
 # the stairs up to the wall walks: (points, width, walk), the points and
 # width as for mciwb.builders.stairway (the walkway blocks; each row widens
 # to the right of the way up), and the walk's standing level, which the
@@ -142,8 +164,15 @@ MARKET = (70, 130, 82, 132)  # two stalls by the gate
 # towers. In the upper ward: south beside the curtains, north of the
 # mid-wall towers
 WALL_STAIRS = {
-    "west wall stair": ([(3, -1, 112), (3, WALL_H - 1, 122)], 2, WALL_H),
-    "east wall stair": ([(W - 3, -1, 112), (W - 3, WALL_H - 1, 122)], 2, WALL_H),
+    **{
+        nth(f"{side} wall stair", k): (
+            [(x, -1, mz + 7), (x, WALL_H - 1, mz + 17)],
+            2,
+            WALL_H,
+        )
+        for k, mz in enumerate(MID_ZS)
+        for side, x in (("west", 3), ("east", W - 3))
+    },
     "stair west of the gatehouse": (
         [(GATEHOUSE[0] - 18, -1, ZS - 3), (GATEHOUSE[0] - 8, WALL_H - 1, ZS - 3)],
         2,
@@ -186,8 +215,11 @@ STANDING_SIGNS = {
 BAILEY_TOWERS = {
     "south-west corner tower": (3, ZS - 3, TR),
     "south-east corner tower": (W - 4, ZS - 3, TR),
-    "west mid-wall tower": (3, MID_Z, TR - 1),
-    "east mid-wall tower": (W - 4, MID_Z, TR - 1),
+    **{
+        nth(f"{side} mid-wall tower", k): (x, mz, TR - 1)
+        for k, mz in enumerate(MID_ZS)
+        for side, x in (("west", 3), ("east", W - 4))
+    },
     "west junction tower": (3, UD - 1, TR),
     "east junction tower": (W - 4, UD - 1, TR),
 }
@@ -303,16 +335,18 @@ TOWER_DOORS = {
         2,
         [(_WALK, _N, 1), (_WALK, _W, -1), (0, _N, -1)],
     ),
-    "west mid-wall tower": (
-        *BAILEY_TOWERS["west mid-wall tower"],
-        1,
-        [(_WALK, _N, -1), (_WALK, _S, 1), (0, _E, 0)],
-    ),
-    "east mid-wall tower": (
-        *BAILEY_TOWERS["east mid-wall tower"],
-        1,
-        [(_WALK, _N, 1), (_WALK, _S, -1), (0, _W, 0)],
-    ),
+    **{
+        nth(f"{side} mid-wall tower", k): (
+            *BAILEY_TOWERS[nth(f"{side} mid-wall tower", k)],
+            1,
+            doors,
+        )
+        for k in range(len(MID_ZS))
+        for side, doors in (
+            ("west", [(_WALK, _N, -1), (_WALK, _S, 1), (0, _E, 0)]),
+            ("east", [(_WALK, _N, 1), (_WALK, _S, -1), (0, _W, 0)]),
+        )
+    },
     # the junction towers: the bailey's walk, the bailey, the upper ward and
     # its west (east) and south walks
     "west junction tower": (
@@ -378,6 +412,41 @@ TOWER_DOORS = {
         XG, (KEEP[1] + KEEP[3]) // 2, 3, 2, [(KEEP_ROOF, _S, 0)]
     ),
     "alchemist's tower": (*ALCH, 6, 2, [(YU, _S, 0)]),
+}  # fmt: skip
+
+# each round tower's levels (local): its foot, its floors' standing levels,
+# its top (castle_lib.round_tower's y_top), whether it has a conical roof
+# (its top floor is then the highest of its floors) and a spiral stair (or
+# a ladder, as narrow towers have anyway). build_outer.tower builds from
+# this, and castle_lib.tower_stair_top tells the checks where each tower's
+# way up comes out on its top floor
+TOWER_LEVELS: dict[str, tuple[int, list[int], int, bool, bool]] = {
+    **{
+        name: (
+            (MOAT_FLOOR, [0, _WALK, YU, _UWALK], _UWALK + 8, False, True)
+            if "junction" in name
+            else (MOAT_FLOOR, [0, _WALK], _WALK + 8, False, True)
+        )
+        for name in BAILEY_TOWERS
+    },
+    **{name: (MOAT_FLOOR, [0, 16], 24, False, True) for name in GATE_TOWERS},
+    **{
+        name: (
+            (DITCH_FLOOR - 1, [YU, _UWALK, _UWALK + 6], _UWALK + 12, True, True)
+            if "corner" in name
+            else (DITCH_FLOOR - 1, [YU, _UWALK], _UWALK + 6, False, True)
+        )
+        for name in UPPER_TOWERS
+    },
+    **{
+        f"keep turret {x},{z}": (YU - 2, [*KEEP_FLOORS, KEEP_ROOF], KEEP_ROOF + 10, True, True)
+        for x in (KEEP[0], KEEP[2])
+        for z in (KEEP[1], KEEP[3])
+    },
+    "keep's lantern tower": (KEEP_ROOF - 1, [KEEP_ROOF], KEEP_ROOF + 8, True, False),
+    "alchemist's tower": (
+        YU - 2, [YU, YU + 8, YU + 16, YU + 24], YU + 31, True, False
+    ),
 }  # fmt: skip
 
 # every round tower standing on a ward's ground, for `layout_problems`

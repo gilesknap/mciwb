@@ -54,11 +54,21 @@ ORIGIN=-80,82,-230 SPAWN=32,74,-64 NAME=Fable BANNER=red mciwb run build_castle.
 - `NAME` goes on the sign inside the gate, the vault's sign and the
   signpost; `BANNER` is the colour of the castle's banners (the second
   colour, blue, is fixed).
+- `BAILEY_DEPTH` (default 81) is the lower bailey's depth, north to south.
+  A deeper bailey moves its south end (the south wall, the gatehouse, the
+  market and the stairs beside the gatehouse) south, and adds a pair of
+  mid-wall towers, each with its wall stairs, for every 81 blocks of depth
+  (`castle_layout.MID_ZS`). Its north end stays, and so does everything
+  under the bailey's east side: the dungeons, catacombs and lower treasury
+  hang off the smithy's hatch and the well's tunnel. `examples/castle2`
+  builds a castle with a bailey of 162.
 - `verify_castle.py` and `guide.py` take the same variables, so that they
   check and describe the right castle.
 
 Every entity the castle summons (horses, armour stands, item frames, the
-golem and the cat) is tagged `castle_<x>_<z>` of its origin, and with its
+golem and the cat) is invulnerable (`castle_lib.protected`: armour stands
+have their slots disabled and item frames are fixed, to keep their armour
+and items on them), and is tagged `castle_<x>_<z>` of its origin, and with its
 stage. A stage removes its own entities before it runs and the earthworks
 stage (a fresh site) removes every entity in the site, so rebuilding all or
 part of a castle never duplicates them. Mobs are summoned with
@@ -79,7 +89,7 @@ check after a build (observed, not explained: gilesknap/mciwb#166, item 9).
 | Keep | x 40..80, z 12..42 | three storeys and a roof terrace; turrets at the corners |
 | Chapel | x 86..110, z 14..40 | crypt underneath (y 8..11) |
 | Alchemist's tower | centre (18, 22) | the engine on the top floor |
-| Well | (60, 105) | bubble column down to the tunnels |
+| Well | (60, 105) | bubble column up from the tunnels; a fence gate in the rim (`WELL_GATE`) is the way out |
 | Dungeons | x 69..100, z 131..143, standing level -8 | cells, guard room, pit trap |
 | Catacombs | x 91..110, z 104..132, standing level -15 | oubliette, arrow trap, lower treasury |
 | Vault | x 50..70, z 16..30, standing level 8 | under the keep |
@@ -155,7 +165,12 @@ armour stand stands in a block or item frame hangs in one, that every round
 tower's doorway opens onto somewhere to stand on both sides at its level
 (`castle_layout.TOWER_DOORS`, `reach.door_problems`), and, given the
 server's world folder in `WORLD_FOLDER`, that a visitor can walk from the
-bridge to every room (`reach.py`, below). A portcullis
+bridge to every room (`reach.py`, below). Every round
+tower's stair or ladder comes out on its top floor (the top of a tower
+with battlements, the floor under a cone: `castle_layout.TOWER_LEVELS`),
+and `reach.stair_top_problems` checks the headroom over its last steps.
+Signs take their text as plain SNBT strings (`castle_lib.sign`), the form
+Minecraft 1.21.5 and later want. A portcullis
 a visitor left closed is reported as found, tested, and left closed. It clears hostile mobs from the site and anything from
 the tripwires first, and leaves everything as it found it: the levers off,
 the bookshelf untouched, the dispensers reloaded. Two things it has to work round: the server pauses
@@ -222,7 +237,15 @@ lightning rod may be `exposed_lightning_rod` by the time you visit.
 - `build_outer.py`: earthworks, walls, towers, gatehouse, bridge, road,
   grand stair, keep shell; the site's forceload and the road's route.
 - `build_inner.py`: rooms, chapel and crypt, alchemist's tower, bailey
-  buildings, dungeons, vault, details.
+  buildings, dungeons, vault, details. The stages that furnish rooms are
+  split into a shell and its furnishing, so that another castle can keep the rooms and furnish them
+  its own way: `keep_interiors` is `interiors_shell`,
+  `interiors_furnishing` and `interiors_lights`; `chapel` is
+  `chapel_shell` and `chapel_furnishing`; `bailey_buildings` is
+  `bailey_shell` and `bailey_furnishing`; `details` is `details_fixtures`
+  and `details_people`. Every seat is placed by `castle_lib.seat(pos,
+  faces)`, given the way the sitter looks, and recorded in
+  `castle_lib.PLACED_SEATS`.
 - `build_castle.py`: the staged driver. `verify_castle.py`: the checks.
 - `reach.py`: can a visitor walk to every room? A flood fill over the
   site's blocks (read from the world files: RCON is far too slow) from the

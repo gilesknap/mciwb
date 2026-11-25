@@ -66,11 +66,13 @@ from castle_layout import (  # noqa: E402
     TAG,
     TELEPORTS,
     TOWER_DOORS,
+    TOWER_LEVELS,
     VAULT,
     VAULT_Y,
     WALL_H,
     WALL_STAIRS,
     WELL,
+    WELL_GATE,
     WELL_TUNNEL_X,
     XG,
     YU,
@@ -462,6 +464,16 @@ def passages() -> None:
             is_block(V(wx, y, wz), "minecraft:bubble_column") for y in range(-8, 0)
         ),
     )
+    gx, gz = WELL_GATE
+    check(
+        "well: a gate in the rim, the way out of the water onto the bailey",
+        is_block(V(gx, 0, gz), "#minecraft:fence_gates")
+        and is_block(V(gx, 1, gz), L.AIR)
+        and is_block(V(wx, 0, wz), L.AIR)
+        and is_block(V(wx, 1, wz), L.AIR)
+        and is_block(V(2 * gx - wx, 0, 2 * gz - wz), L.AIR)
+        and is_block(V(2 * gx - wx, 1, 2 * gz - wz), L.AIR),
+    )
     check(
         "well: a door at the bottom into a dry tunnel",
         is_block(V(wx + 1, -8, wz), "minecraft:dark_oak_door")
@@ -667,10 +679,19 @@ def banners() -> None:
     )
 
 
+def feet_free(p: Vec3) -> bool:
+    """room for a visitor's feet: air, or the layer of snow that falls in a
+    cold biome (reach counts snow as open too)"""
+    return is_block(p, L.AIR) or is_block(p, "minecraft:snow")
+
+
 def walk_step(x: int, walk: int, z: int) -> bool:
-    """somewhere to stand at a wall walk's level: solid under, air for feet and head"""
-    return not is_block(V(x, walk - 1, z), L.AIR) and all(
-        is_block(V(x, walk + k, z), L.AIR) for k in (0, 1)
+    """somewhere to stand at a wall walk's level: solid under, air for feet
+    (or snow) and head"""
+    return (
+        not is_block(V(x, walk - 1, z), L.AIR)
+        and feet_free(V(x, walk, z))
+        and is_block(V(x, walk + 1, z), L.AIR)
     )
 
 
@@ -709,7 +730,7 @@ def bailey() -> None:
         not problems,
     )
     bad = []
-    for name in ("west mid-wall tower", "east mid-wall tower"):
+    for name in (n for n in BAILEY_TOWERS if "mid-wall" in n):
         cx, cz, r = BAILEY_TOWERS[name]
         # the pillar, and the north and south walls beside the wall-walk doors
         for x, z in ((cx, cz), (cx, cz - r), (cx, cz + r)):
@@ -781,7 +802,7 @@ def places() -> None:
         p = V(x, y, z)
         check(
             f"teleport to {name} ({p.x} {p.y} {p.z}) lands on a floor with head room",
-            is_block(p, L.AIR)
+            feet_free(p)
             and is_block(p + Vec3(0, 1, 0), L.AIR)
             and not is_block(p - Vec3(0, 1, 0), L.AIR)
             and not is_block(p - Vec3(0, 1, 0), L.WATER),
@@ -849,7 +870,9 @@ def road() -> None:
     text = c(f"data get block {p.x} {y} {p.z} front_text.messages")
     check(
         f"road: signpost at ({p.x}, {y}, {p.z}) names Castle {NAME}",
-        is_block(Vec3(p.x, y, p.z), "#minecraft:all_signs") and NAME in text,
+        is_block(Vec3(p.x, y, p.z), "#minecraft:all_signs")
+        and f'"Castle {NAME}"' in text
+        and "'\"" not in text,  # plain lines: '"Castle ..."' shows its quotes
     )
     # every lamp post is one post: a lantern on exactly POST_HEIGHT fence
     # blocks, nothing on it and no post under it (or no post at all, where
@@ -975,7 +998,10 @@ def summoned_clear(kind_at) -> None:
 
     bad = []
     stands = c(
-        f"execute as @e[type=minecraft:armor_stand,tag={TAG}] run data get entity @s Pos"
+        # (not markers: an invisible marker stand that a sitter rides sits
+        # in its seat, castle2's do)
+        f"execute as @e[type=minecraft:armor_stand,tag={TAG},nbt=!{{Marker:1b}}] "
+        "run data get entity @s Pos"
     )
     n_stands = 0
     for m in POS.finditer(stands):
@@ -1013,7 +1039,7 @@ def summoned_clear(kind_at) -> None:
 
 def towers(kind_at, describe=None) -> None:
     """every round tower's doorway opens onto somewhere to stand at its
-    level on both sides"""
+    level on both sides, and its stair or ladder comes out on its top floor"""
     for name, (_cx, _cz, _r, _wall, doors) in TOWER_DOORS.items():
         bad = [
             b
@@ -1022,6 +1048,13 @@ def towers(kind_at, describe=None) -> None:
         ]
         check(
             f"towers: the {name}'s {len(doors)} doors open onto floors at their levels on both sides{' (' + '; '.join(bad) + ')' if bad else ''}",
+            not bad,
+        )
+    stair_tops = reach.stair_top_problems(kind_at)
+    for name in TOWER_LEVELS:
+        bad = [b for b in stair_tops if b.startswith(name + ",")]
+        check(
+            f"towers: the {name}'s way up comes out on its top floor with headroom{' (' + '; '.join(bad) + ')' if bad else ''}",
             not bad,
         )
 
@@ -1060,56 +1093,66 @@ def main() -> None:
         )
     build_outer.forceload(True)
     try:
-        print(f"killed {L.kill_hostiles(*site_box())} hostile mobs in the site")
-        portcullis("main gate", MAIN_GATE)
-        portcullis("middle gate", MIDDLE_GATE)
-        blocked = [z for z in range(ZS - 8, ZS + 1) if not is_block(V(XG, 0, z), L.AIR)]
-        check(
-            f"main gate passage is open end to end (blocked at local z {blocked})",
-            not blocked,
-        )
-        check(
-            "bridge spans the moat",
-            all(
-                is_block(V(XG, -1, z), L.PLANKS) for z in range(ZS + 1, BRIDGE_END + 1)
-            ),
-        )
-        library()
-        lever_door("cell block", V(*CELL_DOOR), CELL_LEVER, L.BRICK)
-        lever_door("crypt", V(*CRYPT_DOOR), -1, L.DARK_BRICK)
-        traps()
-        passages()
-        engine()
-        places()
-        cells()
-        mounts()
-        seats()
-        banners()
-        bailey()
-        road()
-        entities()
-        world_folder = os.environ.get("WORLD_FOLDER")
-        if world_folder:
-            # read the site from the world files (RCON is too slow for a
-            # flood fill over it): doors and reachability
-            c("save-all flush")
-            g = reach.load_world(world_folder)
-            summoned_clear(reach.grid_kind(g))
-            towers(reach.grid_kind(g), g.name)
-            reachable(g)
-        else:
-            summoned_clear(rcon_kind)
-            towers(rcon_kind)
-            print(
-                "INFO reach: not checked (set WORLD_FOLDER to the server's world "
-                "folder to walk the castle from its files)"
-            )
+        checks()
     finally:
         c("kill @e[tag=castle_verify]")
         build_outer.forceload(False)
     print(f"{sum(results)}/{len(results)} checks passed")
     if not all(results):
         raise SystemExit(1)
+
+
+def checks() -> None:
+    """every check, with the site loaded (castle2's verify runs these too)"""
+    print(f"killed {L.kill_hostiles(*site_box())} hostile mobs in the site")
+    portcullis("main gate", MAIN_GATE)
+    portcullis("middle gate", MIDDLE_GATE)
+    # air all the way, or a fence gate (a castle may close its passage
+    # with fence gates, which visitors open and villagers cannot: castle2)
+    blocked = [
+        z
+        for z in range(ZS - 8, ZS + 1)
+        if not is_block(V(XG, 0, z), L.AIR)
+        and not is_block(V(XG, 0, z), "#minecraft:fence_gates")
+    ]
+    check(
+        f"main gate passage is open end to end, or through fence gates (blocked at local z {blocked})",
+        not blocked,
+    )
+    check(
+        "bridge spans the moat",
+        all(is_block(V(XG, -1, z), L.PLANKS) for z in range(ZS + 1, BRIDGE_END + 1)),
+    )
+    library()
+    lever_door("cell block", V(*CELL_DOOR), CELL_LEVER, L.BRICK)
+    lever_door("crypt", V(*CRYPT_DOOR), -1, L.DARK_BRICK)
+    traps()
+    passages()
+    engine()
+    places()
+    cells()
+    mounts()
+    seats()
+    banners()
+    bailey()
+    road()
+    entities()
+    world_folder = os.environ.get("WORLD_FOLDER")
+    if world_folder:
+        # read the site from the world files (RCON is too slow for a
+        # flood fill over it): doors and reachability
+        c("save-all flush")
+        g = reach.load_world(world_folder)
+        summoned_clear(reach.grid_kind(g))
+        towers(reach.grid_kind(g), g.name)
+        reachable(g)
+    else:
+        summoned_clear(rcon_kind)
+        towers(rcon_kind)
+        print(
+            "INFO reach: not checked (set WORLD_FOLDER to the server's world "
+            "folder to walk the castle from its files)"
+        )
 
 
 if __name__ == "__main__":

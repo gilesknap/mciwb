@@ -2,7 +2,7 @@
 Block states: a block id plus properties, e.g.
 ``minecraft:oak_stairs[facing=east,half=bottom,shape=straight]``, and
 optionally block entity data, e.g.
-``minecraft:oak_sign[rotation=4]{front_text:{messages:['"Hi"','""','""','""']}}``.
+``minecraft:oak_sign[rotation=4]{front_text:{messages:["Hi","","",""]}}``.
 
 `BlockState` parses and formats these strings, and rotates and mirrors them
 about the Y axis (used to rotate schematics). `stair_shapes` works out the

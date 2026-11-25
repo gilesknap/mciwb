@@ -53,7 +53,7 @@ def test_block_state_parse_and_format():
         BlockState.parse("oak_stairs[facing]")
 
 
-SIGN_TEXT = """{front_text:{messages:['"Hi"','""','""','""']}}"""
+SIGN_TEXT = """{front_text:{messages:["Hi","","",""]}}"""
 
 
 def test_block_state_parses_block_entity_nbt():

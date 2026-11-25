@@ -84,7 +84,7 @@ class Placer:
         Set one block, e.g. ``placer.setblock(pos, "oak_stairs[half=top]")``.
         The block may carry block entity data, e.g. a sign's text::
 
-            text = '''{front_text:{messages:['"Hi"','""','""','""']}}'''
+            text = '{front_text:{messages:["Hi","","",""]}}'
             placer.setblock(pos, "oak_sign[rotation=4]" + text)
         """
         pos = _ints(pos)

@@ -13,11 +13,11 @@ import random
 import re
 from collections.abc import Iterable
 
-from castle_layout import TAG
+from castle_layout import TAG, seat_facing
 from mcipc.rcon.enumerations import FillMode
 from mcwb import Vec3
 
-from mciwb.builders.paths import stairway
+from mciwb.builders.paths import stairway, trace_path
 from mciwb.builders.placer import Placer, rectangles
 from mciwb.threads import get_client, reply_matches, retry_command
 
@@ -97,10 +97,17 @@ def cmd(command: str) -> str:
     return get_client().run(command)
 
 
+def snbt_string(text: str) -> str:
+    """text as a double-quoted SNBT string (a plain text component)"""
+    return '"' + text.replace("\\", "\\\\").replace('"', '\\"') + '"'
+
+
 def sign(pos: Vec3, block: str, *lines: str) -> None:
     """a sign (``oak_sign[rotation=4]``, ``oak_wall_sign[facing=north]`` ...)
-    with up to four lines of text"""
-    text = ",".join(f"'\"{line}\"'" for line in (*lines, "", "", "", "")[:4])
+    with up to four lines of text. Each line is a plain SNBT string: since
+    Minecraft 1.21.5 text components in NBT are SNBT, and the old form (a
+    JSON string inside quotes, ``'"text"'``) shows its quotes on the sign"""
+    text = ",".join(snbt_string(line) for line in (*lines, "", "", "", "")[:4])
     placer().setblock(pos, f"minecraft:{block}{{front_text:{{messages:[{text}]}}}}")
 
 
@@ -110,11 +117,50 @@ STAGE = "build"
 PERSIST = "PersistenceRequired:1b"
 
 
+# what a visitor must not be able to kill, knock off its wall or strip:
+# the castle's fittings and people (not farm animals). An armour stand's
+# armour and an item frame's item can be taken in adventure mode too, so
+# the stands that wear something have every slot disabled and the frames
+# are fixed. (A player in creative mode can still remove them all.)
+PROTECTED = (
+    "armor_stand",
+    "item_frame",
+    "painting",
+    "villager",
+    "cat",
+    "wolf",
+    "parrot",
+    "horse",
+    "iron_golem",
+    "copper_golem",
+)
+# an armour stand's DisabledSlots with every bit set for its six slots
+# (0x3F3F3F: nothing taken, placed or swapped)
+ALL_SLOTS_DISABLED = 4144959
+
+
+def protected(kind: str, nbt: str) -> str:
+    """``nbt`` with what keeps an entity of this kind safe from visitors"""
+    if kind not in PROTECTED:
+        return nbt
+    extra = []
+    if "Invulnerable:" not in nbt:
+        extra.append("Invulnerable:1b")
+    if kind == "item_frame" and "Fixed:" not in nbt:
+        extra.append("Fixed:1b")
+    if kind == "armor_stand" and "equipment:" in nbt.split("Passengers:")[0]:
+        extra.append(f"DisabledSlots:{ALL_SLOTS_DISABLED}")
+    if kind == "copper_golem" and "next_weather_age:" not in nbt:
+        extra.append("next_weather_age:-2L")  # waxed: it never turns to a statue
+    return ",".join([*extra, nbt] if nbt else extra)
+
+
 def summon(kind: str, pos: Vec3, nbt: str = "") -> None:
     """
     Summon an entity, tagged ``TAG`` (the castle's) and ``TAG.STAGE`` so that
     a rebuild of the castle or of a stage removes the old ones first (see
-    build_castle.kill_stage_entities). ``nbt`` is extra NBT, without braces.
+    build_castle.kill_stage_entities). ``nbt`` is extra NBT, without braces;
+    the kinds in `PROTECTED` are made invulnerable (`protected`).
 
     Another RCON client can empty our reply or add its output to it, and
     mciwb sends a summon once (a lost reply does not mean it failed, and a
@@ -123,6 +169,7 @@ def summon(kind: str, pos: Vec3, nbt: str = "") -> None:
     summons it again if it is missing), and anything else is an error.
     """
     tags = f'Tags:["{TAG}","{TAG}.{STAGE}"]'
+    nbt = protected(kind, nbt)
     data = f"{{{tags},{nbt}}}" if nbt else f"{{{tags}}}"
     command = f"summon minecraft:{kind} {pos.x} {pos.y} {pos.z} {data}"
     r = cmd(command)
@@ -271,6 +318,34 @@ def shell(a: Vec3, b: Vec3, block: str) -> None:
     p.fill(Vec3(lo.x, lo.y, hi.z), Vec3(hi.x, hi.y, hi.z), block)
     p.fill(Vec3(lo.x, lo.y, lo.z), Vec3(lo.x, hi.y, hi.z), block)
     p.fill(Vec3(hi.x, lo.y, lo.z), Vec3(hi.x, hi.y, hi.z), block)
+
+
+# ---------------------------------------------------------------- seats
+
+# every seat placed so far: (first cell, last cell, the way the sitter looks)
+PLACED_SEATS: list[tuple[Vec3, Vec3, str]] = []
+
+
+def seat(
+    pos: Vec3,
+    faces: str,
+    to: Vec3 | None = None,
+    block: str = "minecraft:dark_oak_stairs",
+) -> None:
+    """
+    A stair to sit on at ``pos`` (a row of them to ``to``), for someone who
+    looks ``faces`` (north, south, east or west): towards their table, altar
+    or hall. A stair's facing is its high back, so the stair faces the
+    other way (`castle_layout.seat_facing`). Each seat is recorded in
+    `PLACED_SEATS`, so that another castle's checks can learn its seats by
+    running its build against a fake client.
+    """
+    state = f"{block}[facing={seat_facing(faces)}]"
+    if to is None:
+        set_block(pos, state)
+    else:
+        fill(pos, to, state)
+    PLACED_SEATS.append((pos, pos if to is None else to, faces))
 
 
 # ---------------------------------------------------------------- cells
@@ -448,6 +523,94 @@ def lantern_spot(
     return None
 
 
+def tower_stair_top(
+    cx: int,
+    cz: int,
+    r: int,
+    wall: int,
+    floors: Iterable[int],
+    y_top: int,
+    *,
+    roofed: bool = False,
+    stair: bool = True,
+) -> dict | None:
+    """
+    Where a `round_tower`'s stair (or ladder) comes out on its top floor:
+    ``y_top`` for a tower with battlements, the highest of ``floors`` (the
+    floor under the cone) for a roofed one. None if it has no way up.
+
+    - "top": the top floor's standing level
+    - "climb": (feet, headroom) for the last steps or rungs: the cell a
+      visitor's feet pass through and how many blocks from there up must
+      be free (3 on a step: room to step up onto the next, as castle's
+      `reach` walks; 2 on the last step and on a ladder)
+    - "exits": cells on the top floor beside the last step (or the ladder's
+      top): a visitor must be able to stand on one of them
+    - "hole": the (x, z) cells of the opening in the top floor's slab (at
+      "top" - 1) over the last three steps below it, as the stairway's
+      clearance cuts each lower floor's: kept open, the way up
+    - "last": the (x, z) cells of the top step (the ladder) in the slab
+    - "rail": the (x, z) cells round the opening on the top floor that get a
+      rail (a tower with battlements only: its top is a walk)
+    - "ladder": True for a ladder
+    """
+    floors = sorted(floors)
+    if not floors:
+        return None
+    top = floors[-1] if roofed else y_top
+    if top <= floors[0]:
+        return None
+    if stair and r - wall >= 3:
+        steps = trace_path(spiral_points(cx, cz, floors[0] - 1, top - 1))
+        hole = {
+            (int(s.pos.x), int(s.pos.z)) for s in steps if top - 5 < s.pos.y < top - 1
+        }
+        last = [s for s in steps if s.pos.y == top - 1]
+        climb = [
+            (Vec3(s.pos.x, s.pos.y + 1, s.pos.z), 2 if s.pos.y == top - 1 else 3)
+            for s in steps
+            if s.pos.y >= top - 5
+        ]
+        end = last[-1]
+        exit_cell = Vec3(end.pos.x, top, end.pos.z) + end.direction
+        last_cells = {(int(s.pos.x), int(s.pos.z)) for s in last}
+        rail: Cells = set()
+        if not roofed:
+            near = {
+                (x + dx, z + dz)
+                for x, z in hole
+                for dx in (-1, 0, 1)
+                for dz in (-1, 0, 1)
+            }
+            rail = (
+                (near & disc(cx, cz, r - 1))
+                - hole
+                - last_cells
+                - {(int(exit_cell.x), int(exit_cell.z)), (cx, cz), (cx + 1, cz)}
+            )
+        return {
+            "top": top,
+            "climb": climb,
+            "exits": [exit_cell],
+            "hole": hole,
+            "last": last_cells,
+            "rail": rail,
+            "ladder": False,
+        }
+    # a ladder up the north inside wall, through a hole in each floor: step
+    # off it south, east or west
+    q = Vec3(cx, top, cz - (r - wall))
+    return {
+        "top": top,
+        "climb": [(q - Vec3(0, 2, 0), 2), (q - Vec3(0, 1, 0), 2), (q, 2)],
+        "exits": [q + Vec3(0, 0, 1), q + Vec3(1, 0, 0), q + Vec3(-1, 0, 0)],
+        "hole": set(),
+        "last": {(int(q.x), int(q.z))},
+        "rail": set(),
+        "ladder": True,
+    }
+
+
 def round_tower(
     cx: int,
     cz: int,
@@ -509,12 +672,17 @@ def round_tower(
             for k in range(r - wall, r + 1):
                 q = Vec3(cx + round(dx * k * 0.7071), 0, cz + round(dz * k * 0.7071))
                 set_block(Vec3(q.x, fy + 1, q.z), AIR)
-    # the spiral stair round a pillar
-    if stair and floors and r - wall >= 3:
+    # the way up: it comes out on the top floor (under the cone, for a
+    # roofed tower) through an opening with headroom over its last steps
+    up = tower_stair_top(
+        cx, cz, r, wall, floors, y_top, roofed=roof is not None, stair=stair
+    )
+    if up is not None and not up["ladder"]:
+        # the spiral stair round a pillar
         pillar = rect(cx - 1, cz - 1, cx + 1, cz + 1)
         fill_cells(pillar, floors[0] - 1, y_top - 1, DARK)
         stairway(
-            spiral_points(cx, cz, floors[0] - 1, y_top - 1),
+            spiral_points(cx, cz, floors[0] - 1, up["top"] - 1),
             BRICK_STAIRS,
             width=1,
             support=block,
@@ -529,17 +697,13 @@ def round_tower(
             if spot:  # standing on the floor, out of the doorways
                 set_block(Vec3(spot[0], fy, spot[1]), f"{LANTERN}[hanging=false]")
     elif floors:
-        # a ladder up the north inside wall, and a lantern on every floor
+        # a ladder up the north inside wall, through each floor, and a
+        # lantern on every floor
         q = Vec3(cx, 0, cz - (r - wall))
-        fill(
-            Vec3(q.x, floors[0], q.z),
-            Vec3(q.x, y_top, q.z),
-            "minecraft:ladder[facing=south]",
-        )
-        for fy in floors[1:] + [y_top]:
+        if up is not None:
             fill(
-                Vec3(q.x, fy - 1, q.z),
-                Vec3(q.x, fy - 1, q.z),
+                Vec3(q.x, floors[0], q.z),
+                Vec3(q.x, min(up["top"], y_top - 1), q.z),
                 "minecraft:ladder[facing=south]",
             )
         for fy in floors:
@@ -550,8 +714,11 @@ def round_tower(
             )
             if spot:
                 set_block(Vec3(spot[0], fy, spot[1]), f"{LANTERN}[hanging=false]")
-    # top: battlements or a stepped cone (clearing anything left above the top floor first)
-    fill_cells(inner, y_top - 1, y_top - 1, BRICK)
+    # top: battlements or a stepped cone (clearing anything left above the
+    # top floor first). The top floor's slab leaves the way up open: the
+    # last steps (or the ladder) and the headroom over the steps below them
+    way_up = up["hole"] | up["last"] if up is not None and up["top"] == y_top else set()
+    fill_cells(inner - way_up, y_top - 1, y_top - 1, BRICK)
     fill_cells(disc(cx, cz, r + 1), y_top, y_top + 4, AIR)
     if roof is None:
         fill_cells(ring(cx, cz, r, 1), y_top, y_top, block)
@@ -559,6 +726,9 @@ def round_tower(
         set_block(Vec3(cx + 1, y_top, cz), f"{LANTERN}[hanging=false]")
         if banner:
             set_block(Vec3(cx, y_top, cz), f"minecraft:{banner}_banner[rotation=0]")
+        if up is not None and up["rail"]:
+            # a rail round the opening over the stair, open at its top step
+            fill_cells(up["rail"], y_top, y_top, BRICK_WALL)
     else:
         fill_cells(ring(cx, cz, r + 1, 1), y_top, y_top, roof)  # eaves
         level = y_top

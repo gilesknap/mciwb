@@ -16,7 +16,8 @@ up and down water, open every door, fence gate and wooden trapdoor (iron
 doors here all have buttons), and walk through a hidden door as if its
 mechanism had opened it (`secret_doors`). Each space in `spaces` (its
 standing cells) must have a cell the fill reached; `doors` checks every
-round tower's doorways on their own.
+round tower's doorways on their own, and `stair_top_problems` that each
+tower's stair or ladder comes out on its top floor with headroom.
 """
 
 from __future__ import annotations
@@ -52,6 +53,7 @@ from castle_layout import (  # noqa: E402
     STABLES,
     TELEPORTS,
     TOWER_DOORS,
+    TOWER_LEVELS,
     UD,
     UPPER_TOWERS,
     VAULT,
@@ -363,6 +365,11 @@ def spaces() -> dict[str, list[tuple[int, int, int]]]:
     for n, (cx, cz, r, floors) in towers.items():
         for fy in floors:
             out[f"{n} at {fy}"] = _disc(cx, cz, r - 2, fy)
+    # the tops of the towers with battlements, up their stairs or ladders
+    for n, (_y0, _floors, y_top, roofed, _stair) in TOWER_LEVELS.items():
+        if not roofed:
+            cx, cz, r, _wall, _doors = TOWER_DOORS[n]
+            out[f"{n}'s top at {y_top}"] = _disc(cx, cz, r - 1, y_top)
     for i, fy in enumerate((YU, YU + 8, YU + 16, YU + 24)):
         out[f"alchemist's tower floor {i + 1}"] = _disc(*ALCH, 4, fy)
     cx1, cz1, cx2, cz2 = CHAPEL
@@ -509,6 +516,43 @@ def door_problems(kind_at, describe=None) -> list[str]:
     return bad
 
 
+def stair_top_problems(kind_at) -> list[str]:
+    """
+    Every round tower's way up (castle_lib.tower_stair_top): over its last
+    steps or rungs a visitor has their feet and head free, and beside the
+    last one a floor to step onto, so the stair does not end under a
+    ceiling. ``kind_at`` as for `door_problems`.
+    """
+
+    def free(p: Vec3, height: int = 2) -> bool:
+        return all(kind_at(Vec3(p.x, p.y + h, p.z)) in PASS for h in range(height))
+
+    bad = []
+    for name, (_y0, floors, y_top, roofed, stair) in TOWER_LEVELS.items():
+        cx, cz, r, wall, _doors = TOWER_DOORS[name]
+        up = L.tower_stair_top(
+            cx, cz, r, wall, floors, y_top, roofed=roofed, stair=stair
+        )
+        if up is None:
+            continue
+        what = []
+        shut = [V(*c) for c, height in up["climb"] if not free(V(*c), height)]
+        if shut:
+            what.append(
+                "no headroom over the last steps at "
+                + ", ".join(f"{p.x} {p.y} {p.z}" for p in shut)
+            )
+        exits = [V(*e) for e in up["exits"]]
+        if not any(
+            free(e) and kind_at(Vec3(e.x, e.y - 1, e.z)) in FLOOR for e in exits
+        ):
+            e = exits[0]
+            what.append(f"nowhere to step off at {e.x} {e.y} {e.z}")
+        if what:
+            bad.append(f"{name}, up to y {exits[0].y}: {'; '.join(what)}")
+    return bad
+
+
 def _compass(d: Vec3) -> str:
     return {(0, -1): "north", (0, 1): "south", (1, 0): "east", (-1, 0): "west"}[
         (int(d.x), int(d.z))
@@ -531,6 +575,8 @@ def main() -> None:
     g = load_dump(dumped) if dumped else load_world(os.environ["WORLD_FOLDER"])
     for line in door_problems(grid_kind(g), g.name):
         print("DOOR", line)
+    for line in stair_top_problems(grid_kind(g)):
+        print("STAIR", line)
     for line in problems(g):
         print("REACH", line)
     print("done")
