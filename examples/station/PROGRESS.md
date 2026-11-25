@@ -13,7 +13,7 @@ played it: each entry says which.
 | 0 | Ground work: survey, layout, mechanisms proved in a rig, datapack delivery, the skeleton | done |
 | 1 | The playable slice: shore, boat, dock, lift, start dome, Boiler Room, its tunnel, reset, recall, kit | built and played once: the way in, the Pump House, the Boiler Room, tunnels 0 and 1, the Gearworks' empty shell. The owner's first play-test (25 Nov 2026) asked for changes: see "The first play-test" |
 | 2 | Gearworks and the Flooded Dome | the shells, tunnels 2 and 3 and a stub (a BYPASS lever) in each dome are built; the rooms are designed, not built |
-| 3 | Foundry and the Signal Room | as stage 2: shells, tunnels 4 and 5, stubs |
+| 3 | Foundry and the Signal Room | shells, tunnels 4 and 5; the Signal Room built and checked live (see "The Signal Room (dome 5): findings"), not yet played; the Foundry a stub |
 | 4 | Clockwork Maze, the boss dome, the return tunnel, the win, the Wall of Fame | as stage 2: shells, tunnels 6 and 7, stubs; the win is the core's and is checked; the Wall of Fame's sign is not written |
 | 5 | Polish from the play-tests, the guide, the docs image, the PR | not started |
 
@@ -279,6 +279,12 @@ What RCON cannot stand in for. Each stage adds to the list as it builds.
 | 1 | The recall button at the Boiler Room's door clicked by hand: it takes the player who clicked to the Pump House and nobody else; the click lands on the button from where a player stands |  no |
 | 1 | The Boiler Room's plaque, signs and log: readable, the right way round, the log's three pages fit; a log taken from the lectern is replaced within a second |  no |
 | 1 | Leaving the Boiler Room unsolved and coming back: it has put itself right (fires out, gauge dark, coal gone from the chutes). Is losing the fire by stepping back into the tunnel too harsh? |  no |
+| 3 | The Signal Room alone: are the plaque and the board's words enough to find both switches (the AERIAL SWITCH is up the mast, on the loft); 3, 4 and 5 signals at 0.8 s with 8 s a key at level 5: fair for a 14 year old and for an adult, or ground through by trial |  no |
+| 3 | The Signal Room's keys by hand: a press read once and popping back; a click held down, or two quick clicks, taken as one key, not WRONG; a hand's press flips no bulb or lamp anywhere; the dull click of a dead key; the switches by hand |  no |
+| 3 | The Signal Board read: the four lamps told apart from the console, each wing and the entrance (place, coloured frame, glass), lit against unlit; the four bells told apart by ear, and the last round by bells alone at levels 8 to 10; the board's words the right way round and readable |  no |
+| 3 | The mast in front of the board: from the entrance and down the aisle's middle it hides the middle of the words and the LINE lamps (seen from the desks). Leave it, or a see-through lower mast, or the words moved? |  no |
+| 3 | The Signal Room with two: a wing desk each, "the desks change over when this round is done" understood, a partner arriving mid-answer; at levels 9 and 10 the walk between wings in the 6 s a key |  no |
+| 3 | The Signal Room as a place: the climb (stairs, bridges, catwalk, loft; a fall from the loft is 10 blocks), headroom, light under the wings and behind the houses; the racks, sweep and recorder busy and plainly not to be worked, the racks' bulbs clicking under a puzzle played by ear; "NO ANSWER: PRESS CALL" after walking away understood; a level voted in mid-room keeps the rounds won; the keys as an instrument once solved |  no |
 
 ## Decisions and findings
 
@@ -1371,6 +1377,77 @@ without error and no more. They are in the play-test list.
 - **The shore**: the lift's `st.lift.on` is taken off everyone while the
   lift is idle (a rider who logged off mid-ride kept it); no boat is made
   while 12 are about (`BOAT_CAP`). Neither case was made to happen live.
+
+### The Signal Room (dome 5): findings
+
+`dome_signal.py` (its docstring has the puzzle and the functions), built
+live with `dome_5_inside` over the shell already there; the BYPASS stub
+is gone. An exchange on four levels: floor (plaque, logbook, recall post,
+battery and recorder houses, two caged relay racks either side of the
+aisle), the operator's deck (4 up: the main console, the mast's foot),
+two wings (6 up: the port and starboard desks), a catwalk (8) and the
+loft round the mast (10: the AERIAL SWITCH). The Signal Board over the
+way out: four lamps (a cross of redstone lamps round a contact, a frame
+of coloured concrete, a bell behind each), three LINE lamps, the words
+on a text display. Close the BATTERY and AERIAL SWITCHes, press CALL,
+answer the Engine's lamps and bells key for key; three rounds, each a
+signal longer, solve it. Solo at the main console; two players at the
+wing desks, a pair of keys each.
+
+| At level | Rounds (signals) | Between signals / lamp on | Time a key (duo: +2 s) | Last round |
+| --- | --- | --- | --- | --- |
+| 1 | 1, 2, 3 | 19 / 11 ticks | 11.2 s | lamps and bells |
+| 5 | 3, 4, 5 | 16 / 8 | 8 s | lamps and bells |
+| 10 | 6, 7, 8 | 12 / 4 | 4 s | bells alone (levels 8 to 10) |
+
+**What the live check (`CHECKS=signal_room`) proves**, with stand-ins
+and blocks set by command: every one of the 1073 blocks as built and
+again after a reset from a scrambled room; the racks' eight bulbs
+chasing; the recorder still with nobody in and moving with someone in;
+dead keys with no line; each switch, the cables and pilots ramping, the
+sweep turning; free play of each key (its four lamps lit and its note
+block powered, then dark); three rounds answered at level 5 with every
+round's sent signals matching the room's own record and some contact
+seen closed (a round that lights nothing fails); the solve, tunnel 5's
+pump event and dome 6 opened; the switches held once solved; every
+failure path (wrong key, clock out mid-answer, no answer, CALL during an
+answer, a switch opened, everyone leaving, three wrong answers); the duo
+desks, a form change waiting for the round, a key out of turn, one
+leaving mid-answer; a change of level keeping the rounds won; the last
+round by bells alone at level 10; fifty sequences keeping their rules;
+the recall click taken up; tunnel 5 left shut and flooded, the
+neighbours' scores untouched. Live: `PASS signal_room` on the first run after the review fixes (its counters confirm the work: 108 signals shown, the 8 of the round by ear rung on the second contacts); then the whole verify, 43/43 passed (5 TODO: the domes not built yet).
+
+**Changed from the review** (none of its findings "will break a game"):
+
+- 1.1 A key held, or clicked twice, was read as a second key, always
+  WRONG (the button is let go in the tick it is read, and a held click
+  repeats every 4 ticks). Now the same key twice running is ignored while
+  answering (`#sig.last`): safe, as a sequence never has a key twice
+  running. Tested offline; a real held click is for the play-test.
+- 1.2 "NO ANSWER: PRESS CALL" now has a sound (the beacon's deactivate)
+  and is red, not READY's gold.
+- 1.3 A level voted while in the room used to arm it anew for the next
+  first player in: switches opened, LINE lamps out. Now (`rearm`) the
+  new level's values and a new sequence for the rounds still to win; the
+  switches and the LINE lamps kept.
+- 1.4 Duo at levels 9 and 10 left 4 s a key for a 16 block walk between
+  wings: while the desks are split each key gets 40 ticks more (`WALK`).
+- Debt: the check's `listen` now fails a round in which no contact was
+  seen closed (below level 8).
+- Contract: the check's first line is `game_checks.no_run`; the level is
+  saved and put back with `save_level`/`restore_level`. The core test
+  `test_station_shared_room_helpers` builds its own stub of dome 5 now,
+  instead of reading the Signal Room's tick as a stub's.
+- **Declined, for the owner**: 1.5, the mast hides the middle of the
+  board's words from the entrance and the LINE lamps from the whole of
+  the aisle's middle column (offline sight lines: the words are clear
+  from the aisle's side columns past f -8, and from every desk). Fixing
+  it means a see-through lower mast and moving its cable bulbs, or
+  moving the words: a matter of taste, so it is on the play-test list.
+  Not done either: the review's nits (blank key signs on the unused
+  desks, the racks' bulbs clicking, the docstring's list of check-only
+  scores).
 
 ## Known problems / notes
 

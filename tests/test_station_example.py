@@ -797,9 +797,11 @@ post = game.stub_post(dome)
 blocks = {**post.solid, **post.attached}
 assert not rooms.room_problems(dome, blocks)
 assert not rooms.input_problems(blocks, {post.input})
+stub = datapack.Pack(stamp="t")
+game.stub_module(dome).functions(stub)
+assert "function station:dome/5/solved" in stub.functions["dome/5/tick"][0]
+assert stub.functions["dome/5/reset"][0].endswith("minecraft:air")
 pack = B.new_pack("t")
-assert "function station:dome/5/solved" in pack.functions["dome/5/tick"][0]
-assert pack.functions["dome/5/reset"][0].endswith("minecraft:air")
 reset = pack.functions["reset/all"]
 assert reset.index("function station:tunnel/7/reset") < reset.index(
     "function station:dome/1/reset"
