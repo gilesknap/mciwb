@@ -152,23 +152,25 @@ OBJ = game.OBJ
 # ============================================================================
 # THE SWITCH. False: the room, the mains and phase 1, and the third main shut
 # is the win. True: the third main starts the breach and phase 2 (the Master
-# on his ravager). Leave it False until a rig has proved what phase 2 assumes:
+# on his ravager). Leave it False until the owner has tried the pair at the
+# test bench. The rig (PROGRESS, "Rig, second round") proved, against an iron
+# golem: the pair hunts and bites by itself with ``mob_griefing`` off, the
+# vindicator strikes from its back, it passes under a deck 5 up, climbs
+# stairs 3 and 2 wide and not 1 wide; ``damage @s <n> minecraft:generic``
+# from a function hurts (husks). Still unproved, as written here:
 #
-# 1. a ravager summoned with a vindicator in ``Passengers`` hunts and bites
-#    players by itself outside a raid, on Easy, with ``mob_griefing`` off; the
-#    vindicator strikes from its back and fights on foot when the ravager dies;
+# 1. any of the pair's fight against a player, and the vindicator fighting
+#    on foot once the ravager dies;
 # 2. ``Team`` in the NBT of the ravager and of its passenger puts both on the
 #    automatons' team, so that a Riveter's stray arrow starts no fight;
 # 3. the core's ``station:mob/dress`` (max health, attack damage, ``Health``)
 #    works on a ravager and on a vindicator, called ``with storage``;
 # 4. ``data get entity <mob> Health`` stored in a score reads their health;
 # 5. ``effect give`` of Resistance 5 and of Regeneration takes on both;
-# 6. ``damage @s <n> minecraft:generic`` parses in a function and hurts a
-#    player (the steam of the high level);
-# 7. the pair passes the firebox's doorway (5 wide, 5 high) and under the
-#    gallery (5 clear), climbs the three-wide ramps, and does not climb the
-#    one-wide stair to main C;
-# 8. a teleport of the ravager carries its rider (the pavilion's fence).
+# 6. the steam's ``damage`` on a player;
+# 7. the pair passes the firebox's doorway (5 wide, 5 high);
+# 8. a teleport of the ravager carries its rider (the pavilion's fence; the
+#    fence's own comment assumes it does not, and moves him only on foot).
 # ============================================================================
 PHASE_2 = False
 
@@ -961,6 +963,16 @@ def dressing_blocks(dome: Dome) -> Blocks:
         else:
             block = STONE
         d.floor[cell] = block
+
+    # -- each main's deck in cut copper, on the floor, the gallery and the
+    # platform alike: the sign's "stand here" has a here
+    for main in place.mains:
+        (x1, y, z1), (x2, _, z2) = main.deck
+        for x in range(min(x1, x2), max(x1, x2) + 1):
+            for z in range(min(z1, z2), max(z1, z2) + 1):
+                for part in (d.floor, d.solid):
+                    if part.get((x, y - 1, z)) in (STONE, GRATE):
+                        part[x, y - 1, z] = CUT
     return d
 
 
@@ -1276,6 +1288,16 @@ def master_summon(spot: Cell) -> str:
     )
 
 
+def clock_torches(place: Room) -> dict[Cell, str]:
+    """the torches of the cylinders' clocks: taken out, the pistons stop"""
+    return {
+        cell: block
+        for machine in place.cylinders
+        for cell, block in machine.attached.items()
+        if "redstone_wall_torch" in block
+    }
+
+
 def functions(pack: dp.Pack) -> None:
     """the Engine's functions (see the module docstring)"""
     dome = layout.DOMES[INDEX]
@@ -1286,6 +1308,7 @@ def functions(pack: dp.Pack) -> None:
     arena = f"@e[tag={ARENA}]"
     boss = f"@e[tag={BOSS}]"
     heart = place.spot  # where the Engine's sounds come from
+    torches = clock_torches(place)  # out at the win, back at the reset
     pack.constants(OBJ, 2, 4, 8, 16, 32, 50, 60, 100)
 
     def fid(name: str) -> str:
@@ -1577,9 +1600,14 @@ def functions(pack: dp.Pack) -> None:
                     for j, kind in enumerate(kinds)
                 ),
                 # round the Engine a player is often out of sight: they
-                # look further than a zombie does
+                # look further than a zombie does, and are set on the
+                # nearest player in the arena (a touch "by" them, as the
+                # rig proved: a zombie hit takes its hitter as its target)
                 f"execute as {automatons.selector(INDEX, f'tag={automatons.NEW}')} "
                 "run attribute @s minecraft:follow_range base set 48",
+                f"execute as {automatons.selector(INDEX, f'tag={automatons.NEW}')} "
+                "at @s run damage @s 0.01 minecraft:mob_attack by "
+                f"{game.PLAYERS[:-1]},tag={ARENA},sort=nearest,limit=1]",
                 *(automatons.dress_kind_line(INDEX, kind) for kind in kinds),
                 f"particle minecraft:large_smoke {middle(hatch, 1)} 0.3 0.5 0.3 0.02 12",
                 sound("block.iron_trapdoor.open", hatch, 1.5, 0.6),
@@ -1692,6 +1720,7 @@ def functions(pack: dp.Pack) -> None:
             remove_boss,
             bar.hide,
             *(_setblock(cell, f"{BULB}[lit=false]") for cell in place.eyes),
+            *(_setblock(cell, AIR) for cell in torches),
             sound("block.beacon.deactivate", heart, 3, 0.5),
             sound("block.fire.extinguish", heart, 3, 0.5),
             f"particle minecraft:cloud {middle(place.chimney)} 1 2 1 0.05 200",
@@ -1923,6 +1952,11 @@ def functions(pack: dp.Pack) -> None:
             *(_setblock(c, lit) for m in place.mains for c in m.telltales),
             *(_setblock(c, lit) for c in place.eyes),
             *(_setblock(c, dark) for c in place.way_out),
+            *(_setblock(c, dark) for row in place.brow for c in row),
+            *(
+                f"execute if block {_xyz(c)} {AIR} run {_setblock(c, block)}"
+                for c, block in torches.items()
+            ),
             call("face/shut"),
             dp.fill(lo, hi, AIR),
             automatons.remove_line(INDEX),
@@ -2189,8 +2223,42 @@ def check(ctx: Any) -> list[str]:
     particles, the bossbar, the steam's ``damage``, the trophy sign given
     and placed; that automatons, or the Master and his ravager, go for a
     player, find a way round the Engine and up the ramps, and fight
-    fairly; the governor seen turning (its displays are only counted).
+    fairly; the governor seen turning (its displays are only counted); the
+    automatons set on the nearest player as they come (a stand-in is no
+    ``@a``).
+
+    It refuses while a run is in progress (``game_checks.no_run``): the
+    scores it puts back are the run's, not the room's or the tunnel's
+    state. The scores and the level are put back, and the stand-ins
+    killed, whatever happens.
     """
+    game_checks.no_run(ctx)
+    saved_level = game_checks.save_level(ctx)
+    saved = game_checks.scores(ctx, *RUN_SCORES)
+    try:
+        return _check(ctx, saved)
+    finally:
+        ctx.cmd(f"kill @e[tag={S1}]")
+        ctx.cmd(f"kill @e[tag={S2}]")
+        for name, value in saved.items():
+            ctx.set_score(name, value or 0)
+        game_checks.restore_level(ctx, saved_level)
+        ctx.function("difficulty/apply")
+
+
+#: the run's scores the check changes (it solves the last dome: the win)
+RUN_SCORES = (
+    f"#d{INDEX}",
+    "#solved",
+    "#run",
+    "#run.level",
+    "#secs",
+    "#level",
+    "#won.best",
+)
+
+
+def _check(ctx: Any, saved: dict[str, int | None]) -> list[str]:
     dome = ctx.layout.DOMES[INDEX]
     tunnel = ctx.layout.TUNNELS[INDEX]
     place = room(dome)
@@ -2200,6 +2268,7 @@ def check(ctx: Any) -> list[str]:
     base = f"dome/{INDEX}"
     mobs = automatons.selector(INDEX)
     lit_bulbs = (f"{BULB}[lit=true]", f"{GREEN_BULB}[lit=true]")
+    torches = clock_torches(place)
 
     def expect(what: str, got: Any, want: Any) -> None:
         game_checks.expect(problems, what, got, want)
@@ -2215,7 +2284,9 @@ def check(ctx: Any) -> list[str]:
     floor = middle(place.back)  # in the arena, on no deck
 
     def stand(tag: str, where: str) -> None:
-        """a stand-in that hangs where it is put (there are no plates here)"""
+        """a stand-in that hangs where it is put (there are no plates here).
+        On a deck it hangs half a block up: a marker has no height, and one
+        at the bottom face of the deck's box is not in it (tried live)"""
         game_checks.stand_at(ctx, tag, where)
 
     def come_in(tag: str = S1) -> None:
@@ -2247,7 +2318,7 @@ def check(ctx: Any) -> list[str]:
 
     def hold(tag: str, main: Main) -> None:
         """a stand-in on a main's deck, its lever over"""
-        stand(tag, middle(main.stand))
+        stand(tag, middle(main.stand, 0.5))
         throw(main)
 
     def shut(tag: str, main: Main) -> None:
@@ -2259,13 +2330,17 @@ def check(ctx: Any) -> list[str]:
     def as_built(what: str) -> None:
         """every block of the room is as ``reset`` leaves it (a block of a
         clock that runs by itself: the same block, in whatever state; a
-        cell its pistons' heads rise into: not looked at)"""
+        cell its pistons' heads rise into: not looked at; a piston caught
+        in mid stroke is a ``moving_piston``)"""
         blocks = room_blocks(dome)
         wrong = [
             cell
             for cell, block in blocks.everything().items()
-            if not ctx.is_block(
-                cell, _name(block) if cell in blocks.moving else block.partition("{")[0]
+            if not (
+                ctx.is_block(cell, _name(block))
+                or ctx.is_block(cell, "minecraft:moving_piston")
+                if cell in blocks.moving
+                else ctx.is_block(cell, block.partition("{")[0])
             )
         ]
         wrong += [cell for cell in blocks.clear if not ctx.is_block(cell, AIR)]
@@ -2336,24 +2411,31 @@ def check(ctx: Any) -> list[str]:
         )
         expect(f"{what}: the eyes", lamps(place.eyes), 0)
         expect(f"{what}: the governor, run down", get("spin"), 0)
+        # the core's run/win ran this module's wins hook: the trophy's name
+        # was made (the level is the check's 0; the sign goes to players)
+        trophy = ctx.data(f"storage {game.STORE} b7.trophy")
+        expect(f"{what}: the trophy's name made ({trophy!r})", "level" in trophy, True)
+        # the cylinders: their clocks out, the pistons come to rest
+        out = sum(ctx.is_block(cell, AIR) for cell in torches)
+        expect(f"{what}: the cylinders' clocks out", out, len(torches))
+        ctx.advance(80)
+        moved = [
+            cell
+            for machine in place.cylinders
+            for cell in machine.pistons
+            if True in seen(cell, "minecraft:piston[extended=true]", 5, 4)
+        ]
+        expect(f"{what}: the cylinders at rest", moved, [])
 
     # ---- before: nobody about, the room and its tunnel reset, the dome open
-    names = (
-        f"#d{INDEX}",
-        "#solved",
-        "#run",
-        "#run.level",
-        "#secs",
-        "#level",
-        "#won.best",
-    )
-    saved = game_checks.scores(ctx, *names)
+    names = RUN_SCORES
     ctx.cmd(f"kill @e[tag={S1}]")
     ctx.cmd(f"kill @e[tag={S2}]")
     ctx.advance(game.SOLO_AFTER * game.SCAN_TICKS + 2 * scan)
     if (others := ctx.score("#players")) or ctx.score(f"#form{INDEX}"):
         return [f"{others} players or stand-ins of another check are in the game"]
     unsolve()
+    ctx.cmd(f"data remove storage {game.STORE} b7.trophy")
     ctx.advance(scan)
     as_built("built")
     cylinders_run("nobody in")
@@ -2386,7 +2468,7 @@ def check(ctx: Any) -> list[str]:
     expect("a lever thrown: the phase", get("phase"), 1)
     expect("a lever thrown, nobody on its deck: the gauge", get("ga"), 0)
     # on the deck it winds, and the gauge and the telltales show it
-    stand(S1, middle(a.stand))
+    stand(S1, middle(a.stand, 0.5))
     steps(8)
     gauge = get("ga")
     if not 4 * get("rate") <= gauge < FULL:
@@ -2406,7 +2488,7 @@ def check(ctx: Any) -> list[str]:
     steps(4)
     if not 0 < get("ga") < 3 * LAMP:
         problems.append(f"main A left for 2 s from 3 lamps: {get('ga')}")
-    stand(S1, middle(a.stand))
+    stand(S1, middle(a.stand, 0.5))
     throw(a, False)
     put("ga", 3 * LAMP)
     steps(4)
@@ -2443,6 +2525,12 @@ def check(ctx: Any) -> list[str]:
         for kind in automatons.KINDS
     )
     expect("automatons of the core's three kinds", kinds, limit)
+    reply = ctx.cmd(
+        f"attribute {automatons.selector(INDEX, 'limit=1')} "
+        "minecraft:follow_range base get",
+        "is ",
+    )
+    expect(f"an automaton's follow range ({reply!r})", "48" in reply, True)
     ctx.cmd(f"tp {automatons.selector(INDEX, 'limit=1')} {entrance}")
     steps(2)
     fenced = ctx.count(automatons.selector(INDEX, dp.box_selector(*place.fence)))
@@ -2515,7 +2603,7 @@ def check(ctx: Any) -> list[str]:
         if get("hr") <= 20:
             problems.append(f"the ravager did not mend from 20: {get('hr')}")
         # a stand-in on the high level: the steam's cycle runs
-        stand(S1, middle(c.stand))
+        stand(S1, middle(c.stand, 0.5))
         steps(VENT_AFTER + 2)
         cycle = set()
         for _ in range(VENT_CYCLE):
@@ -2619,14 +2707,14 @@ def check(ctx: Any) -> list[str]:
         True,
     )
     # A ready alone: it neither winds nor drains, and its amber lamp blinks
-    stand(S1, middle(a.stand))
+    stand(S1, middle(a.stand, 0.5))
     steps(2)
     held = get("ga")
     expect("A ready alone: its amber lamp", seen(a.amber, AMBER), {True, False})
     got = {"ga": get("ga"), "amb": get("amb")}
     expect("A ready alone for 2.5 s", got, {"ga": held, "amb": 1})
     # both ready: they climb in step, and shut together
-    stand(S2, middle(b.stand))
+    stand(S2, middle(b.stand, 0.5))
     put("gb", held)
     throw(b)
     steps(4)

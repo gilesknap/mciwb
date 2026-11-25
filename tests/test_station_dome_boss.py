@@ -353,16 +353,24 @@ for phase_2 in (False, True):
     assert all(calls("dome/7/reset", f"dome/7/main/open_{k}") for k in "abc")
     gone = "execute as @e[tag=st.mob7] run function station:mob/remove"
     assert gone in f["dome/7/reset"]
-    # nothing reads, sets or kills the cylinders: no function names a cell
-    # of theirs, and nothing kills by position
+    # nothing reads, sets or kills the cylinders but their clocks' torches,
+    # taken out at the win and put back by the reset; nothing kills by
+    # position
+    torches = D.clock_torches(place)
+    assert len(torches) == 2
     machine = set()
     for m in place.cylinders:
         machine |= set(m.bed) | set(m.solid) | set(m.attached) | m.moving
-    cells = {D._xyz(c) for c in machine}
+    cells = {D._xyz(c) for c in machine - set(torches)}
     for name, lines in mine.items():
         for line in lines:
             assert not any(f" {xyz} " in f"{line} " for xyz in cells), (name, line)
             assert not line.startswith("kill"), (name, line)
+            touched = any(f" {D._xyz(c)} " in f"{line} " for c in torches)
+            assert not touched or name in ("dome/7/won", "dome/7/reset"), (name, line)
+    for c, block in torches.items():
+        assert D._setblock(c, "minecraft:air") in f["dome/7/won"]
+        assert any(l.endswith(D._setblock(c, block)) for l in f["dome/7/reset"])
     # the machinery runs whether or not there is a fight
     step = f["dome/7/step"]
     at = lambda end: next(  # noqa: E731
@@ -390,7 +398,7 @@ assert on["dome/7/all_shut"] == ["function station:dome/7/breach/start"]
 for name, lines in off.items():
     if name.startswith("dome/7/"):
         text = " ".join(lines)
-        assert "ravager" not in text and "damage @s" not in text, name
+        assert "ravager" not in text and "minecraft:generic" not in text, name
 # the pair: summoned here with the core's rules, on the automatons' team,
 # and not swept by the core as automatons are
 summon = D.master_summon(place.spot)
@@ -1343,6 +1351,14 @@ class Ctx:
                 sim.run("dome/7/tick")
 
     def cmd(self, command, expect=None):
+        if command.startswith("attribute") and "follow_range base get" in command:
+            return "Base value of attribute Follow Range for Zombie is 48.0"
+        if command.startswith("data remove storage"):
+            _, _, _, store, at = command.split(" ")
+            for key in [k for k in sim.storage if k[0] == store and
+                        k[1].startswith(at + ".")]:
+                del sim.storage[key]
+            return ""
         if command.startswith("bossbar get"):
             shown = sim.get("#bar7") == 1
             return "is currently visible" if shown else "is currently hidden"
@@ -1379,6 +1395,11 @@ class Ctx:
 
     def data(self, what):
         kind, rest = what.split(" ", 1)
+        if kind == "storage":
+            store, at = rest.split(" ")
+            return " ".join(f"{k[len(at) + 1:]}:{v}" for (s, k), v in
+                            sim.storage.items() if s == store and
+                            k.startswith(at + "."))
         if kind == "block":
             x, y, z, path = rest.split(" ")
             cell = (int(x), int(y), int(z))
@@ -1404,6 +1425,12 @@ sim.scores["#t7", "st"] = 0
 sim.scores["#run", "st"] = 1
 sim.scores["#solved", "st"] = 6
 ctx = Ctx()
+try:  # a run in progress: refused (game_checks.no_run)
+    D.check(ctx)
+    raise AssertionError("the check ran over a run in progress")
+except SystemExit:
+    pass
+ctx.run_checked = True  # as FORCE=1: what it puts back is tried too
 problems = D.check(ctx)
 # (nothing moves the cylinders' pistons here: real redstone does)
 real = [p for p in problems if "cylinders stood still" not in p]

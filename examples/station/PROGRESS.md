@@ -14,7 +14,7 @@ played it: each entry says which.
 | 1 | The playable slice: shore, boat, dock, lift, start dome, Boiler Room, its tunnel, reset, recall, kit | built and played once: the way in, the Pump House, the Boiler Room, tunnels 0 and 1, the Gearworks' empty shell. The owner's first play-test (25 Nov 2026) asked for changes: see "The first play-test" |
 | 2 | Gearworks and the Flooded Dome | the shells, tunnels 2 and 3 and a stub (a BYPASS lever) in each dome are built; the rooms are designed, not built |
 | 3 | Foundry and the Signal Room | shells, tunnels 4 and 5; the Signal Room and the Foundry built and checked live (see "The Signal Room (dome 5): findings" and "The Foundry (dome 4): findings"), not yet played |
-| 4 | Clockwork Maze, the boss dome, the return tunnel, the win, the Wall of Fame | as stage 2: shells, tunnels 6 and 7, stubs; the win is the core's and is checked; the Wall of Fame's sign is not written |
+| 4 | Clockwork Maze, the boss dome, the return tunnel, the win, the Wall of Fame | shells, tunnels 6 and 7; the Engine (dome 7) built and checked live with its phase 2 (the Master) switched off, see "The Engine (dome 7): findings"; the Maze a stub; the win is the core's and is checked, the trophy sign is given at the win, nobody has written one |
 | 5 | Polish from the play-tests, the guide, the docs image, the PR | not started |
 
 Stages 1 to 5 each end with a play-test by the owner; the next does not
@@ -291,6 +291,12 @@ What RCON cannot stand in for. Each stage adds to the list as it builds.
 | 3 | Leaving the Foundry mid-fight: back within 3 s nothing changes; after that the charge falls to the last quarter, a breaker left out is still out, "the charge is where you left it" and 5 s to the fight; a level voted in the Pump House meanwhile takes force when it goes on |  no |
 | 3 | The Foundry as a place: the stairs now climb straight onto the gallery (no step up at the top); the stamp battery's cage now has a grating lid (hop the rail onto it and walk back: is that fine, or should the rail be higher?); light under the gallery and in the moulds; the ladle as a ladle, its pour; the mast read as a progress bar from the floor, gallery and top deck; sounds (bell, thunder) too loud or too often; the log's fourth page fits ("O.F." may be cut) |  no |
 | 3 | Dying in the Foundry: a cell lost (never below the quarter), no automaton on the respawn spot, the shield against Riveters |  no |
+| 4 | The Engine alone, Easy, level 5: is it plain from the plaque, the log and the signs what to do (throw a lever, stand on its copper deck till five lamps light)? Main A is on the floor under the gallery to the right, B on the gallery to the left, C up the one-wide stair behind the Engine. Is 3 to 5 automatons at once fair for a 14 year old; levels 1 and 10 |  no |
+| 4 | The Engine's automatons with a real player: do they come out of the hatch notches in the plinth, find a player round the Engine, up the ramps and the one-wide stair (each is set on the nearest player as it comes: does that work, or do they stand at the far hatches)? Do Riveters shoot into the pavilion while someone respawns or reads the log there (review 4: the dial would be no Riveter while someone is out of the arena)? |  no |
+| 4 | The Engine's win: the Engine stopping, the way out lighting, tunnel 7 pumping, the trophy sign in your hand (named with the level and the time), placed on the Wall of Fame in the Pump House and written on |  no |
+| 4 | The Engine with two: A and B only together (the amber lamp blinking at the side that is ready, the chat hint), a partner in the pavilion not counting, one dying or leaving; the form's chat line at each change (too chatty?) |  no |
+| 4 | The Engine as a place: gauges, amber lamps and the drum's telltales read from each deck and the arch (through two decks of grating); headroom under main A's pipe and the gallery; the governor turning; the cylinders seen through their cages and stopping at the win; the heartbeat (too often?); the log's four pages fit; leaving for 3 s throws open levers back (the cheapest way to clear the automatons: does a child find it?) |  no |
+| 4 | Phase 2 (switched off): the Master on his ravager at the test bench first; then, switched on, the breach, the fight, the columns as cover, the steam on the high level |  no |
 
 ## Decisions and findings
 
@@ -1526,6 +1532,89 @@ neighbours' scores untouched. Live: `PASS signal_room` on the first run after th
   Not done either: the review's nits (blank key signs on the unused
   desks, the racks' bulbs clicking, the docstring's list of check-only
   scores).
+
+### The Engine (dome 7): findings
+
+`dome_boss.py` (its docstring has the fight and the functions), built
+live with `dome_7_inside` over the shell already there; the BYPASS stub
+is gone. A pavilion round the entrance (plaque, logbook, recall post);
+the Engine in the middle, its face towards you, two caged torch-clock
+cylinders either side of the avenue; a gallery ring 6 up on nine columns
+with three ramps; a high level 12 up (crown deck, catwalks, main C's
+platform up a one-wide railed stair, three ladders). Three steam mains:
+throw a main's lever and stand on its deck (cut copper) until its five
+lamps light; step off and it runs down. Automatons come one at a time
+from four hatches in the Engine's plinth once a lever is thrown, 3 to 5
+alive at level 5 alone. Two players in the arena wind A and B only
+together. **The third main shut is the win**: the Engine stops, the way
+out lights, tunnel 7 pumps dry, and the core's `run/win` runs (best
+time, then this module's `trophy`: a trophy sign for the Wall of Fame).
+
+**Phase 2** (the breach and the Master on his ravager) is written and
+kept out of the pack by `PHASE_2 = False` at the top of `dome_boss.py`,
+until the owner has seen the pair at the test bench. The list at the
+switch says what is still unproved; switching on needs `datapack` and
+`dome_7_inside`, and the check then works the breach and the Master too
+(offline only so far).
+
+**What the live check (`CHECKS=boss`) proves**, with stand-ins and levers
+set by command, switch off: every block as built and again after a reset
+from a scrambled room; the build's 8 entities and the log; both
+cylinders seen moving; nothing before a lever; a lever with nobody on
+the deck wakes the Engine and winds nothing; on the deck the gauge, its
+lamps and the telltale climb; off the deck, or the lever back, it runs
+down; held to five it shuts (lever gone, telltales out, sign SHUT);
+automatons to the cap and no further, on the team, of the core's kinds,
+follow range 48; one put in the pavilion is put out, one killed is
+replaced; B and C; **the win**: phase 5, `#d7` 2 and `#run` 2 (the core's
+`solved` and `run/win`), no automatons, the 17 lamps of the way out,
+the eyes out, the governor run down, the trophy hook run (its name made
+in storage), the cylinders' clocks out and their pistons at rest;
+tunnel 7 pumped dry and open; a second entry leaves the solved room
+alone; leaving in phase 1 costs the main being wound and no more; two
+players (a partner in the pavilion, the form change waiting for a safe
+point, A ready alone with the amber lamp, both in step, the cap, C for
+one, one leaving); `died`; the recall click; levels 1 and 10; tunnel 7
+left shut and flooded, the scores as found, no stand-in. Live: `PASS
+boss` on the second run (the first found the deck fault below); then the
+whole verify, 45/45 passed (3 TODO: the domes not built yet).
+
+**Changed from the review** (none of its findings "will break a game"):
+
+- 1 (`minecraft:follow_range` unproved, in the function that casts every
+  automaton): **declined as moot**. The Foundry's live check has since
+  read follow range 48 back from its automatons, so the name is proved;
+  this dome's check now reads it back too.
+- 2: main A's deck was plain floor and B's and C's plain grating, so
+  the lever could be thrown from 30-odd cells off the deck and nothing
+  wound. Every deck is cut copper now; the offline walk and sight checks
+  still pass.
+- 3: automatons cast at a hatch behind the Engine stood there. Each is
+  now set on the nearest player in the arena as it comes (`damage ...
+  0.01 minecraft:mob_attack by <player>`, as the rig proved). A
+  stand-in is not `@a`, so only a player can show it works.
+- 4 (Riveters shooting into the pavilion): **declined for the play-test**,
+  as the review itself advised: no fix in blocks, and the dial (no
+  Riveter cast while someone in the dome is out of the arena) is a
+  balance call. It is on the play-test list.
+- Debt, small: the cylinders now stop at the win (the clocks' torches
+  taken out, put back by `reset`; review 7); the shared test no longer
+  asserts dome 7 is a stub (6); the switch's list rewritten to what the
+  rig has not proved (10); the check refuses during a run
+  (`game_checks.no_run`), and puts back the run's scores and the level
+  (`save_level`/`restore_level`) and kills its stand-ins whatever
+  happens (9).
+- Found live: a stand-in (a marker, no height) put at a deck's floor is
+  not in the deck's box, whose bottom face it sits on; the check now
+  hangs it half a block up. A player's body is always in the box. And a
+  piston caught in mid stroke reads as `moving_piston`: accepted for a
+  cylinder's cells, and for the stamp battery's in the Foundry's check,
+  which failed on it twice running in the whole verify. The whole verify
+  also found the brow left lit by an earlier check: `reset` now darkens
+  it.
+- **Not done**: the review's other debt and nits (Slag Husks never cast
+  in the check; the log still names the Master with phase 2 off; "The
+  Engine watches" at every entry; `form/set`'s chat at every change).
 
 ## Known problems / notes
 

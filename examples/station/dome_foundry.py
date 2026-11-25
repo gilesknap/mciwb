@@ -1977,6 +1977,10 @@ def _check(ctx: Any) -> list[str]:
                 cell,
                 rooms.name(block) if cell in blocks.moving else block.partition("{")[0],
             )
+            # (a piston caught in mid stroke)
+            and not (
+                cell in blocks.moving and ctx.is_block(cell, "minecraft:moving_piston")
+            )
         ]
         wrong += [cell for cell in blocks.clear if not ctx.is_block(cell, AIR)]
         if wrong:

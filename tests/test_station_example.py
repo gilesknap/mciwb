@@ -90,8 +90,8 @@ from fake_client import Recorder, World
 
 assert list(B.STAGES)[:3] == ["site", "datapack", "rules"] == B.written()[:3]
 assert {"start_dome", "dome_7", "tunnel_0", "tunnel_7"} <= set(B.written())
-# a dome with no module of its own is a stub with a bypass lever
-assert "stub_boss" in {m.name for m in B.modules()}
+# the last dome has its module (a dome without one is a stub with a bypass)
+assert "boss" in {m.name for m in B.modules()}
 assert "dome_7_inside" in B.written()
 
 # the whole build: the site loaded for it, and left loaded for the game;
