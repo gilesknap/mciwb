@@ -389,7 +389,10 @@ LIVE: dict[str, Callable[[B.Context], list[str]]] = {
     "ring": game_checks.check_ring,
     "restricted_items": game_checks.check_restricted,
     "boiler_room": todo("the Boiler Room solved and failed, solo and two-player", 1),
-    "gearworks": todo("the Gearworks solved and failed, an old attempt cleared", 2),
+    "gearworks": todo(
+        "the Gearworks solved and failed, laid pipe kept when left, cleared by the reset",
+        2,
+    ),
     "flooded_dome": todo("the Flooded Dome drained, solo and two-player", 2),
     "foundry": todo("the Foundry's waves raised, killed and counted", 3),
     "signal_room": todo("the Signal Room solved and failed, solo and two-player", 3),
@@ -420,11 +423,7 @@ def live_checks(world, wanted: list[str] | None = None) -> dict[str, list[str]]:
     ctx = B.Context(world=world, layout=B.station_layout, pack=B.new_pack())
     # a run that is parked (started, nobody online) is somebody's game: the
     # core's checks reset the game, and every check sprints the clock
-    if ctx.score("#run") == 1 and not os.environ.get("FORCE"):
-        raise SystemExit(
-            "a run is in progress (#run is 1): not verifying, which would "
-            "reset it (FORCE=1 to)"
-        )
+    game_checks.no_run(ctx)
     B.forceload(ctx)
     results = {}
     for name in names:

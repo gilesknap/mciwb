@@ -875,6 +875,25 @@ def functions(p):
 game.add_functions(pack, [game.Module("t", functions=functions)])
 f = pack.functions
 assert f["dome/4/respawned"][-1] == "function station:dome/4/died"
+assert automatons.respawn_lines(L.DOMES[4])[0] in f["dome/4/respawned"]
+# the checks' cell: in the station's box, clear of every dome, tunnel,
+# the dock and its lift, and the test bench (all near the ring's edges)
+cell = F.check_cell()
+box = {(x, y, z) for x in (cell.low[0], cell.high[0])
+       for y in (cell.low[1], cell.high[1]) for z in (cell.low[2], cell.high[2])}
+assert all(L.in_station(*c) for c in box)
+(x1, y1, z1), (x2, y2, z2) = cell.low, cell.high
+def clear(x, z, reach):
+    dx = max(x1 - x, 0, x - x2)
+    dz = max(z1 - z, 0, z - z2)
+    return dx * dx + dz * dz > reach * reach
+assert all(clear(*d.centre, d.radius + 2) for d in L.DOMES)
+assert all(
+    clear(t.a[0] + s * t.step[0], t.a[2] + s * t.step[1], 6)
+    for t in L.TUNNELS for s in range(t.length + 1)
+)
+assert clear(L.DOCK[0], L.DOCK[2], 64)  # the dock, its lift and the bench
+assert y2 < L.SEA_LEVEL - 1 and F.CHECK_INDEX not in {d.index for d in L.DOMES}
 assert any("fight/respawned" in line for line in f["game/tick"])
 shown = "station:d4 players @a[tag=st.in,scores={st.dome=4}]"
 assert any(shown in line for line in f["game/second"])

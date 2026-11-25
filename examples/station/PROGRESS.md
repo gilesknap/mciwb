@@ -218,12 +218,13 @@ What RCON cannot stand in for. Each stage adds to the list as it builds.
 
 | Stage | To try | Tried |
 | --- | --- | --- |
+| before 2 | **The test bench** (a deck beyond the dock's far landing, the side away from the shore; ten minutes; see "Rig, second round"): the Gearworks' pipes and wrench in an adventure-mode hand; a stone button read and let go by the pack, and four lamps behind coloured glass; dying, the 5 s of grace, a zombie that cannot see you set on you; the stepped lift, the hatch, the floor that goes with slow falling; the ravager and its rider seen through glass |  no |
 | 1 | Finding the jetty from the world spawn: the signpost, the lamps through the trees (the straight line crosses an inlet and a pond: is the way round plain?) |  no |
 | 1 | The boats: getting into one from the jetty, a new one at the mooring a moment after one is rowed away, one each for two players; that a boat cannot be broken |  no |
 | 1 | The row out: the beacon's amber beam seen from the jetty by day and by night (it needs the player's own render distance to reach 12 chunks), about 190 blocks |  no |
 | 1 | The dock: coming alongside a landing, stepping out of the boat and climbing out of the water onto it, the stairs, the boats there for the row back |  no |
 | 1 | The slow lift (second round) with one player and with two: the buttons by hand; the ride down and up seated in the cage, about 11 s (is it smooth? how do you sit in it? does the cage of displays look like the cage?); the chain paying out, the drum turning, the counterweight passing, the lamps; the gates and the bell |  no |
-| 1 | The lift's corner cases with real players: one standing in the doorway is taken along; one who sneaks off the seat in mid ride is put back on it; one who logs off in mid ride and comes back is put into the cage; the cage called away with someone standing in it |  no |
+| 1 | The lift's corner cases with real players: one standing in the doorway is taken along; one who sneaks off the seat in mid ride is put back on it; one who logs off in mid ride and comes back is put into the cage, and is not pulled onto a seat when the other player next rides; the cage called away with someone standing in it |  no |
 | 1 | Titles and sounds on entering and on solving a dome | no |
 | 1 | The pump event through the door's window: is the flooded tunnel visible by the dim lamps, can the water level be seen falling (3 s a layer), do the lamps and the opening doors read well; the same from the far dome's window | no |
 | 1 | The engine while it pumps: the strokes, the flashing lamp, the steam and puffs, the klaxon every 4 s (too loud? too often?) | no |
@@ -232,7 +233,8 @@ What RCON cannot stand in for. Each stage adds to the list as it builds.
 | 1 | Dying: respawn at the last dome's entrance, with the kit | no |
 | 4 | The sloping tunnels walked both ways: the stairs under foot, headroom at each step, the falling water seen through the door from the Maze (looking down the slope) and from the Engine (looking up) | no |
 | 3, 4 | The later kits: a shield in the off hand and spectral arrows on first entering the Foundry; the brass helm, cuirass and sabre on first entering the Engine (do they replace what was worn as intended?) | no |
-| 3, 4 | Automatons with a player: they attack, do not fight each other, drop nothing, and are gone when everyone leaves their dome | no |
+| 3, 4 | Automatons with a player: they attack, do not fight each other, drop nothing, are gone when everyone leaves their dome, and are cleared from round the entrance when you respawn there | no |
+| 1 | Nothing broken leaves an item (`block_drops` off): a pipe broken with the wrench, a lamp | no |
 | 1 | The reset buttons with two real players, and a late joiner | no |
 | 2 | The Gearworks' pipe in a real hand: places only on the track, the tool breaks only the pipe | no |
 | 3, 4 | Whether the fights are fair for a child on Easy | no |
@@ -1126,6 +1128,179 @@ and whether the puzzle is clear and fair at any level.
   beacon shows from the jetty; whether the signpost and lamps are
   enough to find the jetty. All in the play-test list.
 
+### Rig, second round
+
+`rig_domes.py`: the mechanics the designs of domes 2 to 7 rest on, each
+worked on the 26.3 server with nobody online, in the air over the rig's
+ocean (far from the station), through a pack of its own (`station_rig2`)
+that is removed again. The last whole run: 47 checks passed, 3 failed
+(3d, 3h and 7e below: each is a finding, not a fault of the rig). Numbered
+as in the rig. "By the pack" means read by a function in the same tick.
+
+2. **The Flooded Dome's basin: it holds.** A stone box 35 x 47 x 12 of
+   sources (19,451 open cells) with a deck, a stair of 12, a ladder, a
+   wall with a 2 x 2 of iron bars, and two levers.
+   - A layer dry: its fittings set `waterlogged=false`, then
+     `fill <layer> minecraft:air replace minecraft:water`. A layer wet:
+     `fill <layer> minecraft:water replace minecraft:water`, `... replace
+     minecraft:air`, then its fittings `waterlogged=true`. Stepped down 12
+     layers writing only the top one each time: every cell below a source,
+     every cell above air, nothing flowing, read 200 ticks on for the
+     first four layers and 40 for the rest. Drawn whole from the level
+     alone, 16 jumps visiting every level and ending full: right each time.
+   - **A fitting left to the game waterlogs itself**: a stair, a ladder and
+     bars set `waterlogged=false` among sources were all waterlogged 200
+     ticks on. Every waterloggable cell in a wet layer must be written by
+     `draw`.
+   - A lever over the surface stood through all of it and no item dropped.
+     A lever left standing while its own layer is made wet is washed off
+     and drops an item: `draw` takes levers out first
+     (`fill <cell> minecraft:air replace minecraft:lever`).
+   - Bars as a gate: filled to water (air when dry) and back to
+     `minecraft:iron_bars[waterlogged=true]` (`false` when dry) they join
+     up (`north=true,south=true` in a wall) and nothing flows.
+   - Light: one sea lantern in the floor gives 8 or more at head height
+     out to 5 blocks sideways, wet and dry alike (in a dark box).
+3. **The Clockwork Maze's gate: piston gates work, on two rules.** Two
+   sticky pistons, two `waxed_chiseled_copper` leaves, the slot filled
+   with `redstone_block` by a function; four gates, the slot behind the
+   pistons on two and beside them on two.
+   - 1000 strokes 80 ticks apart, each read shut and read open by the
+     pack: never a cell out of place. A lit bulb on the lintel and one
+     diagonal to the slot stayed lit; one face to face with the slot
+     flips.
+   - **A short pulse leaves the leaves in the doorway** (check 3d fails):
+     the slot cleared 2 or 3 ticks after it was filled; 1 tick and 4 or
+     more are clean. A shut gate opened and shut again 1 to 8 ticks later
+     ends shut.
+   - **Writing the pistons destroys the leaves** (check 3h fails): the
+     whole gate set open by `setblock` (slot, pistons `extended=false`,
+     leaves, doorway) while it is shut or in mid stroke left all four leaf
+     and doorway cells air in 5 cases of 9, a shut gate at rest among
+     them. No item drops.
+   - **Rule 1: never write a piston.** Open is the slot cleared, shut is
+     the slot filled. **Rule 2: a mend every tick** that reads the pistons
+     and writes only leaves and doorway: where a piston is
+     `sticky_piston[extended=false]`, its leaf cell is the leaf and its
+     doorway air; where it is `extended=true` with its `piston_head` out,
+     its doorway is the leaf. With it every short pulse ended right, and
+     everything the rewrites had wrecked was whole within 5 ticks. A reset
+     is: clear the slots.
+   - Not judged: the noise of some 25 gates at once.
+4. **The Engine's pair.** `summon minecraft:ravager x y z
+   {PersistenceRequired:1b,Passengers:[{id:"minecraft:vindicator",PersistenceRequired:1b,equipment:{mainhand:{id:"minecraft:iron_axe",count:1}}}]}`,
+   `mob_griefing` false, Easy, prey an iron golem that cannot move
+   (`NoAI:1b`, 1000 health), 11 blocks off, 600 ticks.
+   - The ravager goes for the prey and bites by itself (the rider's
+     `attack_damage` set to 0: the prey lost 320), passing under a deck 5
+     over the floor. The rider strikes from its back (the ravager's set to
+     0: the prey lost 364). Both still there, persistent, the rider up; a
+     zombie of their team beside them unhurt.
+   - **With a husk on its back the ravager only carries**: it is taken to
+     the prey, and a husk whose blow is 0 leaves the prey unhurt (an
+     ordinary husk's own blows took 84). The vindicator is the right
+     rider.
+   - Stairs between stone walls, prey 4 up: climbed at 3 wide and **at 2
+     wide**; not at 1 wide. A two-wide stair does not keep it down.
+   - Prey on the pair's own team is left alone (the first run had the
+     golem on it: nothing moved). Not proved: any of it against a player.
+5. **Daylight.** In the same sun in which a bare zombie under the open sky
+   and one under a single layer of glass burnt, nobody burnt under one
+   layer of glass with one block of water over it: zombie and skeleton,
+   bare and in a copper helmet, 180 ticks. A zombie in an unbreakable
+   copper helmet under the open sky did not burn either.
+6. **The Signal Room's contact.**
+   - `setblock` of a `redstone_block` among four redstone lamps: all four
+     `lit=true` by the pack in the function that set it. Beside a note
+     block on gold with air over it: `powered=true` at once, and it sounds
+     (a sculk sensor 8 blocks off woke for it, and not for the lamps'
+     contact alone).
+   - Swapped back for copper the lamps hold for 4 ticks and are dark at
+     the 5th (the design said within 4).
+   - A stone button `[face=floor]` set `powered=true` by command five
+     times, read each tick and set back in the tick it is read: five
+     presses counted, the button up.
+   - **A real press flips a bulb that touches the button's block** (an
+     arrow on a wooden button: the bulb beside the block lit). A button
+     set by command does not show this (bulb and lamp stayed dark), so a
+     check with commands cannot find the fault: no bulb or lamp may touch
+     a desk.
+   - `execute store result score <name> <objective> run random value 1..4`,
+     400 times in a function: 90, 109, 100 and 101 of each, nothing else.
+7. **Fights.**
+   - `execute store result score <name> <objective> run difficulty` gives
+     1 on Easy. Peaceful (0) was not tried: the world's difficulty was not
+     the rig's to change.
+   - A zombie crossed 10 blocks of `waxed_copper_grate` deck with nothing
+     under it, climbed a stair two wide, and passed a ladder hole in its
+     straight way without going down it, each to its prey.
+   - **A ladder does not keep a zombie down** (check 7e fails): below a
+     ladder up the face of a ledge 5 high, its prey in sight at the head,
+     it stayed down in one run of 600 ticks and stood at the top in the
+     next. In a shaft a block square it stayed down both times.
+   - `damage` takes one target (two are refused): from a function,
+     `execute as <each> run damage @s 2 minecraft:generic` took 2 from
+     each of two husks.
+   - `damage <mob> 0.01 minecraft:mob_attack by <other>` sets the mob on
+     the other: a zombie left another alone for 100 ticks, then killed it.
+8. **Displays.** A block display with `teleport_duration:1` turned by
+   `execute as <it> at @s run tp @s ~ ~ ~ ~9 ~`: 90 degrees after ten, and
+   on by 9 a tick from a tick function (the yaw is not wrapped: it read
+   369). One posed by `data merge entity <it>
+   {start_interpolation:0,interpolation_duration:20,transformation:{left_rotation:{axis:[0f,1f,0f],angle:1.5708f},translation:[0f,1f,0f],scale:[1f,2f,1f],right_rotation:[0f,0f,0f,1f]}}`
+   reads back so. Not seen: whether either looks smooth.
+9. **The Maze's lift step.** A 3 x 3 platform stepped up 6 blocks at 3
+   ticks a block: each step, `execute as <everyone in the shaft over the
+   platform> at @s run tp @s ~ ~1 ~`, the new layer filled, the old
+   cleared; the shutter of `iron_trapdoor`s filled to air when the
+   platform is 3 below. An armour stand on the platform ended standing on
+   it level with the upper deck, and one standing on the shutter when it
+   opened ended on the platform too. Everyone in the shaft is moved, not
+   only those on the platform, so that the platform never rises into
+   someone falling. Not proved: the ride as a player feels it.
+10. **The Gearworks' small things.**
+    - The rule is `block_drops` (also `entity_drops`, `mob_drops`;
+      `doTileDrops` is refused). On, a bulb broken by `setblock ... air
+      destroy` drops one item; off, none (the rig turned it off for the
+      one test and put it back: it is `true` now).
+    - A bulb set `lit=true` stays lit and a bulb set beside it dark; a
+      `redstone_block` two blocks off changes nothing.
+    - `fill ... minecraft:air replace minecraft:waxed_exposed_copper_bulb`
+      takes the bulb in each of its four states.
+    - `execute as <item entity> store result score ... if items entity @s
+      contents <item>` gives the stack's count (3), as does `contents
+      *[minecraft:custom_data~{st_gear:1b}]`; 0 for another item. `clear
+      <players> *[minecraft:custom_data~{st_gear:1b}]` parses.
+    - The gear's 97 cells swapped for another full block every tick for 60
+      ticks, nothing under them: two armour stands on it did not fall.
+11. **Machinery.** The torch clock (a torch on a block, dust, two
+    repeaters of 4) set by `setblock` starts by itself: a turn is 35.8
+    ticks (1.79 s). Three plain pistons tapped off it, each on a block fed
+    by a repeater of 4 with a lamp beside it, rise in turn 8 ticks apart,
+    once a turn, and are down 60 ticks after the torch is taken out. Six
+    `waxed_copper_bulb`s with a `comparator` out of each into the next
+    count in binary (changes in 2401 ticks: 67, 34, 17, 9, 5, 3).
+
+**The test bench** is `rig_domes.py` too (`BENCH=build`, `check`,
+`remove`): a deck joined to the far landing of the dock, the side away
+from the shore, with a bay for each thing only a player can try, and it
+stays. It is in the station's box (so its chunks are loaded) but is none
+of the station's: a pack of its own (`station_bench`, with its own
+namespace, objectives `bench` and `bench.died`, tags and loot table), no
+call into the station's functions, no block of the dock changed. Buttons
+are stone buttons on gold posts, read each tick and set back. A player is
+"at the bench" inside its box: on leaving, what it gave is cleared (by
+`custom_data`), and with nobody there its mobs are killed and the bays
+put right. `DIE` sets the player's respawn point at the bench; leaving
+sets it to the world spawn.
+- Checked with nobody there: the pack enabled beside the station's, the
+  2238 blocks and 22 notices in place, each of the 14 buttons read and
+  let go, the lift and the grate run empty, the lamps, the count, the
+  mobs summoned and removed. **Nothing at the bench has been tried by a
+  player**: that is what it is for.
+- To take it away: `BENCH=remove` (entities, blocks, the sea put back
+  under the gangway, the pack).
+
 ### Stand-ins
 
 The live checks of the core run with nobody online. A player is stood in
@@ -1172,6 +1347,31 @@ without error and no more. They are in the play-test list.
   site is in the layout); the sloping fake ground (the station's site is
   sea, and the fake world is empty).
 
+### Core, fifth round: before the six domes
+
+- **The check cell.** The core's checks that build or summon (fittings,
+  automatons, fights, restricted items) no longer use dome 6 (the
+  Clockwork Maze will fill it): they build a sealed glass cell, 11 by 7
+  by 5 inside, in open water in the middle of the ring
+  (`fittings.check_cell`, from the layout; its floor 8 above the base
+  floor), and put the sea back after. It goes by the number 8, no dome's.
+  The unit test checks it is in the station's box and clear of every
+  dome, tunnel, the dock, the lift and the bench. Because the cell is no
+  dome, two things the fights check saw live are now seen only in the
+  unit test: that the core removes a dome's automatons when it empties,
+  and clears round its entrance on a respawn (the check runs the same
+  clearing line round a spot in the cell, and the core putting
+  `st.died` back is still seen live).
+- **`game_checks.no_run`**: every live check's first line; refuses while
+  `#run` is 1 unless `FORCE=1` (tried live: set `#run` 1, the verify
+  refused). Checks that change the level put back `#run.level` too
+  (`save_level`, `restore_level`).
+- **`block_drops` false** in the rules stage: nothing broken leaves an
+  item. The whole verify passed with it.
+- **The shore**: the lift's `st.lift.on` is taken off everyone while the
+  lift is idle (a rider who logged off mid-ride kept it); no boat is made
+  while 12 are about (`BOAT_CAP`). Neither case was made to happen live.
+
 ## Known problems / notes
 
 - The station's box stays forceloaded by design (see "Forceload").
@@ -1179,8 +1379,9 @@ without error and no more. They are in the play-test list.
   its outgoing tunnel too, and shuts its doors whatever the tunnels'
   state: after it run the dome's `_inside` stage and `tunnels`, and
   `function station:reset/all`.
-- The live checks reset the game (`station:reset/all`) before and after:
-  do not run them over a game someone means to carry on.
+- The live checks reset the game (`station:reset/all`) before and after,
+  so they refuse to run while a run is in progress (`game_checks.no_run`;
+  `FORCE=1` overrides).
 - A player who is offline when a reset happens keeps their respawn point
   in a dome; their kit is replaced when they next enter a dome.
 - A level changed by vote is recorded against the run as the lowest

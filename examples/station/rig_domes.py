@@ -1049,7 +1049,7 @@ def x4_pack(b: Bench) -> None:
 
 def x4_run(b: Bench, _: None) -> None:
     print("-- 4 the Engine's pair", flush=True)
-    a, z = off(b, 40, 0, 30), off(b, 112, 8, 49)
+    a, z = off(b, 40, 0, 30), off(b, 118, 8, 49)
     b.plot(a, z)
     grief = b.cmd("gamerule mob_griefing")
     hard = b.cmd("difficulty")
@@ -1059,13 +1059,14 @@ def x4_run(b: Bench, _: None) -> None:
         "bite": ("vindicator", none, "", "flat"),  # the rider's blow does nothing
         "blow": ("vindicator", "", none, "flat"),  # the ravager's bite does nothing
         "husk": ("husk", "", "", "flat"),
+        "husk0": ("husk", none, "", "flat"),  # and a husk whose blow does nothing
         "stair1": ("vindicator", "", "", 1),
         "stair2": ("vindicator", "", "", 2),
         "stair3": ("vindicator", "", "", 3),
     }
     where: dict[str, Cell] = {}
     for n, (name, (rider, rider_nbt, mount_nbt, kind)) in enumerate(pens.items()):
-        corner = (a[0] + 12 * n, a[1], a[2])
+        corner = (a[0] + 11 * n, a[1], a[2])
         if kind == "flat":
             c = pen(b, corner, 9, 16, 6, False)
             prey = (c[0] + 4, c[1], c[2] + 13)
@@ -1092,7 +1093,9 @@ def x4_run(b: Bench, _: None) -> None:
             "minecraft:ravager", (c[0] + 4, c[1], c[2] + 2), mount, f"x4_mount_{name}"
         )
     b.tick(2)
-    b.cmd(f"team join {TEAM} @e[tag={TAG}]")
+    # the pair and the zombie are one team, as the Master and the automatons
+    for kind in ("ravager", "vindicator", "husk", "zombie"):
+        b.cmd(f"team join {TEAM} @e[tag={TAG},type=minecraft:{kind}]")
     start = {n: b.pos(f"@e[tag=x4_mount_{n},limit=1]") for n in pens}
     health: dict[str, list[float | None]] = {n: [] for n in pens}
     high: dict[str, float] = dict.fromkeys(pens, 0.0)
@@ -1147,10 +1150,15 @@ def x4_run(b: Bench, _: None) -> None:
         f"persistent {riding} of 2, riding {b.score('#x4_rides')}, zombie's health {mate}",
     )
     b.check(
-        "4d with a husk on its back the ravager only carries: it does not go "
-        "for the prey or bite",
-        lost("husk") == 0 and 0 <= moved("husk") < 3,
-        f"prey lost {lost('husk')}, ravager went {moved('husk')} blocks",
+        "4d with a husk on its back the ravager only carries: it is taken to "
+        "the prey but does not bite (a husk whose blow is 0: the prey loses "
+        "nothing; an ordinary husk: only the husk's blows)",
+        lost("husk0") == 0
+        and moved("husk0") > 6
+        and 0 < lost("husk") < lost("bite") / 2,
+        f"husk with no blow: prey lost {lost('husk0')}, ravager went "
+        f"{moved('husk0')} blocks; ordinary husk: prey lost {lost('husk')} "
+        f"(a biting ravager alone took {lost('bite')})",
     )
     climbs = {
         n: (lost(n) > 0, round(high[n], 1)) for n in ("stair1", "stair2", "stair3")
@@ -1398,8 +1406,9 @@ def x6_run(b: Bench, s: Signal) -> None:
     b.tick(10)
     dark = [b.score(f"#s_{n}") for n in range(1, 7)]
     b.check(
-        "6c the contact swapped back for copper: the lamps are dark within 4 ticks",
-        dark[3] == 0,
+        "6c the contact swapped back for copper: the lamps hold for 4 ticks "
+        "and are dark at the 5th (the design said within 4)",
+        dark[:4] == [4, 4, 4, 4] and dark[4] == 0,
         f"lamps lit 1 to 6 ticks after: {dark}",
     )
 
@@ -1485,8 +1494,8 @@ def x7_pack(b: Bench) -> Fights:
     b.function(
         "fight/up",
         [
-            "execute as @e[tag=x7_climber] run damage @s 0.01 minecraft:mob_attack "
-            "by @e[tag=x7_prey_ladder,limit=1]"
+            "execute as @e[tag=x7_climber] at @s run damage @s 0.01 "
+            "minecraft:mob_attack by @e[tag=x7_prey_ladder,limit=1,sort=nearest]"
         ],
     )
     return f
@@ -1549,14 +1558,29 @@ def x7_run(b: Bench, f: Fights) -> None:
     b.summon(
         "minecraft:iron_golem", (c[0] + 3, c[1] + 5, c[2] + 3), PREY, "x7_prey_ladder"
     )
-    floors["ladder"] = c[1]
+    floors["shaft"] = c[1]
+    # a ladder up the face of a ledge 5 high, the prey at its head, in sight
+    c = pen(b, (x + 32, y, z), 5, 6, 9, True)
+    b.fill((c[0], c[1], c[2]), (c[0] + 4, c[1] + 4, c[2] + 1), STONE)
+    b.fill(
+        (c[0] + 2, c[1], c[2] + 2),
+        (c[0] + 2, c[1] + 4, c[2] + 2),
+        "minecraft:ladder[facing=south]",
+    )
+    b.summon("minecraft:zombie", (c[0] + 2, c[1], c[2] + 5), zombie, "x7_climber")
+    b.summon("minecraft:iron_golem", (c[0] + 2, c[1] + 5, c[2]), PREY, "x7_prey_ladder")
+    floors["ledge"] = c[1]
     b.tick(2)
-    seen: dict[str, list[float]] = {"ladder": []}
-    for _step in range(5):
-        b.run("fight/up")
-        b.tick(80)
-        p = b.pos("@e[tag=x7_climber,limit=1]")
-        seen["ladder"].append(round(p[1] - floors["ladder"], 1) if p else -1)
+    b.cmd("tag @e[tag=x7_climber,limit=1,sort=nearest,x=0,z=0] add x7_first")
+    high = {"shaft": 0.0, "ledge": 0.0}
+    for n in range(40):
+        if n % 5 == 0:
+            b.run("fight/up")
+        b.tick(15)
+        for name, sel in (("shaft", "tag=x7_first"), ("ledge", "tag=!x7_first")):
+            p = b.pos(f"@e[tag=x7_climber,{sel},limit=1]")
+            if p:
+                high[name] = max(high[name], round(p[1] - floors[name], 1))
     res = {}
     for name in ("grate", "stair", "hole"):
         p = b.pos(f"@e[tag=x7_z_{name},limit=1]")
@@ -1583,11 +1607,12 @@ def x7_run(b: Bench, f: Fights) -> None:
         f"(prey hit, zombie's height over the deck) {res['hole']}",
     )
     b.check(
-        "7e a zombie at the foot of a ladder in a shaft one block square, set "
-        "on prey at the top (damage ... by), climbs it: ladders do not keep "
-        "automatons down",
-        max(seen["ladder"]) >= 4,
-        f"height over the shaft's floor each 80 ticks: {seen['ladder']}",
+        "7e a ladder keeps a zombie down: one in a shaft a block square with "
+        "the ladder, and one below a ladder up the face of a ledge with its "
+        "prey in sight at the head, each set on the prey (damage ... by) "
+        "every 75 ticks for 600 ticks",
+        max(high.values()) < 1,
+        f"the highest each stood over its floor (the prey is 5 up): {high}",
     )
 
     # damage in a function; and one mob set on another by damage ... by
@@ -1655,16 +1680,13 @@ def x8_run(b: Bench, _: None) -> None:
     b.tick(2)
     turns = (b.score("#ticks") or 0) - t0
     yaw = b.number("@e[tag=x8_turn,limit=1]", "Rotation[0]")
-    want = ((90 + 9 * turns + 180) % 360) - 180
-    near = (
-        yaw is not None
-        and min(abs(yaw - want - 9 * k) for k in (-2, -1, 0, 1, 2)) < 0.01
-    )
+    # the yaw is not wrapped: it goes on past 360
+    near = yaw is not None and yaw >= 90 + 9 * 25 and abs((yaw - 90) % 9) < 0.01
     b.check(
         "8a a block display turned by tp @s ~ ~ ~ ~9 ~ with teleport_duration:1: "
         "90 degrees after ten, and on by 9 a tick from a tick function",
         "[90.0f" in ten and near,
-        f"after ten: {ten}; after about {turns} more ticks: {yaw}",
+        f"after ten: {ten}; after about {turns} more ticks: {yaw} (not wrapped at 360)",
     )
     pose = (
         "{start_interpolation:0,interpolation_duration:20,transformation:{"
@@ -2075,8 +2097,717 @@ def x11_run(b: Bench, m: Machine) -> None:
     )
     b.cmd(setblock((cx + 1, cy, cz), AIR))
     b.tick(60)
-    stopped = [b.score(f"#m_was_{k}") for k in (1, 2, 3)]
-    b.note(f"the torch taken out: 60 ticks on the pistons are {stopped} (0 is down)")
+    down = [b.is_block(p, "minecraft:piston[extended=false]") for p in m.pistons]
+    b.note(f"the torch taken out: 60 ticks on the pistons are down: {down}")
+
+
+# == the hand bench ===========================================================
+#
+# What only a player in adventure mode can try, laid out as five bays on a
+# deck of its own beyond the dock's far landing (the side away from the
+# shore), and left standing. Every bay has stone buttons on gold posts that
+# the bench's pack reads each tick and sets back (itself the Signal Room's
+# test), a notice, and a way to clear up. Nothing of the station's is used
+# or changed but the far landing, which the gangway leaves from: the bench
+# has its own pack, namespace, objectives, tags and loot table. A player is
+# "at the bench" inside its box; on leaving, the bench's items are taken
+# back, and with nobody there its mobs are removed and the bays put right.
+
+BNS = "station_bench"
+BOBJ = "bench"
+BDIED = "bench.died"
+BSTORE = f"{BNS}:bench"
+BTAG = "bench"  # on every entity of the bench
+IN = "bench.in"  # on a player at the bench
+PLANKS = "minecraft:dark_oak_planks"
+CUT = "minecraft:waxed_cut_copper"
+GOLD = "minecraft:gold_block"
+LOG = "minecraft:dark_oak_log"
+FENCE = "minecraft:dark_oak_fence"
+BUTTON_UP = "minecraft:stone_button[face=floor,facing=north,powered=false]"
+MINE = "minecraft:custom_data={bench:1b}"
+ROUGH = ("minecraft:raw_gold_block", "minecraft:raw_copper_block")
+LIFT_F, LIFT_R = (17, 19), (5, 7)  # the lift's 3 x 3
+GRATE_F, GRATE_R = (21, 23), (5, 7)  # and the grate that drops
+UP = 6  # the upper deck's level over the bench's
+PILES = ((5, -9), (5, 9), (40, -9), (40, 9), (22, -9), (22, 9))
+
+
+def snbt(text: str) -> str:
+    return '"' + text.replace("\\", "\\\\").replace('"', '\\"') + '"'
+
+
+class Hand:
+    """the bench's frame: f blocks out from the far landing's end, r to the
+    right (seen walking out), h over the bench's deck (level with the dock's)"""
+
+    def __init__(self) -> None:
+        import domes
+        import shore
+        import station_layout as layout
+
+        self.shore = shore
+        self.u = shore.shoreward_sides()[-1]
+        ax = domes.across(self.u)
+        self.d0 = shore.DECK_HALF + shore.RISE + 2  # the landing's last row
+        self.fwd = shore.FACING[self.u]
+        self.back = shore.FACING[shore.back(self.u)]
+        self.right = shore.FACING[ax]
+        self.left = shore.FACING[shore.back(ax)]
+        self.spawn = layout.SPAWN
+        self.solid: dict[Cell, str] = {}
+        self.attached: dict[Cell, str] = {}
+        self.texts: list[tuple[Cell, float, str, float]] = []
+        self.buttons: dict[str, Cell] = {}
+
+    def c(self, f: int, r: int, h: int = 0) -> Cell:
+        return self.shore.dock_at(self.u, self.d0 + f, r, self.shore.DECK_Y + h)
+
+    def box(self, f1: int, r1: int, h1: int, f2: int, r2: int, h2: int) -> Box:
+        a, z = self.c(f1, r1, h1), self.c(f2, r2, h2)
+        lo = (min(a[0], z[0]), min(a[1], z[1]), min(a[2], z[2]))
+        hi = (max(a[0], z[0]), max(a[1], z[1]), max(a[2], z[2]))
+        return lo, hi
+
+    def sel(self, f1: int, r1: int, h1: int, f2: int, r2: int, h2: int) -> str:
+        return dp.box_selector(*self.box(f1, r1, h1, f2, r2, h2))
+
+    def area(
+        self, f1: int, r1: int, h1: int, f2: int, r2: int, h2: int, block: str
+    ) -> None:
+        for c in cells(*self.box(f1, r1, h1, f2, r2, h2)):
+            self.solid[c] = block
+
+    def post(self, name: str, f: int, r: int, h: int, label: str) -> None:
+        """a gold post with a button on it and its name over it"""
+        self.solid[self.c(f, r, h)] = GOLD
+        self.buttons[name] = self.c(f, r, h + 1)
+        self.attached[self.c(f, r, h + 1)] = BUTTON_UP
+        self.texts.append((self.c(f, r, h + 1), 0.9, label, 0.6))
+
+    def notice(self, f: int, r: int, h: int, text: str, size: float = 0.5) -> None:
+        self.texts.append((self.c(f, r, h), 0.0, text, size))
+
+    @property
+    def whole(self) -> Box:
+        return self.box(1, -10, -2, 41, 10, 12)
+
+    @property
+    def inside(self) -> str:
+        return self.sel(1, -10, -2, 41, 10, 12)
+
+
+def bench_plan() -> Hand:
+    """every block, button and notice of the bench"""
+    h = Hand()
+    # the gangway from the landing: two rows at the water, two stairs up
+    h.area(1, -1, -2, 4, 1, -2, PLANKS)
+    h.area(4, -1, -1, 4, 1, -1, PLANKS)
+    h.area(3, -1, -1, 3, 1, -1, f"minecraft:dark_oak_stairs[facing={h.fwd}]")
+    h.area(4, -1, 0, 4, 1, 0, f"minecraft:dark_oak_stairs[facing={h.fwd}]")
+    # the deck, a rail round it, lamps in it
+    h.area(5, -9, 0, 40, 9, 0, CUT)
+    h.area(6, -8, 0, 39, 8, 0, PLANKS)
+    for f in range(5, 41):
+        for r in range(-9, 10):
+            edge = f in (5, 40) or abs(r) == 9
+            if edge and not (f == 5 and abs(r) <= 1):
+                h.solid[h.c(f, r, 1)] = FENCE
+    for f in (8, 14, 20, 26):
+        h.solid[h.c(f, 0, 0)] = "minecraft:sea_lantern"
+    for f, r in PILES:
+        h.solid[h.c(f, r, -1)] = LOG
+    h.notice(5, 0, 4, "TEST BENCH", 1.6)
+    h.notice(
+        6,
+        0,
+        3,
+        "Five bays, one for each thing only a player can try. Press the "
+        "stone buttons on the gold posts. Nothing here changes the game. "
+        "What the bench gives you is taken back when you leave it.",
+    )
+
+    # -- bay 1 (left): the Gearworks' pipe and wrench
+    track = [(9, r) for r in range(-8, -3)] + [(10, r) for r in range(-8, -3)]
+    kinds = [0, 0, 0, 1, 1, 1, 1, 0, 0, 1]
+    for (f, r), k in zip(track, kinds, strict=True):
+        h.solid[h.c(f, r, 0)] = ROUGH[k]
+    h.solid[h.c(13, -8, 1)] = GOLD
+    h.solid[h.c(13, -7, 1)] = GLASS
+    h.solid[h.c(13, -6, 1)] = CUT
+    h.solid[h.c(13, -4, 1)] = ROUGH[0]
+    h.solid[h.c(13, -4, 2)] = ROUGH[1]
+    door = f"minecraft:waxed_copper_door[facing={h.back},half={{}}]"
+    h.attached[h.c(13, -5, 1)] = door.format("lower")
+    h.attached[h.c(13, -5, 2)] = door.format("upper")
+    h.post("h1_give", 7, -3, 1, "GIVE pipes and wrench")
+    h.post("h1_clear", 11, -3, 1, "CLEAR UP")
+    h.notice(
+        8,
+        -6,
+        3,
+        "1 GEARWORKS. Steam pipe: it should go on the rough gold and the "
+        "rough copper in the floor (and on the two rough blocks in the back "
+        "row), and on nothing else: try the gold block, the glass, the "
+        "door, the deck, another pipe. Brass-flange pipe: rough gold only. "
+        "Copper-flange pipe: rough copper only. The wrench should break "
+        "pipe and nothing else. Read the tooltips. Lay pipe while walking.",
+    )
+
+    # -- bay 2 (right): the Signal Room's key and lamps
+    h.post("h2_key", 8, 3, 1, "KEY")
+    h.post("h2_lamps", 11, 3, 1, "LAMPS on / off")
+    h.post("h2_zero", 13, 3, 1, "ZERO")
+    for k, colour in enumerate(("red", "yellow", "lime", "light_blue")):
+        f = 7 + 2 * k
+        h.solid[h.c(f, 8, 1)] = COPPER
+        h.solid[h.c(f, 8, 2)] = f"{LAMP}[lit=false]"
+        h.solid[h.c(f, 7, 1)] = CUT
+        h.solid[h.c(f, 7, 2)] = f"minecraft:{colour}_stained_glass"
+    h.notice(
+        10,
+        6,
+        4,
+        "2 SIGNAL ROOM. Press KEY as you would in a game, fast and slow: "
+        "the count over it should go up by one for each press, never two, "
+        "and the button should never stay down. LAMPS lights the four "
+        "lamps behind coloured glass: are lit and unlit plainly different, "
+        "and the four colours plainly four?",
+    )
+
+    # -- bay 3 (left): dying, and a zombie set on you
+    h.post("h3_die", 16, -3, 1, "DIE (you come back here)")
+    h.post("h3_hit", 18, -3, 1, "HIT ME (2 hearts)")
+    h.post("h3_zombie", 20, -3, 1, "ZOMBIE in the cage")
+    h.post("h3_set", 22, -3, 1, "SET IT ON ME")
+    h.area(18, -9, 1, 22, -5, 3, GLASS)
+    h.area(19, -8, 1, 21, -6, 3, AIR)
+    h.area(18, -9, 4, 22, -5, 4, COPPER)
+    h.notice(
+        17,
+        -6,
+        5,
+        "3 FIGHTS. DIE, come back, and press HIT ME at once: for 5 seconds "
+        "it should cost nothing (a message says so), after that 2 hearts. "
+        "Then ZOMBIE: it cannot see you through glass and should stand "
+        "about. SET IT ON ME: it should turn and come at you, and follow "
+        "you along the glass.",
+    )
+
+    # -- bay 4 (right): the Maze's lift and timed floor
+    for f, r in ((16, 3), (16, 9), (24, 3), (24, 9)):
+        h.area(f, r, 1, f, r, UP - 1, LOG)
+    h.area(16, 3, UP, 24, 9, UP, CUT)
+    h.area(17, 4, UP, 23, 8, UP, PLANKS)
+    for f in range(16, 25):
+        for r in range(3, 10):
+            if f in (16, 24) or r in (3, 9):
+                h.solid[h.c(f, r, UP + 1)] = FENCE
+    h.area(LIFT_F[0], LIFT_R[0], UP, LIFT_F[1], LIFT_R[1], UP, TRAPDOOR)
+    h.area(LIFT_F[0], LIFT_R[0], 0, LIFT_F[1], LIFT_R[1], 0, COPPER)
+    h.area(LIFT_F[0], LIFT_R[0], -1, LIFT_F[1], LIFT_R[1], -1, CUT)
+    h.area(GRATE_F[0], GRATE_R[0], UP, GRATE_F[1], GRATE_R[1], UP, GRATE)
+    # a ladder, to get down (or up) without either
+    for k in range(1, UP + 1):
+        h.attached[h.c(24, 8, k)] = f"minecraft:ladder[facing={h.left}]"
+    h.solid[h.c(24, 8, UP + 1)] = AIR
+    h.solid.pop(h.c(24, 8, UP), None)
+    h.post("h4_up", 20, 4, 1, "LIFT UP (stand on the copper)")
+    h.post("h4_call", 20, 4, UP + 1, "CALL LIFT (stand on the hatch)")
+    h.post("h4_drop", 22, 4, UP + 1, "DROP (stand on the grate)")
+    h.notice(
+        20,
+        2,
+        3,
+        "4 MAZE. Stand on the copper square and press LIFT UP: you are "
+        "carried up 6 blocks in under a second, through the hatch. Is it a "
+        "ride or a jolt? Upstairs, stand on the hatch and press CALL LIFT: "
+        "you should drop no more than 3 onto it and come back up. Then "
+        "stand on the grate and press DROP: 3 seconds later it is gone and "
+        "you should float down unhurt.",
+    )
+
+    # -- bay 5 (the end): the Engine's master, behind glass
+    h.area(28, -7, 1, 40, 7, 6, GLASS)
+    h.area(29, -6, 1, 39, 6, 5, AIR)
+    h.area(29, -6, 0, 39, 6, 0, CUT)
+    h.solid[h.c(31, 0, 0)] = "minecraft:sea_lantern"
+    h.solid[h.c(37, 0, 0)] = "minecraft:sea_lantern"
+    h.post("h5_start", 26, -2, 1, "LET THEM LOOSE")
+    h.post("h5_clear", 26, 2, 1, "CLEAR")
+    h.notice(
+        26,
+        0,
+        4,
+        "5 THE ENGINE. A ravager with a vindicator on it, and an iron "
+        "golem for them to fight, behind glass: they cannot see or reach "
+        "you. The ravager should charge and bite by itself, the rider "
+        "swing from its back and stay up. Is it frightening enough, and "
+        "too much for a child?",
+    )
+    return h
+
+
+def bench_pack(h: Hand) -> dp.Pack:
+    pack = dp.Pack(BNS, BNS, "The Drowned Station: the test bench by the dock")
+    pack.objectives({BOBJ: "dummy", BDIED: "deathCount"})
+    empty = pack.loot_table("empty", {"pools": []})
+    here = h.inside
+    players = f"@a[tag={IN}]"
+    score = f"score {{}} {BOBJ}"
+
+    def fn(path: str, lines: list[str]) -> str:
+        return pack.function(path, lines)
+
+    def set_(name: str, value: int) -> str:
+        return f"scoreboard players set {name} {BOBJ} {value}"
+
+    def box(*a: int) -> str:
+        return at(h.box(*a)[0]) + " " + at(h.box(*a)[1])
+
+    # ---- the bays' actions, each run as the player who pressed, at them
+    bulb = "minecraft:waxed_exposed_copper_bulb"
+
+    def pipe(name: str, on: str) -> str:
+        return (
+            f"give @s {bulb}[minecraft:can_place_on={{blocks:{on}}},{MINE},"
+            f"minecraft:item_name={snbt(name)}] 16"
+        )
+
+    both = '["minecraft:raw_gold_block","minecraft:raw_copper_block"]'
+    take = "clear @s *[minecraft:custom_data~{bench:1b}]"
+    bay1 = box(6, -9, 1, 14, -3, 4)
+    clear1 = [
+        f"fill {bay1} {AIR} replace {bulb}",
+        f"kill @e[type=minecraft:item,{here}]",
+    ]
+    do: dict[str, list[str]] = {
+        "h1_give": [
+            take,
+            pipe("Steam pipe", both),
+            pipe("Brass-flange pipe", '"minecraft:raw_gold_block"'),
+            pipe("Copper-flange pipe", '"minecraft:raw_copper_block"'),
+            f'give @s minecraft:iron_pickaxe[minecraft:can_break={{blocks:"{bulb}"}},'
+            f'minecraft:unbreakable={{}},{MINE},minecraft:item_name="Pipe wrench"] 1',
+        ],
+        "h1_clear": [take, *clear1],
+        "h2_key": [
+            f"scoreboard players add #presses {BOBJ} 1",
+            f"function {BNS}:h2/show",
+            "playsound minecraft:block.note_block.bell block @s ~ ~ ~ 1 1",
+        ],
+        "h2_zero": [set_("#presses", 0), f"function {BNS}:h2/show"],
+        "h2_lamps": [
+            f"execute store success {score.format('#lamps')} "
+            f"unless {score.format('#lamps')} matches 1",
+            f"function {BNS}:h2/lamps",
+        ],
+        "h3_die": [
+            f"spawnpoint @s {at(h.c(17, 0, 1))}",
+            "tag @s add bench.sp",
+            "kill @s",
+        ],
+        "h3_hit": ["damage @s 4 minecraft:generic"],
+        "h3_zombie": [
+            "kill @e[tag=bench.zombie]",
+            f"summon minecraft:zombie {middle(h.c(20, -7, 1))} "
+            f'{{Tags:["{BTAG}","bench.mob","bench.zombie"],IsBaby:0b,'
+            f'PersistenceRequired:1b,CanPickUpLoot:0b,DeathLootTable:"{empty}",'
+            'CustomName:"Automaton"}',
+        ],
+        "h3_set": [
+            "damage @e[tag=bench.zombie,limit=1] 0.01 minecraft:mob_attack by @s"
+        ],
+        "h4_up": [
+            f"execute if {score.format('#lift')} matches 0 run {set_('#lift', 1)}"
+        ],
+        "h4_call": [
+            f"execute if {score.format('#lift')} matches 0 run {set_('#lift', 1)}"
+        ],
+        "h4_drop": [
+            f"execute if {score.format('#drop')} matches 0 run {set_('#drop', 1)}"
+        ],
+        "h5_start": [
+            "kill @e[tag=bench.boss]",
+            f"summon minecraft:ravager {middle(h.c(37, 0, 1))} "
+            f'{{Tags:["{BTAG}","bench.mob","bench.boss"],PersistenceRequired:1b,'
+            f'DeathLootTable:"{empty}",CustomName:"Old Grinder",Passengers:[{{id:'
+            f'"minecraft:vindicator",Tags:["{BTAG}","bench.mob","bench.boss"],'
+            f'PersistenceRequired:1b,DeathLootTable:"{empty}",CustomName:"The Master",'
+            'equipment:{mainhand:{id:"minecraft:iron_axe",count:1}},'
+            "drop_chances:{mainhand:0f}}]}",
+            f"summon minecraft:iron_golem {middle(h.c(31, 0, 1))} "
+            f'{{Tags:["{BTAG}","bench.mob","bench.boss"],PersistenceRequired:1b,'
+            f'DeathLootTable:"{empty}"}}',
+        ],
+        "h5_clear": ["kill @e[tag=bench.boss]"],
+    }
+    tick = [
+        f"execute as @a[{here},gamemode=!spectator,tag=!{IN}] run function {BNS}:enter",
+        f"execute as {players} unless entity @s[{here}] run function {BNS}:leave",
+        f"execute as @e[type=minecraft:player,tag={IN},scores={{{BDIED}=1..}}] "
+        f"run function {BNS}:respawned",
+        f"execute unless entity {players} run function {BNS}:idle",
+    ]
+    for name, cell in h.buttons.items():
+        fn(f"do/{name}", do[name])
+        fn(
+            f"btn/{name}",
+            [
+                setblock(cell, BUTTON_UP),
+                f"scoreboard players add #pressed {BOBJ} 1",
+                f"execute positioned {middle(cell)} as @p[tag={IN},distance=..6] "
+                f"at @s run function {BNS}:do/{name}",
+            ],
+        )
+        tick.append(
+            f"execute if block {at(cell)} minecraft:stone_button[powered=true] "
+            f"run function {BNS}:btn/{name}"
+        )
+    tick += [
+        f"execute if {score.format('#lift')} matches 1.. run function {BNS}:lift/tick",
+        f"execute if {score.format('#drop')} matches 1.. run function {BNS}:drop/tick",
+    ]
+    fn("tick", tick)
+    pack.function("on_tick", [f"function {BNS}:tick"], tick=True)
+
+    # ---- coming and going
+    fn(
+        "enter",
+        [
+            f"tag @s add {IN}",
+            f"scoreboard players set @s {BDIED} 0",
+            set_("#tidy", 1),
+            'tellraw @s {text:"Test bench: what it gives you is taken back when '
+            'you leave.",color:"gold"}',
+        ],
+    )
+    sx, sy, sz = h.spawn
+    fn(
+        "leave",
+        [
+            take,
+            f"execute if entity @s[tag=bench.sp] run spawnpoint @s {sx} {sy} {sz}",
+            "tag @s remove bench.sp",
+            f"tag @s remove {IN}",
+            'tellraw @s {text:"You have left the test bench.",color:"gray"}',
+        ],
+    )
+    fn(
+        "respawned",
+        [
+            "effect give @s minecraft:resistance 5 4 true",
+            f"scoreboard players set @s {BDIED} 0",
+            'tellraw @s {text:"Back: nothing can hurt you for 5 seconds. Press '
+            'HIT ME now, and again after.",color:"gold"}',
+        ],
+    )
+    fn(
+        "idle",
+        [
+            "kill @e[tag=bench.mob]",
+            f"execute if {score.format('#tidy')} matches 1 run function {BNS}:tidy",
+        ],
+    )
+    fn(
+        "tidy",
+        [
+            set_("#tidy", 0),
+            *clear1,
+            set_("#presses", 0),
+            f"function {BNS}:h2/show",
+            set_("#lamps", 0),
+            f"function {BNS}:h2/lamps",
+            f"function {BNS}:lift/reset",
+            f"function {BNS}:drop/reset",
+        ],
+    )
+
+    # ---- bay 2
+    fn(
+        "h2/show",
+        [
+            f"execute store result storage {BSTORE} v.n int 1 "
+            f"run scoreboard players get #presses {BOBJ}",
+            f"function {BNS}:h2/write with storage {BSTORE} v",
+        ],
+    )
+    fn(
+        "h2/write",
+        [
+            "$data modify entity @e[type=minecraft:text_display,tag=bench.count,"
+            'limit=1] text set value "Presses: $(n)"'
+        ],
+    )
+    contacts = [h.c(7 + 2 * k, 8, 1) for k in range(4)]
+    fn(
+        "h2/lamps",
+        [
+            f"execute if {score.format('#lamps')} matches 1 run {setblock(c, REDSTONE)}"
+            for c in contacts
+        ]
+        + [
+            f"execute unless {score.format('#lamps')} matches 1 run {setblock(c, COPPER)}"
+            for c in contacts
+        ],
+    )
+
+    # ---- bay 4: the lift (a block every 3 ticks) and the floor that goes
+    f1, f2 = LIFT_F
+    r1, r2 = LIFT_R
+    for k in range(1, UP + 1):
+        lines = []
+        if k == UP - 3:
+            lines.append(f"fill {box(f1, r1, UP, f2, r2, UP)} {AIR}")
+        riders = h.sel(f1, r1, k, f2, r2, UP + 2)
+        lines += [
+            f"execute as @a[{riders}] at @s run tp @s ~ ~1 ~",
+            f"fill {box(f1, r1, k, f2, r2, k)} {COPPER}",
+            f"fill {box(f1, r1, k - 1, f2, r2, k - 1)} {AIR}",
+            f"execute as {players} at @s run playsound "
+            "minecraft:block.piston.extend block @s ~ ~ ~ 0.6 1.4",
+        ]
+        fn(f"lift/at_{k}", lines)
+    fn(
+        "lift/tick",
+        [f"scoreboard players add #lift {BOBJ} 1"]
+        + [
+            f"execute if {score.format('#lift')} matches {1 + STEP * k} "
+            f"run function {BNS}:lift/at_{k}"
+            for k in range(1, UP + 1)
+        ]
+        + [
+            # back to the bottom two seconds after the shaft is empty
+            f"execute if {score.format('#lift')} matches 140.. "
+            f"unless entity @a[{h.sel(f1, r1, -1, f2, r2, UP + 2)}] "
+            f"run function {BNS}:lift/reset"
+        ],
+    )
+    fn(
+        "lift/reset",
+        [
+            f"fill {box(f1, r1, 1, f2, r2, UP - 1)} {AIR}",
+            f"fill {box(f1, r1, UP, f2, r2, UP)} {TRAPDOOR}",
+            f"fill {box(f1, r1, 0, f2, r2, 0)} {COPPER}",
+            set_("#lift", 0),
+        ],
+    )
+    g1, g2 = GRATE_F
+    q1, q2 = GRATE_R
+    grate = box(g1, q1, UP, g2, q2, UP)
+    click = (
+        f"execute as {players} at @s run playsound "
+        "minecraft:block.note_block.hat block @s ~ ~ ~ 1 {}"
+    )
+    fn(
+        "drop/tick",
+        [
+            f"scoreboard players add #drop {BOBJ} 1",
+            f"execute if {score.format('#drop')} matches 2 run {click.format(1)}",
+            f"execute if {score.format('#drop')} matches 21 run {click.format(1)}",
+            f"execute if {score.format('#drop')} matches 41 run {click.format(1)}",
+            f"execute if {score.format('#drop')} matches 61 run function {BNS}:drop/go",
+            f"execute if {score.format('#drop')} matches 200.. "
+            f"unless entity @a[{h.sel(g1, q1, UP, g2, q2, UP)}] "
+            f"run function {BNS}:drop/reset",
+        ],
+    )
+    fn(
+        "drop/go",
+        [
+            # the effect and the floor in one function, as the Maze will
+            f"effect give @a[{h.sel(g1, q1, UP + 1, g2, q2, UP + 2)}] "
+            "minecraft:slow_falling 6 0 true",
+            f"fill {grate} {AIR}",
+            click.format(0.5),
+        ],
+    )
+    fn("drop/reset", [f"fill {grate} {GRATE}", set_("#drop", 0)])
+    # for the build's own check: the mobs summoned and counted in one tick
+    fn(
+        "chk/mobs",
+        [
+            f"function {BNS}:do/h5_start",
+            f"function {BNS}:do/h3_zombie",
+            f"execute store result {score.format('#chk')} if entity @e[tag=bench.mob]",
+        ],
+    )
+    return pack
+
+
+def bench_remove(b: Bench, h: Hand) -> None:
+    """take the bench away: its entities, blocks (the sea put back where
+    the gangway stood in it), tags, storage and pack"""
+    pack = bench_pack(h)
+    b.cmd(f"kill @e[tag={BTAG}]")
+    b.tick(2)
+    a, z = h.whole
+    b.fill(a, z, AIR)
+    water = h.box(1, -10, -2, 41, 10, -2)
+    b.fill(*water, WATER)
+    for f, r in PILES:
+        top = h.c(f, r, -2)
+        b.cmd(dp.fill((top[0], top[1] - 10, top[2]), top, WATER, f"replace {LOG}"))
+    b.tick(5)
+    b.fill((a[0], a[1] + 1, a[2]), z, AIR)
+    b.cmd(f"kill @e[type=minecraft:item,{h.inside}]")
+    b.cmd(f"kill @e[tag={BTAG}]")
+    for tag in (IN, "bench.sp"):
+        b.cmd(f"tag @a remove {tag}")
+    b.cmd(f"data remove storage {BSTORE} v")
+    dp.uninstall(b.world, pack, b.dir)
+    print(f"bench removed; packs: {b.cmd('datapack list')}", flush=True)
+
+
+def bench_build(b: Bench, h: Hand) -> None:
+    a, z = h.whole
+    if (b.dir / BNS).is_dir():
+        bench_remove(b, h)  # a rebuild: only where a bench of this pack stood
+    # nothing but air may be in the way (the layer at the water aside)
+    sky = (a[0], 200, a[2])
+    low = (a[0], a[1] + 1, a[2])
+    free = b.cmd(f"execute if blocks {at(low)} {at(z)} {at(sky)} all", "Test ")
+    if "passed" not in free:
+        print(f"something stands where the bench would go ({low} to {z}): not built")
+        return
+    b.put(h.solid)
+    b.put(h.attached)
+    for f, r in PILES:
+        top = h.c(f, r, -2)
+        b.cmd(dp.fill((top[0], top[1] - 10, top[2]), top, LOG, f"replace {WATER}"))
+    for cell, dy, text, size in h.texts:
+        s = f"[{size}f,{size}f,{size}f]"
+        b.cmd(
+            f"summon minecraft:text_display {middle(cell, dy)} "
+            f'{{Tags:["{BTAG}"],billboard:"vertical",line_width:220,text:{snbt(text)},'
+            f"transformation:{{left_rotation:[0f,0f,0f,1f],right_rotation:[0f,0f,0f,1f],"
+            f"translation:[0f,0f,0f],scale:{s}}}}}"
+        )
+    key = h.buttons["h2_key"]
+    b.cmd(
+        f"summon minecraft:text_display {middle(key, 1.6)} "
+        f'{{Tags:["{BTAG}","bench.count"],billboard:"vertical",text:"Presses: 0"}}'
+    )
+    dp.install(b.world, bench_pack(h), b.dir)
+    b.cmd(f"function {BNS}:tidy")
+    b.tick(5)
+    print(
+        f"bench built: {len(h.solid) + len(h.attached)} blocks, {len(h.texts) + 1} "
+        f"notices, {len(h.buttons)} buttons, from {a} to {z}",
+        flush=True,
+    )
+    bench_check(b, h)
+
+
+def bench_check(b: Bench, h: Hand) -> None:
+    """what can be seen of the bench with nobody at it"""
+
+    def bs(name: str) -> int | None:
+        r = b.cmd(f"scoreboard players get {name} {BOBJ}", r"has -?\d+|Can't|Unknown")
+        m = re.search(r"has (-?\d+)", r)
+        return int(m.group(1)) if m else None
+
+    def put_score(name: str, v: int) -> None:
+        b.cmd(f"scoreboard players set {name} {BOBJ} {v}")
+
+    packs = b.cmd("datapack list enabled")
+    b.check(
+        "bench: its pack is enabled beside the station's", f"file/{BNS}" in packs, packs
+    )
+    wrong = [
+        c
+        for c, block in {**h.solid, **h.attached}.items()
+        if block != AIR and not b.is_block(c, block.split("[")[0])
+    ]
+    b.check(
+        f"bench: its {len(h.solid) + len(h.attached)} blocks are there",
+        not wrong,
+        wrong[:5],
+    )
+    texts = b.count(f"@e[type=minecraft:text_display,tag={BTAG}]")
+    b.check("bench: its notices are there", texts == len(h.texts) + 1, texts)
+    # every button, set down by command, is read and let go within a tick
+    put_score("#pressed", 0)
+    for cell in h.buttons.values():
+        b.cmd(setblock(cell, BUTTON_UP.replace("powered=false", "powered=true")))
+    b.tick(3)
+    up = [n for n, c in h.buttons.items() if not b.is_block(c, BUTTON_UP)]
+    b.check(
+        f"bench: each of the {len(h.buttons)} buttons set down by command is "
+        "read by the pack and let go (with nobody there its action does nothing)",
+        not up and bs("#pressed") == len(h.buttons),
+        f"still down: {up}; presses read: {bs('#pressed')}",
+    )
+    # the lift and the grate, run empty
+    f1, f2 = LIFT_F
+    r1, r2 = LIFT_R
+    put_score("#lift", 1)
+    b.tick(STEP * UP + 6)
+    top = all(b.is_block(c, COPPER) for c in cells(*h.box(f1, r1, UP, f2, r2, UP)))
+    b.tick(150)
+    home = all(b.is_block(c, COPPER) for c in cells(*h.box(f1, r1, 0, f2, r2, 0)))
+    shut = all(
+        b.is_block(c, "minecraft:iron_trapdoor")
+        for c in cells(*h.box(f1, r1, UP, f2, r2, UP))
+    )
+    b.check(
+        "bench: the lift run empty stands at the top after its steps, and is "
+        "back down with the hatch shut some seconds later",
+        top and home and shut and bs("#lift") == 0,
+        (top, home, shut, bs("#lift")),
+    )
+    g = cells(*h.box(GRATE_F[0], GRATE_R[0], UP, GRATE_F[1], GRATE_R[1], UP))
+    put_score("#drop", 1)
+    b.tick(70)
+    gone = all(b.is_block(c, AIR) for c in g)
+    b.tick(140)
+    back = all(b.is_block(c, GRATE) for c in g)
+    b.check(
+        "bench: the grate goes 3 seconds after its button and is back later",
+        gone and back and bs("#drop") == 0,
+        (gone, back, bs("#drop")),
+    )
+    # the lamps, the count
+    b.cmd(f"function {BNS}:do/h2_lamps")
+    b.tick(4)
+    lamps = [h.c(7 + 2 * k, 8, 2) for k in range(4)]
+    lit = sum(b.is_block(c, f"{LAMP}[lit=true]") for c in lamps)
+    b.cmd(f"function {BNS}:do/h2_key")
+    text = b.data("@e[tag=bench.count,limit=1]", "text")
+    b.cmd(f"function {BNS}:tidy")
+    b.tick(8)
+    dark = sum(b.is_block(c, f"{LAMP}[lit=false]") for c in lamps)
+    b.check(
+        "bench: the four lamps light and go out; the count is written",
+        lit == 4 and dark == 4 and "Presses: 1" in text,
+        f"lit {lit}, then dark {dark}; {text}",
+    )
+    # the mobs: summoned, and gone the next tick because nobody is there
+    b.cmd(f"function {BNS}:chk/mobs")
+    made = bs("#chk")
+    b.tick(3)
+    left = b.count("@e[tag=bench.mob]")
+    b.check(
+        "bench: the pair, the golem and the zombie are summoned (4), and "
+        "removed at once with nobody at the bench",
+        made == 4 and left == 0,
+        f"summoned {made}, left {left}",
+    )
+    log = dp.server_log(b.dir)
+    b.note(f"server log found for the pack's load: {log is not None}")
+    failed = [name for name, ok in b.results if not ok]
+    print(f"{len(b.results) - len(failed)} passed, {len(failed)} failed", flush=True)
+
+
+def bench(world, datapacks_dir: Path, what: str) -> None:
+    b = Bench(world, datapacks_dir)
+    h = bench_plan()
+    if what == "remove":
+        bench_remove(b, h)
+    elif what == "check":
+        bench_check(b, h)
+    else:
+        bench_build(b, h)
 
 
 # == running ================================================================
@@ -2134,7 +2865,10 @@ def main(world) -> None:
     if where is None:
         print(f"set {dp.DATAPACKS_ENV} to the world's datapacks folder")
         return
-    run(world, Path(where))
+    if os.environ.get("BENCH"):
+        bench(world, Path(where), os.environ["BENCH"])
+    else:
+        run(world, Path(where))
 
 
 if __name__ == "__main__":

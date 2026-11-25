@@ -198,7 +198,15 @@ MODULE = game.Module(
     players; `gravity=True` to press a plate), `as_stand_in`, `scores`,
     `expect`, `SCAN` and `EMPTY` (ticks to wait for a scan, and for a
     dome to count as empty). A module's check resets its own dome, not
-    the game.
+    the game. **Required**: its first line is `game_checks.no_run(ctx)`,
+    which refuses (unless `FORCE=1`) while a run is in progress: a run
+    parked by players who logged off would be wiped. A check that changes
+    the level saves and puts back `#run.level` as well as `#level`
+    (`game_checks.save_level`, `restore_level`): during a run
+    `difficulty/apply` lowers `#run.level`, and the best time is kept
+    under it. The core's checks build what they try out in a glass cell
+    of their own in the sea in the middle of the ring
+    (`fittings.check_cell`), never in a dome.
 - One stage: `STAGES=site,dome_1_inside mciwb run build_station.py`
   (with `datapack` too, and `STATION_DATAPACKS_DIR`, if the functions
   changed). One check: `CHECKS=boiler_room mciwb run verify_station.py`.

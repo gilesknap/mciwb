@@ -443,14 +443,17 @@ def install_datapack(ctx: Context) -> str:
     return f"{files} files installed in {folder}, and loaded (the server's log read)"
 
 
-#: the game rules of the plan (Minecraft 26.3 names). The last is a radius
-#: round each player within which fire spreads; 0 turns spreading off
-#: (PROGRESS.md, "Game rules")
+#: the game rules of the plan (Minecraft 26.3 names). The fire spread rule
+#: is a radius round each player within which fire spreads; 0 turns
+#: spreading off (PROGRESS.md, "Game rules"). With ``block_drops`` off a
+#: block broken by a player or a function leaves no item (PROGRESS.md,
+#: "Rig, second round", 10)
 RULES = {
     "keep_inventory": "true",
     "mob_griefing": "false",
     "spawn_monsters": "false",
     "fire_spread_radius_around_player": "0",
+    "block_drops": "false",
 }
 
 

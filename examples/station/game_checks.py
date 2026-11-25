@@ -22,6 +22,7 @@ PROGRESS.md for the owner's play-test.
 
 from __future__ import annotations
 
+import os
 from typing import Any
 
 import domes
@@ -72,8 +73,46 @@ def as_stand_in(ctx: Any, tag: str, path: str, args: str = "") -> None:
     ctx.cmd(f"execute as @e[tag={tag},limit=1] run function {ctx.pack.id(path)}{tail}")
 
 
+def no_run(ctx: Any) -> None:
+    """
+    Refuse to go on while a run is in progress (``#run`` 1), unless
+    ``FORCE=1``: a run parked by players who logged off is somebody's
+    game, and a check would wipe it. The first line of every live check
+    (``verify_station`` also calls it before the first); once it has
+    passed for a context, it is not asked again, so that a check that
+    starts a run of its own does not stop the next.
+    """
+    if getattr(ctx, "run_checked", False):
+        return
+    if ctx.score("#run") == 1 and not os.environ.get("FORCE"):
+        raise SystemExit(
+            "a run is in progress (#run is 1): not checking, which would "
+            "wipe it (FORCE=1 to)"
+        )
+    ctx.run_checked = True
+
+
+#: what a check that changes the difficulty level saves and puts back:
+#: the level, and the level a run is recorded at (``difficulty/apply``
+#: lowers it during a run, and the best time is kept under it)
+LEVEL_SCORES = ("#level", "#run.level")
+
+
+def save_level(ctx: Any) -> dict[str, int | None]:
+    return scores(ctx, *LEVEL_SCORES)
+
+
+def restore_level(ctx: Any, saved: dict[str, int | None]) -> None:
+    for name, value in saved.items():
+        if value is None and name == "#level":
+            value = game.DEFAULT_LEVEL
+        if value is not None:
+            ctx.set_score(name, value)
+
+
 def fresh(ctx: Any) -> None:
-    """the game reset, no stand-ins"""
+    """the game reset, no stand-ins (``no_run`` first)"""
+    no_run(ctx)
     ctx.cmd(f"kill @e[type=minecraft:armor_stand,tag={game.STANDIN}]")
     ctx.function("reset/all")
     ctx.advance(SCAN)
@@ -168,6 +207,7 @@ def check_vote(ctx: Any) -> list[str]:
     """the vote: proposed, counted, expiring, passing; both kinds"""
     problems: list[str] = []
     fresh(ctx)
+    saved = save_level(ctx)
     level = ctx.score("#level")
     stand_in(ctx, "st.s1", 0)
     stand_in(ctx, "st.s2", 0)
@@ -250,6 +290,7 @@ def check_vote(ctx: Any) -> list[str]:
         f"run function {ctx.pack.id('vote/reset')}"
     )
     expect(problems, "proposed by one not in the game", ctx.score("#vote.kind"), 0)
+    restore_level(ctx, saved)
     fresh(ctx)
     return problems
 
@@ -258,6 +299,7 @@ def check_difficulty(ctx: Any) -> list[str]:
     """the level takes force on entering a dome, and scales the values"""
     problems: list[str] = []
     fresh(ctx)
+    saved = save_level(ctx)
     level = ctx.score("#level")
     names = tuple(game.SCALED)
     expect(
@@ -282,7 +324,7 @@ def check_difficulty(ctx: Any) -> list[str]:
     as_stand_in(ctx, "st.s1", "vote/difficulty", "{level:8}")
     ctx.function("reset/all")
     expect(problems, "the level after a reset", ctx.score("#level"), 8)
-    ctx.set_score("#level", level if level is not None else game.DEFAULT_LEVEL)
+    restore_level(ctx, saved)
     fresh(ctx)
     return problems
 
@@ -423,12 +465,15 @@ def check_reset(ctx: Any) -> list[str]:
 
 def check_restricted(ctx: Any) -> list[str]:
     """``fittings.restricted``: the items it writes are taken by the game
-    and keep their rules (read back from a barrel: there is no hand to
-    hold them, so that they bind an adventure-mode player is not proved)"""
+    and keep their rules (read back from a barrel in the check cell: there
+    is no hand to hold them, so that they bind an adventure-mode player is
+    not proved)"""
     import fittings
 
-    problems: list[str] = []
-    x, y, z, _ = domes.entrance(layout.DOMES[-2])
+    cell = fittings.check_cell()
+    if problems := fittings.build_cell(ctx):
+        return problems
+    x, y, z = cell.fr.at(0, 0, 1)
     at = f"{x} {y} {z}"
     ctx.cmd(f"setblock {at} minecraft:barrel")
     items = {
@@ -454,8 +499,7 @@ def check_restricted(ctx: Any) -> list[str]:
         "hidden_components",
     ):
         expect(problems, f"{word} in what the barrel holds", word in held, True)
-    ctx.cmd(f"setblock {at} minecraft:air")
-    ctx.cmd(f"kill @e[type=minecraft:item,{domes.sphere(layout.DOMES[-2])}]")
+    fittings.remove_cell(ctx)
     return problems
 
 
@@ -530,8 +574,8 @@ def check_ring(ctx: Any) -> list[str]:
 
 def check_fittings(ctx: Any) -> list[str]:
     """
-    The fittings (fittings.py) tried in the world, in the way in to the
-    check's dome, which is cleared afterwards: the torch clock with its
+    The fittings (fittings.py) tried in the world, in the check cell
+    (``fittings.check_cell``), built here and removed after: the torch clock with its
     lamp chase and pistons seen running; a gauge following a score; a
     lever put back and held over; a button read once a press; a plate
     that counts only with a player on it; a post's label; a display
@@ -541,15 +585,27 @@ def check_fittings(ctx: Any) -> list[str]:
     """
     import fittings as F
 
+    cell = F.check_cell()
+    if problems := F.build_cell(ctx):
+        return problems
+    try:
+        return _check_fittings(ctx, cell)
+    finally:
+        F.remove_cell(ctx)
+
+
+def _check_fittings(ctx: Any, site: Any) -> list[str]:
+    import fittings as F
+
     problems: list[str] = []
-    dome, fr, way = F.check_site()
+    fr = site.fr
     tag = "st.chk"
-    box = (min(way.values()), max(way.values()))
+    box = (min(site.inside), max(site.inside))
 
     def clear() -> None:
         ctx.fill(*box, domes.AIR)
         ctx.cmd(f"kill @e[tag={tag}]")
-        ctx.cmd(f"kill @e[type=minecraft:item,{domes.sphere(dome)}]")
+        ctx.cmd(f"kill @e[type=minecraft:item,{site.selector}]")
 
     def place(*layers: dict) -> None:
         for layer in layers:
@@ -559,14 +615,12 @@ def check_fittings(ctx: Any) -> list[str]:
     def run(line: str) -> str:
         return ctx.cmd(line)
 
-    if not set(way.values()) <= tunnels.reserved_cells(dome):
-        return ["the check's site is not all reserved cells"]
     clear_stand_ins(ctx)
     clear()
 
     # -- the torch clock, a level up on its own bed
     clock = F.torch_clock(fr, 0, 0, h=2, side=-1, lamps=True, pistons=True)
-    if not clock.cells <= set(way.values()):
+    if not clock.cells <= site.inside:
         problems.append("the clock does not fit the check's site")
     place(clock.bed, clock.solid, clock.attached)
     lamps: list[set[bool]] = [set() for _ in clock.lamps]
@@ -699,8 +753,8 @@ def check_fittings(ctx: Any) -> list[str]:
     # -- a hint: once, after its time, and not while there is progress
     saved = ctx.score("#diff.timer")
     ctx.set_score("#diff.timer", 100)
-    lines = F.hint(B_pack(), dome.index, "check", "", 2)
-    clock_score = f"#hint{dome.index}.check"
+    lines = F.hint(B_pack(), F.CHECK_INDEX, "check", "", 2)
+    clock_score = f"#hint{F.CHECK_INDEX}.check"
     run(lines.arm)
     for _ in range(30):
         run(lines.tick)

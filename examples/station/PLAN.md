@@ -48,7 +48,8 @@ at the entrance, one real working machine to watch, and its tunnel pump.
    must be held at once.
 2. **Gearworks** (building). Lay copper "pipe" that only sticks to a brass
    track (`can_place_on`) to link an engine to the door, with a tool that
-   breaks only that pipe (`can_break`). Entering clears an old attempt.
+   breaks only that pipe (`can_break`). Laid pipe is kept when the dome is
+   left; only the game's reset clears it.
 3. **Flooded Dome.** Half under water. Find and work the pumps to drain it
    level by level; each level uncovers the next pump. *Two players:* one
    holds a pump lever open while the other swims through.
@@ -106,7 +107,8 @@ Avoid:
   (`mob_griefing`), natural monster spawning off (`spawn_monsters`, not
   `spawn_mobs`: the game summons its own; fish and squid stay), fire spread
   off (`fire_spread_radius_around_player`, a radius in blocks, 128 by
-  default, not on/off: 0 turns it off).
+  default, not on/off: 0 turns it off), block drops off (`block_drops`:
+  a block broken by a player or a function leaves no item).
   Leave the day cycle and weather running (`advance_time`,
   `advance_weather`). Difficulty stays Easy; the fights must
   check the difficulty is above Peaceful.

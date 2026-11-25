@@ -695,28 +695,85 @@ def torch_clock(
 
 
 # ----------------------------------------------------------- for the checks
-# A place to try these fittings in the world: the way in from the upstream
-# mouth of the last dome but one, which every room keeps clear.
+# A place to try these fittings, and the automatons, in the world, away
+# from every room: a sealed glass cell in the open sea in the middle of the
+# ring, which no dome, tunnel, the dock, the lift or the test bench comes
+# near (they are all on the ring's edges or by the start dome). The checks
+# that use it build it first and put the sea back after (``build_cell``,
+# ``remove_cell``).
 
-CHECK_DOME = -2  # index into the layout's domes
+#: the number the checks' automatons, waves and hint go by: no dome's
+CHECK_INDEX = len(tunnels.layout.DOMES)
+#: the cell's inside: half its length along x and its width along z, and
+#: its height; its floor this far above the base floor (clear of the sea
+#: floor, under water)
+CELL_HALF = (5, 3)
+CELL_HEIGHT = 5
+CELL_RISE = 8
 
 
-def check_site() -> tuple[Dome, Frame, dict[tuple[int, int, int], Cell]]:
-    """the dome the live checks work in, a frame over the way in from its
-    upstream mouth (f across it, -2 .. 2; r into the dome, -1 .. 1; h
-    above the floor, 1 .. 4) and that way's cells (``tunnels.way_in``)"""
-    dome = tunnels.layout.DOMES[CHECK_DOME]
-    tunnel = tunnels.layout.TUNNELS[dome.index - 1]
-    way = tunnels.way_in(dome, tunnel)
-    out = domes.outward(dome, tunnel)
-    x, y, z = way[1, 0, 1]
-    fr = Frame((x, y - 1, z), domes.across(out), (-out[0], -out[1]))
-    return dome, fr, way
+@dataclass(frozen=True)
+class CheckCell:
+    """the check cell: its frame (the middle of its floor; f along x, r
+    along z, h up), the glass box's corners and the air inside it"""
+
+    fr: Frame
+    low: Cell
+    high: Cell
+    inside: frozenset[Cell]
+
+    @property
+    def selector(self) -> str:
+        """selector arguments for what is in the cell"""
+        return dp.box_selector(self.low, self.high)
+
+
+def check_cell() -> CheckCell:
+    """the check cell, from the layout: in the middle of the ring"""
+    layout = tunnels.layout
+    xs = [d.centre[0] for d in layout.DOMES]
+    zs = [d.centre[1] for d in layout.DOMES]
+    origin = (
+        (min(xs) + max(xs)) // 2,
+        layout.BASE_FLOOR_Y + CELL_RISE,
+        (min(zs) + max(zs)) // 2,
+    )
+    fr = Frame(origin, (1, 0), (0, 1))
+    (lf, lr), h = CELL_HALF, CELL_HEIGHT
+    inside = frozenset(
+        fr.at(f, r, k)
+        for f in range(-lf, lf + 1)
+        for r in range(-lr, lr + 1)
+        for k in range(1, h + 1)
+    )
+    return CheckCell(
+        fr, fr.at(-lf - 1, -lr - 1, 0), fr.at(lf + 1, lr + 1, h + 1), inside
+    )
+
+
+def build_cell(ctx) -> list[str]:
+    """build the check cell where the sea is open (the problems if not)"""
+    cell = check_cell()
+    (x1, y1, z1), (x2, y2, z2) = cell.low, cell.high
+    corners = [(x, y, z) for x in (x1, x2) for y in (y1, y2) for z in (z1, z2)]
+    if not all(ctx.is_block(c, tunnels.WATER) for c in corners):
+        if not all(ctx.is_block(c, domes.GLASS) for c in corners):
+            return ["the check cell's site is not open sea"]
+    ctx.fill(cell.low, cell.high, domes.GLASS, "hollow")
+    return []
+
+
+def remove_cell(ctx) -> None:
+    """the check cell gone: what is in it, then the sea put back"""
+    cell = check_cell()
+    ctx.cmd(f"kill @e[type=!minecraft:player,{cell.selector}]")
+    ctx.fill(cell.low, cell.high, tunnels.WATER)
+    ctx.cmd(f"kill @e[type=minecraft:item,{cell.selector}]")
 
 
 def check_button() -> tuple[Cell, Cell, str]:
     """the check's button: its brass block, its cell and its block"""
-    _, fr, _ = check_site()
+    fr = check_cell().fr
     facing = fr.facing(1, 0)
     block = f"minecraft:stone_button[face=wall,facing={facing},powered=false]"
     return fr.at(-2, 0, 1), fr.at(-1, 0, 1), block
@@ -725,7 +782,6 @@ def check_button() -> tuple[Cell, Cell, str]:
 def add_check_functions(pack: dp.Pack) -> None:
     """what the live check of these fittings needs in the pack: a button
     read by ``button_line`` and a hint"""
-    dome, _, _ = check_site()
     _, cell, block = check_button()
     button_line(
         pack,
@@ -734,4 +790,4 @@ def add_check_functions(pack: dp.Pack) -> None:
         block,
         ["scoreboard players add #chk.pressed st 1"],
     )
-    hint(pack, dome.index, "check", "A hint, from the check.", 2)
+    hint(pack, CHECK_INDEX, "check", "A hint, from the check.", 2)

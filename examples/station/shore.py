@@ -28,7 +28,9 @@ as long as they run and release those they added (``loaded``).
 the dock, on its two sides nearest the shore), and once a second
 ``station:shore/boats`` puts a boat at any mooring that has none within
 ``BOAT_NEAR`` blocks: the rig's method (rig_mechanisms.py check 7). So a
-boat rowed away is replaced, and two players have a boat each at once.
+boat rowed away is replaced, and two players have a boat each at once;
+none is made while ``BOAT_CAP`` boats are about (rowing off and back
+again and again).
 Boats are tagged ``st.boat`` and carry the number of the reset they were
 made after (objective ``st.boat``); ``station:shore/reset`` raises the
 number, and a boat with an older one is killed as soon as it is seen, so a
@@ -87,6 +89,7 @@ from typing import Any
 import datapack as dp
 import domes
 import game
+import game_checks
 import station_layout as layout
 from domes import AIR, Cell
 
@@ -117,6 +120,7 @@ BOAT_OBJ = "st.boat"
 #: a mooring with no boat this near gets one
 BOAT_NEAR = 2.5
 BOAT_EVERY = 20  # ticks between looks at the moorings
+BOAT_CAP = 12  # no boat is made at a mooring while this many are about
 
 Step = tuple[int, int]
 FACING = {(0, 1): "south", (-1, 0): "west", (0, -1): "north", (1, 0): "east"}
@@ -785,6 +789,7 @@ def boat_functions(pack: dp.Pack) -> None:
     each = f"execute as {BOATS}"
     lines = [
         set_score("#boat.t", 0),
+        f"execute store result score #boats {OBJ} if entity {BOATS}",
         # a new boat takes the number of the last reset; an older one goes
         f"{each} unless score @s {BOAT_OBJ} = @s {BOAT_OBJ} "
         f"run scoreboard players operation @s {BOAT_OBJ} = {gen}",
@@ -793,7 +798,8 @@ def boat_functions(pack: dp.Pack) -> None:
     for name, aim in (("shore", layout.DOCK), ("dock", layout.SHORE_LANDING)):
         turn = yaw(moorings(name)[0], aim)
         lines.append(
-            f"execute at @e[type=minecraft:marker,tag=st.moor.{name}] "
+            f"execute if score #boats {OBJ} matches ..{BOAT_CAP - 1} "
+            f"at @e[type=minecraft:marker,tag=st.moor.{name}] "
             f"unless entity @e[type=#minecraft:boat,distance=..{BOAT_NEAR}] "
             f"run summon {BOAT} ~ ~ ~ "
             f'{{Tags:["st.boat"],Invulnerable:1b,Rotation:[{turn}f,0f]}}'
@@ -1000,6 +1006,8 @@ def lift_functions(pack: dp.Pack) -> None:
     tick += [
         # (a seat that came back with a player who logged off on it)
         f"execute if score {busy} matches 0 run kill {car}",
+        # (and a rider's tag kept by logging off mid-ride)
+        f"execute if score {busy} matches 0 run tag @a[tag={ON}] remove {ON}",
         f"execute if score {busy} matches 1 run function {pack.id('lift/run')}",
     ]
     pack.function("lift/tick", tick, tick=True)
@@ -1114,6 +1122,7 @@ def check_boats(ctx: Any, place: str) -> list[str]:
 
 def check_shore(ctx: Any) -> list[str]:
     """the jetty, the way from the spawn, the boats"""
+    game_checks.no_run(ctx)
     problems: list[str] = []
     obj = domes.CHECK_OBJECTIVE
     with loaded(ctx, shore_chunks()):
@@ -1152,6 +1161,7 @@ def check_shore(ctx: Any) -> list[str]:
 
 def check_dock(ctx: Any) -> list[str]:
     """the dock's blocks, its piles, the beacon lit, the boats"""
+    game_checks.no_run(ctx)
     problems = wrong(ctx, dock_blocks())
     piles = [c for c in dock_piles() if not ctx.is_block(c, LOG)]
     if piles:
@@ -1183,6 +1193,7 @@ def lift_state(f: int) -> dict[Cell, str]:
 def check_lift(ctx: Any) -> list[str]:
     """the lift's blocks, the shaft and the dome dry, the cage called and
     sent both ways with a rider"""
+    game_checks.no_run(ctx)
     problems: list[str] = []
     obj = domes.CHECK_OBJECTIVE
     rider = f"@e[type=minecraft:armor_stand,tag={RIDER}]"

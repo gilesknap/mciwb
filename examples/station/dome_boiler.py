@@ -1376,6 +1376,7 @@ def check(ctx: Any) -> list[str]:
     the entity as a hand would leave it. Leaves the room and its tunnel
     reset, dome 1 locked again and no stand-in behind.
     """
+    game_checks.no_run(ctx)
     dome = ctx.layout.DOMES[INDEX]
     tunnel = ctx.layout.TUNNELS[INDEX]
     place = room(dome)

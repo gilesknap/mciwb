@@ -1568,6 +1568,7 @@ def check(ctx: Any) -> list[str]:
     """work the Pump House in place: its blocks, the lever, the map, the
     clocks, the dial, the votes from its buttons, and the dome still dry.
     Resets the game before and after"""
+    game_checks.no_run(ctx)
     problems: list[str] = []
     expect = game_checks.expect
     game_checks.fresh(ctx)

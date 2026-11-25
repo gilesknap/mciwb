@@ -358,6 +358,7 @@ def waves(
     cap: int = 8,
     caps: dict[str, int] | None = None,
     near: int = 12,
+    inside: str = "",
 ) -> Waves:
     """
     Add a dome's wave functions (``dome/<n>/wave/...``, or under ``base``
@@ -366,10 +367,12 @@ def waves(
     stands in the cell); ``interval`` and ``first``: ticks between waves
     and before the first, at level 5; ``cap``: the most automatons alive
     in the dome; ``caps``: a kind's key -> the most of that kind alive;
-    ``near``: a spawn point is used only with a player this close.
+    ``near``: a spawn point is used only with a player this close;
+    ``inside``: where the leash keeps them (selector arguments; the
+    dome's sphere if not given).
     """
     n = dome_index
-    dome = domes.layout.DOMES[n]
+    inside = inside or domes.sphere(domes.layout.DOMES[n])
     base = base or f"dome/{n}/wave"
     caps = caps or {}
     left, room, kroom = f"#wave.left {OBJ}", f"#wave.room {OBJ}", f"#wave.kroom {OBJ}"
@@ -443,7 +446,7 @@ def waves(
             f"execute if score {clock} matches ..0 run function {pack.id(f'{base}/go')}",
         ],
     )
-    pack.function(f"{base}/leash", leash_lines(n, points, domes.sphere(dome)))
+    pack.function(f"{base}/leash", leash_lines(n, points, inside))
     return Waves(
         arm=f"function {pack.id(f'{base}/arm')}",
         tick=f"function {pack.id(f'{base}/tick')}",
@@ -455,21 +458,27 @@ def waves(
 # --------------------------------------------------------------- fight services
 
 
-def sweep_lines(dome: Any) -> list[str]:
+def sweep_lines(where: Any) -> list[str]:
     """lines that remove the arrows stuck in things and the experience
-    orbs in a dome"""
-    here = domes.sphere(dome)
+    orbs in a dome (or where selector arguments say)"""
+    here = where if isinstance(where, str) else domes.sphere(where)
     return [
         f"kill @e[type=#minecraft:arrows,nbt={{inGround:1b}},{here}]",
         f"kill @e[type=minecraft:experience_orb,{here}]",
     ]
 
 
+def clear_round_line(dome_index: int, cell: domes.Cell) -> str:
+    """the line that removes a dome's automatons within ``CLEAR_ROUND``
+    blocks of a cell"""
+    x, y, z = cell
+    near = f"x={x + 0.5},y={y},z={z + 0.5},distance=..{CLEAR_ROUND}"
+    return f"execute as {selector(dome_index, near)} run function station:mob/remove"
+
+
 def respawn_lines(dome: Any) -> list[str]:
     """lines that clear the automatons from round a dome's entrance spot"""
-    x, y, z, _ = domes.entrance(dome)
-    near = f"x={x + 0.5},y={y},z={z + 0.5},distance=..{CLEAR_ROUND}"
-    return [f"execute as {selector(dome.index, near)} run function station:mob/remove"]
+    return [clear_round_line(dome.index, domes.entrance(dome)[:3])]
 
 
 @dataclass
@@ -552,24 +561,22 @@ def bar(
 
 
 def check_points() -> list[domes.Cell]:
-    """the spawn points of the check's waves: in the ways in from the two
-    mouths of the check's dome (``fittings.check_site``), far apart"""
+    """the spawn points of the check's waves: at the two ends of the check
+    cell (``fittings.check_cell``), more than ``CLEAR_ROUND`` apart"""
     import fittings
-    import tunnels
 
-    dome, _, way = fittings.check_site()
-    far = tunnels.way_in(dome, domes.layout.TUNNELS[dome.index])
-    return [way[1, 0, 1], far[1, 0, 1]]
+    fr = fittings.check_cell().fr
+    f = fittings.CELL_HALF[0] - 1
+    return [fr.at(-f, 0, 1), fr.at(f, 0, 1)]
 
 
 def check_waves(pack: dp.Pack) -> Waves:
     """the waves the live check casts (``check/wave/...``)"""
     import fittings
 
-    dome, _, _ = fittings.check_site()
     return waves(
         pack,
-        dome.index,
+        fittings.CHECK_INDEX,
         check_points(),
         base="check/wave",
         interval=40,
@@ -577,26 +584,39 @@ def check_waves(pack: dp.Pack) -> Waves:
         cap=4,
         caps={RIVETER.key: 1},
         near=3,
+        inside=fittings.check_cell().selector,
     )
 
 
 def check(ctx: Any) -> list[str]:
     """
-    Live, in an empty dome (the last but one of the ring, away from the
-    built rooms): an automaton summoned and dressed is as the plan wants
-    it and scaled by the level's values; it drops nothing; the count
-    follows the dome's form and the level; the automatons go when the
-    dome empties. Players are stood in for (``game_checks``). Not proved:
-    that automatons leave each other alone and fight a player, which
-    needs a player.
+    Live, in the check cell (``fittings.check_cell``, built and removed
+    here): an automaton summoned and dressed is as the plan wants it and
+    scaled by the level's values; it drops nothing; the count follows the
+    dome's form and the level (the form and the number in the dome set by
+    hand: the scan that sets them is ``game_checks.check_players``'s);
+    ``remove_line`` removes them (that the core runs it when a dome
+    empties is in the unit test). Not proved: that automatons leave each
+    other alone and fight a player, which needs a player.
     """
+    import fittings
+
+    n = fittings.CHECK_INDEX
+    cell = fittings.check_cell()
+    if problems := fittings.build_cell(ctx):
+        return problems
+    try:
+        return _check(ctx, n, cell)
+    finally:
+        fittings.remove_cell(ctx)
+
+
+def _check(ctx: Any, n: int, cell: Any) -> list[str]:
     import game_checks
 
-    dome = ctx.layout.DOMES[-2]
-    n = dome.index
     problems: list[str] = []
-    x, y, z, _ = domes.entrance(dome)
-    spot = domes.middle((x, y, z))
+    spot = domes.middle(cell.fr.at(0, 0, 1))
+    items = f"@e[type=minecraft:item,{cell.selector}]"
     mine = selector(n, "limit=1")
 
     def expect(what: str, got: Any, want: Any) -> None:
@@ -617,7 +637,6 @@ def check(ctx: Any) -> list[str]:
         return float(m.group(1)) if m else None
 
     ctx.cmd(f"kill @e[tag={dome_tag(n)}]")
-    game_checks.clear_stand_ins(ctx)
     saved = {
         name: ctx.score(name)
         for name in ("#diff.health", "#diff.damage", "#diff.count")
@@ -655,47 +674,40 @@ def check(ctx: Any) -> list[str]:
     expect("its helmet", "copper_helmet" in helmet, True)
     expect("its name", "Stoker" in ctx.data(f"entity {mine} CustomName"), True)
     # killed: nothing drops
-    ctx.cmd(f"kill @e[type=minecraft:item,{domes.sphere(dome)}]")
+    ctx.cmd(f"kill {items}")
     ctx.cmd(f"kill {selector(n)}")
     ctx.advance(30)
-    expect(
-        "items dropped by a killed automaton",
-        ctx.count(f"@e[type=minecraft:item,{domes.sphere(dome)}]"),
-        0,
-    )
+    expect("items dropped by a killed automaton", ctx.count(items), 0)
 
-    # the count: by the dome's form and the level
-    ctx.set_score("#diff.count", 100)
+    # the count: by the dome's form, the number in it and the level
     args = f"{{dome:{n},solo:2,duo:3,more:1}}"
-    game_checks.stand_in(ctx, "st.a1", n)
-    ctx.function("mob/count", args)
-    expect("the count, one in the dome", ctx.score("#mob.n"), 2)
-    game_checks.stand_in(ctx, "st.a2", n)
-    ctx.function("mob/count", args)
-    expect("the count, two in the dome", ctx.score("#mob.n"), 3)
-    game_checks.stand_in(ctx, "st.a3", n)
-    ctx.set_score("#diff.count", 160)
-    ctx.function("mob/count", args)
-    expect("the count, three in the dome at 160%", ctx.score("#mob.n"), 6)
+    for occ, form, percent, want_n in ((1, 1, 100, 2), (2, 2, 100, 3), (3, 2, 160, 6)):
+        ctx.set_score(f"#occ{n}", occ)
+        ctx.set_score(f"#form{n}", form)
+        ctx.set_score("#diff.count", percent)
+        ctx.function("mob/count", args)
+        expect(
+            f"the count, {occ} in the dome at {percent}%", ctx.score("#mob.n"), want_n
+        )
     for line in room_lines(n, 4):
         ctx.cmd(line)
     got = {name: ctx.score(name) for name in ("#mob.alive", "#mob.room", "#mob.n")}
     expect(
         "a cap of 4, none alive", got, {"#mob.alive": 0, "#mob.room": 4, "#mob.n": 4}
     )
+    ctx.cmd(f"scoreboard players reset #occ{n} {OBJ}")
+    ctx.cmd(f"scoreboard players reset #form{n} {OBJ}")
 
-    # they go when the dome empties
+    # removed
     for _ in range(3):
         ctx.cmd(summon("minecraft:skeleton", "Riveter", spot, n, IRON))
     ctx.cmd(dress_line(n, 20, 20))
     ctx.cmd(alive_line(n))
     expect("three summoned", ctx.score("#mob.alive"), 3)
-    ctx.advance(game_checks.SCAN)
-    expect("still there with players in the dome", ctx.count(selector(n)), 3)
-    game_checks.clear_stand_ins(ctx)
-    ctx.advance(game_checks.SCAN)
-    expect("left when the dome emptied", ctx.count(selector(n)), 0)
-    ctx.cmd(f"kill @e[type=minecraft:item,{domes.sphere(dome)}]")
+    ctx.cmd(remove_line(n))
+    ctx.advance(2)
+    expect("removed", ctx.count(selector(n)), 0)
+    expect("items left after they were removed", ctx.count(items), 0)
     for name, value in saved.items():
         if value is not None:
             ctx.set_score(name, value)
@@ -704,19 +716,33 @@ def check(ctx: Any) -> list[str]:
 
 def check_fights(ctx: Any) -> list[str]:
     """
-    Live, in the check's dome: the difficulty read; waves cast only where
-    a player is, up to the cap and a kind's cap, refilled after a kill;
-    the leash and the fence; a death answered (the entrance cleared, the
-    score put back); the sweep; a dome's bossbar. Players are stood in
-    for: a stand-in's death is its ``st.died`` set by hand, so that a
-    real death is found and the Resistance given is not proved.
+    Live, in the check cell (``fittings.check_cell``, built and removed
+    here): the difficulty read; waves cast only where a player is, up to
+    the cap and a kind's cap, refilled after a kill; the leash and the
+    fence; a death answered (the score put back) and the clearing round a
+    spot that the core runs at a dome's entrance on a respawn; the sweep;
+    a dome's bossbar. Players are stood in for: a stand-in's death is its
+    ``st.died`` set by hand, so that a real death is found and the
+    Resistance given is not proved. The cell is no dome: that the core
+    clears round the entrance of the dome the player is in is in the unit
+    test.
     """
     import fittings
-    import game_checks
-    import tunnels
 
-    dome, _, way = fittings.check_site()
-    n = dome.index
+    cell = fittings.check_cell()
+    if problems := fittings.build_cell(ctx):
+        return problems
+    try:
+        return _check_fights(ctx, fittings.CHECK_INDEX, cell)
+    finally:
+        fittings.remove_cell(ctx)
+
+
+def _check_fights(ctx: Any, n: int, cell: Any) -> list[str]:
+    import fittings
+    import game_checks
+
+    fr = cell.fr
     problems: list[str] = []
     points = check_points()
     scratch = dp.Pack(stamp="check")
@@ -737,7 +763,7 @@ def check_fights(ctx: Any) -> list[str]:
     expect("the difficulty (Easy is 1)", ctx.score("#difficulty"), 1)
     # -- waves: a player at the first spawn point only
     game_checks.stand_at(ctx, "st.a1", domes.middle(points[0]))
-    saved = ctx.score("#diff.timer")  # (coming in has just set the level's)
+    saved = ctx.score("#diff.timer")
     ctx.set_score("#diff.timer", 150)
     ctx.cmd(lines.arm)
     expect("the time between waves at 150%", ctx.score(f"#wave{n}.gap"), 60)
@@ -768,7 +794,7 @@ def check_fights(ctx: Any) -> list[str]:
     expect("refilled after a kill", alive(f"tag={STOKER.tag}"), 3)
     # nobody near either point: nothing cast
     ctx.cmd(remove_line(n))
-    game_checks.stand_at(ctx, "st.a1", domes.middle(dome.floor_centre, 1))
+    game_checks.stand_at(ctx, "st.a1", domes.middle(fr.at(0, fittings.CELL_HALF[1])))
     ctx.cmd(lines.cast)
     expect("cast with nobody by a spawn point", alive(), 0)
     # at the second point: cast there
@@ -777,75 +803,71 @@ def check_fights(ctx: Any) -> list[str]:
     got = {"all": alive(), "at the second point": alive(f"tag={home_tag(1)}")}
     expect("cast where the player is", got, {"all": 4, "at the second point": 4})
 
-    # -- the leash and the fence
-    tunnel = domes.layout.TUNNELS[n]
-    out = domes.middle(tunnels.at(tunnel, tunnel.length // 2, 0, 1))
+    # -- the leash (out of the cell, into the sea above it) and the fence
+    out = domes.middle(fr.at(0, 0, fittings.CELL_HEIGHT + 3))
     one = selector(n, "limit=1,sort=nearest")
     ctx.cmd(f"execute positioned {domes.middle(points[1])} run tp {one} {out}")
     ctx.cmd(lines.leash)
-    expect("back from the tunnel on the leash", alive(near(points[1], 6)), 4)
-    far = tunnels.way_in(dome, tunnel)
-    low, high = min(far.values()), max(far.values())
-    inside = domes.middle(dome.floor_centre, 1)
-    ctx.cmd(f"tp {selector(n)} {inside}")
+    expect("back from the sea on the leash", alive(near(points[1], 6)), 4)
+    (px, py, pz) = points[1]
+    low, high = (px - 1, py, pz - 1), (px + 1, py + 2, pz + 1)
+    ctx.cmd(f"tp {selector(n)} {domes.middle(fr.at(0, 0, 1))}")
     for line in fence_lines(n, points, low, high):
         ctx.cmd(line)
     expect("back inside the fence", alive(near(points[1], 1)), 4)
 
-    # -- a death: the entrance spot cleared, the score put back
+    # -- a death: the score put back by the core, and a spot cleared
     ctx.cmd(remove_line(n))
-    x, y, z, _ = domes.entrance(dome)
-    ctx.cmd(summon_kind(STOKER, domes.middle((x, y, z)), n))
+    spot = points[0]
+    ctx.cmd(summon_kind(STOKER, domes.middle(spot), n))
     ctx.cmd(summon_kind(STOKER, domes.middle(points[1]), n))
     ctx.cmd(dress_kind_line(n, STOKER))
     ctx.cmd(f"execute as {selector(n)} run data merge entity @s {{NoAI:1b}}")
-    game_checks.stand_in(ctx, "st.a1", n)
+    game_checks.stand_at(ctx, "st.a1", domes.middle(fr.at(0, 0, 1)))
     ctx.cmd("scoreboard players set @e[tag=st.a1] st.died 1")
     ctx.advance(3)
+    ctx.cmd(clear_round_line(n, spot))
     got = {
         "died": ctx.score("@e[tag=st.a1,limit=1]", "st.died"),
-        "by the entrance": alive(near((x, y, z), CLEAR_ROUND)),
-        "across the dome": alive(near(points[1], 3)),
+        "by the spot": alive(near(spot, CLEAR_ROUND)),
+        "across the cell": alive(near(points[1], 3)),
     }
-    expect(
-        "a death answered", got, {"died": 0, "by the entrance": 0, "across the dome": 1}
-    )
+    expect("a death answered", got, {"died": 0, "by the spot": 0, "across the cell": 1})
 
     # -- the sweep
-    spot = domes.middle(points[0], 1)
-    ctx.cmd(f"summon minecraft:arrow {spot} {{inGround:1b,NoGravity:1b}}")
-    ctx.cmd(f"summon minecraft:experience_orb {spot} {{NoGravity:1b}}")
+    spot_up = domes.middle(points[0], 1)
+    ctx.cmd(f"summon minecraft:arrow {spot_up} {{inGround:1b,NoGravity:1b}}")
+    ctx.cmd(f"summon minecraft:experience_orb {spot_up} {{NoGravity:1b}}")
     kinds = "type=#minecraft:arrows", "type=minecraft:experience_orb"
-    before = [ctx.count(f"@e[{k},{domes.sphere(dome)}]") for k in kinds]
-    for line in sweep_lines(dome):
+    before = [ctx.count(f"@e[{k},{cell.selector}]") for k in kinds]
+    for line in sweep_lines(cell.selector):
         ctx.cmd(line)
-    after = [ctx.count(f"@e[{k},{domes.sphere(dome)}]") for k in kinds]
+    after = [ctx.count(f"@e[{k},{cell.selector}]") for k in kinds]
     expect("an arrow and an orb, then swept", (before, after), ([1, 1], [0, 0]))
 
-    # -- a dome's bossbar (unless the dome's own room has one)
-    if f"dome/{n}/bar/show" not in ctx.pack.functions:
-        b = bar(scratch, n, "Charge", 50)
-        for line in scratch.functions[f"dome/{n}/bar/load"]:
-            ctx.cmd(line)
-        hidden = ctx.cmd(f"bossbar get {b.id} visible", "currently")
-        for line in scratch.functions[f"dome/{n}/bar/show"]:
-            ctx.cmd(line)
-        ctx.set_score("#chk.bar", 20)
-        ctx.cmd(b.value_line(f"#chk.bar {OBJ}"))
-        shown = ctx.cmd(f"bossbar get {b.id} visible", "currently")
-        value = ctx.cmd(f"bossbar get {b.id} value", "has a value")
-        for line in scratch.functions[f"dome/{n}/bar/hide"]:
-            ctx.cmd(line)
-        gone = ctx.cmd(f"bossbar get {b.id} visible", "currently")
-        got = (
-            "hidden" in hidden,
-            "visible" in shown,
-            "value of 20" in value,
-            "hidden" in gone,
-        )
-        expect("the bar hidden, shown at 20, hidden", got, (True, True, True, True))
-        expect("its name", "Charge" in value, True)
-        ctx.cmd(f"bossbar remove {b.id}")
+    # -- a dome's bossbar
+    b = bar(scratch, n, "Charge", 50)
+    for line in scratch.functions[f"dome/{n}/bar/load"]:
+        ctx.cmd(line)
+    hidden = ctx.cmd(f"bossbar get {b.id} visible", "currently")
+    for line in scratch.functions[f"dome/{n}/bar/show"]:
+        ctx.cmd(line)
+    ctx.set_score("#chk.bar", 20)
+    ctx.cmd(b.value_line(f"#chk.bar {OBJ}"))
+    shown = ctx.cmd(f"bossbar get {b.id} visible", "currently")
+    value = ctx.cmd(f"bossbar get {b.id} value", "has a value")
+    for line in scratch.functions[f"dome/{n}/bar/hide"]:
+        ctx.cmd(line)
+    gone = ctx.cmd(f"bossbar get {b.id} visible", "currently")
+    got = (
+        "hidden" in hidden,
+        "visible" in shown,
+        "value of 20" in value,
+        "hidden" in gone,
+    )
+    expect("the bar hidden, shown at 20, hidden", got, (True, True, True, True))
+    expect("its name", "Charge" in value, True)
+    ctx.cmd(f"bossbar remove {b.id}")
 
     ctx.cmd(remove_line(n))
     game_checks.clear_stand_ins(ctx)
