@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>mciwb.builders &#8212; mciwb 0.9.2.dev116+g694358fa6 documentation</title>
+    <title>mciwb.builders &#8212; mciwb 0.9.2.dev117+gad1ebd723 documentation</title>
   
   
   
@@ -40,7 +40,7 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be" />
 
-    <script src="../_static/documentation_options.js?v=2b441086"></script>
+    <script src="../_static/documentation_options.js?v=324fea49"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -771,7 +771,7 @@ bounding box of every block placed.</p>
 <span class="sig-name descname"><span class="pre">setblock</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pos</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Vec3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">block</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Item</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="#mciwb.builders.BlockState" title="mciwb.builders.blockstate.BlockState"><span class="pre">BlockState</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></span><a class="reference internal" href="../_modules/mciwb/builders/placer.html#Placer.setblock"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mciwb.builders.Placer.setblock" title="Link to this definition">#</a></dt>
 <dd><p>Set one block, e.g. <code class="docutils literal notranslate"><span class="pre">placer.setblock(pos,</span> <span class="pre">&quot;oak_stairs[half=top]&quot;)</span></code>.
 The block may carry block entity data, e.g. a sign’s text:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">text</span> <span class="o">=</span> <span class="s1">'''{front_text:{messages:['"Hi"','""','""','""']}}'''</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">text</span> <span class="o">=</span> <span class="s1">'{front_text:{messages:["Hi","","",""]}}'</span>
 <span class="n">placer</span><span class="o">.</span><span class="n">setblock</span><span class="p">(</span><span class="n">pos</span><span class="p">,</span> <span class="s2">"oak_sign[rotation=4]"</span> <span class="o">+</span> <span class="n">text</span><span class="p">)</span>
 </pre></div>
 </div>
