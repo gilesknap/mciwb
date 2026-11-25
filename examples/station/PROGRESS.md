@@ -13,7 +13,7 @@ played it: each entry says which.
 | 0 | Ground work: survey, layout, mechanisms proved in a rig, datapack delivery, the skeleton | done |
 | 1 | The playable slice: shore, boat, dock, lift, start dome, Boiler Room, its tunnel, reset, recall, kit | built and played once: the way in, the Pump House, the Boiler Room, tunnels 0 and 1, the Gearworks' empty shell. The owner's first play-test (25 Nov 2026) asked for changes: see "The first play-test" |
 | 2 | Gearworks and the Flooded Dome | the shells, tunnels 2 and 3 and a stub (a BYPASS lever) in each dome are built; the rooms are designed, not built |
-| 3 | Foundry and the Signal Room | shells, tunnels 4 and 5; the Signal Room built and checked live (see "The Signal Room (dome 5): findings"), not yet played; the Foundry a stub |
+| 3 | Foundry and the Signal Room | shells, tunnels 4 and 5; the Signal Room and the Foundry built and checked live (see "The Signal Room (dome 5): findings" and "The Foundry (dome 4): findings"), not yet played |
 | 4 | Clockwork Maze, the boss dome, the return tunnel, the win, the Wall of Fame | as stage 2: shells, tunnels 6 and 7, stubs; the win is the core's and is checked; the Wall of Fame's sign is not written |
 | 5 | Polish from the play-tests, the guide, the docs image, the PR | not started |
 
@@ -285,6 +285,12 @@ What RCON cannot stand in for. Each stage adds to the list as it builds.
 | 3 | The mast in front of the board: from the entrance and down the aisle's middle it hides the middle of the words and the LINE lamps (seen from the desks). Leave it, or a see-through lower mast, or the words moved? |  no |
 | 3 | The Signal Room with two: a wing desk each, "the desks change over when this round is done" understood, a partner arriving mid-answer; at levels 9 and 10 the walk between wings in the 6 s a key |  no |
 | 3 | The Signal Room as a place: the climb (stairs, bridges, catwalk, loft; a fall from the loft is 10 blocks), headroom, light under the wings and behind the houses; the racks, sweep and recorder busy and plainly not to be worked, the racks' bulbs clicking under a puzzle played by ear; "NO ANSWER: PRESS CALL" after walking away understood; a level voted in mid-room keeps the rounds won; the keys as an instrument once solved |  no |
+| 3 | The Foundry alone, Easy, level 5: is 160 s of charge plus three trips fair and fun for a 14 year old, or too long? Do the plaque and the log say enough to find the MAIN SWITCH and then each breaker (A is by the north-west glass, far from everything)? |  no |
+| 3 | Automatons in the Foundry with a real player: do Stokers and Slag Husks come out of the moulds at a player they cannot see, cross the floor, climb the open stairs, walk the grating; do Riveters shoot from the loft or walk onto the gallery; can anything climb the ladders to the gantry; do they burn at noon under the glass? If they stand in the moulds the fight is only a timer |  no |
+| 3 | The Foundry's breakers by hand: a lamp following its lever within half a second; a trip throwing the lever back in front of you; the red "OUT" label seen through gratings and the mast from every level; with two players, one title naming both breakers of a pair ("BREAKERS A AND B TRIPPED") |  no |
+| 3 | Leaving the Foundry mid-fight: back within 3 s nothing changes; after that the charge falls to the last quarter, a breaker left out is still out, "the charge is where you left it" and 5 s to the fight; a level voted in the Pump House meanwhile takes force when it goes on |  no |
+| 3 | The Foundry as a place: the stairs now climb straight onto the gallery (no step up at the top); the stamp battery's cage now has a grating lid (hop the rail onto it and walk back: is that fine, or should the rail be higher?); light under the gallery and in the moulds; the ladle as a ladle, its pour; the mast read as a progress bar from the floor, gallery and top deck; sounds (bell, thunder) too loud or too often; the log's fourth page fits ("O.F." may be cut) |  no |
+| 3 | Dying in the Foundry: a cell lost (never below the quarter), no automaton on the respawn spot, the shield against Riveters |  no |
 
 ## Decisions and findings
 
@@ -1377,6 +1383,78 @@ without error and no more. They are in the play-test list.
 - **The shore**: the lift's `st.lift.on` is taken off everyone while the
   lift is idle (a rider who logged off mid-ride kept it); no boat is made
   while 12 are about (`BOAT_CAP`). Neither case was made to happen live.
+
+### The Foundry (dome 4): findings
+
+`dome_foundry.py` (its docstring has the fight and the functions), built
+live with `dome_4_inside` over the shell already there; the BYPASS stub
+is gone. A casting floor with a dais and the mast (twelve cells of four
+lamps, the MAIN SWITCH on brass at its foot), a horseshoe gallery 6 up
+reached by two stairs, a gantry 12 up reached by two ladders, two moulds
+the automatons are cast in, the cupola with the rivet loft, chimneys,
+the stamp battery (the shared torch clock, caged and lidded) and a ladle
+on a crane rail. Throw the switch; the mast charges while breakers A
+(floor), B (gallery) and C (top deck) are all closed; a breaker trips at
+each quarter (solo one at a time, duo a pair on two levels); waves from
+the moulds and the loft every 20 s at level 5; the twelfth cell solves
+it. 160 s of charge at level 5 (133 s at 1, 214 s at 10).
+
+**What the live check (`CHECKS=foundry`) proves**, with stand-ins and
+levers set by command: every block as built and again after a reset from
+a scrambled duo fight; the room's 9 entities and the logbook; the stamp
+battery's lamps and pistons seen both ways; the ladle parked with nobody
+in and travelling with someone in; Peaceful refused (the difficulty put
+back as found); the switch starting the fight and held over; the moulds'
+lamps before a wave and dark after; the first wave's kinds, dressed, in
+both moulds, follow range 48; the charge climbing, standing with a
+breaker opened by hand and going on when closed; A tripping at the first
+quarter, its label red and `see_through`; eight waves with nothing killed
+filling each kind to its cap and no more; Slag Husks in a third-quarter
+wave; the leash; a death costing a cell and never going below the
+quarter; duo (B and C trip together) and one leaving (the relief relay);
+the checkpoint (out for a second changes nothing; after 3 s the charge at
+the quarter, a breaker left out still out, no automatons, the bar hidden;
+back in, a level voted meanwhile taken, the charge standing until the
+breaker is closed, then a wave); the end (mast and bus bar lit, tunnel 4
+drained, dome 5 opened, the shell intact); a second entry casting
+nothing; an idle room left put back; the values at levels 1 and 10.
+Live: `PASS foundry` on the first run after the review fixes; then the
+whole verify (see below).
+
+**Changed from the review**:
+
+- F1 (would break a game): the battery's cage on the north mould's roof
+  was a pit: a player who hopped the gallery's one-block rail could drop
+  in and not get out, and nothing in an idle room kills or recalls. Now a
+  lid of copper grating level with the die bar (`MOULD_ROOF + 3`), and
+  `walk_problems` searches for pits (`pits`: falls of any height, ladders
+  both ways, rail tops to stand on; every cell reached must lead back to
+  the entrance). Without the lid it finds the review's 11 cells; the unit
+  test checks it does.
+- F2: in the duo form the second breaker's title replaced the first's.
+  Now `trip_stage` sends one title naming the stage's breakers.
+- F3: leaving no longer closes the breakers. Before, stepping out for 3 s
+  answered every trip and cleared the room, so the fight could be won from
+  the doorway. The charge still falls only to the last quarter, so leaving
+  costs no more than the stage in progress (the core's rule); a returning
+  player closes what is out (the relief relay still closes the second of
+  a pair when one of two is left).
+- F4: the stairs had five treads, a full block's step below the gallery
+  deck. Now six (`TREADS = DECK_H`), the foot one nearer the mast.
+- F5: a level voted while the Foundry was left changed the automatons
+  (the core's `mob/count`) but not the room's charge rate, wave gap or
+  death cost. Now `resume` (a safe point) takes the level's values.
+- F6 (debt, one line): a solved room puts its logbook back.
+- Nits: no "closed" sound on the first draw after a reset; the duo chat
+  line reworded; the stand-in tags are `st.fd1`, `st.fd2`.
+- Contract: the check's first line is `game_checks.no_run`; the level is
+  saved and put back with `save_level`/`restore_level` whatever happens;
+  nothing uses the old check site.
+- **Not done** (debt, more than a line each): F7 (the relief relay closes
+  a fixed breaker and says so even if it was closed); the death message
+  when nothing is lost; `#fdy.live` read only by the check; the three
+  `waves` calls used for `cast` only (15 unused functions); the check not
+  refusing when `#d4` is 2 (the verify resets the game first).
 
 ### The Signal Room (dome 5): findings
 
