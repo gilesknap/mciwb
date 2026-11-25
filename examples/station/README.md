@@ -64,10 +64,11 @@ world, the layout and the datapack under construction.
 | `start_dome`, `dome_1` ... `dome_7` | each dome's empty, lit shell on its foundation, its mouths plugged with windowed brass doors |
 | `lift` | the lift from the dock down into the start dome (after that dome's shell, which would wipe its shaft) |
 | `start_dome_inside`, `dome_1_inside` | the Pump House; the Boiler Room |
+| `dome_3_inside` | the Flooded Dome (after `datapack`: it ends with the pack's `dome/3/reset`) |
 | `dome_4_inside` | the Foundry |
 | `dome_5_inside` | the Signal Room |
 | `dome_7_inside` | the Engine (phase 1; phase 2, the Master, behind `PHASE_2` in `dome_boss.py`, off) |
-| `dome_2_inside` ... `dome_6_inside` (but 4 and 5) | not built yet (a stub: a BYPASS lever) |
+| `dome_2_inside`, `dome_6_inside` | not built yet (a stub: a BYPASS lever) |
 | `tunnel_0` ... `tunnel_7` | each tunnel, flooded and shut, with its pump engine; the two that slope have stairs. `STAGES=tunnels` is short for all eight |
 
 A stage that is not written says so and does nothing: the list is the
@@ -252,7 +253,7 @@ since the core's checks reset the game before and after.
 | `fights` | the difficulty read; waves cast where a player is, to the cap, refilled; leash and fence; a death answered; the sweep; a dome's bossbar |
 | `fittings` | the torch clock, its lamp chase and pistons seen running; a gauge; a lever put back and held; a button read once; a plate that wants a player; a display; a lent item; a hint |
 | `ring` | the whole ring's progress walked by a stand-in from the master lever to the win, each stub's BYPASS lever thrown, and the reset |
-| `shore`, `dock`, `lift`, `start_dome`, `boiler_room`, `foundry`, `signal_room`, `boss` | the modules' own checks (see each module) |
+| `shore`, `dock`, `lift`, `start_dome`, `boiler_room`, `flooded_dome`, `foundry`, `signal_room`, `boss` | the modules' own checks (see each module) |
 
 The checks of the parts not built yet are listed as `TODO`, and a TODO is
 not a pass. Players are stood in for by armour stands

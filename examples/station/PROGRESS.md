@@ -12,7 +12,7 @@ played it: each entry says which.
 | --- | --- | --- |
 | 0 | Ground work: survey, layout, mechanisms proved in a rig, datapack delivery, the skeleton | done |
 | 1 | The playable slice: shore, boat, dock, lift, start dome, Boiler Room, its tunnel, reset, recall, kit | built and played once: the way in, the Pump House, the Boiler Room, tunnels 0 and 1, the Gearworks' empty shell. The owner's first play-test (25 Nov 2026) asked for changes: see "The first play-test" |
-| 2 | Gearworks and the Flooded Dome | the shells, tunnels 2 and 3 and a stub (a BYPASS lever) in each dome are built; the rooms are designed, not built |
+| 2 | Gearworks and the Flooded Dome | the shells, tunnels 2 and 3 are built; the Flooded Dome built and checked live (see "The Flooded Dome (dome 3): findings"), not yet played; the Gearworks a stub (a BYPASS lever) |
 | 3 | Foundry and the Signal Room | shells, tunnels 4 and 5; the Signal Room and the Foundry built and checked live (see "The Signal Room (dome 5): findings" and "The Foundry (dome 4): findings"), not yet played |
 | 4 | Clockwork Maze, the boss dome, the return tunnel, the win, the Wall of Fame | shells, tunnels 6 and 7; the Engine (dome 7) built and checked live with its phase 2 (the Master) switched off, see "The Engine (dome 7): findings"; the Maze a stub; the win is the core's and is checked, the trophy sign is given at the win, nobody has written one |
 | 5 | Polish from the play-tests, the guide, the docs image, the PR | not started |
@@ -297,6 +297,11 @@ What RCON cannot stand in for. Each stage adds to the list as it builds.
 | 4 | The Engine with two: A and B only together (the amber lamp blinking at the side that is ready, the chat hint), a partner in the pavilion not counting, one dying or leaving; the form's chat line at each change (too chatty?) |  no |
 | 4 | The Engine as a place: gauges, amber lamps and the drum's telltales read from each deck and the arch (through two decks of grating); headroom under main A's pipe and the gallery; the governor turning; the cylinders seen through their cages and stopping at the win; the heartbeat (too often?); the log's four pages fit; leaving for 3 s throws open levers back (the cheapest way to clear the automatons: does a child find it?) |  no |
 | 4 | Phase 2 (switched off): the Master on his ravager at the test bench first; then, switched on, the breach, the fight, the columns as cover, the steam on the high level |  no |
+| 2 | The Flooded Dome alone, Easy, level 5: the first sight through the dam (the standpipe's gauge readable at 17 blocks through glass and water; the cabins and the stairs going down into the water seen); finding pump A without the hint; the sluice line read as a countdown; the lever throwing itself back in front of you; are 22 / 32 / 28 s fair; at level 10 is "throw it twice" understood |  no |
+| 2 | The Flooded Dome's swims: stage B down the well, through the culvert, up the hatch with the gate open and shut, air left, the ladder out of the well; stage C the dive from the lower deck to the bars at the cabin's foot and up the hatch ladder, finding the gate; getting out of the water at every level (the two long ladders, each flight, a deck level with the surface); being in the water as a layer goes (any push, damage or suffocation); nothing spawns in the basin (fish, squid, drowned) |  no |
+| 2 | The Flooded Dome's gates with real bodies: never shutting on you, in its own cells or beyond it; standing against shut bars from outside does not open them; hands on the levers and a player's weight on each plate; the pump lever put back if moved |  no |
+| 2 | The Flooded Dome with two: holder and partner in sight at A, B and C (from plate B only a sliver of gate B shows: review 12); "Hold here. Swap next time." understood; one logging off mid-swim; the second arriving mid-clock (the plate comes only when the spring has run out); is holding three times dull |  no |
+| 2 | The Flooded Dome as a place: the crown (about 10 walkable cells: cramped for two?); the one-block bar rails, which can be hopped (into the tide clock's open cage from the dam's crest, onto the beam engine past the fence's ends: a repeater clicked there can stop a clock for good, review 4); falls from the high walk and the crown once dry (up to 16 blocks); lag when a stage ends or a player enters (about 1000 fills in one tick); titles, the bell, the gate and pump sounds, the bubbles, the drowned lamps under water, the tide clock's noise in the hall; the log's four pages fit; plaque and signs the right way round; labels readable under water; time, about 8 minutes for a first-time pair |  no |
 
 ## Decisions and findings
 
@@ -1615,6 +1620,80 @@ whole verify, 45/45 passed (3 TODO: the domes not built yet).
 - **Not done**: the review's other debt and nits (Slag Husks never cast
   in the check; the log still names the Master with phase 2 off; "The
   Engine watches" at every entry; `form/set`'s chat at every change).
+
+### The Flooded Dome (dome 3): findings
+
+`dome_flooded.py` (its docstring has the puzzle and the functions), built
+live with `dome_3_inside` over the shell already there; the BYPASS stub
+is gone. A glass dam a few steps in holds a basin 11 layers deep; the
+entry hall behind it stays dry. A copper standpipe with a gauge of lamps
+rises out of the flood; a stair beside the dam climbs to a high walk,
+bridges, a balcony round the pipe, the crown (a caged beam engine) and an
+east platform. Under the water: a machine deck, a lower deck, three pump
+houses, a culvert and the floor, with tunnel 3's airlock at the bottom.
+Three stages, one rule: a pump moves water only while its sluice is open,
+and the sluice's control is never by the pump. Solo the control is a
+lever on a spring (22 / 32 / 28 s at level 5, counted down by eight
+lamps); duo a plate one player holds while the other goes through. A
+layer falls every 1.5 s at level 5. Stage A is in the dry, B is a swim
+through the culvert, C a dive to the foot of a cabin. The two rig rules
+are kept: every waterloggable cell of the basin is written by its
+layer's function (`basin_problems` refuses any other), and `draw` takes
+levers, plates and signs out before any layer is made wet.
+
+**What the live check (`CHECKS=flooded_dome`) proves**, with stand-ins
+and levers set by command: every block of the plan and the basin by
+count (13,101 sources, nothing flowing, no air under water, every fitting
+wet), again 200 ticks on; the shell; labels, recall entity, log; light at
+five places flooded and four more once dry; the tide clock's lamps and
+pistons seen both ways; the beam engine still with nobody in and seen
+working while water falls; solo straight through (the spring's clock run
+out and the lever back, layers falling one at a time with the gauge,
+each stage uncovered whole, the water at rest part way for 200 ticks);
+the solve, tunnel 3's pump event, dome 4 opened, the dam door open, the
+room dry; a second entry changing nothing; nobody shut in at any of the
+three gates (beyond it, in its own cells, out again); solved from outside
+with nobody in: dry within 4 ticks, the tunnel's doors still shut; duo
+(an item on the plate does nothing, a stand-in on it opens the gate and
+drains, let go the water rests); the form changing both ways mid-stage;
+leaving part drained (kept) and coming back at levels 1 and 10; a reset
+from a scrambled duo room, the other domes' and tunnels' scores
+untouched. Live: `PASS flooded_dome` on the second run (the first found
+the fault below); then the whole verify, 46/46 passed (2 TODO: the Gearworks and the Maze).
+
+**Changed from the review** (none of its findings "will break a game"):
+
+- 1: a tunnel check (`CHECKS=tunnel_3`) opened the tunnel, the guard
+  dried the room, the check then shut the tunnel, and the next player in
+  found a dry room that solved itself. `tick` now solves a dry room only
+  while tunnel 3 is pumping or open, and otherwise floods it again
+  (`reset`). Tested offline in the simulation, both ways.
+- 2: the beam engine's clock strokes for 8 to 10 ticks after its torch
+  goes; the check now waits 30 ticks before reading the engine or the
+  room after a stage, and watches it for 40 ticks while pumping.
+- 6 (debt, done for the soft lock it guards): the check now stands a
+  stand-in beyond gates B and C and in their own cells, not only A's.
+- Found live: a tide-clock piston caught in mid stroke reads as
+  `moving_piston` (as in the Engine and the Foundry); now accepted for a
+  moving cell.
+- Nits, a line each: stand-in tags `st.fl1`, `st.fl2` (8: the Foundry's
+  are `st.fd*` now anyway); the unused `RECALL_TAG` gone (16); the log's
+  last page loses its signature (13).
+- Contract: the check's first line is `game_checks.no_run`; the level is
+  saved and put back with `save_level`/`restore_level`, and the stand-ins
+  killed, whatever happens. Nothing uses the old check site in dome 6.
+- **Not done** (debt, more than a line each): 3, the whole build runs
+  `dome_3_inside` before `tunnel_3`, which rebuilds the pump engine dry
+  inside the standing flood (put right by the first `arm` or
+  `reset/all`); 4, the one-block bar rails round the tide clock's open
+  cage and the crown's engine (on the play-test list); 5, hint times run
+  longer at low levels (the core's `fittings.hint`); 7, the check leaves
+  `#t3` 0 whatever it was (the docstring says so now); 9, the stage calls
+  `dome/3/reset` whatever pack is installed (run `datapack` first, as the
+  README says); 11, 12, 14, 15 (the east platform's unreachable side
+  aisles, gate B a sliver from its plate, the entry message, the chase
+  beside sluice line A); the `# noqa: E731` lines in the test (as
+  `test_station_example.py` has).
 
 ## Known problems / notes
 
