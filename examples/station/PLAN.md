@@ -187,22 +187,34 @@ stage until the owner has played the last one and said what to change.
   `datapack.py` (generator), `verify_station.py`, `README.md`,
   `PROGRESS.md`, and a unit test that runs the offline checks.
 
+*State:* done.
+
 **Stage 1: the playable slice.** Shore, boat, dock, lift, start dome (map
 wall, timers, briefing, reset with the vote, recall), the Boiler Room in
 both solo and two-player forms, its tunnel pumping dry, the on-screen
 progress line, respawn and kit. Dome 2 exists as an empty lit shell so the
 tunnel leads somewhere. Everything a later dome needs from the shared
 machinery is exercised here. **Owner plays.**
+*State:* built; played once by the owner (25 Nov 2026); the changes asked
+for are built, not yet played.
 
 **Stage 2:** Gearworks and the Flooded Dome. **Owner plays.**
+*State:* both built and checked live (the Gearworks on 26 Nov 2026, after
+the owner's hand test of its pipe and wrench at the test bench passed).
+Not yet played.
 
 **Stage 3:** Foundry and the Signal Room. **Owner plays.**
+*State:* both built and checked live. Not yet played.
 
 **Stage 4:** Clockwork Maze and the boss dome, the return tunnel, the win,
 the Wall of Fame, best time. **Owner plays the whole run.**
+*State:* the Maze (with lifts) and the Engine's phase 1 built and checked
+live, the win checked end to end; the Engine's phase 2 (the Master) is
+written but switched off. Not yet played.
 
 **Stage 5:** polish from the play-tests: balance, story text, sounds, the
 joke, the guide (with spoilers), docs image. Then the PR.
+*State:* not started.
 
 ## Checks
 
