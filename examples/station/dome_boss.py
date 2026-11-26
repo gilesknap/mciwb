@@ -1,8 +1,7 @@
 """
 The Engine (dome 7, the boss dome) of The Drowned Station: the last room
 of the ring. Its build stage (``dome_7_inside``), its datapack functions
-(``dome/7/...``), the trophy it hands out at the win and its live check
-(``boss``).
+(``dome/7/...``) and its live check (``boss``).
 
 **The one idea.** Starve the Engine of steam by winding shut its three
 steam mains, each on a different level of the dome, while it sends
@@ -81,9 +80,8 @@ level in force when an untouched room is first entered (``scaled``):
 - ``leave`` / ``died``: the player is out of the arena;
 - ``empty``: the stage in progress put back (see "Leaving");
 - ``reset``: everything as built, and all that ``empty`` does;
-- ``won``: the one call of ``station:dome/7/solved``;
-- ``trophy`` (a ``wins`` function of the core): the trophy sign for the
-  Wall of Fame, named with the run's level and time.
+- ``won``: the one call of ``station:dome/7/solved`` (the trophy is the
+  Pump House's: ``dome_start``, "The trophy").
 
 **The room** (``dressing_blocks``; everything is placed in the dome's own
 frame, forward from the entrance, right, up from the floor). Three levels
@@ -225,10 +223,6 @@ BRICKS = "minecraft:polished_blackstone_bricks"
 TILES = "minecraft:deepslate_tiles"
 LADDER = "minecraft:ladder"
 LANTERN = "minecraft:lantern[hanging=true]"
-#: the Pump House's trophy wall is made of this and nothing else is
-#: (``dome_start.TROPHY``): the trophy sign goes only on it
-TROPHY = "minecraft:gilded_blackstone"
-TROPHY_SIGN = "minecraft:bamboo_sign"
 
 ENTITY_TAG = "st.b7"  # everything the build summons here
 RECALL_TAG = "st.recall7"
@@ -1965,28 +1959,6 @@ def functions(pack: dp.Pack) -> None:
         ],
     )
 
-    # -- the win: a trophy sign for the Wall of Fame, named with the level
-    # and the time, that goes only on the trophy wall
-    trophy = fittings.restricted(
-        TROPHY_SIGN, place_on=TROPHY, name="Trophy: level $(level) in $(m):$(t)$(o)"
-    )
-    pack.function(f"{base}/trophy/sign", [f"$give {game.PLAYERS} {trophy} 1"])
-    store = f"{game.STORE} b7.trophy"
-    pack.function(
-        f"{base}/trophy",
-        [
-            *dp.mmss_lines("#secs", OBJ, game.STORE, "b7.trophy"),
-            f"execute store result storage {store}.level int 1 "
-            f"run scoreboard players get #run.level {OBJ}",
-            f"function {fid('trophy/sign')} with storage {store}",
-            f"tellraw {game.PLAYERS} "
-            '{text:"You have a trophy sign: put it on the Wall of Fame in the '
-            'Pump House, and write your own line.",color:"gold"}',
-            f"execute if score #won.best {OBJ} matches 1 run tellraw {game.PLAYERS} "
-            '{text:"A new best time for this level!",color:"aqua"}',
-        ],
-    )
-
 
 def _phase_2(
     pack: dp.Pack,
@@ -2411,9 +2383,9 @@ def _check(ctx: Any, saved: dict[str, int | None]) -> list[str]:
         )
         expect(f"{what}: the eyes", lamps(place.eyes), 0)
         expect(f"{what}: the governor, run down", get("spin"), 0)
-        # the core's run/win ran this module's wins hook: the trophy's name
-        # was made (the level is the check's 0; the sign goes to players)
-        trophy = ctx.data(f"storage {game.STORE} b7.trophy")
+        # the core's run/win armed the Pump House's trophy dispenser: the
+        # trophy's name made (the level is the check's 0)
+        trophy = ctx.data(f"storage {game.STORE} trophy")
         expect(f"{what}: the trophy's name made ({trophy!r})", "level" in trophy, True)
         # the cylinders: their clocks out, the pistons come to rest
         out = sum(ctx.is_block(cell, AIR) for cell in torches)
@@ -2435,7 +2407,7 @@ def _check(ctx: Any, saved: dict[str, int | None]) -> list[str]:
     if (others := ctx.score("#players")) or ctx.score(f"#form{INDEX}"):
         return [f"{others} players or stand-ins of another check are in the game"]
     unsolve()
-    ctx.cmd(f"data remove storage {game.STORE} b7.trophy")
+    ctx.cmd(f"data remove storage {game.STORE} trophy")
     ctx.advance(scan)
     as_built("built")
     cylinders_run("nobody in")
@@ -2833,6 +2805,5 @@ MODULE = game.Module(
     "boss",
     stages={f"dome_{INDEX}_inside": build},
     functions=functions,
-    wins=(f"dome/{INDEX}/trophy",),
     checks={"boss": check},
 )

@@ -408,6 +408,14 @@ assert solid[m.lamps[0]] == S.DOME_LAMP[1] and solid[m.lamps[1]] == S.DOME_LAMP[
 assert S.TROPHY not in {domes.door_block(0, 1), domes.door_block(1, 1), domes.FRAME}
 assert {c for c, b in solid.items() if b == S.TROPHY} == S.trophy_cells()
 assert not S.trophy_cells() & S.clear_cells()
+# the trophy dispenser: in the Wall's brass border, clear of the trophies'
+# blocks and of the cells their signs go in
+signs = {S.FAME.front(k, h) for k in range(1, S.FAME.width - 1)
+         for h in range(1, S.FAME.height)}
+prize = {S.DISPENSER, S.PRIZE_LAMP, S.PRIZE_BUTTON}
+assert not prize & (S.trophy_cells() | signs)
+assert solid[S.DISPENSER].startswith("minecraft:dispenser[")
+assert solid[S.PRIZE_LAMP] == S.UNLIT and "button" in fit[S.PRIZE_BUTTON]
 
 # built against the fake client: every block where the plan has it, the
 # same built twice, and the trophies' wall never emptied
@@ -420,7 +428,7 @@ for cell, block in want.items():
 assert rec.world.at(S.LECTERN).count("Good luck") == 0  # a page a command
 summons = [c for c in rec.commands if c.startswith("summon ")]
 assert summons == list(S.entities()) and len(summons) > 40
-assert sum("minecraft:interaction" in c for c in summons) == 2
+assert sum("minecraft:interaction" in c for c in summons) == 3
 engine = set(tunnels.engine_cells(L.TUNNELS[0]).values())
 inside = domes.dome_cells(dome).interior
 assert all(rec.world.name_at(c) == AIR for c in inside - used - engine)
@@ -463,6 +471,30 @@ touched = {
     for found in re.findall(r"setblock (-?\\d+) (-?\\d+) (-?\\d+) ", l)
 }
 assert touched and not touched & (set(extra) | S.moving_cells())
+assert not touched & (S.trophy_cells() | signs)  # the Wall of Fame left alone
+# the trophy: armed at the win, made at a press for the presser alone, one
+# a player a run, never given silently, never stocked in the dispenser
+assert "function station:dome/0/trophy/arm" in f["run/win"]
+arm = " ".join(f["dome/0/trophy/arm"])
+assert f"tag @e[tag=st.in] add {S.DUE}" in arm and "trophy/title" in arm
+assert "Your trophy waits by the Wall of Fame" in " ".join(f["dome/0/trophy/title"])
+press = f["dome/0/press/trophy"]
+paid = press.index(f"tag @s remove {S.DUE}")
+assert paid < next(i for i, l in enumerate(press) if "trophy/drop" in l)
+assert all(S.DUE in l or "#runid" in l or "st.in" in l for l in press[:paid])
+drop = " ".join(f["dome/0/trophy/drop"])
+for part in (S.TROPHY, S.LORE[0], "Place on the Wall of Fame (gilded blackstone)",
+             "Owner set from entity @s UUID", "Age:-32768s", "Trophy: level $(level)"):
+    assert part in drop, part
+assert not any(S.SIGN in l and ("give " in l or "item replace block" in l)
+               for lines in f.values() for l in lines)
+reset = f["dome/0/reset"]
+for line in (f"kill @e[type=minecraft:item,tag={S.ITEM_TAG}]",
+             f"tag @e[tag={S.DUE}] remove {S.DUE}",
+             "function station:dome/0/trophy/show"):
+    assert line in reset, line
+assert any("click/trophy" in l for l in f["dome/0/tick"])
+assert any("trophy/show" in l for l in f["dome/0/refresh"])
 book = S.lectern(S.PAGES)
 assert all(len(c.encode()) <= B.MAX_COMMAND for c in S.book_commands())
 assert S.TITLE in book and book.count('","') == len(S.PAGES) - 1
@@ -903,5 +935,89 @@ assert any(shown in line for line in f["game/second"])
 assert "function station:dome/4/bar/hide" in f["reset/all"]
 assert sum("spawn/stoker" in l for l in f["dome/4/wave/cast/stoker"]) == 12
 assert all(len(l.encode()) < B.MAX_COMMAND for l in f["dome/4/wave/spawn/stoker_0"])
+"""
+    )
+
+
+def test_station_checks_keep_best_times():
+    run(
+        """
+import build_station as B
+import game
+import game_checks as G
+import verify_station as V
+
+# every level's best time is saved with the level, and put back
+assert set(G.BEST_SCORES) == {f"#best{level}" for level in game.LEVELS}
+assert set(G.BEST_SCORES) <= set(G.LEVEL_SCORES)
+
+
+class Ctx:
+    def __init__(self, scores):
+        self.scores = dict(scores)
+
+    def score(self, name, objective=None):
+        return self.scores.get(name)
+
+    def set_score(self, name, value):
+        self.scores[name] = value
+
+
+# a check that wins a run (the ring did: #best5 left at 135 s) and one
+# that raises after changing the level: both put back by the runner
+before = {"#run": 0, "#level": 7, "#run.level": 0, "#best5": 0, "#best7": 600}
+ctx = Ctx(before)
+
+
+def wins(c):
+    c.set_score("#run.level", 5)
+    c.set_score("#best5", 135)
+    c.set_score("#best7", 90)
+    return []
+
+
+def raises(c):
+    c.set_score("#level", 2)
+    c.set_score("#best2", 42)  # a level that had no best time at all
+    raise RuntimeError("garbled")
+
+
+B.players_online = lambda: []
+B.Context = lambda **kw: ctx
+B.new_pack = lambda: None
+B.forceload = lambda c: None
+V.LIVE = {"wins": wins, "raises": raises}
+results = V.live_checks(None)
+assert results["wins"] == [] and "garbled" in results["raises"][0], results
+want = before | {f"#best{level}": 0 for level in game.LEVELS} | {"#best7": 600}
+assert ctx.scores == want, ctx.scores
+"""
+    )
+
+
+def test_station_vote_alone():
+    run(
+        """
+import build_station as B
+
+f = B.new_pack("t").functions
+# the press that opens a vote is marked, and only that press
+assert "scoreboard players set #vote.new st 1" in f["vote/open"]
+for path in ("vote/reset", "vote/difficulty"):
+    assert f[path][-1] == "scoreboard players set #vote.new st 0", path
+# a player alone: that press is no yes (st.vote 2 is not counted), so a
+# scan's count cannot pass it; a second press sets the yes
+tally = f["vote/tally"]
+alone = next(i for i, l in enumerate(tally) if "vote/alone" in l)
+passing = next(i for i, l in enumerate(tally) if "vote/pass" in l)
+assert alone < passing and "#vote.new st matches 1" in tally[alone]
+assert "#vote.need st matches 1" in tally[alone] and "return run" in tally[alone]
+assert "scoreboard players set @s st.vote 2" in f["vote/alone"]
+assert all("st.vote=2" not in l for l in f["vote/count"])
+assert f["vote/yes"][0] == "scoreboard players set @s st.vote 1"
+# the bar: the seconds shown, and "press again" for one alone
+assert "press again to confirm, $(left) s" in f["vote/show_alone"][0]
+assert "$(yes) of $(need), $(left) s" in f["vote/show_all"][0]
+assert "function station:vote/show" in f["vote/second"]
 """
     )

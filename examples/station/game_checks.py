@@ -23,6 +23,8 @@ PROGRESS.md for the owner's play-test.
 from __future__ import annotations
 
 import os
+from collections.abc import Iterator
+from contextlib import contextmanager
 from typing import Any
 
 import domes
@@ -73,6 +75,13 @@ def as_stand_in(ctx: Any, tag: str, path: str, args: str = "") -> None:
     ctx.cmd(f"execute as @e[tag={tag},limit=1] run function {ctx.pack.id(path)}{tail}")
 
 
+def pressed_twice(ctx: Any, tag: str, path: str, args: str = "") -> None:
+    """a vote's function run twice as a stand-in: what a player alone must
+    do to propose and confirm (the first press only opens the vote)"""
+    as_stand_in(ctx, tag, path, args)
+    as_stand_in(ctx, tag, path, args)
+
+
 def no_run(ctx: Any) -> None:
     """
     Refuse to go on while a run is in progress (``#run`` 1), unless
@@ -92,10 +101,14 @@ def no_run(ctx: Any) -> None:
     ctx.run_checked = True
 
 
-#: what a check that changes the difficulty level saves and puts back:
-#: the level, and the level a run is recorded at (``difficulty/apply``
-#: lowers it during a run, and the best time is kept under it)
-LEVEL_SCORES = ("#level", "#run.level")
+#: each level's best time: a check that wins a run (the ring, the
+#: progress check) writes the one of the level it ran at
+BEST_SCORES = tuple(f"#best{level}" for level in game.LEVELS)
+#: what a check that changes the difficulty level, or wins a run, saves
+#: and puts back: the level, the level a run is recorded at
+#: (``difficulty/apply`` lowers it during a run, and the best time is kept
+#: under it) and every level's best time
+LEVEL_SCORES = ("#level", "#run.level", *BEST_SCORES)
 
 
 def save_level(ctx: Any) -> dict[str, int | None]:
@@ -106,8 +119,22 @@ def restore_level(ctx: Any, saved: dict[str, int | None]) -> None:
     for name, value in saved.items():
         if value is None and name == "#level":
             value = game.DEFAULT_LEVEL
+        if value is None and name in BEST_SCORES:
+            value = 0  # none (``game/load`` gives each its zero)
         if value is not None:
             ctx.set_score(name, value)
+
+
+@contextmanager
+def kept_level(ctx: Any) -> Iterator[dict[str, int | None]]:
+    """``save_level`` on the way in and ``restore_level`` on the way out,
+    whatever happens: ``verify_station`` runs every live check inside it,
+    so no check leaves a best time from no real run on the board"""
+    saved = save_level(ctx)
+    try:
+        yield saved
+    finally:
+        restore_level(ctx, saved)
 
 
 def fresh(ctx: Any) -> None:
@@ -223,7 +250,7 @@ def check_vote(ctx: Any) -> list[str]:
         {"#vote.kind": 1, "#vote.yes": 1, "#vote.need": 2},
     )
     name, value, shown = bar(ctx)
-    expect(problems, "the bar's name", name, "Reset: 1 of 2")
+    expect(problems, "the bar's name", name.startswith("Reset: 1 of 2, "), True)
     if not shown or value is None or not game.VOTE_SECONDS - 3 <= value:
         problems.append(f"the bar after a proposal: value {value}, shown {shown}")
     # the proposer pressing again, and another proposal, change nothing
@@ -260,7 +287,8 @@ def check_vote(ctx: Any) -> list[str]:
     as_stand_in(ctx, "st.s1", "vote/difficulty", "{level:11}")
     expect(problems, "level 11 proposed", ctx.score("#vote.kind"), 0)
     as_stand_in(ctx, "st.s1", "vote/difficulty", "{level:7}")
-    expect(problems, "the bar's name", bar(ctx)[0], "Difficulty 7: 1 of 2")
+    name = bar(ctx)[0]
+    expect(problems, "the bar's name", name.startswith("Difficulty 7: 1 of 2, "), True)
     as_stand_in(ctx, "st.s2", "vote/difficulty", "{level:8}")  # not the level proposed
     expect(problems, "another level pressed", ctx.score("#vote.yes"), 1)
     as_stand_in(ctx, "st.s2", "vote/difficulty", "{level:7}")
@@ -280,10 +308,42 @@ def check_vote(ctx: Any) -> list[str]:
         got,
         {"#vote.kind": 0, "#level": 3},
     )
-    # one player: one press
-    as_stand_in(ctx, "st.s1", "vote/difficulty", f"{{level:{level}}}")
-    got = scores(ctx, "#vote.kind", "#level")
-    expect(problems, "one player, one press", got, {"#vote.kind": 0, "#level": level})
+    # one player: the first press opens the vote and is not a yes, even
+    # after a scan has counted again; it runs out with nothing done, and a
+    # second press within it passes it
+    for want in ("expire", "pass"):
+        as_stand_in(ctx, "st.s1", "vote/difficulty", f"{{level:{level}}}")
+        ctx.advance(SCAN)
+        got = scores(ctx, "#vote.kind", "#vote.yes", "#vote.need", "#level")
+        opened = {"#vote.kind": 2, "#vote.yes": 0, "#vote.need": 1, "#level": 3}
+        expect(problems, "one player's first press", got, opened)
+        name = bar(ctx)[0]
+        if not name.startswith(f"Difficulty {level}: press again to confirm, "):
+            problems.append(f"the bar after one player's first press: {name!r}")
+        if want == "expire":
+            ctx.set_score("#vote.left", 1)
+            ctx.advance(25)
+        else:
+            as_stand_in(ctx, "st.s1", "vote/difficulty", f"{{level:{level}}}")
+        got = scores(ctx, "#vote.kind", "#level")
+        then = {"#vote.kind": 0, "#level": level if want == "pass" else 3}
+        expect(problems, f"one player's vote left to {want}", got, then)
+    # a reset by one player alone, the same: two presses
+    ctx.set_score("#solved", 3)
+    as_stand_in(ctx, "st.s1", "vote/reset")
+    ctx.advance(SCAN)
+    got = scores(ctx, "#vote.kind", "#solved")
+    expect(
+        problems, "one player's first reset press", got, {"#vote.kind": 1, "#solved": 3}
+    )
+    as_stand_in(ctx, "st.s1", "vote/reset")
+    got = scores(ctx, "#vote.kind", "#solved")
+    expect(
+        problems,
+        "one player's second reset press",
+        got,
+        {"#vote.kind": 0, "#solved": 0},
+    )
     # someone not in the game cannot propose
     ctx.cmd(
         f"execute as @e[type=!minecraft:armor_stand,limit=1] "
@@ -310,7 +370,7 @@ def check_difficulty(ctx: Any) -> list[str]:
     )
     stand_in(ctx, "st.s1", 0)
     for new in (1, 10, 5):
-        as_stand_in(ctx, "st.s1", "vote/difficulty", f"{{level:{new}}}")
+        pressed_twice(ctx, "st.s1", "vote/difficulty", f"{{level:{new}}}")
         expect(problems, f"level {new} voted", ctx.score("#level"), new)
         before = ctx.score("#active")
         stand_in(ctx, "st.s1", 1 if ctx.score("#occ0") else 0)  # enter a dome
@@ -321,7 +381,7 @@ def check_difficulty(ctx: Any) -> list[str]:
         if before == new and new != level:
             problems.append(f"level {new} was in force before a dome was entered")
     # it survives a reset
-    as_stand_in(ctx, "st.s1", "vote/difficulty", "{level:8}")
+    pressed_twice(ctx, "st.s1", "vote/difficulty", "{level:8}")
     ctx.function("reset/all")
     expect(problems, "the level after a reset", ctx.score("#level"), 8)
     restore_level(ctx, saved)
@@ -333,9 +393,8 @@ def check_progress(ctx: Any) -> list[str]:
     """the run: start, the clock, a dome solved, the win and the best time"""
     problems: list[str] = []
     fresh(ctx)
-    level = ctx.score("#active")
-    best_name = f"#best{level}"
-    best = ctx.score(best_name)
+    saved = save_level(ctx)
+    best_name = f"#best{ctx.score('#active')}"
     # a locked dome cannot be solved
     ctx.function("dome/1/solved")
     expect(
@@ -403,7 +462,7 @@ def check_progress(ctx: Any) -> list[str]:
     expect(problems, "#best", ctx.score("#best"), 800)
     ctx.function("reset/all")
     expect(problems, "the best time after a reset", ctx.score(best_name), 800)
-    ctx.set_score(best_name, best or 0)
+    restore_level(ctx, saved)
     fresh(ctx)
     return problems
 
@@ -509,13 +568,18 @@ def check_ring(ctx: Any) -> list[str]:
     lever to the win: into each dome in turn, the dome solved (a stub's
     BYPASS lever thrown as a hand would leave it; a built room's
     ``solved`` called, its puzzle being its own check's business), its
-    tunnel's pump event waited out. Then the reset: every bypass lever
-    back. Not proved: that a player can walk it (see the play-test list).
+    tunnel's pump event waited out; at the win the stand-in has a trophy
+    waiting in the Pump House's dispenser. Then the reset: every bypass
+    lever back, the dispenser cleared. The run is a real win at the level
+    in force, so the best times are put back (``save_level``). Not proved:
+    that a player can walk it (see the play-test list).
     """
     import build_station as B
+    import dome_start
 
     problems: list[str] = []
     fresh(ctx)
+    saved = save_level(ctx)
     names = {m.name for m in B.modules()}
     stubs = {
         d.index: game.stub_post(d) for d in layout.DOMES if f"stub_{d.key}" in names
@@ -554,13 +618,20 @@ def check_ring(ctx: Any) -> list[str]:
         expect(problems, f"dome {n} solved", got, {f"#d{n}": 2, "#solved": n})
     got = scores(ctx, "#run", f"#t{last}")
     expect(problems, "the win", got, {"#run": 2, f"#t{last}": 1})
+    due = ctx.count(f"@e[tag=st.s1,tag={dome_start.DUE}]")
+    expect(problems, "a trophy waiting for the winner", due, 1)
+    expect(problems, "the trophy dispenser armed", ctx.score(dome_start.ARMED), 1)
     ctx.advance(tunnels.event_ticks(layout.TUNNELS[last]) + 20)
     expect(problems, "the tunnel home", ctx.score(f"#t{last}"), 2)
     home = layout.DOMES[0]
     doors = [c for _, c in domes.door_cells(home, layout.TUNNELS[last])]
     opened = sum(ctx.is_block(c, domes.AIR) for c in doors)
     expect(problems, "the Pump House's far door open", opened, len(doors))
+    restore_level(ctx, saved)
     fresh(ctx)
+    expect(
+        problems, "the trophy dispenser after the reset", ctx.score(dome_start.ARMED), 0
+    )
     for n, post in stubs.items():
         if not ctx.is_block(post.input, post.attached[post.input]):
             problems.append(f"dome {n}: the bypass lever is not back after the reset")

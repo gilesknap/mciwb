@@ -193,13 +193,14 @@ def restricted(
     place_on: str | None = None,
     breaks: str | None = None,
     name: str | None = None,
+    lore: tuple[str, ...] = (),
 ) -> str:
     """
     An item for an adventure-mode player that can be placed only on
     ``place_on`` or can break only ``breaks`` (each a block, a ``#tag``, or
-    blocks separated by commas), with an optional name: the item argument
-    of ``give``, ``clear`` and ``item replace``. The lists are kept out of
-    the tooltip. Give it in a dome's ``enter`` hook and take it back in
+    blocks separated by commas), with an optional name and lines of lore:
+    the item argument of ``give``, ``clear`` and ``item replace``. The
+    lists are kept out of the tooltip (say in the lore where it goes). Give it in a dome's ``enter`` hook and take it back in
     its ``leave`` and ``reset`` hooks with ``clear <players> <item id>``
     (which takes every item of that id, restricted or not).
     """
@@ -224,6 +225,9 @@ def restricted(
         )
     if name:
         parts.append(f"minecraft:custom_name={snbt(name)}")
+    if lore:
+        lines = ",".join(f'{{text:{snbt(t)},color:"gray",italic:false}}' for t in lore)
+        parts.append(f"minecraft:lore=[{lines}]")
     return f"{item}[{','.join(parts)}]" if parts else item
 
 

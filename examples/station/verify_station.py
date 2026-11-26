@@ -413,7 +413,8 @@ def live_checks(world, wanted: list[str] | None = None) -> dict[str, list[str]]:
     """run the written live checks (all, or those named): name -> its
     problems. The station's box is forceloaded for good by the build; this
     loads it if it is not, and leaves it loaded. A check that raises is a
-    failure, and the rest still run"""
+    failure, and the rest still run. The level and the best times are put
+    back after each (``game_checks.kept_level``)"""
     names = [n for n in LIVE if n not in todos() and (wanted is None or n in wanted)]
     if not names:
         return {}
@@ -429,7 +430,10 @@ def live_checks(world, wanted: list[str] | None = None) -> dict[str, list[str]]:
     for name in names:
         print(f"-- {name}", flush=True)
         try:
-            results[name] = LIVE[name](ctx)
+            # the level and every level's best time put back after each
+            # check, whatever it did: no best time from no real run
+            with game_checks.kept_level(ctx):
+                results[name] = LIVE[name](ctx)
         except Exception as e:  # noqa: BLE001
             results[name] = [f"the check failed to run: {e!r}"]
     return results
