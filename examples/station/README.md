@@ -69,7 +69,7 @@ world, the layout and the datapack under construction.
 | `dome_5_inside` | the Signal Room |
 | `dome_7_inside` | the Engine (phase 1; phase 2, the Master, behind `PHASE_2` in `dome_boss.py`, off) |
 | `dome_6_inside` | the Clockwork Maze (after `datapack`: it ends with the pack's `dome/6/reset`; lifts on, behind `LIFTS` in `dome_maze.py`) |
-| `dome_2_inside` | not built yet (a stub: a BYPASS lever) |
+| `dome_2_inside` | the Gearworks (after `datapack`: it ends with the pack's `dome/2/reset`) |
 | `tunnel_0` ... `tunnel_7` | each tunnel, flooded and shut, with its pump engine; the two that slope have stairs. `STAGES=tunnels` is short for all eight |
 
 A stage that is not written says so and does nothing: the list is the
@@ -254,7 +254,7 @@ since the core's checks reset the game before and after.
 | `fights` | the difficulty read; waves cast where a player is, to the cap, refilled; leash and fence; a death answered; the sweep; a dome's bossbar |
 | `fittings` | the torch clock, its lamp chase and pistons seen running; a gauge; a lever put back and held; a button read once; a plate that wants a player; a display; a lent item; a hint |
 | `ring` | the whole ring's progress walked by a stand-in from the master lever to the win, each stub's BYPASS lever thrown, and the reset |
-| `shore`, `dock`, `lift`, `start_dome`, `boiler_room`, `flooded_dome`, `foundry`, `signal_room`, `boss` | the modules' own checks (see each module) |
+| `shore`, `dock`, `lift`, `start_dome`, `boiler_room`, `gearworks`, `flooded_dome`, `foundry`, `signal_room`, `clockwork_maze`, `boss` | the modules' own checks (see each module) |
 
 The checks of the parts not built yet are listed as `TODO`, and a TODO is
 not a pass. Players are stood in for by armour stands

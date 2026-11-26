@@ -45,7 +45,7 @@ verify_station.main()
 """
     )
     assert "FAIL" not in out
-    assert "TODO boiler_room" not in out and "TODO gearworks" in out
+    assert "TODO" not in out
 
 
 def test_station_checks_find_faults():
@@ -158,7 +158,8 @@ else:
 """,
         str(tmp_path),
     )
-    assert "a stub, its BYPASS lever" in out
+    # every dome has its module now: no stub with a bypass is built
+    assert "a stub, its BYPASS lever" not in out
     assert (tmp_path / "station" / "pack.mcmeta").is_file()
 
 

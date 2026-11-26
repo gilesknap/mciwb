@@ -12,7 +12,7 @@ played it: each entry says which.
 | --- | --- | --- |
 | 0 | Ground work: survey, layout, mechanisms proved in a rig, datapack delivery, the skeleton | done |
 | 1 | The playable slice: shore, boat, dock, lift, start dome, Boiler Room, its tunnel, reset, recall, kit | built and played once: the way in, the Pump House, the Boiler Room, tunnels 0 and 1, the Gearworks' empty shell. The owner's first play-test (25 Nov 2026) asked for changes: see "The first play-test" |
-| 2 | Gearworks and the Flooded Dome | the shells, tunnels 2 and 3 are built; the Flooded Dome built and checked live (see "The Flooded Dome (dome 3): findings"), not yet played; the Gearworks a stub (a BYPASS lever) |
+| 2 | Gearworks and the Flooded Dome | the shells, tunnels 2 and 3 are built; the Flooded Dome and the Gearworks built and checked live (see "The Flooded Dome (dome 3): findings" and "The Gearworks (dome 2): findings"), not yet played; the Gearworks' pipe and wrench hand-tested at the test bench (26 Nov 2026) |
 | 3 | Foundry and the Signal Room | shells, tunnels 4 and 5; the Signal Room and the Foundry built and checked live (see "The Signal Room (dome 5): findings" and "The Foundry (dome 4): findings"), not yet played |
 | 4 | Clockwork Maze, the boss dome, the return tunnel, the win, the Wall of Fame | shells, tunnels 6 and 7; the Engine (dome 7) built and checked live with its phase 2 (the Master) switched off, see "The Engine (dome 7): findings"; the Clockwork Maze built and checked live (see "The Clockwork Maze (dome 6): findings"), not yet played; the win is the core's and is checked, the trophy sign is given at the win, nobody has written one |
 | 5 | Polish from the play-tests, the guide, the docs image, the PR | not started |
@@ -236,7 +236,7 @@ What RCON cannot stand in for. Each stage adds to the list as it builds.
 | 3, 4 | Automatons with a player: they attack, do not fight each other, drop nothing, are gone when everyone leaves their dome, and are cleared from round the entrance when you respawn there | no |
 | 1 | Nothing broken leaves an item (`block_drops` off): a pipe broken with the wrench, a lamp | no |
 | 1 | The reset buttons with two real players, and a late joiner | no |
-| 2 | The Gearworks' pipe in a real hand: places only on the track, the tool breaks only the pipe | no |
+| 2 | The Gearworks' pipe in a real hand: places only on the track, the tool breaks only the pipe | yes, at the test bench (26 Nov 2026): it works |
 | 3, 4 | Whether the fights are fair for a child on Easy | no |
 | 4 | Writing a line on the trophy sign for the Wall of Fame | no |
 | 1 | The timers' text displays and the bossbar as a player sees them (the rig only read their data back) | no |
@@ -302,6 +302,11 @@ What RCON cannot stand in for. Each stage adds to the list as it builds.
 | 2 | The Flooded Dome's gates with real bodies: never shutting on you, in its own cells or beyond it; standing against shut bars from outside does not open them; hands on the levers and a player's weight on each plate; the pump lever put back if moved |  no |
 | 2 | The Flooded Dome with two: holder and partner in sight at A, B and C (from plate B only a sliver of gate B shows: review 12); "Hold here. Swap next time." understood; one logging off mid-swim; the second arriving mid-clock (the plate comes only when the spring has run out); is holding three times dull |  no |
 | 2 | The Flooded Dome as a place: the crown (about 10 walkable cells: cramped for two?); the one-block bar rails, which can be hopped (into the tide clock's open cage from the dam's crest, onto the beam engine past the fence's ends: a repeater clicked there can stop a clock for good, review 4); falls from the high walk and the crown once dry (up to 16 blocks); lag when a stage ends or a player enters (about 1000 fills in one tick); titles, the bell, the gate and pump sounds, the bubbles, the drowned lamps under water, the tide clock's noise in the hall; the log's four pages fit; plaque and signs the right way round; labels readable under water; time, about 8 minutes for a first-time pair |  no |
+| 2 | The Gearworks alone, Easy, level 5: is "steam reaches 67 lengths" understood from the plaque, the steam board and the lit pipe; the steam stopping at the Great Gear's edge read as "find the clutch" (the sign on the back bridge, then the hint); laying 38 lengths while walking: pleasure or chore; about 7 minutes for a first run; the way round falling short read from the red board |  no |
+| 2 | The Gearworks' kit in the room itself: 64 pipe and a wrench lent within a second of entering, given back after being thrown away, taken on leaving and on solving; the pipe placing on rough brass and rough copper and nothing else; the wrench breaking laid pipe (under a second?) and not the built-in pipe, the tunnel's lamps or the pump engine's lamp; a broken pipe never dropping an item |  no |
+| 2 | The Gearworks' clutch by hand: the lever on the catwalk, the bell and lamps, the gear turning for 1.5 s under you (stand on it through the grating), the lever refusing to go back; pipe laid on the gear before the turn thrown off |  no |
+| 2 | The Gearworks with two: each player's pipe sticking to one metal (brass or copper), the bands changing every 5 or 6 lengths, a bay plate at the pipe store changing your kind (stand on it, about a second); one partner idle making the other walk down to the bays at each band (review 1.2: a second pair of bays on the gallery?); one leaving, the one left getting both |  no |
+| 2 | The Gearworks as a place: the climb (both floor stairs, the catwalk stair, the ladder at the right side, the squeeze past the fallen cog); stepping over laid pipe on the ring to reach a bridge; the six-block fall from the gear's rim and from the catwalk; light under the gallery; the steam board readable from the gallery and catwalk; the steam chest found from the entrance (the pipe store's rack hides it: review 5); the running lights and pinions (busy for good after the solve: review 7), the tappets, the tick, the hiss, the bells; the log's pages 3 and 4 fit (review 11); anything decorative taken for an input (the bay plates in solo, the built-in pipe) |  no |
 | 4 | The Clockwork Maze alone, Easy, level 5: is 6 s an hour enough to see a gate open and get through (and at levels 1 and 10)? The three hour colours (oxidised copper, iron, yellow) and the numerals in the tower's light; the Great Dial from the entrance, the atrium's hour lamps on each deck; the bell's three pitches heard over some 25 pistons at a strike (review 6.4: too loud, lost?); about 2 minutes for a clean run |  no |
 | 4 | The Maze's lifts (on) with a real player: riding A, B and C up at the strike of Green (smooth, or a jolt every 3 ticks?), being carried down from a lift's top at the strike of Gold (annoying?), the shutter of trapdoors underfoot, the Ram taking you down from the crown 3 s after the Regulator; and the ladders beside every lift: found, climbed, stepped off sideways (now only into the shaft: a short fall, a slow drift in the Ram's) |  no |
 | 4 | The Maze's timed floors: the thud and sparks over a floor in its last quarter (enough warning, at levels 7 to 10 too?), the drift down a deck read as "caught", not hurt; the wave w1 to w5 alone and as a pair |  no |
@@ -1798,6 +1803,82 @@ review's 1.1 and 3.1):
   position, as the Boiler Room does (D8); the nits N1 to N7. A player
   standing on a lift's top at the strike of Gold is carried down a deck
   (they climb back up the ladder); the pair search does not model it.
+
+### The Gearworks (dome 2): findings
+
+`dome_gearworks.py` (its docstring has the puzzle and the functions),
+built live with `dome_2_inside` over the shell already there; the BYPASS
+stub is gone. Built only after the owner's hand test at the test bench
+(26 Nov 2026): pipe laid with `can_place_on`, broken with the
+`can_break` wrench, in an adventure-mode hand. Three levels: the engine
+floor (the steam chest, the pipe store with its two bays, risers, the
+tappets, tanks), a ring gallery with four bridges and the Great Gear in
+the middle, and a catwalk with the clutch. Steam main of 166 lengths of
+track (rough brass and rough copper); the short way is 63, of which a
+player lays 38 (the risers, the hub and the door feed are built in). The
+rule is the gentle one: a length is lit if it is within N lengths of the
+chest along laid pipe (67 at level 5, 81 to 63 from level 1 to 10), so
+the way round the gallery falls short at level 3 and up and the clutch
+(which turns the gear's track into line, and latches) is the way. Solo,
+64 pipe and a wrench are lent; duo, each player's pipe sticks to one
+metal, and a bay plate changes your kind.
+
+**What the live check (`CHECKS=gearworks`) proves**, with stand-ins and
+the pipe and lever set by command: every block of the room as built,
+after leaving and after a reset from a scrambled duo room; the three
+entities and the log; the tappets seen out and in, the decoration still
+with nobody in and stepping with someone in; arming with the level's N
+and the board's text; the feed lighting riser 1; steam stopping at the
+gear's edge and the hint counting; pipe on the gear thrown off by the
+turn, the track swapped, the clutch lamps, the lever held over; the
+short way solving, the intake lamps, tunnel 2's pump event to both doors
+open, dome 3 opened, the dome dry; a solved room entered again; the way
+round: exactly N lit, the board red, then the short way beside it
+solving; a lit length cut and put back; out for a moment (nothing
+changes), out for good (pipe kept, dark) and back (it fills again); duo:
+one of each kind, both bays, three players, one leaving, the fall-back,
+the one left finishing a line laid in the duo form; the recall's click;
+N at levels 1 and 10 and the plaque rewritten; the other domes' and
+tunnels' scores untouched. Not proved by it: anything in a real hand (the
+kit given and taken, each duo kind on its metal, the wrench), a real
+weight on a plate, a hand on the lever, standing on the turning gear,
+what a player sees or hears, the recall's teleport. Live: `PASS
+gearworks` on the first run of the fixed check (an earlier run found the
+fault below, the next passed by luck of timing); then the whole verify,
+48/48 passed, no TODO.
+
+**Changed from the reviews** (`review_gearworks`, `review_gearworks_opus`;
+none "will break a game"), before the live build, in the module's second
+commit:
+
+- The check's first line is `game_checks.no_run`; the level is saved and
+  put back (`save_level`, `restore_level`); `#t2` is left to the
+  tunnel's reset (Opus 4.1).
+- The kit is no longer lent again in the tick that solves the room
+  (review 1).
+- The bays are read every tick, not once a second (Opus 1.1).
+- A sign at the back bridge's gear end names the clutch ("GREAT GEAR /
+  out of line. / CLUTCH: / catwalk above.") (review 2).
+- The drop sweep is gone now that `block_drops` is off; `reset` still
+  kills kit thrown down and left lying.
+- The logbook is put back after the solve too (review 6).
+- Found live: a tappet piston caught in mid stroke reads as
+  `moving_piston` (as in the Engine, the Foundry and the Flooded Dome);
+  now accepted for a moving cell.
+- **Not done** (debt or nits): the hint assertions in the check pass on a
+  dead hint (review 3); `restored` takes the kit from `@e` and misses a
+  player on the death screen or offline at the solve (review 4, Opus's
+  first "not worth fixing"); the pipe store's rack hides the steam chest
+  from the entrance (review 5); the solved room's decoration busy for good
+  (review 7, play-test); the module's own lending line and items beside
+  `fittings` (review 8, Opus 5.2: give `restricted` a tooltip flag); the
+  tick cost, about 1,650 commands every 2 ticks while occupied and
+  unsolved (Opus 5.2); a second pair of bays on the gallery (Opus 1.2,
+  play-test); the nits (the enter message, the plaque's sign after a reset
+  at another level, the log's page length, `#gear.live` and the
+  built-in lengths' dead writes, the `# noqa: E731` lambdas in the test).
+  The test bench row's other items (the button, dying, the lift, the
+  ravager) were not part of the hand test.
 
 ## Known problems / notes
 
