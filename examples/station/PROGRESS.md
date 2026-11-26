@@ -297,7 +297,7 @@ What RCON cannot stand in for. Each stage adds to the list as it builds.
 | 4 | The Engine's win: the Engine stopping, the way out lighting, tunnel 7 pumping, the trophy sign in your hand (named with the level and the time), placed on the Wall of Fame in the Pump House and written on |  no |
 | 4 | The Engine with two: A and B only together (the amber lamp blinking at the side that is ready, the chat hint), a partner in the pavilion not counting, one dying or leaving; the form's chat line at each change (too chatty?) |  no |
 | 4 | The Engine as a place: gauges, amber lamps and the drum's telltales read from each deck and the arch (through two decks of grating); headroom under main A's pipe and the gallery; the governor turning; the cylinders seen through their cages and stopping at the win; the heartbeat (too often?); the log's four pages fit; leaving for 3 s throws open levers back (the cheapest way to clear the automatons: does a child find it?) |  no |
-| 4 | Phase 2 (switched off): the Master on his ravager at the test bench first; then, switched on, the breach, the fight, the columns as cover, the steam on the high level |  no |
+| 4 | Phase 2 (switched on, not yet live): at the test bench's bay 5, the Master as he is now: is his gold armour, its copper trim and his name drawn, does he sit right on the ravager at his size, does the ravager still charge and bite under him. Then the breach (the dimmed floor, the Darkness, the bar filling, the doors), the fight, the columns as cover, the steam on the high level, whether the dim floor is too dark to fight in |  no |
 | 2 | The Flooded Dome alone, Easy, level 5: the first sight through the dam (the standpipe's gauge readable at 17 blocks through glass and water; the cabins and the stairs going down into the water seen); finding pump A without the hint; the sluice line read as a countdown; the lever throwing itself back in front of you; are 22 / 32 / 28 s fair; at level 10 is "throw it twice" understood |  no |
 | 2 | The Flooded Dome's swims: stage B down the well, through the culvert, up the hatch with the gate open and shut, air left, the ladder out of the well; stage C the dive from the lower deck to the bars at the cabin's foot and up the hatch ladder, finding the gate; getting out of the water at every level (the two long ladders, each flight, a deck level with the surface); being in the water as a layer goes (any push, damage or suffocation); nothing spawns in the basin (fish, squid, drowned) |  no |
 | 2 | The Flooded Dome's gates with real bodies: never shutting on you, in its own cells or beyond it; standing against shut bars from outside does not open them; hands on the levers and a player's weight on each plate; the pump lever put back if moved |  no |
@@ -1540,12 +1540,37 @@ together. **The third main shut is the win**: the Engine stops, the way
 out lights, tunnel 7 pumps dry, and the core's `run/win` runs (best
 time, then this module's `trophy`: a trophy sign for the Wall of Fame).
 
-**Phase 2** (the breach and the Master on his ravager) is written and
-kept out of the pack by `PHASE_2 = False` at the top of `dome_boss.py`,
-until the owner has seen the pair at the test bench. The list at the
-switch says what is still unproved; switching on needs `datapack` and
-`dome_7_inside`, and the check then works the breach and the Master too
-(offline only so far).
+**Phase 2** (the breach and the Master on his ravager) is switched on
+(`PHASE_2 = True` at the top of `dome_boss.py`) and **has not been on a
+server yet**: all of it below passed offline only, against the fake
+client and the test's interpreter. Going live needs `datapack` and
+`dome_7_inside` (the plaque and the log change), then `CHECKS=boss`; the
+bench's bay 5 shows the same pair after `BENCH=build`.
+
+- The owner saw the vindicator on the ravager at the bench: the ravager
+  frightening enough, the rider "an illager with an axe". No illager
+  draws armour, so the Master is now **a husk** a quarter bigger than
+  life (`scale` 1.25), in the whole golden suit trimmed with copper
+  (`silence`), a golden axe, "The Master" in gold over his head. The rig
+  saw a husk ride a ravager and strike from it, and the ravager under a
+  husk only carry: a ravager fights by itself only under a rider of the
+  game's entity tag `#minecraft:raiders`. The pack therefore adds
+  `minecraft:husk` to that tag (`datapack.Pack.tag`, new). **Not proved:**
+  that the ravager then bites. The check sets a golem before the pair,
+  takes the rider's blow and axe away and reports a ravager that does not
+  bite; `RIDER_MOB = "minecraft:vindicator"` is the proved pair, without
+  the armour. The tag is the game's own and holds every husk, the Slag
+  Husks too: nothing else that reads it is known to matter here.
+- When the third main shuts it cannot be missed: the floor's 95 lanterns
+  dim to weathered copper bulbs (light 8) until the win or the reset, the
+  players get the Darkness effect for 8 s, a title, the Master's bar comes
+  up empty and fills over the 7 s in which the doors are forced, then a
+  second title and a roar as he comes out.
+- The porch and the firebox are kept clear all through the breach and
+  again as he is summoned (the review's debt 12).
+- The check (offline) also reads back his kit, trims, size and name, that
+  his mob is among the raiders, and that the ravager teleported into the
+  pavilion is put out with its rider still up.
 
 **What the live check (`CHECKS=boss`) proves**, with stand-ins and levers
 set by command, switch off: every block as built and again after a reset

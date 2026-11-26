@@ -46,7 +46,7 @@ import tunnels
 import verify_station as V
 
 dome = L.DOMES[D.INDEX]
-assert dome.key == "boss" and D.PHASE_2 is False
+assert dome.key == "boss" and D.PHASE_2 is True
 # the module takes the stub's place: its stage, its check under the name the
 # verify script lists (the trophy at the win is the Pump House's)
 assert B.STAGES["dome_7_inside"] is D.build and V.LIVE["boss"] is D.check
@@ -301,6 +301,7 @@ import re
 import build_station as B
 import datapack
 import dome_boss as D
+import domes
 import game
 import station_layout as L
 import verify_station as V
@@ -387,8 +388,8 @@ for phase_2 in (False, True):
 off, on = packs[False].functions, packs[True].functions
 # phase 2 is in the pack only with the switch on
 extra = sorted(set(on) - set(off))
-assert extra and all(n.startswith(("dome/7/breach/", "dome/7/master/", "dome/7/p3",
-                                   "dome/7/p4")) for n in extra), extra
+parts = ("breach/", "master/", "p3", "p4", "lights/")
+assert extra and all(n.startswith(tuple("dome/7/" + p for p in parts)) for n in extra)
 assert off["dome/7/all_shut"] == ["function station:dome/7/won"]
 assert on["dome/7/all_shut"] == ["function station:dome/7/breach/start"]
 for name, lines in off.items():
@@ -400,9 +401,97 @@ for name, lines in off.items():
 summon = D.master_summon(place.spot)
 assert summon in on["dome/7/master/out"]
 assert summon.count('Team:"st.automaton"') == 2 and summon.count("station:empty") == 2
-assert summon.count("PersistenceRequired:1b") == 2 and "Passengers:[{id:" in summon
+assert summon.count("PersistenceRequired:1b") == 2
 assert "st.mob" not in summon and len(summon.encode()) < B.MAX_COMMAND
-D.PHASE_2 = False
+# the Master: a mob that draws armour, in the whole brass suit trimmed with
+# copper, a golden axe in hand, bigger than life, his name over him; he
+# drops none of it, and is no baby and calls no others
+assert D.RIDER_MOB == "minecraft:husk" and not D.rider_is_raider()
+assert 'Passengers:[{id:"minecraft:husk",Tags:["st.b7.boss","st.b7.rider"]' in summon
+for slot, item in D.MASTER_KIT.items():
+    assert slot + ':{id:"' + item + '",count:1,components:{"minecraft:trim":' in summon
+assert sorted(D.MASTER_KIT) == ["chest", "feet", "head", "legs"]
+assert all(item.startswith("minecraft:golden_") for item in D.MASTER_KIT.values())
+assert summon.count('material:"minecraft:copper",pattern:"minecraft:silence"') == 4
+assert 'mainhand:{id:"minecraft:golden_axe",count:1}' in summon
+assert "drop_chances:{head:0f,chest:0f,legs:0f,feet:0f,mainhand:0f}" in summon
+assert '{id:"minecraft:scale",base:1.25d}' in summon and D.MASTER_SCALE > 1
+assert 'CustomName:{text:"The Master",color:"gold",bold:true}' in summon
+assert "CustomNameVisible:1b" in summon and "IsBaby:0b" in summon
+assert '{id:"minecraft:spawn_reinforcements",base:0d}' in summon
+assert summon.count("{") == summon.count("}") and summon.count("[") == summon.count("]")
+# a ravager fights by itself only under a raider: the pack adds the husk to
+# the game's tag, replacing nothing; with the switch off it adds no tag
+import json
+tag = "data/minecraft/tags/entity_type/raiders.json"
+files = {flag: packs[flag].files() for flag in packs}
+assert json.loads(files[True][tag]) == {"replace": False, "values": ["minecraft:husk"]}
+assert not [path for path in files[False] if "/tags/entity_type/" in path]
+assert not V.function_problems(files[True])
+# the other rider, the pair the rig proved: a vindicator, a raider already
+D.RIDER_MOB = "minecraft:vindicator"
+assert D.rider_is_raider()
+other = datapack.Pack(stamp="t")
+game.add_functions(other, [D.MODULE])
+assert tag not in other.files()
+assert 'Passengers:[{id:"minecraft:vindicator",Tags:[' in D.master_summon(place.spot)
+assert "IsBaby" not in D.master_summon(place.spot)
+assert D.master_summon(place.spot) in other.functions["dome/7/master/out"]
+D.RIDER_MOB = "minecraft:husk"
+# the transition is plain: when the mains shut the floor's lanterns dim, the
+# players are darkened, the Master's bar comes up empty, a title, a sound
+start = on["dome/7/breach/start"]
+assert "function station:dome/7/lights/dim" in start
+assert "function station:dome/7/bar/show" in start
+assert "bossbar set station:d7 value 0" in start
+players = "@a[tag=st.in,scores={st.dome=7}]"
+assert f"effect give {players} minecraft:darkness {D.DARK} 0 true" in start
+assert sum(l.startswith(f"title {players}") for l in start) == 3
+assert sum(l.startswith("playsound") for l in start) >= 2
+out = on["dome/7/master/out"]
+assert any("THE MASTER" in l for l in out) and any("ravager.roar" in l for l in out)
+assert any(l.startswith("execute store result bossbar station:d7 value")
+           for l in on["dome/7/breach/step"])
+# the lanterns: the core's own in this dome's floor, none that touches the
+# room's redstone; dimmed to a copper bulb, back at the win and the reset
+lights = D.floor_lights(dome)
+floor = domes.light_cells(dome)[0]
+assert set(lights) <= floor and len(lights) >= len(floor) - 4 and len(lights) > 60
+blocks = D.room_blocks(dome)
+live = set(blocks.moving)
+for main in place.mains:
+    live |= main.post.cells
+for x, y, z in lights:
+    assert (x, y, z) not in blocks.everything()
+    assert not any(abs(x - a) <= 1 and abs(y - b) <= 1 and abs(z - c) <= 1
+                   for a, b, c in live), (x, y, z)
+assert on["dome/7/lights/dim"] == [D._setblock(c, D.DIM) for c in lights]
+assert on["dome/7/lights/full"] == [
+    D._setblock(c, "minecraft:sea_lantern") for c in lights]
+for name in ("dome/7/won", "dome/7/reset"):
+    assert "function station:dome/7/lights/full" in on[name], name
+    assert not any("lights/" in line for line in off[name]), name
+# nobody stands where he comes out: the porch and the firebox are cleared
+# at every step of the breach and as he is summoned
+clear = "function station:dome/7/breach/clear"
+assert clear in on["dome/7/breach/start"] and clear in on["dome/7/breach/step"]
+assert out.index(clear) < out.index(summon)
+# the dead respawn in the antechamber: the core's respawn point for this
+# dome is its entrance spot, which is in the pavilion, where no mob stays
+x, y, z, _ = domes.entrance(dome)
+assert any(l.startswith(f"spawnpoint @s {x} {y} {z}") for l in on["dome/7/entered"])
+for box in (place.pavilion, place.fence):
+    assert all(min(a, b) <= v <= max(a, b) for v, a, b in zip((x, y, z), *box))
+assert any(D.RAVAGER in l and "run tp @s" in l for l in on["dome/7/fence"])
+assert "function station:dome/7/fence" in on["dome/7/p3"]
+# no outlasting him from the pavilion: with nobody in the arena he cannot
+# be hurt, and then he mends
+p3 = " ".join(on["dome/7/p3"])
+assert "minecraft:resistance 2 4 true" in p3 and "minecraft:regeneration 2 2" in p3
+# his health: by who is in the dome, then by the level (the core's dress)
+assert any(str(D.TWO_PLAYERS) in l and "#occ7" in l for l in out)
+assert sum("function station:mob/dress with storage" in l for l in out) == 2
+D.PHASE_2 = True
 """
     )
 
@@ -453,6 +542,7 @@ class Sim:
         self.said = []
         self.called = []
         self.difficulty = 1
+        self.raiders = ()  # (the script gives it the game's own)
         self.stubs = {
             "station:mob/remove": lambda me, args: self.drop(me),
             "station:mob/dress": self.dress,
@@ -502,6 +592,8 @@ class Sim:
                 found = [e for e in found if value[1:] not in e["tags"]]
             elif key == "tag":
                 found = [e for e in found if value in e["tags"]]
+            elif key == "type" and value.startswith("#"):
+                found = [e for e in found if e["type"] in self.types(value[1:])]
             elif key == "type":
                 found = [e for e in found if e["type"] == value]
             elif key == "team":
@@ -527,6 +619,13 @@ class Sim:
                 hi = lo + float(box["d" + k]) + 1
                 found = [e for e in found if lo <= e["pos"][i] < hi]
         return found[:limit]
+
+    def types(self, tag):
+        """the mobs of an entity type tag: the game's raiders, and what the
+        pack adds to the tag"""
+        assert tag == "minecraft:raiders", tag
+        return {"minecraft:" + name for name in self.raiders} | set(
+            self.pack.tags.get(("entity_type", tag), []))
 
     # -- scores
     def get(self, name, obj="st"):
@@ -787,6 +886,7 @@ TROPHY = game.Module(
 )
 game.add_functions(pack, [D.MODULE, TROPHY])
 sim = Sim(pack, rec.world)
+sim.raiders = D.RAIDERS
 LIT = (D.BULB + "[lit=true]", D.GREEN_BULB + "[lit=true]")
 
 
@@ -1144,18 +1244,40 @@ assert sim.b7("phase") == 2 and sim.get("#d7") == 1 and not mobs()
 assert "dome/7/won" not in sim.called
 # one standing in the porch is put back from the doors
 assert p["pos"][0] == place.back[0] + 0.5
+# it cannot be missed: the floor's lanterns dim, the Master's bar comes up
+# empty and fills, a title
+lights = D.floor_lights(dome)
+dim = lambda: sum(sim.is_block(x, D.DIM) for x in lights)  # noqa: E731
+assert dim() == len(lights) > 60 and sim.get("#bar7") == 1
+assert any(k == "title" and "THE MAINS ARE SHUT" in v for k, v in sim.said)
 # the doors are forced from the middle outwards
 order = [gone()]
+filling, walked = [], []
 for _ in range(D.BREACH[-1] + 1):
+    t = sim.b7("t") if sim.b7("phase") == 2 else None
+    if t == D.BREACH[1]:  # one who walks back to the doors is put out again
+        sim.move(p, place.porch[1])
+        walked.append("porch")
+    if t == D.BREACH[-1] - 2:  # and one who walks into the open firebox
+        sim.move(p, place.spot)
+        walked.append("firebox")
     steps(1)
+    assert p["pos"][0] == place.back[0] + 0.5
+    if t is not None:
+        filling.append(sim.b7("pct"))
     if gone() != order[-1]:
         order.append(gone())
 assert order == [[False] * 3, [True, False, False], [True, True, False], [True] * 3]
+assert walked == ["porch", "firebox"]
+assert filling == sorted(filling) and 0 < filling[0] < filling[-1] == 100
 # the pair comes out: a ravager with the Master on it, on the team
 assert sim.b7("phase") == 3 and len(pair()) == 2
 kinds = sorted(e["type"] for e in pair())
-assert kinds == ["minecraft:ravager", "minecraft:vindicator"]
+assert kinds == sorted(["minecraft:ravager", D.RIDER_MOB])
 assert all(e["team"] == "st.automaton" and "st.mob7" not in e["tags"] for e in pair())
+assert any(k == "title" and "THE MASTER" in v for k, v in sim.said)
+# under a rider of the game's raiders, as a ravager needs to fight by itself
+assert len(sim.select("@e[tag=" + D.RIDER + ",type=#minecraft:raiders]", None)) == 1
 # health for two in the dome: 170%
 full = (D.RAVAGER_HP + D.MASTER_HP) * D.TWO_PLAYERS // 100
 assert sim.b7("hmax") == full and sim.b7("hsum") == full
@@ -1196,13 +1318,15 @@ assert sim.b7("up") == 0 and sim.b7("vent") == 0
 # ---- the dome emptied in the fight: he goes, and comes out again whole
 leave_all()
 assert sim.b7("phase") == 4 and not pair() and gone() == [True] * 3
+assert dim() == len(lights) and sim.get("#bar7") == 0  # still dim, no bar
 p = enter("p1", entrance, first=1)
 steps(D.ROAR + 4)
 assert sim.b7("phase") == 4 and not pair()  # in the pavilion: he waits
 assert sim.b7("shut") == 3 and sim.b7("rate") == D.WIND  # and nothing is set up anew
-sim.move(p, place.back)
+sim.move(p, place.spot)  # (into the open firebox itself: put out of it)
 steps(D.ROAR + 1)
-assert sim.b7("phase") == 3 and len(pair()) == 2
+assert sim.b7("phase") == 3 and len(pair()) == 2 and sim.get("#bar7") == 1
+assert p["pos"][0] == place.back[0] + 0.5
 solo = D.RAVAGER_HP + D.MASTER_HP
 assert sim.b7("hmax") == solo == sim.b7("hsum")
 
@@ -1221,6 +1345,9 @@ steps(1)
 assert sim.b7("phase") == 5 and sim.get("#d7") == 2 and sim.get("#run") == 2
 assert sim.called.count("dome/7/won") == 1 and "tunnel/7/ready" in sim.called
 assert sim.called.count("dome/0/trophy/arm") == 1
+# the lanterns come back, the bar goes
+assert dim() == 0 and sim.get("#bar7") == 0
+assert all(sim.is_block(x, "minecraft:sea_lantern") for x in lights)
 steps(len(place.way_out) + 2)
 assert lamps(place.way_out) == len(place.way_out) and lamps(place.eyes) == 0
 
@@ -1241,6 +1368,11 @@ steps(D.FULL // D.WIND + 3)
 assert sim.b7("phase") == 2
 leave_all()
 assert sim.b7("phase") == 4 and gone() == [True] * 3 and not pair()
+# and the game's reset from there: the lanterns back, the doors shut
+assert dim() == len(lights)
+sim.run("dome/7/reset")
+assert dim() == 0
+as_built("reset from the breach")
 
 # ---- the escort, from level 6: an automaton or two beside him
 leave_all()
@@ -1359,8 +1491,37 @@ class Ctx:
                 self.scan()
             if sim.get("#occ7"):
                 sim.run("dome/7/tick")
+            self.fight()
+
+    def fight(self):
+        # the one thing of the game's own that the check waits for: a
+        # ravager bites a golem set before it, if its rider is a raider
+        prey = sim.select("@e[tag=" + D.PREY + "]", None)
+        riders = sim.select("@e[tag=" + D.RIDER + ",type=#minecraft:raiders]", None)
+        if prey and riders and sim.select("@e[tag=" + D.RAVAGER + "]", None):
+            prey[0]["health"] -= 1
 
     def cmd(self, command, expect=None):
+        asked = re.match(
+            r"attribute (.+) minecraft:(scale|attack_damage) (get|base [gs]et)(.*)",
+            command,
+        )
+        if asked:
+            who, name, verb, value = asked.groups()
+            for e in sim.select(who, None):
+                if verb == "base set":
+                    e[name] = float(value)
+                elif name == "scale":
+                    size = re.search(r'minecraft:scale",base:([\\d.]+)d', e["nbt"])
+                    return "Value of attribute Scale is " + size.group(1)
+                else:
+                    return "Base value of attribute is " + str(e.get(name, 5.0))
+            return ""
+        if command.startswith("summon minecraft:iron_golem"):
+            sim.command(command, None)
+            health = re.search(r"Health:(\\d+)f", command)
+            sim.entities[-1]["health"] = int(health.group(1))
+            return ""
         if command.startswith("attribute") and "follow_range base get" in command:
             return "Base value of attribute Follow Range for Zombie is 48.0"
         if command.startswith("data remove storage"):
@@ -1426,7 +1587,16 @@ class Ctx:
             return ""
         e = found[0]
         effects = " ".join(e["effects"])
-        return {"Passengers": e.get("nbt", ""), "active_effects": effects}[path]
+        nbt = e.get("nbt", "")
+        name = re.search(r"CustomName:(\\{[^}]*\\})", nbt)
+        return {
+            "Passengers": nbt,
+            "active_effects": effects,
+            "equipment": nbt[nbt.find("equipment:"):],
+            "CustomName": name.group(1) if name else "",
+            "CustomNameVisible": "1b" if "CustomNameVisible:1b" in nbt else "",
+            "Health": str(e.get("health", 0)) + "f",
+        }[path]
 
 
 for command in rec.commands:  # what the build summoned
@@ -1444,11 +1614,16 @@ try:  # a run in progress: refused (game_checks.no_run)
 except SystemExit:
     pass
 ctx.run_checked = True  # as FORCE=1: what it puts back is tried too
+if NO_TAG:  # the pack's addition to the game's raiders did not take
+    pack.tags.clear()
 problems = D.check(ctx)
 # (nothing moves the cylinders' pistons here: real redstone does)
 real = [p for p in problems if "cylinders stood still" not in p]
-assert not real, real
-assert len(problems) == 2, problems
+if NO_TAG:  # the check says so, and that the ravager did not bite
+    assert len(real) == 2 and "raiders" in real[0] and "did not bite" in real[1], real
+else:
+    assert not real, real
+assert len(problems) - len(real) == 2, problems
 # it leaves the game as it found it, and no stand-in behind
 assert sim.get("#run") == 1 and sim.get("#solved") == 6 and sim.get("#d7") == 1
 assert not sim.select("@e[tag=st.standin]", None) and not mobs()
@@ -1458,5 +1633,7 @@ print(ctx.t)
 
 def test_station_boss_live_check_logic():
     for phase_2 in (False, True):
-        out = run(state_machine(phase_2, LIVE))
+        out = run(state_machine(phase_2, "NO_TAG = False\n" + LIVE))
         assert int(out.split()[-1]) > 3000  # ticks: it was worked, not skipped
+    # a rider the game does not let a ravager fight under: the check finds it
+    run(state_machine(True, "NO_TAG = True\n" + LIVE))

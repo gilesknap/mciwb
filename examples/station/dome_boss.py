@@ -8,14 +8,44 @@ steam mains, each on a different level of the dome, while it sends
 automatons to move you off them; then (phase 2) fight what comes out of
 the firebox when the last one shuts.
 
-**The switch.** ``PHASE_2`` (below) is the one switch of this module.
-Off, the fight ends when the third main shuts: that is the win. On, the
-third main starts the breach: the firebox doors are forced from inside
-and the Master comes out on his ravager; the win is their death. The
-room, the mains and phase 1 are the same either way, and phase 2's
-functions are in the pack only when the switch is on, so that a line of
-theirs the game refuses cannot stop the pack that phase 1 needs. What
-phase 2 assumes, none of it proved yet, is listed at ``PHASE_2``.
+**The switch.** ``PHASE_2`` (below) is the one switch of this module, and
+it is on. On, the third main starts the breach: the firebox doors are
+forced from inside and the Master comes out on his ravager; the win is
+their death. Off, the fight ends when the third main shuts: that is the
+win. The room, the mains and phase 1 are the same either way, and phase
+2's functions are in the pack only when the switch is on, so that a line
+of theirs the game refuses cannot stop the pack that phase 1 needs. What
+phase 2 assumes and no server has yet shown is listed at ``PHASE_2``.
+
+**Phase 2, in order.** *The breach* (7 s, no fighting): the automatons
+are gone; the lights fail (the lanterns in the floor dim to copper bulbs,
+``floor_lights``, and the players are given the Darkness effect for a few
+seconds); a title, "THE MAINS ARE SHUT"; the Master's red bossbar comes
+up empty and fills as he breaks out; knocking in the firebox; its doors
+are forced in three bangs from the middle outwards. Nobody can stand in
+the porch or the firebox meanwhile (``breach/clear``). *The Master*
+(``master/out``): Old Grinder, a ravager, comes out of the firebox with
+the Master on its back (``master_nbt``: a husk a quarter bigger than
+life, in the whole golden suit trimmed with copper, a golden axe, his
+name in gold over him); a title, "THE MASTER", a roar. The bar is their
+two healths added; their health is by who is in the dome when he comes
+out (170% for two, 50% more for each beyond) and by the level. The
+ravager dead, he fights on foot; both dead is the win: the bar goes, the
+lanterns come back, and the end is phase 1's own (``won``).
+
+- *No outlasting him.* With nobody in the arena (all dead or in the
+  pavilion) the pair cannot be hurt, and after ``mend`` they mend about
+  two points a second. The high level, where the ravager cannot follow,
+  is steamed seven seconds in fourteen once a player has been up for five.
+- *The dead respawn in the antechamber*: the core's respawn point for
+  this dome is its entrance spot, in the pavilion, which no mob stays in
+  (``fence``: the ravager is put back at ``back``, carrying its rider).
+  Dying costs the walk back; the Master keeps his wounds.
+- *A rider that draws armour.* A ravager fights by itself only under a
+  rider of the game's entity tag ``#minecraft:raiders`` (the rig: it bit
+  under a vindicator and only carried a husk). No illager draws armour,
+  so the pack adds the husk to that tag (``RIDER_MOB``). The live check
+  sets a golem before the pair and reports a ravager that does not bite.
 
 **A main** (``Main``: A on the floor to the right of the way in, B on the
 gallery to the left, over the way out, C on the high platform behind the
@@ -125,6 +155,7 @@ on purpose (``domes.allow``, below): it is the antechamber.
 from __future__ import annotations
 
 import math
+import re
 from dataclasses import dataclass, field
 from functools import cache
 from typing import TYPE_CHECKING, Any
@@ -148,29 +179,38 @@ INDEX = 7  # the Engine's place in the ring
 OBJ = game.OBJ
 
 # ============================================================================
-# THE SWITCH. False: the room, the mains and phase 1, and the third main shut
-# is the win. True: the third main starts the breach and phase 2 (the Master
-# on his ravager). Leave it False until the owner has tried the pair at the
-# test bench. The rig (PROGRESS, "Rig, second round") proved, against an iron
-# golem: the pair hunts and bites by itself with ``mob_griefing`` off, the
-# vindicator strikes from its back, it passes under a deck 5 up, climbs
-# stairs 3 and 2 wide and not 1 wide; ``damage @s <n> minecraft:generic``
-# from a function hurts (husks). Still unproved, as written here:
+# THE SWITCH. True: the third main starts the breach and phase 2 (the Master
+# on his ravager). False: the room, the mains and phase 1, and the third main
+# shut is the win. The rig (PROGRESS, "Rig, second round") proved, against an
+# iron golem: a ravager with a vindicator up hunts and bites by itself with
+# ``mob_griefing`` off and the vindicator strikes from its back; with a husk
+# up it only carries, and the husk strikes; it passes under a deck 5 up,
+# climbs stairs 3 and 2 wide and not 1 wide; ``damage @s <n>
+# minecraft:generic`` from a function hurts (husks). Not yet shown by any
+# server, as written here (the live check reads all but 1, 7 and 8 back):
 #
-# 1. any of the pair's fight against a player, and the vindicator fighting
-#    on foot once the ravager dies;
-# 2. ``Team`` in the NBT of the ravager and of its passenger puts both on the
+# 1. any of the pair's fight against a player, and the Master fighting on
+#    foot once the ravager dies;
+# 2. ``#minecraft:raiders`` with the husk added by this pack lets the
+#    ravager fight under him (the check: the tag took; the golem was bitten);
+# 3. the Master's NBT: the trims (``components:{"minecraft:trim":...}``),
+#    ``minecraft:scale`` in ``attributes``, ``CustomName`` as a compound,
+#    ``CustomNameVisible`` (the check reads each back; that they are drawn,
+#    and how he sits at that size, only an eye can tell);
+# 4. ``Team`` in the NBT of the ravager and of its passenger puts both on the
 #    automatons' team, so that a Riveter's stray arrow starts no fight;
-# 3. the core's ``station:mob/dress`` (max health, attack damage, ``Health``)
-#    works on a ravager and on a vindicator, called ``with storage``;
-# 4. ``data get entity <mob> Health`` stored in a score reads their health;
-# 5. ``effect give`` of Resistance 5 and of Regeneration takes on both;
-# 6. the steam's ``damage`` on a player;
-# 7. the pair passes the firebox's doorway (5 wide, 5 high);
-# 8. a teleport of the ravager carries its rider (the pavilion's fence; the
-#    fence's own comment assumes it does not, and moves him only on foot).
+# 5. the core's ``station:mob/dress`` (max health, attack damage, ``Health``)
+#    works on a ravager and its rider, called ``with storage``; ``data get
+#    entity <mob> Health`` stored in a score reads their health;
+# 6. ``effect give`` of Resistance 5 and of Regeneration takes on both, and
+#    a teleport of the ravager carries its rider (the pavilion's fence);
+# 7. the steam's ``damage`` and the Darkness effect on a player;
+# 8. the pair passes the firebox's doorway (5 wide, 5 high).
+#
+# If the ravager will not bite under the husk, ``RIDER_MOB`` (below) set to
+# the vindicator is the pair the rig proved, at the cost of the armour.
 # ============================================================================
-PHASE_2 = False
+PHASE_2 = True
 
 domes.allow(
     INDEX,
@@ -196,12 +236,38 @@ MEND = 10  # steps with nobody in the arena before the Master mends
 # phase 2
 RAVAGER_HP, RAVAGER_DAMAGE = 100, 120  # as ``mob/dress`` takes them
 MASTER_HP, MASTER_DAMAGE = 40, 50
+#: who rides the ravager. A husk draws armour, and the rig saw one ride and
+#: strike from a ravager's back; a ravager fights by itself only under a
+#: rider of the game's tag ``#minecraft:raiders``, so the pack puts the
+#: husk in that tag (``RAIDERS_TAG``). ``minecraft:vindicator`` is the pair
+#: the rig proved whole (the ravager bites under him), and he is in the tag
+#: already; but an illager draws no armour: he is a grey coat with an axe
+RIDER_MOB = "minecraft:husk"
+RAIDERS_TAG = "minecraft:raiders"
+#: the mobs that tag holds in the game itself
+RAIDERS = ("evoker", "illusioner", "pillager", "ravager", "vindicator", "witch")
+MASTER_NAME, MOUNT_NAME = "The Master", "Old Grinder"
+MASTER_SCALE = 1.25  # a quarter bigger than a man
+#: his brass: the players' own (the core's kit for this dome is a golden
+#: helm and cuirass), the whole suit, trimmed in copper
+MASTER_KIT = {
+    "head": "minecraft:golden_helmet",
+    "chest": "minecraft:golden_chestplate",
+    "legs": "minecraft:golden_leggings",
+    "feet": "minecraft:golden_boots",
+}
+MASTER_TRIM = ("minecraft:copper", "minecraft:silence")  # material, pattern
+MASTER_AXE = "minecraft:golden_axe"
 TWO_PLAYERS, MORE_PLAYERS = 170, 50  # percent of health for two, and each more
 EARLY = 10  # steps: the pair lost sooner than this is no win
 ROAR = 6  # steps a player is in the arena before the Master comes out again
 BREACH = (4, 6, 8, 10, 14)  # steps: the knock, the doors' three bangs, out
 VENT_AFTER, VENT_CYCLE, VENT_WARN, VENT_BLOW = 10, 28, 6, 14  # steps
 ESCORT_FROM = 110  # ``#diff.health`` from which the Master has an escort
+DARK = 8  # seconds of the Darkness effect when the mains shut
+#: what the floor's lanterns become while the Master is about: a dim lamp
+#: (light 8, where a sea lantern gives 15)
+DIM = "minecraft:waxed_weathered_copper_bulb[lit=true]"
 
 BRASS = "minecraft:gold_block"
 COPPER = "minecraft:waxed_copper_block"
@@ -1255,31 +1321,90 @@ def _lamp(cell: Cell, score: str, lit: str, dark: str) -> list[str]:
     return fittings.gauge_lines([cell], score, 1, lit, dark)
 
 
+def floor_lights(dome: Dome) -> tuple[Cell, ...]:
+    """the core's lanterns in this dome's floor that the breach dims: all
+    but any that touches the room's redstone (a cylinder's clock, a main's
+    post), since what they become is a copper bulb, which a pulse beside
+    it would flip"""
+    b = room_blocks(dome)
+    live = set(b.moving)
+    for main in room(dome).mains:
+        live |= main.post.cells
+    near = {
+        (x + dx, y + dy, z + dz)
+        for x, y, z in live
+        for dx in (-1, 0, 1)
+        for dy in (-1, 0, 1)
+        for dz in (-1, 0, 1)
+    }
+    lights = domes.light_cells(dome)[0]
+    return tuple(sorted(lights - near - set(b.everything()) - b.clear))
+
+
+def rider_is_raider() -> bool:
+    """whether the Master's mob is one the game itself lets a ravager
+    fight under"""
+    return RIDER_MOB.removeprefix("minecraft:") in RAIDERS
+
+
+def master_nbt(tags: tuple[str, ...], common: str) -> str:
+    """the Master as a passenger: named in gold over his head, a quarter
+    bigger than life, in the whole brass suit trimmed with copper and with
+    a golden axe, none of which he drops. (On a vindicator the suit is
+    worn and not drawn.)"""
+    material, pattern = MASTER_TRIM
+    trim = (
+        f'components:{{"minecraft:trim":{{material:"{material}",pattern:"{pattern}"}}}}'
+    )
+    worn = [
+        f'{slot}:{{id:"{item}",count:1,{trim}}}' for slot, item in MASTER_KIT.items()
+    ]
+    worn.append(f'mainhand:{{id:"{MASTER_AXE}",count:1}}')
+    kept = ",".join(f"{slot}:0f" for slot in (*MASTER_KIT, "mainhand"))
+    attributes = [f'{{id:"minecraft:scale",base:{MASTER_SCALE}d}}']
+    more = ""
+    if RIDER_MOB.removeprefix("minecraft:") in automatons.ZOMBIES:
+        attributes.append('{id:"minecraft:spawn_reinforcements",base:0d}')
+        more = "IsBaby:0b,"
+    listed = ",".join(f'"{t}"' for t in tags)
+    return (
+        f'{{id:"{RIDER_MOB}",Tags:[{listed}],'
+        f'CustomName:{{text:"{MASTER_NAME}",color:"gold",bold:true}},'
+        f"CustomNameVisible:1b,{common},{more}"
+        f"attributes:[{','.join(attributes)}],"
+        f"equipment:{{{','.join(worn)}}},drop_chances:{{{kept}}}}}"
+    )
+
+
+def pair_summon(
+    where: str, mount_tags: tuple[str, ...], rider_tags: tuple[str, ...], common: str
+) -> str:
+    """the command that summons the ravager with the Master on its back
+    (``common``: NBT both are given)"""
+    listed = ",".join(f'"{t}"' for t in mount_tags)
+    return (
+        f"summon minecraft:ravager {where} "
+        f'{{Tags:[{listed}],CustomName:"{MOUNT_NAME}",{common},'
+        f"Passengers:[{master_nbt(rider_tags, common)}]}}"
+    )
+
+
 def master_summon(spot: Cell) -> str:
     """
     The command that summons the pair of phase 2: Old Grinder, a ravager,
-    with the Master, a vindicator, on its back. Written here, as
-    ``automatons.summon`` has no passengers; it follows that function's
-    rules by hand: both named, on the automatons' team, persistent,
-    picking nothing up, dropping nothing. They carry this dome's own tags
-    and not the automatons', so that the core does not sweep them from
-    round the entrance when a player respawns, nor dress them as a wave.
+    with the Master (``RIDER_MOB``, ``master_nbt``) on its back. Written
+    here, as ``automatons.summon`` has no passengers; it follows that
+    function's rules by hand: both named, on the automatons' team,
+    persistent, picking nothing up, dropping nothing. They carry this
+    dome's own tags and not the automatons', so that the core does not
+    sweep them from round the entrance when a player respawns, nor dress
+    them as a wave.
     """
     common = (
         f'Team:"{automatons.TEAM}",PersistenceRequired:1b,CanPickUpLoot:0b,'
         f'DeathLootTable:"station:{automatons.LOOT}"'
     )
-    rider = (
-        f'{{id:"minecraft:vindicator",Tags:["{BOSS}","{RIDER}"],'
-        f'CustomName:"The Master",{common},'
-        'equipment:{mainhand:{id:"minecraft:golden_axe",count:1}},'
-        "drop_chances:{mainhand:0f}}"
-    )
-    return (
-        f"summon minecraft:ravager {middle(spot)} "
-        f'{{Tags:["{BOSS}","{RAVAGER}"],CustomName:"Old Grinder",{common},'
-        f"Passengers:[{rider}]}}"
-    )
+    return pair_summon(middle(spot), (BOSS, RAVAGER), (BOSS, RIDER), common)
 
 
 def clock_torches(place: Room) -> dict[Cell, str]:
@@ -1682,7 +1807,8 @@ def functions(pack: dp.Pack) -> None:
         fence += [
             f"execute as @e[tag={RAVAGER},{box(place.fence)}] "
             f"run tp @s {middle(place.back)}",
-            # (a teleport takes a rider off its mount: the Master is put
+            # (a mount that is teleported carries its rider, and a rider
+            # teleported by himself is taken off it: the Master is put
             # back by himself only once he is on foot)
             f"execute unless entity @e[tag={RAVAGER}] as @e[tag={RIDER},"
             f"{box(place.fence)}] run tp @s {middle(place.back)}",
@@ -1713,6 +1839,7 @@ def functions(pack: dp.Pack) -> None:
             automatons.remove_line(INDEX),
             remove_boss,
             bar.hide,
+            *([call("lights/full")] if PHASE_2 else []),
             *(_setblock(cell, f"{BULB}[lit=false]") for cell in place.eyes),
             *(_setblock(cell, AIR) for cell in torches),
             sound("block.beacon.deactivate", heart, 3, 0.5),
@@ -1836,7 +1963,7 @@ def functions(pack: dp.Pack) -> None:
     pack.function(f"{base}/face/open", [_setblock(c, AIR) for c in place.doors])
 
     if PHASE_2:
-        _phase_2(pack, place, bar, title, sound, say, call, box)
+        _phase_2(pack, dome, place, bar, title, sound, say, call, box)
 
     # -- a step, and the hooks
     phases = ["p0", "p1"] + (["breach/step", "p3", "p4"] if PHASE_2 else [])
@@ -1952,6 +2079,7 @@ def functions(pack: dp.Pack) -> None:
                 for c, block in torches.items()
             ),
             call("face/shut"),
+            *([call("lights/full")] if PHASE_2 else []),
             dp.fill(lo, hi, AIR),
             automatons.remove_line(INDEX),
             call("signs"),
@@ -1962,6 +2090,7 @@ def functions(pack: dp.Pack) -> None:
 
 def _phase_2(
     pack: dp.Pack,
+    dome: Dome,
     place: Room,
     bar: Any,
     title: Any,
@@ -1979,8 +2108,29 @@ def _phase_2(
     doorway = place.door_columns[0][2]
     store = f"{game.STORE} b7"
     occ = f"#occ{INDEX}"
+    knock, *bangs, out = BREACH
+    pack.constants(OBJ, out)
+    if not rider_is_raider():
+        # a ravager fights by itself only under one of these (see RIDER_MOB)
+        pack.tag("entity_type", RAIDERS_TAG, [RIDER_MOB])
 
-    # -- the breach: the doors forced from the middle outwards
+    # -- the light: the floor's lanterns dim while he is about
+    lights = floor_lights(dome)
+    pack.function(f"{base}/lights/dim", [_setblock(c, DIM) for c in lights])
+    pack.function(f"{base}/lights/full", [_setblock(c, domes.LIGHT) for c in lights])
+    # -- nobody stands in the doorway he comes out of: the porch and the
+    # firebox, as one box
+    corners = (*place.porch, *place.firebox)
+    low, top = (
+        tuple(pick(c[i] for c in corners) for i in range(3)) for pick in (min, max)
+    )
+    pack.function(
+        f"{base}/breach/clear",
+        [f"tp @e[tag=st.in,{box((low, top))}] {middle(place.back)}"],
+    )
+
+    # -- the breach: the lights fail, the bar fills, and the doors are
+    # forced from the middle outwards
     pack.function(
         f"{base}/breach/start",
         [
@@ -1988,9 +2138,15 @@ def _phase_2(
             _set("t", 0),
             *(_set(name, 0) for name in ("wa", "wb", "wc", "ra", "rb", "rc", "amb")),
             automatons.remove_line(INDEX),
-            f"tp @e[tag=st.in,{box(place.porch)}] {middle(place.back)}",
+            call("breach/clear"),
+            call("lights/dim"),
+            f"effect give {here} minecraft:darkness {DARK} 0 true",
+            f"bossbar set {bar.id} value 0",
+            bar.show,
             *title("THE MAINS ARE SHUT", "Something is knocking in the firebox."),
             sound("block.beacon.deactivate", heart, 3, 0.5),
+            sound("entity.warden.heartbeat", heart, 3, 0.6),
+            say("The lamps fail. The firebox doors are moving.", "red"),
         ],
     )
     for i, column in enumerate(place.door_columns):
@@ -2002,11 +2158,16 @@ def _phase_2(
                 f"particle minecraft:large_smoke {middle(doorway)} 1.5 1.5 0.5 0.05 60",
             ],
         )
-    knock, *bangs, out = BREACH
     pack.function(
         f"{base}/breach/step",
         [
             _add("t"),
+            call("breach/clear"),
+            # the Master's bar fills as he breaks out
+            _op("pct", "=", "#b7.t"),
+            _op("pct", "*=", "#100"),
+            _op("pct", "/=", f"#{out}"),
+            bar.value_line(_s("pct")),
             f"execute {_if('t', f'{knock}..{bangs[0] - 1}')} run "
             + sound("entity.zombie.attack_iron_door", doorway, 3, 0.5),
             *(
@@ -2038,6 +2199,7 @@ def _phase_2(
         [
             f"execute as {boss} run function {pack.id('mob/remove')}",
             call("face/open"),
+            call("breach/clear"),
             master_summon(place.spot),
             # two players: 170%; each one more: 50% more
             _set("mult", 100),
@@ -2056,8 +2218,10 @@ def _phase_2(
             *(_set(name, 0) for name in ("t", "idle", "up", "vent", "esc")),
             # from level 6 he has an escort: one automaton, or two
             f"execute {_if('hp', f'{ESCORT_FROM}..')} run {_op('esc', '=', '#b7.form')}",
-            *title("THE MASTER", "T. Marsh, on Old Grinder"),
+            *title("THE MASTER", "T. Marsh, on Old Grinder", "gold"),
             sound("entity.ravager.roar", heart, 3, 0.8),
+            sound("entity.wither.spawn", heart, 2, 0.8),
+            f"particle minecraft:flame {middle(doorway)} 1.5 1.5 0.5 0.1 80",
         ],
     )
     pack.function(
@@ -2173,6 +2337,8 @@ def _phase_2(
 # --------------------------------------------------------------- the check
 
 S1, S2 = "st.e1", "st.e2"
+PREY = "st.b7.prey"  # the golem the check sets before the ravager
+BITE_WAIT = 600  # ticks the check gives the ravager to bite it
 
 
 def check(ctx: Any) -> list[str]:
@@ -2183,19 +2349,31 @@ def check(ctx: Any) -> list[str]:
     be out of the arena; a lever is thrown and the recall button clicked
     by setting the block or the entity as a hand would leave it. With
     ``PHASE_2`` off the third main is the win; on, the breach and the
-    Master are worked too. It solves dome 7, which is the game's win: the
-    run's scores are saved and put back, and ``#run.level`` is 0 while it
-    runs so that no best time is touched. It resets its own dome and its
-    own tunnel and nothing else, and leaves no stand-in behind.
+    Master are worked too: the lanterns dimmed and the bar up at the
+    breach, the porch kept clear, the doors' order; the pair out, the
+    Master's kit, trims, size and name read back, his mob among the game's
+    raiders, their health; lost early and out again; a golem set before
+    them and bitten by the ravager with the rider's blow at nothing; the
+    ravager put out of the pavilion with its rider still up; Resistance
+    and mending with nobody in the arena; the steam's cycle; the ravager
+    dead, the Master dead, the win, the lanterns back; the dome emptied in
+    the breach, and he out again whole.
+
+    It solves dome 7, which is the game's win: the run's scores are saved
+    and put back, and ``#run.level`` is 0 while it runs so that no best
+    time is touched. It resets its own dome and its own tunnel and nothing
+    else, and leaves no stand-in behind.
 
     What stand-ins cannot prove (all in the play-test list): a lever
     thrown by hand, and a player's own body on a deck; a dead partner not
     counting in the arena (a stand-in does not die: it is moved to the
     pavilion); everything aimed at players: titles, chat, sounds,
-    particles, the bossbar, the steam's ``damage``, the trophy sign given
-    and placed; that automatons, or the Master and his ravager, go for a
-    player, find a way round the Engine and up the ramps, and fight
-    fairly; the governor seen turning (its displays are only counted); the
+    particles, the bossbar, the Darkness at the breach, the steam's
+    ``damage``, the trophy sign given and placed; that automatons, or the
+    Master and his ravager, go for a player, find a way round the Engine
+    and up the ramps, and fight fairly; how the Master looks (that his
+    armour, trims and name are drawn, how he sits on the ravager at his
+    size) and how dim the room is with the floor's lanterns down; the governor seen turning (its displays are only counted); the
     automatons set on the nearest player as they come (a stand-in is no
     ``@a``).
 
@@ -2212,6 +2390,7 @@ def check(ctx: Any) -> list[str]:
     finally:
         ctx.cmd(f"kill @e[tag={S1}]")
         ctx.cmd(f"kill @e[tag={S2}]")
+        ctx.cmd(f"kill @e[tag={PREY}]")
         for name, value in saved.items():
             ctx.set_score(name, value or 0)
         game_checks.restore_level(ctx, saved_level)
@@ -2354,6 +2533,27 @@ def _check(ctx: Any, saved: dict[str, int | None]) -> list[str]:
             problems.append(
                 f"{what}: {len(still)} parts of the cylinders stood still: {still[:4]}"
             )
+
+    lights = floor_lights(dome)
+    in_porch = f"@e[tag={S1},{dp.box_selector(*place.porch)}]"
+    in_fence = f"@e[tag={BOSS},{dp.box_selector(*place.fence)}]"
+
+    def dimmed() -> int:
+        return sum(ctx.is_block(cell, DIM) for cell in lights)
+
+    def bar_shown() -> bool:
+        reply = ctx.cmd(f"bossbar get {automatons.bar_id(INDEX)} visible", "currently")
+        return "hidden" not in reply
+
+    def attribute(who: str, what: str) -> float | None:
+        reply = ctx.cmd(f"attribute {who} minecraft:{what}", "is ")
+        m = re.search(r"is (-?[\d.]+)", reply)
+        return float(m.group(1)) if m else None
+
+    def riding() -> bool:
+        """the Master is on the ravager's back"""
+        mob = RIDER_MOB.removeprefix("minecraft:")
+        return mob in ctx.data(f"entity @e[tag={RAVAGER},limit=1] Passengers")
 
     def unsolve() -> None:
         """the room and its tunnel put back, the dome open and unsolved,
@@ -2523,9 +2723,15 @@ def _check(ctx: Any, saved: dict[str, int | None]) -> list[str]:
     steps(5)
     expect("main C shut", {"lc": get("lc"), "shut": get("shut")}, {"lc": 1, "shut": 3})
     if PHASE_2:
-        # the breach: no automatons, the doors forced from the middle out
+        # the breach: no automatons, the lights dimmed, the bar up and
+        # filling, the doors forced from the middle out
         expect("the breach: the phase", get("phase"), 2)
         expect("the breach: automatons", ctx.count(mobs), 0)
+        expect("the breach: the floor's lanterns dimmed", dimmed(), len(lights))
+        expect("the breach: the Master's bar shown", bar_shown(), True)
+        # one who walks into the porch while the doors go is put back
+        # (moved with no wait for a scan: the doors' order is timed below)
+        ctx.cmd(f"tp @e[tag={S1}] {middle(place.porch[0])}")
         order = []
         for _ in range(BREACH[-1] + 4):
             gone = [
@@ -2541,21 +2747,38 @@ def _check(ctx: Any, saved: dict[str, int | None]) -> list[str]:
             [True] * 3,
         ]
         expect("the doors forced, by column", order, want_order)
+        expect("the breach: the porch kept clear", ctx.count(in_porch), 0)
         # the pair, out of the firebox, at the level's health
+        ravager, rider = f"@e[tag={RAVAGER},limit=1]", f"@e[tag={RIDER},limit=1]"
         got = {
             "phase": get("phase"),
             "ravager": ctx.count(f"@e[type=minecraft:ravager,tag={RAVAGER}]"),
-            "rider": ctx.count(f"@e[type=minecraft:vindicator,tag={RIDER}]"),
+            "rider": ctx.count(f"@e[type={RIDER_MOB},tag={RIDER}]"),
             "team": ctx.count(f"@e[tag={BOSS},team={automatons.TEAM}]"),
         }
         expect("the Master out", got, {"phase": 3, "ravager": 1, "rider": 1, "team": 2})
-        riding = ctx.data(f"entity @e[tag={RAVAGER},limit=1] Passengers")
-        expect("the Master on the ravager", "vindicator" in riding, True)
+        expect("the Master on the ravager", riding(), True)
+        # as he is meant to look: the brass suit, trimmed, the axe, his
+        # size, his name over him (that the game draws them: by eye)
+        kit = ctx.data(f"entity {rider} equipment")
+        missing = [
+            item for item in (*MASTER_KIT.values(), MASTER_AXE) if item not in kit
+        ]
+        expect("the Master's kit, missing", missing, [])
+        expect("the Master's trims", kit.count(MASTER_TRIM[1]), len(MASTER_KIT))
+        expect("the Master's size", attribute(rider, "scale get"), MASTER_SCALE)
+        named = ctx.data(f"entity {rider} CustomName")
+        expect(f"the Master's name ({named!r})", MASTER_NAME in named, True)
+        shown = ctx.data(f"entity {rider} CustomNameVisible")
+        expect("the Master's name over him", shown, "1b")
+        # the ravager fights by itself only under a rider of the game's
+        # tag of raiders: the pack's addition to it took
+        raider = ctx.count(f"@e[tag={RIDER},type=#{RAIDERS_TAG}]")
+        expect("the Master one of the game's raiders", raider, 1)
         full = (RAVAGER_HP + MASTER_HP) * scaled(level)["hp"] // 100
         if abs(get("hmax") - full) > 2:
             problems.append(f"the pair's health, one player: {get('hmax')}, not {full}")
-        shown = ctx.cmd(f"bossbar get {automatons.bar_id(INDEX)} visible", "currently")
-        expect("the Master's bar shown", "hidden" in shown, False)
+        expect("the Master's bar shown", bar_shown(), True)
         # lost inside five seconds: he comes out again, and it is no win
         ctx.cmd(f"kill @e[tag={BOSS}]")
         steps(3)
@@ -2563,9 +2786,45 @@ def _check(ctx: Any, saved: dict[str, int | None]) -> list[str]:
         expect("the pair lost at once: out again", got, {"phase": 3, "pair": 2})
         expect("the pair lost at once: the dome", ctx.score(f"#d{INDEX}"), 1)
         steps(EARLY + 2)
+        # the ravager bites by itself with this rider up, as at the rig: a
+        # golem that cannot move, of no team, set before them; the rider's
+        # own blow set to nothing and his axe taken (it strikes by itself),
+        # so that what the golem loses the ravager took
+        blow = attribute(rider, "attack_damage base get")
+        ctx.cmd(f"attribute {rider} minecraft:attack_damage base set 0")
+        ctx.cmd(f"item replace entity {rider} weapon.mainhand with {AIR}")
+        ctx.cmd(
+            f"summon minecraft:iron_golem {floor} "
+            f'{{Tags:["{PREY}"],NoAI:1b,PersistenceRequired:1b,'
+            f'DeathLootTable:"station:{automatons.LOOT}",'
+            'attributes:[{id:"minecraft:max_health",base:1000d}],Health:1000f}'
+        )
+        prey = f"@e[tag={PREY},limit=1]"
+        lost = 0.0
+        for _ in range(BITE_WAIT // 40):
+            ctx.advance(40)
+            health = ctx.data(f"entity {prey} Health").rstrip("f")
+            lost = 1000 - float(health or 1000)
+            if lost > 0:
+                break
+        if lost <= 0:
+            problems.append(
+                f"the ravager did not bite a golem in {BITE_WAIT // 20} s with a "
+                f"{RIDER_MOB} up (see RIDER_MOB)"
+            )
+        expect("the Master still on the ravager after it fought", riding(), True)
+        ctx.cmd(f"kill @e[tag={PREY}]")
+        ctx.cmd(f"attribute {rider} minecraft:attack_damage base set {blow or 0}")
+        ctx.cmd(f"item replace entity {rider} weapon.mainhand with {MASTER_AXE}")
+        kit = ctx.data(f"entity {rider} equipment")
+        expect("the Master's axe given back", MASTER_AXE in kit, True)
+        # a mount in the pavilion is put out, and carries its rider
+        ctx.cmd(f"tp {ravager} {entrance}")
+        steps(2)
+        expect("the ravager put out of the pavilion", ctx.count(in_fence), 0)
+        expect("the ravager put out: the Master still on it", riding(), True)
         # nobody in the arena: he cannot be hurt, and then he mends
         stand(S1, entrance)
-        ravager = f"@e[tag={RAVAGER},limit=1]"
         ctx.cmd(f"data modify entity {ravager} Health set value 20f")
         steps(3)
         effects = ctx.data(f"entity {ravager} active_effects")
@@ -2593,6 +2852,8 @@ def _check(ctx: Any, saved: dict[str, int | None]) -> list[str]:
             problems.append(f"the bar after the ravager died: {before} to {get('pct')}")
         ctx.cmd(f"kill @e[tag={RIDER}]")
         steps(3)
+        expect("the Master dead: the floor's lanterns back", dimmed(), 0)
+        expect("the Master dead: his bar hidden", bar_shown(), False)
     won("solo")
     # the tunnel home pumps dry and opens; the dome stays dry and whole
     ctx.advance(tunnels.event_ticks(tunnel) + 60)
@@ -2648,6 +2909,7 @@ def _check(ctx: Any, saved: dict[str, int | None]) -> list[str]:
         got = {"phase": get("phase"), "pair": ctx.count(f"@e[tag={BOSS}]")}
         expect("back in the arena: he comes out", got, {"phase": 3, "pair": 2})
         expect("he comes out at full health", get("hsum"), get("hmax"))
+        expect("he waits and comes out: the lanterns still dim", dimmed(), len(lights))
 
     # ---- two players: the form follows who is in the arena
     unsolve()
@@ -2793,6 +3055,7 @@ def _check(ctx: Any, saved: dict[str, int | None]) -> list[str]:
     ctx.function(f"{base}/reset")
     ctx.advance(40)
     as_built("left")
+    expect("left: the floor's lanterns dimmed", dimmed(), 0)
     cylinders_run("left")
     got, wanted = tunnels.counts(ctx, tunnel), tunnels.expected(tunnel, 0)
     expect("tunnel 7 left shut and flooded", got, wanted)

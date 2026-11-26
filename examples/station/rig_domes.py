@@ -2109,7 +2109,8 @@ def x11_run(b: Bench, m: Machine) -> None:
 # the bench's pack reads each tick and sets back (itself the Signal Room's
 # test), a notice, and a way to clear up. Nothing of the station's is used
 # or changed but the far landing, which the gangway leaves from: the bench
-# has its own pack, namespace, objectives, tags and loot table. A player is
+# has its own pack, namespace, objectives, tags and loot table (bay 5 takes
+# the Master's summon from dome_boss.py, so that what is seen there is him). A player is
 # "at the bench" inside its box; on leaving, the bench's items are taken
 # back, and with nobody there its mobs are removed and the bays put right.
 
@@ -2339,11 +2340,12 @@ def bench_plan() -> Hand:
         26,
         0,
         4,
-        "5 THE ENGINE. A ravager with a vindicator on it, and an iron "
-        "golem for them to fight, behind glass: they cannot see or reach "
-        "you. The ravager should charge and bite by itself, the rider "
-        "swing from its back and stay up. Is it frightening enough, and "
-        "too much for a child?",
+        "5 THE ENGINE. The Master on his ravager, as the Engine's fight "
+        "summons them, and an iron golem for them to fight, behind glass: "
+        "they cannot see or reach you. Does he look like a master of "
+        "brass: gold armour trimmed with copper, an axe, his name over "
+        "him? The ravager should charge and bite by itself, the rider "
+        "swing from its back and stay up.",
     )
     return h
 
@@ -2352,6 +2354,13 @@ def bench_pack(h: Hand) -> dp.Pack:
     pack = dp.Pack(BNS, BNS, "The Drowned Station: the test bench by the dock")
     pack.objectives({BOBJ: "dummy", BDIED: "deathCount"})
     empty = pack.loot_table("empty", {"pools": []})
+    # bay 5 shows the Master as the Engine summons him, and gives his mob
+    # the same place among the game's raiders (see dome_boss.RIDER_MOB)
+    import dome_boss
+
+    boss_tags = (BTAG, "bench.mob", "bench.boss")
+    if not dome_boss.rider_is_raider():
+        pack.tag("entity_type", dome_boss.RAIDERS_TAG, [dome_boss.RIDER_MOB])
     here = h.inside
     players = f"@a[tag={IN}]"
     score = f"score {{}} {BOBJ}"
@@ -2429,13 +2438,13 @@ def bench_pack(h: Hand) -> dp.Pack:
         ],
         "h5_start": [
             "kill @e[tag=bench.boss]",
-            f"summon minecraft:ravager {middle(h.c(37, 0, 1))} "
-            f'{{Tags:["{BTAG}","bench.mob","bench.boss"],PersistenceRequired:1b,'
-            f'DeathLootTable:"{empty}",CustomName:"Old Grinder",Passengers:[{{id:'
-            f'"minecraft:vindicator",Tags:["{BTAG}","bench.mob","bench.boss"],'
-            f'PersistenceRequired:1b,DeathLootTable:"{empty}",CustomName:"The Master",'
-            'equipment:{mainhand:{id:"minecraft:iron_axe",count:1}},'
-            "drop_chances:{mainhand:0f}}]}",
+            # the Engine's own pair (dome_boss.py), on no team here
+            dome_boss.pair_summon(
+                middle(h.c(37, 0, 1)),
+                boss_tags,
+                boss_tags,
+                f'PersistenceRequired:1b,DeathLootTable:"{empty}"',
+            ),
             f"summon minecraft:iron_golem {middle(h.c(31, 0, 1))} "
             f'{{Tags:["{BTAG}","bench.mob","bench.boss"],PersistenceRequired:1b,'
             f'DeathLootTable:"{empty}"}}',
