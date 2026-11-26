@@ -237,7 +237,7 @@ What RCON cannot stand in for. Each stage adds to the list as it builds.
 | 1 | Nothing broken leaves an item (`block_drops` off): a pipe broken with the wrench, a lamp | no |
 | 1 | The reset buttons with two real players, and a late joiner | no |
 | 2 | The Gearworks' pipe in a real hand: places only on the track, the tool breaks only the pipe | yes, at the test bench (26 Nov 2026): it works |
-| 3, 4 | Whether the fights are fair for a child on Easy | no |
+| 3, 4 | Whether the fights are fair for a younger player on Easy | no |
 | 4 | Writing a line on the trophy sign for the Wall of Fame | no |
 | 1 | The timers' text displays and the bossbar as a player sees them (the rig only read their data back) | no |
 | 1 | A bossbar shown to the players in the game and to nobody else (`bossbar set ... players` did nothing with nobody online) | no |
@@ -258,7 +258,7 @@ What RCON cannot stand in for. Each stage adds to the list as it builds.
 | 1 | The dial's LOWER and RAISE buttons by hand: one step a press, the lamps following |  no |
 | 1 | Every text display in the Pump House the right way round and readable from where a player stands: the domes' names on the map's frame, the clock board, the dial, the plaques, the arrival point (they were turned to face out from their walls by yaw; only their data was read) |  no |
 | 1 | The map wall read by a player: which lamp is which dome, whether "ahead is up" reads naturally, the three states of a lamp told apart, a tunnel's line seen to light |  no |
-| 1 | The log on the lectern: it opens, the pages fit, it reads well for a 14 year old; a reset puts a new one back if it was taken |  no |
+| 1 | The log on the lectern: it opens, the pages fit, it reads well for a younger player; a reset puts a new one back if it was taken |  no |
 | 1 | The Pump House as a room: the walk from the lift to the east airlock, whether the arrival pad reads as where the recall brings you, the sealed north door, the light in the map's bay |  no |
 | 1 | The new map wall at a glance: does it read as a map (sea, domes as discs of their sizes, pipes, the shore's corner and the row out, "STATION MAP", the blinking "you are here" pin over the Pump House); are the names, the legend and "south is up, east is left" readable from the bay; does glass over copper read as a dome |  no |
 | 1 | The Pump House's upper level: the stairs climbed, the gallery and the bridge walked, the view from the look-out by the lift's shaft, the rails (one block high: can be jumped), headroom under the deck and the pipes |  no |
@@ -279,19 +279,19 @@ What RCON cannot stand in for. Each stage adds to the list as it builds.
 | 1 | The recall button at the Boiler Room's door clicked by hand: it takes the player who clicked to the Pump House and nobody else; the click lands on the button from where a player stands |  no |
 | 1 | The Boiler Room's plaque, signs and log: readable, the right way round, the log's three pages fit; a log taken from the lectern is replaced within a second |  no |
 | 1 | Leaving the Boiler Room unsolved and coming back: it has put itself right (fires out, gauge dark, coal gone from the chutes). Is losing the fire by stepping back into the tunnel too harsh? |  no |
-| 3 | The Signal Room alone: are the plaque and the board's words enough to find both switches (the AERIAL SWITCH is up the mast, on the loft); 3, 4 and 5 signals at 0.8 s with 8 s a key at level 5: fair for a 14 year old and for an adult, or ground through by trial |  no |
+| 3 | The Signal Room alone: are the plaque and the board's words enough to find both switches (the AERIAL SWITCH is up the mast, on the loft); 3, 4 and 5 signals at 0.8 s with 8 s a key at level 5: fair for a younger player and for an adult, or ground through by trial |  no |
 | 3 | The Signal Room's keys by hand: a press read once and popping back; a click held down, or two quick clicks, taken as one key, not WRONG; a hand's press flips no bulb or lamp anywhere; the dull click of a dead key; the switches by hand |  no |
 | 3 | The Signal Board read: the four lamps told apart from the console, each wing and the entrance (place, coloured frame, glass), lit against unlit; the four bells told apart by ear, and the last round by bells alone at levels 8 to 10; the board's words the right way round and readable |  no |
 | 3 | The mast in front of the board: from the entrance and down the aisle's middle it hides the middle of the words and the LINE lamps (seen from the desks). Leave it, or a see-through lower mast, or the words moved? |  no |
 | 3 | The Signal Room with two: a wing desk each, "the desks change over when this round is done" understood, a partner arriving mid-answer; at levels 9 and 10 the walk between wings in the 6 s a key |  no |
 | 3 | The Signal Room as a place: the climb (stairs, bridges, catwalk, loft; a fall from the loft is 10 blocks), headroom, light under the wings and behind the houses; the racks, sweep and recorder busy and plainly not to be worked, the racks' bulbs clicking under a puzzle played by ear; "NO ANSWER: PRESS CALL" after walking away understood; a level voted in mid-room keeps the rounds won; the keys as an instrument once solved |  no |
-| 3 | The Foundry alone, Easy, level 5: is 160 s of charge plus three trips fair and fun for a 14 year old, or too long? Do the plaque and the log say enough to find the MAIN SWITCH and then each breaker (A is by the north-west glass, far from everything)? |  no |
+| 3 | The Foundry alone, Easy, level 5: is 160 s of charge plus three trips fair and fun for a younger player, or too long? Do the plaque and the log say enough to find the MAIN SWITCH and then each breaker (A is by the north-west glass, far from everything)? |  no |
 | 3 | Automatons in the Foundry with a real player: do Stokers and Slag Husks come out of the moulds at a player they cannot see, cross the floor, climb the open stairs, walk the grating; do Riveters shoot from the loft or walk onto the gallery; can anything climb the ladders to the gantry; do they burn at noon under the glass? If they stand in the moulds the fight is only a timer |  no |
 | 3 | The Foundry's breakers by hand: a lamp following its lever within half a second; a trip throwing the lever back in front of you; the red "OUT" label seen through gratings and the mast from every level; with two players, one title naming both breakers of a pair ("BREAKERS A AND B TRIPPED") |  no |
 | 3 | Leaving the Foundry mid-fight: back within 3 s nothing changes; after that the charge falls to the last quarter, a breaker left out is still out, "the charge is where you left it" and 5 s to the fight; a level voted in the Pump House meanwhile takes force when it goes on |  no |
 | 3 | The Foundry as a place: the stairs now climb straight onto the gallery (no step up at the top); the stamp battery's cage now has a grating lid (hop the rail onto it and walk back: is that fine, or should the rail be higher?); light under the gallery and in the moulds; the ladle as a ladle, its pour; the mast read as a progress bar from the floor, gallery and top deck; sounds (bell, thunder) too loud or too often; the log's fourth page fits ("O.F." may be cut) |  no |
 | 3 | Dying in the Foundry: a cell lost (never below the quarter), no automaton on the respawn spot, the shield against Riveters |  no |
-| 4 | The Engine alone, Easy, level 5: is it plain from the plaque, the log and the signs what to do (throw a lever, stand on its copper deck till five lamps light)? Main A is on the floor under the gallery to the right, B on the gallery to the left, C up the one-wide stair behind the Engine. Is 3 to 5 automatons at once fair for a 14 year old; levels 1 and 10 |  no |
+| 4 | The Engine alone, Easy, level 5: is it plain from the plaque, the log and the signs what to do (throw a lever, stand on its copper deck till five lamps light)? Main A is on the floor under the gallery to the right, B on the gallery to the left, C up the one-wide stair behind the Engine. Is 3 to 5 automatons at once fair for a younger player; levels 1 and 10 |  no |
 | 4 | The Engine's automatons with a real player: do they come out of the hatch notches in the plinth, find a player round the Engine, up the ramps and the one-wide stair (each is set on the nearest player as it comes: does that work, or do they stand at the far hatches)? Do Riveters shoot into the pavilion while someone respawns or reads the log there (review 4: the dial would be no Riveter while someone is out of the arena)? |  no |
 | 4 | The Engine's win: the Engine stopping, the way out lighting, tunnel 7 pumping, the trophy sign in your hand (named with the level and the time), placed on the Wall of Fame in the Pump House and written on |  no |
 | 4 | The Engine with two: A and B only together (the amber lamp blinking at the side that is ready, the chat hint), a partner in the pavilion not counting, one dying or leaving; the form's chat line at each change (too chatty?) |  no |
@@ -423,34 +423,8 @@ Not verified:
   at most 2000 blocks of a kind per batch of chunks: a structure made of
   other blocks would be missed.
 
-Putting the station somewhere else (another world, or another part of
-this sea). Every position is an offset from one anchor, so the layout
-moves as a whole:
-
-1. Survey the sea there with `survey_site.py` (above); it writes
-   `site_survey.npz`.
-2. Set the site block at the top of `station_layout.py`, and nothing
-   else: `ANCHOR` (the x, z of the middle of the start dome),
-   `BASE_FLOOR_Y` (the y of its floor), `SEA_LEVEL`, `SPAWN`,
-   `SHORE_LANDING` and the site's hazards (`MINESHAFT_SPAWNERS`, empty if
-   there are none). The shape block (`RING`: each dome's offset from the
-   anchor, its size, how far its floor is sunk) stays as it is.
-3. Run `python station_layout.py`: it prints the layout, runs
-   `check_layout()` and then `check_site()` against the survey. The site
-   check fails if a dome's footprint has land in it, a dome's top is above
-   the surface or its floor more than 3 above the sea floor, a tunnel
-   crosses land, the shore landing is not the top of the ground, or the
-   row to the dock crosses land or a bubble column. Its notes say how far
-   each dome's top is below the surface, how much of each dome and tunnel
-   is over a ravine, and what structure blocks lie under the box. The
-   same check is `site` in `verify_station.py`'s offline checks (skipped
-   if there is no survey file).
-4. Run `python render_layout.py` and read the picture.
-
-What that does not do: choose the anchor for you (the search that chose
-this one was done by hand and is not in the example), or change the
-shape to fit a sea of another size; and the site check knows only what
-the survey holds.
+Putting the station somewhere else: the steps are in the README's
+[Putting the station somewhere else](README.md#putting-the-station-somewhere-else).
 
 ### Datapack: format and delivery
 

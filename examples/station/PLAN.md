@@ -3,7 +3,7 @@
 An adventure game built with mciwb: a chain of underwater glass domes, each
 with a puzzle or a battle, joined by glass tunnels that pump dry as the
 players restore the station. Steampunk machinery, a final boss, one to many
-players. Inspired by a hand-built family map, "The Adventure of Doom" (2020),
+players. Inspired by an earlier hand-built map, "The Adventure of Doom" (2020),
 whose best ideas it keeps (see "From the original").
 
 Opening title: "The Adventure of Doom II: The Drowned Station".
@@ -15,7 +15,7 @@ decision changes, change it here. Progress goes in `PROGRESS.md` beside it.
 
 | Topic | Decision |
 | --- | --- |
-| Audience | Family: a teenager of 14 and an adult, friends welcome. About an hour a run. Puzzles take some thought but never stall a run; fights are a fair challenge on Easy, not punishing. |
+| Audience | A younger player and an adult, friends welcome. About an hour a run. Puzzles take some thought but never stall a run; fights are a fair challenge on Easy, not punishing. |
 | Site | The natural deep ocean nearest the world's spawn, so sea life passes the glass. |
 | Domes | Mixed sizes: about 32 across for small puzzle domes, 48 for most, 64 for the boss (its floor dug into the seabed). Some domes may break the surface and show air at the top. |
 | Start | Spawn on the shore. Row a boat to a dock offshore. A lift goes down from the dock to the start dome. |
@@ -30,7 +30,7 @@ decision changes, change it here. Progress goes in `PROGRESS.md` beside it.
 | Scoreboard | In the start dome: a wall-sized brass map with a lamp per dome and a glowing tunnel between them; the run's time and the best time; an on-screen line that follows players ("Domes 3 of 7, 12:40"). Winners get a trophy sign for a Wall of Fame, which the reset leaves alone. |
 | Tunnel | Present from the start, flooded and dark behind a brass airlock. The airlock has a glass window so the flooded tunnel can be seen from the dome. On success: a pump engine runs (pistons, steam, a klaxon), the water level drops layer by layer while the players watch through the window, lamps come on towards the next dome, the airlock opens. The same event after every dome. |
 | Boss | A machine with phases, in the 64 dome. Phase 1: shut three steam valves round the dome while automatons pour out (two players: two valves thrown together). Phase 2: the engine cracks open and its master comes out, a brass-armoured brute on a ravager (a nod to the original). Health scales with the number of players. The dead respawn in an antechamber and walk back in. |
-| Code | A self-contained mciwb example, `examples/station/`, on branch `examples/station`: layout, a module per dome, the datapack generator, a verify script, a guide, a unit test of the offline checks. Its own PR to main when it works. |
+| Code | A self-contained mciwb example, `examples/station/`, on branch `examples/station`: layout, a module per dome, the datapack generator, a verify script, a guide, a unit test of the offline checks. It goes to main by pull request. |
 | Staging | A playable slice first, then the owner plays each stage before the next is built (see "Stages"). |
 
 ## The domes

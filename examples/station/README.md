@@ -10,25 +10,50 @@ It is a self-contained example: nothing here imports another example. The
 blocks and the redstone are placed over RCON by mciwb; the game's logic is
 a datapack of functions that the build generates and installs.
 
-So far the plan's stage 1 is here, the playable slice: the shore and its
-boats, the dock, the lift, the Pump House (the start dome), the Boiler
-Room (the first puzzle), and the structure of the whole ring: all eight
-domes' shells and all eight tunnels that pump dry (domes 2 to 7 are empty
-shells so far), over the game core (who is playing, progress, the
-clock, kit and respawn, the vote, difficulty, reset). The owner has played
-it once; PROGRESS.md says what that asked for and what is still to do.
+Where it stands: all eight domes are built and checked live (the shore
+and its boats, the dock, the lift, the Pump House, the Boiler Room, the
+Gearworks, the Flooded Dome, the Foundry, the Signal Room, the Clockwork
+Maze and the Engine), with all eight tunnels that pump dry, over the game
+core (who is playing, progress, the clock, kit and respawn, the vote,
+difficulty, reset). The Engine's second phase is written but switched off
+(`PHASE_2` in `dome_boss.py`). Play-testing continues; PROGRESS.md says
+what it has found and what is still to do.
+
+## The world
+
+The station is laid out for one world, not any world: `ANCHOR` (63,
+-109), `SPAWN` (-32, 63, 81) and the mineshaft's spawners in
+`station_layout.py` were surveyed in a **Minecraft Java 26.3** world with
+the seed **4578111213919200824** (normal terrain). Make a world from that
+seed on a 26.3 server; the build and the datapack need 26.3.
+
+- **The build overwrites the box (23, 21, -229) to (303, 72, -77)**,
+  whatever is in it, and keeps it forceloaded for good.
+- **The `rules` stage sets world-wide game rules**: keep inventory on, mob
+  griefing off, monster spawning off, fire spread off and block drops off
+  (`RULES` in `build_station.py`); the live checks expect the difficulty
+  Easy. Use the world for this game only.
+
+To put the station somewhere else, see
+[Putting the station somewhere else](#putting-the-station-somewhere-else)
+below.
 
 ```
 python verify_station.py                         # the offline checks, no server
 python build_station.py                          # the whole build against a fake client
-mciwb run build_station.py                       # build into the world
+STATION_DATAPACKS_DIR=~/mciwb-server/world/datapacks \
+  mciwb run build_station.py                     # build into the world, with its datapack
 STAGES=site,datapack mciwb run build_station.py  # just some stages
 mciwb run verify_station.py                      # offline checks, then the live ones
 CHECKS=layout,names python verify_station.py     # some checks only
 ```
 
-Pass `--server` and `--port` for a server that is not the `mciwb start`
-one, and the password in `$MCIWB_PASSWORD` (or `--password-file`).
+`STATION_DATAPACKS_DIR` is the world's `datapacks` folder
+(`~/mciwb-server/world/datapacks` for an `mciwb start` server). Without
+it the build carries on but installs no datapack, so the station has no
+game logic. Pass `--server` and `--port` for a server that is not the
+`mciwb start` one, and the password in `$MCIWB_PASSWORD` (or
+`--password-file`).
 
 ## The files
 
@@ -42,12 +67,14 @@ one, and the password in `$MCIWB_PASSWORD` (or `--password-file`).
 | `fittings.py` | what every dome has: a frame to place things by, input posts and readers, gauges, displays, hints, machinery that runs by itself, signs and plaques, a lectern and its book, the recall post, lent and restricted items |
 | `automatons.py` | the mobs of the fights, made to the plan's rules: the three kinds, waves, leash and fence, a dome's bossbar, the difficulty |
 | `rooms.py` | offline checks of a room's plan: placement, walks, sight lines, inputs on gold, blocks with a meaning |
-| `shore.py`, `dome_start.py`, `dome_boiler.py` | the modules: the way in (shore, boats, dock, lift), the Pump House, the Boiler Room |
+| `shore.py`, `dome_start.py`, `dome_boiler.py`, `dome_gearworks.py`, `dome_flooded.py`, `dome_foundry.py`, `dome_signal.py`, `dome_maze.py`, `dome_boss.py` | the modules: the way in (shore, boats, dock, lift), then the eight domes in ring order: the Pump House, the Boiler Room, the Gearworks, the Flooded Dome, the Foundry, the Signal Room, the Clockwork Maze, the Engine |
 | `game_checks.py` | the live checks of the game core, with stand-ins for players |
 | `build_station.py` | the build, stage by stage |
 | `verify_station.py` | the checks: offline ones, and live ones over RCON |
 | `fake_client.py` | a fake RCON client and a simulated box of blocks, for building with no server |
 | `survey_site.py`, `render_layout.py`, `rig_mechanisms.py` | the tools of stage 0: the survey of the ocean, the plan drawn, each mechanism proved in a rig |
+| `rig_domes.py` | the rig's second round: the mechanics the later domes rest on, each worked on a live server away from the station, and the hand test bench |
+| `render_start.py` | the Pump House drawn from its plan, with no server |
 
 ## Building
 
@@ -72,8 +99,8 @@ world, the layout and the datapack under construction.
 | `dome_2_inside` | the Gearworks (after `datapack`: it ends with the pack's `dome/2/reset`) |
 | `tunnel_0` ... `tunnel_7` | each tunnel, flooded and shut, with its pump engine; the two that slope have stairs. `STAGES=tunnels` is short for all eight |
 
-A stage that is not written says so and does nothing: the list is the
-order of work. A shell stage wipes what is inside its dome (the pump
+A stage not written yet would say so and do nothing; every stage is
+written now. A shell stage wipes what is inside its dome (the pump
 engine and the lift's shaft too) and shuts its doors: run `lift` (for
 the start dome), the dome's `_inside` stage and its outgoing tunnel's stage after it, as
 the whole build does. Every stage gives the same result run twice.
@@ -151,9 +178,10 @@ MODULE = game.Module(
 - **The builders' contract**: what a dome's module gets from the core,
   and what it must not do for itself.
   - *Until it exists*, its dome is a stub: a BYPASS lever by the exit
-    that solves the dome, so the ring always plays end to end. The
-    module's file replaces the stub; its build stage runs
-    `game.clear_stub_commands(dome)`.
+    that solves the dome, so the ring always plays end to end. All eight
+    domes have their modules now, so no stub is built; the support stays
+    for a dome being rebuilt. The module's file replaces the stub; its
+    build stage runs `game.clear_stub_commands(dome)`.
   - *Two rules*: leaving a dome never costs more than the stage in
     progress; a change of form never shuts, removes or restarts
     something a player is using (it waits for the room's next safe
@@ -253,13 +281,43 @@ since the core's checks reset the game before and after.
 | `restricted_items` | the items `fittings.restricted` writes are taken by the game and keep their rules |
 | `fights` | the difficulty read; waves cast where a player is, to the cap, refilled; leash and fence; a death answered; the sweep; a dome's bossbar |
 | `fittings` | the torch clock, its lamp chase and pistons seen running; a gauge; a lever put back and held; a button read once; a plate that wants a player; a display; a lent item; a hint |
-| `ring` | the whole ring's progress walked by a stand-in from the master lever to the win, each stub's BYPASS lever thrown, and the reset |
+| `ring` | the whole ring's progress walked by a stand-in from the master lever to the win (throwing a stub's BYPASS lever, if any dome were still a stub), and the reset |
 | `shore`, `dock`, `lift`, `start_dome`, `boiler_room`, `gearworks`, `flooded_dome`, `foundry`, `signal_room`, `clockwork_maze`, `boss` | the modules' own checks (see each module) |
 
-The checks of the parts not built yet are listed as `TODO`, and a TODO is
-not a pass. Players are stood in for by armour stands
+A check of a part not built would be listed as `TODO`, and a TODO is not
+a pass; none is left. Players are stood in for by armour stands
 (`game_checks.py` says what that proves and what it does not).
 
 What RCON cannot stand in for (an item in a real hand, a jump, whether a
 fight is fair, sounds and titles) is listed in PROGRESS.md for a person to
 try.
+
+## Putting the station somewhere else
+
+Another world, or another part of this sea. Every position is an offset
+from one anchor, so the layout moves as a whole:
+
+1. Survey the sea there with `survey_site.py`; it writes
+   `site_survey.npz`.
+2. Set the site block at the top of `station_layout.py`, and nothing
+   else: `ANCHOR` (the x, z of the middle of the start dome),
+   `BASE_FLOOR_Y` (the y of its floor), `SEA_LEVEL`, `SPAWN`,
+   `SHORE_LANDING` and the site's hazards (`MINESHAFT_SPAWNERS`, empty if
+   there are none). The shape block (`RING`: each dome's offset from the
+   anchor, its size, how far its floor is sunk) stays as it is.
+3. Run `python station_layout.py`: it prints the layout, runs
+   `check_layout()` and then `check_site()` against the survey. The site
+   check fails if a dome's footprint has land in it, a dome's top is above
+   the surface or its floor more than 3 above the sea floor, a tunnel
+   crosses land, the shore landing is not the top of the ground, or the
+   row to the dock crosses land or a bubble column. Its notes say how far
+   each dome's top is below the surface, how much of each dome and tunnel
+   is over a ravine, and what structure blocks lie under the box. The
+   same check is `site` in `verify_station.py`'s offline checks (skipped
+   if there is no survey file).
+4. Run `python render_layout.py` and read the picture.
+
+What that does not do: choose the anchor for you (the search that chose
+this one was done by hand and is not in the example), or change the
+shape to fit a sea of another size; and the site check knows only what
+the survey holds.
