@@ -17,6 +17,9 @@ runs):
   order, and no other dome stage;
 - forceload: the station's box splits into forceload commands of at most
   256 chunks each, which cover it;
+- seabed: the dressing of the sea floor (``seabed.problems``): clear of
+  the domes and tunnels, standing on the surveyed floor, its coral in
+  water;
 - datapack: the datapack's own checks (``datapack.py``: every function
   line and name, as the pack is made);
 - functions: the pack has a readable ``pack.mcmeta``; its tags are JSON
@@ -60,6 +63,7 @@ import build_station as B  # noqa: E402
 import domes  # noqa: E402
 import game_checks  # noqa: E402
 import mcwb  # noqa: E402
+import seabed  # noqa: E402
 import tunnels  # noqa: E402
 from fake_client import Recorder  # noqa: E402
 
@@ -295,6 +299,7 @@ OFFLINE: dict[str, Callable[[], list[str]]] = {
     "stages": stage_problems,
     "forceload": forceload_problems,
     "geometry": geometry_problems,
+    "seabed": lambda: seabed.problems()[:20],
     "datapack": B.pack_problems,
     "functions": lambda: function_problems(pack()),
     "build": build_problems,
@@ -390,6 +395,7 @@ LIVE: dict[str, Callable[[B.Context], list[str]]] = {
     "fittings": game_checks.check_fittings,
     "ring": game_checks.check_ring,
     "restricted_items": game_checks.check_restricted,
+    "seabed_live": seabed.check,
     "boiler_room": todo("the Boiler Room solved and failed, solo and two-player", 1),
     "gearworks": todo(
         "the Gearworks solved and failed, laid pipe kept when left, cleared by the reset",

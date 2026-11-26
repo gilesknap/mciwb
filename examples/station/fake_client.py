@@ -8,7 +8,8 @@ server, and two builds can be compared by their commands and blocks.
 What it simulates: ``setblock`` and ``fill`` (with fill's modes and a block
 filter, which may be one of the block tags in ``TAGS``), ``execute if
 block``, ``forceload`` (add, remove and query, with the server's limit of
-256 chunks a command), ``list``, and a game clock that only ``tick sprint``
+256 chunks a command), ``fillbiome`` (its limit and the loaded chunks; the
+boxes are kept in ``biomes``, the world has no biomes), ``list``, and a game clock that only ``tick sprint``
 moves (``time query gametime``, ``tick query``). A block command outside the forceloaded
 chunks is refused as the server refuses it, so a stage that builds outside
 the loaded site fails offline too.
@@ -39,6 +40,13 @@ FORCELOAD_LIMIT = 256  # chunks a forceload command, the server's limit
 #: the block tags a fill's filter may name, as far as the fake world can
 #: hold them: it has no plants and no lava
 TAGS = {"#minecraft:replaceable": {AIR, "minecraft:water"}}
+_CORALS = ("tube", "brain", "bubble", "fire", "horn")
+TAGS["#minecraft:coral_blocks"] = {f"minecraft:{c}_coral_block" for c in _CORALS}
+TAGS["#minecraft:wall_corals"] = {f"minecraft:{c}_coral_wall_fan" for c in _CORALS}
+TAGS["#minecraft:corals"] = {
+    f"minecraft:{c}_coral{kind}" for c in _CORALS for kind in ("", "_fan")
+}
+FILLBIOME_LIMIT = 32768  # blocks a fillbiome command, in whole 4 x 4 x 4 cells
 
 
 def _ints(v) -> tuple[int, int, int]:
@@ -159,6 +167,7 @@ class Recorder:
         self.datapacks_dir = Path(datapacks_dir) if datapacks_dir else None
         self.storage: dict[tuple[str, str], str] = {}  # (storage, path) -> SNBT
         self.gametime = 0  # moved only by ``tick sprint``
+        self.biomes: list[tuple[tuple, tuple, str]] = []  # what fillbiome set
         self.host, self.port, self.passwd = "fake", 0, ""
 
     def connect(self, retry=True) -> None:
@@ -229,6 +238,19 @@ class Recorder:
         ):
             c = [int(v) for v in m.group(1).split()]
             return self._fill(c[:3], c[3:], m.group(2), m.group(3), m.group(4))
+        if m := re.match(r"fillbiome((?: -?\d+){6}) (\S+)$", command):
+            c = [int(v) for v in m.group(1).split()]
+            if not self.loaded(c[:3], c[3:]):
+                return NOT_LOADED
+            lo, hi = np.minimum(c[:3], c[3:]) // 4, np.maximum(c[:3], c[3:]) // 4
+            size = int(np.prod((hi - lo + 1) * 4))
+            if size > FILLBIOME_LIMIT:
+                return (
+                    "Too many blocks in the specified area "
+                    f"(maximum {FILLBIOME_LIMIT}, specified {size})"
+                )
+            self.biomes.append((tuple(c[:3]), tuple(c[3:]), m.group(2)))
+            return f"{size // 64} biome entries set between {c[:3]} and {c[3:]}"
         if m := re.match(r"execute if block (\S+) (\S+) (\S+) (\S+)$", command):
             pos = _ints(m.groups()[:3])
             if not self.loaded(pos):

@@ -63,6 +63,7 @@ game logic. Pass `--server` and `--port` for a server that is not the
 | `datapack.py` | the datapack generator: a pack built in memory, written to a folder, installed in a world |
 | `domes.py` | a dome's cells, the build of its shell, its mouths and entrance, and the check that it is dry and whole |
 | `tunnels.py` | a tunnel's cells, its build, its drain, refill and pump event as functions, and its check |
+| `seabed.py`, `render_seabed.py` | the sea floor round the station dressed (lights, coral, seagrass, the water's biome): its plan, stages and checks, and the plan drawn (`seabed_plan.png`) |
 | `game.py` | the game core's functions, and `Module`: how a part of the station adds its stages, functions and checks |
 | `fittings.py` | what every dome has: a frame to place things by, input posts and readers, gauges, displays, hints, machinery that runs by itself, signs and plaques, a lectern and its book, the recall post, lent and restricted items |
 | `automatons.py` | the mobs of the fights, made to the plan's rules: the three kinds, waves, leash and fence, a dome's bossbar, the difficulty |

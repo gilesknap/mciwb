@@ -1884,6 +1884,42 @@ Engine's tunnel home has one: the win readies it, so the show is seen.
   lever absent and inert before `ready`, `ready` twice, the pull, the
   lever gone with the doors open, and a reset while waiting.
 
+## The sea floor (stages `seabed`, `seabed_water`)
+
+For the play-test's "the sea is a little dark and you don't see out that
+much". Built and checked offline only (26 Nov 2026): nothing of it has
+run on a server, and nobody has looked at it in the game.
+
+- `seabed.py` plans, from the layout, `site_survey.npz` and a fixed seed,
+  288 sea lanterns set flush in the sea floor (a ring round each dome, a
+  row beside each tunnel, a scatter over the rest), reefs (2230
+  living coral blocks one to four high, 1061 corals, 600 fans, 299 wall
+  fans, all five colours, two main colours a reef), 399 blocks of three
+  or four sea pickles and 987 of seagrass: 6252 blocks. Picture:
+  `python render_seabed.py` writes `seabed_plan.png` (the plan, and the
+  light it gives the water over the floor).
+- Stage `seabed` first takes away what an earlier run left in the free
+  columns (the coral tags, sea pickles, sea lanterns to sand), then
+  places the plan: about 7900 commands. Stage `seabed_water` sets the
+  box's biome to `minecraft:warm_ocean` from y 21 to the sea's top (120
+  `fillbiome` commands): lighter, turquoise water, and tropical fish.
+  Both come last in the build; neither is a placeholder a dome's shell
+  stage wipes, and neither touches a dome, tunnel, pier, the dock or the
+  lift (it keeps 3 clear blocks, measured level, from every shell and
+  tunnel).
+- Checks: offline `seabed` in `verify_station.py` and
+  `tests/test_station_seabed.py`. The live check `seabed_live` reads 150
+  blocks back and the biome at the box's corners, and reports coral that
+  has died; it is written and has never run.
+- Not known until it is built: whether the survey still matches the sea
+  floor everywhere (the plan trusts it; kelp or seagrass in a planned
+  cell is replaced); what a `fillbiome` that changes nothing replies
+  (the stage only refuses "not loaded", "Too many" and "Unknown"); how
+  the light and the warm water look through the glass. A player online
+  may need to rejoin to see the new water colour.
+- Left out: lanterns on the tunnels' ribs and glow lichen (both would
+  mean touching the tunnels or guessing at rock faces).
+
 ## Known problems / notes
 
 - The station's box stays forceloaded by design (see "Forceload").
