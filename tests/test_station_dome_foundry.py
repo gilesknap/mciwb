@@ -682,7 +682,8 @@ steps = until(sim, lambda: sim.fdy("state") == 2)
 assert sim.get("#d4") == 2 and sim.calls.count("dome/4/solved") == 1
 assert not sim.mobs and mast(sim) == 4 * D.CELLS and sim.get("#bar4") == 0
 assert levers(sim) == [True] * 3 and sim.is_block(place.switch, ON)
-assert sim.get("#t4") == 1  # the pump event has begun
+# its pump waits for its lever by the airlock
+assert sim.get("#t4") == 0 and sim.get("#t4.ready") == 1
 assert sum(sim.is_block(cell, LIT) for cell in place.bus) < len(place.bus)
 tick(sim, 3 * len(place.bus) + 2)
 assert all(sim.is_block(cell, LIT) for cell in place.bus)

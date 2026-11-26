@@ -955,7 +955,7 @@ steps(D.FULL // D.WIND - 1)
 assert sim.b7("phase") == 1 and sim.get("#d7") == 1
 steps(2)
 assert sim.b7("phase") == 5 and sim.get("#d7") == 2 and sim.get("#run") == 2
-assert sim.called.count("dome/7/won") == 1 and "tunnel/7/open" in sim.called
+assert sim.called.count("dome/7/won") == 1 and "tunnel/7/ready" in sim.called
 assert not mobs()
 # the win arms the Pump House's trophy dispenser
 assert sim.called.count("dome/0/trophy/arm") == 1
@@ -1219,7 +1219,7 @@ assert rider["pos"][0] == place.back[0] + 0.5
 sim.entities.remove(rider)
 steps(1)
 assert sim.b7("phase") == 5 and sim.get("#d7") == 2 and sim.get("#run") == 2
-assert sim.called.count("dome/7/won") == 1 and "tunnel/7/open" in sim.called
+assert sim.called.count("dome/7/won") == 1 and "tunnel/7/ready" in sim.called
 assert sim.called.count("dome/0/trophy/arm") == 1
 steps(len(place.way_out) + 2)
 assert lamps(place.way_out) == len(place.way_out) and lamps(place.eyes) == 0
@@ -1290,6 +1290,14 @@ class Ctx:
             for _, c in domes.door_cells(d, TUNNEL)
         }
         sim.stubs["station:tunnel/7/open"] = self.opened
+        # the solve wakes the pump: its lever by the airlock, and a pull
+        # of it (``game_checks.pull_pump``) opens the tunnel
+        self.lever = tunnels.lever_cell(TUNNEL)
+        sim.stubs["station:tunnel/7/ready"] = self.ready
+
+    def ready(self, me, args):
+        sim.scores["#t7.ready", "st"] = 1
+        sim.world.setblock(self.lever, tunnels.lever_block(TUNNEL))
 
     def opened(self, me, args):
         sim.scores["#t7", "st"] = 2
@@ -1374,6 +1382,9 @@ class Ctx:
 
     def setblock(self, cell, block):
         sim.world.setblock(cell, block)
+        if cell == self.lever and block == tunnels.lever_block(TUNNEL, True):
+            sim.scores["#t7.ready", "st"] = 0
+            self.opened(None, None)
 
     def function(self, path, args=""):
         if path == "tunnel/7/reset":
