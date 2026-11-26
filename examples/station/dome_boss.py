@@ -2780,6 +2780,9 @@ def _check(ctx: Any, saved: dict[str, int | None]) -> list[str]:
             problems.append(f"the pair's health, one player: {get('hmax')}, not {full}")
         expect("the Master's bar shown", bar_shown(), True)
         # lost inside five seconds: he comes out again, and it is no win
+        # (the game runs on while the reads above are made: his time out
+        # is counted from here)
+        put("t", 0)
         ctx.cmd(f"kill @e[tag={BOSS}]")
         steps(3)
         got = {"phase": get("phase"), "pair": ctx.count(f"@e[tag={BOSS}]")}
