@@ -154,6 +154,31 @@ def expect(problems: list[str], what: str, got: Any, want: Any) -> None:
         problems.append(f"{what}: read {got}, expected {want}")
 
 
+def pull_pump(ctx: Any, index: int) -> list[str]:
+    """
+    Pull tunnel ``index``'s pump lever by the airlock as a hand would
+    (the block set thrown), once its dome is solved, and let the tick
+    that reads it pass: the pump event is then running. First, that the
+    pump waits for it: the tunnel shut, ``.ready`` 1 and the lever there.
+    Tunnel 0 has no lever (the master lever pumps it): nothing is done.
+    For a dome's check, straight after its ``solved``.
+    """
+    if index not in tunnels.LEVERED:
+        return []
+    problems: list[str] = []
+    tunnel = layout.TUNNELS[index]
+    cell = tunnels.lever_cell(tunnel)
+    got = (
+        ctx.score(f"#t{index}"),
+        ctx.score(f"#t{index}.ready"),
+        ctx.is_block(cell, tunnels.lever_block(tunnel)),
+    )
+    expect(problems, f"tunnel {index}'s pump (state, ready, lever)", got, (0, 1, True))
+    ctx.setblock(cell, tunnels.lever_block(tunnel, True))
+    ctx.advance(2)
+    return problems
+
+
 def check_players(ctx: Any) -> list[str]:
     """the count, which dome each is in, and each dome's own form: solo
     or duo by who is in that dome, falling back to solo"""
@@ -427,23 +452,30 @@ def check_progress(ctx: Any) -> list[str]:
             problems.append(f"the clock at 755 s or so reads {time}")
     ctx.function("dome/1/solved")
     ctx.function("dome/1/solved")
-    got = scores(ctx, "#d1", "#d2", "#solved", "#t1")
+    ctx.advance(2)
+    got = scores(ctx, "#d1", "#d2", "#solved", "#t1", "#t1.ready", "#pumps")
     expect(
         problems,
-        "dome 1 solved, twice",
+        "dome 1 solved, twice: its pump ready",
         got,
-        {"#d1": 2, "#d2": 1, "#solved": 1, "#t1": 1},
+        {"#d1": 2, "#d2": 1, "#solved": 1, "#t1": 0, "#t1.ready": 1, "#pumps": 1},
     )
+    problems += pull_pump(ctx, 1)
+    got = scores(ctx, "#t1", "#t1.ready", "#pumps")
+    want = {"#t1": 1, "#t1.ready": 0, "#pumps": 0}
+    expect(problems, "tunnel 1's lever pulled", got, want)
     # the win: the last dome solved
     last = layout.DOMES[-1].index
     ctx.set_score(f"#d{last}", 1)
     ctx.set_score(best_name, 0)
     ctx.set_score("#secs", 900)
     ctx.function(f"dome/{last}/solved")
-    # the run is won at once; the tunnel home starts its pump event (a
-    # built tunnel: 1 while it pumps) and is open when the event is over
+    # the run is won at once; the tunnel home's pump waits for its lever,
+    # and is open when the event it starts is over
     got = scores(ctx, "#run", best_name, f"#t{last}")
-    expect(problems, "the win", got, {"#run": 2, best_name: 900, f"#t{last}": 1})
+    expect(problems, "the win", got, {"#run": 2, best_name: 900, f"#t{last}": 0})
+    problems += pull_pump(ctx, last)
+    expect(problems, "the tunnel home pumping", ctx.score(f"#t{last}"), 1)
     ctx.advance(tunnels.event_ticks(layout.TUNNELS[last]) + 20)
     expect(problems, "the tunnel home after its pump event", ctx.score(f"#t{last}"), 2)
     expect(problems, "the clock after the win", ctx.score("#secs"), 900)
@@ -481,6 +513,8 @@ def check_reset(ctx: Any) -> list[str]:
     ctx.advance(wait)
     expect(problems, "tunnel 0 after the run started", ctx.score("#t0"), 2)
     ctx.function("dome/1/solved")
+    problems += pull_pump(ctx, 1)
+    ctx.function("tunnel/2/ready")  # a pump waiting for its lever too
     second = layout.TUNNELS[tunnels.BUILT[1]]
     ctx.advance(tunnels.PUMP_LEAD + tunnels.layer_step(second) + 5)  # part drained
     as_stand_in(ctx, "st.s1", "vote/difficulty", "{level:2}")
@@ -497,8 +531,12 @@ def check_reset(ctx: Any) -> list[str]:
     names = ["#run", "#secs", "#solved", "#vote.kind"]
     names += [f"#d{d.index}" for d in layout.DOMES]
     names += [f"#t{t.index}" for t in layout.TUNNELS]
+    names += [f"#t{n}.ready" for n in tunnels.LEVERED]
     want = dict.fromkeys(names, 0) | {"#d0": 1}
     expect(problems, "after the reset", scores(ctx, *names), want)
+    for n in tunnels.LEVERED:
+        if not ctx.is_block(tunnels.lever_cell(layout.TUNNELS[n]), domes.AIR):
+            problems.append(f"tunnel {n}: its lever is there after the reset")
     expect(problems, "the run's number", ctx.score("#runid"), (runid or 0) + 1)
     expect(problems, "the level", ctx.score("#level"), level)
     expect(problems, "the bar shown", bar(ctx)[2], False)
@@ -568,11 +606,12 @@ def check_ring(ctx: Any) -> list[str]:
     lever to the win: into each dome in turn, the dome solved (a stub's
     BYPASS lever thrown as a hand would leave it; a built room's
     ``solved`` called, its puzzle being its own check's business), its
-    tunnel's pump event waited out; at the win the stand-in has a trophy
-    waiting in the Pump House's dispenser. Then the reset: every bypass
-    lever back, the dispenser cleared. The run is a real win at the level
-    in force, so the best times are put back (``save_level``). Not proved:
-    that a player can walk it (see the play-test list).
+    tunnel's pump lever pulled and the pump event waited out; at the win
+    the stand-in has a trophy waiting in the Pump House's dispenser. Then
+    the reset: every bypass lever back, the dispenser cleared. The run is a
+    real win at the level in force, so the best times are put back
+    (``save_level``). Not proved: that a player can walk it (see the
+    play-test list).
     """
     import build_station as B
     import dome_start
@@ -616,6 +655,7 @@ def check_ring(ctx: Any) -> list[str]:
             ctx.function(f"dome/{n}/solved")
         got = scores(ctx, f"#d{n}", "#solved")
         expect(problems, f"dome {n} solved", got, {f"#d{n}": 2, "#solved": n})
+        problems += pull_pump(ctx, n)
     got = scores(ctx, "#run", f"#t{last}")
     expect(problems, "the win", got, {"#run": 2, f"#t{last}": 1})
     due = ctx.count(f"@e[tag=st.s1,tag={dome_start.DUE}]")

@@ -84,7 +84,8 @@ clock; from the level (``scaled``): ``per`` ticks a layer, ``ta`` ``tb``
   water and the pumps kept;
 - ``reset``: all of that, and the basin full again;
 - ``guard`` (every tick, whoever is or is not in the dome): if tunnel 3
-  is pumping or open while the basin is wet, the room is made dry at once
+  is pumping or open, or its pump waits for its lever (which stands in
+  the basin), while the basin is wet, the room is made dry at once
   (``restored``). The room's own ``done`` never needs it; the core's
   checks call ``dome/3/solved`` and ``tunnel/3/open`` themselves, and the
   tunnel's doors must never open onto the flood. A room found dry by a
@@ -1907,7 +1908,13 @@ def functions(pack: dp.Pack) -> None:
     pack.function(f"{base}/door", door)
 
     # -- the whole room from the scores: the reset and the repair
-    draw = [call("fixtures_clear")]
+    # tunnel 3's pump lever stands in the basin, by the airlock: out
+    # before any layer is made wet (it is there only once the room is dry)
+    lx, ly, lz = tunnels.lever_cell(layout.TUNNELS[INDEX])
+    draw = [
+        call("fixtures_clear"),
+        f"execute {_is('w', '1..')} run setblock {lx} {ly} {lz} {AIR}",
+    ]
     for h in range(1, TOP + 1):
         draw += [
             f"execute {_is('w', f'{h}..')} run {call(f'layer_{h}/wet')}",
@@ -2309,7 +2316,10 @@ def functions(pack: dp.Pack) -> None:
         f"{base}/guard",
         [
             f"execute if score {tunnels.score(INDEX)} matches 1.. {_is('w', '1..')} "
-            f"run {call('restored')}"
+            f"run {call('restored')}",
+            # its pump waiting for its lever (the lever is in the basin)
+            f"execute if score {tunnels.score(INDEX, '.ready')} matches 1 "
+            f"{_is('w', '1..')} run {call('restored')}",
         ],
         tick=True,
     )
@@ -2646,6 +2656,7 @@ def _check(ctx: Any) -> list[str]:
     falls(TARGETS[2], "stage C")
     ctx.advance(2 * STEP)
     expect("solved", (solved(), get("stage"), get("w")), (True, 3, 0))
+    problems.extend(game_checks.pull_pump(ctx, INDEX))
     expect("tunnel 3 at the solve", ctx.score(f"#t{INDEX}") in (1, 2), True)
     expect("places with light under 8, the room dry", dark(lit_places), [])
     low = {

@@ -45,15 +45,17 @@ in seconds (0: none) and ``#best<level>`` each level's.
   starts the clock and solves the start dome, which opens tunnel 0.
 - ``station:dome/<n>/solved``: the one thing a puzzle calls when it is
   solved. Does nothing unless dome n is open and unsolved. Title and
-  sound, the dome marked solved, tunnel n's pump event
-  (``station:tunnel/<n>/open``), the next dome marked open and every
+  sound, the dome marked solved, tunnel n's pump engine woken
+  (``station:tunnel/<n>/ready``: its lever by the airlock, pulled by
+  anyone, starts the pump event; tunnel 0's starts at once), the next
+  dome marked open and every
   player's respawn point moved to its entrance. The last dome's opens
   tunnel 7, back to the Pump House's north door, and calls
   ``station:run/win``: the clock stops, the best time for the level is
   kept, and each module's ``wins`` functions run (the trophy, the
   finale).
 - Players in the game see "Domes 3 of 7, 12:40" above the hotbar while a
-  run is on.
+  run is on, and "Pump ready" after it while a pump waits for its lever.
 
 **Two rules every room follows.**
 
@@ -384,6 +386,7 @@ def add_functions(pack: dp.Pack, modules: list[Module]) -> None:
             tunnels.add_functions(pack, tunnel, PLAYERS)
         else:
             tunnels.add_stub_functions(pack, tunnel)
+    tunnels.add_tick_function(pack)
     for index in domes.BUILT:
         domes.add_check_functions(pack, layout.DOMES[index], tunnels.BUILT)
     hooks = {
@@ -592,7 +595,7 @@ def _progress(
             f'title {PLAYERS} title {{text:"{dome.name}",color:"gold"}}',
             f"execute as {PLAYERS} at @s run playsound "
             "minecraft:ui.toast.challenge_complete master @s ~ ~ ~ 1 1",
-            f"function {pack.id(f'tunnel/{n}/open')}",
+            f"function {pack.id(f'tunnel/{n}/ready')}",
         ]
         if n < last:
             x, y, z, yaw = domes.entrance(layout.DOMES[n + 1])
@@ -949,20 +952,24 @@ def _clock(pack: dp.Pack, hooks: set[tuple[int, str]]) -> None:
     ]
     pack.function("game/load", load, load=True)
 
+    line = (
+        '{text:"Domes "}',
+        _score("#solved"),
+        f'{{text:" of {len(layout.DOMES) - 1}, "}}',
+        _score("#mm.m"),
+        '{text:":"}',
+        _score("#mm.t"),
+        _score("#mm.o"),
+    )
+    ready = '{text:"   Pump ready: pull the lever",color:"aqua"}'
     second = [
         _set("#second", 0),
         f"execute if score #run {OBJ} matches 1 run scoreboard players add #secs {OBJ} 1",
         *dp.mmss_lines("#secs", OBJ, STORE, "time"),
-        f"execute if score #run {OBJ} matches 1.. run title {PLAYERS} actionbar "
-        + _text(
-            '{text:"Domes "}',
-            _score("#solved"),
-            f'{{text:" of {len(layout.DOMES) - 1}, "}}',
-            _score("#mm.m"),
-            '{text:":"}',
-            _score("#mm.t"),
-            _score("#mm.o"),
-        ),
+        f"execute if score #run {OBJ} matches 1.. unless score #pumps {OBJ} "
+        f"matches 1.. run title {PLAYERS} actionbar " + _text(*line),
+        f"execute if score #run {OBJ} matches 1.. if score #pumps {OBJ} "
+        f"matches 1.. run title {PLAYERS} actionbar " + _text(*line, ready),
     ]
     second += [
         f"execute if score #active {OBJ} matches {level} "
@@ -984,6 +991,7 @@ def _clock(pack: dp.Pack, hooks: set[tuple[int, str]]) -> None:
     pack.function("game/second", second)
 
     tick = [
+        f"function {pack.id('tunnel/tick')}",
         f"scoreboard players add #scan {OBJ} 1",
         f"execute if score #scan {OBJ} matches {SCAN_TICKS}.. "
         f"run function {pack.id('players/scan')}",

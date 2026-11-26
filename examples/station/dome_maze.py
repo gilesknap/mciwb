@@ -2420,6 +2420,7 @@ def _check(ctx: Any, saved_level: dict[str, int | None]) -> list[str]:
     ctx.setblock(post, lever(fr, True))
     ctx.advance(6)
     expect("the lever thrown: solved", (solved(), get("free")), (True, 1))
+    problems.extend(game_checks.pull_pump(ctx, INDEX))
     expect("solved: tunnel 6", ctx.score(f"#t{INDEX}") in (1, 2), True)
     ctx.advance(12)
     gates_read("solved", lambda g: False)

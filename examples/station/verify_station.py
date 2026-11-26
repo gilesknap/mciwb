@@ -275,6 +275,8 @@ def geometry_problems() -> list[str]:
             ):
                 problems.append(f"tunnel {tunnel.index}: water can flow in state {d}")
         tunnels.engine_cells(tunnel)
+        if tunnel.index in tunnels.LEVERED:
+            problems += tunnels.lever_problems(tunnel)
     return problems
 
 

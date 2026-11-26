@@ -20,7 +20,8 @@ sees them.
   prismarine in a brass frame; standing out from it, each dome a disc of
   glass over copper of its own size with its state lamp in the middle
   (``DOME_LAMP``: dark locked, amber open, green restored), each tunnel a
-  pipe of copper bulbs, lit when it is pumped dry, the shore as a corner
+  pipe of copper bulbs, lit when it is pumped dry and dimly (``READY``)
+  while its pump waits for its lever, the shore as a corner
   of land with the row out to it, and a blinking pin over the Pump House:
   "you are here". The names, a title, a legend and which way is up are
   text.
@@ -187,6 +188,8 @@ SAND, GRASS, JETTY = (
 PIN = ("minecraft:pearlescent_froglight", "minecraft:red_concrete")
 BULB = "minecraft:waxed_copper_bulb"
 LIT, UNLIT = f"{BULB}[lit=true]", f"{BULB}[lit=false]"
+#: a tunnel's pipe on the map while its pump waits for its lever
+READY = f"{tunnels.LAMP_DIM}[lit=true]"
 LAMP = "minecraft:redstone_lamp"
 BUTTON = "minecraft:polished_blackstone_button"
 DOOR = "minecraft:waxed_copper_door"
@@ -1128,7 +1131,13 @@ def entities() -> tuple[str, ...]:
         + "]",
         0.8,
     )
-    label(MAP, mid, band - 0.25, _t("A lit pipe is a tunnel pumped dry", "gray"), 0.8)
+    label(
+        MAP,
+        mid,
+        band - 0.25,
+        _t("A lit pipe is a tunnel pumped dry; a dim one, its pump ready", "gray"),
+        0.8,
+    )
     ahead = _COMPASS[(-MAP.face[0], -MAP.face[1])]
     left = _COMPASS[(-MAP.right[0], -MAP.right[1])]
     label(
@@ -1426,10 +1435,11 @@ def functions(pack: dp.Pack) -> None:
             )
     for i, cells in m.lines.items():
         for a, b in domes.boxes(cells):
-            dry = score(f"#t{i}", "2")
+            dry, ready = score(f"#t{i}", "2"), score(f"#t{i}.ready", "1")
             show += [
                 f"execute if {dry} run {dp.fill(a, b, LIT)}",
-                f"execute unless {dry} run {dp.fill(a, b, UNLIT)}",
+                f"execute if {ready} run {dp.fill(a, b, READY)}",
+                f"execute unless {dry} unless {ready} run {dp.fill(a, b, UNLIT)}",
             ]
     for level in LEVELS:
         reached = score(DIAL, f"{level}..")
@@ -1795,12 +1805,15 @@ def check(ctx: Any) -> list[str]:
         }
 
     def lines() -> dict[int, int | None]:
-        """each tunnel's line: 1 all lit, 0 all dark, None mixed"""
+        """each tunnel's line: 1 all lit, 0 all dark, 2 all "pump ready",
+        None mixed"""
         out: dict[int, int | None] = {}
         for i, cells in m.lines.items():
             lit = sum(ctx.is_block(c, LIT) for c in cells)
             dark = sum(ctx.is_block(c, UNLIT) for c in cells)
-            out[i] = 1 if lit == len(cells) else 0 if dark == len(cells) else None
+            ready = sum(ctx.is_block(c, READY) for c in cells)
+            whole = [k for k, n in ((1, lit), (0, dark), (2, ready)) if n == len(cells)]
+            out[i] = whole[0] if whole else None
         return out
 
     def dial() -> tuple[int | None, int, int | None]:
@@ -1931,6 +1944,20 @@ def check(ctx: Any) -> list[str]:
             lines(),
             dict.fromkeys(range(tunnels_n), shown) | {N: 1},
         )
+    # a pump waiting for its lever: shut, and its line dim
+    for t in layout.TUNNELS:
+        if t.index != N:
+            ctx.set_score(f"#t{t.index}", 0)
+            ctx.set_score(f"#t{t.index}.ready", 1)
+    ctx.advance(12)
+    expect(
+        problems,
+        "the lines with the pumps ready",
+        lines(),
+        dict.fromkeys(range(tunnels_n), 2) | {N: 1},
+    )
+    for t in layout.TUNNELS:
+        ctx.set_score(f"#t{t.index}.ready", 0)
 
     # -- the dial: its buttons move the proposal, and it stops at the ends
     top, bottom = LEVELS[-1], LEVELS[0]

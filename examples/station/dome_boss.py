@@ -2374,6 +2374,7 @@ def _check(ctx: Any, saved: dict[str, int | None]) -> list[str]:
         }
         expect(f"{what}: won", got, {"phase": 5, "dome": 2, "run": 2})
         expect(f"{what}: automatons left", ctx.count(mobs), 0)
+        problems.extend(game_checks.pull_pump(ctx, INDEX))
         expect(f"{what}: tunnel 7 at the win", ctx.score(f"#t{INDEX}") in (1, 2), True)
         steps(len(place.way_out) + 3)
         expect(

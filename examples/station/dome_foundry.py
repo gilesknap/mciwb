@@ -2277,6 +2277,7 @@ def _check(ctx: Any) -> list[str]:
     }
     want = {"state": 2, "dome": 2, "automatons": 0, "mast": 4 * CELLS, "bar": False}
     expect("charged", got, want)
+    problems.extend(game_checks.pull_pump(ctx, INDEX))
     expect("tunnel 4 at the end", ctx.score(f"#t{INDEX}") in (1, 2), True)
     ctx.advance(len(place.bus) * 3 + STEP)
     bus = sum(ctx.is_block(x, lit) for x in place.bus)

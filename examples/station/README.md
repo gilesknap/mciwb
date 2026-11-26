@@ -190,7 +190,7 @@ MODULE = game.Module(
     something a player is using (it waits for the room's next safe
     point).
   - *Progress*: call `station:dome/<n>/solved` and the core does the
-    rest (the title, tunnel n's pump event, the next dome opened, respawn
+    rest (the title, tunnel n's pump woken for its lever by the airlock, the next dome opened, respawn
     points). The last dome's is the win, and functions named in
     `Module(wins=...)` run then (`#won.best`: the run set the level's
     best time).

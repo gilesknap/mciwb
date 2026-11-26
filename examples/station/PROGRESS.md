@@ -227,6 +227,7 @@ What RCON cannot stand in for. Each stage adds to the list as it builds.
 | 1 | The lift's corner cases with real players: one standing in the doorway is taken along; one who sneaks off the seat in mid ride is put back on it; one who logs off in mid ride and comes back is put into the cage, and is not pulled onto a seat when the other player next rides; the cage called away with someone standing in it |  no |
 | 1 | Titles and sounds on entering and on solving a dome | no |
 | 1 | The pump event through the door's window: is the flooded tunnel visible by the dim lamps, can the water level be seen falling (3 s a layer), do the lamps and the opening doors read well; the same from the far dome's window | no |
+| 2 | The pump lever (after the play-test, not yet played): on solving a dome the engine wakes (lamp and furnace lit, a hum and steam every 3 s), a lever appears on the door's brass jamb beside the window and a title says "Pull the pump lever"; the progress line says "Pump ready" and the map's pipe glows dim. Is the lever found? Is the hum too much or too little? The lever pulled by either of two players; a late joiner finds it waiting; it goes as its jamb slides open | no |
 | 1 | The engine while it pumps: the strokes, the flashing lamp, the steam and puffs, the klaxon every 4 s (too loud? too often?) | no |
 | 1 | The sea seen through the windows of the doors that stay shut (the Pump House's north door, the Gearworks' far door) | no |
 | 1 | Two real players and the forms: one in the Boiler Room with the other on the shore or in the Pump House keeps the levers; the second walking in brings the plates at once; one stepping out for under 3 s changes nothing | no |
@@ -1853,6 +1854,35 @@ commit:
   built-in lengths' dead writes, the `# noqa: E731` lambdas in the test).
   The test bench row's other items (the button, dying, the lift, the
   ravager) were not part of the hand test.
+
+### The pump levers (after the play-test)
+
+Asked by the owner: solving a dome no longer starts its tunnel's pump.
+`dome/<n>/solved` calls `tunnel/<n>/ready`: `#t<n>.ready` 1 (the state
+stays 0, flooded and shut), the engine's lamp and furnace lit, a hum and
+steam every `HUM_EVERY` ticks, the lever (`tunnels.lever_cell`: the way
+in's nearest cell on the engine's side, 2 up, so on the inner face of
+the door's brass jamb beside the window) and, after the "restored"
+title, "Pull the pump lever" to those in the dome. `tunnel/tick` (every
+tick) counts the waiting pumps into `#pumps` (the progress line's "Pump
+ready", the map's dim pipe, `dome_start.READY`) and runs `open` for a
+pulled lever, whoever pulled it. The pump event itself and its timing
+are unchanged; the lever is taken out as its jamb opens (`door_2`) and by
+the tunnel's reset. Before `ready` there is no lever. Tunnel 0 has none:
+the master lever is its pump lever (`tunnel/0/ready` is `open`). The
+Engine's tunnel home has one: the win readies it, so the show is seen.
+
+- The lever stands 3 or more blocks from every part of the engine and on
+  gold (`tunnels.lever_problems`, in the geometry check), so neither it
+  nor the block it powers touches a piston. In the offline build its
+  neighbours are air, glass, gold, copper and water only.
+- Tunnel 3's lever is in the Flooded Dome's basin: it is placed only once
+  the room is dry, its `guard` dries the room while the pump waits, and
+  its `draw` takes the lever out before any wet layer (the rig rule).
+- Checks: `game_checks.pull_pump(ctx, n)` (the pump waiting, the lever
+  thrown, a tick) after each dome's `solved`; the tunnel check tries the
+  lever absent and inert before `ready`, `ready` twice, the pull, the
+  lever gone with the doors open, and a reset while waiting.
 
 ## Known problems / notes
 

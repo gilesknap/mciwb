@@ -2094,6 +2094,7 @@ def check(ctx: Any) -> list[str]:
     expect("the intake's lamps seen counting", most >= 1, True)
     expect("solved: the intake's lamps", intake_lit(), INTAKE_LAMPS)
     expect("solved: the room no longer live", get("live"), 0)
+    problems.extend(game_checks.pull_pump(ctx, INDEX))
     expect("tunnel 2 at the solve", ctx.score(f"#t{INDEX}") in (1, 2), True)
     ctx.advance(tunnels.event_ticks(tunnel) + 60)
     got = game_checks.scores(ctx, f"#t{INDEX}", f"#d{INDEX + 1}")

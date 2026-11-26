@@ -767,7 +767,22 @@ for n, name in game.KITS.items():
     assert any(line.endswith(given) for line in f[f"dome/{n}/entered"])
 # the last dome is the win, and a module's win function is called
 assert "function station:run/win" in f["dome/7/solved"]
-assert "function station:tunnel/7/open" in f["dome/7/solved"]
+assert "function station:tunnel/7/ready" in f["dome/7/solved"]
+# solving wakes a pump; its lever by the airlock starts it (tunnel 0: the
+# master lever, at once)
+import tunnels
+assert f["tunnel/0/ready"] == ["function station:tunnel/0/open"]
+assert "function station:tunnel/tick" in f["game/tick"]
+for n in tunnels.LEVERED:
+    t = B.station_layout.TUNNELS[n]
+    assert not tunnels.lever_problems(t), n
+    x, y, z = tunnels.lever_cell(t)
+    assert f"setblock {x} {y} {z} {tunnels.lever_block(t)}" in f[f"tunnel/{n}/ready"]
+    gone = f"setblock {x} {y} {z} minecraft:air"
+    assert gone in f[f"tunnel/{n}/reset"] and gone in f[f"tunnel/{n}/door_2"]
+    assert any(f"if block {x} {y} {z} minecraft:lever[powered=true]" in line
+               and line.endswith(f"tunnel/{n}/open") for line in f["tunnel/tick"])
+    assert f"scoreboard players set #t{n}.ready st 0" in f[f"tunnel/{n}/begin"]
 import datapack
 module = game.Module(
     "t",
