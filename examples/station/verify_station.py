@@ -17,6 +17,9 @@ runs):
   order, and no other dome stage;
 - forceload: the station's box splits into forceload commands of at most
   256 chunks each, which cover it;
+- seabed: the dressing of the sea floor (``seabed.problems``): clear of
+  the domes and tunnels, standing on the surveyed floor, its coral in
+  water;
 - datapack: the datapack's own checks (``datapack.py``: every function
   line and name, as the pack is made);
 - functions: the pack has a readable ``pack.mcmeta``; its tags are JSON
@@ -60,6 +63,7 @@ import build_station as B  # noqa: E402
 import domes  # noqa: E402
 import game_checks  # noqa: E402
 import mcwb  # noqa: E402
+import seabed  # noqa: E402
 import tunnels  # noqa: E402
 from fake_client import Recorder  # noqa: E402
 
@@ -275,6 +279,8 @@ def geometry_problems() -> list[str]:
             ):
                 problems.append(f"tunnel {tunnel.index}: water can flow in state {d}")
         tunnels.engine_cells(tunnel)
+        if tunnel.index in tunnels.LEVERED:
+            problems += tunnels.lever_problems(tunnel)
     return problems
 
 
@@ -293,6 +299,7 @@ OFFLINE: dict[str, Callable[[], list[str]]] = {
     "stages": stage_problems,
     "forceload": forceload_problems,
     "geometry": geometry_problems,
+    "seabed": lambda: seabed.problems()[:20],
     "datapack": B.pack_problems,
     "functions": lambda: function_problems(pack()),
     "build": build_problems,
@@ -388,6 +395,7 @@ LIVE: dict[str, Callable[[B.Context], list[str]]] = {
     "fittings": game_checks.check_fittings,
     "ring": game_checks.check_ring,
     "restricted_items": game_checks.check_restricted,
+    "seabed_live": seabed.check,
     "boiler_room": todo("the Boiler Room solved and failed, solo and two-player", 1),
     "gearworks": todo(
         "the Gearworks solved and failed, laid pipe kept when left, cleared by the reset",
@@ -413,7 +421,8 @@ def live_checks(world, wanted: list[str] | None = None) -> dict[str, list[str]]:
     """run the written live checks (all, or those named): name -> its
     problems. The station's box is forceloaded for good by the build; this
     loads it if it is not, and leaves it loaded. A check that raises is a
-    failure, and the rest still run"""
+    failure, and the rest still run. The level and the best times are put
+    back after each (``game_checks.kept_level``)"""
     names = [n for n in LIVE if n not in todos() and (wanted is None or n in wanted)]
     if not names:
         return {}
@@ -429,7 +438,10 @@ def live_checks(world, wanted: list[str] | None = None) -> dict[str, list[str]]:
     for name in names:
         print(f"-- {name}", flush=True)
         try:
-            results[name] = LIVE[name](ctx)
+            # the level and every level's best time put back after each
+            # check, whatever it did: no best time from no real run
+            with game_checks.kept_level(ctx):
+                results[name] = LIVE[name](ctx)
         except Exception as e:  # noqa: BLE001
             results[name] = [f"the check failed to run: {e!r}"]
     return results

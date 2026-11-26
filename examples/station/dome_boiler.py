@@ -1512,6 +1512,10 @@ def check(ctx: Any) -> list[str]:
         return [f"{others} players or stand-ins of another check are in the game"]
     ctx.function(f"{base}/reset")
     unsolve()
+    # the paths below are worked out at the level the room is tuned for: at
+    # level 1 the valves left open hold the band (the level is put back at
+    # the end, and by verify_station's kept_level)
+    ctx.set_score("#level", game.DEFAULT_LEVEL)
     ctx.advance(scan)
     as_built("built")
     chaser_runs("nobody in")
@@ -1606,6 +1610,7 @@ def check(ctx: Any) -> list[str]:
             f"its pistons seen out or in: {pumped}"
         )
     # solved: the tunnel's pump event, the next dome open, the room steady
+    problems.extend(game_checks.pull_pump(ctx, INDEX))
     expect("tunnel 1 at the solve", ctx.score(f"#t{INDEX}") in (1, 2), True)
     wait = tunnels.event_ticks(tunnel) + 60
     ctx.advance(wait)
@@ -1726,6 +1731,7 @@ def check(ctx: Any) -> list[str]:
     if not work(plates, solved):
         got = {n: get(n) for n in ("p", "hold", "need", "lit", "v0", "v1")}
         problems.append(f"duo: not solved with both valves held: {got}")
+    problems.extend(game_checks.pull_pump(ctx, INDEX))
     expect("duo solved: tunnel 1", ctx.score(f"#t{INDEX}") in (1, 2), True)
 
     # ---- duo, and one leaves in the middle: solo, and not stuck

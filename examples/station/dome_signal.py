@@ -2093,6 +2093,7 @@ def check(ctx: Any) -> list[str]:
     expect("solo: solved", (get("st"), solved()), (6, True))
     expect("the sequence through the rounds", sequence(), first)
     says("solved", "LINE OPEN")
+    problems.extend(game_checks.pull_pump(ctx, INDEX))
     expect("tunnel 5 at the solve", ctx.score(f"#t{INDEX}") in (1, 2), True)
     ctx.advance(tunnels.event_ticks(tunnel) + 60)
     got = game_checks.scores(ctx, f"#t{INDEX}", f"#d{INDEX + 1}")

@@ -170,6 +170,7 @@ class Pack:
         self.stamp = stamp if stamp is not None else f"{time.time():.3f}"
         self.functions: dict[str, list[str]] = {}
         self.loot_tables: dict[str, dict] = {}
+        self.tags: dict[tuple[str, str], list[str]] = {}
         self._load: list[str] = []
         self._tick: list[str] = []
         self._objectives: dict[str, str] = {}
@@ -225,6 +226,20 @@ class Pack:
         name = self.id(path)
         self.loot_tables[path] = table
         return name
+
+    def tag(self, registry: str, name: str, values: Iterable[str]) -> str:
+        """add values to a tag of any namespace, the game's own included
+        (``registry`` as the folder under ``tags``: ``entity_type``; ``name``
+        as ``minecraft:raiders``). It adds to the tag and replaces nothing.
+        Returns the tag as a command names it (``#minecraft:raiders``)"""
+        namespace, _, path = name.partition(":")
+        if not _NAMESPACE.match(namespace) or not _PATH.match(path):
+            raise PackError(f"bad tag name: {name!r}")
+        if not _PATH.match(registry) or registry == "function":
+            raise PackError(f"bad tag registry: {registry!r}")
+        have = self.tags.setdefault((registry, name), [])
+        have += [v for v in values if v not in have]
+        return f"#{name}"
 
     def objectives(self, objectives: dict[str, str]) -> None:
         """scoreboard objectives (name -> criterion, usually ``dummy``) that
@@ -285,6 +300,11 @@ class Pack:
         for path, table in self.loot_tables.items():
             out[f"data/{self.namespace}/loot_table/{path}.json"] = (
                 json.dumps(table, indent=2) + "\n"
+            )
+        for (registry, name), values in self.tags.items():
+            namespace, _, path = name.partition(":")
+            out[f"data/{namespace}/tags/{registry}/{path}.json"] = (
+                json.dumps({"replace": False, "values": values}, indent=2) + "\n"
             )
         tags = "data/minecraft/tags/function"
         load = [self.id("_load"), *self._load]

@@ -45,15 +45,17 @@ in seconds (0: none) and ``#best<level>`` each level's.
   starts the clock and solves the start dome, which opens tunnel 0.
 - ``station:dome/<n>/solved``: the one thing a puzzle calls when it is
   solved. Does nothing unless dome n is open and unsolved. Title and
-  sound, the dome marked solved, tunnel n's pump event
-  (``station:tunnel/<n>/open``), the next dome marked open and every
+  sound, the dome marked solved, tunnel n's pump engine woken
+  (``station:tunnel/<n>/ready``: its lever by the airlock, pulled by
+  anyone, starts the pump event; tunnel 0's starts at once), the next
+  dome marked open and every
   player's respawn point moved to its entrance. The last dome's opens
   tunnel 7, back to the Pump House's north door, and calls
   ``station:run/win``: the clock stops, the best time for the level is
   kept, and each module's ``wins`` functions run (the trophy, the
   finale).
 - Players in the game see "Domes 3 of 7, 12:40" above the hotbar while a
-  run is on.
+  run is on, and "Pump ready" after it while a pump waits for its lever.
 
 **Two rules every room follows.**
 
@@ -127,12 +129,15 @@ answered by the core (``st.died``, criterion ``deathCount``): see the
 - ``station:vote/confirm``: confirm whatever is proposed.
 
 A proposal starts ``VOTE_SECONDS`` on the bossbar ``station:vote``
-("Reset: 1 of 2"), shown to the players in the game. It passes when
-everyone in the game has confirmed (one player: one press) and then calls
-``station:reset/all`` or sets ``#level``; otherwise it expires. While one
-is open another proposal is ignored. ``#vote.kind`` (0 none, 1 reset, 2
-difficulty), ``#vote.value``, ``#vote.left``, ``#vote.yes``,
-``#vote.need``; objective ``st.vote``: 1 for a player who has confirmed.
+("Reset: 1 of 2, 57 s"), shown to the players in the game. It passes when
+everyone in the game has confirmed (a player's own presses count once)
+and then calls ``station:reset/all`` or sets ``#level``; otherwise it
+expires. A player alone confirms with a second press: the first only opens
+it ("Reset: press again to confirm, 57 s"), so neither a reset nor a level
+is ever one accidental press. While one is open another proposal is
+ignored. ``#vote.kind`` (0 none, 1 reset, 2 difficulty), ``#vote.value``,
+``#vote.left``, ``#vote.yes``, ``#vote.need``; objective ``st.vote``: 1
+for a player who has confirmed, 2 for one alone who has opened it.
 
 **Difficulty.** ``#level``: 1 to 10, 5 by default, kept through a reset.
 It takes force (``#active``) the next time anyone enters a dome, and then
@@ -381,6 +386,7 @@ def add_functions(pack: dp.Pack, modules: list[Module]) -> None:
             tunnels.add_functions(pack, tunnel, PLAYERS)
         else:
             tunnels.add_stub_functions(pack, tunnel)
+    tunnels.add_tick_function(pack)
     for index in domes.BUILT:
         domes.add_check_functions(pack, layout.DOMES[index], tunnels.BUILT)
     hooks = {
@@ -589,7 +595,7 @@ def _progress(
             f'title {PLAYERS} title {{text:"{dome.name}",color:"gold"}}',
             f"execute as {PLAYERS} at @s run playsound "
             "minecraft:ui.toast.challenge_complete master @s ~ ~ ~ 1 1",
-            f"function {pack.id(f'tunnel/{n}/open')}",
+            f"function {pack.id(f'tunnel/{n}/ready')}",
         ]
         if n < last:
             x, y, z, yaw = domes.entrance(layout.DOMES[n + 1])
@@ -693,6 +699,7 @@ def _vote(pack: dp.Pack) -> None:
     in_game = "execute unless entity @s[tag=st.in] run return 0"
     open_ = pack.id("vote/open")
     confirm = f"run function {pack.id('vote/yes')}"
+    # ``#vote.new`` is 1 only during the press that opens a vote
     pack.function(
         "vote/reset",
         [
@@ -700,6 +707,7 @@ def _vote(pack: dp.Pack) -> None:
             f"execute if score {kind} matches 0 "
             f'run function {open_} {{kind:1,value:0,label:"Reset"}}',
             f"execute if score {kind} matches 1 {confirm}",
+            _set("#vote.new", 0),
         ],
     )
     pack.function(
@@ -713,6 +721,7 @@ def _vote(pack: dp.Pack) -> None:
             '{kind:2,value:$(level),label:"Difficulty $(level)"}',
             f"execute if score {kind} matches 2 if score {value} = #vote.arg {OBJ} "
             f"{confirm}",
+            _set("#vote.new", 0),
         ],
     )
     pack.function(
@@ -725,6 +734,7 @@ def _vote(pack: dp.Pack) -> None:
             f"$scoreboard players set {value} $(value)",
             f'$data modify storage {STORE} vote.label set value "$(label)"',
             f"scoreboard players set {left} {VOTE_SECONDS}",
+            _set("#vote.new", 1),
             "scoreboard players reset * st.vote",
             f"bossbar set {BAR} value {VOTE_SECONDS}",
             f"bossbar set {BAR} players {PLAYERS}",
@@ -743,11 +753,22 @@ def _vote(pack: dp.Pack) -> None:
             _set("#vote.need", 0),
             _set("#vote.yes", 0),
             *(f"function {pack.id('vote/count')} {{who:'{who}'}}" for who in WHO),
-            f"{store}.yes int 1 run scoreboard players get {yes}",
-            f"{store}.need int 1 run scoreboard players get {need}",
-            f"function {pack.id('vote/show')} with storage {STORE} vote",
+            # a player alone: the press that opened it is not a yes
+            f"execute if score #vote.new {OBJ} matches 1 if score {need} matches 1 "
+            f"run return run function {pack.id('vote/alone')}",
+            f"function {pack.id('vote/show')}",
             f"execute if score {need} matches 1.. if score {yes} >= {need} "
             f"run function {pack.id('vote/pass')}",
+        ],
+    )
+    pack.function(
+        "vote/alone",
+        [
+            "scoreboard players set @s st.vote 2",  # pressed once, not counted
+            _set("#vote.yes", 0),
+            f"function {pack.id('vote/show')}",
+            "tellraw @s "
+            + _text('{text:"Press again within the minute to confirm.",color:"gold"}'),
         ],
     )
     pack.function(
@@ -763,8 +784,26 @@ def _vote(pack: dp.Pack) -> None:
     pack.function(
         "vote/show",
         [
+            f"{store}.yes int 1 run scoreboard players get {yes}",
+            f"{store}.need int 1 run scoreboard players get {need}",
+            f"{store}.left int 1 run scoreboard players get {left}",
+            f"execute if score {need} matches 1 run return run "
+            f"function {pack.id('vote/show_alone')} with storage {STORE} vote",
+            f"function {pack.id('vote/show_all')} with storage {STORE} vote",
+        ],
+    )
+    pack.function(
+        "vote/show_alone",
+        [
             f"$bossbar set {BAR} name "
-            '{text:"$(label): $(yes) of $(need)",color:"gold"}'
+            '{text:"$(label): press again to confirm, $(left) s",color:"gold"}'
+        ],
+    )
+    pack.function(
+        "vote/show_all",
+        [
+            f"$bossbar set {BAR} name "
+            '{text:"$(label): $(yes) of $(need), $(left) s",color:"gold"}'
         ],
     )
     pack.function(
@@ -774,6 +813,7 @@ def _vote(pack: dp.Pack) -> None:
             f"execute store result bossbar {BAR} value "
             f"run scoreboard players get {left}",
             f"bossbar set {BAR} players {PLAYERS}",
+            f"function {pack.id('vote/show')}",
             f"execute if score {left} matches ..0 run function {pack.id('vote/expire')}",
         ],
     )
@@ -912,20 +952,24 @@ def _clock(pack: dp.Pack, hooks: set[tuple[int, str]]) -> None:
     ]
     pack.function("game/load", load, load=True)
 
+    line = (
+        '{text:"Domes "}',
+        _score("#solved"),
+        f'{{text:" of {len(layout.DOMES) - 1}, "}}',
+        _score("#mm.m"),
+        '{text:":"}',
+        _score("#mm.t"),
+        _score("#mm.o"),
+    )
+    ready = '{text:"   Pump ready: pull the lever",color:"aqua"}'
     second = [
         _set("#second", 0),
         f"execute if score #run {OBJ} matches 1 run scoreboard players add #secs {OBJ} 1",
         *dp.mmss_lines("#secs", OBJ, STORE, "time"),
-        f"execute if score #run {OBJ} matches 1.. run title {PLAYERS} actionbar "
-        + _text(
-            '{text:"Domes "}',
-            _score("#solved"),
-            f'{{text:" of {len(layout.DOMES) - 1}, "}}',
-            _score("#mm.m"),
-            '{text:":"}',
-            _score("#mm.t"),
-            _score("#mm.o"),
-        ),
+        f"execute if score #run {OBJ} matches 1.. unless score #pumps {OBJ} "
+        f"matches 1.. run title {PLAYERS} actionbar " + _text(*line),
+        f"execute if score #run {OBJ} matches 1.. if score #pumps {OBJ} "
+        f"matches 1.. run title {PLAYERS} actionbar " + _text(*line, ready),
     ]
     second += [
         f"execute if score #active {OBJ} matches {level} "
@@ -947,6 +991,7 @@ def _clock(pack: dp.Pack, hooks: set[tuple[int, str]]) -> None:
     pack.function("game/second", second)
 
     tick = [
+        f"function {pack.id('tunnel/tick')}",
         f"scoreboard players add #scan {OBJ} 1",
         f"execute if score #scan {OBJ} matches {SCAN_TICKS}.. "
         f"run function {pack.id('players/scan')}",

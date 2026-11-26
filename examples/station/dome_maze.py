@@ -12,6 +12,24 @@ is only there in its hours. Climb with the clock to the Regulator on the
 crown and throw it: the clock is tamed, every gate opens and stays open,
 and tunnel 6 pumps dry.
 
+**The puzzle** is the way up, and it is planned, not found. No cell has
+two gates of one hour, so every cell is a wait for a bell, and most have
+two or three gates: which one to wait for? The gate that opens first is
+often the wrong one (it leads to a dead end, a full turn of the clock to
+get out of, or the long way round). Deck 1 and deck 2 are each such a
+maze, with a brass plan of each (``PLAN_AT``) on the tower's face beside
+the dial: every gate on it in its own colour and numeral. ``puzzle``
+measures it: the best route against the walker who takes whatever opens
+first, the dead ends, and the gates the best route lets go by.
+
+**The clock is told** everywhere: the Great Dial over the door (its rim
+in the three hours' blocks, a lamp a quarter, and a hand that sweeps
+round it), the light on every post of every cell in the hour's colour
+(``HOUR_LIGHT``), three lamps on the atrium, a bell at each player's ear
+that strikes once for Green, twice for Iron and three times for Gold, and
+through an hour's last quarter a clank every half second while the
+lights go to the colour of the hour to come and back.
+
 **Places** are in the dome's own frame (``fittings.frame``): f forward
 from the entrance, r to the right, h up from the floor. The tower is a
 lattice of pitch 4: wall lines at f and r = ``LINES``, a post where two
@@ -19,7 +37,7 @@ cross, and between them cells 3 by 3; cell (i, j) has its middle at
 f = -8 + 4i, r = -8 + 4j. Deck d is walked at h = 6d - 5; the crown at
 h 19. The middle cell is the atrium, a shaft from the floor to the crown.
 
-**A gate** (``GATES``, 38 of them) is a doorway 1 wide and 2 high shut by
+**A gate** (``GATES``, 39 of them) is a doorway 1 wide and 2 high shut by
 a real two-block piston door: along the wall, the doorway, the parked
 leaves, two sticky pistons in the post, and beside them the valve slot.
 The rig's rules, kept exactly: the pack never writes a piston. It shuts a
@@ -46,23 +64,25 @@ doorway. ``reset`` clears every slot and lets the mend do the rest.
 positions) at every hour, at one gate an hour, and report any from which
 the crown cannot be reached.
 
-**The lifts** (``LIFTS``, one switch, on). A platform stepped a block
-every 3 ticks with its riders was proved in the rig with stand-ins, not
-ridden by a player, so every lift also has a ladder in a corner well of
-its shaft that is always there. On, lifts A, B and C go up at the strike
-of Green and down at the strike of Gold, a shutter of iron trapdoors
-closing the hole they leave, and the Ram in the atrium takes the players
-down from the crown once the dome is solved (a step off its ladder is a
-slow drift down the shaft). Off, the platforms stay parked at the top as
-the upper deck's floor. The dome plays either way: a lift's gate opens in
-Gold, or for anyone found inside it.
+**The lifts.** A, B and C go up at the strike of Green and down at the
+strike of Gold; a lift takes whoever stands on its platform, which is a
+whole cell. At rest a platform is blocks; to travel it becomes block
+displays that glide a quarter of a block a tick, its riders seated on
+item displays that move with them (the dock lift's way), and at the other
+end it is blocks again. A shutter of iron trapdoors closes the hole it
+leaves at the top. There are no ladders: the lifts are the way. So that
+nobody is stuck, a lift's gate opens while its platform stands at the
+bottom (through Gold) and for anyone found inside, a platform does not
+come down onto anybody (it waits over them), and whoever stays on one at
+the top is brought down at Gold and up again at Green. The Ram in the
+atrium stays at the crown until the dome is solved, then takes whoever
+stands on it down to the Ram Door, and after that goes with the clock.
 
 **Nowhere to be stuck** (``trap_problems``): the band between a wall's
 top and the floor over it is closed at foot height and each machine cell
-has a lid, so that nobody stepping off a ladder or drifting down from a
-timed floor can walk the wall tops and drop into a machine cell; the
-search climbs, steps off ladders and falls (drifting) with the lifts up
-and down and the floors in and out.
+has a lid, so that nobody drifting down from a timed floor can walk the
+wall tops and drop into a machine cell; the search rides the lifts and
+falls (drifting) with the lifts up and down and the floors in and out.
 
 **State** (scores in ``st``, all ``#maze.<name>``): ``live`` 1 once the
 room is set up for those in it; ``form`` 1 solo, 2 duo; ``free`` 1 once
@@ -71,21 +91,26 @@ early (``scaled``, from the level when the room is set up); ``t``, ``q``
 (0 to 11), ``hour`` (0 to 2); ``in``, ``beyond``, ``top`` who is in the
 tower, beyond the second held gate, and up top; ``keys`` 1 while the
 Regulator wants two keys, ``hold`` the ticks both have been held; for
-each lift its height and where it is going (``l<id>``, ``l<id>.to``).
+each lift its height and where it is going (``l<id>``, ``l<id>.to``),
+``l<id>.m`` 1 while it travels, ``.p`` the ticks into the block, ``.d``
+its way and ``.w`` 1 while it waits over someone; ``bells`` the strokes
+still to come, ``fl`` the warning's flash.
 
 **Functions** (the core calls the hooks, see game.py): ``enter`` (the
 first into an unsolved room: ``arm``), ``tick`` (the log put back, then
-``work``: ``clock`` -> ``gates`` -> ``mend`` -> ``floors`` -> ``keys``,
-which calls ``done``: ``station:dome/6/solved``, then ``restored``),
+``work``: ``clock`` -> ``gates`` -> ``mend`` -> ``floors`` -> ``lifts`` ->
+``keys``, which calls ``done``: ``station:dome/6/solved``, then ``restored``),
 ``solo`` / ``duo`` (the two held gates' plates and signs, nothing else:
 a gate never shuts on anyone, so a change of form takes effect when the
 doorway is clear), ``empty`` (an unsolved room parked: the clock stopped
 at the strike of Green, every gate open), ``reset`` (everything as
 built). Nothing is lent, and nothing here hurts: no ``leave`` or ``died``.
 
-**To watch**, and no part of the puzzle (``dressing_blocks``): the Great
-Dial over the tower door (twelve lamps, one more each quarter) with a
-pendulum of two block displays that the pack swings; the Tally Engine in
+**To watch** (``dressing_blocks``): the Great Dial over the tower door
+(twelve lamps, one more each quarter) with its hand, a block display
+that the pack turns a twelfth of a turn a quarter (``hand/go``: made anew
+if it is gone, put back to twelve by ``park``), and a pendulum of two
+more that it swings; the plans; the Tally Engine in
 the left yard, a torch clock (``fittings.torch_clock``) feeding six copper
 bulbs that count in binary through comparators, behind bars; tanks and
 pipes in the right yard; the Walk, a railed gantry round the dome's wall
@@ -95,6 +120,7 @@ for looking down into the maze. None has a lever, button or plate.
 from __future__ import annotations
 
 import math
+import re
 from dataclasses import dataclass, field
 from functools import cache
 from typing import TYPE_CHECKING, Any
@@ -115,11 +141,6 @@ if TYPE_CHECKING:
 INDEX = 6  # the Clockwork Maze's place in the ring
 OBJ = game.OBJ
 
-#: the one switch: True, the lifts run on the clock (the step proved in
-#: the rig with stand-ins, the ride not felt by a player); False, the
-#: platforms stay at the top and the ladders are the way up and down
-LIFTS = True
-
 QUARTER = 30  # ticks a quarter at level 5: an hour is 6 s
 HOURS = ("GREEN", "IRON", "GOLD")
 GREEN, IRON, GOLD = 0, 1, 2
@@ -127,7 +148,9 @@ LINES = (-10, -6, -2, 2, 6, 10)
 CROWN_H = 19  # where feet are on the crown
 KEY_TICKS = 20  # both keys held this long
 RAM_WAIT = 60  # ticks from the solve to the Ram's first descent
-LIFT_STEP = 3  # ticks a block of a lift's travel
+LIFT_STEP = 4  # ticks a block of a lift's travel: a quarter block a tick
+BELL_GAP = 7  # ticks between the strokes of the bell
+BELL_PITCH = (0.6, 0.85, 1.2)  # of each hour
 
 BRASS = "minecraft:gold_block"
 COPPER = "minecraft:waxed_copper_block"
@@ -136,7 +159,12 @@ LEAF = "minecraft:waxed_chiseled_copper"
 GRATE = "minecraft:waxed_copper_grate"
 BARS = "minecraft:iron_bars"
 RAIL = "minecraft:polished_blackstone_wall"
-LIGHT = "minecraft:ochre_froglight"
+#: the light on every post, in the colour of the hour
+HOUR_LIGHT = (
+    "minecraft:verdant_froglight",
+    "minecraft:pearlescent_froglight",
+    "minecraft:ochre_froglight",
+)
 BULB = "minecraft:waxed_copper_bulb"
 PISTON = "minecraft:sticky_piston"
 POWER = "minecraft:redstone_block"
@@ -144,7 +172,6 @@ SLOT_OPEN = GRATE  # an open valve slot: not air, which would be a way through
 PLATE = "minecraft:polished_blackstone_pressure_plate"
 ROD = "minecraft:waxed_lightning_rod"
 TRAPDOOR = "minecraft:iron_trapdoor[half=top,open=false]"
-LADDER = "minecraft:ladder"
 BED = "minecraft:polished_deepslate"
 PLANKS = "minecraft:dark_oak_planks"
 TANK = "minecraft:waxed_weathered_copper"
@@ -159,6 +186,11 @@ DECK_FLOOR = {2: "minecraft:waxed_weathered_cut_copper", 3: CUT}
 NUMERAL = ("I", "II", "III")
 ENTITY_TAG = "st.d6"  # everything this module summons
 PEND_TAGS = ("st.maze.rod", "st.maze.bob")
+HAND_TAG = "st.maze.hand"  # the Great Dial's hand
+HAND = "minecraft:polished_blackstone"
+CAR_TAG, SEAT_TAG = "st.maze.car", "st.maze.seat"  # a lift as it travels
+BOARD = "minecraft:polished_blackstone"  # a cell on a plan
+ARCH_MARK = "minecraft:sea_lantern"  # an open arch on a plan
 
 # the kinds of gate that do not simply follow the hour
 DOOR, FK, LIFT, RAM, GREAT = "door", "fk", "lift", "ram", "great"
@@ -192,49 +224,53 @@ def _gates(deck: int, *rows: tuple) -> list[Gate]:
     return [Gate(deck, *row) for row in rows]
 
 
-#: every gate: its deck, when it opens, its doorway, piston stack and slot
+#: every gate: its deck, when it opens, its doorway, piston stack and slot.
+#: No cell has two gates of one hour (``puzzle_problems``), so every way
+#: through a cell is a wait for the bell, and which gate to wait for is
+#: the puzzle
 GATES: tuple[Gate, ...] = tuple(
     _gates(
         1,
         (DOOR, (-10, 0), (-10, 2), (-10, 3)),  # the tower door
-        (GREEN, (-8, -2), (-10, -2), (-10, -1)),
-        (IRON, (-8, 2), (-6, 2), (-5, 2)),
-        (IRON, (-6, -4), (-6, -2), (-6, -1)),
-        (GOLD, (-6, 4), (-6, 6), (-6, 7)),
+        (IRON, (-8, -2), (-10, -2), (-10, -1)),
+        (GREEN, (-8, 2), (-6, 2), (-5, 2)),
+        (GOLD, (-6, -4), (-6, -2), (-5, -2)),
+        (GOLD, (-6, 4), (-6, 6), (-5, 6)),
         (GREEN, (-4, -6), (-6, -6), (-7, -6)),
-        (GREEN, (-4, 6), (-2, 6), (-1, 6)),
-        (IRON, (-2, -8), (-2, -10), (-1, -10)),
-        (GOLD, (-2, -4), (-2, -2), (-2, -1)),
-        (IRON, (-2, 8), (-2, 10), (-1, 10)),
-        (IRON, (0, -6), (-2, -6), (-3, -6)),
+        (IRON, (-2, -4), (-2, -2), (-1, -2)),
+        (GOLD, (-2, 8), (-2, 10), (-1, 10)),
+        (GREEN, (0, -6), (-2, -6), (-3, -6)),
         (GOLD, (2, -8), (2, -10), (3, -10)),
-        (GREEN, (2, -4), (2, -2), (2, -1)),
-        (GOLD, (2, 8), (2, 10), (3, 10)),
-        (GREEN, (4, -6), (2, -6), (1, -6)),
-        (GOLD, (4, -2), (6, -2), (7, -2)),
-        (IRON, (4, 2), (6, 2), (7, 2)),
-        (GREEN, (4, 6), (6, 6), (7, 6)),
-        (IRON, (6, -4), (6, -6), (6, -7)),
+        (GOLD, (2, -4), (2, -2), (3, -2)),
+        (GREEN, (2, 8), (2, 10), (3, 10)),
+        (IRON, (4, -6), (2, -6), (1, -6)),
+        (GREEN, (4, 2), (6, 2), (7, 2)),
+        (GOLD, (4, 6), (2, 6), (1, 6)),
+        (GREEN, (6, -4), (6, -6), (7, -6)),
+        (IRON, (6, 4), (6, 6), (7, 6)),
+        (IRON, (6, 8), (6, 10), (7, 10)),
+        (IRON, (8, -2), (6, -2), (5, -2)),
+        (GOLD, (8, 2), (10, 2), (10, 3)),
+        (GREEN, (8, 6), (10, 6), (10, 7)),
         (LIFT, (8, -6), (10, -6), (10, -5)),  # into lift A
         (RAM, (2, 0), (2, 2), (2, 3)),  # the Ram Door: solved only
-        (GREAT, (10, 0), (10, 2), (10, 3)),  # the Great Door: solved only
+        (GREAT, (10, 0), (10, -2), (9, -2)),  # the Great Door: solved only
     )
     + _gates(
         2,
         (FK, (2, -8), (2, -10), (3, -10)),  # F to K: held, or Green
+        (GREEN, (-8, -2), (-6, -2), (-5, -2)),
+        (IRON, (-6, 0), (-6, 2), (-5, 2)),
+        (GREEN, (-6, 4), (-6, 6), (-5, 6)),
+        (GOLD, (-4, -6), (-6, -6), (-7, -6)),
+        (GREEN, (-4, -2), (-2, -2), (-1, -2)),
+        (GOLD, (-4, 2), (-2, 2), (-1, 2)),
+        (IRON, (-4, 6), (-2, 6), (-1, 6)),
         (IRON, (-2, -8), (-2, -10), (-1, -10)),
-        (GOLD, (-4, -6), (-2, -6), (-1, -6)),
-        (GOLD, (0, -6), (2, -6), (3, -6)),
-        (IRON, (-2, -4), (-2, -2), (-2, -1)),
-        (GREEN, (2, -4), (2, -2), (2, -1)),
-        (GREEN, (-4, -2), (-6, -2), (-7, -2)),
-        (IRON, (-4, 2), (-2, 2), (-1, 2)),
-        (IRON, (-6, -4), (-6, -6), (-6, -7)),
-        (GOLD, (-8, -2), (-10, -2), (-10, -1)),
-        (GREEN, (-8, 2), (-6, 2), (-5, 2)),
-        (IRON, (-6, 4), (-6, 6), (-6, 7)),
-        (GOLD, (-4, 6), (-2, 6), (-1, 6)),
+        (IRON, (-2, -4), (-2, -6), (-1, -6)),
         (GREEN, (-2, 8), (-2, 10), (-1, 10)),
+        (GOLD, (0, -6), (2, -6), (3, -6)),
+        (GREEN, (2, -4), (2, -2), (3, -2)),
         (LIFT, (0, 6), (2, 6), (3, 6)),  # into lift B
     )
     + _gates(3, (LIFT, (4, -2), (6, -2), (6, -3)))  # into lift C
@@ -257,7 +293,7 @@ CELLS: dict[int, frozenset[P]] = {
 }
 #: cells nobody goes into: static machinery behind bars
 MACHINE: dict[int, frozenset[P]] = {
-    1: frozenset({(0, 0), (0, 4), (1, 2), (2, 3), (4, 3), (4, 4)}),
+    1: frozenset({(0, 0), (0, 4), (1, 2), (2, 3)}),
     2: frozenset({(3, 2), (3, 3)}),
     3: frozenset({(3, 3)}),
 }
@@ -301,15 +337,12 @@ FLOORS = (
 
 @dataclass(frozen=True)
 class Lift:
-    """a platform 3 by 3 less one corner, where a ladder stands in a well
-    against a solid backing in the wall line beside it"""
+    """a platform 3 by 3, a whole cell, that takes whoever stands on it"""
 
     name: str
     cell: P
     bottom: int  # the height of the platform's blocks at the bottom
     travel: int
-    well: P  # the corner, from the cell's middle
-    back: P  # the backing, from the well
     low: Node  # the cell at the bottom, and at the top
     high: Node
 
@@ -322,19 +355,19 @@ class Lift:
         return (-8 + 4 * self.cell[0], -8 + 4 * self.cell[1])
 
     @property
-    def well_at(self) -> P:
-        return (self.mid[0] + self.well[0], self.mid[1] + self.well[1])
-
-    @property
     def score(self) -> str:
         return f"#maze.l{self.name} {OBJ}"
 
+    @property
+    def car(self) -> str:
+        return f"{CAR_TAG}.{self.name}"
+
 
 LIFT_LIST = (
-    Lift("a", (4, 0), 0, 6, (1, -1), (1, 0), (1, 4, 0), (2, 4, 0)),
-    Lift("b", (2, 3), 6, 6, (1, 1), (1, 0), (2, 2, 3), (3, 2, 3)),
-    Lift("c", (3, 2), 12, 6, (1, 1), (1, 0), (3, 3, 2), "crown"),
-    Lift("ram", ATRIUM, 0, 18, (1, -1), (0, -1), (1, 2, 2), "crown"),
+    Lift("a", (4, 0), 0, 6, (1, 4, 0), (2, 4, 0)),
+    Lift("b", (2, 3), 6, 6, (2, 2, 3), (3, 2, 3)),
+    Lift("c", (3, 2), 12, 6, (3, 3, 2), "crown"),
+    Lift("ram", ATRIUM, 0, 18, (1, 2, 2), "crown"),
 )
 RAM_LIFT = LIFT_LIST[3]
 
@@ -403,7 +436,7 @@ def beyond(node: Node) -> bool:
 @cache
 def edges() -> tuple[tuple[Node, Node, Any], ...]:
     """every way from a cell to the next: (from, to, rule), the rule an
-    hour, "arch", "ladder" or a gate's kind"""
+    hour, "arch" or a gate's kind"""
     found = []
     for g in GATES:
         a, b = sides(g.deck, g.door)
@@ -412,50 +445,98 @@ def edges() -> tuple[tuple[Node, Node, Any], ...]:
         found.append((a, b, g.kind))
     for deck, doors in ARCHES.items():
         found += [(*sides(deck, door), "arch") for door in doors]
-    found += [(lift.low, lift.high, "ladder") for lift in LIFT_LIST[:3]]
     return tuple(found)
 
 
 def nodes() -> list[Node]:
-    return sorted({n for a, b, _ in edges() for n in (a, b)}, key=str)
+    found = {n for a, b, _ in edges() for n in (a, b)}
+    found |= {n for lift in LIFT_LIST[:3] for n in (lift.low, lift.high)}
+    return sorted(found, key=str)
+
+
+def room(node: Node, hour: int | None = None) -> set[Node]:
+    """a cell and the cells its open arches lead to: one room. With an
+    ``hour``, only through timed floors that are out in it"""
+    seen, edge = {node}, [node]
+    while edge:
+        here = edge.pop()
+        for a, b, rule in edges():
+            for one, other in ((a, b), (b, a)):
+                if rule != "arch" or one != here or other in seen:
+                    continue
+                if hour is not None and land(other, hour) != other:
+                    continue
+                seen.add(other)
+                edge.append(other)
+    return seen
+
+
+def opens(rule: Any, hour: int) -> bool:
+    """whether a gate is open in an hour, alone, with nobody in a lift"""
+    return hour == {FK: GREEN, LIFT: GOLD}.get(rule, rule)
 
 
 def moves(node: Node, hour: int, other: Node | None = None) -> dict[Node, bool]:
     """
     Where a player in ``node`` can be at the end of ``hour``, moving
-    through one doorway at most: place -> whether the partner must stand
-    still on a plate for it. ``other`` is the partner's place (None: the
-    solo form).
+    through one gate at most and any arches before and after it (an arch
+    has no door: it takes no time): place -> whether the partner must
+    stand still on a plate for it. ``other`` is the partner's place (None:
+    the solo form). Stepping through an arch onto a timed floor that is
+    not out is a fall to the cell below.
     """
-    found = {node: False}
+    found: dict[Node, bool] = {}
+
+    def spread(start: Node, hold: bool) -> None:
+        for at in room(start, hour):
+            found[at] = found.get(at, True) and hold
+            for a, b, rule in edges():
+                for one, there in ((a, b), (b, a)):
+                    if rule == "arch" and one == at and land(there, hour) != there:
+                        down = land(there, hour)
+                        found[down] = found.get(down, True) and hold
+
+    spread(node, False)
     lifts = {lift.low for lift in LIFT_LIST}
-    for a, b, rule in edges():
-        for here, there in ((a, b), (b, a)):
-            if here != node:
-                continue
-            hold = False
-            if rule in ("arch", "ladder"):
-                ok = True
-            elif rule == LIFT:  # in during Gold; out whenever
-                ok = hour == GOLD or here in lifts
-            elif rule == DOOR:
-                # held only while two are here and nobody is inside
-                hold = other == "out" and here == "out"
-                ok = True
-            elif rule == FK:
-                held = other is not None and not beyond(here) and not beyond(other)
-                hold = held
-                ok = other == F_CELL if held else hour == GREEN
-            else:
-                ok = hour == rule
-            if ok:
-                found[land(there, hour)] = hold
+    for here in room(node, hour):
+        for a, b, rule in edges():
+            for one, there in ((a, b), (b, a)):
+                if one != here or rule == "arch":
+                    continue
+                hold = False
+                if rule == LIFT:  # in during Gold; out whenever
+                    ok = hour == GOLD or here in lifts
+                elif rule == DOOR:
+                    # held only while two are here and nobody is inside
+                    hold = other == "out" and here == "out"
+                    ok = True
+                elif rule == FK:
+                    held = other is not None and not beyond(here) and not beyond(other)
+                    hold = held
+                    ok = other == F_CELL if held else hour == GREEN
+                else:
+                    ok = hour == rule
+                if ok:
+                    spread(land(there, hour), hold)
+    # from the crown onto lift C's platform, to be taken down at Gold
+    for lift in LIFT_LIST[:3]:
+        if node == lift.high == "crown" and hour == IRON:
+            found[lift.low] = False
     return found
 
 
 def strike(node: Node, hour: int) -> Node:
-    """where someone is after the strike that begins ``hour``"""
-    return land(node, hour)
+    """where someone is after the strike that begins ``hour``: a deck
+    down if their timed floor has gone, and with a lift's platform if
+    they stand on it (up at the strike of Green, down at Gold: the top of
+    lift A and of lift B is all platform, the crown is not)"""
+    node = land(node, hour)
+    for lift in LIFT_LIST[:3]:
+        if hour == GREEN and node == lift.low:
+            return lift.high
+        if hour == GOLD and node == lift.high != "crown":
+            return lift.low
+    return node
 
 
 def solo_steps() -> dict[tuple[Node, int], set[tuple[Node, int]]]:
@@ -510,16 +591,18 @@ def pair_problems() -> list[str]:
     ]
 
 
-def solo_route(start: Node = "out", hour: int = GREEN) -> list[tuple[Node, int]]:
-    """the shortest way to the crown alone, an hour a step: the place at
-    the end of each hour, with that hour"""
+def solo_route(
+    start: Node = "out", hour: int = GREEN, goal: Node = "crown"
+) -> list[tuple[Node, int]]:
+    """the shortest way to ``goal`` alone, an hour a step: the place after
+    each strike, with the hour it begins"""
     steps = solo_steps()
     came: dict = {(start, hour): None}
     edge = [(start, hour)]
     while edge:
         new = []
         for state in edge:
-            if state[0] == "crown":
+            if state[0] == goal:
                 route = []
                 while came[state] is not None:
                     route.append(state)
@@ -531,6 +614,141 @@ def solo_route(start: Node = "out", hour: int = GREEN) -> list[tuple[Node, int]]
                     new.append(to)
         edge = new
     return []
+
+
+# ------------------------------------------------- is the puzzle a puzzle?
+# The clock tells when a gate opens. That is only worth knowing if it
+# matters which gate: so the route that plans ahead is measured against
+# the walker who goes through whatever opens first.
+
+
+def naive_step(node: Node, hour: int) -> tuple[Node, int]:
+    """an hour of the walker with no plan: through the gate of their room
+    that is open, if there is one (never back out of the tower door), and
+    whatever the strike then does with them"""
+    nxt = (hour + 1) % 3
+    for here in sorted(room(node, hour), key=str):
+        for a, b, rule in edges():
+            for one, there in ((a, b), (b, a)):
+                if one == here and rule not in ("arch", DOOR) and opens(rule, hour):
+                    return strike(land(there, hour), nxt), nxt
+    return strike(node, nxt), nxt
+
+
+def naive_hours(start: Node, hour: int, goal: Node) -> int | None:
+    """how many hours the walker with no plan takes; None: they go round
+    for ever"""
+    state, seen, hours = (start, hour), set(), 0
+    while goal not in room(state[0]):
+        if state in seen:
+            return None
+        seen.add(state)
+        state = naive_step(*state)
+        hours += 1
+    return hours
+
+
+def hours_left(goal: Node) -> dict[tuple[Node, int], int]:
+    """from every place and hour, the fewest hours to ``goal``"""
+    steps = solo_steps()
+    left = {s: 0 for s in steps if s[0] == goal}
+    grew = True
+    while grew:
+        grew = False
+        for s, to in steps.items():
+            best = min((left[t] + 1 for t in to if t in left), default=None)
+            if best is not None and best < left.get(s, 10**6):
+                left[s] = best
+                grew = True
+    return left
+
+
+#: each deck of gates as a puzzle: where it starts and where it ends (the
+#: top of its lift, reached at a strike of Green)
+LEGS: dict[int, tuple[Node, Node]] = {
+    1: ((1, 0, 2), LIFT_LIST[0].high),
+    2: (LIFT_LIST[0].high, LIFT_LIST[1].high),
+}
+
+
+def dead_ends(deck: int) -> list[Node]:
+    """the rooms of a deck with one gate and no other way on"""
+    lifts = {n for lift in LIFT_LIST for n in (lift.low, lift.high)}
+    found = []
+    for node in nodes():
+        if node in ("out", "crown") or node[0] != deck or node in lifts:
+            continue
+        mine = room(node)
+        gates = [(a, b) for a, b, rule in edges() if rule != "arch" and {a, b} & mine]
+        if len(gates) == 1 and node == min(mine, key=str) and not mine & lifts:
+            found.append(node)
+    return found
+
+
+def puzzle() -> dict[int, dict[str, Any]]:
+    """
+    The numbers of each deck's puzzle, in hours of the clock: for a start
+    in each hour the ``best`` route and the ``naive`` one (None: never
+    arrives); the ``dead`` ends; and ``ahead``, the places on the best
+    route from Green where the gate that opens first is the wrong one,
+    with the hours it costs to take it (a turn of the clock or more).
+    """
+    found = {}
+    for deck, (start, goal) in LEGS.items():
+        left = hours_left(goal)
+        ahead = []
+        state = (start, GREEN)
+        for nxt in solo_route(start, GREEN, goal):
+            there = naive_step(*state)
+            cost = 1 + left[there] - left[state]
+            if cost >= 3:
+                ahead.append((state[0], HOURS[state[1]], cost))
+            state = nxt
+        found[deck] = {
+            "best": [left[start, h] for h in range(3)],
+            "naive": [naive_hours(start, h, goal) for h in range(3)],
+            "dead": dead_ends(deck),
+            "ahead": ahead,
+        }
+    return found
+
+
+def puzzle_problems() -> list[str]:
+    """the route is worth planning: no room has two gates of one hour (so
+    nobody runs through two in an hour, at any level), most have two or
+    three; on each deck there are dead ends, the walker with no plan
+    takes half as long again as the best route or more (or never arrives),
+    and the best route passes two or more gates that open first and are
+    wrong"""
+    problems = []
+    for deck in LEGS:
+        rooms_, wide = set(), 0
+        for node in nodes():
+            if node in ("out", "crown") or node[0] != deck:
+                continue
+            mine = room(node)
+            if min(mine, key=str) != node:
+                continue
+            hours = [
+                {FK: GREEN, LIFT: GOLD}.get(rule, rule)
+                for a, b, rule in edges()
+                if rule not in ("arch", DOOR) and {a, b} & mine
+            ]
+            if len(hours) != len(set(hours)):
+                problems.append(f"the room of {node} has two gates of one hour")
+            rooms_.add(node)
+            wide += len(hours) >= 2
+        if 2 * wide <= len(rooms_):
+            problems.append(f"deck {deck}: {wide} of {len(rooms_)} rooms have a choice")
+    for deck, n in puzzle().items():
+        best, naive = n["best"][GREEN], n["naive"][GREEN]
+        if naive is not None and 2 * naive < 3 * best:
+            problems.append(f"deck {deck}: no plan {naive} hours, the best {best}")
+        if len(n["dead"]) < 2:
+            problems.append(f"deck {deck}: {len(n['dead'])} dead ends")
+        if len(n["ahead"]) < 2:
+            problems.append(f"deck {deck}: {len(n['ahead'])} gates to let go by")
+    return problems
 
 
 def table_problems() -> list[str]:
@@ -616,25 +834,23 @@ def lintel(g: Gate) -> tuple[str, str]:
     return CUT, {DOOR: "IN", RAM: "RAM", GREAT: "OUT"}[g.kind]
 
 
-def lift_places(lift: Lift, k: int) -> dict[Place, str]:
-    """a lift's whole shaft (less the ladder's well) with the platform k
-    blocks up: the platform, the ram under it, the bed it left, and a
-    shutter of trapdoors over the hole at the top while it is more than
-    3 below"""
+def lift_places(lift: Lift, k: int, riding: bool = False) -> dict[Place, str]:
+    """a lift's whole shaft with the platform k blocks up: the platform,
+    the ram under it, the bed it left, and a shutter of trapdoors over the
+    hole at the top while it is away. ``riding``: the platform is on its
+    way (display entities, ``car_summons``), so none of it is blocks"""
     cf, cr = lift.mid
     found = {}
     for df in (-1, 0, 1):
         for dr in (-1, 0, 1):
-            if (df, dr) == lift.well:
-                continue
             for level in range(lift.travel + 1):
-                if level == k:
+                if level == k and not riding:
                     block = COPPER
                 elif level == 0:
                     block = BED
                 elif level < k:
                     block = f"{ROD}[facing=up]" if (df, dr) == (0, 0) else AIR
-                elif level == lift.travel and lift.travel - k > 3:
+                elif level == lift.travel:
                     block = TRAPDOOR
                 else:
                     block = AIR
@@ -649,19 +865,69 @@ def floor_places(fl: Floor) -> list[Place]:
 
 def dial_places() -> tuple[list[Place], dict[Place, str]]:
     """the Great Dial: its twelve lamps from twelve o'clock round, and the
-    disc behind them with a mark in each lamp's hour block"""
+    disc behind them, its rim in the block of the hour of the nearest lamp"""
     hands = [(0, 4), (2, 3), (3, 2), (4, 0), (3, -2), (2, -3)]
     hands += [(-r, -h) for r, h in hands]
     lamps = [(-11, r, 9 + h) for r, h in hands]
-    disc = {
-        (-11, r, 9 + h): "minecraft:polished_deepslate"
-        for r in range(-5, 6)
-        for h in range(-5, 6)
-        if math.hypot(r, h) <= 5.2
-    }
-    for n, (r, h) in enumerate(hands):
-        disc[-11, round(r * 1.25), 9 + round(h * 1.25)] = HOUR_BLOCK[n // 4]
+    disc = {}
+    for r in range(-5, 6):
+        for h in range(-5, 6):
+            if math.hypot(r, h) > 5.2:
+                continue
+            near = min(range(12), key=lambda n: math.dist(hands[n], (r, h)))
+            rim = math.hypot(r, h) > 3.2
+            disc[-11, r, 9 + h] = HOUR_BLOCK[near // 4] if rim else BED
     return lamps, disc
+
+
+def turned(
+    fr: fittings.Frame,
+    angle: float,
+    size: tuple[float, float, float],
+    corner: tuple[float, float, float],
+    out: float = 0.0,
+) -> str:
+    """the ``transformation`` of a block display hung at the dial's
+    middle: a block of ``size`` with its ``corner`` (from the pivot, with
+    the display upright) turned by ``angle`` about the frame's forward,
+    clockwise as the entrance sees it, and stood ``out`` towards it"""
+    ax, az = fr.forward
+    # Rodrigues: the corner turned by ``angle`` about (ax, 0, az)
+    c, s = math.cos(angle), math.sin(angle)
+    x, y, z = corner
+    dot = ax * x + az * z
+    cross = (-az * y, az * x - ax * z, ax * y)
+    tx, ty, tz = (
+        p * c + q * s + k * (dot * (1 - c) - out)
+        for p, q, k in zip(corner, cross, (ax, 0, az), strict=True)
+    )
+    return (
+        f"transformation:{{translation:[{tx:.3f}f,{ty:.3f}f,{tz:.3f}f],"
+        f"scale:[{size[0]}f,{size[1]}f,{size[2]}f],"
+        f"left_rotation:{{axis:[{ax}f,0f,{az}f],angle:{angle:.4f}f}},"
+        "right_rotation:[0f,0f,0f,1f]}"
+    )
+
+
+def hand(fr: fittings.Frame, q: int) -> str:
+    """the dial's hand pointing at lamp ``q`` (0 to 12: twelve o'clock,
+    and round to it again)"""
+    return turned(fr, q * math.pi / 6, (0.2, 3.6, 0.2), (-0.1, -0.4, -0.1), 0.3)
+
+
+def hand_turn(q: int) -> tuple[float, float]:
+    """what the hand's ``left_rotation`` reads back as when it points at
+    lamp ``q``, as (the sine of half its angle, the cosine); the same turn
+    with both signs changed"""
+    return math.sin(q * math.pi / 12), math.cos(q * math.pi / 12)
+
+
+def hand_summon(fr: fittings.Frame) -> str:
+    return (
+        f"summon minecraft:block_display {middle(fr.at(-12, 0, 9), 0.5)} "
+        f'{{Tags:["{ENTITY_TAG}","{HAND_TAG}"],'
+        f'block_state:{{Name:"{HAND}"}},{hand(fr, 0)}}}'
+    )
 
 
 def atrium_lamps() -> list[tuple[int, Place]]:
@@ -782,7 +1048,7 @@ def tower_places(free: bool = False) -> tuple[dict[Place, str], set[Place]]:
                     continue
                 for h in range(h0, h0 + 3):
                     solid[f, r, h] = CUT
-                solid[f, r, h0 + 3] = LIGHT
+                solid[f, r, h0 + 3] = HOUR_LIGHT[GREEN]
                 if post(deck + 1, i, j):
                     solid[f, r, h0 + 4] = CUT
         for i, j in MACHINE[deck]:  # a cylinder behind the bars
@@ -826,7 +1092,7 @@ def tower_places(free: bool = False) -> tuple[dict[Place, str], set[Place]]:
     for f, r in ((6, -1), (6, 0), (6, 1), (5, -2), (5, 2), (6, -2), (6, 2)):
         solid[f, r, top] = CUT
         solid[f, r, CROWN_H] = RAIL
-    # the timed floors, the lifts parked at the top, their ladders
+    # the timed floors, the lifts parked at the top
     for fl in FLOORS:
         for at in floor_places(fl):
             if free or fl.out(GREEN):
@@ -841,15 +1107,9 @@ def tower_places(free: bool = False) -> tuple[dict[Place, str], set[Place]]:
                 clear.add(at)
             else:
                 solid[at] = block
-        f, r = lift.well_at
-        if lift.bottom:
-            solid[f, r, lift.bottom] = BED
-        for h in range(lift.bottom + 1, lift.top + 1):
-            solid[f + lift.back[0], r + lift.back[1], h] = CUT
-            solid.pop((f, r, h), None)
     # no wall top to stand on: the band between a wall and the floor over
-    # it closed at foot height (off a ladder, or drifting down from a timed
-    # floor, a player could walk the tops and drop into a machine cell),
+    # it closed at foot height (drifting down from a timed floor, a
+    # player could walk the tops and drop into a machine cell),
     # and a lid of bars on each machine cell
     for deck in (1, 2, 3):
         h0 = walk_h(deck)
@@ -899,11 +1159,6 @@ def room_blocks(
 
     for cell, block in plate_bases(dome, form, keys).items():
         (b.solid if cell[1] > dome.floor_y else b.floor)[cell] = block
-    for lift in LIFT_LIST:
-        f, r = lift.well_at
-        away = fr.facing(-lift.back[0], -lift.back[1])
-        for h in range(lift.bottom + 1, lift.top + 1):
-            put(b.attached, {fr.at(f, r, h): f"{LADDER}[facing={away}]"})
 
     # the inputs: the Regulator's lever or its two keys, the held gates'
     # plates; the fittings by the entrance
@@ -938,9 +1193,9 @@ def room_blocks(
         fr,
         *PLAQUE,
         signs=(
-            ("CLOCKWORK MAZE", "", "Every gate opens", "in the hour"),
-            ("it wears:", "I GREEN", "II IRON", "III GOLD"),
-            ("Climb with", "the clock.", "Throw the", "Regulator."),
+            ("CLOCKWORK MAZE", "", "Each gate opens", "in its hour:"),
+            ("I GREEN", "II IRON", "III GOLD", ""),
+            ("Plan your", "way up.", "The plans are", "by the dial."),
         ),
     )
     put(b.solid, solid)
@@ -951,7 +1206,7 @@ def room_blocks(
     put(b.attached, attached)
     for at, text in (((9, -3, 1), "A"), ((1, 9, 7), "B")):
         put(b.attached, {fr.at(*at): fittings.standing_sign(
-            back, f"LIFT {text}", "Its gate opens", "in GOLD.", "Ladder inside.")})  # fmt: skip
+            back, f"LIFT {text}", "Its gate opens", "in GOLD.", "Stand on it.")})  # fmt: skip
     dress = dressing_blocks(dome)
     put(b.floor, dress.floor)
     put(b.solid, dress.solid)
@@ -991,6 +1246,8 @@ def dressing_blocks(dome: Dome) -> Blocks:
         d.solid[fr.at(*at)] = block
     for n, at in enumerate(lamps):
         d.solid[fr.at(*at)] = f"{BULB}[lit={'true' if n == 0 else 'false'}]"
+    for at, block in plan_blocks().items():
+        d.solid[fr.at(*at)] = block
 
     # the Tally Engine: a torch clock on a bench, its first lamp read by a
     # comparator into the next lamp, and so on: six lamps counting
@@ -1049,6 +1306,98 @@ def frame(dome: Dome) -> fittings.Frame:
     return fittings.frame(dome)
 
 
+#: the brass plans on the tower's face, either side of the dial: for each
+#: deck where its cell (0, 0) is, a block a cell, forward up the board
+PLAN_AT: dict[int, Place] = {1: (-11, -11, 5), 2: (-11, 7, 5), 3: (-11, 7, 10)}
+
+
+def plan_blocks() -> dict[Place, str]:
+    """the boards: a block for each cell of a deck: a cell to walk in, a
+    machine cell, the atrium (bars), a lift (a lit bulb), a timed floor
+    (grating, as it is)"""
+    found = {}
+    lifts = {n for lift in LIFT_LIST[:3] for n in (lift.low, lift.high)}
+    for deck, (f, r, h) in PLAN_AT.items():
+        for i, j in CELLS[deck]:
+            node = (deck, i, j)
+            if (i, j) == ATRIUM:
+                block = BARS
+            elif (i, j) in MACHINE[deck]:
+                block = COPPER
+            elif floor_at(node):
+                block = GRATE
+            elif node in lifts:
+                block = f"{BULB}[lit=true]"
+            else:
+                block = BOARD
+            found[f, r + j, h + i] = block
+    return found
+
+
+def plan_marks() -> list[tuple[tuple[float, float, float], str, str, float]]:
+    """what stands on the boards: (where in the frame, a block or "", the
+    words, the words' size): a small block in each gate's own lintel
+    block where the gate is, with its numeral; a light where an arch is;
+    the hours of a timed floor; UP on a lift's cell and IN where the one
+    from below comes up; a title"""
+    marks: list[tuple[tuple[float, float, float], str, str, float]] = []
+    floors = {fl.node: fl for fl in FLOORS}
+    for deck, (f, r, h) in PLAN_AT.items():
+
+        def at(pf: float, pr: float, f=f, r=r, h=h) -> tuple[float, float, float]:
+            """a place on the deck (f, r) as a point on the board's face"""
+            return (f - 0.5, r + (pr + 8) / 4, h + 0.5 + (pf + 8) / 4)
+
+        for g in GATES:
+            if g.deck == deck and g.kind not in (RAM, GREAT):
+                block, words = lintel(g)
+                marks.append((at(*g.door), block, words, 0.5))
+        marks += [(at(*door), ARCH_MARK, "", 0.5) for door in ARCHES[deck]]
+        for i, j in CELLS[deck]:
+            node, words = (deck, i, j), ""
+            if node in floors:
+                words = " ".join(NUMERAL[n] for n in range(3) if floors[node].out(n))
+            for lift in LIFT_LIST[:3]:
+                words = {lift.low: "UP", lift.high: "IN"}.get(node, words)
+            if words:
+                marks.append((at(-8 + 4 * i, -8 + 4 * j), "", words, 0.45))
+        rows = [i for i, _ in CELLS[deck]]
+        mid = sum(j for _, j in CELLS[deck]) / len(CELLS[deck])
+        top = (f - 0.5, r + mid, h + max(rows) + 1.15)
+        marks.append((top, "", f"DECK {deck}", 0.9))
+    return marks
+
+
+def plan_summons(fr: fittings.Frame) -> list[str]:
+    """the commands that summon ``plan_marks``, facing the entrance"""
+    yaw = {"south": 0, "west": 90, "north": 180, "east": -90}[fr.facing(-1, 0)]
+    ox, oy, oz = fr.at(0, 0, 0)
+    found = []
+
+    def point(f: float, r: float, h: float) -> tuple[float, float, float]:
+        return (
+            ox + 0.5 + f * fr.forward[0] + r * fr.right[0],
+            oy + h,
+            oz + 0.5 + f * fr.forward[1] + r * fr.right[1],
+        )
+
+    for (f, r, h), block, words, size in plan_marks():
+        if block:
+            x, y, z = point(f, r, h)
+            found.append(
+                f"summon minecraft:block_display {x:.3f} {y:.3f} {z:.3f} "
+                f'{{Tags:["{ENTITY_TAG}"],block_state:{{Name:"{block}"}},'
+                "transformation:{translation:[-0.2f,-0.2f,-0.2f],"
+                "scale:[0.4f,0.4f,0.4f],left_rotation:[0f,0f,0f,1f],"
+                "right_rotation:[0f,0f,0f,1f]}}"
+            )
+        if words:
+            pos = point(f - (0.23 if block else 0.03), r, h - 0.12 * size / 0.5)
+            label = fittings.label_text(words, "black" if block else "white")
+            found.append(fittings.display((ENTITY_TAG,), pos, yaw, label, size))
+    return found
+
+
 def inputs(dome: Dome, form: int = 1, keys: bool = False) -> set[Cell]:
     """every lever, button and plate of the room in a form"""
     fr = frame(dome)
@@ -1066,7 +1415,8 @@ def inputs(dome: Dome, form: int = 1, keys: bool = False) -> set[Cell]:
 def summons(dome: Dome) -> list[str]:
     """the commands that summon the room's entities: a numeral on both
     faces of every gate's lintel, the key's names, the Great Door's
-    notice, the recall button's interaction, the pendulum"""
+    notice, the recall button's interaction, the pendulum, the marks on
+    the plans (the dial's hand is the pack's: ``hand/put``)"""
     fr = frame(dome)
     yaws = {"south": 0, "west": 90, "north": 180, "east": -90}
     found = []
@@ -1095,37 +1445,18 @@ def summons(dome: Dome) -> list[str]:
             f'{{Tags:["{ENTITY_TAG}","{tag}"],'
             f'block_state:{{Name:"{BRASS}"}},{pose}}}'
         )
-    return found
+    return found + plan_summons(fr)
 
 
 def pendulum(fr: fittings.Frame, side: int) -> tuple[str, str]:
     """the pendulum's rod and bob at one end of the swing (``side`` -1 or
-    1), as the ``transformation`` of a block display hung at the dial's
-    middle: turned about the frame's forward, the block's corner put so
-    that the rod hangs from the pivot"""
+    1), each the ``transformation`` of a block display hung at the dial's
+    middle"""
     angle, length = 0.5 * side, 4.0
-    ax, az = fr.forward
-    poses = []
-    for size, corner in (
-        ((0.15, length, 0.15), (-0.075, -length, -0.075)),
-        ((0.8, 0.8, 0.8), (-0.4, -length - 0.4, -0.4)),
-    ):
-        # Rodrigues: the corner turned by ``angle`` about (ax, 0, az)
-        c, s = math.cos(angle), math.sin(angle)
-        x, y, z = corner
-        dot = ax * x + az * z
-        cross = (-az * y, az * x - ax * z, ax * y)
-        tx, ty, tz = (
-            p * c + q * s + k * dot * (1 - c)
-            for p, q, k in zip(corner, cross, (ax, 0, az), strict=True)
-        )
-        poses.append(
-            f"transformation:{{translation:[{tx:.3f}f,{ty:.3f}f,{tz:.3f}f],"
-            f"scale:[{size[0]}f,{size[1]}f,{size[2]}f],"
-            f"left_rotation:{{axis:[{ax}f,0f,{az}f],angle:{angle}f}},"
-            "right_rotation:[0f,0f,0f,1f]}"
-        )
-    return poses[0], poses[1]
+    return (
+        turned(fr, angle, (0.15, length, 0.15), (-0.075, -length, -0.075)),
+        turned(fr, angle, (0.8, 0.8, 0.8), (-0.4, -length - 0.4, -0.4)),
+    )
 
 
 # ------------------------------------------------------ the offline checks
@@ -1141,27 +1472,27 @@ domes.allow(
 )
 
 
-def ladders(dome: Dome) -> list[tuple[Cell, Cell]]:
-    """each ladder's foot and head: the cells a climber's feet are in"""
+def rides(dome: Dome) -> list[tuple[Cell, Cell]]:
+    """each lift's ride: where a rider's feet are at the bottom and at
+    the top (beside the ram, which stands in the middle at the bottom)"""
     fr = frame(dome)
     found = []
     for lift in LIFT_LIST:
-        f, r = lift.well_at
-        head = (f - lift.well[0], r, lift.top + 1)
-        found.append((fr.at(f, r, lift.bottom + 1), fr.at(*head)))
+        f, r = lift.mid
+        found.append((fr.at(f - 1, r, lift.bottom + 1), fr.at(f - 1, r, lift.top + 1)))
     return found
 
 
 def reach(dome: Dome, b: Blocks) -> set[Cell]:
     """where a player's feet can get to from the entrance: by walking
-    (``rooms.reach``) and by the ladders; nobody stands on a rail"""
+    (``rooms.reach``) and by the lifts; nobody stands on a rail"""
     blocked = set(b.solid)
     blocked |= {(x, y + 1, z) for (x, y, z), block in b.solid.items() if block == RAIL}
     seen = rooms.reach(dome, domes.entrance(dome)[:3], b.solid, blocked)
     grew = True
     while grew:
         grew = False
-        for foot, head in ladders(dome):
+        for foot, head in rides(dome):
             for a, z in ((foot, head), (head, foot)):
                 if a in seen and z not in seen:
                     seen |= rooms.reach(dome, z, b.solid, blocked)
@@ -1169,15 +1500,13 @@ def reach(dome: Dome, b: Blocks) -> set[Cell]:
     return seen
 
 
-def shapes_in_play(dome: Dome) -> list[tuple[set[Cell], set[Cell]]]:
-    """the room as it can stand while someone is in it, as (cells that
-    hold a body up or block it, ladder cells): every gate open (a gate
-    only ever takes a way away), the timed floors in and out, and with
-    the platforms at the top and at the bottom (as they are with ``LIFTS``
-    on; the search is the same either way)"""
+def shapes_in_play(dome: Dome) -> list[set[Cell]]:
+    """the room as it can stand while someone is in it, as the cells that
+    hold a body up or block it: every gate open (a gate only ever takes a
+    way away), the timed floors in and out, and with the platforms at the
+    top and at the bottom"""
     fr = frame(dome)
     b = room_blocks(dome, free=True)
-    ladder = {c for c, block in b.attached.items() if block.startswith(LADDER)}
     holes = {fr.at(*p) for fl in FLOORS for p in floor_places(fl)}
     found = []
     for k in ("top", "bottom"):
@@ -1186,7 +1515,7 @@ def shapes_in_play(dome: Dome) -> list[tuple[set[Cell], set[Cell]]]:
             for lift in LIFT_LIST:
                 for p, block in lift_places(lift, 0).items():
                     (solid.discard if block == AIR else solid.add)(fr.at(*p))
-        found += [(solid, ladder), (solid - holes, ladder)]
+        found += [solid, solid - holes]
     return found
 
 
@@ -1194,26 +1523,35 @@ def traps(dome: Dome) -> tuple[set[Cell], set[Cell]]:
     """
     Where a player's feet can get to from the entrance, and of those the
     ones from which there is no way back to it. Wider than ``reach``: a
-    ladder is climbed both ways and stepped off sideways at any rung, a
     fall is of any height and drifts a block sideways for each block fallen
     (as a player steering in the air, or under slow falling, can), a rail
-    can be landed on though not stepped onto, and a timed floor can go from
-    under someone. A move in any of ``shapes_in_play`` counts.
+    can be landed on though not stepped onto, a timed floor can go from
+    under someone, and a lift takes whoever stands on its platform to its
+    other end. A move in any of ``shapes_in_play`` counts.
     """
     cells = domes.dome_cells(dome)
+    fr = frame(dome)
     b = room_blocks(dome, free=True)
     rails = {c for c, block in b.solid.items() if block == RAIL}
+    ride: dict[Cell, Cell] = {}
+    for lift in LIFT_LIST:
+        f, r = lift.mid
+        for df in (-1, 0, 1):
+            for dr in (-1, 0, 1):
+                low = fr.at(f + df, r + dr, lift.bottom + 1)
+                high = fr.at(f + df, r + dr, lift.top + 1)
+                ride[low], ride[high] = high, low
     shapes = []
-    for solid, ladder in shapes_in_play(dome):
+    for solid in shapes_in_play(dome):
         ground = set(cells.floor) | solid
 
         def free(c: Cell, solid=solid) -> bool:
             return c in cells.interior and c not in solid
 
-        def held(c: Cell, ground=ground, ladder=ladder) -> bool:
-            return (c[0], c[1] - 1, c[2]) in ground or c in ladder
+        def held(c: Cell, ground=ground) -> bool:
+            return (c[0], c[1] - 1, c[2]) in ground
 
-        shapes.append((free, held, ladder))
+        shapes.append((free, held))
 
     def fall(c: Cell, free, held) -> set[Cell]:
         """where a body in the air at ``c`` can come to rest"""
@@ -1233,19 +1571,14 @@ def traps(dome: Dome) -> tuple[set[Cell], set[Cell]]:
     def moves(c: Cell) -> set[Cell]:
         x, y, z = c
         out = set()
-        for free, held, ladder in shapes:
+        for free, held in shapes:
             if not (free(c) and free((x, y + 1, z))):
                 continue
             if not held(c):  # the floor went from under them
                 out |= fall(c, free, held)
                 continue
-            if c in ladder:
-                out |= {
-                    to
-                    for to in ((x, y + 1, z), (x, y - 1, z))
-                    if free(to) and free((to[0], to[1] + 1, to[2]))
-                    and (held(to) or to[1] > y)
-                }  # fmt: skip
+            if c in ride:
+                out.add(ride[c])
             for dx, dz in ((1, 0), (-1, 0), (0, 1), (0, -1)):
                 to, up = (x + dx, y, z + dz), (x + dx, y + 1, z + dz)
                 rail_step = (to[0], y, to[2]) in rails
@@ -1451,7 +1784,7 @@ def room_problems(dome: Dome) -> list[str]:
     problems += rooms.window_problems(dome, room_blocks(dome).above())
     problems += plan_problems(dome) + gantry_problems(dome)
     problems += walk_problems(dome) + trap_problems(dome) + sight_problems(dome)
-    return problems + solo_problems() + pair_problems()
+    return problems + solo_problems() + pair_problems() + puzzle_problems()
 
 
 # --------------------------------------------------------------- the build
@@ -1489,9 +1822,9 @@ def build(ctx: Any) -> str:
     return (
         f"{dome.name}: {len(b.everything())} blocks: a tower of three decks "
         f"and a crown, {len(GATES)} piston gates, {len(FLOORS)} timed floors, "
-        f"{len(LIFT_LIST)} lifts with ladders (lifts {'on' if LIFTS else 'off'}), "
-        "the Great Dial and its pendulum, the Tally Engine, the Walk, plaque, "
-        "logbook, recall button"
+        f"{len(LIFT_LIST)} lifts, the Great Dial with its hand and pendulum, "
+        f"{len(PLAN_AT)} plans, the Tally Engine, the Walk, plaque, logbook, "
+        "recall button"
     )
 
 
@@ -1603,6 +1936,18 @@ def functions(pack: dp.Pack) -> None:
     def sound(name: str, volume: float = 1, pitch: float = 1) -> str:
         return f"playsound minecraft:{name} block {here} {heart} {volume} {pitch}"
 
+    def loud(name: str, pitch: float = 1, when: str = "") -> str:
+        """a sound at each player's own ear: as loud wherever they are"""
+        return (
+            f"execute {when}as {here} at @s run "
+            f"playsound minecraft:{name} block @s ~ ~ ~ 1 {pitch}"
+        )
+
+    def layer(deck: int) -> tuple[Cell, Cell]:
+        """the level of a deck's post lights, across the tower"""
+        h = walk_h(deck) + 3
+        return at((-10, -10, h)), at((10, 10, h))
+
     def say(text: str, colour: str = "yellow") -> str:
         return f'tellraw {here} {{text:{fittings.snbt(text)},color:"{colour}"}}'
 
@@ -1626,10 +1971,41 @@ def functions(pack: dp.Pack) -> None:
             f"scoreboard players add {_s('t')} 1",
             f"scoreboard players operation {_s('w')} = {_s('t')}",
             f"scoreboard players operation {_s('w')} %= #10 {OBJ}",
-            # the warning: a tick every half second of an hour's last quarter
-            f"execute {not_free}{_is('last', 1)} {_is('w', 0)} run "
-            + sound("block.note_block.hat", 1, 1.4),
+            # the warning, through an hour's last quarter: every half
+            # second a clank, and the lights of every post go to the
+            # colour of the hour to come and back
+            call("warn", f"{_is('last', 1)} {_is('w', 0)} "),
+            call("bell", _is("bells", "1..") + " "),
             f"execute if score {_s('t')} >= {_s('qlen')} run function {fid('quarter')}",
+        ],
+    )
+    pack.function(
+        f"{base}/warn",
+        [
+            f"scoreboard players add {_s('fl')} 1",
+            f"execute {_is('fl', '2..')} run {_set('fl', 0)}",
+            loud("block.note_block.cow_bell", 1.3, not_free),
+            loud("block.note_block.hat", 1.4, not_free),
+            *(
+                call(f"lights/{(h + n) % 3}", f"{_is('hour', h)} {_is('fl', n)} ")
+                for h in range(3)
+                for n in (0, 1)
+            ),
+        ],
+    )
+    # the bell counts the hour: one stroke for Green, two for Iron, three
+    # for Gold, each hour at its own pitch
+    pack.function(
+        f"{base}/bell",
+        [
+            f"scoreboard players remove {_s('bellt')} 1",
+            f"execute {_is('bellt', '1..')} run return 0",
+            *(
+                loud("block.bell.use", pitch, _is("hour", h) + " ")
+                for h, pitch in enumerate(BELL_PITCH)
+            ),
+            f"scoreboard players remove {_s('bells')} 1",
+            _set("bellt", BELL_GAP),
         ],
     )
     pack.function(
@@ -1641,6 +2017,7 @@ def functions(pack: dp.Pack) -> None:
             _set("last", 0),
             *(f"execute {_is('q', 4 * h + 3)} run {_set('last', 1)}" for h in range(3)),
             call("dial"),
+            call("hand/go"),
             *(call(f"strike/{h}", f"{_is('q', 4 * h)} ") for h in range(3)),
             f"scoreboard players add {_s('swing')} 1",
             f"execute {_is('swing', '2..')} run {_set('swing', 0)}",
@@ -1665,6 +2042,33 @@ def functions(pack: dp.Pack) -> None:
                 for tag, pose in zip(PEND_TAGS, pendulum(fr, side), strict=True)
             ],
         )
+    # the hand: a quarter's sweep to the next lamp, begun at each quarter,
+    # so that it stands on twelve as Green strikes; made anew if it is gone
+    one_hand = f"@e[type=minecraft:block_display,tag={HAND_TAG},limit=1]"
+    pack.function(f"{base}/hand/put", [f"kill @e[tag={HAND_TAG}]", hand_summon(fr)])
+    pack.function(
+        f"{base}/hand/go",
+        [
+            f"execute unless entity @e[tag={HAND_TAG}] run function {fid('hand/put')}",
+            f"execute store result entity {one_hand} interpolation_duration int 1 "
+            f"run scoreboard players get {_s('qlen')}",
+            *(
+                f"execute {_is('q', q)} run data merge entity {one_hand} "
+                f"{{start_interpolation:0,{hand(fr, q + 1)}}}"
+                for q in range(12)
+            ),
+        ],
+    )
+    for h in range(3):
+        pack.function(
+            f"{base}/lights/{h}",
+            [
+                dp.fill(*layer(deck), HOUR_LIGHT[h], f"replace {HOUR_LIGHT[other]}")
+                for deck in (1, 2, 3)
+                for other in range(3)
+                if other != h
+            ],
+        )
     for h in range(3):
         going = []
         if h != IRON:  # up at the strike of Green, down at Gold
@@ -1677,10 +2081,14 @@ def functions(pack: dp.Pack) -> None:
             f"{base}/strike/{h}",
             [
                 _set("hour", h),
-                sound("block.bell.use", 3, (0.6, 0.8, 1.0)[h]),
+                loud("block.bell.use", BELL_PITCH[h]),
+                _set("bells", h),
+                _set("bellt", BELL_GAP),
+                _set("fl", 0),
+                call(f"lights/{h}"),
                 call(f"atrium/{h}"),
                 call(f"lamps/{h}", not_free),
-                *(going if LIFTS else []),
+                *going,
             ],
         )
         pack.function(
@@ -1745,13 +2153,16 @@ def functions(pack: dp.Pack) -> None:
                 f"execute {alone}run {_set('g', 0)}",
                 f"execute {alone}{plate} run {_set('g', 1)}",
             ]
-        elif g.kind == LIFT:  # open in Gold, and for anyone found inside
+        elif g.kind == LIFT:
+            # open while its platform stands at the bottom (through Gold),
+            # and for anyone found inside
             lift = next(x for x in LIFT_LIST if x.low in sides(g.deck, g.door))
             f, r = lift.mid
             a, b = (f - 1, r - 1, lift.bottom + 1), (f + 1, r + 1, lift.bottom + 2)
+            down = f"if score {lift.score} matches 0 {_is(f'l{lift.name}.m', 0)}"
             held += [
                 _set("g", 0),
-                f"execute {_is('hour', GOLD)} run {_set('g', 1)}",
+                f"execute {down} run {_set('g', 1)}",
                 f"execute if {_someone(at(a), at(b))} run {_set('g', 1)}",
             ]
         else:  # the Ram Door and the Great Door: shut until the room is solved
@@ -1849,80 +2260,164 @@ def functions(pack: dp.Pack) -> None:
         ],
     )
 
-    # -- the lifts: a whole shaft written for each height, a step up or
-    # down every ``LIFT_STEP`` ticks, the riders moved with the platform
+    # -- the lifts. At rest a platform is blocks. To travel it becomes
+    # block displays that glide a quarter of a block a tick (the dock
+    # lift's way), everyone on it seated on an item display that moves
+    # with them; at the other end it is blocks again and they stand up.
+    # Each block of the way the shaft under it is written (the ram), the
+    # way to go is read again, and a platform going down waits while
+    # anyone is under it
+    seats = f"@e[type=minecraft:item_display,tag={SEAT_TAG}"
     for lift in LIFT_LIST:
         path = f"{base}/lift/{lift.name}"
         f, r = lift.mid
         top = lift.travel
-        for k in range(top + 1):
-            state = {at(p): block for p, block in lift_places(lift, k).items()}
-            pack.function(f"{path}/at_{k}", _fills(state))
-            riders = dp.box_selector(
+        n = lift.name
+        to, m, p, d, wait = (f"l{n}.to", f"l{n}.m", f"l{n}.p", f"l{n}.d", f"l{n}.w")
+        car = f"@e[tag={lift.car}]"
+        on = f"st.maze.on.{n}"
+        seat = f"{seats},tag={lift.car}"
+
+        def lcall(name: str, when: str = "", path=path) -> str:
+            line = f"function {pack.id(f'{path}/{name}')}"
+            return f"execute {when}run {line}" if when else line
+
+        def above(k: int, lift=lift, f=f, r=r) -> str:
+            """those standing on the platform k blocks up"""
+            return "@e[tag=st.in," + dp.box_selector(
                 at((f - 1, r - 1, lift.bottom + k + 1)),
                 at((f + 1, r + 1, lift.bottom + k + 2)),
+            ) + "]"  # fmt: skip
+
+        for k in range(top + 1):
+            state = {at(q): block for q, block in lift_places(lift, k, True).items()}
+            pack.function(f"{path}/air_{k}", _fills(state))
+        for k in (0, top):
+            state = {at(q): block for q, block in lift_places(lift, k).items()}
+            pack.function(f"{path}/at_{k}", _fills(state))
+            y = dome.floor_y + lift.bottom + k
+            cells = [at((f + df, r + dr, lift.bottom + k)) for df in (-1, 0, 1) for dr in (-1, 0, 1)]  # fmt: skip
+            # leaving an end: the platform's blocks become what travels,
+            # and everyone on it gets a seat where they stand
+            pack.function(
+                f"{path}/leave_{k}",
+                [
+                    lcall(f"air_{k}"),
+                    *(
+                        f"summon minecraft:block_display {x}.0 {y}.0 {z}.0 "
+                        f'{{Tags:["{CAR_TAG}","{lift.car}"],teleport_duration:1,'
+                        f'block_state:{{Name:"{COPPER}"}}}}'
+                        for x, _, z in sorted(cells)
+                    ),
+                    f"execute as {above(k)} at @s positioned ~ {y + 1.1} ~ "
+                    f"run function {pack.id(f'{path}/seat')}",
+                    _set(m, 1),
+                    _set(p, 0),
+                    sound("block.piston.extend", 1, 0.6),
+                ],
             )
-            riders = f"execute as @e[tag=st.in,{riders}] at @s run tp @s ~ "
-            if k < top:
-                pack.function(
-                    f"{path}/up_{k}",
-                    [
-                        riders + "~1 ~",
-                        f"function {pack.id(f'{path}/at_{k + 1}')}",
-                        f"scoreboard players set {lift.score} {k + 1}",
-                    ],
-                )
-            if k:
-                bed = (at((f - 1, r - 1, lift.bottom + 1)), at((f + 1, r + 1, lift.bottom + k - 1)))  # fmt: skip
-                pack.function(
-                    f"{path}/down_{k}",
-                    [
-                        # it does not come down onto anybody
-                        *(
-                            [f"execute if {_someone(*bed)} run return 0"]
-                            if k > 1
-                            else []
-                        ),
-                        f"function {pack.id(f'{path}/at_{k - 1}')}",
-                        riders + "~-1 ~",
-                        f"scoreboard players set {lift.score} {k - 1}",
-                    ],
-                )
-        to = f"#maze.l{lift.name}.to {OBJ}"
+            # arriving: blocks again, the riders stood where they sat
+            pack.function(
+                f"{path}/arrive_{k}",
+                [
+                    lcall(f"at_{k}"),
+                    f"execute as {seat}] at @s positioned ~ {y + 1} ~ on passengers "
+                    f"run function {pack.id(f'{path}/off')}",
+                    f"kill {car}",
+                    f"tag @e[tag={on}] remove {on}",
+                    _set(m, 0),
+                    sound("block.piston.contract", 1, 0.6),
+                ],
+            )
         pack.function(
-            f"{path}/move",
+            f"{path}/seat",
             [
-                # one step a call: going up the highest height is tried
-                # first, going down the lowest, so that the step a line
-                # takes never matches a later line
+                "summon minecraft:item_display ~ ~ ~ "
+                f'{{Tags:["{CAR_TAG}","{lift.car}","{SEAT_TAG}","st.maze.new"],'
+                "teleport_duration:1}",
+                f"ride @s mount {seats},tag=st.maze.new,limit=1,sort=nearest]",
+                "tag @e[tag=st.maze.new] remove st.maze.new",
+                f"tag @s add {on}",
+            ],
+        )
+        pack.function(
+            f"{path}/off", ["ride @s dismount", "tp @s ~ ~ ~", f"tag @s remove {on}"]
+        )
+        # the way to go, read once a block; going down it waits while
+        # anyone is under it
+        pack.function(
+            f"{path}/aim",
+            [
+                _set(d, -1),
+                f"execute {_is(to, 1)} run {_set(d, 1)}",
+                _set(wait, 0),
                 *(
-                    f"execute if score {to} matches 1 if score {lift.score} matches {k} "
-                    f"run function {pack.id(f'{path}/up_{k}')}"
-                    for k in reversed(range(top))
-                ),
-                *(
-                    f"execute if score {to} matches 0 if score {lift.score} matches {k} "
-                    f"run function {pack.id(f'{path}/down_{k}')}"
-                    for k in range(1, top + 1)
+                    f"execute {_is(d, -1)} if score {lift.score} matches {k} "
+                    f"if {_someone(at((f - 1, r - 1, lift.bottom + 1)), at((f + 1, r + 1, lift.bottom + k - 1)))} "
+                    f"run {_set(wait, 1)}"
+                    for k in range(2, top + 1)
                 ),
             ],
         )
         pack.function(
+            f"{path}/glide",
+            [
+                lcall("aim", _is(p, 0) + " "),
+                f"execute {_is(wait, 1)} run return 0",
+                f"execute {_is(d, 1)} as {car} at @s run tp @s ~ ~{1 / LIFT_STEP} ~",
+                f"execute {_is(d, -1)} as {car} at @s run tp @s ~ ~-{1 / LIFT_STEP} ~",
+                # one who has got off their seat is put back on it
+                f"execute as @a[tag={on}] at @s run ride @s mount {seat},limit=1,sort=nearest]",
+                f"scoreboard players add {_s(p)} 1",
+                lcall("landed", _is(p, f"{LIFT_STEP}..") + " "),
+            ],
+        )
+        pack.function(
+            f"{path}/landed",
+            [
+                _set(p, 0),
+                f"scoreboard players operation {lift.score} += {_s(d)}",
+                *(
+                    f"execute if score {lift.score} matches {k} "
+                    f"run function {pack.id(f'{path}/air_{k}')}"
+                    for k in range(1, top)
+                ),
+                f"execute if score {lift.score} matches 0 {_is(to, 0)} "
+                f"run function {pack.id(f'{path}/arrive_0')}",
+                f"execute if score {lift.score} matches {top} {_is(to, 1)} "
+                f"run function {pack.id(f'{path}/arrive_{top}')}",
+            ],
+        )
+        under = _someone(
+            at((f - 1, r - 1, lift.bottom + 1)), at((f + 1, r + 1, lift.top - 1))
+        )
+        pack.function(
+            f"{path}/move",
+            [
+                f"execute {_is(m, 0)} {_is(to, 1)} if score {lift.score} matches 0 "
+                f"run function {pack.id(f'{path}/leave_0')}",
+                f"execute {_is(m, 0)} {_is(to, 0)} if score {lift.score} matches {top} "
+                f"unless {under} run function {pack.id(f'{path}/leave_{top}')}",
+                lcall("glide", _is(m, 1) + " "),
+            ],
+        )
+        stop = [f"kill {car}", f"tag @e[tag={on}] remove {on}", _set(m, 0), _set(p, 0)]
+        pack.function(
             f"{path}/park",
             [
-                f"function {pack.id(f'{path}/at_{top}')}",
+                *stop,
+                lcall(f"at_{top}"),
                 f"scoreboard players set {lift.score} {top}",
-                f"scoreboard players set {to} 1",
+                _set(to, 1),
             ],
         )
         pack.function(  # written whole at the end it was going to
             f"{path}/settle",
             [
-                f"execute if score {to} matches 0 "
-                f"run function {pack.id(f'{path}/at_0')}",
-                f"execute if score {to} matches 0 "
-                f"run scoreboard players set {lift.score} 0",
-                f"execute unless score {to} matches 0 "
+                *stop,
+                lcall("at_0", _is(to, 0) + " "),
+                f"execute {_is(to, 0)} run scoreboard players set {lift.score} 0",
+                f"execute unless score {_s(to)} matches 0 "
                 f"run function {pack.id(f'{path}/park')}",
             ],
         )
@@ -1933,9 +2428,6 @@ def functions(pack: dp.Pack) -> None:
             f"run scoreboard players remove {_s('ramwait')} 1",
             f"execute {free}{_is('ramwait', 0)} run {_set('lram.to', 0)}",
             f"execute {free}{_is('ramwait', 0)} run {_set('ramwait', -1)}",
-            f"scoreboard players add {_s('step')} 1",
-            f"execute unless score {_s('step')} matches {LIFT_STEP}.. run return 0",
-            _set("step", 0),
             *(call(f"lift/{lift.name}/move") for lift in LIFT_LIST),
         ],
     )
@@ -2028,11 +2520,6 @@ def functions(pack: dp.Pack) -> None:
 
     # -- the hooks
     lectern = at(LECTERN)
-    rf, rr = RAM_LIFT.mid
-    shaft = dp.box_selector(
-        at((rf - 1, rr - 1, RAM_LIFT.bottom + 1)),
-        at((rf + 1, rr + 1, RAM_LIFT.top - 1)),
-    )
     pack.function(f"{base}/book", [_setblock(lectern, logbook(fr))])
     pack.function(
         f"{base}/work",
@@ -2041,12 +2528,9 @@ def functions(pack: dp.Pack) -> None:
             call("gates"),
             call("mend"),
             call("floors"),
-            *([call("lifts")] if LIFTS else []),
+            call("lifts"),
             call("keys", not_free),
             fittings.lever_hold_line(post, lever(fr, True), free.strip()),
-            # a step off the Ram's ladder is a drift down the shaft, not a
-            # fall of up to 17 blocks
-            f"effect give @a[tag=st.in,{shaft}] minecraft:slow_falling 1 0 true",
         ],
     )
     pack.function(
@@ -2081,6 +2565,7 @@ def functions(pack: dp.Pack) -> None:
             call("reset"),
             _set("live", 1),
             call("strike/0"),
+            call("hand/go"),
             # set up from the tick, not on entry: the form is known
             f"execute if score #form{INDEX} {OBJ} matches 2 run function {fid('duo')}",
         ],
@@ -2125,7 +2610,10 @@ def functions(pack: dp.Pack) -> None:
     pack.function(
         f"{base}/park",
         [
-            *(_set(name, 0) for name in ("t", "q", "hour", "step", "last", "swing")),
+            *(_set(name, 0) for name in ("t", "q", "hour", "last", "swing")),
+            *(_set(name, 0) for name in ("fl", "bells", "bellt")),
+            call("lights/0"),
+            call("hand/put"),
             call("gates/free"),
             call("lamps/free"),
             *_fills(parked),
@@ -2139,7 +2627,7 @@ def functions(pack: dp.Pack) -> None:
     pack.function(
         f"{base}/empty",
         [
-            *([call(f"lift/{x.name}/settle") for x in LIFT_LIST] if LIFTS else []),
+            *(call(f"lift/{x.name}/settle") for x in LIFT_LIST),
             f"execute if score {open_dome} matches 1 run function {fid('park')}",
             _set("live", 0),
         ],
@@ -2174,8 +2662,7 @@ def shut_alone(g: Gate, hour: int) -> bool:
         return True
     if g.kind == DOOR:
         return False
-    opens = {FK: GREEN, LIFT: GOLD}.get(g.kind, g.kind)
-    return hour != opens
+    return not opens(g.kind, hour)
 
 
 def check(ctx: Any) -> list[str]:
@@ -2187,13 +2674,13 @@ def check(ctx: Any) -> list[str]:
     reset, dome 6 as it was and no stand-in behind.
 
     What the stand-ins cannot prove: that a player can walk a gate in the
-    time an hour gives, climb a ladder, or see and tell the colours; the
+    time an hour gives, read a plan, or see and tell the colours; the
     ``slow_falling`` given as a floor goes (an armour stand takes no
     effect: it simply falls); a gate's leaves against a real body; the
     bell, the ticks, the titles and the chat lines (all aimed at
     players); a hand on the lever, the recall button or the log; the
-    pendulum's swing (its data is merged, not seen); with ``LIFTS`` on,
-    how the ride feels.
+    pendulum's swing and the hand's sweep (their data is read back, not
+    seen); how a lift's ride feels and whether a player stays on a seat.
 
     It refuses while a run is in progress (``game_checks.no_run``); the
     level is put back (``save_level``) and the stand-ins killed whatever
@@ -2239,6 +2726,31 @@ def _check(ctx: Any, saved_level: dict[str, int | None]) -> list[str]:
         f, r, h = cell_mid(node)
         low = node in {lift.low for lift in LIFT_LIST}
         return middle(fr.at(f - 1 if low else f, r, h))
+
+    def hand_at() -> tuple[float, float] | None:
+        """the hand's turn read back: (sine, cosine) of half its angle"""
+        got = ctx.data(
+            f"entity @e[tag={HAND_TAG},limit=1] transformation.left_rotation"
+        )
+        found = [float(n) for n in re.findall(r"-?\d+\.?\d*(?:[eE]-?\d+)?", got)][-4:]
+        if len(found) != 4:
+            return None
+        x, _, z, w = found
+        return x * fr.forward[0] + z * fr.forward[1], w
+
+    def hand_reads(what: str, q: int) -> None:
+        want = hand_turn(q)
+        got = hand_at()
+        flipped = (-want[0], -want[1])  # the same turn
+        if got is None or min(math.dist(got, want), math.dist(got, flipped)) > 0.02:
+            problems.append(f"{what}: the hand reads {got}, not {want} (lamp {q})")
+
+    def light_is(hour: int) -> bool:
+        """a post's light on each deck is the hour's"""
+        return all(
+            ctx.is_block(fr.at(-6, -6, walk_h(deck) + 3), HOUR_LIGHT[hour])
+            for deck in (1, 2, 3)
+        )
 
     outside = middle(tunnels.at(ctx.layout.TUNNELS[INDEX - 1], 8, 0, 1))
 
@@ -2310,6 +2822,9 @@ def _check(ctx: Any, saved_level: dict[str, int | None]) -> list[str]:
         expect(
             f"{what}: the scores", {n: get(n) for n in names}, dict.fromkeys(names, 0)
         )
+        expect(f"{what}: the dial's hand", ctx.count(f"@e[tag={HAND_TAG}]"), 1)
+        hand_reads(what, 0)
+        expect(f"{what}: a lift on its way", ctx.count(f"@e[tag={CAR_TAG}]"), 0)
 
     def tally_counts(what: str) -> None:
         """the Tally Engine, which nothing starts or stops: three or more
@@ -2346,8 +2861,11 @@ def _check(ctx: Any, saved_level: dict[str, int | None]) -> list[str]:
     unsolve()
     as_built("built")
     tally_counts("nobody in")
-    shows = ctx.count(f"@e[type=minecraft:text_display,tag={ENTITY_TAG}]")
-    expect("the room's text displays", shows, len(summons(dome)) - 3)
+    for kind in ("text_display", "block_display"):
+        want = sum(c.startswith(f"summon minecraft:{kind} ") for c in summons(dome))
+        want += kind == "block_display"  # the hand, which the pack summons
+        shows = ctx.count(f"@e[type=minecraft:{kind},tag={ENTITY_TAG}]")
+        expect(f"the room's {kind}s", shows, want)
     for tag in PEND_TAGS:
         expect(f"the pendulum's {tag}", ctx.count(f"@e[tag={tag}]"), 1)
     recall = f"@e[type=minecraft:interaction,tag={ENTITY_TAG}]"
@@ -2365,9 +2883,8 @@ def _check(ctx: Any, saved_level: dict[str, int | None]) -> list[str]:
         for hour in range(3):
             if not wait_hour(hour):
                 break
-            gates_read(
-                f"turn {turn_}, {HOURS[hour]}", lambda g, h=hour: shut_alone(g, h)
-            )
+            hand_reads(f"turn {turn_}, {HOURS[hour]}", 4 * hour + 1)
+            expect(f"the post lights in {HOURS[hour]}", light_is(hour), True)
             lit = [ctx.is_block(fr.at(*p), f"{BULB}[lit=true]") for p in lamps]
             want = [n == 4 * hour for n in range(12)]
             expect(f"the dial at the strike of {HOURS[hour]}", lit, want)
@@ -2376,6 +2893,24 @@ def _check(ctx: Any, saved_level: dict[str, int | None]) -> list[str]:
                 for h, p in atrium_lamps()
             ]
             expect(f"the atrium's lamps in {HOURS[hour]}", all(bulbs), True)
+            # (a lift's gate opens when its platform has come down)
+            ctx.advance(LIFT_STEP * (LIFT_LIST[0].travel + 4))
+            gates_read(
+                f"turn {turn_}, {HOURS[hour]}", lambda g, h=hour: shut_alone(g, h)
+            )
+    # the warning: in an hour's last quarter the post lights go to the
+    # colour of the hour to come and back, every half second
+    wait_hour(GREEN)
+    ctx.advance(3 * get("qlen"))
+    seen = set()
+    for _ in range(max(get("qlen") // 2, 10)):
+        ctx.advance(2)
+        seen |= {h for h in range(3) if light_is(h)}
+    expect("the lights in Green's last quarter", seen, {GREEN, IRON})
+    # the hand made anew if it is gone
+    ctx.cmd(f"kill @e[tag={HAND_TAG}]")
+    ctx.advance(get("qlen") + 2)
+    expect("the hand, killed, a quarter on", ctx.count(f"@e[tag={HAND_TAG}]"), 1)
     q0 = get("q")
     ctx.advance(get("qlen") * 3)
     expect("three quarters on", (get("q") - q0) % 12, 3)
@@ -2390,36 +2925,58 @@ def _check(ctx: Any, saved_level: dict[str, int | None]) -> list[str]:
     ctx.advance(8)
     expect("that gate once the doorway is clear", is_shut(g), (True, True, True))
 
-    # ---- the run, walked by teleport along the search's shortest route.
-    # (It proves each doorway is clear in the hour the table says: not
-    # that a player can walk it in the time, nor climb a ladder)
+    # ---- the run, along the search's shortest route: walked by teleport
+    # from cell to cell, each gate read open first, and ridden up each
+    # lift from its lower cell. (It proves each doorway is clear in the
+    # hour the table says and that the lifts carry a stand-in: not that a
+    # player can walk it in the time)
     stand(S1, spot("out"))
     wait_hour(GOLD)
-    here = "out"
+    here, riding = "out", None
+    top_of = {lift.high: lift for lift in LIFT_LIST[:3]}
     for node, after in solo_route("out", GREEN):
         if not wait_hour((after - 1) % 3):
             break
+        if riding:  # the strike of Green has taken it up
+            ctx.advance(LIFT_STEP * (riding.travel + 2))
+            name = riding.name
+            expect(f"the run: up lift {name}", inside(S1, riding.high), True)
+            expect(f"lift {name} at the top", get(f"l{name}"), riding.travel)
+            here, riding = riding.high, None
         if node == here:
             continue
-        for gate in GATES:
-            if set(sides(gate.deck, gate.door)) == {here, node} and not whole(gate):
-                problems.append(
-                    f"the run: {gate.name} is not open for {here} to {node}"
-                )
-        shaft = next((x for x in LIFT_LIST if node in (x.low, x.high)), None)
-        if LIFTS and shaft:  # the platform at rest first: down, or up
-            ctx.advance(LIFT_STEP * (shaft.travel + 2))
-        stand(S1, spot(node))
-        if node != "crown" and not inside(S1, node):
-            problems.append(f"the run: the stand-in did not stay in {node}")
-        here = node
+        lift = top_of.get(node)
+        to = lift.low if lift and here not in room(node) else node
+        if lift and to != node:  # in at Gold, once its platform is down
+            ctx.advance(LIFT_STEP * (lift.travel + 4))
+        ways = [
+            gate
+            for gate in GATES
+            if to in sides(gate.deck, gate.door)
+            and set(sides(gate.deck, gate.door)) & room(here)
+        ]
+        if to not in room(here) and not any(whole(gate) for gate in ways):
+            problems.append(f"the run: no gate is open for {here} to {to}")
+        stand(S1, spot(to))
+        if to != "crown" and not inside(S1, to):
+            problems.append(f"the run: the stand-in did not stay in {to}")
+        here, riding = to, lift if to != node else None
+    if riding:  # the last ride, to the crown
+        wait_hour(GREEN)
+        ctx.advance(LIFT_STEP * (riding.travel + 2))
+        here = riding.high
+        box = dp.box_selector(fr.at(-5, -2, CROWN_H), fr.at(6, 2, CROWN_H + 2))
+        expect(
+            "the run: lift C took the stand-in up", ctx.count(f"@e[tag={S1},{box}]"), 1
+        )
     expect("the run ends on the crown", here, "crown")
     expect("alone on the crown: the lever, no keys", get("keys"), 0)
-    if LIFTS:  # on the Ram, to be taken down once the room is solved
-        stand(S1, middle(fr.at(-1, 0, CROWN_H)))
+    # on the Ram, to be taken down once the room is solved
+    stand(S1, middle(fr.at(-1, 0, CROWN_H)))
     ctx.setblock(post, lever(fr, True))
     ctx.advance(6)
     expect("the lever thrown: solved", (solved(), get("free")), (True, 1))
+    problems.extend(game_checks.pull_pump(ctx, INDEX))
     expect("solved: tunnel 6", ctx.score(f"#t{INDEX}") in (1, 2), True)
     ctx.advance(12)
     gates_read("solved", lambda g: False)
@@ -2438,12 +2995,13 @@ def _check(ctx: Any, saved_level: dict[str, int | None]) -> list[str]:
     ctx.cmd(dp.fill(part[g]["slot"][0], part[g]["slot"][1], POWER))
     ctx.advance(12)
     expect("a gate given a short pulse, mended", whole(g), True)
-    if LIFTS:
-        ctx.advance(RAM_WAIT + LIFT_STEP * (RAM_LIFT.travel + 2) + 10)
-        expect("solved: the Ram gone down", get("lram"), 0)
-        expect("its rider at the foot", inside(S1, RAM_LIFT.low), True)
-        shutter = fr.at(-1, 0, RAM_LIFT.top)
-        expect("the shutter over its hole", ctx.is_block(shutter, TRAPDOOR), True)
+    ctx.advance(RAM_WAIT + LIFT_STEP * (RAM_LIFT.travel + 2) + 10)
+    expect("solved: the Ram gone down", (get("lram"), get("lram.m")), (0, 0))
+    expect("its rider at the foot", inside(S1, RAM_LIFT.low), True)
+    expect("its rider off the seat", ctx.count(f"@e[tag={SEAT_TAG}]"), 0)
+    shutter = fr.at(-1, 0, RAM_LIFT.top)
+    expect("the shutter over its hole", ctx.is_block(shutter, TRAPDOOR), True)
+    stand(S1, spot((1, 3, 2)))  # off the Ram, which goes on with the clock
     ctx.setblock(post, lever(fr))
     ctx.advance(3)
     expect("the lever put back by hand", ctx.is_block(post, lever(fr, True)), True)
@@ -2488,7 +3046,7 @@ def _check(ctx: Any, saved_level: dict[str, int | None]) -> list[str]:
     ctx.advance(8)
     expect("one inside: the tower door", is_shut(door)[0], False)
     stand(S1, spot(F_CELL))
-    stand(S2, spot((2, 4, 0)))
+    stand(S2, spot(F_CELL))  # (not on the lift's top: it would ride)
     wait_hour(GREEN)  # held: shut even in its own hour until the plate is held
     expect("duo, nobody beyond: F to K in Green", is_shut(fk)[0], True)
     stand(S2, middle(plates[1]))
@@ -2543,15 +3101,30 @@ def _check(ctx: Any, saved_level: dict[str, int | None]) -> list[str]:
     game_checks.restore_level(ctx, saved_level)
     ctx.function("difficulty/apply")
 
-    # ---- with the switch on: a ride up lift A at the strike of Green
-    if LIFTS:
-        come_in()
-        wait_hour(GOLD)
-        ctx.advance(LIFT_STEP * 8)
-        stand(S1, spot((1, 4, 0)))
-        wait_hour(GREEN)
-        ctx.advance(LIFT_STEP * 8)
-        expect("lift A's rider after the strike of Green", inside(S1, (2, 4, 0)), True)
+    # ---- a lift does not come down onto anybody, and its gate opens for
+    # whoever is under it; then a ride up at the strike of Green, and down
+    # again at Gold for one who stays on
+    come_in()
+    lift_a = LIFT_LIST[0]
+    gate_a = next(g for g in GATES if (g.deck, g.kind) == (1, LIFT))
+    wait_hour(IRON)
+    stand(S1, spot(lift_a.low))
+    ctx.advance(8)
+    expect("under lift A in Iron: its gate", is_shut(gate_a)[0], False)
+    wait_hour(GOLD)
+    ctx.advance(LIFT_STEP * (lift_a.travel + 4))
+    expect("lift A with someone under it: waiting", get("la") >= 3, True)
+    stand(S1, spot((1, 4, 1)))
+    ctx.advance(LIFT_STEP * (lift_a.travel + 4))
+    expect("lift A, the bed clear: down", (get("la"), get("la.m")), (0, 0))
+    stand(S1, spot(lift_a.low))
+    wait_hour(GREEN)
+    ctx.advance(LIFT_STEP * (lift_a.travel + 2))
+    expect("lift A's rider after the strike of Green", inside(S1, lift_a.high), True)
+    wait_hour(GOLD)
+    ctx.advance(LIFT_STEP * (lift_a.travel + 2))
+    expect("lift A's rider after the strike of Gold", inside(S1, lift_a.low), True)
+    expect("nothing of lift A left in the air", ctx.count(f"@e[tag={CAR_TAG}]"), 0)
 
     # ---- everyone out of an unsolved room: parked
     stand(S1, outside)
@@ -2566,7 +3139,7 @@ def _check(ctx: Any, saved_level: dict[str, int | None]) -> list[str]:
     stand(S1, spot("crown"))  # two up top: the keys
     stand(S2, spot("crown"))
     ctx.advance(scan + 8)
-    ctx.function(f"{base}/lift/a/at_3")
+    ctx.function(f"{base}/lift/a/air_3")
     ctx.function(f"{base}/floors/e2")
     ctx.setblock(fr.at(*LECTERN), f"minecraft:lectern[facing={fr.facing(-1, 0)}]")
     ctx.advance(3)

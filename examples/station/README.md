@@ -63,6 +63,7 @@ game logic. Pass `--server` and `--port` for a server that is not the
 | `datapack.py` | the datapack generator: a pack built in memory, written to a folder, installed in a world |
 | `domes.py` | a dome's cells, the build of its shell, its mouths and entrance, and the check that it is dry and whole |
 | `tunnels.py` | a tunnel's cells, its build, its drain, refill and pump event as functions, and its check |
+| `seabed.py`, `render_seabed.py` | the sea floor round the station dressed (lights, coral, seagrass, the water's biome): its plan, stages and checks, and the plan drawn (`seabed_plan.png`) |
 | `game.py` | the game core's functions, and `Module`: how a part of the station adds its stages, functions and checks |
 | `fittings.py` | what every dome has: a frame to place things by, input posts and readers, gauges, displays, hints, machinery that runs by itself, signs and plaques, a lectern and its book, the recall post, lent and restricted items |
 | `automatons.py` | the mobs of the fights, made to the plan's rules: the three kinds, waves, leash and fence, a dome's bossbar, the difficulty |
@@ -94,10 +95,12 @@ world, the layout and the datapack under construction.
 | `dome_3_inside` | the Flooded Dome (after `datapack`: it ends with the pack's `dome/3/reset`) |
 | `dome_4_inside` | the Foundry |
 | `dome_5_inside` | the Signal Room |
-| `dome_7_inside` | the Engine (phase 1; phase 2, the Master, behind `PHASE_2` in `dome_boss.py`, off) |
-| `dome_6_inside` | the Clockwork Maze (after `datapack`: it ends with the pack's `dome/6/reset`; lifts on, behind `LIFTS` in `dome_maze.py`) |
+| `dome_7_inside` | the Engine (phase 1, and phase 2, the Master, behind `PHASE_2` in `dome_boss.py`: on) |
+| `dome_6_inside` | the Clockwork Maze (after `datapack`: it ends with the pack's `dome/6/reset`; the gate plan and the lifts are in `dome_maze.py`) |
 | `dome_2_inside` | the Gearworks (after `datapack`: it ends with the pack's `dome/2/reset`) |
 | `tunnel_0` ... `tunnel_7` | each tunnel, flooded and shut, with its pump engine; the two that slope have stairs. `STAGES=tunnels` is short for all eight |
+| `seabed` | last: the sea floor round the station dressed from the survey, with sea lanterns, reefs of coral, sea pickles and seagrass (what an earlier run placed taken away first; `seabed.py`) |
+| `seabed_water` | the station's box set to the warm-ocean biome from the sea floor up: lighter, turquoise water and tropical fish (a player online may need to rejoin to see it) |
 
 A stage not written yet would say so and do nothing; every stage is
 written now. A shell stage wipes what is inside its dome (the pump
@@ -123,6 +126,10 @@ station:reset/all` after rebuilding a dome during a game.
   build must be able to write. It then sends `reload` and checks that this
   build of the pack loaded. Without the variable the pack is generated but
   not installed, and the stage says so.
+- The datapack **adds `minecraft:husk` to the game's own
+  `#minecraft:raiders` entity tag**, so that the Engine's Master (a husk)
+  can ride the ravager and have it fight; the tag holds for the whole
+  world, not just the station.
 - A command longer than 1446 bytes is refused before it is sent: RCON
   drops the connection on one.
 
@@ -190,7 +197,7 @@ MODULE = game.Module(
     something a player is using (it waits for the room's next safe
     point).
   - *Progress*: call `station:dome/<n>/solved` and the core does the
-    rest (the title, tunnel n's pump event, the next dome opened, respawn
+    rest (the title, tunnel n's pump woken for its lever by the airlock, the next dome opened, respawn
     points). The last dome's is the win, and functions named in
     `Module(wins=...)` run then (`#won.best`: the run set the level's
     best time).
@@ -260,6 +267,7 @@ MODULE = game.Module(
 | `stages` | the build has a stage for every dome of the layout, in ring order |
 | `forceload` | the station's box splits into forceload commands of at most 256 chunks, which cover it |
 | `geometry` | every dome's and tunnel's cells (built yet or not, the sloping tunnels too): no inside cell has a face on the sea, the mouths are in the shells, the reserved cells are inside |
+| `seabed` | the sea floor's plan against its rules: in the box, in free columns, clear of every dome and tunnel, standing on the surveyed floor or the reef, living coral touching water |
 | `datapack` | the datapack's own checks of every function line and name |
 | `functions` | `pack.mcmeta` and the tags read as JSON; every function a tag or a line names exists |
 | `build` | the whole build runs against the fake client, the datapack is installed and seen to load, no command is too long for RCON or outside the loaded box, and the station's box is left forceloaded |
@@ -285,6 +293,7 @@ since the core's checks reset the game before and after.
 | `fights` | the difficulty read; waves cast where a player is, to the cap, refilled; leash and fence; a death answered; the sweep; a dome's bossbar |
 | `fittings` | the torch clock, its lamp chase and pistons seen running; a gauge; a lever put back and held; a button read once; a plate that wants a player; a display; a lent item; a hint |
 | `ring` | the whole ring's progress walked by a stand-in from the master lever to the win (throwing a stub's BYPASS lever, if any dome were still a stub), and the reset |
+| `seabed_live` | a sample of the sea floor's plan read back (coral that has died is reported) and the water's biome inside the box |
 | `shore`, `dock`, `lift`, `start_dome`, `boiler_room`, `gearworks`, `flooded_dome`, `foundry`, `signal_room`, `clockwork_maze`, `boss` | the modules' own checks (see each module) |
 
 A check of a part not built would be listed as `TODO`, and a TODO is not

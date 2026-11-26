@@ -413,6 +413,7 @@ class Ctx:
         if self.score_(f"#occ{self.n}") >= 1:
             sim.run(f"dome/{self.n}/tick")
         sim.run(f"dome/{self.n}/guard")  # (its own entry in the tick tag)
+        sim.run("tunnel/tick")  # the core's: a pump lever pulled
 
 
 def simulated():

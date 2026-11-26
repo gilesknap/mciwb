@@ -9,7 +9,9 @@ Stages, in order (``STAGES``): site, datapack, rules, shore, dock, then
 for each dome its shell (start_dome, dome_1 to dome_7) and what is inside
 it (start_dome_inside, dome_1_inside ...), with the lift between the start
 dome's shell and its inside, then a stage for each tunnel (tunnel_0 to
-tunnel_7; ``tunnels`` in ``STAGES`` is short for all of them). Those not written yet are in
+tunnel_7; ``tunnels`` in ``STAGES`` is short for all of them), then
+``seabed`` (lights, coral and seagrass on the sea floor round it all) and
+``seabed_water`` (the water's biome), see seabed.py. Those not written yet are in
 the list all the same, so the order of work shows; they say "not built
 yet" and do nothing. A dome's shell stage wipes what is inside the dome,
 the pump engines and the lift's shaft too: run ``lift`` (the start dome),
@@ -56,6 +58,7 @@ sys.path.insert(0, str(Path(__file__).parent))
 import datapack  # noqa: E402
 import domes  # noqa: E402
 import game  # noqa: E402
+import seabed  # noqa: E402
 import station_layout  # noqa: E402
 import tunnels  # noqa: E402
 from fake_client import Recorder, World  # noqa: E402
@@ -551,6 +554,9 @@ def make_stages() -> dict[str, Callable[[Context], str | None]]:
                     f"module {module.name}: {name!r} is not a placeholder stage"
                 )
             stages[name] = stage
+    # last: the sea floor round all of it, and the water's colour
+    stages["seabed"] = seabed.build
+    stages["seabed_water"] = seabed.build_water
     return stages
 
 

@@ -29,6 +29,12 @@ and ends behind the next dome's.
   sticky pistons that lift brass heads in turn when a function puts a
   redstone block under them, a furnace between them, a lamp over it that
   flashes with the strokes and a chimney that steams.
+- The pump lever (``lever_cell``): on the inner face of the airlock
+  door's brass jamb on the engine's side, beside the window, at hand
+  height. It is there only while the pump waits for it (absent before
+  the dome is solved, and taken away as its jamb slides open), so it
+  can never be pulled too soon. Tunnel 0 has none: the Pump House's
+  master lever is its pump lever (``LEVERED``).
 
 **Reserved inside a dome** (``reserved_cells(dome)``): the two cells of
 the entrance spot, a way in from each mouth as wide and high as the mouth
@@ -39,7 +45,17 @@ dome's inside is the tunnels'. See "Dressing a dome" in domes.py.
 as the dome it leaves). The state is the score ``#t<n>`` in ``st``: 0
 flooded and shut, 1 the pump event running, 2 dry and open.
 ``#t<n>.dry`` is how many layers are dry, ``#t<n>.lit`` how many lamps
-are fully lit.
+are fully lit. ``#t<n>.ready`` is 1 while the engine waits for its lever
+(the state still 0); ``#pumps`` is how many wait (``station:tunnel/tick``
+counts them every tick, for the progress line and the map).
+
+- ``station:tunnel/<n>/ready``: what solving the dome does (``game``'s
+  ``dome/<n>/solved``). Does nothing unless the tunnel is flooded, shut
+  and not already waiting. The engine wakes: its lamp and furnace light,
+  steam rises with a soft hum every few seconds, the lever appears, and
+  a title tells those in the dome to pull it. Pulling it (any player:
+  ``station:tunnel/tick`` reads the block) runs ``open``. Tunnel 0's
+  ``ready`` is ``open`` at once.
 
 - ``station:tunnel/<n>/open``: the pump event, the same for every tunnel.
   Does nothing unless the tunnel is flooded and shut. The klaxon sounds,
@@ -47,10 +63,12 @@ are fully lit.
   window, and the engine runs; after ``PUMP_LEAD`` ticks the water level
   falls a layer every ``layer_step(tunnel)`` ticks (3 s in a level
   tunnel); then the lamps come on fully one by one towards the next dome;
-  then both doors slide open from the middle and the engine stops.
+  then both doors slide open from the middle and the engine stops (the
+  lever goes with the outermost columns).
   ``event_ticks(tunnel)`` is how long all of it takes.
 - ``station:tunnel/<n>/reset``: at once, from any state: the schedule
-  cleared, the doors shut, the tunnel flooded and dark, the engine still.
+  cleared, the doors shut, the tunnel flooded and dark, the engine still,
+  the lever gone and ``.ready`` 0.
 - ``station:tunnel/<n>/state_<d>``: the water with the top d layers dry,
   written whole in one tick, so any state can follow any other and
   state 0 is the refill: the wet layers made sources again
@@ -64,15 +82,18 @@ are fully lit.
   Nothing waterlogged may be put in a tunnel: the fills leave such a
   block wet.
 
-A tunnel that is not built yet has only ``open`` and ``reset``, which set
-the score and nothing else, so the game's progress runs the same.
+A tunnel that is not built yet has only ``open``, ``ready`` (the same)
+and ``reset``, which set the score and nothing else, so the game's
+progress runs the same.
 
 **The build** (``build_tunnel``): piers, then the tube solid glass, its
 floor and lamps, the inside filled with water, the engine, both doors
 shut. It leaves the tunnel in state 0 and is the same run twice.
 
 **The check** (``check_tunnel``) works a built tunnel over RCON: reset,
-open, each state read as it comes (``station:check/tunnel/<n>`` counts the
+the lever absent and a lever set thrown there inert, ``ready`` (the lever
+and the engine's lamp, a second ``ready`` changing nothing), the lever
+pulled, each state read as it comes (``station:check/tunnel/<n>`` counts the
 cells: every layer state must be all sources below and all air above,
 with no flowing water and no air under water), the lamps, the doors, the
 engine's pistons seen to move, the tunnel and both domes dry afterwards,
@@ -110,11 +131,17 @@ LAMP_STEP = 8  # ticks between the lamps coming on
 STROKE = 8  # ticks between the engine's strokes
 HORN_EVERY = 80  # ticks between the klaxon's blasts
 DOOR_STEP = 4  # ticks between the columns of a door sliding open
+HUM_EVERY = 60  # ticks between the waiting engine's hums
+PROMPT_AFTER = 70  # ticks from ``ready`` to its title (after "restored")
+LEVER_HEIGHT = 2  # the pump lever's height above the floor
 
 STAIRS = "minecraft:polished_deepslate_stairs"
 
 #: the tunnels that are built: all of the ring
 BUILT = tuple(t.index for t in layout.TUNNELS)
+#: the tunnels whose pump waits for a lever by the airlock: all but
+#: tunnel 0, which the Pump House's master lever pumps at once
+LEVERED = tuple(i for i in BUILT if i != 0)
 
 # the engine: blocks by (place along the wall 0..2, height 0..3)
 ENGINE_IDLE = "minecraft:waxed_cut_copper"
@@ -283,6 +310,46 @@ def way_in(dome: Dome, tunnel: Tunnel) -> dict[tuple[int, int, int], Cell]:
             for depth, cell in enumerate([c for c in way if c in inside][:3]):
                 found[depth, w, h] = cell
     return found
+
+
+def lever_cell(tunnel: Tunnel) -> Cell:
+    """where a tunnel's pump lever is: in the upstream dome, the way in's
+    nearest cell on the engine's side at ``LEVER_HEIGHT``, so on the inner
+    face of the door's brass jamb beside its window (a reserved cell)"""
+    return way_in(ends(tunnel)[0], tunnel)[0, DOOR_HALF_WIDTH, LEVER_HEIGHT]
+
+
+def lever_block(tunnel: Tunnel, on: bool = False) -> str:
+    """the pump lever, pointing into the dome, thrown or not"""
+    ux, uz = domes.outward(ends(tunnel)[0], tunnel)
+    powered = "true" if on else "false"
+    return (
+        f"minecraft:lever[face=wall,facing={domes.COMPASS[-ux, -uz]},powered={powered}]"
+    )
+
+
+def lever_problems(tunnel: Tunnel) -> list[str]:
+    """what is wrong with where a tunnel's pump lever is: it must hang on
+    its door's brass, and stand clear of the engine (a lever powers the
+    pistons it touches, and the block it is on powers those beside it)"""
+    dome = ends(tunnel)[0]
+    x, y, z = lever_cell(tunnel)
+    ux, uz = domes.outward(dome, tunnel)
+    on = (x + ux, y, z + uz)
+    problems = []
+    if domes.door_blocks(dome, tunnel).get(on) != "minecraft:gold_block":
+        problems.append(f"tunnel {tunnel.index}: its lever is not on the door's brass")
+    for cell in engine_cells(tunnel).values():
+        if (
+            min(
+                sum(abs(a - b) for a, b in zip(cell, c, strict=True))
+                for c in ((x, y, z), on)
+            )
+            < 3
+        ):
+            problems.append(f"tunnel {tunnel.index}: its lever is by the engine")
+            break
+    return problems
 
 
 def reserved_cells(dome: Dome) -> set[Cell]:
@@ -474,6 +541,10 @@ def add_functions(pack: dp.Pack, tunnel: Tunnel, players: str) -> None:
             f"schedule function {fid('pump/horn')} {HORN_EVERY}t",
         ],
     )
+    levered = n in LEVERED
+    lever = lever_cell(tunnel)
+    lever_off = f"setblock {lever[0]} {lever[1]} {lever[2]} {AIR}"
+    ready = score(n, ".ready")
     pack.function(
         f"{base}/pump/stop",
         [
@@ -485,8 +556,11 @@ def add_functions(pack: dp.Pack, tunnel: Tunnel, players: str) -> None:
     )
 
     scheduled = [f"{base}/pump/a", f"{base}/pump/b", f"{base}/pump/horn"]
+    if levered:
+        scheduled += [f"{base}/hum", f"{base}/prompt"]
     begin = [
         f"scoreboard players set {state} 1",
+        f"scoreboard players set {ready} 0",
         f"function {fid('glow')}",
         setblock((1, 1), f"{ENGINE[1, 1]}[lit=true]"),
         f"function {fid('pump/a')}",
@@ -510,6 +584,8 @@ def add_functions(pack: dp.Pack, tunnel: Tunnel, players: str) -> None:
         )
         scheduled.append(f"{base}/door_{column}")
         lines = door_lines(tunnel, False, {column})
+        if levered and column == DOOR_HALF_WIDTH:
+            lines.insert(0, lever_off)  # (its jamb is going)
         lines.append(sound("block.piston.contract", 1, 0.6))
         if column == DOOR_HALF_WIDTH:
             lines += [
@@ -522,11 +598,14 @@ def add_functions(pack: dp.Pack, tunnel: Tunnel, players: str) -> None:
         f"{base}/open",
         [f"execute if score {state} matches 0 run function {fid('begin')}"],
     )
+    _add_ready(pack, tunnel, players, sound, setblock, smoke)
     pack.function(
         f"{base}/reset",
         [
             *(f"schedule clear {pack.id(path)}" for path in scheduled),
             f"scoreboard players set {state} 0",
+            f"scoreboard players set {ready} 0",
+            *([lever_off] if levered else []),
             f"function {fid('pump/stop')}",
             *door_lines(tunnel, True),
             f"function {fid('state_0')}",
@@ -549,6 +628,70 @@ def add_functions(pack: dp.Pack, tunnel: Tunnel, players: str) -> None:
         pack, cells.ring | cells.floor | set(cells.stairs), "tring"
     )
     pack.function(f"check/tunnel/{n}", lines)
+
+
+def _add_ready(pack: dp.Pack, tunnel: Tunnel, players: str, sound, setblock, smoke):
+    """a built tunnel's ``ready``, and for one with a lever (``LEVERED``)
+    its ``hum`` and ``prompt`` (see the module docstring)"""
+    n = tunnel.index
+    base = f"tunnel/{n}"
+    if n not in LEVERED:
+        pack.function(f"{base}/ready", [f"function {pack.id(f'{base}/open')}"])
+        return
+    state, ready = score(n), score(n, ".ready")
+    x, y, z = lever_cell(tunnel)
+    # those in the dome the tunnel leaves
+    here = f"{players[:-1]},scores={{st.dome={tunnel.start}}}]"
+    pack.function(
+        f"{base}/ready",
+        [
+            f"execute unless score {state} matches 0 run return 0",
+            f"execute if score {ready} matches 1 run return 0",
+            f"scoreboard players set {ready} 1",
+            setblock((1, 1), f"{ENGINE[1, 1]}[lit=true]"),
+            setblock((1, 2), f"{ENGINE_LAMP}[lit=true]"),
+            f"setblock {x} {y} {z} {AIR}",
+            f"setblock {x} {y} {z} {lever_block(tunnel)}",
+            sound("block.beacon.activate", 1, 0.6),
+            sound("block.fire.extinguish", 0.6, 0.5),
+            f"function {pack.id(f'{base}/hum')}",
+            f"schedule function {pack.id(f'{base}/prompt')} {PROMPT_AFTER}t",
+        ],
+    )
+    pack.function(
+        f"{base}/hum",
+        [
+            f"execute unless score {ready} matches 1 run return 0",
+            sound("block.beacon.ambient", 1, 0.7),
+            smoke,
+            f"schedule function {pack.id(f'{base}/hum')} {HUM_EVERY}t",
+        ],
+    )
+    pack.function(
+        f"{base}/prompt",
+        [
+            f"execute unless score {ready} matches 1 run return 0",
+            f"title {here} times 10 60 20",
+            f'title {here} subtitle {{text:"by the airlock window",color:"white"}}',
+            f'title {here} title {{text:"Pull the pump lever",color:"aqua"}}',
+        ],
+    )
+
+
+def add_tick_function(pack: dp.Pack) -> None:
+    """``station:tunnel/tick``, for the core to run every tick: counts the
+    pumps that wait into ``#pumps`` and runs ``open`` for one whose lever
+    has been pulled"""
+    lines = [f"scoreboard players set #pumps {OBJECTIVE} 0"]
+    for n in LEVERED:
+        x, y, z = lever_cell(layout.TUNNELS[n])
+        waits = f"execute if score {score(n, '.ready')} matches 1"
+        lines += [
+            f"{waits} run scoreboard players add #pumps {OBJECTIVE} 1",
+            f"{waits} if block {x} {y} {z} minecraft:lever[powered=true] "
+            f"run function {pack.id(f'tunnel/{n}/open')}",
+        ]
+    pack.function("tunnel/tick", lines)
 
 
 def _count(name: str) -> str:
@@ -579,10 +722,56 @@ def add_stub_functions(pack: dp.Pack, tunnel: Tunnel) -> None:
         f"tunnel/{tunnel.index}/open",
         [f"execute if score {state} matches 0 run scoreboard players set {state} 2"],
     )
+    pack.function(
+        f"tunnel/{tunnel.index}/ready",
+        [f"function {pack.id(f'tunnel/{tunnel.index}/open')}"],
+    )
     pack.function(f"tunnel/{tunnel.index}/reset", [f"scoreboard players set {state} 0"])
 
 
 # ----------------------------------------------------------------------- check
+
+
+def _check_lever(ctx: Any, tunnel: Tunnel) -> list[str]:
+    """a reset tunnel's lever: absent, and a lever thrown in its place
+    inert; then ``ready`` (twice), the engine awake and the lever there;
+    then the lever pulled, which starts the pump event"""
+    n, name = tunnel.index, f"tunnel {tunnel.index}"
+    cell, engine = lever_cell(tunnel), engine_cells(tunnel)
+    problems: list[str] = []
+
+    def got() -> tuple:
+        return (
+            ctx.score(f"#t{n}"),
+            ctx.score(f"#t{n}.ready"),
+            ctx.is_block(cell, lever_block(tunnel)),
+            ctx.is_block(engine[1, 2], f"{ENGINE_LAMP}[lit=true]"),
+        )
+
+    # air, or water: tunnel 3's lever is in the Flooded Dome's basin
+    if ctx.is_block(cell, "minecraft:lever"):
+        problems.append(f"{name}: a lever at the lever's place before ready")
+    ctx.setblock(cell, lever_block(tunnel, True))
+    ctx.advance(3)
+    if ctx.score(f"#t{n}") != 0:
+        problems.append(f"{name}: a lever thrown before ready started the pump")
+    ctx.function(f"tunnel/{n}/reset")
+    ctx.function(f"tunnel/{n}/ready")
+    ctx.function(f"tunnel/{n}/ready")  # a second call must change nothing
+    ctx.advance(5)
+    if got() != (0, 1, True, True):
+        problems.append(
+            f"{name} ready: (state, ready, lever, engine lamp lit) {got()}, "
+            "not (0, 1, True, True)"
+        )
+    if not ctx.score("#pumps"):
+        problems.append(f"{name} ready: #pumps is {ctx.score('#pumps')}")
+    ctx.setblock(cell, lever_block(tunnel, True))
+    ctx.advance(2)
+    if (ctx.score(f"#t{n}"), ctx.score(f"#t{n}.ready")) != (1, 0):
+        problems.append(f"{name}: the lever pulled, (state, ready) {got()[:2]}")
+    return problems
+
 
 #: what ``station:check/tunnel/<n>`` counts: inside cells that are water,
 #: sources, air, wet (the predicate), air with water over them; lamps fully
@@ -648,7 +837,10 @@ def check_tunnel(ctx: Any, tunnel: Tunnel) -> list[str]:
         problems.append(f"{name}: state after reset is {state()}, not (0, 0, 0)")
     differ("reset", expected(tunnel, 0))
 
-    ctx.function(f"tunnel/{n}/open")
+    if n in LEVERED:
+        problems += _check_lever(ctx, tunnel)
+    else:
+        ctx.function(f"tunnel/{n}/ready")  # tunnel 0: ``open`` at once
     ctx.function(f"tunnel/{n}/open")  # a second call must change nothing
     seen_pistons, flashes = set(), set()
     seen: list[tuple[int, int]] = []  # (layers dry, lamps lit) read whole
@@ -697,6 +889,8 @@ def check_tunnel(ctx: Any, tunnel: Tunnel) -> list[str]:
         problems.append(f"{name}: the engine's lamp did not flash: {flashes}")
     ctx.advance(10)
     differ("open", expected(tunnel, layers, lamps, 0, shut=False))
+    if n in LEVERED and not ctx.is_block(lever_cell(tunnel), AIR):
+        problems.append(f"{name}: the lever is still there with the doors open")
     if pistons():
         problems.append(f"{name}: a piston still out after the event")
     for u in (0, 2):
@@ -711,10 +905,18 @@ def check_tunnel(ctx: Any, tunnel: Tunnel) -> list[str]:
     for dome in ends(tunnel):
         problems += [f"{name} open: {p}" for p in domes.check_shell(ctx, dome, False)]
 
+    if n in LEVERED:  # waiting for its lever, then reset
+        ctx.function(f"tunnel/{n}/reset")
+        ctx.function(f"tunnel/{n}/ready")
+        ctx.advance(5)
     ctx.function(f"tunnel/{n}/reset")
     ctx.advance(40)
     if state() != (0, 0, 0):
         problems.append(f"{name}: state after the last reset is {state()}")
+    if n in LEVERED:
+        got = (ctx.score(f"#t{n}.ready"), ctx.is_block(lever_cell(tunnel), AIR))
+        if got != (0, True):
+            problems.append(f"{name}: (ready, no lever) after a reset: {got}")
     differ("reset again", expected(tunnel, 0))
     # any state can follow any other (behind shut doors): half drained
     # from dry, then from flooded, each left to stand

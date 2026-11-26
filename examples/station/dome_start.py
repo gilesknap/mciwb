@@ -20,7 +20,8 @@ sees them.
   prismarine in a brass frame; standing out from it, each dome a disc of
   glass over copper of its own size with its state lamp in the middle
   (``DOME_LAMP``: dark locked, amber open, green restored), each tunnel a
-  pipe of copper bulbs, lit when it is pumped dry, the shore as a corner
+  pipe of copper bulbs, lit when it is pumped dry and dimly (``READY``)
+  while its pump waits for its lever, the shore as a corner
   of land with the row out to it, and a blinking pin over the Pump House:
   "you are here". The names, a title, a legend and which way is up are
   text.
@@ -36,6 +37,10 @@ sees them.
 - **The Wall of Fame**, the west wall: ``TROPHY`` blocks (used nowhere
   else in the station, so a sign that goes only on them goes only here),
   which the reset leaves alone, and the build too.
+- **The trophy dispenser**, in the wall's brass border at its north end
+  (the end nearest the door the way home comes in by): a dispenser at
+  eye height, a copper bulb over it that is lit while a trophy waits, a
+  text display ("YOUR TROPHY") and a button under it. See "The trophy".
 - **The sealed door** in the north: tunnel 7's mouth, dressed and left
   shut.
 - **The arrival point**: a brass pad round ``domes.entrance``, where the
@@ -77,8 +82,30 @@ it; the tick finds one that has been clicked and runs the vote function
 it is pressed for show. (A real button tells a function only that it was
 pressed, not by whom, and the nearest player to it is the wrong one as
 soon as two stand at the same button to confirm a vote.) The functions a
-click ends in are ``dome/0/press/confirm`` and ``dome/0/press/reset``: run
-as a player in the game.
+click ends in are ``dome/0/press/confirm``, ``dome/0/press/reset`` and
+``dome/0/press/trophy``: run as a player in the game.
+
+**The trophy.** At the win (``dome/0/trophy/arm``, a ``wins`` function of
+the core) every player in the game (and stand-in) is owed a trophy: tag
+``DUE`` and the run's number in ``TROPHY_RUN``; the trophy's name ("Trophy:
+level 5 in 14:05") is kept in storage ``TROPHY_STORE``; the dispenser's
+bulb is lit, its display says "YOUR TROPHY", and five seconds later a
+title says "Your trophy waits by the Wall of Fame". A player owed one who
+presses the button gets one bamboo sign, placeable only on ``TROPHY``,
+its lore saying so, thrown out of the dispenser's mouth as an item that
+only they can pick up and that never despawns; the tag goes, so it is one
+a player a run. Someone not owed one (a late joiner, a second press, an
+old run's tag) is told so. ``#ph.trophy`` (``ARMED``) is 1 while anyone in
+the game is still owed one, and the bulb and the display follow it.
+
+The dispenser itself is always empty: the sign is made when the button is
+pressed, never stored. In adventure mode a dispenser can still be opened,
+so a stocked one could be emptied by hand and its stock farmed; an empty
+one has nothing to take, and the button can only make the presser's own.
+(The button is pressed for show under an interaction entity, like the
+vote's; if a real press reaches the dispenser it fires an empty one.) The
+reset kills uncollected trophies by their tag, takes the tags and puts
+the bulb out; it never touches the Wall's blocks or the signs on them.
 
 **Functions** (all under ``dome/0/``): ``tick`` and ``reset`` are the
 core's hooks. ``show`` writes the map, the dial and the boards from the
@@ -133,6 +160,14 @@ DARK = "minecraft:polished_blackstone"
 PIPE = "minecraft:waxed_lightning_rod"
 #: the trophy wall's block: nothing else in the station is made of it
 TROPHY = "minecraft:gilded_blackstone"
+#: the trophy sign, and what is kept of it (see "The trophy")
+SIGN = "minecraft:bamboo_sign"
+DUE = "st.trophy"  #: tag: owed a trophy
+TROPHY_RUN = "st.trophyrun"  #: objective: the run the trophy is owed for
+ARMED = "#ph.trophy"
+TROPHY_STORE = "station:game trophy"
+ITEM_TAG = "st.ph.sign"  #: a trophy thrown out and not picked up
+LORE = ("Place on the Wall of Fame (gilded blackstone)", "in the Pump House.")
 #: a dome's lamp on the map, by its score: locked, open, solved
 DOME_LAMP = (
     "minecraft:redstone_lamp",
@@ -153,6 +188,8 @@ SAND, GRASS, JETTY = (
 PIN = ("minecraft:pearlescent_froglight", "minecraft:red_concrete")
 BULB = "minecraft:waxed_copper_bulb"
 LIT, UNLIT = f"{BULB}[lit=true]", f"{BULB}[lit=false]"
+#: a tunnel's pipe on the map while its pump waits for its lever
+READY = f"{tunnels.LAMP_DIM}[lit=true]"
 LAMP = "minecraft:redstone_lamp"
 BUTTON = "minecraft:polished_blackstone_button"
 DOOR = "minecraft:waxed_copper_door"
@@ -238,6 +275,11 @@ PANEL_LAMPS = (
 )
 DOWN, UP, CONFIRM = (DIAL_WALL.front(k, BUTTON_ROW) for k in (DOWN_K, UP_K, CONFIRM_K))
 RESET = CABINET.front(2, 2)  # the reset button, in its cupboard
+# the trophy dispenser: the Wall of Fame's north border column
+PRIZE_K = FAME.width - 1
+DISPENSER = FAME.cell(PRIZE_K, 3)
+PRIZE_LAMP = FAME.cell(PRIZE_K, 4)
+PRIZE_BUTTON = FAME.front(PRIZE_K, 2)
 LECTERN = PLAQUE.front(1, 1)
 
 
@@ -796,9 +838,12 @@ def blocks() -> tuple[dict[Cell, str], dict[Cell, str]]:
     for k, cell in ((DOWN_K, DOWN), (UP_K, UP), (CONFIRM_K, CONFIRM)):
         solid[DIAL_WALL.cell(k, BUTTON_ROW)] = BRASS
         fit[cell] = button(DIAL_WALL)
-    # the Wall of Fame
+    # the Wall of Fame, and the trophy dispenser in its border
     put(FAME.cells(), BRASS)
     put(trophy_cells(), TROPHY)
+    solid[DISPENSER] = _state("minecraft:dispenser", facing=_COMPASS[FAME.face])
+    solid[PRIZE_LAMP] = UNLIT
+    fit[PRIZE_BUTTON] = button(FAME)
     # the master lever's panel
     put(PANEL.cells(), PLATE)
     put(PANEL.cells(hs=(PANEL.height,)) | {PANEL.cell(1, 2)}, BRASS)
@@ -909,6 +954,7 @@ def walk_problems() -> list[str]:
         "the dial's LOWER": feet(DOWN),
         "the dial's RAISE": feet(UP),
         "the dial's CONFIRM": feet(CONFIRM),
+        "the trophy button": feet(PRIZE_BUTTON),
         "the reset cabinet's door": door_cells()[0],
         "the reset button": feet(RESET),
         "the lectern": (LECTERN[0] + ahead[0], y, LECTERN[2] + ahead[1]),
@@ -1009,13 +1055,19 @@ SHOWN = {
     "st.ph.level": "the difficulty level",
     "st.ph.dial": "the level set and the dial's proposal",
     "st.ph.status": "what the run is doing",
+    "st.ph.prize": "whether a trophy waits in the dispenser",
 }
+#: the trophy dispenser's display, idle and with a trophy waiting
+PRIZE_TEXT = (
+    _t("TROPHIES", "dark_gray", bold="true"),
+    _t("YOUR TROPHY", "dark_red", bold="true"),
+)
 
 
 @cache
 def entities() -> tuple[str, ...]:
     """the summon commands of everything that is not a block: the text
-    displays (labels, names, clocks) and the two interaction entities"""
+    displays (labels, names, clocks) and the three interaction entities"""
     blocks()  # the plan must stand before anything is put on it
     out = []
 
@@ -1079,7 +1131,13 @@ def entities() -> tuple[str, ...]:
         + "]",
         0.8,
     )
-    label(MAP, mid, band - 0.25, _t("A lit pipe is a tunnel pumped dry", "gray"), 0.8)
+    label(
+        MAP,
+        mid,
+        band - 0.25,
+        _t("A lit pipe is a tunnel pumped dry; a dim one, its pump ready", "gray"),
+        0.8,
+    )
     ahead = _COMPASS[(-MAP.face[0], -MAP.face[1])]
     left = _COMPASS[(-MAP.right[0], -MAP.right[1])]
     label(
@@ -1128,6 +1186,9 @@ def entities() -> tuple[str, ...]:
         _t("for the crews who mastered the Engine", "black"),
         0.8,
     )
+    prize = PRIZE_K + 0.5
+    label(FAME, prize, 5.5, PRIZE_TEXT[0], 0.5, "st.ph.prize")
+    label(FAME, prize, 5.2, _t("press the button", "black"), 0.4)
     # the master lever
     label(PANEL, 1.5, 4.55, _t("MASTER LEVER", "black", bold="true"), 0.9)
     label(PANEL, 1.5, 4.3, _t("Pull to start the pumps", "black"), 0.55)
@@ -1193,6 +1254,7 @@ def entities() -> tuple[str, ...]:
     )
     out.append(interaction("st.ph.confirm", CONFIRM))
     out.append(interaction("st.ph.reset", RESET))
+    out.append(interaction("st.ph.trophy", PRIZE_BUTTON))
     return tuple(out)
 
 
@@ -1272,12 +1334,13 @@ def functions(pack: dp.Pack) -> None:
         "~ ~ ~ 0.6 1.2"
     )
 
+    pack.objectives({TROPHY_RUN: "dummy"})
     # a score that was never set matches nothing
     pack.function(
         f"{base}/load",
         [
             f"scoreboard players add {name} {OBJ} 0"
-            for name in ("#ph.up", "#ph.down", "#ph.t", DIAL, *MACHINE_SCORES)
+            for name in ("#ph.up", "#ph.down", "#ph.t", DIAL, ARMED, *MACHINE_SCORES)
         ],
         load=True,
     )
@@ -1338,9 +1401,15 @@ def functions(pack: dp.Pack) -> None:
             f"function {pack.id('vote/reset')}",
         ],
     )
+    _trophy(pack, fid, score, write)
     # a click on an interaction entity (run as the entity): the button
-    # under it pressed for show, the vote run as the player who clicked
-    shown = (("confirm", CONFIRM, DIAL_WALL), ("reset", RESET, CABINET))
+    # under it pressed for show, the vote (or the trophy) run as the
+    # player who clicked
+    shown = (
+        ("confirm", CONFIRM, DIAL_WALL),
+        ("reset", RESET, CABINET),
+        ("trophy", PRIZE_BUTTON, FAME),
+    )
     for name, cell, wall in shown:
         lines = [
             _setblock(cell, button(wall, True)),
@@ -1366,10 +1435,11 @@ def functions(pack: dp.Pack) -> None:
             )
     for i, cells in m.lines.items():
         for a, b in domes.boxes(cells):
-            dry = score(f"#t{i}", "2")
+            dry, ready = score(f"#t{i}", "2"), score(f"#t{i}.ready", "1")
             show += [
                 f"execute if {dry} run {dp.fill(a, b, LIT)}",
-                f"execute unless {dry} run {dp.fill(a, b, UNLIT)}",
+                f"execute if {ready} run {dp.fill(a, b, READY)}",
+                f"execute unless {dry} unless {ready} run {dp.fill(a, b, UNLIT)}",
             ]
     for level in LEVELS:
         reached = score(DIAL, f"{level}..")
@@ -1449,7 +1519,7 @@ def functions(pack: dp.Pack) -> None:
         ]
     tick += [
         fittings.click_line(f"st.ph.{name}", fid(f"click/{name}"))
-        for name in ("confirm", "reset")
+        for name, _, _ in shown
     ]
     tick += [
         f"scoreboard players add #ph.t {OBJ} 1",
@@ -1531,6 +1601,7 @@ def functions(pack: dp.Pack) -> None:
                 for i, block in enumerate(PIN)
             ),
             f"function {fid('show')}",
+            f"function {fid('trophy/show')}",
         ],
     )
     x, y, z = LECTERN
@@ -1546,6 +1617,14 @@ def functions(pack: dp.Pack) -> None:
             _setblock(upper, door("upper")),
             *(_setblock(c, button(DIAL_WALL)) for c in (DOWN, UP, CONFIRM)),
             _setblock(RESET, button(CABINET)),
+            _setblock(PRIZE_BUTTON, button(FAME)),
+            # the dispenser cleared: trophies not picked up, and those owed
+            # (the Wall and the signs on it are never touched)
+            f"kill @e[type=minecraft:item,tag={ITEM_TAG}]",
+            f"tag @e[tag={DUE}] remove {DUE}",
+            f"scoreboard players reset * {TROPHY_RUN}",
+            f"schedule clear {fid('trophy/title')}",
+            f"function {fid('trophy/show')}",
             _setblock(LECTERN, AIR),
             _setblock(LECTERN, lectern(PAGES)),
             f"scoreboard players operation {DIAL} {OBJ} = #level {OBJ}",
@@ -1553,6 +1632,106 @@ def functions(pack: dp.Pack) -> None:
             # again when the clock's text has been written
             f"schedule function {fid('show')} 1t",
             f"schedule function {fid('show')} 25t append",
+        ],
+    )
+
+
+def _trophy(pack: dp.Pack, fid: Any, score: Any, write: Any) -> None:
+    """the trophy's functions (see "The trophy" in the module docstring)"""
+    base = f"dome/{N}"
+    owed = f"score @s {TROPHY_RUN} = #runid {OBJ}"
+    pack.function(
+        f"{base}/trophy/arm",
+        [
+            *dp.mmss_lines("#secs", OBJ, game.STORE, "trophy"),
+            f"execute store result storage {TROPHY_STORE}.level int 1 "
+            f"run scoreboard players get #run.level {OBJ}",
+            # the players in the game, and the checks' stand-ins
+            f"execute as @e[tag=st.in] run scoreboard players operation "
+            f"@s {TROPHY_RUN} = #runid {OBJ}",
+            f"tag @e[tag=st.in] add {DUE}",
+            f"function {fid('trophy/show')}",
+            f"tellraw {game.PLAYERS} "
+            + _t(
+                "Your trophy waits in the dispenser by the Wall of Fame in the "
+                "Pump House: press its button, put the sign on the Wall's "
+                "gilded blackstone and write your own line."
+            ),
+            f"execute if {score('#won.best', '1')} run tellraw {game.PLAYERS} "
+            + _t("A new best time for this level!", "aqua"),
+            # after the last dome's own title has been shown
+            f"schedule function {fid('trophy/title')} 100t",
+        ],
+    )
+    pack.function(
+        f"{base}/trophy/title",
+        [
+            f"title {game.PLAYERS} times 10 80 20",
+            f"title {game.PLAYERS} subtitle "
+            + _t("Your trophy waits by the Wall of Fame"),
+            f"title {game.PLAYERS} title " + _t("Well done, crew", "aqua"),
+        ],
+    )
+    armed = score(ARMED, "1")
+    pack.function(
+        f"{base}/trophy/show",
+        [
+            f"scoreboard players set {ARMED} {OBJ} 0",
+            f"execute as @e[tag={DUE}] if {owed} "
+            f"run scoreboard players set {ARMED} {OBJ} 1",
+            f"execute if {armed} run {_setblock(PRIZE_LAMP, LIT)}",
+            f"execute unless {armed} run {_setblock(PRIZE_LAMP, UNLIT)}",
+            f"execute if {armed} run " + write("st.ph.prize", PRIZE_TEXT[1]),
+            f"execute unless {armed} run " + write("st.ph.prize", PRIZE_TEXT[0]),
+        ],
+    )
+    pack.function(
+        f"{base}/press/trophy",
+        [
+            "execute unless entity @s[tag=st.in] run return 0",
+            f"execute unless entity @s[tag={DUE}] run return run tellraw @s "
+            + _t(
+                "No trophy waits for you: there is one for each player in "
+                "the game when the Engine is mastered.",
+                "gray",
+            ),
+            f"execute unless {owed} run return run tellraw @s "
+            + _t("That trophy was for a run before the last reset.", "gray"),
+            f"tag @s remove {DUE}",
+            f"function {fid('trophy/drop')} with storage {TROPHY_STORE}",
+            "tellraw @s "
+            + _t(
+                "Your trophy: place it on the Wall of Fame (gilded blackstone) "
+                "and write your own line."
+            ),
+            f"function {fid('trophy/show')}",
+        ],
+    )
+    # thrown out of the dispenser's mouth, as a dispenser would: an item
+    # only the presser can pick up, that never despawns
+    sign = fittings.restricted(
+        SIGN,
+        place_on=TROPHY,
+        name="Trophy: level $(level) in $(m):$(t)$(o)",
+        lore=LORE,
+    )
+    x, y, z = FAME.front(PRIZE_K, 3)
+    fx, fz = FAME.face
+    new = f"@e[type=minecraft:item,tag={ITEM_TAG}.new,limit=1]"
+    pack.function(
+        f"{base}/trophy/drop",
+        [
+            f"summon minecraft:item {x + 0.5 - 0.3 * fx:g} {y + 0.3:g} "
+            f"{z + 0.5 - 0.3 * fz:g} "
+            f'{{Item:{{id:"{SIGN}",count:1}},Tags:["{ITEM_TAG}","{ITEM_TAG}.new"],'
+            f"PickupDelay:10s,Age:-32768s,Motion:[{0.15 * fx:g}d,0.1d,{0.15 * fz:g}d]}}",
+            f"$item replace entity {new} contents with {sign}",
+            f"data modify entity {new} Owner set from entity @s UUID",
+            f"tag @e[tag={ITEM_TAG}.new] remove {ITEM_TAG}.new",
+            f"playsound minecraft:block.dispenser.dispense block {game.PLAYERS} "
+            f"{x} {y} {z} 1 1",
+            f"particle minecraft:smoke {x + 0.5:g} {y + 0.5:g} {z + 0.5:g} "
+            "0.1 0.1 0.1 0.01 8",
         ],
     )
 
@@ -1611,6 +1790,7 @@ def check(ctx: Any) -> list[str]:
         *((t, 1) for t in SHOWN),
         ("st.ph.confirm", 1),
         ("st.ph.reset", 1),
+        ("st.ph.trophy", 1),
         (TAG, len(entities())),
     ):
         expect(problems, f"entities tagged {tag}", ctx.count(f"@e[tag={tag}]"), n)
@@ -1625,12 +1805,15 @@ def check(ctx: Any) -> list[str]:
         }
 
     def lines() -> dict[int, int | None]:
-        """each tunnel's line: 1 all lit, 0 all dark, None mixed"""
+        """each tunnel's line: 1 all lit, 0 all dark, 2 all "pump ready",
+        None mixed"""
         out: dict[int, int | None] = {}
         for i, cells in m.lines.items():
             lit = sum(ctx.is_block(c, LIT) for c in cells)
             dark = sum(ctx.is_block(c, UNLIT) for c in cells)
-            out[i] = 1 if lit == len(cells) else 0 if dark == len(cells) else None
+            ready = sum(ctx.is_block(c, READY) for c in cells)
+            whole = [k for k, n in ((1, lit), (0, dark), (2, ready)) if n == len(cells)]
+            out[i] = whole[0] if whole else None
         return out
 
     def dial() -> tuple[int | None, int, int | None]:
@@ -1761,6 +1944,20 @@ def check(ctx: Any) -> list[str]:
             lines(),
             dict.fromkeys(range(tunnels_n), shown) | {N: 1},
         )
+    # a pump waiting for its lever: shut, and its line dim
+    for t in layout.TUNNELS:
+        if t.index != N:
+            ctx.set_score(f"#t{t.index}", 0)
+            ctx.set_score(f"#t{t.index}.ready", 1)
+    ctx.advance(12)
+    expect(
+        problems,
+        "the lines with the pumps ready",
+        lines(),
+        dict.fromkeys(range(tunnels_n), 2) | {N: 1},
+    )
+    for t in layout.TUNNELS:
+        ctx.set_score(f"#t{t.index}.ready", 0)
 
     # -- the dial: its buttons move the proposal, and it stops at the ends
     top, bottom = LEVELS[-1], LEVELS[0]
@@ -1778,6 +1975,47 @@ def check(ctx: Any) -> list[str]:
     text = _text(ctx, "st.ph.dial")
     if f'"{bottom}"' not in text or f'"{level}"' not in text:
         problems.append(f"the dial's text at {bottom}, level {level}: {text!r}")
+
+    # -- the trophy dispenser: armed by the win's function (the run is not
+    # won, so no best time is touched), one trophy for the one in the game
+    def prize() -> tuple[int | None, bool, int]:
+        """armed, the bulb lit, trophies thrown out and not picked up"""
+        lit = ctx.is_block(PRIZE_LAMP, LIT)
+        return (
+            ctx.score(ARMED),
+            lit,
+            ctx.count(f"@e[type=minecraft:item,tag={ITEM_TAG}]"),
+        )
+
+    expect(problems, "the trophy dispenser before the win", prize(), (0, False, 0))
+    dx, dy, dz = DISPENSER
+    ctx.function(f"dome/{N}/trophy/arm")
+    expect(problems, "the dispenser armed at the win", prize(), (1, True, 0))
+    if "YOUR TROPHY" not in (text := _text(ctx, "st.ph.prize")):
+        problems.append(f"the dispenser's display when armed reads {text!r}")
+    game_checks.as_stand_in(ctx, "st.s1", f"dome/{N}/press/trophy")
+    expect(problems, "the winner's trophy thrown out", prize(), (0, False, 1))
+    item = "@e[type=minecraft:item,tag=" + ITEM_TAG + ",limit=1]"
+    sign = ctx.data(f"entity {item} Item")
+    for part in ("Trophy: level", "gilded_blackstone", "Wall of Fame"):
+        if part not in sign:
+            problems.append(f"the trophy thrown out has no {part!r}: {sign[:200]!r}")
+    if not ctx.data(f"entity {item} Owner"):
+        problems.append("the trophy thrown out can be picked up by anyone")
+    inv = ctx.data(f"block {dx} {dy} {dz} Items")
+    if inv and inv.strip() not in ("[]", ""):
+        problems.append(f"the dispenser holds {inv!r}: it must stay empty")
+    # no more: pressed again, or by one who was not in the game at the win
+    game_checks.as_stand_in(ctx, "st.s1", f"dome/{N}/press/trophy")
+    game_checks.stand_in(ctx, "st.s3", N)
+    game_checks.as_stand_in(ctx, "st.s3", f"dome/{N}/press/trophy")
+    expect(problems, "pressed again, and by a late comer", prize(), (0, False, 1))
+    ctx.cmd("kill @e[tag=st.s3]")
+    # armed again for the reset below to clear, a trophy left lying
+    ctx.function(f"dome/{N}/trophy/arm")
+    game_checks.as_stand_in(ctx, "st.s1", f"dome/{N}/press/trophy")
+    ctx.function(f"dome/{N}/trophy/arm")
+    expect(problems, "armed again before the reset", prize(), (1, True, 2))
 
     # -- the votes, from the functions the buttons end in, as two players
     def vote() -> dict[str, int | None]:
@@ -1871,6 +2109,9 @@ def check(ctx: Any) -> list[str]:
         problems.append("the log is not on the lectern after the reset")
     items = ctx.count(f"@e[type=minecraft:item,{domes.sphere(DOME)}]")
     expect(problems, "dropped items in the dome", items, 0)
+    expect(problems, "the trophy dispenser after the reset", prize(), (0, False, 0))
+    owed = ctx.count(f"@e[tag={DUE}]")
+    expect(problems, "trophies owed after the reset", owed, 0)
 
     # -- the level put back, the dome still dry
     ctx.set_score("#level", level)
@@ -1886,5 +2127,6 @@ MODULE = game.Module(
     "start",
     stages={"start_dome_inside": build},
     functions=functions,
+    wins=(f"dome/{N}/trophy/arm",),
     checks={"start_dome": check},
 )
