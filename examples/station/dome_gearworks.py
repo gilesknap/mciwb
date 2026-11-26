@@ -318,10 +318,11 @@ def steam(dome: Dome, laid: Iterable[int], along: bool) -> dict[int, int]:
     """
     all_lengths = lengths(dome)
     line = ALONG if along else ACROSS
+    laid = set(laid)
     there = {
         i
         for i, ln in enumerate(all_lengths)
-        if (not ln.laid or i in set(laid)) and ln.line in (0, line)
+        if (not ln.laid or i in laid) and ln.line in (0, line)
     }
     start = source(dome)
     if start not in there:

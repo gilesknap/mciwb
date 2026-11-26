@@ -30,10 +30,10 @@ runs):
   mcwb's ``Item`` knows, for the Minecraft release Item was made from.
 
 Live checks work each mechanism in place over RCON, with the station's box
-forceloaded and released again afterwards. None is written yet: each is
-listed as TODO with the plan's stage that brings it, and a TODO is not a
-pass. What RCON cannot stand in for is in PROGRESS.md, for the owner's
-play-test.
+forceloaded (and left so: the game keeps it loaded). A check of a part
+not built yet is listed as TODO with the plan's stage that brings it, and
+a TODO is not a pass. What RCON cannot stand in for is in PROGRESS.md,
+for a play-test.
 
 Refuses to run the live checks while a player is online or a run is in
 progress (someone's parked game: the checks reset it), unless FORCE=1.
@@ -418,7 +418,7 @@ def live_checks(world, wanted: list[str] | None = None) -> dict[str, list[str]]:
     if not names:
         return {}
     online = B.players_online()
-    if online and not os.environ.get("FORCE"):
+    if online and os.environ.get("FORCE") != "1":
         raise SystemExit(f"{', '.join(online)} online: not verifying (FORCE=1 to)")
     ctx = B.Context(world=world, layout=B.station_layout, pack=B.new_pack())
     # a run that is parked (started, nobody online) is somebody's game: the

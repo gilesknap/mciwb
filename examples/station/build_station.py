@@ -65,6 +65,7 @@ from mciwb.threads import (  # noqa: E402
     reply_matches,
     retry_command,
     set_client,
+    thread_local,
 )
 
 # RCON drops a command longer than this (the connection breaks, and a build
@@ -614,7 +615,7 @@ def build(
         pause=pause,
     )
     online = players_online()
-    if online and not _setting(force, "FORCE"):
+    if online and not (force if force is not None else os.environ.get("FORCE") == "1"):
         raise SystemExit(f"{', '.join(online)} online: not building (FORCE=1 to)")
     t_start = time.time()
     forceload(ctx)
@@ -657,6 +658,8 @@ def offline_build(
     finally:
         if real is not None:
             set_client(real)
+        else:
+            del thread_local.client
     return rec
 
 

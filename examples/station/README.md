@@ -104,6 +104,9 @@ written now. A shell stage wipes what is inside its dome (the pump
 engine and the lift's shaft too) and shuts its doors: run `lift` (for
 the start dome), the dome's `_inside` stage and its outgoing tunnel's stage after it, as
 the whole build does. Every stage gives the same result run twice.
+Rebuilding a dome also shuts the doors of the tunnels that meet it, and
+an open tunnel stays open behind a shut door: run `function
+station:reset/all` after rebuilding a dome during a game.
 
 - The build **refuses to run while a player is online**, unless `FORCE=1`.
   With nobody online the server does not tick, so the build sprints the

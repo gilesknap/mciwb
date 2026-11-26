@@ -84,7 +84,7 @@ def no_run(ctx: Any) -> None:
     """
     if getattr(ctx, "run_checked", False):
         return
-    if ctx.score("#run") == 1 and not os.environ.get("FORCE"):
+    if ctx.score("#run") == 1 and os.environ.get("FORCE") != "1":
         raise SystemExit(
             "a run is in progress (#run is 1): not checking, which would "
             "wipe it (FORCE=1 to)"

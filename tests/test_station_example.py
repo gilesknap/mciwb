@@ -633,9 +633,9 @@ assert domes.OPENINGS[start.index] == opening
 assert (set(fixed) | set(moving)) & cells.shell <= opening
 # the dock stands clear of the shaft and of the dome
 dock = S.dock_blocks()
-assert not {c for c in dock if c[1] <= L.LIFT_TOP_Y} & {c[::2] for c in column} and all(
-    c[1] > start.top_y for c in dock
-)
+low_dock = {c[::2] for c in dock if c[1] <= L.LIFT_TOP_Y}
+assert not low_dock & {c[::2] for c in column}
+assert all(c[1] > start.top_y for c in dock)
 assert len(S.moorings("shore")) == len(S.moorings("dock")) == 2
 for place in ("shore", "dock"):
     a, b = S.moorings(place)
