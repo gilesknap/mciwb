@@ -1512,6 +1512,10 @@ def check(ctx: Any) -> list[str]:
         return [f"{others} players or stand-ins of another check are in the game"]
     ctx.function(f"{base}/reset")
     unsolve()
+    # the paths below are worked out at the level the room is tuned for: at
+    # level 1 the valves left open hold the band (the level is put back at
+    # the end, and by verify_station's kept_level)
+    ctx.set_score("#level", game.DEFAULT_LEVEL)
     ctx.advance(scan)
     as_built("built")
     chaser_runs("nobody in")
