@@ -1844,7 +1844,15 @@ def check(ctx: Any) -> list[str]:
     for i in LEVELS:
         want[dial_lamp(i)] = LIT if i <= new else UNLIT
         want[dial_pointer(i)] = BRASS if i == new else COPPER
-    wrong = [c for c, b in sorted(want.items()) if not ctx.is_block(c, b)]
+    # a stand-in is still in the dome, so the governor runs: its pistons and
+    # their brass may be caught in mid stroke
+    stroke = {c for p in G_PISTONS for c in (p, (p[0], p[1] + 1, p[2]))}
+    wrong = [
+        c
+        for c, b in sorted(want.items())
+        if not ctx.is_block(c, b)
+        and not (c in stroke and ctx.is_block(c, "minecraft:moving_piston"))
+    ]
     if wrong:
         problems.append(
             f"{len(wrong)} blocks are not put back by the reset, the first at "
