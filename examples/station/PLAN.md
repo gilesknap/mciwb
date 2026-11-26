@@ -196,7 +196,9 @@ progress line, respawn and kit. Dome 2 exists as an empty lit shell so the
 tunnel leads somewhere. Everything a later dome needs from the shared
 machinery is exercised here. **Owner plays.**
 *State:* built; played once by the owner (25 Nov 2026); the changes asked
-for are built, not yet played.
+for are built, and round 2 (the pump levers by the airlocks, a second
+press for a player alone at the reset and the dial, the sea floor dressed)
+built and checked live on 26 Nov 2026. Not yet played.
 
 **Stage 2:** Gearworks and the Flooded Dome. **Owner plays.**
 *State:* both built and checked live (the Gearworks on 26 Nov 2026, after
@@ -208,9 +210,11 @@ Not yet played.
 
 **Stage 4:** Clockwork Maze and the boss dome, the return tunnel, the win,
 the Wall of Fame, best time. **Owner plays the whole run.**
-*State:* the Maze (with lifts) and the Engine's phase 1 built and checked
-live, the win checked end to end; the Engine's phase 2 (the Master) is
-written but switched off. Not yet played.
+*State:* the Maze (round 2: the route puzzle, the clock hand and plans,
+gliding lifts and no ladders) and the Engine with its phase 2 on (the
+Master in gold on a ravager) built and checked live, the win and the
+Pump House's trophy dispenser checked end to end (26 Nov 2026). Not yet
+played.
 
 **Stage 5:** polish from the play-tests: balance, story text, sounds, the
 joke, the guide (with spoilers), docs image. Then the PR.

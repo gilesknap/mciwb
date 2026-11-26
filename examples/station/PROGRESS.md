@@ -14,7 +14,7 @@ played it: each entry says which.
 | 1 | The playable slice: shore, boat, dock, lift, start dome, Boiler Room, its tunnel, reset, recall, kit | built and played once: the way in, the Pump House, the Boiler Room, tunnels 0 and 1, the Gearworks' empty shell. The owner's first play-test (25 Nov 2026) asked for changes: see "The first play-test" |
 | 2 | Gearworks and the Flooded Dome | the shells, tunnels 2 and 3 are built; the Flooded Dome and the Gearworks built and checked live (see "The Flooded Dome (dome 3): findings" and "The Gearworks (dome 2): findings"), not yet played; the Gearworks' pipe and wrench hand-tested at the test bench (26 Nov 2026) |
 | 3 | Foundry and the Signal Room | shells, tunnels 4 and 5; the Signal Room and the Foundry built and checked live (see "The Signal Room (dome 5): findings" and "The Foundry (dome 4): findings"), not yet played |
-| 4 | Clockwork Maze, the boss dome, the return tunnel, the win, the Wall of Fame | shells, tunnels 6 and 7; the Engine (dome 7) built and checked live with its phase 2 (the Master) switched off, see "The Engine (dome 7): findings"; the Clockwork Maze built and checked live (see "The Clockwork Maze (dome 6): findings"), not yet played; the win is the core's and is checked, the trophy sign is given at the win, nobody has written one |
+| 4 | Clockwork Maze, the boss dome, the return tunnel, the win, the Wall of Fame | shells, tunnels 6 and 7; the Engine (dome 7) built and checked live with its phase 2 (the Master) on, see "The Engine (dome 7): findings"; the Clockwork Maze's round 2 built and checked live (see "The Clockwork Maze (dome 6): findings" and "Round 2 live"), not yet played; the win is the core's and is checked, the trophy waits in the Pump House's dispenser at the win, nobody has written one |
 | 5 | Polish from the play-tests, the guide, the docs image, the PR | not started |
 
 Stages 1 to 5 each end with a play-test by the owner; the next does not
@@ -237,9 +237,12 @@ What RCON cannot stand in for. Each stage adds to the list as it builds.
 | 3, 4 | Automatons with a player: they attack, do not fight each other, drop nothing, are gone when everyone leaves their dome, and are cleared from round the entrance when you respawn there | no |
 | 1 | Nothing broken leaves an item (`block_drops` off): a pipe broken with the wrench, a lamp | no |
 | 1 | The reset buttons with two real players, and a late joiner | no |
+| 1 | One player alone (round 2): the reset and the dial's confirm need a second press within the 60 s ("press again to confirm"): understood, and not annoying | no |
+| 1 | The Boiler Room at level 1: the live check found that both valves left open hold the band and solve the room, so the safety valve never blows at that level. Right for the easiest level, or too easy? | no |
+| 1 | The sea floor (round 2, stages `seabed` and `seabed_water`, built 26 Nov 2026, checked live by reading blocks back): the sea lanterns, the reefs, sea pickles and seagrass seen through the domes' glass and the tunnels; the warm-ocean water lighter and turquoise (rejoin if the colour has not changed), tropical fish; does it look natural round the station | no |
 | 2 | The Gearworks' pipe in a real hand: places only on the track, the tool breaks only the pipe | yes, at the test bench (26 Nov 2026): it works |
 | 3, 4 | Whether the fights are fair for a younger player on Easy | no |
-| 4 | Writing a line on the trophy sign for the Wall of Fame | no |
+| 4 | The trophy dispenser (round 2, checked live with stand-ins, not yet played): at the win the dispenser in the Wall of Fame's border lights ("YOUR TROPHY") and a title says where it waits; each player in the game at the win presses its button once and a sign is thrown out that only they can pick up and that never despawns; its name and lore read in the tooltip; placed on the Wall (gilded blackstone) and written on; a second press, or a player who joined after the win, gets none | no |
 | 1 | The timers' text displays and the bossbar as a player sees them (the rig only read their data back) | no |
 | 1 | A bossbar shown to the players in the game and to nobody else (`bossbar set ... players` did nothing with nobody online) | no |
 | 1 | What the commands aimed at players do: spawn point, teleport, titles, the on-screen line, sounds, kit, effects (the rig proved only that they parse) | no |
@@ -294,10 +297,10 @@ What RCON cannot stand in for. Each stage adds to the list as it builds.
 | 3 | Dying in the Foundry: a cell lost (never below the quarter), no automaton on the respawn spot, the shield against Riveters |  no |
 | 4 | The Engine alone, Easy, level 5: is it plain from the plaque, the log and the signs what to do (throw a lever, stand on its copper deck till five lamps light)? Main A is on the floor under the gallery to the right, B on the gallery to the left, C up the one-wide stair behind the Engine. Is 3 to 5 automatons at once fair for a younger player; levels 1 and 10 |  no |
 | 4 | The Engine's automatons with a real player: do they come out of the hatch notches in the plinth, find a player round the Engine, up the ramps and the one-wide stair (each is set on the nearest player as it comes: does that work, or do they stand at the far hatches)? Do Riveters shoot into the pavilion while someone respawns or reads the log there (review 4: the dial would be no Riveter while someone is out of the arena)? |  no |
-| 4 | The Engine's win: the Engine stopping, the way out lighting, tunnel 7 pumping, the trophy sign in your hand (named with the level and the time), placed on the Wall of Fame in the Pump House and written on |  no |
+| 4 | The Engine's win: the Engine stopping, the way out lighting, tunnel 7's pump lever pulled and the tunnel pumping, the walk home to the trophy waiting in the Pump House's dispenser (named with the level and the time) |  no |
 | 4 | The Engine with two: A and B only together (the amber lamp blinking at the side that is ready, the chat hint), a partner in the pavilion not counting, one dying or leaving; the form's chat line at each change (too chatty?) |  no |
 | 4 | The Engine as a place: gauges, amber lamps and the drum's telltales read from each deck and the arch (through two decks of grating); headroom under main A's pipe and the gallery; the governor turning; the cylinders seen through their cages and stopping at the win; the heartbeat (too often?); the log's four pages fit; leaving for 3 s throws open levers back (the cheapest way to clear the automatons: does a child find it?) |  no |
-| 4 | Phase 2 (switched on, not yet live): at the test bench's bay 5, the Master as he is now: is his gold armour, its copper trim and his name drawn, does he sit right on the ravager at his size, does the ravager still charge and bite under him. Then the breach (the dimmed floor, the Darkness, the bar filling, the doors), the fight, the columns as cover, the steam on the high level, whether the dim floor is too dark to fight in |  no |
+| 4 | Phase 2 (on; checked live 26 Nov 2026 with stand-ins: the Master's kit, trims, size and name read back, he counts as a raider, and the ravager bit a golem with him up): is his gold armour, its copper trim and his name drawn, does he sit right on the ravager at his size, does the ravager charge and bite a player under him. Then the breach (the dimmed floor, the Darkness, the bar filling, the doors), the fight, the columns as cover, the steam on the high level, whether the dim floor is too dark to fight in, the Master fighting on foot once the ravager dies |  no |
 | 2 | The Flooded Dome alone, Easy, level 5: the first sight through the dam (the standpipe's gauge readable at 17 blocks through glass and water; the cabins and the stairs going down into the water seen); finding pump A without the hint; the sluice line read as a countdown; the lever throwing itself back in front of you; are 22 / 32 / 28 s fair; at level 10 is "throw it twice" understood |  no |
 | 2 | The Flooded Dome's swims: stage B down the well, through the culvert, up the hatch with the gate open and shut, air left, the ladder out of the well; stage C the dive from the lower deck to the bars at the cabin's foot and up the hatch ladder, finding the gate; getting out of the water at every level (the two long ladders, each flight, a deck level with the surface); being in the water as a layer goes (any push, damage or suffocation); nothing spawns in the basin (fish, squid, drowned) |  no |
 | 2 | The Flooded Dome's gates with real bodies: never shutting on you, in its own cells or beyond it; standing against shut bars from outside does not open them; hands on the levers and a player's weight on each plate; the pump lever put back if moved |  no |
@@ -309,7 +312,8 @@ What RCON cannot stand in for. Each stage adds to the list as it builds.
 | 2 | The Gearworks with two: each player's pipe sticking to one metal (brass or copper), the bands changing every 5 or 6 lengths, a bay plate at the pipe store changing your kind (stand on it, about a second); one partner idle making the other walk down to the bays at each band (review 1.2: a second pair of bays on the gallery?); one leaving, the one left getting both |  no |
 | 2 | The Gearworks as a place: the climb (both floor stairs, the catwalk stair, the ladder at the right side, the squeeze past the fallen cog); stepping over laid pipe on the ring to reach a bridge; the six-block fall from the gear's rim and from the catwalk; light under the gallery; the steam board readable from the gallery and catwalk; the steam chest found from the entrance (the pipe store's rack hides it: review 5); the running lights and pinions (busy for good after the solve: review 7), the tappets, the tick, the hiss, the bells; the log's pages 3 and 4 fit (review 11); anything decorative taken for an input (the bay plates in solo, the built-in pipe) |  no |
 | 4 | The Clockwork Maze alone, Easy, level 5: is 6 s an hour enough to see a gate open and get through (and at levels 1 and 10)? The three hour colours (oxidised copper, iron, yellow) and the numerals in the tower's light; the Great Dial from the entrance, the atrium's hour lamps on each deck; the bell's three pitches heard over some 25 pistons at a strike (review 6.4: too loud, lost?); about 2 minutes for a clean run |  no |
-| 4 | The Maze's lifts (on) with a real player: riding A, B and C up at the strike of Green (smooth, or a jolt every 3 ticks?), being carried down from a lift's top at the strike of Gold (annoying?), the shutter of trapdoors underfoot, the Ram taking you down from the crown 3 s after the Regulator; and the ladders beside every lift: found, climbed, stepped off sideways (now only into the shaft: a short fall, a slow drift in the Ram's) |  no |
+| 4 | The Maze's gliding lifts (round 2: there are no ladders, the lifts are the only way up; checked live carrying stand-ins): riding A, B and C up on their seats at the strike of Green (smooth?), being carried down at the strike of Gold (annoying?), getting on and off a seat, the Ram taking you down from the crown 3 s after the Regulator; with no ladders, can a player ever be stuck on a deck with no lift to come |  no |
+| 4 | The Maze, round 2, as a puzzle: the brass plans of each deck on the tower's face read and used to plan the route, against walking through whatever opens (deck 1 best 9 hours, deck 2 12); the clock made plain: the hand on the dial seen to sweep (and the short way from 11 to 12), the rim and every post's light in the hour's colour, the bell counting the hour, the warning in the last quarter |  no |
 | 4 | The Maze's timed floors: the thud and sparks over a floor in its last quarter (enough warning, at levels 7 to 10 too?), the drift down a deck read as "caught", not hurt; the wave w1 to w5 alone and as a pair |  no |
 | 4 | The Maze with two: the tower door's and F to K's plates (gold only while there), the signs changing, the Regulator's lever turning into two keys as the second arrives up top and back; stepping into a doorway as a gate shuts (it waits) |  no |
 | 4 | The Maze as a place: the closed bands over the wall tops and the lids on the machine cells (do the cells still read as machinery behind bars?), light under deck 2, the Tally Engine (does it count; its new lid), the pendulum's swing, the Walk (found, used, gives too much away?), the falls from the Walk's stairs (4 to 5 blocks, unrailed); the descent after solving and the pump event on the way; the lever, the recall button and the log by hand |  no |
@@ -1944,6 +1948,41 @@ run on a server, and nobody has looked at it in the game.
   may need to rejoin to see the new water colour.
 - Left out: lanterns on the tunnels' ribs and glow lichen (both would
   mean touching the tunnels or guessing at rock faces).
+
+## Round 2 live (26 Nov 2026)
+
+The five round-2 features (the trophy dispenser, the pump levers, the
+sea floor, the Engine's phase 2, the Maze's round 2) were brought
+together, built and checked live one at a time, then the whole verify:
+50 of 50 checks passed, none left to do. What the live runs found:
+
+- Tunnel 3's pump lever stands in the Flooded Dome's basin, so its place
+  is water, not air, before the pump is ready and after a reset: the
+  tunnel and reset checks now look for no lever there.
+- The Boiler Room's check failed at level 1 (the level the world is at):
+  there both valves left open hold the band and solve the room, so the
+  safety valve's path never came. The check now plays at the default
+  level and puts the level back. Whether level 1 should be that easy is
+  on the play-test list.
+- The sea floor's biome check read the box's far corner, where the
+  game's biome zoom takes a block's biome from the cell beyond; it now
+  reads a cell inside. `fillbiome` that changes nothing replies "No biome
+  entries were changed", which the stage accepts. The shells and tunnels
+  all passed after it.
+- The Engine's check killed the Master to see a loss inside five seconds
+  come back as no win, but the game runs on while the check reads his kit
+  back, so by then he had been out longer and the loss was a win; the
+  timer is now counted from the kill. With that, the ravager bit the golem
+  with the husk up: `RIDER_MOB` stays the husk, so the Master wears his
+  armour. The summon with trims, `minecraft:scale` and a compound
+  `CustomName` was accepted and read back, and the husk is in
+  `#minecraft:raiders`.
+- The trophy: `item replace entity ... contents` gave the thrown item the
+  sign, `Owner` is set, and `Age:-32768s` is kept on an item. The lore is
+  in the item's data; how it reads is for a player.
+- The Maze: `execute store result entity ... interpolation_duration` takes
+  (read back), the hand reads right at every hour, the lifts carry
+  stand-ins, and the display counts are as the check expects.
 
 ## Known problems / notes
 
