@@ -1545,11 +1545,10 @@ out lights, tunnel 7 pumps dry, and the core's `run/win` runs (best
 time, then this module's `trophy`: a trophy sign for the Wall of Fame).
 
 **Phase 2** (the breach and the Master on his ravager) is switched on
-(`PHASE_2 = True` at the top of `dome_boss.py`) and **has not been on a
-server yet**: all of it below passed offline only, against the fake
-client and the test's interpreter. Going live needs `datapack` and
-`dome_7_inside` (the plaque and the log change), then `CHECKS=boss`; the
-bench's bay 5 shows the same pair after `BENCH=build`.
+(`PHASE_2 = True` at the top of `dome_boss.py`). It was first checked
+offline, against the fake client and the test's interpreter, and has
+since passed `CHECKS=boss` live (see "Round 2 live"); the bench's bay 5
+shows the same pair after `BENCH=build`.
 
 - The owner saw the vindicator on the ravager at the bench: the ravager
   frightening enough, the rider "an illager with an axe". No illager
@@ -1559,11 +1558,11 @@ bench's bay 5 shows the same pair after `BENCH=build`.
   saw a husk ride a ravager and strike from it, and the ravager under a
   husk only carry: a ravager fights by itself only under a rider of the
   game's entity tag `#minecraft:raiders`. The pack therefore adds
-  `minecraft:husk` to that tag (`datapack.Pack.tag`, new). **Not proved:**
-  that the ravager then bites. The check sets a golem before the pair,
-  takes the rider's blow and axe away and reports a ravager that does not
-  bite; `RIDER_MOB = "minecraft:vindicator"` is the proved pair, without
-  the armour. The tag is the game's own and holds every husk, the Slag
+  `minecraft:husk` to that tag (`datapack.Pack.tag`, new). **Proved
+  live** (see "Round 2 live"): with the husk up the ravager bit the golem
+  the check sets before the pair (the check takes the rider's blow and axe
+  away, so only the ravager can hurt it). `RIDER_MOB =
+  "minecraft:vindicator"` would be the fallback, without the armour. The tag is the game's own and holds every husk, the Slag
   Husks too: nothing else that reads it is known to matter here.
 - When the third main shuts it cannot be missed: the floor's 95 lanterns
   dim to weathered copper bulbs (light 8) until the win or the reset, the
@@ -1710,6 +1709,13 @@ the fault below); then the whole verify, 46/46 passed (2 TODO: the Gearworks and
   `test_station_example.py` has).
 
 ### The Clockwork Maze (dome 6): findings
+
+**Round 1 only.** This section records the first Clockwork Maze. Round 2
+replaced its layout with a route puzzle and a clock hand: the ladders and
+the `LIFTS` switch are gone, and the lifts glide and are the only way up.
+For the current design read `dome_maze.py`'s docstring; for how round 2
+went live, "Round 2 live" below. Ladders, `LIFTS` and the counts here
+describe round 1, not the room as built now.
 
 `dome_maze.py` (its docstring has the puzzle and the functions), built
 live with `dome_6_inside` over the shell already there; the BYPASS stub
@@ -1916,8 +1922,9 @@ Engine's tunnel home has one: the win readies it, so the show is seen.
 ## The sea floor (stages `seabed`, `seabed_water`)
 
 For the play-test's "the sea is a little dark and you don't see out that
-much". Built and checked offline only (26 Nov 2026): nothing of it has
-run on a server, and nobody has looked at it in the game.
+much". Built and checked offline first, then built and checked live
+(26 Nov 2026, see "Round 2 live"); nobody has looked at it in the game
+yet.
 
 - `seabed.py` plans, from the layout, `site_survey.npz` and a fixed seed,
   288 sea lanterns set flush in the sea floor (a ring round each dome, a
@@ -1939,13 +1946,16 @@ run on a server, and nobody has looked at it in the game.
 - Checks: offline `seabed` in `verify_station.py` and
   `tests/test_station_seabed.py`. The live check `seabed_live` reads 150
   blocks back and the biome at the box's corners, and reports coral that
-  has died; it is written and has never run.
-- Not known until it is built: whether the survey still matches the sea
-  floor everywhere (the plan trusts it; kelp or seagrass in a planned
-  cell is replaced); what a `fillbiome` that changes nothing replies
-  (the stage only refuses "not loaded", "Too many" and "Unknown"); how
-  the light and the warm water look through the glass. A player online
-  may need to rejoin to see the new water colour.
+  has died; it passed live in the whole verify (after the biome fix in
+  "Round 2 live").
+- Found when it was built: a `fillbiome` that changes nothing replies
+  "No biome entries were changed", which the stage accepts (it refuses
+  only "not loaded", "Too many" and "Unknown"). The live check reads back
+  a sample, not every cell, so that the survey matches the sea floor
+  everywhere is trusted (kelp or seagrass in a planned cell is
+  replaced). Still for a player: how the light and the warm water look
+  through the glass. A player online may need to rejoin to see the new
+  water colour.
 - Left out: lanterns on the tunnels' ribs and glow lichen (both would
   mean touching the tunnels or guessing at rock faces).
 

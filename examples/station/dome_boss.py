@@ -186,13 +186,15 @@ OBJ = game.OBJ
 # ``mob_griefing`` off and the vindicator strikes from its back; with a husk
 # up it only carries, and the husk strikes; it passes under a deck 5 up,
 # climbs stairs 3 and 2 wide and not 1 wide; ``damage @s <n>
-# minecraft:generic`` from a function hurts (husks). Not yet shown by any
-# server, as written here (the live check reads all but 1, 7 and 8 back):
+# minecraft:generic`` from a function hurts (husks). What the rig did not
+# show, as written here (the live check, passed on 26 Nov 2026, reads all but
+# 1, 7 and 8 back; PROGRESS, "Round 2 live"):
 #
 # 1. any of the pair's fight against a player, and the Master fighting on
 #    foot once the ravager dies;
 # 2. ``#minecraft:raiders`` with the husk added by this pack lets the
-#    ravager fight under him (the check: the tag took; the golem was bitten);
+#    ravager fight under him: shown live (the tag took; the golem was bitten
+#    with the husk up);
 # 3. the Master's NBT: the trims (``components:{"minecraft:trim":...}``),
 #    ``minecraft:scale`` in ``attributes``, ``CustomName`` as a compound,
 #    ``CustomNameVisible`` (the check reads each back; that they are drawn,
@@ -207,7 +209,7 @@ OBJ = game.OBJ
 # 7. the steam's ``damage`` and the Darkness effect on a player;
 # 8. the pair passes the firebox's doorway (5 wide, 5 high).
 #
-# If the ravager will not bite under the husk, ``RIDER_MOB`` (below) set to
+# Should the ravager stop biting under the husk, ``RIDER_MOB`` (below) set to
 # the vindicator is the pair the rig proved, at the cost of the armour.
 # ============================================================================
 PHASE_2 = True
