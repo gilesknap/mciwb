@@ -71,8 +71,8 @@ assert max(c[1] for c in b.solid) - dome.floor_y >= 20  # three decks and a crow
 # the outgoing door's window is behind the tower, and the dome says so
 assert D.INDEX in domes.ALLOWED and not rooms.window_problems(dome, b.above())
 
-# the gate table: 38 gates, each in the lattice, no cell used twice
-assert len(D.GATES) == 38 and not D.table_problems()
+# the gate table: 39 gates, each in the lattice, no cell used twice
+assert len(D.GATES) == 39 and not D.table_problems()
 kinds = [g.kind for g in D.GATES]
 special = (D.DOOR, D.FK, D.RAM, D.GREAT, D.LIFT)
 assert [kinds.count(k) for k in special] == [1, 1, 1, 1, 3]
@@ -96,7 +96,7 @@ assert D.SLOT_OPEN != D.AIR
 assert not D.solo_problems() and not D.pair_problems()
 assert len(D.pair_steps()) == 3 * len(D.nodes()) ** 2
 route = D.solo_route()
-assert route[-1][0] == "crown" and 15 < len(route) < 40, len(route)
+assert route[-1][0] == "crown" and len(route) == 27, len(route)
 steps = D.solo_steps()
 state = ("out", D.GREEN)
 for to in route:
@@ -112,6 +112,46 @@ assert (2, 2, 0) not in D.moves(D.F_CELL, D.IRON, (2, 1, 1))
 # (a timed floor that is not out is a fall to the cell below)
 t2 = D.FLOORS[0]
 assert D.strike(t2.node, D.GREEN) == t2.below and D.strike(t2.node, D.IRON) == t2.node
+# (no ladders: a lift takes whoever stands on it, up at Green, down at Gold;
+# its lower cell is got into in Gold and out of in any hour)
+a = D.LIFT_LIST[0]
+assert D.strike(a.low, D.GREEN) == a.high and D.strike(a.high, D.GOLD) == a.low
+assert D.strike(a.low, D.GOLD) == a.low and D.strike("crown", D.GOLD) == "crown"
+assert a.low in D.moves((1, 4, 1), D.GOLD) and a.low not in D.moves((1, 4, 1), D.IRON)
+assert (1, 4, 1) in D.moves(a.low, D.IRON)
+assert D.LIFT_LIST[2].low in D.moves("crown", D.IRON)
+assert not any("ladder" in block for block in b.everything().values())
+assert not any(rule == "ladder" for _, _, rule in D.edges())
+# (an arch has no door and takes no time: lift A's top, F and on through
+# the held gate in one hour)
+assert (2, 2, 0) in D.moves(a.high, D.GREEN) and D.room(a.high) == {a.high, D.F_CELL}
+
+# the puzzle is one: no room has two gates of an hour, most have a choice,
+# and on each deck of gates the walker who takes whatever opens first is
+# far behind the route that plans, there are dead ends, and the best route
+# lets gates go by that open first
+assert not D.puzzle_problems(), D.puzzle_problems()
+numbers = D.puzzle()
+assert numbers[1]["best"] == [9, 8, 10] and numbers[1]["naive"] == [24, 17, 25]
+assert numbers[2]["best"] == [12, 14, 13] and numbers[2]["naive"] == [21, 56, 22]
+assert numbers[1]["dead"] == [(1, 1, 0), (1, 1, 3), (1, 1, 4)]
+assert numbers[2]["dead"] == [(2, 0, 1), (2, 0, 3), (2, 3, 1)]
+assert [len(n["ahead"]) for n in numbers.values()] == [3, 2]
+assert all(cost >= 3 for n in numbers.values() for _, _, cost in n["ahead"])
+# (the timed floor is a short cut one way and a fall the other: the walker
+# with no plan who starts deck 2 in Iron goes through it to deck 1)
+assert D.naive_step((2, 2, 0), D.GOLD)[0][0] == 2
+assert D.land((2, 1, 0), D.GREEN) == (1, 1, 0)
+# (and the searches find a deck made easy: every gate of deck 1 Green)
+D.GATES = tuple(
+    D.Gate(g.deck, D.GREEN, g.door, g.piston, g.slot)
+    if g.deck == 1 and g.kind in (D.IRON, D.GOLD) else g
+    for g in real
+)
+D.edges.cache_clear()
+assert any("two gates of one hour" in p for p in D.puzzle_problems())
+D.GATES = real
+D.edges.cache_clear()
 D.GATES = tuple(g for g in real if g.kind != D.LIFT)
 D.edges.cache_clear()
 assert D.solo_problems()
@@ -120,19 +160,18 @@ D.edges.cache_clear()
 
 # the walks and the sight lines pass, and find a wall round the entrance
 assert not D.walk_problems(dome) and not D.sight_problems(dome)
-# nobody gets into a machine cell or anywhere with no way back: a ladder
-# stepped off at any rung, falls that drift, a timed floor going; and the
-# search finds the review's trap when the block beside lift C's ladder
-# and the lid of deck 3's machine cell are taken out
+# nobody gets into a machine cell or anywhere with no way back: the lifts
+# ridden, falls that drift, a timed floor going; and the search finds the
+# review's trap when the bars over the wall beside T2 and the lid of the
+# machine cell below are taken out
 assert not D.trap_problems(dome), D.trap_problems(dome)
 seen, _ = D.traps(dome)
 assert all(cell in seen for cell in D.walks(dome).values())
-rungs = {c for c, block in D.room_blocks(dome).attached.items() if "ladder" in block}
-assert rungs <= seen
 whole = D.room_blocks
 def opened(dome, *args, **kw):
     b = whole(dome, *args, **kw)
-    for at in [(5, 2, 16)] + [(f, r, 16) for f in (3, 4, 5) for r in (3, 4, 5)]:
+    gone = [(-6, r, 4) for r in (-9, -8, -7)]
+    for at in gone + [(f, r, 4) for f in (-9, -8, -7) for r in (-9, -8, -7)]:
         b.solid.pop(fr.at(*at))
     return b
 D.room_blocks = opened
@@ -164,6 +203,34 @@ assert five == {"qlen": 30, "early": 0} and 4 * five["qlen"] == 6 * 20
 assert one == {"qlen": 42, "early": 0} and ten == {"qlen": 15, "early": 2}
 assert seven["early"] == 1
 assert all(D.scaled(lv)["qlen"] >= D.scaled(lv + 1)["qlen"] for lv in range(1, 10))
+# the clock made plain: a light of the hour on every post, the dial's rim
+# in the hours' blocks with a lamp on each, a plan of each deck with every
+# gate on it in its own block, and the plaque's rule
+lights = [c for c, block in b.solid.items() if block == D.HOUR_LIGHT[D.GREEN]]
+assert len(lights) > 60 and not any("ochre" in v for v in b.solid.values())
+lamps, disc = D.dial_places()
+assert set(lamps) <= set(disc) and lamps[0] == (-11, 0, 13)
+assert all(disc[f, round(r * 1.25), 9 + round((h - 9) * 1.25)] == D.HOUR_BLOCK[n // 4]
+           for n, (f, r, h) in enumerate(lamps))
+marks = D.plan_marks()
+for deck in (1, 2, 3):
+    gates = [g for g in D.GATES if g.deck == deck and g.kind not in (D.RAM, D.GREAT)]
+    f, r, h = D.PLAN_AT[deck]
+    on = [m for m in marks
+          if m[1] and r - 1 <= m[0][1] <= r + 5 and h <= m[0][2] < h + 5]
+    blocks = sorted(m[1] for m in on if m[1] != D.ARCH_MARK)
+    assert blocks == sorted(D.lintel(g)[0] for g in gates), deck
+    assert sum(m[1] == D.ARCH_MARK for m in on) == len(D.ARCHES[deck])
+assert len({m[0] for m in marks}) == len(marks)
+assert all(fr.at(*at) in b.solid for at in D.plan_blocks())
+signs = " ".join(v for v in b.attached.values() if "sign" in v)
+for words in ("Each gate opens", "in its hour:", "I GREEN", "II IRON", "III GOLD",
+              "Plan your", "way up."):
+    assert words in signs, words
+# the hand: from twelve o'clock clockwise, a twelfth of a turn a quarter
+assert D.hand_turn(0) == (0.0, 1.0) and abs(D.hand_turn(6)[0] - 1) < 1e-9
+assert D.HAND_TAG in D.hand_summon(fr) and "block_display" in D.hand_summon(fr)
+
 # the logbook: four pages, by Finch, and it goes over RCON in the build
 assert len(D.LOG_PAGES) <= 4 and "Finch" in D.LOG_AUTHOR
 assert all(len(page) <= 256 for page in D.LOG_PAGES)
@@ -200,8 +267,11 @@ shell = domes.dome_cells(dome).shell
 assert all(rec.world.name_at(c) != "minecraft:air" for c in shell)
 count = lambda start: sum(c.startswith(start) for c in rec.commands)  # noqa: E731
 assert count("summon minecraft:interaction") == 1
-assert count("summon minecraft:block_display") == 2
-assert count("summon minecraft:text_display") == 2 * len(D.GATES) + 4
+marks = D.plan_marks()
+assert count("summon minecraft:block_display") == 2 + sum(bool(m[1]) for m in marks)
+words = sum(bool(m[2]) for m in marks)
+assert count("summon minecraft:text_display") == 2 * len(D.GATES) + 4 + words
+assert sum(bool(m[1]) for m in marks) == 44 and words == 51, (words,)
 assert "function station:dome/6/reset" in rec.commands
 assert all(len(c.encode()) <= B.MAX_COMMAND for c in rec.commands)
 again = B.offline_build(stages=[*stages, "dome_6_inside"], force=False)
@@ -237,19 +307,17 @@ fr = D.frame(dome)
 xyz = lambda place: D._xyz(fr.at(*place))  # noqa: E731
 
 
-def packed(lifts):
-    was, D.LIFTS = D.LIFTS, lifts
+def packed():
     pack = datapack.Pack(stamp="t")
     game.add_functions(pack, [D.MODULE])
-    D.LIFTS = was
     return pack
 
 
 # (the core's own functions for the dome are not the module's)
 core = datapack.Pack(stamp="t")
 game.add_functions(core, [])
-for lifts in (False, True):
-    pack = packed(lifts)
+for _ in (0,):
+    pack = packed()
     F = pack.functions
     mine = {n: lines for n, lines in F.items()
             if n.startswith("dome/6/") and n not in core.functions}
@@ -268,12 +336,83 @@ for lifts in (False, True):
     solvers = [n for n, ls in mine.items()
                if any("function station:dome/6/solved" in line for line in ls)]
     assert solvers == ["dome/6/done"], solvers
-    # the lifts run only with the switch on; their functions are there
-    # either way, and the gates and ladders do not depend on them
-    assert calls("dome/6/work", "dome/6/lifts") == lifts
-    assert any(".to" in line for line in F["dome/6/strike/0"]) == lifts
-    assert any("settle" in line for line in F["dome/6/empty"]) == lifts
-    assert "dome/6/lift/ram/at_18" in F and "dome/6/lift/a/down_6" in F
+    # the lifts run on the clock: up at the strike of Green, down at Gold
+    assert calls("dome/6/work", "dome/6/lifts")
+    assert any("la.to st 1" in line for line in F["dome/6/strike/0"])
+    assert any("la.to st 0" in line for line in F["dome/6/strike/2"])
+    assert not any(".to" in line for line in F["dome/6/strike/1"])
+    assert any("settle" in line for line in F["dome/6/empty"])
+    assert "dome/6/lift/ram/at_18" in F and "dome/6/lift/a/leave_6" in F
+    # a platform glides: at rest it is blocks, on its way nine block
+    # displays moved a quarter of a block a tick, its riders on seats that
+    # move with them, set down at the end; no ladder anywhere
+    for lift in D.LIFT_LIST:
+        base = f"dome/6/lift/{lift.name}"
+        for k in (0, lift.travel):
+            leave, arrive = F[f"{base}/leave_{k}"], F[f"{base}/arrive_{k}"]
+            cars = [line for line in leave
+                    if line.startswith("summon minecraft:block_display")]
+            assert len(cars) == 9 and all("teleport_duration:1" in c for c in cars)
+            assert leave[0].endswith(f"{base}/air_{k}")
+            assert arrive[0].endswith(f"{base}/at_{k}")
+            assert any(line.endswith(f"{base}/seat") and "@e[tag=st.in," in line
+                       for line in leave)
+            assert any("on passengers" in line and line.endswith(f"{base}/off")
+                       for line in arrive)
+            assert f"kill @e[tag={lift.car}]" in arrive
+            assert not any(D.COPPER in line for line in F[f"{base}/air_{k}"])
+            assert sum(D.COPPER in line for line in F[f"{base}/at_{k}"]) == 1
+        glide = F[f"{base}/glide"]
+        assert sum(f"tp @s ~ ~{sign}0.25 ~" in line
+                   for sign in ("", "-") for line in glide) == 2
+        assert any("ride @s mount" in line for line in glide)
+        assert any("ride @s mount" in line for line in F[f"{base}/seat"])
+        assert F[f"{base}/off"][0] == "ride @s dismount"
+        # going down it waits while anyone is under it, and does not leave
+        # the top over anybody
+        assert len(F[f"{base}/aim"]) == 3 + lift.travel - 1
+        assert any("unless entity @e[tag=st.in," in line for line in F[f"{base}/move"])
+    assert not any("ladder" in line for ls in mine.values() for line in ls)
+    assert D.LIFT_STEP * D.LIFT_LIST[0].travel == 24  # ticks a ride
+    # a lift's gate: open while its platform stands at the bottom, and for
+    # anyone found inside
+    assert sum("#maze.la st matches 0 if score #maze.la.m st matches 0" in line
+               for line in F["dome/6/held"]) == 1
+    # the clock made plain. The bell: at each ear, a stroke for Green, two
+    # for Iron, three for Gold, each hour at its own pitch
+    for h in range(3):
+        strike = F[f"dome/6/strike/{h}"]
+        bell = [line for line in strike if "block.bell.use" in line]
+        assert len(bell) == 1 and " at @s run playsound " in bell[0]
+        assert bell[0].endswith(f"@s ~ ~ ~ 1 {D.BELL_PITCH[h]}")
+        assert f"scoreboard players set #maze.bells st {h}" in strike
+        assert calls(f"dome/6/strike/{h}", f"dome/6/lights/{h}")
+        # every post's light to the hour's colour: three decks, from each
+        # of the other two colours
+        lights = F[f"dome/6/lights/{h}"]
+        assert len(lights) == 6 and all(
+            line.startswith("fill ") and f"{D.HOUR_LIGHT[h]} replace minecraft:" in line
+            for line in lights)
+    assert len(set(D.BELL_PITCH)) == 3
+    # the warning through an hour's last quarter: a clank at each ear and
+    # the lights to the colour of the hour to come and back
+    warn = F["dome/6/warn"]
+    assert sum("playsound" in line and " at @s run " in line for line in warn) == 2
+    assert sum(line.endswith(f"dome/6/lights/{n}")
+               for n in range(3) for line in warn) == 6
+    assert any("#maze.last st matches 1" in line and line.endswith("dome/6/warn")
+               for line in F["dome/6/clock"])
+    # the hand: made anew if it is gone, a quarter's sweep to the next lamp
+    go = F["dome/6/hand/go"]
+    assert go[0].startswith(f"execute unless entity @e[tag={D.HAND_TAG}]")
+    assert "interpolation_duration int 1 run scoreboard players get #maze.qlen" in go[1]
+    assert len(go) == 14 and all("start_interpolation:0" in line for line in go[2:])
+    assert D.hand(fr, 12) in go[13] and D.hand(fr, 1) in go[2]
+    assert F["dome/6/hand/put"] == [f"kill @e[tag={D.HAND_TAG}]", D.hand_summon(fr)]
+    assert calls("dome/6/park", "dome/6/hand/put")
+    assert calls("dome/6/quarter", "dome/6/hand/go")
+    assert calls("dome/6/arm", "dome/6/hand/go")
+    assert calls("dome/6/park", "dome/6/lights/0")
 
     # every execute line is well formed: known clauses of the right length
     def clauses(line, where):
@@ -292,8 +431,13 @@ for lifts in (False, True):
                         assert all(re.fullmatch(r"-?\\d+", n) for n in t[i + 2:i + 5])
                         assert re.match(r"#?minecraft:[a-z_]+", t[i + 5]), (where, line)
                 i += step
-            elif t[i] in ("as", "at"):
+            elif t[i] in ("as", "at", "on"):
                 i += 2
+            elif t[i] == "positioned":
+                i += 4
+            elif t[i] == "store" and t[i + 2] == "entity":
+                assert t[i + 4:i + 7] == ["interpolation_duration", "int", "1"], line
+                i += 7
             elif t[i] == "store":
                 assert t[i + 1:i + 3] == ["result", "score"], (where, line)
                 i += 5
@@ -301,7 +445,7 @@ for lifts in (False, True):
                 raise AssertionError(f"{where}: {t[i]!r} in {line}")
         assert i == len(t) or t[i + 1] in (
             "function", "scoreboard", "setblock", "fill", "return", "playsound",
-            "tellraw", "tp", "effect", "execute", "particle",
+            "tellraw", "tp", "effect", "particle", "ride", "data",
         ), (where, line)
 
     for name, lines in mine.items():
@@ -320,7 +464,7 @@ for lifts in (False, True):
     hour_gates = [g for g in D.GATES if g.kind in (0, 1, 2)]
     for h in range(3):
         lines = F[f"dome/6/gates/{h}"]
-        assert len(lines) == len(hour_gates) == 31
+        assert len(lines) == len(hour_gates) == 32
         for g, line in zip(hour_gates, lines):
             a, b = (xyz(p) for p in D.gate_places(g)["slot"])
             door = fr.at(*D.gate_places(g)["door"][0])
@@ -377,7 +521,7 @@ for lifts in (False, True):
 
 # ---- the state machine, driven: a small interpreter of the scoreboard
 # lines (blocks and entities are not there: every test of one fails)
-pack = packed(True)
+pack = packed()
 F = pack.functions
 score, trace = {}, []
 
