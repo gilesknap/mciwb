@@ -678,7 +678,13 @@ def check(ctx: Any) -> list[str]:
         found.append(f"{'dead coral' if died else 'no ' + block} at {cell}")
     boxes = biome_boxes()
     for a, b, biome in (boxes[0], boxes[-1]) if boxes else ():
-        for x, y, z in (a, b):
+        # a block's biome is read with the game's zoom, which can take it
+        # from the next cell of 4: the corners are tried a cell inside
+        inset = [
+            tuple(lo + min(4, (hi - lo) // 2) for lo, hi in zip(a, b, strict=True)),
+            tuple(hi - min(4, (hi - lo) // 2) for lo, hi in zip(a, b, strict=True)),
+        ]
+        for x, y, z in inset:
             if not ctx.test(f"execute if biome {x} {y} {z} {biome}"):
                 found.append(f"the biome at {(x, y, z)} is not {biome}")
     return found[:20]
