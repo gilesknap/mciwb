@@ -48,12 +48,12 @@ import verify_station as V
 dome = L.DOMES[D.INDEX]
 assert dome.key == "boss" and D.PHASE_2 is False
 # the module takes the stub's place: its stage, its check under the name the
-# verify script lists, its trophy at the win
+# verify script lists (the trophy at the win is the Pump House's)
 assert B.STAGES["dome_7_inside"] is D.build and V.LIVE["boss"] is D.check
 assert "boss" not in V.todos()
 assert "boss" in {m.name for m in B.modules()}
 assert "stub_boss" not in {m.name for m in B.modules()}
-assert D.MODULE.wins == ("dome/7/trophy",) and D.TROPHY == dome_start.TROPHY
+assert D.MODULE.wins == () and not hasattr(D, "TROPHY")
 assert "the pavilion" in domes.ALLOWED[D.INDEX]
 
 # the room's plan: no problem found, every cell inside the dome and off the
@@ -325,7 +325,8 @@ for phase_2 in (False, True):
     assert calls("reset/all", "dome/7/reset") and calls("dome/7/left", "dome/7/empty")
     assert calls("dome/7/exited", "dome/7/leave")
     assert calls("dome/7/respawned", "dome/7/died")
-    assert calls("run/win", "dome/7/trophy")
+    # the trophy at the win is the Pump House's, none of the module's
+    assert not any("trophy" in line for line in f["run/win"])
     # the core's kit on entering, and none of the module's own
     assert calls("dome/7/entered", "kit/boss")
     mine = {n: ls for n, ls in f.items() if n.startswith("dome/7/")}
@@ -382,11 +383,6 @@ for phase_2 in (False, True):
     for part in ("Stoker", "Riveter", "Slag Husk", "st.automaton", "station:mob/dress",
                  "st.mob7", "st.home0", "IsBaby:0b"):
         assert part in spawn, part
-    # the trophy sign goes only on the trophy wall
-    sign = f["dome/7/trophy/sign"][0]
-    assert sign.startswith("$give @a[tag=st.in] minecraft:bamboo_sign[")
-    assert 'can_place_on={blocks:"minecraft:gilded_blackstone"}' in sign
-    assert "$(level)" in sign and "$(m):$(t)$(o)" in sign
 
 off, on = packs[False].functions, packs[True].functions
 # phase 2 is in the pack only with the switch on
@@ -781,7 +777,15 @@ a, b, c = place.mains
 stages = ["site", "dome_7", "tunnels", "dome_7_inside"]
 rec = B.offline_build(stages=stages, force=False)
 pack = datapack.Pack(stamp="t")
-game.add_functions(pack, [D.MODULE])
+# the Pump House's trophy at the win, as far as the live check reads it
+TROPHY = game.Module(
+    "trophy",
+    functions=lambda p: p.function("dome/0/trophy/arm", [
+        "execute store result storage station:game trophy.level int 1 "
+        "run scoreboard players get #run.level st"]),
+    wins=("dome/0/trophy/arm",),
+)
+game.add_functions(pack, [D.MODULE, TROPHY])
 sim = Sim(pack, rec.world)
 LIT = (D.BULB + "[lit=true]", D.GREEN_BULB + "[lit=true]")
 
@@ -953,10 +957,8 @@ steps(2)
 assert sim.b7("phase") == 5 and sim.get("#d7") == 2 and sim.get("#run") == 2
 assert sim.called.count("dome/7/won") == 1 and "tunnel/7/open" in sim.called
 assert not mobs()
-# the trophy: named with the level and the time
-assert sim.called.count("dome/7/trophy") == 1
-args = next(args for path, args in sim.said if path == "dome/7/trophy/sign")
-assert set(args) == {"level", "m", "t", "o"}
+# the win arms the Pump House's trophy dispenser
+assert sim.called.count("dome/0/trophy/arm") == 1
 # the Engine stops: eyes out, the governor run down, the way out lit
 assert lamps(place.eyes) == 0
 steps(len(place.way_out) + 2)
@@ -1218,7 +1220,7 @@ sim.entities.remove(rider)
 steps(1)
 assert sim.b7("phase") == 5 and sim.get("#d7") == 2 and sim.get("#run") == 2
 assert sim.called.count("dome/7/won") == 1 and "tunnel/7/open" in sim.called
-assert sim.called.count("dome/7/trophy") == 1
+assert sim.called.count("dome/0/trophy/arm") == 1
 steps(len(place.way_out) + 2)
 assert lamps(place.way_out) == len(place.way_out) and lamps(place.eyes) == 0
 
