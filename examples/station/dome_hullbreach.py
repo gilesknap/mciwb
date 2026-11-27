@@ -2230,6 +2230,7 @@ def functions(pack: dp.Pack) -> None:
                 f"execute {_is(f'b{i}', 1)} if entity @e[tag=st.in,{sel}] "
                 f"run {call(f'cast_one/{i}')}"
                 for i, sel in near.items()
+                if kind is not None  # no cast_one functions in "none" mode
             ),
         ],
     )

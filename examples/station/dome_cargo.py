@@ -2457,8 +2457,9 @@ def summons(dome: Dome) -> list[str]:
         text(face, v, 8.1, way, name, colour="gold", scale=1.2)
     for face, way in ((HOUSE_F[0] - 0.02, (-1, 0)), (HOUSE_F[1] + 1.02, (1, 0))):
         text(face, 0.5, 8.9, way, "TRIM", colour="gold", scale=0.8)
-        text(face, -6.5 if way[0] < 0 else 7.5, 6.9, way, "PORT", scale=0.6)
-        text(face, 7.5 if way[0] < 0 else -6.5, 6.9, way, "STARBOARD", scale=0.6)
+        # the lamps run port (r -5) to starboard (r 5) on both faces
+        text(face, -6.5, 6.9, way, "PORT", scale=0.6)
+        text(face, 7.5, 6.9, way, "STARBOARD", scale=0.6)
     # the status board over the pulpit's window, facing the driver
     text(PULPIT_F[1] + 0.6, 0.5, 8.3, (-1, 0), "", (BOARD_TAG,), scale=0.8)
     # the docket and the legend on her stern, over the plaque
@@ -2684,11 +2685,12 @@ def trap_problems(dome: Dome) -> list[str]:
             for p in bay_cells(i, t)
         }
         seen = reach(dome, b, crates)
+        # every cell over the crates, up to the feet over a full bay
         tops = {
             fr.at(f, r, h)
             for i in range(len(BAYS))
-            for f, r, h in bay_cells(i)
-            if h > 2 * n
+            for f, r, _ in bay_cells(i, 0)
+            for h in range(2 * n + 1, 2 * TIERS + 2)
         }
         if on := seen & (tops | roof):
             problems.append(

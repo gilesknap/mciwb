@@ -24,6 +24,8 @@ import domes  # noqa: E402
 import station_layout as L  # noqa: E402
 from PIL import Image, ImageDraw  # noqa: E402
 
+AIRS = {"air", "cave_air", "void_air"}  # block IDs the render leaves out
+
 COLOURS = (
     ("gold_block", (232, 190, 60)),
     ("copper_bulb[lit=true]", (255, 214, 120)),
@@ -97,7 +99,7 @@ def scene() -> tuple[D.fittings.Frame, dict[tuple[int, int, int], str]]:
     out = {}
     for cell in cells.interior | cells.floor:
         block = rec.world.at(cell)
-        if block and "air" not in block:
+        if block and block.split("[")[0].removeprefix("minecraft:") not in AIRS:
             x, y, z = cell
             f = (x - ox) * fr.forward[0] + (z - oz) * fr.forward[1]
             r = (x - ox) * fr.right[0] + (z - oz) * fr.right[1]
