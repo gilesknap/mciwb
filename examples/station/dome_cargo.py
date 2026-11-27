@@ -687,7 +687,8 @@ YAWS = {"south": 0, "west": 90, "north": 180, "east": -90}
 
 def key(fr: fittings.Frame, f: int, r: int, name: str) -> fittings.Post:
     """a key of the desk: a stone button lying on a brass block let into
-    the deck, its name written flat on the brass at the driver's side"""
+    the deck, its name written flat on the brass at the driver's side,
+    black on the gold"""
     ahead = fr.facing(1, 0)
     button = f"minecraft:stone_button[face=floor,facing={ahead},powered=false]"
     yaw = YAWS[fr.facing(-1, 0)]
@@ -696,7 +697,7 @@ def key(fr: fittings.Frame, f: int, r: int, name: str) -> fittings.Post:
         (ENTITY_TAG,),
         point(fr, f + 0.06, r + 0.5, DECK_H + 1.01),
         yaw,
-        fittings.label_text(words),
+        fittings.label_text(words, "black", bold="true"),
         0.45,
         pitch=-90,
     )
