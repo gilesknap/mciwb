@@ -2062,6 +2062,10 @@ crate's eight), gliding a quarter block a tick by `tp` with
   takes a longer drop when asked). The unit test takes the ladder away,
   and opens the corners, and wants the check to say so. Not modelled: a
   running jump.
+  Built live the same night: `cargo_hold` and `displays` pass and the
+  whole verify is 57 of 57. The checks press the keys by setting each
+  button powered where it lies; they prove nothing of how the pulpit
+  looks or reads (the play-test rows above).
 
 ## The sea floor (stages `seabed`, `seabed_water`)
 
