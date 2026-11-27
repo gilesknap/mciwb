@@ -608,6 +608,10 @@ def hold_floor() -> set[tuple[int, int]]:
 #: the stair from the bow down into the fore hold, along the starboard
 #: aisle: (f, r, h) of each step, highest first
 HOLD_STAIR = ((12, 6, 4), (11, 6, 3), (10, 6, 2), (9, 6, 1))
+#: the way out of the aft hold (anyone may fall in): a companionway from
+#: its aft end, under the pulpit's deck and up a stair to it behind the
+#: desk, far from the bays: (f, r, h) of each step, lowest first
+AFT_STAIR = ((-12, -1, 1), (-13, -1, 2), (-14, -1, 3), (-15, -1, 4))
 #: the stairs from the dock up to the pulpit and down from the bow
 PULPIT_STAIRS = tuple((f, r, f + 22) for r in (-5, -4, 4, 5) for f in range(-21, -16))
 BOW_STAIRS = tuple((f, r, 20 - f) for r in (-4, 4) for f in range(16, 20))
@@ -740,6 +744,7 @@ def room_blocks(dome: Dome) -> Blocks:
     ahead, back = fr.facing(1, 0), fr.facing(-1, 0)
     port, star = fr.facing(0, -1), fr.facing(0, 1)
     lights = domes.light_cells(dome)[0]
+    interior = domes.dome_cells(dome).interior
     ship = footprint()
 
     # -- the floor: the hold's tank top, each bay in its column's colour;
@@ -843,6 +848,14 @@ def room_blocks(dome: Dome) -> Blocks:
         put((f, r, h), f"{STAIRS}[facing={ahead},half=bottom]")
         for low in range(1, h):
             put((f, r, low), HULL)
+    f, r, _ = AFT_STAIR[0]
+    way = [(f + 1, r, h) for h in range(1, 4)]
+    for f, r, h in AFT_STAIR:
+        put((f, r, h), f"{STAIRS}[facing={back},half=bottom]")
+        way += [(f, r, up) for up in range(h + 1, h + 4)]
+    for place in way:
+        b.solid.pop(fr.at(*place), None)
+        b.clear.add(fr.at(*place))
     for post in posts(fr).values():
         b.solid.update(post.solid)
         b.attached.update(post.attached)
@@ -921,10 +934,11 @@ def room_blocks(dome: Dome) -> Blocks:
                     13 * side,
                 ) not in walk_stairs:
                     put((f, 13 * side, h), BARS)
-        for f in WALK_F:
-            for r in (11 * side, 12 * side):
+        for f in WALK_F:  # the ends, closing the corners of the rails
+            for r in range(10 * side, 14 * side, side):
                 for h in (11, 12):
-                    put((f + (1 if f > 0 else -1), r, h), BARS)
+                    if fr.at(end := f + (1 if f > 0 else -1), r, h) in interior:
+                        put((end, r, h), BARS)
     for f, r, h in WALK_STAIRS:
         put((f, r, h), f"{STAIRS}[facing={back},half=bottom]")
         for low in range(1, h):
@@ -2506,6 +2520,7 @@ def walks(dome: Dome) -> dict[str, Cell]:
         "the bow": BANKSMAN,
         "the bow's table": (BOW_TABLE[0] + 2, BOW_TABLE[1] + 2, 6),
         "the fore hold's floor": (6, 0, 1),
+        "the aft hold's floor": (-6, 0, 1),
         "the port gantry walk": (0, -11, WALK_H + 1),
         "the starboard gantry walk": (0, 11, WALK_H + 1),
         "the logbook": (lf - 1, lr, 1),
@@ -2529,6 +2544,61 @@ def reach(dome: Dome, b: Blocks, extra: dict[Cell, str] | None = None) -> set[Ce
     }
     blocked |= {(x, y + 1, z) for (x, y, z), block in solid.items() if block == BARS}
     return rooms.reach(dome, domes.entrance(dome)[:3], solid, blocked)
+
+
+def roam(dome: Dome, b: Blocks, extra: dict[Cell, str] | None = None) -> set[Cell]:
+    """where a player's feet can get to from the entrance as ``reach``, and
+    also by slipping diagonally between two bars that do not join, by
+    standing on bars, and by stepping off any edge (and a block aside on
+    the way down): for the places nobody must get to"""
+    solid = {**b.solid, **(extra or {})}
+    full = set(solid) | {
+        c for c, block in b.attached.items() if "lantern" in block or "bell" in block
+    }
+    cells = domes.dome_cells(dome)
+    ground = set(cells.floor) | set(solid)
+    sides = ((1, 0), (-1, 0), (0, 1), (0, -1))
+
+    def free(c: Cell) -> bool:
+        x, y, z = c
+        return c in cells.interior and c not in full and (x, y + 1, z) not in full
+
+    def bars(c: Cell) -> bool:
+        x, y, z = c
+        return solid.get(c) == BARS and solid.get((x, y + 1, z)) == BARS
+
+    def drop(c: Cell) -> Cell:
+        x, y, z = c
+        while (x, y - 1, z) not in ground:
+            y -= 1
+        return (x, y, z)
+
+    def moves(c: Cell):
+        x, y, z = c
+        for dx, dz in sides:
+            for dy in (0, 1):
+                to = (x + dx, y + dy, z + dz)
+                if free(to) and (not dy or free((x, y + 1, z))):
+                    yield to
+                    break
+        for dx, dz in ((1, 1), (1, -1), (-1, 1), (-1, -1)):
+            to = (x + dx, y, z + dz)
+            if free(to) and bars((x + dx, y, z)) and bars((x, y, z + dz)):
+                yield to
+
+    start = domes.entrance(dome)[:3]
+    seen, edge = {start}, [start]
+    while edge:
+        for to in moves(edge.pop()):
+            x, y, z = to
+            landed = {drop(to)}
+            if (x, y - 1, z) not in ground:
+                aside = ((x + dx, y, z + dz) for dx, dz in sides)
+                landed |= {drop(a) for a in aside if free(a)}
+            for land in landed - seen:
+                seen.add(land)
+                edge.append(land)
+    return seen
 
 
 def walk_problems(dome: Dome) -> list[str]:
@@ -2655,10 +2725,11 @@ def blind_problems(dome: Dome) -> list[str]:
 
 
 def trap_problems(dome: Dome) -> list[str]:
-    """nobody climbs onto a crate or the deckhouse's roof: with every bay
-    one, two or three crates high, no crate's top is a place to stand;
-    and with every bay empty, every cell of the hold floor a player gets
-    to leads back to the entrance"""
+    """nobody gets onto a crate, the deckhouse's roof or the pulpit's
+    canopy: with every bay one, two or three crates high, no crate's top
+    is a place to stand, even by a drop or a slip between bars (``roam``);
+    and with every bay empty, every cell of the hold floor (anyone may fall
+    in) leads back to the entrance"""
     fr = frame(dome)
     b = room_blocks(dome)
     problems = []
@@ -2666,6 +2737,8 @@ def trap_problems(dome: Dome) -> list[str]:
         fr.at(f, r, HOUSE_TOP + 1)
         for f in range(HOUSE_F[0], HOUSE_F[1] + 1)
         for r in range(-HOUSE_R, HOUSE_R + 1)
+    } | {
+        fr.at(f, r, 11) for f in range(PULPIT_F[0], PULPIT_F[1]) for r in range(-9, 10)
     }
     for n in range(1, TIERS + 1):
         crates = {
@@ -2674,7 +2747,7 @@ def trap_problems(dome: Dome) -> list[str]:
             for t in range(n)
             for p in bay_cells(i, t)
         }
-        seen = reach(dome, b, crates)
+        seen = roam(dome, b, crates)
         # every cell over the crates, up to the feet over a full bay
         tops = {
             fr.at(f, r, h)
@@ -2686,9 +2759,8 @@ def trap_problems(dome: Dome) -> list[str]:
             problems.append(
                 f"{n} high: {len(on)} cells on the crates or the roof, as {min(on)}"
             )
-    seen = reach(dome, b)
     start = domes.entrance(dome)[:3]
-    floor = {fr.at(f, r, 1) for f, r in hold_floor()} & seen
+    floor = {fr.at(f, r, 1) for f, r in hold_floor()}
     stuck = [
         c
         for c in sorted(floor)
