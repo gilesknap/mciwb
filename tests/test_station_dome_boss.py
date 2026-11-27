@@ -1,5 +1,5 @@
 """
-The Engine (dome 7) of examples/station, with no server: its room's plan
+The Engine (the last dome) of examples/station, with no server: its room's plan
 and the offline checks of it, its build stage against the example's fake
 client, its datapack functions with phase 2 off and on, and its state
 machine driven by a small interpreter of the functions' commands (``SIM``)
@@ -36,6 +36,7 @@ def test_station_boss_room():
         """
 import build_station as B
 import dome_boss as D
+N = D.INDEX  # the dome's place in the ring
 import dome_start
 import domes
 import fittings
@@ -49,7 +50,7 @@ dome = L.DOMES[D.INDEX]
 assert dome.key == "boss" and D.PHASE_2 is True
 # the module takes the stub's place: its stage, its check under the name the
 # verify script lists (the trophy at the win is the Pump House's)
-assert B.STAGES["dome_7_inside"] is D.build and V.LIVE["boss"] is D.check
+assert B.STAGES[f"dome_{N}_inside"] is D.build and V.LIVE["boss"] is D.check
 assert "boss" not in V.todos()
 assert "boss" in {m.name for m in B.modules()}
 assert "stub_boss" not in {m.name for m in B.modules()}
@@ -231,6 +232,7 @@ def test_station_boss_build():
         """
 import build_station as B
 import dome_boss as D
+N = D.INDEX  # the dome's place in the ring
 import domes
 import game
 import station_layout as L
@@ -242,7 +244,7 @@ place = D.room(dome)
 
 # the stage against the fake client: every block where the plan has it, the
 # dome's shell and the pump engine left alone, the same built twice
-stages = ["site", "dome_7", "tunnels", "dome_7_inside"]
+stages = ["site", f"dome_{N}", "tunnels", f"dome_{N}_inside"]
 rec = B.offline_build(stages=stages, force=False)
 for cell, block in blocks.everything().items():
     if cell != place.lectern:
@@ -269,8 +271,8 @@ assert count("summon minecraft:interaction") == 1
 assert count("summon minecraft:text_display") == 3
 assert count("summon minecraft:block_display") == len(D.GOVERNOR_PARTS)
 assert not any(c.startswith("summon") and "ravager" in c for c in rec.commands)
-assert "function station:dome/7/reset" in rec.commands
-again = B.offline_build(stages=[*stages, "dome_7_inside"], force=False)
+assert f"function station:dome/{N}/reset" in rec.commands
+again = B.offline_build(stages=[*stages, f"dome_{N}_inside"], force=False)
 assert again.world.dump() == rec.world.dump()
 # a room with a problem is not built
 real = D.dressing_blocks
@@ -287,7 +289,7 @@ except RuntimeError as e:
 else:
     raise AssertionError("a room on the reserved cells was built")
 D.dressing_blocks = real
-print(B.STAGES["dome_7_inside"].__name__)
+print(B.STAGES[f"dome_{N}_inside"].__name__)
 """
     )
     assert "build" in out
@@ -301,6 +303,7 @@ import re
 import build_station as B
 import datapack
 import dome_boss as D
+N = D.INDEX  # the dome's place in the ring
 import domes
 import game
 import station_layout as L
@@ -317,27 +320,30 @@ for phase_2 in (False, True):
     f = pack.functions
     # the hooks the core calls, and that it calls them
     for hook in (*game.HOOKS, *game.MORE_HOOKS):
-        assert f"dome/7/{hook}" in f, hook
+        assert f"dome/{N}/{hook}" in f, hook
     calls = lambda path, name: any(  # noqa: E731
         line.endswith(f"function station:{name}") for line in f[path]
     )
-    assert calls("dome/7/entered", "dome/7/enter") and calls("game/tick", "dome/7/tick")
-    assert calls("dome/7/form", "dome/7/solo") and calls("dome/7/form", "dome/7/duo")
-    assert calls("reset/all", "dome/7/reset") and calls("dome/7/left", "dome/7/empty")
-    assert calls("dome/7/exited", "dome/7/leave")
-    assert calls("dome/7/respawned", "dome/7/died")
+    assert calls(f"dome/{N}/entered", f"dome/{N}/enter")
+    assert calls("game/tick", f"dome/{N}/tick")
+    assert calls(f"dome/{N}/form", f"dome/{N}/solo")
+    assert calls(f"dome/{N}/form", f"dome/{N}/duo")
+    assert calls("reset/all", f"dome/{N}/reset")
+    assert calls(f"dome/{N}/left", f"dome/{N}/empty")
+    assert calls(f"dome/{N}/exited", f"dome/{N}/leave")
+    assert calls(f"dome/{N}/respawned", f"dome/{N}/died")
     # the trophy at the win is the Pump House's, none of the module's
     assert not any("trophy" in line for line in f["run/win"])
     # the core's kit on entering, and none of the module's own
-    assert calls("dome/7/entered", "kit/boss")
-    mine = {n: ls for n, ls in f.items() if n.startswith("dome/7/")}
+    assert calls(f"dome/{N}/entered", "kit/boss")
+    mine = {n: ls for n, ls in f.items() if n.startswith(f"dome/{N}/")}
     core = {"entered", "exited", "left", "form", "respawned", "solved", "check"}
     mine = {n: ls for n, ls in mine.items() if n.split("/")[2] not in core}
     assert not any(" armor." in line for ls in mine.values() for line in ls)
     # one call of the core's solved, in ``won``
     solvers = [n for n, ls in mine.items()
-               if any("function station:dome/7/solved" in line for line in ls)]
-    assert solvers == ["dome/7/won"], solvers
+               if any(f"function station:dome/{N}/solved" in line for line in ls)]
+    assert solvers == [f"dome/{N}/won"], solvers
     # every function referenced exists; every block and item is known
     assert not V.function_problems(B.pack_files(pack))
     assert not V.name_problems(mine)
@@ -348,13 +354,13 @@ for phase_2 in (False, True):
             for selector in re.findall(r"@a(?:\\[[^\\]]*\\])?", line):
                 assert "tag=st.in" in selector, (name, line)
     # reset does all that empty does, and more
-    quiet = [l for l in f["dome/7/empty"] if "run function" not in l
-             and not l.endswith("dome/7/signs")]
-    assert quiet and all(line in f["dome/7/reset"] for line in quiet)
-    assert calls("dome/7/reset", "dome/7/face/shut")
-    assert all(calls("dome/7/reset", f"dome/7/main/open_{k}") for k in "abc")
-    gone = "execute as @e[tag=st.mob7] run function station:mob/remove"
-    assert gone in f["dome/7/reset"]
+    quiet = [l for l in f[f"dome/{N}/empty"] if "run function" not in l
+             and not l.endswith(f"dome/{N}/signs")]
+    assert quiet and all(line in f[f"dome/{N}/reset"] for line in quiet)
+    assert calls(f"dome/{N}/reset", f"dome/{N}/face/shut")
+    assert all(calls(f"dome/{N}/reset", f"dome/{N}/main/open_{k}") for k in "abc")
+    gone = f"execute as @e[tag=st.mob{N}] run function station:mob/remove"
+    assert gone in f[f"dome/{N}/reset"]
     # nothing reads, sets or kills the cylinders but their clocks' torches,
     # taken out at the win and put back by the reset; nothing kills by
     # position
@@ -369,37 +375,39 @@ for phase_2 in (False, True):
             assert not any(f" {xyz} " in f"{line} " for xyz in cells), (name, line)
             assert not line.startswith("kill"), (name, line)
             touched = any(f" {D._xyz(c)} " in f"{line} " for c in torches)
-            assert not touched or name in ("dome/7/won", "dome/7/reset"), (name, line)
+            allowed = (f"dome/{N}/won", f"dome/{N}/reset")
+            assert not touched or name in allowed, (name, line)
     for c, block in torches.items():
-        assert D._setblock(c, "minecraft:air") in f["dome/7/won"]
-        assert any(l.endswith(D._setblock(c, block)) for l in f["dome/7/reset"])
+        assert D._setblock(c, "minecraft:air") in f[f"dome/{N}/won"]
+        assert any(l.endswith(D._setblock(c, block)) for l in f[f"dome/{N}/reset"])
     # the machinery runs whether or not there is a fight
-    step = f["dome/7/step"]
+    step = f[f"dome/{N}/step"]
     at = lambda end: next(  # noqa: E731
         i for i, l in enumerate(step) if l.endswith(end)
     )
-    assert at("function station:dome/7/dress") < at("run return 0")
+    assert at(f"function station:dome/{N}/dress") < at("run return 0")
     # the automatons are the core's: its kinds, its dress, its team
-    spawn = " ".join(f["dome/7/pour/at_0"])
+    spawn = " ".join(f[f"dome/{N}/pour/at_0"])
     for part in ("Stoker", "Riveter", "Slag Husk", "st.automaton", "station:mob/dress",
-                 "st.mob7", "st.home0", "IsBaby:0b"):
+                 f"st.mob{N}", "st.home0", "IsBaby:0b"):
         assert part in spawn, part
 
 off, on = packs[False].functions, packs[True].functions
 # phase 2 is in the pack only with the switch on
 extra = sorted(set(on) - set(off))
 parts = ("breach/", "master/", "p3", "p4", "lights/")
-assert extra and all(n.startswith(tuple("dome/7/" + p for p in parts)) for n in extra)
-assert off["dome/7/all_shut"] == ["function station:dome/7/won"]
-assert on["dome/7/all_shut"] == ["function station:dome/7/breach/start"]
+assert extra
+assert all(n.startswith(tuple(f"dome/{N}/" + p for p in parts)) for n in extra)
+assert off[f"dome/{N}/all_shut"] == [f"function station:dome/{N}/won"]
+assert on[f"dome/{N}/all_shut"] == [f"function station:dome/{N}/breach/start"]
 for name, lines in off.items():
-    if name.startswith("dome/7/"):
+    if name.startswith(f"dome/{N}/"):
         text = " ".join(lines)
         assert "ravager" not in text and "minecraft:generic" not in text, name
 # the pair: summoned here with the core's rules, on the automatons' team,
 # and not swept by the core as automatons are
 summon = D.master_summon(place.spot)
-assert summon in on["dome/7/master/out"]
+assert summon in on[f"dome/{N}/master/out"]
 assert summon.count('Team:"st.automaton"') == 2 and summon.count("station:empty") == 2
 assert summon.count("PersistenceRequired:1b") == 2
 assert "st.mob" not in summon and len(summon.encode()) < B.MAX_COMMAND
@@ -436,22 +444,22 @@ game.add_functions(other, [D.MODULE])
 assert tag not in other.files()
 assert 'Passengers:[{id:"minecraft:vindicator",Tags:[' in D.master_summon(place.spot)
 assert "IsBaby" not in D.master_summon(place.spot)
-assert D.master_summon(place.spot) in other.functions["dome/7/master/out"]
+assert D.master_summon(place.spot) in other.functions[f"dome/{N}/master/out"]
 D.RIDER_MOB = "minecraft:husk"
 # the transition is plain: when the mains shut the floor's lanterns dim, the
 # players are darkened, the Master's bar comes up empty, a title, a sound
-start = on["dome/7/breach/start"]
-assert "function station:dome/7/lights/dim" in start
-assert "function station:dome/7/bar/show" in start
-assert "bossbar set station:d7 value 0" in start
-players = "@a[tag=st.in,scores={st.dome=7}]"
+start = on[f"dome/{N}/breach/start"]
+assert f"function station:dome/{N}/lights/dim" in start
+assert f"function station:dome/{N}/bar/show" in start
+assert f"bossbar set station:d{N} value 0" in start
+players = f"@a[tag=st.in,scores={{st.dome={N}}}]"
 assert f"effect give {players} minecraft:darkness {D.DARK} 0 true" in start
 assert sum(l.startswith(f"title {players}") for l in start) == 3
 assert sum(l.startswith("playsound") for l in start) >= 2
-out = on["dome/7/master/out"]
+out = on[f"dome/{N}/master/out"]
 assert any("THE MASTER" in l for l in out) and any("ravager.roar" in l for l in out)
-assert any(l.startswith("execute store result bossbar station:d7 value")
-           for l in on["dome/7/breach/step"])
+assert any(l.startswith(f"execute store result bossbar station:d{N} value")
+           for l in on[f"dome/{N}/breach/step"])
 # the lanterns: the core's own in this dome's floor, none that touches the
 # room's redstone; dimmed to a copper bulb, back at the win and the reset
 lights = D.floor_lights(dome)
@@ -465,31 +473,31 @@ for x, y, z in lights:
     assert (x, y, z) not in blocks.everything()
     assert not any(abs(x - a) <= 1 and abs(y - b) <= 1 and abs(z - c) <= 1
                    for a, b, c in live), (x, y, z)
-assert on["dome/7/lights/dim"] == [D._setblock(c, D.DIM) for c in lights]
-assert on["dome/7/lights/full"] == [
+assert on[f"dome/{N}/lights/dim"] == [D._setblock(c, D.DIM) for c in lights]
+assert on[f"dome/{N}/lights/full"] == [
     D._setblock(c, "minecraft:sea_lantern") for c in lights]
-for name in ("dome/7/won", "dome/7/reset"):
-    assert "function station:dome/7/lights/full" in on[name], name
+for name in (f"dome/{N}/won", f"dome/{N}/reset"):
+    assert f"function station:dome/{N}/lights/full" in on[name], name
     assert not any("lights/" in line for line in off[name]), name
 # nobody stands where he comes out: the porch and the firebox are cleared
 # at every step of the breach and as he is summoned
-clear = "function station:dome/7/breach/clear"
-assert clear in on["dome/7/breach/start"] and clear in on["dome/7/breach/step"]
+clear = f"function station:dome/{N}/breach/clear"
+assert clear in on[f"dome/{N}/breach/start"] and clear in on[f"dome/{N}/breach/step"]
 assert out.index(clear) < out.index(summon)
 # the dead respawn in the antechamber: the core's respawn point for this
 # dome is its entrance spot, which is in the pavilion, where no mob stays
 x, y, z, _ = domes.entrance(dome)
-assert any(l.startswith(f"spawnpoint @s {x} {y} {z}") for l in on["dome/7/entered"])
+assert any(l.startswith(f"spawnpoint @s {x} {y} {z}") for l in on[f"dome/{N}/entered"])
 for box in (place.pavilion, place.fence):
     assert all(min(a, b) <= v <= max(a, b) for v, a, b in zip((x, y, z), *box))
-assert any(D.RAVAGER in l and "run tp @s" in l for l in on["dome/7/fence"])
-assert "function station:dome/7/fence" in on["dome/7/p3"]
+assert any(D.RAVAGER in l and "run tp @s" in l for l in on[f"dome/{N}/fence"])
+assert f"function station:dome/{N}/fence" in on[f"dome/{N}/p3"]
 # no outlasting him from the pavilion: with nobody in the arena he cannot
 # be hurt, and then he mends
-p3 = " ".join(on["dome/7/p3"])
+p3 = " ".join(on[f"dome/{N}/p3"])
 assert "minecraft:resistance 2 4 true" in p3 and "minecraft:regeneration 2 2" in p3
 # his health: by who is in the dome, then by the level (the core's dress)
-assert any(str(D.TWO_PLAYERS) in l and "#occ7" in l for l in out)
+assert any(str(D.TWO_PLAYERS) in l and f"#occ{N}" in l for l in out)
 assert sum("function station:mob/dress with storage" in l for l in out) == 2
 D.PHASE_2 = True
 """
@@ -560,9 +568,9 @@ class Sim:
         return e
 
     def player(self, tag, cell):
-        """a stand-in in dome 7, standing in a cell"""
+        """a stand-in in the dome, standing in a cell"""
         e = self.add("minecraft:armor_stand", (0, 0, 0), {"st.standin", "st.in", tag})
-        e["scores"]["st.dome"] = 7
+        e["scores"]["st.dome"] = D.INDEX
         self.move(e, cell)
         return e
 
@@ -866,6 +874,7 @@ def state_machine(phase_2: bool, body: str) -> str:
 import build_station as B
 import datapack
 import dome_boss as D
+N = D.INDEX  # the dome's place in the ring
 import game
 import station_layout as L
 
@@ -873,7 +882,7 @@ D.PHASE_2 = {phase_2}
 dome = L.DOMES[D.INDEX]
 place = D.room(dome)
 a, b, c = place.mains
-stages = ["site", "dome_7", "tunnels", "dome_7_inside"]
+stages = ["site", f"dome_{{N}}", "tunnels", f"dome_{{N}}_inside"]
 rec = B.offline_build(stages=stages, force=False)
 pack = datapack.Pack(stamp="t")
 # the Pump House's trophy at the win, as far as the live check reads it
@@ -893,8 +902,8 @@ LIT = (D.BULB + "[lit=true]", D.GREEN_BULB + "[lit=true]")
 def steps(n=1):
     for _ in range(n * D.STEP):
         # (the core's count of who is in the dome)
-        sim.scores["#occ7", "st"] = len(sim.select("@e[tag=st.standin]", None))
-        sim.run("dome/7/tick")
+        sim.scores[f"#occ{{N}}", "st"] = len(sim.select("@e[tag=st.standin]", None))
+        sim.run(f"dome/{{N}}/tick")
 
 
 def throw(main, on=True):
@@ -906,22 +915,22 @@ def lamps(cells):
 
 
 def mobs():
-    return [e for e in sim.entities if "st.mob7" in e["tags"]]
+    return [e for e in sim.entities if f"st.mob{{N}}" in e["tags"]]
 
 
 def enter(tag, cell, first=1):
     sim.scores["#first", "st"] = first
     e = sim.player(tag, cell)
-    sim.run("dome/7/enter", e)
+    sim.run(f"dome/{{N}}/enter", e)
     return e
 
 
 def leave_all():
     for e in [e for e in sim.entities if "st.standin" in e["tags"]]:
-        sim.run("dome/7/leave", e)
+        sim.run(f"dome/{{N}}/leave", e)
         sim.entities.remove(e)
-    sim.entities[:] = [e for e in sim.entities if "st.mob7" not in e["tags"]]
-    sim.run("dome/7/empty")
+    sim.entities[:] = [e for e in sim.entities if f"st.mob{{N}}" not in e["tags"]]
+    sim.run(f"dome/{{N}}/empty")
 
 
 def as_built(what):
@@ -939,8 +948,8 @@ def as_built(what):
 
 
 entrance = D.domes.entrance(dome)[:3]
-sim.scores["#d7", "st"] = 1
-sim.run("dome/7/reset")
+sim.scores[f"#d{{N}}", "st"] = 1
+sim.run(f"dome/{{N}}/reset")
 as_built("reset")
 """
         + body
@@ -1004,7 +1013,7 @@ assert sim.is_block(a.lever, "minecraft:air")
 assert all(sim.is_block(x, D.GREEN_BULB + "[lit=true]") for x in a.gauge)
 assert lamps(a.telltales) == 0 and lamps(b.telltales) == 4
 assert any(cell == a.sign and "SHUT" in nbt for cell, nbt in sim.said)
-assert sim.get("#d7") == 1
+assert sim.get(f"#d{N}") == 1
 steps(4)
 assert sim.b7("ga") == D.FULL  # a shut main does not drain
 
@@ -1052,10 +1061,10 @@ END_PHASE_1 = (
 sim.move(p, c.stand)
 throw(c)
 steps(D.FULL // D.WIND - 1)
-assert sim.b7("phase") == 1 and sim.get("#d7") == 1
+assert sim.b7("phase") == 1 and sim.get(f"#d{N}") == 1
 steps(2)
-assert sim.b7("phase") == 5 and sim.get("#d7") == 2 and sim.get("#run") == 2
-assert sim.called.count("dome/7/won") == 1 and "tunnel/7/ready" in sim.called
+assert sim.b7("phase") == 5 and sim.get(f"#d{N}") == 2 and sim.get("#run") == 2
+assert sim.called.count(f"dome/{N}/won") == 1 and f"tunnel/{N}/ready" in sim.called
 assert not mobs()
 # the win arms the Pump House's trophy dispenser
 assert sim.called.count("dome/0/trophy/arm") == 1
@@ -1065,7 +1074,7 @@ steps(len(place.way_out) + 2)
 assert lamps(place.way_out) == len(place.way_out) and sim.b7("spin") == 0
 # nothing more happens, and nothing solves it twice
 steps(20)
-assert sim.called.count("dome/7/won") == 1 and not mobs()
+assert sim.called.count(f"dome/{N}/won") == 1 and not mobs()
 # a second entry into the solved room changes nothing
 leave_all()
 p = enter("p1", entrance)
@@ -1073,7 +1082,7 @@ steps(4)
 assert sim.b7("phase") == 5 and lamps(place.way_out) == len(place.way_out)
 
 # ---- reset: everything as built
-sim.run("dome/7/reset")
+sim.run(f"dome/{N}/reset")
 as_built("reset after the win")
 """
 )
@@ -1101,7 +1110,7 @@ assert sim.b7("rate") == 77 and sim.b7("la") == 1 and sim.b7("phase") == 0
 sim.put("rate", D.WIND)
 # an untouched room is set up anew by the first to come in, and only by them
 leave_all()
-sim.run("dome/7/reset")
+sim.run(f"dome/{N}/reset")
 sim.put("rate", 77)
 p = enter("p1", entrance)
 assert sim.b7("rate") == D.WIND
@@ -1113,7 +1122,7 @@ sim.entities.remove(q)
 
 # ---- two players: the form follows who is in the arena, not the dome
 q = sim.player("p2", entrance)
-sim.run("dome/7/duo")  # the core's hook: two in the dome
+sim.run(f"dome/{N}/duo")  # the core's hook: two in the dome
 steps(2)
 assert (sim.b7("na"), sim.b7("form")) == (0, 1)
 # one in the arena, the partner idle in the pavilion: A winds alone
@@ -1162,7 +1171,7 @@ assert sim.b7("gc") == 4 * D.WIND
 
 # ---- one of A and B shut solo, then a second player: the other winds alone
 leave_all()
-sim.run("dome/7/reset")
+sim.run(f"dome/{N}/reset")
 p = enter("p1", entrance)
 sim.move(p, a.stand)
 throw(a)
@@ -1177,7 +1186,7 @@ assert sim.b7("gb") >= 3 * D.WIND
 
 # ---- one leaves in the middle: solo 3 s after, and the one left goes on
 leave_all()
-sim.run("dome/7/reset")
+sim.run(f"dome/{N}/reset")
 p = enter("p1", entrance)
 q = sim.player("p2", b.stand)
 sim.move(p, a.stand)
@@ -1188,7 +1197,7 @@ throw(b)
 steps(6)
 part = sim.b7("ga")
 assert part == sim.b7("gb") > 0
-sim.run("dome/7/leave", q)
+sim.run(f"dome/{N}/leave", q)
 sim.entities.remove(q)
 steps(D.SOLO_STEPS - 2)
 assert sim.b7("form") == 2 and sim.b7("ga") == part  # held, not lost
@@ -1197,7 +1206,7 @@ assert sim.b7("form") == 1 and sim.b7("ga") > part and sim.b7("gb") < part
 # a partner who dies is out of the arena (the core calls ``died`` at the
 # entrance, in the pavilion)
 p["tags"].add(D.ARENA)
-sim.run("dome/7/died", p)
+sim.run(f"dome/{N}/died", p)
 assert D.ARENA not in p["tags"]
 
 # ---- reset from a scrambled state
@@ -1209,7 +1218,7 @@ sim.world.setblock(place.lectern, "minecraft:lectern[has_book=false]")
 steps(1)
 assert sim.is_block(place.lectern, "minecraft:lectern[has_book=true]")
 assert mobs() and sim.b7("ga") > 0
-sim.run("dome/7/reset")
+sim.run(f"dome/{N}/reset")
 as_built("reset from a scrambled state")
 """
 
@@ -1240,15 +1249,15 @@ sim.move(p, place.porch[0])
 q = sim.player("p2", c.stand)
 throw(c)
 steps(D.FULL // D.WIND + 1)
-assert sim.b7("phase") == 2 and sim.get("#d7") == 1 and not mobs()
-assert "dome/7/won" not in sim.called
+assert sim.b7("phase") == 2 and sim.get(f"#d{N}") == 1 and not mobs()
+assert f"dome/{N}/won" not in sim.called
 # one standing in the porch is put back from the doors
 assert p["pos"][0] == place.back[0] + 0.5
 # it cannot be missed: the floor's lanterns dim, the Master's bar comes up
 # empty and fills, a title
 lights = D.floor_lights(dome)
 dim = lambda: sum(sim.is_block(x, D.DIM) for x in lights)  # noqa: E731
-assert dim() == len(lights) > 60 and sim.get("#bar7") == 1
+assert dim() == len(lights) > 60 and sim.get(f"#bar{N}") == 1
 assert any(k == "title" and "THE MAINS ARE SHUT" in v for k, v in sim.said)
 # the doors are forced from the middle outwards
 order = [gone()]
@@ -1274,7 +1283,9 @@ assert filling == sorted(filling) and 0 < filling[0] < filling[-1] == 100
 assert sim.b7("phase") == 3 and len(pair()) == 2
 kinds = sorted(e["type"] for e in pair())
 assert kinds == sorted(["minecraft:ravager", D.RIDER_MOB])
-assert all(e["team"] == "st.automaton" and "st.mob7" not in e["tags"] for e in pair())
+assert all(
+    e["team"] == "st.automaton" and f"st.mob{N}" not in e["tags"] for e in pair()
+)
 assert any(k == "title" and "THE MASTER" in v for k, v in sim.said)
 # under a rider of the game's raiders, as a ravager needs to fight by itself
 assert len(sim.select("@e[tag=" + D.RIDER + ",type=#minecraft:raiders]", None)) == 1
@@ -1285,7 +1296,7 @@ assert sim.b7("hmax") == full and sim.b7("hsum") == full
 for e in pair():
     sim.entities.remove(e)
 steps(1)
-assert sim.b7("phase") == 3 and len(pair()) == 2 and sim.get("#d7") == 1
+assert sim.b7("phase") == 3 and len(pair()) == 2 and sim.get(f"#d{N}") == 1
 steps(D.EARLY + 2)
 # wounded: the bar follows
 rav = sim.select("@e[tag=" + D.RAVAGER + "]", None)[0]
@@ -1318,14 +1329,14 @@ assert sim.b7("up") == 0 and sim.b7("vent") == 0
 # ---- the dome emptied in the fight: he goes, and comes out again whole
 leave_all()
 assert sim.b7("phase") == 4 and not pair() and gone() == [True] * 3
-assert dim() == len(lights) and sim.get("#bar7") == 0  # still dim, no bar
+assert dim() == len(lights) and sim.get(f"#bar{N}") == 0  # still dim, no bar
 p = enter("p1", entrance, first=1)
 steps(D.ROAR + 4)
 assert sim.b7("phase") == 4 and not pair()  # in the pavilion: he waits
 assert sim.b7("shut") == 3 and sim.b7("rate") == D.WIND  # and nothing is set up anew
 sim.move(p, place.spot)  # (into the open firebox itself: put out of it)
 steps(D.ROAR + 1)
-assert sim.b7("phase") == 3 and len(pair()) == 2 and sim.get("#bar7") == 1
+assert sim.b7("phase") == 3 and len(pair()) == 2 and sim.get(f"#bar{N}") == 1
 assert p["pos"][0] == place.back[0] + 0.5
 solo = D.RAVAGER_HP + D.MASTER_HP
 assert sim.b7("hmax") == solo == sim.b7("hsum")
@@ -1342,22 +1353,22 @@ steps(1)
 assert rider["pos"][0] == place.back[0] + 0.5
 sim.entities.remove(rider)
 steps(1)
-assert sim.b7("phase") == 5 and sim.get("#d7") == 2 and sim.get("#run") == 2
-assert sim.called.count("dome/7/won") == 1 and "tunnel/7/ready" in sim.called
+assert sim.b7("phase") == 5 and sim.get(f"#d{N}") == 2 and sim.get("#run") == 2
+assert sim.called.count(f"dome/{N}/won") == 1 and f"tunnel/{N}/ready" in sim.called
 assert sim.called.count("dome/0/trophy/arm") == 1
 # the lanterns come back, the bar goes
-assert dim() == 0 and sim.get("#bar7") == 0
+assert dim() == 0 and sim.get(f"#bar{N}") == 0
 assert all(sim.is_block(x, "minecraft:sea_lantern") for x in lights)
 steps(len(place.way_out) + 2)
 assert lamps(place.way_out) == len(place.way_out) and lamps(place.eyes) == 0
 
 # ---- reset: the doors shut again, the firebox empty
-sim.run("dome/7/reset")
+sim.run(f"dome/{N}/reset")
 as_built("reset after the Master")
 
 # ---- emptied in the breach itself: phase 4, the doors open
 leave_all()
-sim.scores["#d7", "st"] = 1  # (the game's reset opens the dome again)
+sim.scores[f"#d{N}", "st"] = 1  # (the game's reset opens the dome again)
 p2 = enter("p1", entrance)
 for name in ("la", "lb"):
     sim.put(name, 1)
@@ -1370,13 +1381,13 @@ leave_all()
 assert sim.b7("phase") == 4 and gone() == [True] * 3 and not pair()
 # and the game's reset from there: the lanterns back, the doors shut
 assert dim() == len(lights)
-sim.run("dome/7/reset")
+sim.run(f"dome/{N}/reset")
 assert dim() == 0
 as_built("reset from the breach")
 
 # ---- the escort, from level 6: an automaton or two beside him
 leave_all()
-sim.run("dome/7/reset")
+sim.run(f"dome/{N}/reset")
 sim.scores["#level", "st"] = 8
 sim.run("difficulty/apply")
 p3 = enter("p1", entrance)
@@ -1421,18 +1432,18 @@ class Ctx:
             for d in tunnels.ends(TUNNEL)
             for _, c in domes.door_cells(d, TUNNEL)
         }
-        sim.stubs["station:tunnel/7/open"] = self.opened
+        sim.stubs[f"station:tunnel/{N}/open"] = self.opened
         # the solve wakes the pump: its lever by the airlock, and a pull
         # of it (``game_checks.pull_pump``) opens the tunnel
         self.lever = tunnels.lever_cell(TUNNEL)
-        sim.stubs["station:tunnel/7/ready"] = self.ready
+        sim.stubs[f"station:tunnel/{N}/ready"] = self.ready
 
     def ready(self, me, args):
-        sim.scores["#t7.ready", "st"] = 1
+        sim.scores[f"#t{N}.ready", "st"] = 1
         sim.world.setblock(self.lever, tunnels.lever_block(TUNNEL))
 
     def opened(self, me, args):
-        sim.scores["#t7", "st"] = 2
+        sim.scores[f"#t{N}", "st"] = 2
         for cell in self.doors:
             sim.world.setblock(cell, "minecraft:air")
 
@@ -1445,18 +1456,18 @@ class Ctx:
         stands = sim.select("@e[tag=st.standin]", None)
         for e in stands:
             e["tags"].add("st.in")
-            if e["scores"].get("st.dome") == 7 and not self.inside(e):
+            if e["scores"].get("st.dome") == N and not self.inside(e):
                 e["scores"]["st.dome"] = -1
-                sim.run("dome/7/leave", e)
+                sim.run(f"dome/{N}/leave", e)
         for e in stands:
-            if self.inside(e) and e["scores"].get("st.dome") != 7:
-                e["scores"]["st.dome"] = 7
+            if self.inside(e) and e["scores"].get("st.dome") != N:
+                e["scores"]["st.dome"] = N
                 sim.run("difficulty/apply")
                 sim.scores["#first", "st"] = 0 if st["was"] else 1
                 st["was"] = 1
-                sim.run("dome/7/enter", e)
-        occ = sum(e["scores"].get("st.dome") == 7 for e in stands)
-        sim.scores["#occ7", "st"] = occ
+                sim.run(f"dome/{N}/enter", e)
+        occ = sum(e["scores"].get("st.dome") == N for e in stands)
+        sim.scores[f"#occ{N}", "st"] = occ
         sim.scores["#players", "st"] = len(stands)
         if occ >= 2:
             st["form"], st["grace"] = 2, 0
@@ -1468,9 +1479,9 @@ class Ctx:
             st["form"] = 1
         if st["form"] == 1:
             st["grace"] = 0
-        if occ and sim.get("#d7") == 1 and st["shown"] != st["form"]:
+        if occ and sim.get(f"#d{N}") == 1 and st["shown"] != st["form"]:
             st["shown"] = st["form"]
-            sim.run("dome/7/solo" if st["form"] == 1 else "dome/7/duo")
+            sim.run(f"dome/{N}/solo" if st["form"] == 1 else f"dome/{N}/duo")
         if occ:
             st["gone"] = 0
         elif st["was"]:
@@ -1479,18 +1490,18 @@ class Ctx:
             st.update(was=0, form=0, shown=0, grace=0, gone=0)
             for e in mobs():
                 sim.drop(e)
-            sim.run("dome/7/empty")
+            sim.run(f"dome/{N}/empty")
         if occ:
             st["was"] = 1
-        sim.scores["#form7", "st"] = st["form"]
+        sim.scores[f"#form{N}", "st"] = st["form"]
 
     def advance(self, ticks):
         for _ in range(ticks):
             self.t += 1
             if self.t % game.SCAN_TICKS == 0:
                 self.scan()
-            if sim.get("#occ7"):
-                sim.run("dome/7/tick")
+            if sim.get(f"#occ{N}"):
+                sim.run(f"dome/{N}/tick")
             self.fight()
 
     def fight(self):
@@ -1531,7 +1542,7 @@ class Ctx:
                 del sim.storage[key]
             return ""
         if command.startswith("bossbar get"):
-            shown = sim.get("#bar7") == 1
+            shown = sim.get(f"#bar{N}") == 1
             return "is currently visible" if shown else "is currently hidden"
         health = re.match(r"data modify entity (.+) Health set value (\\d+)f", command)
         if health:
@@ -1544,12 +1555,12 @@ class Ctx:
     def setblock(self, cell, block):
         sim.world.setblock(cell, block)
         if cell == self.lever and block == tunnels.lever_block(TUNNEL, True):
-            sim.scores["#t7.ready", "st"] = 0
+            sim.scores[f"#t{N}.ready", "st"] = 0
             self.opened(None, None)
 
     def function(self, path, args=""):
-        if path == "tunnel/7/reset":
-            sim.scores["#t7", "st"] = 0
+        if path == f"tunnel/{N}/reset":
+            sim.scores[f"#t{N}", "st"] = 0
             for cell, block in self.doors.items():
                 sim.world.setblock(cell, block)
         else:
@@ -1604,7 +1615,7 @@ for command in rec.commands:  # what the build summoned
         sim.command(command, None)
 domes.check_shell = lambda ctx, dome, empty=True: []
 tunnels.counts = lambda ctx, tunnel: tunnels.expected(tunnel, 0)
-sim.scores["#t7", "st"] = 0
+sim.scores[f"#t{N}", "st"] = 0
 sim.scores["#run", "st"] = 1
 sim.scores["#solved", "st"] = 6
 ctx = Ctx()
@@ -1625,7 +1636,7 @@ else:
     assert not real, real
 assert len(problems) - len(real) == 2, problems
 # it leaves the game as it found it, and no stand-in behind
-assert sim.get("#run") == 1 and sim.get("#solved") == 6 and sim.get("#d7") == 1
+assert sim.get("#run") == 1 and sim.get("#solved") == 6 and sim.get(f"#d{N}") == 1
 assert not sim.select("@e[tag=st.standin]", None) and not mobs()
 print(ctx.t)
 """

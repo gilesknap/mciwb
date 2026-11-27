@@ -34,7 +34,8 @@ players are left alone and never counted.
   still counted, and still in the dome they died in.
 
 **Progress.** ``#d<n>``: 0 locked, 1 open, 2 solved (the start dome is
-open from the first). ``#solved``: how many of domes 1 to 7 are solved.
+open from the first). ``#solved``: how many domes after the start dome
+are solved.
 ``#run``: 0 not started, 1 running, 2 won. ``#secs``: the run's clock in
 seconds; storage ``station:game`` ``time`` and ``best`` hold ``{m,t,o}``
 (minutes, tens and ones of seconds) of the clock and of the best time at
@@ -50,11 +51,12 @@ in seconds (0: none) and ``#best<level>`` each level's.
   anyone, starts the pump event; tunnel 0's starts at once), the next
   dome marked open and every
   player's respawn point moved to its entrance. The last dome's opens
-  tunnel 7, back to the Pump House's north door, and calls
+  the last tunnel, back to the Pump House's north door, and calls
   ``station:run/win``: the clock stops, the best time for the level is
   kept, and each module's ``wins`` functions run (the trophy, the
   finale).
-- Players in the game see "Domes 3 of 7, 12:40" above the hotbar while a
+- Players in the game see "Domes 3 of 9, 12:40" (of the domes after the
+  start dome) above the hotbar while a
   run is on, and "Pump ready" after it while a pump waits for its lever.
 
 **Two rules every room follows.**
@@ -115,8 +117,8 @@ the dome last entered, or of a dome that opens while they play.
 so a late joiner is kitted on arrival. Food and arrows are topped up
 whenever a kitted player has none. Two more kits add to it, each given
 once per player per run on entering its dome (``KITS``):
-``station:kit/foundry`` (dome 4: a shield in the off hand, 32 spectral
-arrows) and ``station:kit/boss`` (dome 7: an unbreakable brass helm,
+``station:kit/foundry`` (the Foundry: a shield in the off hand, 32 spectral
+arrows) and ``station:kit/boss`` (the Engine: an unbreakable brass helm,
 cuirass and sabre). A module does not give them; it may give more of its
 own in its ``enter`` hook (lent, with ``fittings.lend_line``). A death is
 answered by the core (``st.died``, criterion ``deathCount``): see the
@@ -205,7 +207,7 @@ HOOKS = ("enter", "tick", "solo", "duo", "empty", "reset")
 MORE_HOOKS = ("leave", "died")
 #: the kits after the start kit: the dome on entering which each is
 #: given -> its name (``kit/<name>``, and the objective ``st.kit.<name>``)
-KITS = {4: "foundry", 7: "boss"}
+KITS = {layout.index_of(key): key for key in ("foundry", "boss")}
 #: how far round the shore landing and the dock the route's box reaches
 ROUTE_MARGIN = 24
 

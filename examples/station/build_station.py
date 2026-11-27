@@ -5,13 +5,18 @@ Build The Drowned Station, stage by stage::
     STAGES=site,datapack mciwb run build_station.py    # some stages
     python build_station.py [OUT]                      # offline, no server
 
-Stages, in order (``STAGES``): site, datapack, rules, shore, dock, then
-for each dome its shell (start_dome, dome_1 to dome_7) and what is inside
+Stages, in order (``STAGES``): site, datapack, rules, resite (the sea put
+back where the ring before this one had a tunnel or a dome that this one
+has not: resite.py), shore, dock, then
+for each dome its shell (start_dome, dome_1 to dome_9) and what is inside
 it (start_dome_inside, dome_1_inside ...), with the lift between the start
 dome's shell and its inside, then a stage for each tunnel (tunnel_0 to
-tunnel_7; ``tunnels`` in ``STAGES`` is short for all of them), then
+tunnel_9; ``tunnels`` in ``STAGES`` is short for all of them), then
 ``seabed`` (lights, coral and seagrass on the sea floor round it all) and
-``seabed_water`` (the water's biome), see seabed.py. Those not written yet are in
+``seabed_water`` (the water's biome), see seabed.py. One more,
+``rollback``, runs only when ``STAGES`` names it (``MANUAL_STAGES``): it
+takes away what this ring has that the one before had not, before a
+rebuild of that one. Those not written yet are in
 the list all the same, so the order of work shows; they say "not built
 yet" and do nothing. A dome's shell stage wipes what is inside the dome,
 the pump engines and the lift's shaft too: run ``lift`` (the start dome),
@@ -58,6 +63,7 @@ sys.path.insert(0, str(Path(__file__).parent))
 import datapack  # noqa: E402
 import domes  # noqa: E402
 import game  # noqa: E402
+import resite  # noqa: E402
 import seabed  # noqa: E402
 import station_layout  # noqa: E402
 import tunnels  # noqa: E402
@@ -98,7 +104,7 @@ def station_box() -> Box:
 
 
 def dome_names() -> list[str]:
-    """the domes' names, in ring order: the start dome, then domes 1 to 7"""
+    """the domes' names, in ring order: the start dome, then the others"""
     return [d.name for d in station_layout.DOMES]
 
 
@@ -516,8 +522,19 @@ def dome_stage_name(index: int) -> str:
     return "start_dome" if index == 0 else f"dome_{index}"
 
 
-#: the plan's stage that brings each dome's inside
-_PLAN_STAGE = {0: 1, 1: 1, 2: 2, 3: 2, 4: 3, 5: 3, 6: 4, 7: 4}
+#: the plan's stage that brings each dome's inside, by the dome's key
+_PLAN_STAGE = {
+    "start": 1,
+    "boiler": 1,
+    "gearworks": 2,
+    "flooded": 2,
+    "foundry": 3,
+    "signal": 3,
+    "maze": 4,
+    "boss": 4,
+    "cargo": 5,
+    "hullbreach": 5,
+}
 
 
 def make_stages() -> dict[str, Callable[[Context], str | None]]:
@@ -527,6 +544,8 @@ def make_stages() -> dict[str, Callable[[Context], str | None]]:
         "site": site,
         "datapack": install_datapack,
         "rules": rules,
+        # the previous ring's tunnels and domes that this one has not
+        "resite": resite.resite,
         "shore": not_built("the shore landing and its boat", 1),
         "dock": not_built("the dock offshore", 1),
     }
@@ -535,7 +554,7 @@ def make_stages() -> dict[str, Callable[[Context], str | None]]:
         stages[name] = (
             dome_stage(d.index)
             if d.index in domes.BUILT
-            else not_built(f"the shell of {d.name}", _PLAN_STAGE[d.index])
+            else not_built(f"the shell of {d.name}", _PLAN_STAGE[d.key])
         )
         if d.index == 0:
             # after the shell, which wipes the part of the shaft inside it
@@ -543,7 +562,7 @@ def make_stages() -> dict[str, Callable[[Context], str | None]]:
                 "the lift from the dock down to the start dome", 1
             )
         stages[f"{name}_inside"] = not_built(
-            f"the inside of {d.name}", _PLAN_STAGE[d.index]
+            f"the inside of {d.name}", _PLAN_STAGE[d.key]
         )
     for index in tunnels.BUILT:
         stages[f"tunnel_{index}"] = tunnel_stage(index)
@@ -561,6 +580,10 @@ def make_stages() -> dict[str, Callable[[Context], str | None]]:
 
 
 STAGES: dict[str, Callable[[Context], str | None]] = make_stages()
+#: stages that run only when ``STAGES`` names them: never in a full build
+MANUAL_STAGES: dict[str, Callable[[Context], str | None]] = {
+    "rollback": resite.rollback,
+}
 
 
 def written() -> list[str]:
@@ -571,7 +594,7 @@ def written() -> list[str]:
 def run_stage(ctx: Context, name: str) -> None:
     t0 = time.time()
     print(f"== {name}")
-    result = STAGES[name](ctx)
+    result = (STAGES | MANUAL_STAGES)[name](ctx)
     if result:
         print(f"   {result}")
     if name in written():
@@ -610,8 +633,10 @@ def build(
         for named in stages
         for name in (tunnel_stage_names() if named == "tunnels" else [named])
     ]
-    if unknown := [s for s in stages if s not in STAGES]:
-        raise SystemExit(f"unknown stages {unknown}: choose from {list(STAGES)}")
+    if unknown := [s for s in stages if s not in STAGES | MANUAL_STAGES]:
+        raise SystemExit(
+            f"unknown stages {unknown}: choose from {[*STAGES, *MANUAL_STAGES]}"
+        )
     folder = _setting(datapacks_dir, DATAPACKS_ENV)
     ctx = Context(
         world=world,

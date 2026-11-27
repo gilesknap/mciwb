@@ -105,7 +105,7 @@ if TYPE_CHECKING:
 
     from station_layout import Dome
 
-INDEX = 2  # the Gearworks' place in the ring
+INDEX = layout.index_of("gearworks")  # the Gearworks' place in the ring
 OBJ = game.OBJ
 
 STEP = 2  # ticks between steps of the steam: a length a step
@@ -516,7 +516,7 @@ LOG_PAGES = [
     "Steam only reaches so far.\n\n3. The clutch is on the catwalk. Put the "
     "gear back in line.",
     "With a mate: one takes brass pipe, one copper.\n\nI have sent Marsh up in "
-    "the lift. I am going on to the Flooded Dome while the tunnel is dry.\n\n"
+    "the lift. I am going on to the Cargo Hold while the tunnel is dry.\n\n"
     "It did not break the track. It only took the pipe. I think it wants us "
     "to follow.\n\nO. F.",
 ]
@@ -882,11 +882,13 @@ def _floor(b: Blocks, dome: Dome) -> None:
     back = fr.facing(-1, 0)
     cells = domes.dome_cells(dome)
     lights = domes.light_cells(dome)[0]
+    # (the mouths' sills are the doors' copper frames, laid by the tunnels)
+    sills = {c for t in domes.touching(dome) for c in domes.frame_cells(dome, t)}
     # the aisle from door to door: blackstone, a line of copper down it
     for f in range(-dome.radius, dome.radius + 1):
         for r in (-2, -1, 0, 1, 2):
             cell = fr.at(f, r, 0)
-            if cell in cells.floor and cell not in lights:
+            if cell in cells.floor and cell not in lights and cell not in sills:
                 b.floor.setdefault(cell, CUT if r == 0 else STONE)
     # the steam chest: a tank with two fires in its face, an outlet
     # towards the track, a chimney up through the court
@@ -2098,7 +2100,11 @@ def check(ctx: Any) -> list[str]:
     expect("tunnel 2 at the solve", ctx.score(f"#t{INDEX}") in (1, 2), True)
     ctx.advance(tunnels.event_ticks(tunnel) + 60)
     got = game_checks.scores(ctx, f"#t{INDEX}", f"#d{INDEX + 1}")
-    expect("tunnel 2 open, dome 3 open", got, {f"#t{INDEX}": 2, f"#d{INDEX + 1}": 1})
+    expect(
+        "its tunnel open, the next dome open",
+        got,
+        {f"#t{INDEX}": 2, f"#d{INDEX + 1}": 1},
+    )
     doors = [c for d in tunnels.ends(tunnel) for _, c in domes.door_cells(d, tunnel)]
     expect("door cells open", sum(ctx.is_block(c, AIR) for c in doors), len(doors))
     problems += [f"tunnel open: {p}" for p in domes.check_shell(ctx, dome, False)]

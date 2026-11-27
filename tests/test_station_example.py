@@ -89,10 +89,11 @@ import shore
 from fake_client import Recorder, World
 
 assert list(B.STAGES)[:3] == ["site", "datapack", "rules"] == B.written()[:3]
-assert {"start_dome", "dome_7", "tunnel_0", "tunnel_7"} <= set(B.written())
+last = len(B.station_layout.DOMES) - 1
+assert {"start_dome", f"dome_{last}", "tunnel_0", f"tunnel_{last}"} <= set(B.written())
 # the last dome has its module (a dome without one is a stub with a bypass)
 assert "boss" in {m.name for m in B.modules()}
-assert "dome_7_inside" in B.written()
+assert f"dome_{last}_inside" in B.written()
 
 # the whole build: the site loaded for it, and left loaded for the game;
 # the pack installed
@@ -106,6 +107,13 @@ assert rec.forceloaded == B.site_chunks()
 assert "reload" in rec.commands
 assert rec.storage["station:pack", "stamp"] == '"offline"'
 assert all(len(c.encode()) <= B.MAX_COMMAND for c in rec.commands)
+stubs = [m for m in B.modules() if m.name.startswith("stub_")]
+here = B.Path(B.__file__).parent
+missing = [
+    d for d in B.station_layout.DOMES[1:] if not (here / f"dome_{d.key}.py").is_file()
+]
+assert [m.name for m in stubs] == [f"stub_{d.key}" for d in missing]
+print(f"stubs built: {len(stubs)}")
 
 # some stages, and a stage that does not exist
 rec = B.offline_build(stages=["site"], force=False)
@@ -158,8 +166,10 @@ else:
 """,
         str(tmp_path),
     )
-    # every dome has its module now: no stub with a bypass is built
-    assert "a stub, its BYPASS lever" not in out
+    # a stub with a bypass is built for each dome with no module yet (the
+    # script checks which), and none when every dome has its module
+    stubs = int(out.split("stubs built: ")[1].split()[0])
+    assert ("a stub, its BYPASS lever" in out) == (stubs > 0)
     assert (tmp_path / "station" / "pack.mcmeta").is_file()
 
 
@@ -760,14 +770,15 @@ import game
 pack = B.new_pack("t")
 f = pack.functions
 # every tunnel is built: its states, and no stub
-assert all(f"tunnel/{n}/state_1" in f for n in range(8))
+assert all(f"tunnel/{n}/state_1" in f for n in range(len(B.station_layout.TUNNELS)))
 # the kits after the start kit, on entering their domes
 for n, name in game.KITS.items():
     given = f"function station:kit/{name}"
     assert any(line.endswith(given) for line in f[f"dome/{n}/entered"])
 # the last dome is the win, and a module's win function is called
-assert "function station:run/win" in f["dome/7/solved"]
-assert "function station:tunnel/7/ready" in f["dome/7/solved"]
+last = len(B.station_layout.DOMES) - 1
+assert "function station:run/win" in f[f"dome/{last}/solved"]
+assert f"function station:tunnel/{last}/ready" in f[f"dome/{last}/solved"]
 # solving wakes a pump; its lever by the airlock starts it (tunnel 0: the
 # master lever, at once)
 import tunnels
@@ -835,7 +846,7 @@ import rooms
 import station_layout as L
 import tunnels
 
-dome = L.DOMES[5]
+dome = L.dome("signal")  # a small dome, which a wall can cut across
 fr = F.frame(dome)
 cells = domes.dome_cells(dome)
 
@@ -847,8 +858,9 @@ assert not rooms.room_problems(dome, blocks)
 assert not rooms.input_problems(blocks, {post.input})
 stub = datapack.Pack(stamp="t")
 game.stub_module(dome).functions(stub)
-assert "function station:dome/5/solved" in stub.functions["dome/5/tick"][0]
-assert stub.functions["dome/5/reset"][0].endswith("minecraft:air")
+n = dome.index
+assert f"function station:dome/{n}/solved" in stub.functions[f"dome/{n}/tick"][0]
+assert stub.functions[f"dome/{n}/reset"][0].endswith("minecraft:air")
 pack = B.new_pack("t")
 reset = pack.functions["reset/all"]
 assert reset.index("function station:tunnel/7/reset") < reset.index(

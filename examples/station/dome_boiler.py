@@ -117,7 +117,7 @@ from fittings import (
 if TYPE_CHECKING:
     from station_layout import Dome
 
-INDEX = 1  # the Boiler Room's place in the ring
+INDEX = layout.index_of("boiler")  # the Boiler Room's place in the ring
 OBJ = game.OBJ
 
 STEP = 5  # ticks between steps of the state machine

@@ -36,6 +36,7 @@ def test_maze_plan():
         """
 import build_station as B
 import dome_maze as D
+N = D.INDEX  # the dome's place in the ring
 import domes
 import game
 import rooms
@@ -44,7 +45,7 @@ import tunnels
 import verify_station as V
 
 dome = L.DOMES[D.INDEX]
-assert B.STAGES["dome_6_inside"] is D.build and V.LIVE["clockwork_maze"] is D.check
+assert B.STAGES[f"dome_{N}_inside"] is D.build and V.LIVE["clockwork_maze"] is D.check
 assert "clockwork_maze" not in V.todos()
 assert "stub_maze" not in {m.name for m in B.modules()}
 
@@ -244,6 +245,7 @@ def test_maze_build():
         """
 import build_station as B
 import dome_maze as D
+N = D.INDEX  # the dome's place in the ring
 import domes
 import game
 import station_layout as L
@@ -254,7 +256,7 @@ b = D.room_blocks(dome)
 # the stage against the fake client: every block where the plan has it,
 # the stub's bypass gone, the shell and the pump engine left alone, the
 # same built twice
-stages = ["site", B.dome_stage_name(D.INDEX), "tunnels", "dome_6_inside"]
+stages = ["site", B.dome_stage_name(D.INDEX), "tunnels", f"dome_{N}_inside"]
 rec = B.offline_build(stages=stages, force=False)
 for cell, block in b.everything().items():
     assert rec.world.at(cell) == block, (cell, block, rec.world.at(cell))
@@ -272,9 +274,9 @@ assert count("summon minecraft:block_display") == 2 + sum(bool(m[1]) for m in ma
 words = sum(bool(m[2]) for m in marks)
 assert count("summon minecraft:text_display") == 2 * len(D.GATES) + 4 + words
 assert sum(bool(m[1]) for m in marks) == 44 and words == 51, (words,)
-assert "function station:dome/6/reset" in rec.commands
+assert f"function station:dome/{N}/reset" in rec.commands
 assert all(len(c.encode()) <= B.MAX_COMMAND for c in rec.commands)
-again = B.offline_build(stages=[*stages, "dome_6_inside"], force=False)
+again = B.offline_build(stages=[*stages, f"dome_{N}_inside"], force=False)
 assert again.world.dump() == rec.world.dump()
 # the build refuses a plan with a problem
 real = D.room_problems
@@ -298,6 +300,7 @@ import re
 import build_station as B
 import datapack
 import dome_maze as D
+N = D.INDEX  # the dome's place in the ring
 import game
 import station_layout as L
 import verify_station as V
@@ -320,34 +323,37 @@ for _ in (0,):
     pack = packed()
     F = pack.functions
     mine = {n: lines for n, lines in F.items()
-            if n.startswith("dome/6/") and n not in core.functions}
+            if n.startswith(f"dome/{N}/") and n not in core.functions}
     # the hooks the core calls, every function referenced there, every
     # block and item named known
     for hook in game.HOOKS:
-        assert f"dome/6/{hook}" in F, hook
+        assert f"dome/{N}/{hook}" in F, hook
     assert not V.function_problems(B.pack_files(pack))
     assert not V.name_problems(mine)
     calls = lambda path, name: any(  # noqa: E731
         line.endswith(f"function station:{name}") for line in F[path]
     )
-    assert calls("dome/6/entered", "dome/6/enter") and calls("game/tick", "dome/6/tick")
-    assert calls("dome/6/form", "dome/6/solo") and calls("dome/6/form", "dome/6/duo")
-    assert calls("reset/all", "dome/6/reset") and calls("dome/6/left", "dome/6/empty")
+    assert calls(f"dome/{N}/entered", f"dome/{N}/enter")
+    assert calls("game/tick", f"dome/{N}/tick")
+    assert calls(f"dome/{N}/form", f"dome/{N}/solo")
+    assert calls(f"dome/{N}/form", f"dome/{N}/duo")
+    assert calls("reset/all", f"dome/{N}/reset")
+    assert calls(f"dome/{N}/left", f"dome/{N}/empty")
     solvers = [n for n, ls in mine.items()
-               if any("function station:dome/6/solved" in line for line in ls)]
-    assert solvers == ["dome/6/done"], solvers
+               if any(f"function station:dome/{N}/solved" in line for line in ls)]
+    assert solvers == [f"dome/{N}/done"], solvers
     # the lifts run on the clock: up at the strike of Green, down at Gold
-    assert calls("dome/6/work", "dome/6/lifts")
-    assert any("la.to st 1" in line for line in F["dome/6/strike/0"])
-    assert any("la.to st 0" in line for line in F["dome/6/strike/2"])
-    assert not any(".to" in line for line in F["dome/6/strike/1"])
-    assert any("settle" in line for line in F["dome/6/empty"])
-    assert "dome/6/lift/ram/at_18" in F and "dome/6/lift/a/leave_6" in F
+    assert calls(f"dome/{N}/work", f"dome/{N}/lifts")
+    assert any("la.to st 1" in line for line in F[f"dome/{N}/strike/0"])
+    assert any("la.to st 0" in line for line in F[f"dome/{N}/strike/2"])
+    assert not any(".to" in line for line in F[f"dome/{N}/strike/1"])
+    assert any("settle" in line for line in F[f"dome/{N}/empty"])
+    assert f"dome/{N}/lift/ram/at_18" in F and f"dome/{N}/lift/a/leave_6" in F
     # a platform glides: at rest it is blocks, on its way nine block
     # displays moved a quarter of a block a tick, its riders on seats that
     # move with them, set down at the end; no ladder anywhere
     for lift in D.LIFT_LIST:
-        base = f"dome/6/lift/{lift.name}"
+        base = f"dome/{N}/lift/{lift.name}"
         for k in (0, lift.travel):
             leave, arrive = F[f"{base}/leave_{k}"], F[f"{base}/arrive_{k}"]
             cars = [line for line in leave
@@ -377,42 +383,42 @@ for _ in (0,):
     # a lift's gate: open while its platform stands at the bottom, and for
     # anyone found inside
     assert sum("#maze.la st matches 0 if score #maze.la.m st matches 0" in line
-               for line in F["dome/6/held"]) == 1
+               for line in F[f"dome/{N}/held"]) == 1
     # the clock made plain. The bell: at each ear, a stroke for Green, two
     # for Iron, three for Gold, each hour at its own pitch
     for h in range(3):
-        strike = F[f"dome/6/strike/{h}"]
+        strike = F[f"dome/{N}/strike/{h}"]
         bell = [line for line in strike if "block.bell.use" in line]
         assert len(bell) == 1 and " at @s run playsound " in bell[0]
         assert bell[0].endswith(f"@s ~ ~ ~ 1 {D.BELL_PITCH[h]}")
         assert f"scoreboard players set #maze.bells st {h}" in strike
-        assert calls(f"dome/6/strike/{h}", f"dome/6/lights/{h}")
+        assert calls(f"dome/{N}/strike/{h}", f"dome/{N}/lights/{h}")
         # every post's light to the hour's colour: three decks, from each
         # of the other two colours
-        lights = F[f"dome/6/lights/{h}"]
+        lights = F[f"dome/{N}/lights/{h}"]
         assert len(lights) == 6 and all(
             line.startswith("fill ") and f"{D.HOUR_LIGHT[h]} replace minecraft:" in line
             for line in lights)
     assert len(set(D.BELL_PITCH)) == 3
     # the warning through an hour's last quarter: a clank at each ear and
     # the lights to the colour of the hour to come and back
-    warn = F["dome/6/warn"]
+    warn = F[f"dome/{N}/warn"]
     assert sum("playsound" in line and " at @s run " in line for line in warn) == 2
-    assert sum(line.endswith(f"dome/6/lights/{n}")
+    assert sum(line.endswith(f"dome/{N}/lights/{n}")
                for n in range(3) for line in warn) == 6
-    assert any("#maze.last st matches 1" in line and line.endswith("dome/6/warn")
-               for line in F["dome/6/clock"])
+    assert any("#maze.last st matches 1" in line and line.endswith(f"dome/{N}/warn")
+               for line in F[f"dome/{N}/clock"])
     # the hand: made anew if it is gone, a quarter's sweep to the next lamp
-    go = F["dome/6/hand/go"]
+    go = F[f"dome/{N}/hand/go"]
     assert go[0].startswith(f"execute unless entity @e[tag={D.HAND_TAG}]")
     assert "interpolation_duration int 1 run scoreboard players get #maze.qlen" in go[1]
     assert len(go) == 14 and all("start_interpolation:0" in line for line in go[2:])
     assert D.hand(fr, 12) in go[13] and D.hand(fr, 1) in go[2]
-    assert F["dome/6/hand/put"] == [f"kill @e[tag={D.HAND_TAG}]", D.hand_summon(fr)]
-    assert calls("dome/6/park", "dome/6/hand/put")
-    assert calls("dome/6/quarter", "dome/6/hand/go")
-    assert calls("dome/6/arm", "dome/6/hand/go")
-    assert calls("dome/6/park", "dome/6/lights/0")
+    assert F[f"dome/{N}/hand/put"] == [f"kill @e[tag={D.HAND_TAG}]", D.hand_summon(fr)]
+    assert calls(f"dome/{N}/park", f"dome/{N}/hand/put")
+    assert calls(f"dome/{N}/quarter", f"dome/{N}/hand/go")
+    assert calls(f"dome/{N}/arm", f"dome/{N}/hand/go")
+    assert calls(f"dome/{N}/park", f"dome/{N}/lights/0")
 
     # every execute line is well formed: known clauses of the right length
     def clauses(line, where):
@@ -463,7 +469,7 @@ for _ in (0,):
     # the slot cleared; an hour's function is the whole table
     hour_gates = [g for g in D.GATES if g.kind in (0, 1, 2)]
     for h in range(3):
-        lines = F[f"dome/6/gates/{h}"]
+        lines = F[f"dome/{N}/gates/{h}"]
         assert len(lines) == len(hour_gates) == 32
         for g, line in zip(hour_gates, lines):
             a, b = (xyz(p) for p in D.gate_places(g)["slot"])
@@ -475,10 +481,10 @@ for _ in (0,):
                 assert line.endswith(f"run fill {a} {b} {D.POWER}")
                 assert f"unless block {a} {D.POWER} unless entity @e[tag=st.in," in line
                 assert f"x={door[0]},y={door[1]},z={door[2]},dx=0,dy=1,dz=0]" in line
-    assert len(F["dome/6/gates/free"]) == len(D.GATES)
-    assert all(D.SLOT_OPEN in line for line in F["dome/6/gates/free"])
+    assert len(F[f"dome/{N}/gates/free"]) == len(D.GATES)
+    assert all(D.SLOT_OPEN in line for line in F[f"dome/{N}/gates/free"])
     # the mend reads each piston and writes only leaves and doorways
-    mend = F["dome/6/mend"]
+    mend = F[f"dome/{N}/mend"]
     assert len(mend) == 3 * 2 * len(D.GATES)
     cells = {xyz(p) for g in D.GATES for k in ("leaf", "door")
              for p in D.gate_places(g)[k]}
@@ -489,26 +495,27 @@ for _ in (0,):
         assert " ".join(done[:3]) in cells and done[3] in (D.LEAF, D.AIR), line
     out = [line for line in mend if "extended=true" in line]
     assert len(out) == 2 * len(D.GATES) and all("piston_head" in line for line in out)
-    assert calls("dome/6/work", "dome/6/mend") and calls("dome/6/mend_a", "dome/6/mend")
+    assert calls(f"dome/{N}/work", f"dome/{N}/mend")
+    assert calls(f"dome/{N}/mend_a", f"dome/{N}/mend")
     # reset is all that empty is and more: both park, park clears every
     # slot and has the mend run with nobody there to tick
-    assert calls("dome/6/reset", "dome/6/park")
-    assert calls("dome/6/park", "dome/6/gates/free")
-    assert any(line.endswith("run function station:dome/6/park")
-               for line in F["dome/6/empty"])
-    assert any(line.startswith("schedule function station:dome/6/mend_a")
-               for line in F["dome/6/park"])
+    assert calls(f"dome/{N}/reset", f"dome/{N}/park")
+    assert calls(f"dome/{N}/park", f"dome/{N}/gates/free")
+    assert any(line.endswith(f"run function station:dome/{N}/park")
+               for line in F[f"dome/{N}/empty"])
+    assert any(line.startswith(f"schedule function station:dome/{N}/mend_a")
+               for line in F[f"dome/{N}/park"])
     # a held gate, and the keys, only while two are really there
-    held = F["dome/6/held"]
+    held = F[f"dome/{N}/held"]
     assert any("#maze.form st matches 2 if score #maze.in st matches 0" in line
                for line in held)
     assert any("#maze.form st matches 2 if score #maze.beyond st matches ..0" in line
                for line in held)
     assert any("#maze.form st matches 2 if score #maze.top st matches 2.." in line
-               for line in F["dome/6/keys"])
+               for line in F[f"dome/{N}/keys"])
     # solo and duo change the two plates and the signs and nothing else
     for hook in ("solo", "duo"):
-        for line in F[f"dome/6/{hook}"]:
+        for line in F[f"dome/{N}/{hook}"]:
             assert line.split(" ")[0] in ("scoreboard", "setblock", "data", "execute",
                                           "tellraw"), line
             assert D.POWER not in line and "function" not in line
@@ -584,15 +591,17 @@ def call(name):
     return None
 
 
-score.update({"#10": 10, "#100": 100, "#d6": 1, "#first": 1, "#form6": 1})
+score.update({"#10": 10, "#100": 100, f"#d{N}": 1, "#first": 1, f"#form{N}": 1})
 for level in (1, 5, 10):
     score["#diff.timer"] = game.scaled(level)["#diff.timer"]
-    call("dome/6/scale")
+    call(f"dome/{N}/scale")
     assert {n: score[f"#maze.{n}"] for n in ("qlen", "early")} == D.scaled(level)
 score["#diff.timer"] = 100
 # the first player in: the room armed, the clock at the strike of Green
-call("dome/6/enter")
-assert "dome/6/arm" in trace and "dome/6/park" in trace and "dome/6/strike/0" in trace
+call(f"dome/{N}/enter")
+assert f"dome/{N}/arm" in trace
+assert f"dome/{N}/park" in trace
+assert f"dome/{N}/strike/0" in trace
 get = lambda n: score.get(f"#maze.{n}")  # noqa: E731
 assert (get("live"), get("form"), get("free"), get("q"), get("hour")) == (1, 1, 0, 0, 0)
 assert get("la") == 6 and get("lram") == 18 and get("qlen") == 30
@@ -600,64 +609,67 @@ assert get("la") == 6 and get("lram") == 18 and get("qlen") == 30
 struck, seen = [], set()
 for tick in range(1, 12 * 30 + 1):
     trace.clear()
-    call("dome/6/tick")
-    assert trace[:3] == ["dome/6/tick", "dome/6/work", "dome/6/clock"]
-    assert "dome/6/mend" in trace and "dome/6/held" in trace and "dome/6/keys" in trace
-    assert f"dome/6/gates/{get('hour')}" in trace and "dome/6/gates/free" not in trace
-    assert "dome/6/floors/e0" in trace
+    call(f"dome/{N}/tick")
+    assert trace[:3] == [f"dome/{N}/tick", f"dome/{N}/work", f"dome/{N}/clock"]
+    assert f"dome/{N}/mend" in trace
+    assert f"dome/{N}/held" in trace
+    assert f"dome/{N}/keys" in trace
+    assert f"dome/{N}/gates/{get('hour')}" in trace
+    assert f"dome/{N}/gates/free" not in trace
+    assert f"dome/{N}/floors/e0" in trace
     assert get("q") == (tick // 30) % 12 and get("hour") == get("q") // 4
-    struck += [n for n in trace if n.startswith("dome/6/strike")]
-    seen |= {n for n in trace if n.startswith("dome/6/pend")}
+    struck += [n for n in trace if n.startswith(f"dome/{N}/strike")]
+    seen |= {n for n in trace if n.startswith(f"dome/{N}/pend")}
     if tick % 30 == 0:
-        assert "dome/6/dial" in trace
+        assert f"dome/{N}/dial" in trace
     assert get("last") == (get("q") % 4 == 3)
-assert struck == ["dome/6/strike/1", "dome/6/strike/2", "dome/6/strike/0"]
-assert seen == {"dome/6/pend/0", "dome/6/pend/1"}
+assert struck == [f"dome/{N}/strike/1", f"dome/{N}/strike/2", f"dome/{N}/strike/0"]
+assert seen == {f"dome/{N}/pend/0", f"dome/{N}/pend/1"}
 # the lifts follow the strikes: down at Gold, up again at Green
 assert get("la.to") == 1 and get("la") < 6
 for _ in range(6 * D.LIFT_STEP + 3):
-    call("dome/6/tick")
+    call(f"dome/{N}/tick")
 assert (get("la.to"), get("la")) == (1, 6)
 for _ in range(8 * 30):
-    call("dome/6/tick")
+    call(f"dome/{N}/tick")
 assert get("hour") == 2 and (get("la.to"), get("la"), get("lram")) == (0, 0, 18)
 # the form changes: nothing but the form (nobody is up top: the lever stays)
 trace.clear()
-call("dome/6/duo")
-call("dome/6/tick")
-assert get("form") == 2 and get("keys") == 0 and "dome/6/keys/on" not in trace
+call(f"dome/{N}/duo")
+call(f"dome/{N}/tick")
+assert get("form") == 2 and get("keys") == 0 and f"dome/{N}/keys/on" not in trace
 score["#maze.top"] = 2  # two up top (the count is of entities: set by hand)
-call("dome/6/keys")
-assert get("keys") == 1 and trace[-1] == "dome/6/keys/held" and get("hold") == 0
+call(f"dome/{N}/keys")
+assert get("keys") == 1 and trace[-1] == f"dome/{N}/keys/held" and get("hold") == 0
 score["#maze.top"] = 1
-call("dome/6/keys")
+call(f"dome/{N}/keys")
 assert get("keys") == 0
 # solved: once, the room tamed and steady, the Ram on its way down
 trace.clear()
-call("dome/6/done")
-assert trace.count("dome/6/solved") == 1 and get("free") == 1
+call(f"dome/{N}/done")
+assert trace.count(f"dome/{N}/solved") == 1 and get("free") == 1
 assert get("ramwait") == D.RAM_WAIT and get("qlen") == D.scaled(1)["qlen"]
-score["#d6"] = 2
+score[f"#d{N}"] = 2
 trace.clear()
 for _ in range(D.RAM_WAIT + 18 * D.LIFT_STEP + 6):
-    call("dome/6/tick")
-assert "dome/6/gates/free" in trace and "dome/6/held" not in trace
-assert "dome/6/keys" not in trace and "dome/6/floors/e0" not in trace
+    call(f"dome/{N}/tick")
+assert f"dome/{N}/gates/free" in trace and f"dome/{N}/held" not in trace
+assert f"dome/{N}/keys" not in trace and f"dome/{N}/floors/e0" not in trace
 assert (get("lram"), get("ramwait")) == (0, -1)
 # everyone out of the solved room: it stays tamed; the game's reset: as built
-call("dome/6/empty")
+call(f"dome/{N}/empty")
 assert get("free") == 1 and get("live") == 0
-call("dome/6/reset")
+call(f"dome/{N}/reset")
 state = (get("free"), get("live"), get("form"), get("q"), get("lram"))
 assert state == (0, 0, 1, 0, 18)
 # an unsolved room emptied is parked, and the next in arms it anew
-score["#d6"] = 1
-call("dome/6/tick")
+score[f"#d{N}"] = 1
+call(f"dome/{N}/tick")
 assert get("live") == 1
 for _ in range(100):
-    call("dome/6/tick")
+    call(f"dome/{N}/tick")
 trace.clear()
-call("dome/6/empty")
-assert "dome/6/park" in trace and (get("live"), get("q"), get("la")) == (0, 0, 6)
+call(f"dome/{N}/empty")
+assert f"dome/{N}/park" in trace and (get("live"), get("q"), get("la")) == (0, 0, 6)
 """
     )

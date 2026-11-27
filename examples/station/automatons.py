@@ -140,6 +140,15 @@ RIVETER = Kind(
 )
 SLAG_HUSK = Kind("husk", "minecraft:husk", "Slag Husk", tuple(IRON.items()), 24, 30)
 KINDS = (STOKER, RIVETER, SLAG_HUSK)
+#: Hull Breach's: a drowned with a trident (no wave casts it by default)
+BREACHER = Kind(
+    "breacher",
+    "minecraft:drowned",
+    "Breacher",
+    (("head", COPPER["head"]), ("mainhand", "minecraft:trident")),
+    20,
+    30,
+)
 
 
 def dome_tag(index: int) -> str:

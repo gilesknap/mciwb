@@ -27,6 +27,7 @@ import re
 
 import datapack
 import dome_signal as D
+N = D.INDEX  # the dome's place in the ring
 import game
 import station_layout as L
 
@@ -130,10 +131,10 @@ class Sim:
             name = w[1].partition(":")[2]
             if name in self.own:
                 self.run(name)
-            elif name != "dome/5/solved":
+            elif name != f"dome/{N}/solved":
                 self.outside.append(name)
-            elif self.get("#d5") == 1:  # the core's part: answered once
-                self.put("#d5", 2)
+            elif self.get(f"#d{N}") == 1:  # the core's part: answered once
+                self.put(f"#d{N}", 2)
                 self.outside.append(name)
         elif w[0] == "return":
             return "return"
@@ -168,20 +169,20 @@ def level(n):
 
 def tick(n=1):
     for _ in range(n):
-        sim.run("dome/5/tick")
+        sim.run(f"dome/{N}/tick")
 
 
 def enter(first=1):
     """what the core does when a player comes in"""
     sim.put("#first", first)
-    sim.run("dome/5/enter")
+    sim.run(f"dome/{N}/enter")
 
 
 def form(n):
     """what the core does when the dome's form changes"""
-    sim.put("#form5", n)
-    if sim.get("#d5") == 1:
-        sim.run("dome/5/solo" if n == 1 else "dome/5/duo")
+    sim.put(f"#form{N}", n)
+    if sim.get(f"#d{N}") == 1:
+        sim.run(f"dome/{N}/solo" if n == 1 else f"dome/{N}/duo")
 
 
 def press(what, desk=None):
@@ -243,7 +244,7 @@ def buttons(n):
 def begin(lvl=5, first=1):
     """an open, unsolved room, entered by one player"""
     level(lvl)
-    sim.put("#d5", 1)
+    sim.put(f"#d{N}", 1)
     enter(first)
     form(1)
     tick()
@@ -275,6 +276,7 @@ def test_signal_room_plan():
         """
 import domes
 import dome_signal as D
+N = D.INDEX  # the dome's place in the ring
 import fittings
 import game
 import rooms
@@ -284,7 +286,7 @@ import verify_station as V
 import build_station as B
 
 dome = L.DOMES[D.INDEX]
-assert B.STAGES["dome_5_inside"] is D.build and V.LIVE["signal_room"] is D.check
+assert B.STAGES[f"dome_{N}_inside"] is D.build and V.LIVE["signal_room"] is D.check
 assert "signal_room" not in V.todos()
 assert "stub_signal" not in {m.name for m in B.modules()}
 
@@ -473,6 +475,7 @@ def test_signal_room_build():
         """
 import build_station as B
 import dome_signal as D
+N = D.INDEX  # the dome's place in the ring
 import domes
 import game
 import station_layout as L
@@ -484,7 +487,7 @@ blocks = D.room_blocks(dome)
 
 # the stage against the fake client: every block where the plan has it,
 # the dome's shell and the pump engine left alone, the stub's bypass gone
-stages = ["site", "dome_5", "tunnels", "dome_5_inside"]
+stages = ["site", f"dome_{N}", "tunnels", f"dome_{N}_inside"]
 rec = B.offline_build(stages=stages, force=False)
 for cell, block in blocks.everything().items():
     assert rec.world.at(cell) == block, (cell, block)
@@ -509,15 +512,15 @@ assert len(mine) == 2
 assert sum("minecraft:interaction" in c and D.RECALL_TAG in c for c in mine) == 1
 assert sum("minecraft:text_display" in c and "NO LINE" in c for c in mine) == 1
 assert f"kill @e[tag={D.ENTITY_TAG}]" in rec.commands
-assert "function station:dome/5/reset" in rec.commands
+assert f"function station:dome/{N}/reset" in rec.commands
 assert max(len(c.encode()) for c in rec.commands) <= B.MAX_COMMAND
-again = B.offline_build(stages=[*stages, "dome_5_inside"], force=False)
+again = B.offline_build(stages=[*stages, f"dome_{N}_inside"], force=False)
 assert again.world.dump() == rec.world.dump()
 # the stage refuses to build a room whose plan has a problem
 real = D.room_problems
 D.room_problems = lambda dome: ["a wall across the aisle"]
 try:
-    B.offline_build(stages=["site", "dome_5_inside"], force=False)
+    B.offline_build(stages=["site", f"dome_{N}_inside"], force=False)
 except RuntimeError as e:
     assert "a wall across the aisle" in str(e)
 else:
@@ -535,6 +538,7 @@ import re
 import build_station as B
 import datapack
 import dome_signal as D
+N = D.INDEX  # the dome's place in the ring
 import game
 import station_layout as L
 import verify_station as V
@@ -548,35 +552,38 @@ alone = datapack.Pack(stamp="t")
 alone.objectives({game.OBJ: "dummy"})
 D.functions(alone)
 mine = alone.functions
-assert all(n.startswith("dome/5/") for n in mine)
+assert all(n.startswith(f"dome/{N}/") for n in mine)
 assert all(pack.functions[n] == ls for n, ls in mine.items())
 
 # the hooks the core calls, and only those the room needs
 for hook in game.HOOKS:
-    assert f"dome/5/{hook}" in pack.functions, hook
+    assert f"dome/{N}/{hook}" in pack.functions, hook
 for hook in game.MORE_HOOKS:
-    assert f"dome/5/{hook}" not in pack.functions, hook
+    assert f"dome/{N}/{hook}" not in pack.functions, hook
 calls = lambda path, name: any(  # noqa: E731
     line.endswith(f"function station:{name}") for line in pack.functions[path]
 )
-assert calls("dome/5/entered", "dome/5/enter") and calls("game/tick", "dome/5/tick")
-assert calls("dome/5/form", "dome/5/solo") and calls("dome/5/form", "dome/5/duo")
-assert calls("reset/all", "dome/5/reset") and calls("dome/5/left", "dome/5/empty")
+assert calls(f"dome/{N}/entered", f"dome/{N}/enter")
+assert calls("game/tick", f"dome/{N}/tick")
+assert calls(f"dome/{N}/form", f"dome/{N}/solo")
+assert calls(f"dome/{N}/form", f"dome/{N}/duo")
+assert calls("reset/all", f"dome/{N}/reset")
+assert calls(f"dome/{N}/left", f"dome/{N}/empty")
 # one way to solve, and every function a line names exists
 solvers = [n for n, ls in mine.items()
-           if any("function station:dome/5/solved" in line for line in ls)]
-assert solvers == ["dome/5/tick"], solvers
-assert sum("station:dome/5/solved" in line for line in mine["dome/5/tick"]) == 1
+           if any(f"function station:dome/{N}/solved" in line for line in ls)]
+assert solvers == [f"dome/{N}/tick"], solvers
+assert sum(f"station:dome/{N}/solved" in line for line in mine[f"dome/{N}/tick"]) == 1
 # only an open, unsolved dome whose line is open (``done``) is solved
-assert mine["dome/5/tick"][0] == (
-    "execute if score #d5 st matches 1 if score #sig.st st matches 6 "
-    "run function station:dome/5/solved"
+assert mine[f"dome/{N}/tick"][0] == (
+    f"execute if score #d{N} st matches 1 if score #sig.st st matches 6 "
+    f"run function station:dome/{N}/solved"
 )
 setters = [n for n, ls in mine.items() if "scoreboard players set #sig.st st 6" in ls]
-assert setters == ["dome/5/done"], setters
+assert setters == [f"dome/{N}/done"], setters
 assert not V.function_problems(B.pack_files(pack))
 called = {m for ls in pack.functions.values() for line in ls
-          for m in re.findall(r"function station:(dome/5/[a-z0-9_./]+)", line)}
+          for m in re.findall(rf"function station:(dome/{N}/[a-z0-9_./]+)", line)}
 unused = set(mine) - called
 assert not unused, unused
 # the whole pack, with every other module, is as well formed
@@ -589,7 +596,7 @@ for name, lines in mine.items():
     for line in lines:
         assert "@p" not in line and "@r" not in line, (name, line)
         for sel in re.findall(r"@a(\\[[^\\]]*\\])?", line):
-            assert "tag=st.in" in sel and "st.dome=5" in sel, (name, line)
+            assert "tag=st.in" in sel and f"st.dome={N}" in sel, (name, line)
         for sel in re.findall(r"@e(\\[[^\\]]*\\])?", line):
             assert "tag=st.d5" in sel, (name, line)
 # no function kills or summons: the room's two entities are the build's
@@ -609,29 +616,31 @@ for name in own:
     for line in mine[name]:
         assert not any(f" {xyz} " in f" {line} " for xyz in racks), (name, line)
 for name in ("reset", "empty", "quiet", "off", "arm", "press", "step", "power"):
-    for line in mine[f"dome/5/{name}"]:
+    for line in mine[f"dome/{N}/{name}"]:
         assert not any(f" {at(c)} " in f" {line} " for c in tape), (name, line)
 # the machinery runs whether or not there is a puzzle: before the tick's
 # return for a locked dome
-tick = mine["dome/5/tick"]
-assert tick[1] == "function station:dome/5/dress" and "return 0" in tick[2]
+tick = mine[f"dome/{N}/tick"]
+assert tick[1] == f"function station:dome/{N}/dress" and "return 0" in tick[2]
 # ``reset`` does all that ``empty`` does
-assert calls("dome/5/reset", "dome/5/quiet") and calls("dome/5/empty", "dome/5/quiet")
+assert calls(f"dome/{N}/reset", f"dome/{N}/quiet")
+assert calls(f"dome/{N}/empty", f"dome/{N}/quiet")
 # a change of form is taken up by the tick alone, and not during a round
 users = [n for n, ls in mine.items() if any(
-    re.search(r"function station:dome/5/desks(_solo|_duo)?$", l) for l in ls)]
-assert sorted(users) == ["dome/5/desks", "dome/5/reset", "dome/5/tick"], users
-line = next(l for l in tick if l.endswith("function station:dome/5/desks"))
+    re.search(rf"function station:dome/{N}/desks(_solo|_duo)?$", l) for l in ls)]
+assert sorted(users) == [f"dome/{N}/desks", f"dome/{N}/reset", f"dome/{N}/tick"], users
+line = next(l for l in tick if l.endswith(f"function station:dome/{N}/desks"))
 assert "unless score #sig.st st matches 2..3" in line
 for hook in ("solo", "duo"):
-    assert not any("setblock" in l for l in mine[f"dome/5/{hook}"])
+    assert not any("setblock" in l for l in mine[f"dome/{N}/{hook}"])
 # the level's values are copied when the room is armed, and read nowhere else
 level = lambda line: "#diff." in line or "#active" in line  # noqa: E731
 readers = {n for n, ls in mine.items() if any(level(line) for line in ls)}
-assert readers == {"dome/5/scale", "dome/5/enter", "dome/5/hint/power/arm"}, readers
+want = {f"dome/{N}/scale", f"dome/{N}/enter", f"dome/{N}/hint/power/arm"}
+assert readers == want, readers
 # every key is read by the shared reader and let go in the same function
 for key in place.keys:
-    lines = mine[f"dome/5/{key.path}"]
+    lines = mine[f"dome/{N}/{key.path}"]
     assert lines[0] == f"scoreboard players set #sig.key st {key.what}"
     assert lines[-1].startswith(f"setblock {at(key.cell)} minecraft:stone_button")
     assert "powered=false" in lines[-1]
@@ -718,7 +727,7 @@ for won in (1, 2, 3):
         assert not sim.outside
 # solved: the one call, the fanfare, then a quiet room whose keys play
 assert sim.sig("st") == 6 and sim.words == "LINE OPEN"
-assert sim.outside == ["dome/5/solved"] and sim.get("#d5") == 2
+assert sim.outside == [f"dome/{N}/solved"] and sim.get(f"#d{N}") == 2
 ran = []
 for _ in range(60):
     tick()
@@ -734,16 +743,16 @@ assert sim.is_block(place.battery, D.switch(place, place.battery, True))
 assert sim.sig("pa", "st") == [1, 6]
 # everyone goes and someone comes back: nothing is armed anew, and a
 # second run of the solved room cannot call ``solved`` again
-sim.run("dome/5/empty")
+sim.run(f"dome/{N}/empty")
 enter(1)
 tick(5)
 assert sim.sig("st", "line", "live") == [6, 3, 1] and seq() == first
-assert sim.outside == ["dome/5/solved"] and sim.words == "LINE OPEN"
+assert sim.outside == [f"dome/{N}/solved"] and sim.words == "LINE OPEN"
 
 # -- reset: as built, whatever state it was in
-sim.run("dome/5/on_2")
-sim.run("dome/5/note_4")
-sim.run("dome/5/reset")
+sim.run(f"dome/{N}/on_2")
+sim.run(f"dome/{N}/note_4")
+sim.run(f"dome/{N}/reset")
 built = D.room_blocks(dome)
 tape = {c for column in place.tape for c in column}
 for cell, block in built.everything().items():
@@ -834,8 +843,8 @@ assert listen() == first[:4]
 # -- everyone leaves during a round: the round is dropped, and no more
 press(keys[0])
 assert closed()
-sim.put("#form5", 0)
-sim.run("dome/5/empty")
+sim.put(f"#form{N}", 0)
+sim.run(f"dome/{N}/empty")
 assert sim.sig("st", "pa", "pb", "live") == [1, 1, 1, 1]
 assert sim.sig("line", "round", "len") == [1, 2, 4]
 assert not closed() and sim.words == "READY: PRESS CALL"
@@ -848,14 +857,14 @@ press(D.CALL)
 for k in listen():
     press(k)
 assert sim.sig("st", "line", "round") == [4, 2, 3]
-sim.run("dome/5/empty")
+sim.run(f"dome/{N}/empty")
 assert sim.sig("st", "line", "round", "len") == [1, 2, 3, 5]
 # ... and with a contact closed in free play: it is opened
 enter(1)
 form(1)
 press(1)
 assert closed() == {1}
-sim.run("dome/5/empty")
+sim.run(f"dome/{N}/empty")
 assert not closed() and sim.sig("st") == 1
 
 # -- a new level takes force only for the first into an empty room
@@ -872,7 +881,7 @@ assert len(seq()) == 8 and not D.sequence_problems(seq()) and seq() != first
 assert sim.is_block(place.aerial, D.switch(place, place.aerial, True))
 assert sim.words == "READY: PRESS CALL"
 # a room set up afresh at level 10
-sim.run("dome/5/reset")
+sim.run(f"dome/{N}/reset")
 enter(1)
 assert sim.sig("lvl", "line", "st", "live", "round", "len") == [10, 0, 0, 1, 1, 6]
 assert not sim.is_block(place.aerial, D.switch(place, place.aerial, True))
@@ -903,11 +912,11 @@ for k in seq():  # the answer shows its lamps as ever
     press(k)
     assert closed() == {k} or sim.sig("st") == 6
 tick()
-assert sim.sig("st") == 6 and sim.outside == ["dome/5/solved"]
+assert sim.sig("st") == 6 and sim.outside == [f"dome/{N}/solved"]
 
 # -- a room that was never set up arms itself before a key is read
-sim.run("dome/5/reset")
-sim.put("#d5", 1)
+sim.run(f"dome/{N}/reset")
+sim.put(f"#d{N}", 1)
 assert sim.sig("live") == 0
 tick()
 assert sim.sig("live", "len") == [1, 6]
@@ -916,7 +925,7 @@ assert sim.sig("live", "len") == [1, 6]
 level(10)
 rolls = set()
 for _ in range(300):
-    sim.run("dome/5/roll")
+    sim.run(f"dome/{N}/roll")
     assert not D.sequence_problems(seq()) and len(seq()) == 8, seq()
     rolls.add(tuple(seq()))
 assert len(rolls) > 250
@@ -924,7 +933,7 @@ firsts = {s[0] for s in rolls}
 assert firsts == {1, 2, 3, 4} and sim.sig("i") == 0
 for lvl in game.LEVELS:
     level(lvl)
-    sim.run("dome/5/scale")
+    sim.run(f"dome/{N}/scale")
     assert sim.sig(*D.scaled(lvl)) == list(D.scaled(lvl).values()), lvl
 """
     )
@@ -936,7 +945,7 @@ def test_signal_room_forms():
         + """
 # -- two come in together: the line is split before anything is pressed
 level(5)
-sim.put("#d5", 1)
+sim.put(f"#d{N}", 1)
 enter(1)
 enter(0)
 form(2)
@@ -1006,8 +1015,8 @@ assert sim.sig("form") == 2 and buttons(2)
 for k in keys:
     press(k)
 tick()
-assert sim.sig("st") == 6 and sim.outside == ["dome/5/solved"]
-assert sim.get("#d5") == 2
+assert sim.sig("st") == 6 and sim.outside == [f"dome/{N}/solved"]
+assert sim.get(f"#d{N}") == 2
 
 # -- solved: the core calls neither ``solo`` nor ``duo`` again, and the
 # room follows who is in it by itself
@@ -1018,11 +1027,11 @@ tick()
 assert sim.sig("form", "st") == [2, 6] and buttons(2)
 press(4)
 assert closed() == {4}
-sim.put("#form5", 0)
-sim.run("dome/5/empty")
+sim.put(f"#form{N}", 0)
+sim.run(f"dome/{N}/empty")
 assert not closed() and sim.sig("st") == 6
 enter(1)
-sim.put("#form5", 1)
+sim.put(f"#form{N}", 1)
 tick()
 assert sim.sig("form", "st") == [1, 6] and buttons(1)
 
@@ -1030,14 +1039,14 @@ assert sim.sig("form", "st") == [1, 6] and buttons(1)
 form(2)
 tick()
 assert buttons(2)
-sim.run("dome/5/reset")
+sim.run(f"dome/{N}/reset")
 assert buttons(1) and sim.sig("form", "want", "st", "live") == [1, 1, 0, 0]
 built = D.room_blocks(dome)
 for desk, cell in place.status.items():
     assert sim.world[cell] == built.attached[cell].partition("{")[0]
 # a room armed while two are in it keeps the form the core has
-sim.put("#d5", 1)
-sim.put("#form5", 2)
+sim.put(f"#d{N}", 1)
+sim.put(f"#form{N}", 2)
 tick()
 assert sim.sig("live", "want") == [1, 2]
 tick()

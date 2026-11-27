@@ -113,7 +113,9 @@ from fake_client import Recorder, World
 
 assert list(B.STAGES)[-2:] == ["seabed", "seabed_water"]
 assert {"seabed", "seabed_water"} <= set(B.written())
-others = [s for s in B.STAGES if not s.startswith("seabed")]
+# (not resite: it puts the sea floor back where the ring before had a
+# tunnel, for the seabed to dress)
+others = [s for s in B.STAGES if not s.startswith("seabed") and s != "resite"]
 with redirect_stdout(io.StringIO()):
     rest = B.offline_build(stages=others, force=False)
     rec = B.offline_build(stages=["seabed", "seabed_water"], force=False)

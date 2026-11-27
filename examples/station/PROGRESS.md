@@ -15,10 +15,17 @@ played it: each entry says which.
 | 2 | Gearworks and the Flooded Dome | the shells, tunnels 2 and 3 are built; the Flooded Dome and the Gearworks built and checked live (see "The Flooded Dome (dome 3): findings" and "The Gearworks (dome 2): findings"), not yet played; the Gearworks' pipe and wrench hand-tested at the test bench (26 Nov 2026) |
 | 3 | Foundry and the Signal Room | shells, tunnels 4 and 5; the Signal Room and the Foundry built and checked live (see "The Signal Room (dome 5): findings" and "The Foundry (dome 4): findings"), not yet played |
 | 4 | Clockwork Maze, the boss dome, the return tunnel, the win, the Wall of Fame | shells, tunnels 6 and 7; the Engine (dome 7) built and checked live with its phase 2 (the Master) on, see "The Engine (dome 7): findings"; the Clockwork Maze's round 2 built and checked live (see "The Clockwork Maze (dome 6): findings" and "Round 2 live"), not yet played; the win is the core's and is checked, the trophy waits in the Pump House's dispenser at the win, nobody has written one |
+| round 3 | The ring of ten: the Cargo Hold (3) and Hull Breach (6) added, the Flooded Dome (now 4) and the Foundry (now 5) moved east, craters | built and checked live 27 Nov 2026, the whole verify passed (see "Round 3 live"); not yet played (play-test 28 Nov) |
 | 5 | Polish from the play-tests, the guide, the docs image, the PR | not started |
 
 Stages 1 to 5 each end with a play-test by the owner; the next does not
 start until the owner has played the last and said what to change.
+
+Round 3 grew the ring to ten domes and renumbered it (see "Round 3: the
+re-site"). The dome and tunnel numbers in the entries written before it
+are those of the ring of eight: the Flooded Dome was 3, the Foundry 4, the
+Signal Room 5, the Maze 6 and the Engine 7; the eight's tunnel 3 (Flooded
+Dome to Foundry) is gone, and its tunnels 4 to 7 are the ten's 6 to 9.
 
 ## Done
 
@@ -216,6 +223,26 @@ Everything worked as intended. Asked for:
 
 What RCON cannot stand in for. Each stage adds to the list as it builds.
 
+**Saturday 28 Nov 2026: round 3, first time through the ring of ten.**
+Solo in the afternoon, with a second player in the evening. The world is reset,
+level 5. The new and moved parts, in the order a run meets them (each
+has its rows in the table below):
+
+1. The Pump House's map wall: ten domes, readable; "Domes x of 9".
+2. The Gearworks' log now sends you on to the Cargo Hold.
+3. The Cargo Hold (dome 3): the crane's glide, the buttons, the blind
+   half with two, F1's bottom crate whole, UNDO and RESET HOLD; about
+   6.5 minutes for a pair.
+4. Tunnels 3 to 5 and the craters: the moved Flooded Dome (4) and
+   Foundry (5) looking out on water.
+5. Hull Breach (dome 6): plates in hand, the water rising, getting out at
+   every level, the Breachers by day in the water and at night; the
+   Foundry's last log page sends you to the "hull test chamber".
+6. Then as before: Signal Room (7), Maze (8), the Engine (9) and home.
+7. Afterwards: was the whole run about 75 minutes at level 5? Too long?
+   Old best times were set on the ring of eight (`#best`, kept through
+   resets): clear them?
+
 | Stage | To try | Tried |
 | --- | --- | --- |
 | before 2 | **The test bench** (a deck beyond the dock's far landing, the side away from the shore; ten minutes; see "Rig, second round"): the Gearworks' pipes and wrench in an adventure-mode hand; a stone button read and let go by the pack, and four lamps behind coloured glass; dying, the 5 s of grace, a zombie that cannot see you set on you; the stepped lift, the hatch, the floor that goes with slow falling; the ravager and its rider seen through glass |  no |
@@ -317,10 +344,21 @@ What RCON cannot stand in for. Each stage adds to the list as it builds.
 | 4 | The Maze's timed floors: the thud and sparks over a floor in its last quarter (enough warning, at levels 7 to 10 too?), the drift down a deck read as "caught", not hurt; the wave w1 to w5 alone and as a pair |  no |
 | 4 | The Maze with two: the tower door's and F to K's plates (gold only while there), the signs changing, the Regulator's lever turning into two keys as the second arrives up top and back; stepping into a doorway as a gate shuts (it waits) |  no |
 | 4 | The Maze as a place: the closed bands over the wall tops and the lids on the machine cells (do the cells still read as machinery behind bars?), light under deck 2, the Tally Engine (does it count; its new lid), the pendulum's swing, the Walk (found, used, gives too much away?), the falls from the Walk's stairs (4 to 5 blocks, unrailed); the descent after solving and the pump event on the way; the lever, the recall button and the log by hand |  no |
+| 3 (round 3) | The Cargo Hold's crane as seen (built offline only so far): the glide of some 50 displays (the bridge 15 blocks in 3 s, the trolley 3 in 0.6 s, the hook a block in 0.2 s) smooth or juddering; the bridge passing over the funnel and over heads on the gantry walk; the chain a display a block (good enough?); the moment a crate turns from blocks to displays and back (a flicker?); the drum turning; the displays' light under the dome |  no |
+| 3 (round 3) | The Cargo Hold's buttons by hand: one press one step, presses queueing, the travel buttons in a row (PORT, FORE, AFT, STARBOARD) understood; the DOWN and GRAB rhythm; the refusals' chat lines read by a younger player; the red flash on the trim gauge seen; UNDO and RESET HOLD (pull twice) found |  no |
+| 3 (round 3) | The Cargo Hold read: iron and white wool told apart at 6 to 10 blocks; the tables (they can be climbed: does that matter?); the bay names and floor colours; the trim lamps and their band from both ends; the status board; the docket and the log's fourth page |  no |
+| 3 (round 3) | The Cargo Hold's blind half: the fore hold out of sight from the pulpit standing, jumping and on the tables, the aft hold from the bow (the offline check says so); the banksman's port on the right; is the dark table in the duo form fair or annoying; stand clear with a real player in a bay (the klaxon, the hook waiting); walking the fore hold among the stacks; about 6.5 minutes at level 5 for a first-time pair; the winch and rumble over a whole solve; the crane free after the solve |  no |
+| 3 (round 3) | The Cargo Hold's two bugs found live, by hand: at level 5 or 6 draw "Barrels of lamp oil" and see F1's bottom crate whole (an iron block) with no trapdoor over it; at level 9 or 10 the trapdoor jammed over F1, and gone after a reset; a reset (or a level change) while standing in the Cargo Hold, then walking back in: the hold laid for the new level, not the old |  no |
+| 3 (round 3) | Hull Breach alone, Easy, level 5 (checked live with stand-ins only): a rivet plate in an adventure hand (on every face of a frame, into a hole under water, on nothing else); the stray clearing and the top-up; whether the room reads (the flood line, BREACH labels through water, the gauge, the board, the bar); the compressor seen working; the deepest patch at level 5; getting out of the water at every level; the solve and the walk to the pump lever |  no |
+| 3 (round 3) | Hull Breach's Breachers with a real player: the rig saw one throw 15 tridents at night at a golem on a dry floor, none pickable and none dropped, but go for nothing by day, not even a golem in the water. With a player: does it attack by day when you are in the water (the plaque's "in the water, mind the Breachers"); is the room much harder at night; a trident it throws into a wall or the floor swept; Water Breathing at levels 1 to 3; a player standing or swimming in an open hole holding off its repair after a failed stage |  no |
+| 1 (round 3) | The ring of ten: the map wall's ten domes and their names read from the bay (drawn at a smaller scale; seen only in an offline render); "Domes x of 9" on the progress line; the craters round the moved Flooded Dome and Foundry and along tunnels 3 to 5 (the glass looking out on water, not ground; terraces natural?); the long tunnel 4 (32) walked; about 75 minutes for a whole run at level 5 |  no |
 
 ## Decisions and findings
 
 ### Layout
+
+(This is the layout of the ring of eight. Round 3 changed it: see
+"Round 3: the re-site".)
 
 The site is the deep ocean basin north east of the world spawn
 (-32, 63, 81). Sea level is 63: the top layer of water is y 62. The
@@ -504,8 +542,9 @@ there (from the layout), not by the dome's build stage.
 
 **From stage 1 the box is forceloaded for good.** The build adds it and
 no longer releases it; the live checks add it if it is missing and leave
-it; `verify_station.py`'s `forceloaded` check reports it as expected (198
-chunks) and lists any other forceloaded chunk (one, at chunk -2, 5, which
+it; `verify_station.py`'s `forceloaded` check reports it as expected (253
+chunks for the ring of ten; 198 for the eight before it) and lists any other
+forceloaded chunk (one, at chunk -2, 5, which
 was there before the station). A paused server (nobody online) ticks
 nothing in it. The paragraph below is how stage 0 did it, kept as
 history.
@@ -1919,6 +1958,81 @@ Engine's tunnel home has one: the win readies it, so the show is seen.
   lever absent and inert before `ready`, `ready` twice, the pull, the
   lever gone with the doors open, and a reset while waiting.
 
+### Hull Breach (round 3): findings
+
+`dome_hullbreach.py` (its docstring has the room, the fight and the
+functions), `render_hullbreach.py` (`hullbreach_room.png`). Built and
+checked offline (26 Nov 2026), then built live as dome 6 of the ring of
+ten and its check passed there (see "Round 3 live"). On a branch whose
+ring has no `hullbreach`, the tests and the render put the room at the
+Clockwork Maze's site (48 across, the exit straight ahead).
+
+- Proved on the plan (`room_problems`, which the build runs, and the unit
+  test): the basin closed at every layer (the halls and ways in hold
+  none of it); headroom at every level (every wet top cell within two of
+  one with air over it); from every place a player can get to, at every
+  level with every breach open and every breach sound, air within 14
+  moves and a way back to the entry hall never more than 14 moves under
+  water in a row (the design asked 10; the dome's own curve over the
+  floor by the glass needs up to 14 at the line: the Flooded Dome's
+  limit); no pits (the Foundry's search); every hole cell touching two
+  frame blocks; no input, plate or sign in the basin or in a bay.
+- The live check `hull_breach` passed live (27 Nov 2026) after three
+  fixes to the check itself ("Round 3 live").
+- The rig `CHECKS=hull_breach_rig` ran live by day (timeline day 8681)
+  and by night (15367), the time advanced by `tick sprint`, never set.
+  Both times the Breacher was dressed as the core's automatons (not a
+  baby, no loot pickup, a copper helmet) and never burnt. By day it went
+  for neither prey; by night it threw 15 tridents at the golem on the dry
+  floor (120 health) and left the one in the water alone; every thrown
+  trident had `pickup 0` and no trident item dropped, thrown or at its
+  death. So `BREACHER_MODE` stays `"trident"`: nothing can be looted, and
+  it fights at night, which the contract accepted ("harder at night").
+  Not shown: that by day it goes for a player in the water (the design's
+  "in the water, mind the Breachers"): a play-test item.
+- For the owner's bench and play-test: a rivet plate in an adventure hand
+  (on every face of a frame, into a hole under water, on nothing else);
+  the stray clearing and the top-up; the Breacher's trident on a player;
+  Water Breathing at levels 1 to 3; the deepest patch at level 5; getting
+  out of the water at every level; whether the room reads (flood line,
+  BREACH labels through water, gauge, board, bar); the compressor seen
+  working; the solve and the walk to the pump lever.
+
+### The Cargo Hold (round 3): findings
+
+`dome_cargo.py` (its docstring has the puzzle, the crane and the
+functions), built OFFLINE only (26 Nov 2026, branch `station3-cargo`):
+not yet built or checked live. The lighter *Marigold* in a dry dock under
+a gantry crane; stow her to the manifest a crate at a time (never on a
+lighter one, three high, the trim within the band's limit). The crane is
+block displays all the time (bridge, trolley, hook and chain, a carried
+crate's eight), gliding a quarter block a tick by `tp` with
+`teleport_duration:1`; ten buttons and RESET HOLD's lever on the pulpit.
+
+- **Searches** (`puzzle`, `manifest_problems`, in `room_problems`): every
+  manifest solvable in the table's moves (5, 7, 9, 10 to 11, 11 to 12),
+  no soft lock (3,968 to 64,896 reachable states, every one can still
+  reach the plan), and the player with no plan at least two moves longer
+  everywhere and half as long again from level 3 up. At levels 1 and 2
+  the no-plan median is 7 against a best of 5 (the design said 9 to 10;
+  its figures came from a differently seeded run): easy, as meant.
+- **Offline checks**: walks, sight (the driver sees every aft bay cell,
+  the gauge and the trolley at both stops; the banksman the fore bays),
+  `blind_problems` (from every place a player can stand on the pulpit or
+  the bow, the tables climbed, standing or jumping, the other hold is out
+  of sight), `trap_problems`, the crane's every place, no crate block in
+  the dressing.
+- **The pack**, driven by the unit test's interpreter of the scoreboard:
+  whole solves of all fifteen manifests by the press functions along the
+  searches' routes, the refusals, stand clear and the waiting hook, UNDO
+  (30 deep), RESET HOLD, leaving with a crate up, the forms' safe point.
+- `cargo_render.py` draws the room from an offline build. (The
+  temporary `cargo_ring.py` went when the ring of ten came in.)
+- **Live** (27 Nov 2026): built as dome 3 of the ring of ten; `cargo_hold`
+  found two bugs in the pack (the tick re-arming the hold at a stale
+  level after a reset; the hatch cutting F1's bottom crate in half) and
+  passed once they were fixed ("Round 3 live").
+
 ## The sea floor (stages `seabed`, `seabed_water`)
 
 For the play-test's "the sea is a little dark and you don't see out that
@@ -1993,6 +2107,206 @@ together, built and checked live one at a time, then the whole verify:
 - The Maze: `execute store result entity ... interpolation_duration` takes
   (read back), the hand reads right at every hour, the lifts carry
   stand-ins, and the display counts are as the check expects.
+
+## Round 3 live (26 to 27 Nov 2026)
+
+The three round 3 branches (the re-site, Hull Breach, the Cargo Hold)
+were brought together on `examples/station-3`, the world rebuilt from
+the ring of eight into the ring of ten by the re-site runbook, and every
+check run live: the whole verify, VERIFY_COUNT checks passed, none left
+to do. What the live runs found:
+
+- **The Breacher rig** (`hull_breach_rig`), by day and by night (the
+  clock advanced by `tick sprint`, not set): see "Hull Breach (round 3):
+  findings". `BREACHER_MODE` stays `"trident"`. The rig read the time
+  with `time query daytime`, which 26.3 refuses (it has timelines): it
+  reads `time query day` now.
+- **The rebuild**: `reset/all` with the eight's pack, then the whole
+  build (39 stages; the `resite` stage put the sea back along the eight's
+  tunnel 3 and carved 23,410 cells of crater, 2,945 of sand at the
+  bottom), then `reset/all` with the ten's: 253 chunks forceloaded and
+  the world's own (-2, 5). The old tunnel 3 read back as water (sand at
+  its foot, the crater's floor). The eight's bossbars `station:d4` and
+  `station:d7` were left registered (hidden): removed by hand, and the
+  runbook now says so.
+- **Hull Breach**: its check was wrong three ways, the room right (the
+  next burst came while the water was being read, as the game runs on
+  between RCON reads after a sprint; a marker stand-in on a hole's lower
+  face is not in the hole's box; a trident summoned `inGround` off a
+  block is loosed the next tick, so the check drops one onto the floor:
+  26.3 still calls it `inGround`). In the whole verify "the hold
+  counting" read 22 for 20 for the same running on: it takes 20 to 30.
+- **The Cargo Hold**: two bugs in the pack. The tick armed the hold when
+  it was not live, so a tick after `reset/all` and before the scan
+  cleared `#occ3` armed it at the stale level and manifest (manifest 2
+  came up for 3); only `enter` arms now. The hatch set air over F1's
+  bottom layer every time, cutting a crate there in half (manifest 3 of
+  bands 0 and 2); it clears only a trapdoor now.
+- **The Gearworks** (a round 2 bug the clean rebuild showed): its aisle
+  laid blackstone on the mouths' sills, which the tunnels then lay as
+  the doors' copper frame, so the check found 8 blocks "not as built".
+  Round 2's live Gearworks had been rebuilt after its tunnels, which
+  hid it. The aisle leaves the sills to the tunnels.
+- **The Signal Room** (passed in the first whole verify, failed in the
+  second): its check reset the room and then locked the dome, and a game
+  tick between the two armed the open room again (`live` 1, round 1).
+  The room is right; the check locks the dome first.
+- The game running on in real time between RCON reads (for about a
+  minute after a `tick sprint`, until the empty server pauses) is behind
+  most of what the live runs found: a check that reads an exact count of
+  ticks, or does two things it means to be at once, can race it. Others
+  may still flake now and then; rerun a lone failure before debugging.
+- The offline tests' simulators learnt what the game does: the Flooded
+  Dome's steps over `execute store result bossbar`, Hull Breach's over a
+  falling trident and a marker on a box's face, and the Cargo Hold's test
+  asserts the two fixes.
+- **Left for the weekend**: the game reset (`#run` 0, `#pumps` 0, no
+  stand-ins, automatons or stray items), the difficulty dial at 5 (it was
+  at 1 from the owner's last run), nobody online. The best times
+  (`#best<n>`) were left as they were: all set on the ring of eight.
+
+## Round 3: the re-site (26 Nov 2026)
+
+The ring grows from eight domes to ten: the Cargo Hold (a puzzle) and
+Hull Breach (a battle) stand where the Flooded Dome and the Foundry stood,
+and those two move one column east (`station_layout.RING`). Row 1 runs
+east from the Pump House, row 2 back west.
+
+| # | Dome | Centre x, z | Diameter | Floor y | Sea floor under it (median y) | Was |
+| --- | --- | --- | --- | --- | --- | --- |
+| 0 | The Pump House (start) | 63, -109 | 48 | 37 | 41 | 0 |
+| 1 | Boiler Room | 129, -109 | 32 | 37 | 38 | 1 |
+| 2 | Gearworks | 199, -109 | 48 | 37 | 37 | 2 |
+| 3 | The Cargo Hold | 271, -109 | 48 | 37 | 39 | new, at the Flooded Dome's place |
+| 4 | Flooded Dome | 343, -109 | 48 | 37 | 46 | 3, moved east |
+| 5 | Foundry | 343, -189 | 48 | 37 | 48 | 4, moved east |
+| 6 | Hull Breach | 271, -189 | 48 | 37 | 37 | new, at the Foundry's place |
+| 7 | Signal Room | 207, -189 | 32 | 37 | 37 | 5 |
+| 8 | Clockwork Maze | 143, -189 | 48 | 37 | 36 | 6 |
+| 9 | The Engine (boss) | 63, -189 | 64 | 29 | 42 | 7 |
+
+Tunnels (n runs from dome n to n + 1): 26, 30, 24, 24, 32 (the new east
+side, along z), 24, 24, 24, 24 (falls 8), 24 (rises 8). The eight's tunnels
+0 to 2 are the ten's 0 to 2, its 4 to 7 the ten's 6 to 9, on the same
+cells; its tunnel 3 (x 271, the Flooded Dome south to the Foundry) is
+gone, and the ten's 3, 4 and 5 are new. The station's box is (16, 21,
+-240) to (383, 72, -65): at least 8 beyond the shells, rounded out to
+whole chunks (the forceload keeps whole chunks anyway, and the craters
+below need the room east of the new column): 253 chunks forceloaded (198
+before).
+
+- **The survey.** No new survey was needed: the saved one
+  (`site_survey.npz`, read from the world's files) already covers x -256
+  to 447, and the new column with its margin reaches x 375. No live read
+  was made. `check_site()` finds no problems. The east column's sea floor
+  is shallower (y 46 to 48 under the two moved domes, against 37 to 41
+  under the others): their floors stay at y 37 so that their tops are
+  under the surface, so they are dug 9 and 11 into the sea floor, and
+  tunnels 3, 4 and 5 run below it near them (y 43 to 51 over floors at
+  37). So that their glass looks out on water and not ground, the
+  `resite` stage carves craters (seabed.py, "the craters"): round a dome
+  whose floor is 6 or more below the middle of the sea floor under it
+  (and not sunk on purpose), the ground is cut down to the floor's level
+  (its top block at y 37, sand) 4 blocks out from the shell, then rises
+  in terraces of 2 a block to meet the surveyed floor; a trench along
+  each tunnel to such a dome, flat 2 beyond the glass. Nothing at or
+  below y 36 is cut (the mineshaft's timbers under the new Flooded Dome),
+  no dome, tunnel, airlock or pier cell is touched, and near the box's
+  edge the terraces climb to the survey's floor there. About 22,900
+  cells of ground become water. The seabed plan dresses the crater floors
+  and sides at their carved heights, keeping its 3-block margin.
+- **The Engine** has no crater: its shell replaces the sea floor it is
+  dug 13 into, so its lowest glass shows ground, as it always has. It
+  is left as it is: it is sunk on purpose, and its south shell is 18
+  blocks from the box's edge, too close for a crater 13 deep without
+  growing the box. A crater for it would be one more entry in
+  `crater_domes` and a wider box. The mineshaft's timbers reach under the new Flooded Dome and
+  tunnel 3 (y 9 to 34, below the floors); no spawner is in the new
+  column (the survey found only the two known ones).
+- **Numbers.** A dome's number is its place in the ring:
+  `station_layout.index_of(key)`. Every module's `INDEX`, the core's
+  `KITS`, the build's plan stages and the tests take it from there.
+  `fittings.CHECK_INDEX`, the checks' own number, is 99, out of reach of
+  any ring.
+- **The new domes** are stubs (a BYPASS lever by the exit) until
+  `dome_cargo.py` and `dome_hullbreach.py` are written: the module
+  registry finds a module by its file name.
+- **The map wall** draws the ring at a smaller scale: the small domes
+  are drawn at least a cross of five, and the legend moved to the open
+  sea over the upper row, which is wider now than the band between the
+  rows. Seen in an offline render with the labels drawn at about their
+  size; not yet seen in the game.
+- **The seabed** follows the layout: the new column is dressed and the
+  place of the eight's tunnel 3 is dressed too (`seabed_plan.png`).
+
+### Re-site runbook (for the integrator)
+
+Each live run: under the server's lock, `list` showing nobody online first,
+the offline unit tests passing, then sync.
+
+A full live rebuild of the ring of ten:
+
+0. First, while the eight's pack is still installed:
+   `function station:reset/all`. It hides the fights' bossbars by the
+   eight's numbers (`station:d4`, `station:d7`), which the ten's pack no
+   longer knows by those names and would leave shown.
+1. `STAGES` unset (the whole build, in this order): `site`, `datapack`,
+   `rules`, `resite` (the eight's tunnel 3 taken away: tube to water,
+   or sand where it stood below the surveyed sea floor, piers to water;
+   then the craters carved round the new column and along tunnels 3 to
+   5),
+   `shore`, `dock`, `start_dome`, `lift`, `start_dome_inside`, then for
+   n = 1 to 9 `dome_<n>`, `dome_<n>_inside`, then `tunnel_0` ...
+   `tunnel_9`, `seabed`, `seabed_water`. The shell stages `dome_3` and
+   `dome_6` rebuild the old Flooded Dome's and Foundry's shells whole
+   (inside wiped, the old south and north mouths glass again) for the
+   new domes; `dome_4` and `dome_5` build the new column. The Flooded
+   Dome's and the Foundry's own stages kill their old entities by tag.
+2. `function station:reset/all` (the shell stages shut every door, and
+   the reset takes away the old ring's automatons by their tags). Then
+   `bossbar remove station:d4` and `bossbar remove station:d7`: the
+   eight's Foundry and Engine bars, hidden but left registered (no dome
+   of the ten has a bar at 4 or 7).
+3. `forceload query`: 253 chunks, and the world's own chunk (-2, 5).
+4. The whole verify (`verify_station.py`, `CHECKS` unset).
+
+The rollback, to `examples/station-2`'s ring of eight:
+
+0. `function station:reset/all` with the ten's pack installed (its
+   bossbars `station:d5` and `station:d9` hidden, as above).
+1. On this branch: `STAGES=site,rollback` (`rollback` runs only when
+   named). It takes away the new column (domes 4 and 5, all of what is in
+   them) and tunnels 3, 4 and 5 (sea or sand back by the survey), fills
+   the craters with sand to the surveyed floor, kills
+   every entity but players in the Cargo Hold and Hull Breach (their
+   modules' entities, which the eight's stages would not), takes away the
+   sea floor's dressing but the seagrass, and stops forceloading the 55
+   chunks east of x 303.
+2. Sync a clean copy of `examples/station-2` (no `resite.py`,
+   `dome_cargo.py` or `dome_hullbreach.py` left beside it; the eight's
+   registry would ignore them, but a stale file is a trap).
+3. On it, the whole build (`STAGES` unset), which rebuilds the eight's
+   tunnel 3 and its domes 3 and 4 at the Cargo Hold's and Hull Breach's
+   places, then `function station:reset/all`, then `bossbar remove
+   station:d5`, `station:d6` and `station:d9` (the ten's Foundry, Hull
+   Breach and Engine bars). The rollback stage has
+   already filled the craters with sand up to the surveyed floor (the
+   surveyed heights, not the ground's own blocks: a sand patch where they
+   were).
+4. `forceload query`: 198 chunks and (-2, 5). The water's biome east of
+   x 303 stays a warm ocean (cosmetic: the survey does not record the
+   biome it was).
+
+Not verified: the stages ran against the fake client only
+(`tests/test_station_resite.py`: the eight's tunnel 3 built and taken
+away; the craters carved, clear of every structure cell, no step of more
+than 2 added, the floor at the shell's foot at y 37, dressed; the stage
+the same twice with the seabed after it (a rerun of `resite` alone takes
+the dressing in the craters away: run `seabed` after it); the rollback
+leaving no dome, tunnel or dressing block, the craters sand and the
+chunks released). The re-site has since run in the world (27 Nov 2026,
+"Round 3 live"); the rollback has not. Old best times (`#best`, kept through a reset) were set on
+the ring of eight: the owner may want them cleared.
 
 ## Known problems / notes
 

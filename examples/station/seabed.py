@@ -42,6 +42,10 @@ those) on one of its six faces, by the survey: a block of a mound that
 would have none is ``CORE`` (it is buried, and cannot be seen).
 ``problems()`` checks all of this, and the margins, offline.
 
+Where the ``resite`` stage carves a crater round a dome dug deep into the
+sea floor (``carved``, ``crater_cells``), the plan dresses the crater's
+floor and sides at their carved heights, not the survey's.
+
 The build cannot read the ground, so it trusts the survey: a column whose
 floor has changed since gets its dressing at the surveyed height all the
 same. The live check (``check``) reads a sample of the plan back and looks
@@ -153,8 +157,11 @@ class Site:
 
     x0: int
     z0: int
-    floor: np.ndarray  #: [x - x0, z - z0] -> the y of the top block of ground
+    #: [x - x0, z - z0] -> the y of the top block of ground, as the build
+    #: leaves it: the survey's, cut down where a crater is carved
+    floor: np.ndarray
     free: np.ndarray  #: may this column be dressed? (see the module docstring)
+    surveyed: np.ndarray  #: as ``floor``, the survey's, before any crater
 
     def inside(self, x: int, z: int) -> bool:
         return 0 <= x - self.x0 < self.floor.shape[0] and (
@@ -163,6 +170,9 @@ class Site:
 
     def floor_at(self, x: int, z: int) -> int:
         return int(self.floor[x - self.x0, z - self.z0])
+
+    def surveyed_at(self, x: int, z: int) -> int:
+        return int(self.surveyed[x - self.x0, z - self.z0])
 
     def is_free(self, x: int, z: int) -> bool:
         return self.inside(x, z) and bool(self.free[x - self.x0, z - self.z0])
@@ -213,12 +223,105 @@ def site(survey_path: str | None = None) -> Site:
     if x1 < sx or z1 < sz or x2 - sx >= whole.shape[0] or z2 - sz >= whole.shape[1]:
         raise ValueError("the survey does not cover the station's box")
     cut = np.s_[x1 - sx : x2 + 1 - sx, z1 - sz : z2 + 1 - sz]
-    floor = whole[cut].astype(int)
+    surveyed = whole[cut].astype(int)
+    floor = carved(surveyed)
     free = (data["wet"][cut] == 1) & (floor >= FLOOR_LOW) & (floor <= FLOOR_HIGH)
     free &= ~protected()
     # (a block's neighbours are looked at: keep off the box's edge)
     free[0, :] = free[-1, :] = free[:, 0] = free[:, -1] = False
-    return Site(x1, z1, floor, free)
+    return Site(x1, z1, floor, free, surveyed)
+
+
+# ---------------------------------------------------------------- the craters
+# A dome whose floor lies well below the sea floor round it would show
+# ground through its lower glass, and so would the tunnels to it. The
+# ``resite`` stage (resite.py) carves a crater of open water round such a
+# dome and a trench along each tunnel to it: the ground cut down to the
+# dome's floor (its top block at the floor's y) out to ``CRATER_FLAT``
+# beyond the shell (``TRENCH_FLAT`` beside a tunnel's glass), then rising
+# ``CRATER_RISE`` a block outwards, in terraces, to meet the surveyed
+# floor; sand at the bottom. Only the station's box is carved: near its
+# edge the terraces climb faster, to meet the surveyed floor there. A dome sunk on
+# purpose (``sunk`` in the layout: the Engine) is left as it is.
+
+#: a dome stands in a crater if its floor is this far or more below the
+#: middle of the surveyed sea floor under it
+CRATER_DUG = 6
+CRATER_FLAT = 4  # level crater floor beyond a dome's shell
+TRENCH_FLAT = 2  # ... and beside a tunnel's glass
+CRATER_RISE = 2  # blocks up for each block out, on the crater's sides
+#: nothing at or below this y is carved (the mineshaft's timbers under the
+#: east column reach y 34)
+CARVE_ABOVE = 36
+
+
+def crater_domes(surveyed: np.ndarray) -> list[layout.Dome]:
+    """the domes that stand in a crater, by the survey of the box"""
+    (x1, _, z1), _ = layout.BOUNDS
+    out = []
+    for d, (*_, sunk) in zip(layout.DOMES, layout.RING, strict=True):
+        (cx, cz), r = d.centre, d.radius
+        xs = np.arange(cx - r, cx + r + 1)[:, None]
+        zs = np.arange(cz - r, cz + r + 1)[None, :]
+        disc = (xs - cx) ** 2 + (zs - cz) ** 2 <= r * r
+        under = surveyed[cx - r - x1 : cx + r + 1 - x1, cz - r - z1 : cz + r + 1 - z1]
+        if not sunk and np.median(under[disc]) - d.floor_y >= CRATER_DUG:
+            out.append(d)
+    return out
+
+
+def trench_tunnels(surveyed: np.ndarray) -> list[layout.Tunnel]:
+    """the tunnels to or from a dome in a crater"""
+    keys = {d.index for d in crater_domes(surveyed)}
+    return [t for t in layout.TUNNELS if keys & {t.start, t.end}]
+
+
+def carved(surveyed: np.ndarray) -> np.ndarray:
+    """the top of the ground in each column of the box once the craters are
+    carved (``surveyed``: the survey's, indexed as ``Site.floor``)"""
+    (x1, _, z1), (x2, _, z2) = layout.BOUNDS
+    xs = np.arange(x1, x2 + 1)[:, None].astype(float)
+    zs = np.arange(z1, z2 + 1)[None, :].astype(float)
+    target = np.full(surveyed.shape, np.inf)
+
+    def rise(base: int, out: np.ndarray, flat: int) -> np.ndarray:
+        return base + CRATER_RISE * np.maximum(0, np.ceil(out - flat))
+
+    for d in crater_domes(surveyed):
+        out = np.hypot(xs - d.centre[0], zs - d.centre[1]) - (d.radius + 0.5)
+        target = np.minimum(target, rise(d.floor_y, out, CRATER_FLAT))
+    for t in trench_tunnels(surveyed):
+        (lo_x, hi_x), (lo_z, hi_z) = sorted((t.a[0], t.b[0])), sorted((t.a[2], t.b[2]))
+        along_x = np.maximum(0, np.maximum(lo_x - xs, xs - hi_x))
+        along_z = np.maximum(0, np.maximum(lo_z - zs, zs - hi_z))
+        out = np.hypot(along_x, along_z) - (tunnels.DOOR_HALF_WIDTH + 1.5)
+        target = np.minimum(target, rise(min(t.a[1], t.b[1]), out, TRENCH_FLAT))
+    # the box's edge is the survey's floor: the terraces climb to it there
+    edge = np.minimum(np.minimum(xs - x1, x2 - xs), np.minimum(zs - z1, z2 - zs))
+    target = np.maximum(target, surveyed - CRATER_RISE * edge)
+    target = np.maximum(target, CARVE_ABOVE + 1)
+    return np.minimum(surveyed, target).astype(int)
+
+
+@cache
+def crater_cells() -> tuple[frozenset[Cell], frozenset[Cell]]:
+    """
+    The cells the craters change: those carved out (water), and the new
+    floor under them (sand). None is a cell of a dome or a tunnel.
+
+    :raises FileNotFoundError: if there is no survey of the site
+    """
+    where = site()
+    taken = structure_cells()
+    water: set[Cell] = set()
+    bed: set[Cell] = set()
+    for i, j in zip(*np.nonzero(where.floor < where.surveyed), strict=True):
+        x, z = int(i) + where.x0, int(j) + where.z0
+        top, was = int(where.floor[i, j]), int(where.surveyed[i, j])
+        water |= {(x, y, z) for y in range(top + 1, was + 1)} - taken
+        if (x, top, z) not in taken:
+            bed.add((x, top, z))
+    return frozenset(water), frozenset(bed)
 
 
 # ------------------------------------------------------------------- the plan

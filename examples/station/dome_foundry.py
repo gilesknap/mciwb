@@ -1,6 +1,6 @@
 """
-The Foundry (dome 4) of The Drowned Station: the first fight. Its build
-stage (``dome_4_inside``), its datapack functions (``dome/4/...``) and its
+The Foundry (dome ``INDEX``) of The Drowned Station: the first fight. Its build
+stage (``dome_<n>_inside``), its datapack functions (``dome/<n>/...``) and its
 live check (``foundry``).
 
 **The fight.** Hold the room while a machine charges. A lever on the mast
@@ -60,7 +60,7 @@ up for those in it. From the level in force when the room is set up
   and every ``STEP`` ticks ``step``: ``switch`` -> ``breakers`` ->
   ``charge`` (which calls ``trip_stage`` and ``done``) -> ``show``, then
   the leash and the sweep. ``done`` is the one caller of
-  ``station:dome/4/solved``;
+  ``station:dome/<n>/solved``;
 - ``solo`` / ``duo``: the form recorded (and the relief relay);
 - ``died``: a cell of charge lost, not below the last quarter;
 - ``empty``: ``checkpoint`` in a fight, ``reset`` of an idle room;
@@ -120,7 +120,7 @@ from fittings import Frame, frame, label_text, snbt
 if TYPE_CHECKING:
     from station_layout import Dome
 
-INDEX = 4  # the Foundry's place in the ring
+INDEX = layout.index_of("foundry")  # the Foundry's place in the ring
 OBJ = game.OBJ
 
 STEP = 10  # ticks between steps of the state machine
@@ -440,8 +440,7 @@ LOG_PAGES = [
     "go and close it.",
     "They go for the breakers: floor, gallery, top deck. With a mate they "
     "pull two at a time, so split up.\n\nThey are bad at ladders.\n\nI am "
-    "going on to the Signal Room. Something in there is sending, and it is "
-    "not us.\n\nO.F.",
+    "going on to the hull test chamber. The pressure is wrong.\n\nO.F.",
 ]
 
 
@@ -2278,13 +2277,17 @@ def _check(ctx: Any) -> list[str]:
     want = {"state": 2, "dome": 2, "automatons": 0, "mast": 4 * CELLS, "bar": False}
     expect("charged", got, want)
     problems.extend(game_checks.pull_pump(ctx, INDEX))
-    expect("tunnel 4 at the end", ctx.score(f"#t{INDEX}") in (1, 2), True)
+    expect("its tunnel at the end", ctx.score(f"#t{INDEX}") in (1, 2), True)
     ctx.advance(len(place.bus) * 3 + STEP)
     bus = sum(ctx.is_block(x, lit) for x in place.bus)
     expect("the bus bar lit", bus, len(place.bus))
     ctx.advance(tunnels.event_ticks(tunnel) + 60)
     got = game_checks.scores(ctx, f"#t{INDEX}", f"#d{INDEX + 1}")
-    expect("tunnel 4 open, dome 5 open", got, {f"#t{INDEX}": 2, f"#d{INDEX + 1}": 1})
+    expect(
+        "its tunnel open, the next dome open",
+        got,
+        {f"#t{INDEX}": 2, f"#d{INDEX + 1}": 1},
+    )
     doors = [x for d in tunnels.ends(tunnel) for _, x in domes.door_cells(d, tunnel)]
     expect("door cells open", sum(ctx.is_block(x, AIR) for x in doors), len(doors))
     problems += [f"tunnel open: {p}" for p in domes.check_shell(ctx, dome, False)]
@@ -2348,7 +2351,7 @@ def _check(ctx: Any) -> list[str]:
     as_built("left")
     battery_runs("left")
     got, want = tunnels.counts(ctx, tunnel), tunnels.expected(tunnel, 0)
-    expect("tunnel 4 left shut and flooded", got, want)
+    expect("its tunnel left shut and flooded", got, want)
     problems += [f"left: {p}" for p in domes.check_shell(ctx, dome, False)]
     left = ctx.count(f"@e[tag={S1}]") + ctx.count(f"@e[tag={S2}]") + alive()
     expect("stand-ins and automatons left behind", left, 0)

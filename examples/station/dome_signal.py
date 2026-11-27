@@ -1,7 +1,7 @@
 """
-The Signal Room (dome 5) of The Drowned Station: the station's telephone
-exchange. Its build stage (``dome_5_inside``), its datapack functions
-(``dome/5/...``) and its live check (``signal_room``).
+The Signal Room (dome ``INDEX``) of The Drowned Station: the station's telephone
+exchange. Its build stage (``dome_<n>_inside``), its datapack functions
+(``dome/<n>/...``) and its live check (``signal_room``).
 
 **The puzzle.** The Engine calls in lamps and bells, and the players answer
 it back, lamp for lamp, note for note. First the room wants power: the
@@ -76,7 +76,7 @@ round sent by bells alone).
 - ``press``: by state: nothing, free play (``show``), CALL (``call``) or
   an answer (``answer`` -> ``right`` or ``wrong``; ``won`` at the end of
   a round, ``done`` at the end of the third: the line is open, and the
-  tick's first line makes the room's one call to ``station:dome/5/solved``);
+  tick's first line makes the room's one call to ``station:dome/<n>/solved``);
 - ``solo`` / ``duo``: only note the form that is wanted. *A change of
   form waits for the round*: ``desks`` moves the keys only in states 0,
   1, 4, 5 and 6, never while a round is being sent or answered, so a
@@ -145,7 +145,7 @@ from fittings import (
 if TYPE_CHECKING:
     from station_layout import Dome
 
-INDEX = 5  # the Signal Room's place in the ring
+INDEX = layout.index_of("signal")  # the Signal Room's place in the ring
 OBJ = game.OBJ
 
 ROUNDS = 3
@@ -1829,7 +1829,7 @@ def check(ctx: Any) -> list[str]:
     entrance to come in; a switch is thrown and a key pressed by setting
     the lever or the button as a hand would leave it. Leaves the room and
     its tunnel reset, the game's scores as they were and no stand-in
-    behind. It resets this dome and tunnel 5 only, never the game.
+    behind. It resets this dome and its tunnel only, never the game.
 
     What a stand-in and a block set by command cannot prove (all for the
     play-test): a hand on a key or a switch. A button set pressed by
@@ -2094,10 +2094,14 @@ def check(ctx: Any) -> list[str]:
     expect("the sequence through the rounds", sequence(), first)
     says("solved", "LINE OPEN")
     problems.extend(game_checks.pull_pump(ctx, INDEX))
-    expect("tunnel 5 at the solve", ctx.score(f"#t{INDEX}") in (1, 2), True)
+    expect("its tunnel at the solve", ctx.score(f"#t{INDEX}") in (1, 2), True)
     ctx.advance(tunnels.event_ticks(tunnel) + 60)
     got = game_checks.scores(ctx, f"#t{INDEX}", f"#d{INDEX + 1}")
-    expect("tunnel 5 open, dome 6 open", got, {f"#t{INDEX}": 2, f"#d{INDEX + 1}": 1})
+    expect(
+        "its tunnel open, the next dome open",
+        got,
+        {f"#t{INDEX}": 2, f"#d{INDEX + 1}": 1},
+    )
     problems += [f"tunnel open: {p}" for p in domes.check_shell(ctx, dome, False)]
     # solved: the keys still play, the switches are held, nothing arms it
     expect("solved, the fanfare over", (get("fan"), closed()), (0, set()))
@@ -2321,8 +2325,10 @@ def check(ctx: Any) -> list[str]:
         count(place.line),
     )
     expect("the room scrambled before the reset", scrambled, (True,) * 4 + (2,))
+    # locked first, so that nothing runs after it (the game runs on between
+    # two commands: a tick of an open dome would arm the room again)
+    ctx.set_score(f"#d{INDEX}", 0)
     ctx.function(f"{base}/reset")
-    ctx.set_score(f"#d{INDEX}", 0)  # locked, so that nothing runs after it
     ctx.advance(8)  # (a redstone lamp is dark 4 ticks after its contact opens)
     as_built("reset from a scrambled state")
 
@@ -2339,7 +2345,7 @@ def check(ctx: Any) -> list[str]:
     as_built("left")
     racks_run("left")
     got, want = tunnels.counts(ctx, tunnel), tunnels.expected(tunnel, 0)
-    expect("tunnel 5 left shut and flooded", got, want)
+    expect("its tunnel left shut and flooded", got, want)
     expect("the domes and tunnels beside it", game_checks.scores(ctx, *others), beside)
     problems += [f"left: {p}" for p in domes.check_shell(ctx, dome, False)]
     behind = ctx.count(f"@e[tag={S1}]") + ctx.count(f"@e[tag={S2}]")
