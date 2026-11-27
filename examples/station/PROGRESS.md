@@ -349,7 +349,9 @@ has its rows in the table below):
 | 3 (round 3) | The Cargo Hold read: iron and white wool told apart at 6 to 10 blocks; the tables (they can be climbed: does that matter?); the bay names and floor colours; the trim lamps and their band from both ends; the status board; the docket and the log's fourth page |  no |
 | 3 (round 3) | The Cargo Hold's blind half: the fore hold out of sight from the pulpit standing, jumping and on the tables, the aft hold from the bow (the offline check says so); the banksman's port on the right; is the dark table in the duo form fair or annoying; stand clear with a real player in a bay (the klaxon, the hook waiting); walking the fore hold among the stacks; about 6.5 minutes at level 5 for a first-time pair; the winch and rumble over a whole solve; the crane free after the solve |  no |
 | 3 (round 3) | The Cargo Hold's two bugs found live, by hand: at level 5 or 6 draw "Barrels of lamp oil" and see F1's bottom crate whole (an iron block) with no trapdoor over it; at level 9 or 10 the trapdoor jammed over F1, and gone after a reset; a reset (or a level change) while standing in the Cargo Hold, then walking back in: the hold laid for the new level, not the old |  no |
-| 3 (round 4) | After the first play-test (27 Nov): every block display was air on 26.3 (the crane, the ladle, the maze's hand, pendulum and lift cars, the governor, the shore lift's car and weight); the live check `displays` now finds none air, but whether each looks right is for the eye. The Cargo Hold's gantry walk: try to slip out at its four end corners (now closed) and to reach the pulpit's canopy or the deckhouse roof. The aft hold's way out: drop in, find the companionway at its aft end (port of centre), climb to the pulpit behind the desk; is the hole in the pulpit deck a nuisance at the desk? | no |
+| 3 (round 4) | After the first play-test (27 Nov): every block display was air on 26.3 (the crane, the ladle, the maze's hand, pendulum and lift cars, the governor, the shore lift's car and weight); the live check `displays` now finds none air, but whether each looks right is for the eye. The Cargo Hold's gantry walk: try to slip out at its four end corners (now closed) and to reach the pulpit's canopy or the deckhouse roof. | no |
+| 3 (round 4) | The Cargo Hold's new pulpit (the driver's step and the keys in the deck; built from an offline plan and a ray-cast sketch, no eye has seen it): the key names lying on the brass, upright as read from the step (top towards the bow), not mirrored, not flickering; every key pressed from the step, PORT and RELEASE from its far cell too (4.4 blocks, the reach is 4.5); the crate bottoms of the nearest bays through the glass deck and screen; the glass panes joined along the screen; the status board high over the screen, read from the step; keys, hold and trim lamps on one screen looking down, the crane and a crate in flight with a tilt up; UNDO beside the step (pressed by mistake?), RESET HOLD in the back corner (found?); the tables beside the window, a turn of the head; the bow's manifest table now at the rail to port of the banksman | no |
+| 3 (round 4) | The Cargo Hold's aft hold: try to get in (the screen before the keys is 5 high, glass; the tables stand against it; the pulpit's side rails can be reached from the plan table); if in, the ladder at its starboard aft corner, the notch in her side and the drop of three to the dock (no hurt?); from the dock the notch out of reach; from the ladder or the notch a jump to a crate in A4 (the offline check allows a step and a drop, not a running jump). Known and left: a running jump from the fore hold's stair, or along the rail from the bow's table, onto a crate in the fore hold | no |
 | 3 (round 3) | Hull Breach alone, Easy, level 5 (checked live with stand-ins only): a rivet plate in an adventure hand (on every face of a frame, into a hole under water, on nothing else); the stray clearing and the top-up; whether the room reads (the flood line, BREACH labels through water, the gauge, the board, the bar); the compressor seen working; the deepest patch at level 5; getting out of the water at every level; the solve and the walk to the pump lever |  no |
 | 3 (round 3) | Hull Breach's Breachers with a real player: the rig saw one throw 15 tridents at night at a golem on a dry floor, none pickable and none dropped, but go for nothing by day, not even a golem in the water. With a player: does it attack by day when you are in the water (the plaque's "in the water, mind the Breachers"); is the room much harder at night; a trident it throws into a wall or the floor swept; Water Breathing at levels 1 to 3; a player standing or swimming in an open hole holding off its repair after a failed stage |  no |
 | 1 (round 3) | The ring of ten: the map wall's ten domes and their names read from the bay (drawn at a smaller scale; seen only in an offline render); "Domes x of 9" on the progress line; the craters round the moved Flooded Dome and Foundry and along tunnels 3 to 5 (the glass looking out on water, not ground; terraces natural?); the long tunnel 4 (32) walked; about 75 minutes for a whole run at level 5 |  no |
@@ -2008,7 +2010,8 @@ a gantry crane; stow her to the manifest a crate at a time (never on a
 lighter one, three high, the trim within the band's limit). The crane is
 block displays all the time (bridge, trolley, hook and chain, a carried
 crate's eight), gliding a quarter block a tick by `tp` with
-`teleport_duration:1`; ten buttons and RESET HOLD's lever on the pulpit.
+`teleport_duration:1`; ten buttons and RESET HOLD's lever on the pulpit
+(as first built: see "The pulpit, round 4" below).
 
 - **Searches** (`puzzle`, `manifest_problems`, in `room_problems`): every
   manifest solvable in the table's moves (5, 7, 9, 10 to 11, 11 to 12),
@@ -2033,6 +2036,32 @@ crate's eight), gliding a quarter block a tick by `tp` with
   found two bugs in the pack (the tick re-arming the hold at a stale
   level after a reset; the hatch cutting F1's bottom crate in half) and
   passed once they were fixed ("Round 3 live").
+- **The pulpit, round 4** (27 Nov 2026, after the first play-test): the
+  buttons were on the fore faces of a wall of brass posts, pressed facing
+  aft with the hold behind the driver. Now the driver stands on a step at
+  the back of the pulpit and the eight keys are stone buttons lying on
+  brass in the deck before it (to the left PORT, FORE, STARBOARD with AFT
+  under FORE; to the right HOOK UP and GRAB over HOOK DOWN and RELEASE),
+  their names flat on the brass. Before the keys the deck and the top of
+  her transom are glass and the rail is a glass screen five high: from
+  the step the keys, every aft bay to its floor and the trim lamps are in
+  one view (`sight_problems` from the step). UNDO is a button on a post
+  beside the step, RESET HOLD in the back starboard corner; the tables
+  stand either side of the window; the canopy is cut back to the step;
+  the status board is higher and larger. The bow's manifest table is at
+  the rail to port of the banksman. A waist-high desk in front was ruled
+  out: anything a block high before the driver hides every crate.
+- **The aft hold** has no stair (the companionway of the round before
+  came up through the deck where the keys now lie). `trap_problems` (with
+  `roam`: a slip between unjoined bars, standing on a rail, a step off
+  any edge) finds no way into it from the entrance with the pulpit's
+  tables climbed, and none onto the canopy now the gantry walk's end
+  rails close its corners. For whoever gets in all the same: a ladder at
+  its starboard aft corner to a notch in her side and a drop of three to
+  the dock, with no way back up (`rooms.reach` now climbs ladders and
+  takes a longer drop when asked). The unit test takes the ladder away,
+  and opens the corners, and wants the check to say so. Not modelled: a
+  running jump.
 
 ## The sea floor (stages `seabed`, `seabed_water`)
 

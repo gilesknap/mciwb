@@ -18,7 +18,13 @@ deckhouse at f -8 and -7, F1 to F4 fore of it at f 7 and 8), each a 2 x 2
 square with an aisle all round; a crate is 2 x 2 x 2 and a bay holds three.
 The deckhouse (f -4 to 4, solid to h 9) hides each hold from the other
 end. The pulpit (the crane's controls) is on her stern, the banksman's
-stand on her bow; a railed gantry walk runs round at h 10.
+stand on her bow; a railed gantry walk runs round at h 10. On the pulpit
+the driver stands on a step at its back (``DRIVER``) and looks forward
+and down: the keys at the feet, then a glass deck and a glass screen, the
+aft hold through them, the trim lamps over it. Nobody gets into the aft
+hold (the screen is too high to climb from the tables); whoever does all
+the same leaves by a ladder at its starboard aft corner (``AFT_LADDER``),
+through a notch in her side and down a drop of three to the dock.
 
 **The rules** (``Hold``): a crate is iron (3 tons), a barrel (2) or a
 bale of wool or hay (1). Never on a lighter one, three high at most, and
@@ -40,9 +46,12 @@ and taken at the start of each block up; the drum turns a quarter a
 block. A grabbed crate's blocks become displays that ride the hook (the
 lifts' leave), and blocks again where it is set down (their arrive).
 
-**The controls**, stone buttons on brass on the pulpit's desk: FORE, AFT,
-PORT, STARBOARD (travel: the hook goes up first), HOOK DOWN, HOOK UP,
-GRAB, RELEASE and UNDO; and RESET HOLD, a lever pulled twice in 5 s. A
+**The controls**: eight keys, stone buttons lying on brass let into the
+pulpit's deck before the driver's step, in the ship's own directions. To
+the left hand a cross: PORT, FORE, STARBOARD in the far row and AFT under
+FORE (travel: the hook goes up first); to the right a square: HOOK UP and
+GRAB far, HOOK DOWN and RELEASE near. UNDO is a button on a post beside
+the step; RESET HOLD, a lever pulled twice in 5 s, in the back corner. A
 set-down that breaks a rule is refused at HOOK DOWN, with its reason in
 chat (``why``: 1 full, 2 crush, 3 trim, 4 shut, 5 stand clear, 6 not on a
 crate); the hook never comes down into a bay with anyone in its column,
@@ -467,6 +476,8 @@ Place = tuple[int, int, int]  # f, r, h in the dome's frame
 
 BRASS = "minecraft:gold_block"
 BARS = "minecraft:iron_bars"
+PANE = "minecraft:glass_pane"
+GLASS = "minecraft:glass"
 GRATE = "minecraft:waxed_copper_grate"
 CUT = "minecraft:waxed_cut_copper"
 CHISELED = "minecraft:waxed_chiseled_copper"
@@ -531,18 +542,37 @@ GAUGE_H = 7  # the trim lamps' height, on each face of the deckhouse
 #: the pulpit (stern) and the bow: decks at h 5
 DECK_H = 5
 PULPIT_F = (-17, -11)
-DRIVER: Place = (-12, 0, 6)
+#: the driver's step: a block high, at the back of the pulpit, the keys
+#: before it; the driver stands on it and looks forward over them
+STEP_F, STEP_R = -15, (-1, 0)
+DRIVER: Place = (STEP_F, 0, 7)
 BANKSMAN: Place = (12, 0, 6)
-#: the desk: the buttons on posts at f -13, facing forward: name -> r
-TRAVEL = {"PORT": -6, "FORE": -5, "AFT": -4, "STARBOARD": -3}
-HOOK = {"HOOK DOWN": 3, "HOOK UP": 4, "GRAB": 5, "RELEASE": 6}
-UNDO_R = 8
-DESK_F = -13
-LEVER_AT: Place = (-16, 0, 6)  # RESET HOLD's post, the lever on its fore side
+#: the keys: stone buttons lying on brass let into the deck before the
+#: step, in the ship's own directions (FORE the far row, PORT to the
+#: left): name -> (f, r)
+TRAVEL = {
+    "PORT": (-13, -3),
+    "FORE": (-13, -2),
+    "STARBOARD": (-13, -1),
+    "AFT": (-14, -2),
+}
+HOOK = {
+    "HOOK UP": (-13, 1),
+    "GRAB": (-13, 2),
+    "HOOK DOWN": (-14, 1),
+    "RELEASE": (-14, 2),
+}
+UNDO_AT: Place = (-15, 3, 6)  # UNDO's post, its button on the side of the step
+LEVER_AT: Place = (-16, 7, 6)  # RESET HOLD's post, the lever on its fore side
+#: the window: the deck and the rail before the keys, and the top of her
+#: transom under them, are glass as far as this either side
+WINDOW_R = 4
+SCREEN_H = 10  # the rail before the keys is a glass screen, this high
+CANOPY_F = -15  # the canopy's fore edge: open sky over the driver's view
 #: the tables: (the f of the aft row, the r of A1's column, the lowest tier)
-PLAN_TABLE: Place = (-15, -8, 6)
-HOLD_TABLE: Place = (-15, 5, 6)
-BOW_TABLE: Place = (13, -5, 6)
+PLAN_TABLE: Place = (-13, -8, 6)
+HOLD_TABLE: Place = (-13, 4, 6)
+BOW_TABLE: Place = (12, -6, 6)
 PLAQUE = (-17, 0)
 LECTERN: Place = (-18, -3, 1)
 RECALL = (-20, 7, -1)
@@ -608,10 +638,12 @@ def hold_floor() -> set[tuple[int, int]]:
 #: the stair from the bow down into the fore hold, along the starboard
 #: aisle: (f, r, h) of each step, highest first
 HOLD_STAIR = ((12, 6, 4), (11, 6, 3), (10, 6, 2), (9, 6, 1))
-#: the way out of the aft hold (anyone may fall in): a companionway from
-#: its aft end, under the pulpit's deck and up a stair to it behind the
-#: desk, far from the bays: (f, r, h) of each step, lowest first
-AFT_STAIR = ((-12, -1, 1), (-13, -1, 2), (-14, -1, 3), (-15, -1, 4))
+#: the way out of the aft hold, for whoever gets in all the same: a ladder
+#: up her starboard side at its aft corner, far from the bays, to a notch
+#: in her side at h 4 (the top of the ladder's wall); from there it is a
+#: drop of three to the dock, and there is no way back up
+AFT_LADDER = (-10, 6)
+NOTCH_H = 4
 #: the stairs from the dock up to the pulpit and down from the bow
 PULPIT_STAIRS = tuple((f, r, f + 22) for r in (-5, -4, 4, 5) for f in range(-21, -16))
 BOW_STAIRS = tuple((f, r, 20 - f) for r in (-4, 4) for f in range(16, 20))
@@ -650,28 +682,41 @@ def gauge_cells(face: int) -> list[Place]:
     return [(f, k, GAUGE_H) for k in range(-5, 6)]
 
 
-def desk() -> dict[str, tuple[Place, str]]:
-    """the desk's inputs: name -> (post's foot, the sign's first line)"""
-    found = {name: ((DESK_F, r, 6), name) for name, r in {**TRAVEL, **HOOK}.items()}
-    found["UNDO"] = ((DESK_F, UNDO_R, 6), "UNDO")
-    return found
+YAWS = {"south": 0, "west": 90, "north": 180, "east": -90}
+
+
+def key(fr: fittings.Frame, f: int, r: int, name: str) -> fittings.Post:
+    """a key of the desk: a stone button lying on a brass block let into
+    the deck, its name written flat on the brass at the driver's side"""
+    ahead = fr.facing(1, 0)
+    button = f"minecraft:stone_button[face=floor,facing={ahead},powered=false]"
+    yaw = YAWS[fr.facing(-1, 0)]
+    words = name.replace(" ", "\n")
+    label = fittings.display(
+        (ENTITY_TAG,),
+        point(fr, f + 0.06, r + 0.5, DECK_H + 1.01),
+        yaw,
+        fittings.label_text(words),
+        0.45,
+        pitch=-90,
+    )
+    at = fr.at(f, r, DECK_H + 1)
+    return fittings.Post({fr.at(f, r, DECK_H): BRASS}, {at: button}, [label], at)
 
 
 def posts(fr: fittings.Frame) -> dict[str, fittings.Post]:
-    """the desk's buttons and RESET HOLD's lever, each on its brass post"""
-    ahead = fr.facing(1, 0)
-    button = f"minecraft:stone_button[face=wall,facing={ahead},powered=false]"
-    found = {}
-    signs = {
-        "HOOK DOWN": ("HOOK", "DOWN"),
-        "HOOK UP": ("HOOK", "UP"),
-        "STARBOARD": ("STAR-", "BOARD"),
-        "UNDO": ("UNDO", "the last", "move"),
-    }
-    for name, (at, _) in desk().items():
-        found[name] = fittings.input_post(
-            fr.at(*at), ahead, button, signs.get(name, (name,)), name, (ENTITY_TAG,)
-        )
+    """the desk's keys, UNDO's button and RESET HOLD's lever on their
+    brass posts"""
+    ahead, port = fr.facing(1, 0), fr.facing(0, -1)
+    found = {name: key(fr, f, r, name) for name, (f, r) in {**TRAVEL, **HOOK}.items()}
+    found["UNDO"] = fittings.input_post(
+        fr.at(*UNDO_AT),
+        port,
+        f"minecraft:stone_button[face=wall,facing={port},powered=false]",
+        ("UNDO", "the last", "move"),
+        "UNDO",
+        (ENTITY_TAG,),
+    )
     found["RESET HOLD"] = fittings.input_post(
         fr.at(*LEVER_AT),
         ahead,
@@ -790,6 +835,14 @@ def room_blocks(dome: Dome) -> Blocks:
         for h in (6, 7):
             put((f, r, h), BARS)
 
+    # the way out of the aft hold: a ladder to a notch in her side
+    f, r = AFT_LADDER
+    for h in range(1, NOTCH_H):
+        stood((f, r, h), f"minecraft:ladder[facing={port}]")
+    for h in range(NOTCH_H, 8):
+        b.solid.pop(fr.at(f, r + 1, h))
+        b.clear.add(fr.at(f, r + 1, h))
+
     # -- the deckhouse: the engine casing, dark oak in riveted copper
     f0, f1 = HOUSE_F
     for f in range(f0, f1 + 1):
@@ -821,7 +874,9 @@ def room_blocks(dome: Dome) -> Blocks:
         put((f, r, HOUSE_TOP + 1), "minecraft:waxed_lightning_rod[facing=up]")
 
     # -- the pulpit: a deck at h 5 on her stern, its wings over the dock
-    # walks, railed, under a copper canopy; the desk, the tables, the lever
+    # walks, railed, a copper canopy over its back; the driver's step, the
+    # keys in the deck before it, a glass deck and screen before them, the
+    # tables either side, the lever
     p0, p1 = PULPIT_F
     stair_tops = {(f, r) for f, r, h in PULPIT_STAIRS if h == DECK_H}
     for f in range(p0, p1 + 1):
@@ -829,17 +884,40 @@ def room_blocks(dome: Dome) -> Blocks:
             if (f, r) in stair_tops:
                 continue
             front = f == p1
-            put((f, r, DECK_H), GRATE if front else DECK)
-            if front or f == p0 or abs(r) == 9:
+            window = f >= p1 - 1 and abs(r) <= WINDOW_R
+            put((f, r, DECK_H), GLASS if window else GRATE if front else DECK)
+            if front and abs(r) < 9:
+                # a glass screen, too high to be climbed or jumped from
+                # a table: nobody drops into the aft hold from here
+                for h in range(6, SCREEN_H + 1):
+                    put((f, r, h), PANE)
+            elif front or f == p0 or abs(r) == 9:
                 for h in (6, 7):
                     put((f, r, h), BARS)
-    for f in (p0, -12):
+    for r in range(-WINDOW_R, WINDOW_R + 1):
+        put((p1, r, DECK_H - 1), GLASS)  # the top of her transom
+    for f in (p0, CANOPY_F):
         for r in (-9, 9):
             for h in range(6, 10):
                 put((f, r, h), PILLAR)
-    for f in range(p0, -11):
+    for f in range(p0, CANOPY_F + 1):
         for r in range(-9, 10):
             put((f, r, 10), SLAB)
+    # the driver's step, a stair up to it from either side
+    for r in STEP_R:
+        put((STEP_F, r, 6), CUT)
+    put((STEP_F, STEP_R[0] - 1, 6), f"{STAIRS}[facing={star},half=bottom]")
+    put((STEP_F, STEP_R[1] + 1, 6), f"{STAIRS}[facing={port},half=bottom]")
+    stood(
+        (STEP_F + 1, STEP_R[0], 6),
+        fittings.wall_sign(
+            ahead, "CRANE", "Stand on the", "step. The keys", "are at your feet."
+        ),
+    )
+    stood(
+        (STEP_F + 1, STEP_R[1], 6),
+        fittings.wall_sign(ahead, "HOOK", "UP and DOWN,", "GRAB and", "RELEASE."),
+    )
     for table in (PLAN_TABLE, HOLD_TABLE):
         for i in range(len(BAYS)):
             f, r, _ = table_cell(table, i, 0)
@@ -848,22 +926,14 @@ def room_blocks(dome: Dome) -> Blocks:
         put((f, r, h), f"{STAIRS}[facing={ahead},half=bottom]")
         for low in range(1, h):
             put((f, r, low), HULL)
-    f, r, _ = AFT_STAIR[0]
-    way = [(f + 1, r, h) for h in range(1, 4)]
-    for f, r, h in AFT_STAIR:
-        put((f, r, h), f"{STAIRS}[facing={back},half=bottom]")
-        way += [(f, r, up) for up in range(h + 1, h + 4)]
-    for place in way:
-        b.solid.pop(fr.at(*place), None)
-        b.clear.add(fr.at(*place))
     for post in posts(fr).values():
         b.solid.update(post.solid)
         b.attached.update(post.attached)
     stood((-16, -2, 6), f"minecraft:bell[attachment=floor,facing={port}]")
-    stood((-12, -8, 6), LANTERN)
-    stood((-12, 8, 6), LANTERN)
-    for r in (-6, 0, 6):
-        stood((-14, r, 9), HANGING)
+    stood((-14, -8, 6), LANTERN)
+    stood((-14, 8, 6), LANTERN)
+    for r in (-6, 6):
+        stood((-16, r, 9), HANGING)
 
     # -- the bow: the banksman's stand, railed, its table and bell; a stair
     # down into the fore hold and two to the dock
@@ -2280,7 +2350,6 @@ def functions(pack: dp.Pack) -> None:
             call("crane/mend"),
         ],
     )
-    ahead = fr.facing(1, 0)
     button_lines = []
     for name, post in posts(fr).items():
         if name == "RESET HOLD":
@@ -2292,7 +2361,7 @@ def functions(pack: dp.Pack) -> None:
                 pack,
                 path,
                 post.input,
-                f"minecraft:stone_button[face=wall,facing={ahead},powered=false]",
+                post.attached[post.input],
                 [
                     sound("block.stone_button.click_on", 0.6, 1),
                     f"function {fid(f'press/{press}')}",
@@ -2464,8 +2533,9 @@ def summons(dome: Dome) -> list[str]:
         # the lamps run port (r -5) to starboard (r 5) on both faces
         text(face, -6.5, 6.9, way, "PORT", scale=0.6)
         text(face, 7.5, 6.9, way, "STARBOARD", scale=0.6)
-    # the status board over the pulpit's window, facing the driver
-    text(PULPIT_F[1] + 0.6, 0.5, 8.3, (-1, 0), "", (BOARD_TAG,), scale=0.8)
+    # the status board over the pulpit's screen, facing the driver: high,
+    # between the deckhouse's roof and the bridge as seen from the step
+    text(PULPIT_F[1] + 0.6, 0.5, 10.4, (-1, 0), "", (BOARD_TAG,), scale=1.2)
     # the docket and the legend on her stern, over the plaque
     stern = PULPIT_F[0] - 0.02
     text(stern, 0.5, 3.1, (-1, 0), "", (DOCKET_TAG,), scale=0.7)
@@ -2482,7 +2552,7 @@ def summons(dome: Dome) -> list[str]:
         f, r, h = table
         text(f + 1.0, r + 2.0, 9.2, (-1, 0), words, colour="gold", scale=0.7)
     f, r, h = BOW_TABLE
-    text(f + 1.0, r + 2.0, 9.2, (1, 0), "MANIFEST", colour="gold", scale=0.7)
+    text(f + 1.0, r + 4.1, 9.2, (0, 1), "MANIFEST", colour="gold", scale=0.7)
     f, r, h = HOLD_TABLE
     text(f + 1.0, r + 2.0, 6.6, (-1, 0), "", (DARK_TAG,), scale=0.6)
     u, v = bay_mid(next(b.shut for b in BANDS if b.shut is not None))
@@ -2520,7 +2590,6 @@ def walks(dome: Dome) -> dict[str, Cell]:
         "the bow": BANKSMAN,
         "the bow's table": (BOW_TABLE[0] + 2, BOW_TABLE[1] + 2, 6),
         "the fore hold's floor": (6, 0, 1),
-        "the aft hold's floor": (-6, 0, 1),
         "the port gantry walk": (0, -11, WALK_H + 1),
         "the starboard gantry walk": (0, 11, WALK_H + 1),
         "the logbook": (lf - 1, lr, 1),
@@ -2542,16 +2611,29 @@ def reach(dome: Dome, b: Blocks, extra: dict[Cell, str] | None = None) -> set[Ce
     blocked = set(solid) | {
         c for c, block in b.attached.items() if "lantern" in block or "bell" in block
     }
-    blocked |= {(x, y + 1, z) for (x, y, z), block in solid.items() if block == BARS}
+    blocked |= {
+        (x, y + 1, z) for (x, y, z), block in solid.items() if block in (BARS, PANE)
+    }
     return rooms.reach(dome, domes.entrance(dome)[:3], solid, blocked)
 
 
-def roam(dome: Dome, b: Blocks, extra: dict[Cell, str] | None = None) -> set[Cell]:
-    """where a player's feet can get to from the entrance as ``reach``, and
-    also by slipping diagonally between two bars that do not join, by
-    standing on bars, and by stepping off any edge (and a block aside on
-    the way down): for the places nobody must get to"""
+def ladders(b: Blocks) -> set[Cell]:
+    return {c for c, block in b.attached.items() if "ladder" in block}
+
+
+def roam(
+    dome: Dome,
+    b: Blocks,
+    extra: dict[Cell, str] | None = None,
+    start: Cell | None = None,
+) -> set[Cell]:
+    """where a player's feet can get to from the entrance (or ``start``)
+    as ``reach``, and also by slipping diagonally between two bars that do
+    not join, by standing on bars, by climbing a ladder, and by stepping
+    off any edge (and a block aside on the way down): for the places
+    nobody must get to"""
     solid = {**b.solid, **(extra or {})}
+    rungs = ladders(b)
     full = set(solid) | {
         c for c, block in b.attached.items() if "lantern" in block or "bell" in block
     }
@@ -2569,12 +2651,14 @@ def roam(dome: Dome, b: Blocks, extra: dict[Cell, str] | None = None) -> set[Cel
 
     def drop(c: Cell) -> Cell:
         x, y, z = c
-        while (x, y - 1, z) not in ground:
+        while (x, y - 1, z) not in ground and (x, y, z) not in rungs:
             y -= 1
         return (x, y, z)
 
     def moves(c: Cell):
         x, y, z = c
+        if c in rungs and free((x, y + 1, z)):
+            yield (x, y + 1, z)
         for dx, dz in sides:
             for dy in (0, 1):
                 to = (x + dx, y + dy, z + dz)
@@ -2586,7 +2670,7 @@ def roam(dome: Dome, b: Blocks, extra: dict[Cell, str] | None = None) -> set[Cel
             if free(to) and bars((x + dx, y, z)) and bars((x, y, z + dz)):
                 yield to
 
-    start = domes.entrance(dome)[:3]
+    start = start or domes.entrance(dome)[:3]
     seen, edge = {start}, [start]
     while edge:
         for to in moves(edge.pop()):
@@ -2631,7 +2715,10 @@ def sight_problems(dome: Dome) -> list[str]:
     the trolley at both stops; the banksman every fore bay cell and the
     fore gauge; the gantry walk every bay (each from where it stands)"""
     fr = frame(dome)
-    blocks = room_blocks(dome).above()
+    # a key lies flat on the deck: it hides nothing
+    blocks = {
+        c: b for c, b in room_blocks(dome).above().items() if not rooms.is_input(b)
+    }
     c, vc = home()
 
     def trolley(row: int) -> dict[str, Cell]:
@@ -2726,10 +2813,14 @@ def blind_problems(dome: Dome) -> list[str]:
 
 def trap_problems(dome: Dome) -> list[str]:
     """nobody gets onto a crate, the deckhouse's roof or the pulpit's
-    canopy: with every bay one, two or three crates high, no crate's top
-    is a place to stand, even by a drop or a slip between bars (``roam``);
-    and with every bay empty, every cell of the hold floor (anyone may fall
-    in) leads back to the entrance"""
+    canopy, or into the aft hold: with every bay one, two or three crates
+    high and the pulpit's tables full, in steps, to be climbed (not the
+    bow's: the fore hold is walked in anyway), none of them is a
+    place to get to, even by a drop or a slip between bars (``roam``); nor
+    is a crate's top for whoever is in the aft hold all the same, by its
+    ladder; and with every bay empty, every cell of the hold floor leads
+    back to the entrance (``rooms.reach``, with the ladder and the drop of
+    three from its notch)"""
     fr = frame(dome)
     b = room_blocks(dome)
     problems = []
@@ -2740,6 +2831,14 @@ def trap_problems(dome: Dome) -> list[str]:
     } | {
         fr.at(f, r, 11) for f in range(PULPIT_F[0], PULPIT_F[1]) for r in range(-9, 10)
     }
+    floor = {fr.at(f, r, 1) for f, r in hold_floor()}
+    aft = {fr.at(f, r, 1) for f, r in hold_floor() if f < 0}
+    tables = {
+        fr.at(*table_cell(table, i, t)): CRATE[IRON]
+        for table in (PLAN_TABLE, HOLD_TABLE)
+        for i in range(len(BAYS))
+        for t in range(1 + i % TIERS)
+    }
     for n in range(1, TIERS + 1):
         crates = {
             fr.at(*p): CRATE[IRON]
@@ -2747,7 +2846,7 @@ def trap_problems(dome: Dome) -> list[str]:
             for t in range(n)
             for p in bay_cells(i, t)
         }
-        seen = roam(dome, b, crates)
+        seen = roam(dome, b, {**crates, **tables})
         # every cell over the crates, up to the feet over a full bay
         tops = {
             fr.at(f, r, h)
@@ -2759,19 +2858,22 @@ def trap_problems(dome: Dome) -> list[str]:
             problems.append(
                 f"{n} high: {len(on)} cells on the crates or the roof, as {min(on)}"
             )
+        if on := seen & aft:
+            problems.append(f"{n} high: a way into the aft hold, to {min(on)}")
+        inside = roam(dome, b, crates, fr.at(AFT_LADDER[0], AFT_LADDER[1] - 1, 1))
+        if on := inside & tops:
+            problems.append(
+                f"{n} high: {len(on)} cells on the crates from the aft hold, "
+                f"as {min(on)}"
+            )
     start = domes.entrance(dome)[:3]
-    floor = {fr.at(f, r, 1) for f, r in hold_floor()}
+    blocked = set(b.solid) | {
+        (x, y + 1, z) for (x, y, z), k in b.solid.items() if k in (BARS, PANE)
+    }
     stuck = [
         c
         for c in sorted(floor)
-        if start
-        not in rooms.reach(
-            dome,
-            c,
-            b.solid,
-            set(b.solid)
-            | {(x, y + 1, z) for (x, y, z), k in b.solid.items() if k == BARS},
-        )
+        if start not in rooms.reach(dome, c, b.solid, blocked, ladders(b), drop=3)
     ]
     if stuck:
         problems.append(

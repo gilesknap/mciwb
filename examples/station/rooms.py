@@ -125,33 +125,44 @@ def room_problems(
     return problems
 
 
-def reach(dome: Dome, start: Cell, solid, blocked=()) -> set[Cell]:
+def reach(
+    dome: Dome, start: Cell, solid, blocked=(), ladders=(), drop: int = 1
+) -> set[Cell]:
     """
     The cells a player's feet can get to from ``start`` by walking.
     ``solid``: cells holding something to stand on (the dome's floor is
     added); ``blocked``: other cells a player cannot be in (a lantern, a
-    bell, a cell kept shut).
+    bell, a cell kept shut); ``ladders``: cells holding a ladder, climbed
+    cell by cell; ``drop``: how far down a step off an edge may be.
     """
     cells = domes.dome_cells(dome)
     full = set(solid) | set(blocked)
     ground = set(cells.floor) | set(solid)
+    ladders = set(ladders)
 
     def free(cell: Cell) -> bool:
         return cell in cells.interior and cell not in full
 
     def stands(cell: Cell) -> bool:
         x, y, z = cell
-        return free(cell) and free((x, y + 1, z)) and (x, y - 1, z) in ground
+        held = (x, y - 1, z) in ground or cell in ladders
+        return free(cell) and free((x, y + 1, z)) and held
 
     seen, edge = {start}, [start]
     while edge:
         x, y, z = edge.pop()
+        moves = []
+        if (x, y, z) in ladders:
+            moves += [(x, y + 1, z), (x, y - 1, z)]
         for dx, dz in ((1, 0), (-1, 0), (0, 1), (0, -1)):
-            for dy in (0, 1, -1):
+            for dy in (0, 1, *range(-1, -drop - 1, -1)):
                 to = (x + dx, y + dy, z + dz)
-                head = (x, y + 2, z) if dy == 1 else (to[0], to[1] + 2, to[2])
-                if to in seen or not stands(to) or (dy and not free(head)):
-                    continue
+                head = (x, y + 2, z) if dy == 1 else (to[0], y + 1, to[2])
+                fall = all(free((to[0], h, to[2])) for h in range(to[1], y + 2))
+                if stands(to) and free(head) and (dy > 0 or fall):
+                    moves.append(to)
+        for to in moves:
+            if to not in seen and stands(to):
                 seen.add(to)
                 edge.append(to)
     return seen

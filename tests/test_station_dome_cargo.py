@@ -103,6 +103,8 @@ D.BANDS = real
 def test_cargo_plan():
     run(
         """
+import math
+
 import domes
 import dome_cargo as D
 import rooms
@@ -121,7 +123,7 @@ used = set(b.above()) | b.clear
 assert used <= domes.dome_cells(dome).interior
 assert not used & tunnels.reserved_cells(dome)
 assert len(b.everything()) > 2600
-# ten inputs on the desk and the lever, and the recall
+# nine buttons on the pulpit and the lever, and the recall
 assert len(D.inputs(dome)) == 11
 assert {c for c, block in b.above().items() if rooms.is_input(block)} == D.inputs(dome)
 assert D.INDEX in domes.ALLOWED
@@ -129,6 +131,48 @@ assert D.INDEX in domes.ALLOWED
 seen = D.reach(dome, b)
 assert fr.at(-7, 0, 1) not in seen and fr.at(6, 0, 1) in seen
 assert fr.at(0, 3, D.HOUSE_TOP + 1) not in seen
+# the keys lie the way the crane goes, before the driver's step, in reach
+assert D.DRIVER[2] == 7
+assert D.TRAVEL["FORE"][0] > D.TRAVEL["AFT"][0]
+assert D.TRAVEL["PORT"][1] < D.TRAVEL["STARBOARD"][1]
+assert D.HOOK["HOOK UP"][0] > D.HOOK["HOOK DOWN"][0]
+eye = (D.DRIVER[0] + 0.5, D.DRIVER[1], D.DRIVER[2] + 1.62)  # the step's middle
+for f, r in {**D.TRAVEL, **D.HOOK}.values():
+    assert f > D.DRIVER[0]
+    assert math.dist(eye, (f + 0.5, r + 0.5, D.DECK_H + 1.1)) <= 4.5
+posts = D.posts(fr)
+assert all("face=floor" in posts[k].attached[posts[k].input] for k in D.TRAVEL)
+assert "face=wall" in posts["UNDO"].attached[posts["UNDO"].input]
+# the aft hold: no way in, and a way out all the same. The trap check
+# is honest: it flags the hold with no ladder, and the gantry walk's
+# end rails left open at the corners (a slip between the bars to the canopy)
+assert not D.trap_problems(dome)
+real = D.room_blocks
+def stairless(d):
+    got = real(d)
+    for cell in D.ladders(got):
+        got.attached.pop(cell)
+    return got
+def open_corners(d):
+    got = stairless(d)
+    for side in (-1, 1):
+        for end in (D.WALK_F[0] - 1, D.WALK_F[1] + 1):
+            for r in (10 * side, 13 * side):
+                for h in (11, 12):
+                    got.solid.pop(fr.at(end, r, h), None)
+    return got
+D.room_blocks = stairless
+found = D.trap_problems(dome)
+assert len(found) == 1 and "no way out" in found[0], found
+D.room_blocks = open_corners
+found = D.trap_problems(dome)
+assert any("on the crates or the roof" in p for p in found), found
+assert any("no way out" in p for p in found), found
+D.room_blocks = real
+assert len(D.ladders(b)) == D.NOTCH_H - 1
+f, r = D.AFT_LADDER
+assert fr.at(f, r + 1, D.NOTCH_H) not in b.solid  # the notch
+assert fr.at(f, r + 1, D.NOTCH_H - 1) in b.solid
 # the deckhouse is what hides each hold: lower it and the pulpit sees
 real = D.room_blocks
 def low(d):
