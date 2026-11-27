@@ -926,7 +926,7 @@ def hand_summon(fr: fittings.Frame) -> str:
     return (
         f"summon minecraft:block_display {middle(fr.at(-12, 0, 9), 0.5)} "
         f'{{Tags:["{ENTITY_TAG}","{HAND_TAG}"],'
-        f'block_state:{{Name:"{HAND}"}},{hand(fr, 0)}}}'
+        f"block_state:{fittings.block_state(HAND)},{hand(fr, 0)}}}"
     )
 
 
@@ -1386,7 +1386,7 @@ def plan_summons(fr: fittings.Frame) -> list[str]:
             x, y, z = point(f, r, h)
             found.append(
                 f"summon minecraft:block_display {x:.3f} {y:.3f} {z:.3f} "
-                f'{{Tags:["{ENTITY_TAG}"],block_state:{{Name:"{block}"}},'
+                f'{{Tags:["{ENTITY_TAG}"],block_state:{fittings.block_state(block)},'
                 "transformation:{translation:[-0.2f,-0.2f,-0.2f],"
                 "scale:[0.4f,0.4f,0.4f],left_rotation:[0f,0f,0f,1f],"
                 "right_rotation:[0f,0f,0f,1f]}}"
@@ -1443,7 +1443,7 @@ def summons(dome: Dome) -> list[str]:
         found.append(
             f"summon minecraft:block_display {middle(fr.at(-12, 0, 9), 0.5)} "
             f'{{Tags:["{ENTITY_TAG}","{tag}"],'
-            f'block_state:{{Name:"{BRASS}"}},{pose}}}'
+            f"block_state:{fittings.block_state(BRASS)},{pose}}}"
         )
     return found + plan_summons(fr)
 
@@ -2306,7 +2306,7 @@ def functions(pack: dp.Pack) -> None:
                     *(
                         f"summon minecraft:block_display {x}.0 {y}.0 {z}.0 "
                         f'{{Tags:["{CAR_TAG}","{lift.car}"],teleport_duration:1,'
-                        f'block_state:{{Name:"{COPPER}"}}}}'
+                        f"block_state:{fittings.block_state(COPPER)}}}"
                         for x, _, z in sorted(cells)
                     ),
                     f"execute as {above(k)} at @s positioned ~ {y + 1.1} ~ "

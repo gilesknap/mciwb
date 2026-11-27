@@ -447,6 +447,20 @@ def input_post(
 # ---------------------------------------------------------------- displays
 
 
+def block_state(block: str) -> str:
+    """a block display's ``block_state``, as SNBT, for a block such as
+    ``"minecraft:iron_chain[axis=y]"``: the bare id for a block in its
+    default state, else ``{id:...,properties:{...}}`` (1.21.x's
+    ``{Name:...,Properties:...}`` no longer loads: the display shows air)"""
+    name, _, rest = block.partition("[")
+    if not rest:
+        return f'"{name}"'
+    props = ",".join(
+        f'{k}:"{v}"' for k, v in (p.split("=") for p in rest.rstrip("]").split(","))
+    )
+    return f'{{id:"{name}",properties:{{{props}}}}}'
+
+
 def display(
     tags,
     pos: tuple[float, float, float],

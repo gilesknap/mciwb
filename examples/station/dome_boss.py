@@ -1212,7 +1212,7 @@ def governor_summons(dome: Dome) -> list[str]:
     return [
         f"summon minecraft:block_display {at} "
         f'{{Tags:["{ENTITY_TAG}","{GOVERNOR_TAG}"],teleport_duration:1,'
-        f'block_state:{{Name:"{block}"}},transformation:{{'
+        f"block_state:{fittings.block_state(block)},transformation:{{"
         f"translation:[{dx}f,{dy}f,{dz}f],scale:[{sx}f,{sy}f,{sz}f],{IDENTITY}}}}}"
         for block, (dx, dy, dz), (sx, sy, sz) in GOVERNOR_PARTS
     ]

@@ -107,7 +107,20 @@ assert rec.forceloaded == B.site_chunks()
 assert "reload" in rec.commands
 assert rec.storage["station:pack", "stamp"] == '"offline"'
 assert all(len(c.encode()) <= B.MAX_COMMAND for c in rec.commands)
-stubs = [m for m in B.modules() if m.name.startswith("stub_")]
+# block displays in 26.x's form: {Name:...} decodes as air
+import fittings
+from pathlib import Path
+
+old = "block_state:{Name:"
+assert not [c for c in rec.commands if old in c]
+assert not [
+    f for f in Path(sys.argv[1]).rglob("*.mcfunction") if old in f.read_text()
+]
+assert fittings.block_state("minecraft:stone") == '"minecraft:stone"'
+assert fittings.block_state("minecraft:iron_chain[axis=y]") == (
+    '{id:"minecraft:iron_chain",properties:{axis:"y"}}'
+)
+stubs =[m for m in B.modules() if m.name.startswith("stub_")]
 here = B.Path(B.__file__).parent
 missing = [
     d for d in B.station_layout.DOMES[1:] if not (here / f"dome_{d.key}.py").is_file()

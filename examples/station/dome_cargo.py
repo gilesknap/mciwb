@@ -1098,16 +1098,6 @@ IRON_END = "minecraft:iron_block"
 PARTS = 19 + 6 + 3 + 1
 
 
-def _block_state(block: str) -> str:
-    name, _, rest = block.partition("[")
-    if not rest:
-        return f'{{Name:"{name}"}}'
-    props = ",".join(
-        f'{k}:"{v}"' for k, v in (p.split("=") for p in rest.rstrip("]").split(","))
-    )
-    return f'{{Name:"{name}",Properties:{{{props}}}}}'
-
-
 def _num(x: float) -> str:
     return f"{x:.4f}".rstrip("0").rstrip(".") if x != int(x) else f"{int(x)}"
 
@@ -1122,7 +1112,7 @@ def box_summon(fr: fittings.Frame, block: str, box: Box, tags: tuple[str, ...]) 
     scale = ",".join(f"{_num(s)}f" for s in size)
     return (
         f"summon minecraft:block_display {' '.join(_num(p) for p in lo)} "
-        f"{{Tags:[{listed}],teleport_duration:1,block_state:{_block_state(block)},"
+        f"{{Tags:[{listed}],teleport_duration:1,block_state:{fittings.block_state(block)},"
         f"transformation:{{translation:[0f,0f,0f],scale:[{scale}],{IDENTITY}}}}}"
     )
 

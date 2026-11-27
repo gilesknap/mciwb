@@ -871,7 +871,7 @@ def ladle_summons(place: Room) -> list[str]:
     return [
         f"summon minecraft:block_display {middle(place.ladle[0])} "
         f'{{Tags:["{ENTITY_TAG}","{LADLE_TAG}"],teleport_duration:1,'
-        f'brightness:{{sky:15,block:15}},block_state:{{Name:"{block}"}},'
+        f"brightness:{{sky:15,block:15}},block_state:{fittings.block_state(block)},"
         f"transformation:{{translation:[{tx}f,{ty}f,{tz}f],"
         f"scale:[{sx}f,{sy}f,{sz}f],{identity}}}}}"
         for block, (tx, ty, tz), (sx, sy, sz) in parts
