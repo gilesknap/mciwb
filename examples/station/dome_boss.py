@@ -1,7 +1,7 @@
 """
-The Engine (dome 7, the boss dome) of The Drowned Station: the last room
-of the ring. Its build stage (``dome_7_inside``), its datapack functions
-(``dome/7/...``) and its live check (``boss``).
+The Engine (the last dome, the boss dome) of The Drowned Station: the last room
+of the ring. Its build stage (``dome_<n>_inside``), its datapack functions
+(``dome/<n>/...``) and its live check (``boss``).
 
 **The one idea.** Starve the Engine of steam by winding shut its three
 steam mains, each on a different level of the dome, while it sends
@@ -110,7 +110,7 @@ level in force when an untouched room is first entered (``scaled``):
 - ``leave`` / ``died``: the player is out of the arena;
 - ``empty``: the stage in progress put back (see "Leaving");
 - ``reset``: everything as built, and all that ``empty`` does;
-- ``won``: the one call of ``station:dome/7/solved`` (the trophy is the
+- ``won``: the one call of ``station:dome/<n>/solved`` (the trophy is the
   Pump House's: ``dome_start``, "The trophy").
 
 **The room** (``dressing_blocks``; everything is placed in the dome's own
@@ -175,7 +175,7 @@ from fittings import Frame, frame, label_text, sign_text, snbt
 if TYPE_CHECKING:
     from station_layout import Dome
 
-INDEX = 7  # the Engine's place in the ring
+INDEX = layout.index_of("boss")  # the Engine's place in the ring
 OBJ = game.OBJ
 
 # ============================================================================
@@ -2361,7 +2361,7 @@ def check(ctx: Any) -> list[str]:
     dead, the Master dead, the win, the lanterns back; the dome emptied in
     the breach, and he out again whole.
 
-    It solves dome 7, which is the game's win: the run's scores are saved
+    It solves the last dome, which is the game's win: the run's scores are saved
     and put back, and ``#run.level`` is 0 while it runs so that no best
     time is touched. It resets its own dome and its own tunnel and nothing
     else, and leaves no stand-in behind.
@@ -2577,7 +2577,11 @@ def _check(ctx: Any, saved: dict[str, int | None]) -> list[str]:
         expect(f"{what}: won", got, {"phase": 5, "dome": 2, "run": 2})
         expect(f"{what}: automatons left", ctx.count(mobs), 0)
         problems.extend(game_checks.pull_pump(ctx, INDEX))
-        expect(f"{what}: tunnel 7 at the win", ctx.score(f"#t{INDEX}") in (1, 2), True)
+        expect(
+            f"{what}: the tunnel home at the win",
+            ctx.score(f"#t{INDEX}") in (1, 2),
+            True,
+        )
         steps(len(place.way_out) + 3)
         expect(
             f"{what}: the lamps of the way out",
@@ -2862,7 +2866,7 @@ def _check(ctx: Any, saved: dict[str, int | None]) -> list[str]:
     won("solo")
     # the tunnel home pumps dry and opens; the dome stays dry and whole
     ctx.advance(tunnels.event_ticks(tunnel) + 60)
-    expect("tunnel 7 open", ctx.score(f"#t{INDEX}"), 2)
+    expect("the tunnel home open", ctx.score(f"#t{INDEX}"), 2)
     doors = [x for d in tunnels.ends(tunnel) for _, x in domes.door_cells(d, tunnel)]
     expect("door cells open", sum(ctx.is_block(x, AIR) for x in doors), len(doors))
     problems += [f"tunnel open: {p}" for p in domes.check_shell(ctx, dome, False)]
@@ -3063,7 +3067,7 @@ def _check(ctx: Any, saved: dict[str, int | None]) -> list[str]:
     expect("left: the floor's lanterns dimmed", dimmed(), 0)
     cylinders_run("left")
     got, wanted = tunnels.counts(ctx, tunnel), tunnels.expected(tunnel, 0)
-    expect("tunnel 7 left shut and flooded", got, wanted)
+    expect("the tunnel home left shut and flooded", got, wanted)
     problems += [f"left: {p}" for p in domes.check_shell(ctx, dome, False)]
     left = ctx.count(f"@e[tag={S1}]") + ctx.count(f"@e[tag={S2}]")
     expect("stand-ins left behind", left, 0)

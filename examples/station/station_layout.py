@@ -1,6 +1,6 @@
 """
 The layout of the Drowned Station: where the shore landing, the dock, the
-lift, the eight domes and the eight tunnels are. Plain data and small pure
+lift, the ten domes and the ten tunnels are. Plain data and small pure
 functions: nothing here talks to a server, so the build, the datapack
 generator, the verify script and the tests can all import it.
 
@@ -31,8 +31,9 @@ Conventions:
   meets the shells of its two domes, each at that dome's floor level; its
   length is the distance between them. Floors differ by a few blocks, so
   some tunnels slope.
-- The ring is walked in order: dome 0 (the start), 1 ... 7 (the boss), and
-  tunnel 7 leads from the boss back into dome 0.
+- The ring is walked in order: dome 0 (the start), 1 ... 9 (the boss), and
+  the last tunnel leads from the boss back into dome 0. A module finds its
+  dome's place with ``index_of(key)``, never by number.
 """
 
 from dataclasses import dataclass
@@ -121,23 +122,34 @@ class Dome:
 # (x, z) of its centre from the anchor, its diameter, and ``sunk``: how far
 # its floor lies below the base floor (the boss dome's is dug into the sea
 # floor so that its top comes no higher than the others'). The first is the
-# start dome, at the anchor; the domes stand on a rectangle, four by two.
+# start dome, at the anchor; the domes stand on a rectangle, five by two:
+# the first row runs east from the start dome, the second back west.
 RING: tuple[tuple[str, str, tuple[int, int], int, int], ...] = (
     ("start", "The Pump House", (0, 0), 48, 0),
     ("boiler", "Boiler Room", (66, 0), 32, 0),
     ("gearworks", "Gearworks", (136, 0), 48, 0),
-    ("flooded", "Flooded Dome", (208, 0), 48, 0),
-    ("foundry", "Foundry", (208, -80), 48, 0),
+    ("cargo", "The Cargo Hold", (208, 0), 48, 0),
+    ("flooded", "Flooded Dome", (280, 0), 48, 0),
+    ("foundry", "Foundry", (280, -80), 48, 0),
+    ("hullbreach", "Hull Breach", (208, -80), 48, 0),
     ("signal", "Signal Room", (144, -80), 32, 0),
     ("maze", "Clockwork Maze", (80, -80), 48, 0),
     ("boss", "The Engine", (0, -80), 64, 8),
 )
 
 
+def index_of(key: str) -> int:
+    """the place in the ring of the dome with a key, e.g. ``index_of("boiler")``"""
+    return [k for k, *_ in RING].index(key)
+
+
 def make_domes(
-    anchor: tuple[int, int] = ANCHOR, base_floor_y: int = BASE_FLOOR_Y
+    anchor: tuple[int, int] = ANCHOR,
+    base_floor_y: int = BASE_FLOOR_Y,
+    ring: tuple[tuple[str, str, tuple[int, int], int, int], ...] = RING,
 ) -> tuple[Dome, ...]:
-    """the domes of the ring, for an anchor and a base floor height"""
+    """the domes of a ring (by default `RING`), for an anchor and a base
+    floor height"""
     return tuple(
         Dome(
             index,
@@ -147,7 +159,7 @@ def make_domes(
             diameter,
             base_floor_y - sunk,
         )
-        for index, (key, name, (dx, dz), diameter, sunk) in enumerate(RING)
+        for index, (key, name, (dx, dz), diameter, sunk) in enumerate(ring)
     )
 
 
@@ -250,12 +262,15 @@ LIFT_BOTTOM_Y: int = START.floor_y
 def station_bounds(margin: int = MARGIN) -> tuple[Pos, Pos]:
     """
     The box that holds the dock, the domes and the tunnels (not the shore):
-    its low and high corners. Players inside it are "in the game".
+    its low and high corners. Players inside it are "in the game". It
+    reaches at least ``margin`` beyond the outermost shells, and across x
+    and z out to whole chunks: the forceload keeps whole chunks anyway,
+    and the craters round the domes dug into the sea floor need the room.
     """
-    low_x = min(d.centre[0] - d.radius for d in DOMES) - margin
-    high_x = max(d.centre[0] + d.radius for d in DOMES) + margin
-    low_z = min(d.centre[1] - d.radius for d in DOMES) - margin
-    high_z = max(d.centre[1] + d.radius for d in DOMES) + margin
+    low_x = (min(d.centre[0] - d.radius for d in DOMES) - margin) >> 4 << 4
+    high_x = (max(d.centre[0] + d.radius for d in DOMES) + margin) | 15
+    low_z = (min(d.centre[1] - d.radius for d in DOMES) - margin) >> 4 << 4
+    high_z = (max(d.centre[1] + d.radius for d in DOMES) + margin) | 15
     low_y = min(d.floor_y for d in DOMES) - margin
     high_y = max(DOCK[1], *(d.top_y for d in DOMES)) + margin
     return (low_x, low_y, low_z), (high_x, high_y, high_z)

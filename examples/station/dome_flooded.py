@@ -1,7 +1,7 @@
 """
-The Flooded Dome (dome 3) of The Drowned Station: half under water, and
-drained a deck at a time. Its build stage (``dome_3_inside``), its datapack
-functions (``dome/3/...``) and its live check (``flooded_dome``).
+The Flooded Dome (dome ``INDEX``) of The Drowned Station: half under water, and
+drained a deck at a time. Its build stage (``dome_<n>_inside``), its datapack
+functions (``dome/<n>/...``) and its live check (``flooded_dome``).
 
 **The room.** A dam of glass crosses the dome a few steps in from the
 door and holds a basin of water ``TOP`` layers deep: the entry hall
@@ -45,7 +45,7 @@ plate was held within the last few seconds (``GRACE``).
 **The water** is written by the functions and by nothing else. The basin
 (``basin``: everything east of the dam up to layer ``TOP``) is registered
 with ``domes.add_wet``, so the core's wet check leaves it to this
-module's own count (``station:check/dome/3/layer_<h>``, ``counts``).
+module's own count (``station:check/dome/<n>/layer_<h>``, ``counts``).
 ``#fl.w`` is the top wet layer and the only record of the water;
 ``draw`` writes the whole room from the scores, so it is the reset and
 the repair. Two rules from the rig, kept exactly:
@@ -78,16 +78,16 @@ clock; from the level (``scaled``): ``per`` ticks a layer, ``ta`` ``tb``
   ``gate`` -> ``drain`` -> ``line``;
 - ``drain`` runs ``layer_<h>/dry`` as each layer goes, and at the
   stage's target ``stage_done``, which at the third calls ``done``
-  (``station:dome/3/solved``, then ``restored``);
+  (``station:dome/<n>/solved``, then ``restored``);
 - ``solo`` / ``duo``: only say what the room should become (``want``);
 - ``empty``: the control back, the gate shut, the engine still; the
   water and the pumps kept;
 - ``reset``: all of that, and the basin full again;
-- ``guard`` (every tick, whoever is or is not in the dome): if tunnel 3
+- ``guard`` (every tick, whoever is or is not in the dome): if its tunnel
   is pumping or open, or its pump waits for its lever (which stands in
   the basin), while the basin is wet, the room is made dry at once
   (``restored``). The room's own ``done`` never needs it; the core's
-  checks call ``dome/3/solved`` and ``tunnel/3/open`` themselves, and the
+  checks call ``dome/<n>/solved`` and ``tunnel/<n>/open`` themselves, and the
   tunnel's doors must never open onto the flood. A room found dry by a
   player is solved if the tunnel is pumping or open, and flooded again
   (``reset``) if a tunnel's check has since shut it (``tick``).
@@ -132,7 +132,7 @@ from fittings import Frame, frame, snbt, wall_sign
 if TYPE_CHECKING:
     from station_layout import Dome
 
-INDEX = 3  # the Flooded Dome's place in the ring
+INDEX = layout.index_of("flooded")  # the Flooded Dome's place in the ring
 OBJ = game.OBJ
 
 STEP = 2  # ticks between steps of the state machine
@@ -173,6 +173,8 @@ PLATE = "minecraft:polished_blackstone_pressure_plate"
 LEVER = "minecraft:lever"
 TORCH = "minecraft:redstone_wall_torch"
 DRY, WET = "waterlogged=false", "waterlogged=true"
+# The st.dN tags are names, not ring indices (st.d3 is the Flooded Dome, now dome 4,
+# and so on): they keep their old numbers so the re-site clears the old entities.
 ENTITY_TAG = "st.d3"  # everything this module summons
 
 # where things are, in the frame: (forward, right[, height])
@@ -1585,7 +1587,7 @@ def build(ctx: Any) -> str:
     inside but the pump engine, builds the room dry, then floods it, and
     leaves it as ``reset`` does. Run it after the tunnels' stages (which
     rebuild the pump engine dry: after them, ``function
-    station:dome/3/draw``)"""
+    station:dome/<n>/draw``)"""
     dome = ctx.layout.DOMES[INDEX]
     if problems := room_problems(dome):
         raise RuntimeError("the Flooded Dome: " + "; ".join(problems))
@@ -1682,7 +1684,7 @@ def _if_block(cell: Cell, block: str) -> str:
     return f"if block {_xyz(cell)} {block}"
 
 
-#: what ``station:check/dome/3/layer_<h>`` counts (``#f3_<name>`` in the
+#: what ``station:check/dome/<n>/layer_<h>`` counts (``#f3_<name>`` in the
 #: checks' objective): open cells that are water, sources, air, air with
 #: water over it; fittings and gate cells that are wet
 COUNTS = ("water", "source", "air", "under", "fit")
@@ -1908,7 +1910,7 @@ def functions(pack: dp.Pack) -> None:
     pack.function(f"{base}/door", door)
 
     # -- the whole room from the scores: the reset and the repair
-    # tunnel 3's pump lever stands in the basin, by the airlock: out
+    # its tunnel's pump lever stands in the basin, by the airlock: out
     # before any layer is made wet (it is there only once the room is dry)
     lx, ly, lz = tunnels.lever_cell(layout.TUNNELS[INDEX])
     draw = [
@@ -2308,7 +2310,7 @@ def functions(pack: dp.Pack) -> None:
             call("lines_rest"),
         ],
     )
-    # whoever opens tunnel 3 (this room's ``done``, the core's checks, which
+    # whoever opens its tunnel (this room's ``done``, the core's checks, which
     # call ``solved`` or the tunnel's ``open`` themselves), the flood must
     # be gone before the tunnel's doors are: looked at every tick, with
     # anyone in the dome or nobody
@@ -2381,8 +2383,8 @@ def check(ctx: Any) -> list[str]:
     it, beyond a gate to be "inside". A lever is thrown by setting the
     block as a hand would leave it. The room's blocks are read whole only
     when nothing is running (a server that has just been sprinted ticks on
-    between the reads). Leaves the room and tunnel 3 reset (``#t3`` 0,
-    whatever it was), dome 3 and 4's scores, ``#solved`` and the level as
+    between the reads). Leaves the room and its tunnel reset (``#t<n>`` 0,
+    whatever it was), this dome's and the next's scores, ``#solved`` and the level as
     it found them, and no stand-in behind.
 
     What stand-ins and block reads cannot prove, and so is not claimed: a
@@ -2657,7 +2659,7 @@ def _check(ctx: Any) -> list[str]:
     ctx.advance(2 * STEP)
     expect("solved", (solved(), get("stage"), get("w")), (True, 3, 0))
     problems.extend(game_checks.pull_pump(ctx, INDEX))
-    expect("tunnel 3 at the solve", ctx.score(f"#t{INDEX}") in (1, 2), True)
+    expect("its tunnel at the solve", ctx.score(f"#t{INDEX}") in (1, 2), True)
     expect("places with light under 8, the room dry", dark(lit_places), [])
     low = {
         "the machine deck": at(2, 10, MID_H + 2),
@@ -2668,7 +2670,11 @@ def _check(ctx: Any) -> list[str]:
     expect("places with light under 8 on the lower decks", dark(low), [])
     ctx.advance(tunnels.event_ticks(tunnel) + 60)
     got = game_checks.scores(ctx, f"#t{INDEX}", f"#d{INDEX + 1}")
-    expect("tunnel 3 open, dome 4 open", got, {f"#t{INDEX}": 2, f"#d{INDEX + 1}": 1})
+    expect(
+        "its tunnel open, the next dome open",
+        got,
+        {f"#t{INDEX}": 2, f"#d{INDEX + 1}": 1},
+    )
     doors = [c for d in tunnels.ends(tunnel) for _, c in domes.door_cells(d, tunnel)]
     expect("door cells open", sum(ctx.is_block(c, AIR) for c in doors), len(doors))
     expect("the dam door open", sum(ctx.is_block(c, AIR) for c in place.door), 6)

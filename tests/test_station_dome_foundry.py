@@ -42,6 +42,7 @@ def test_station_foundry_room():
         r"""
 import build_station as B
 import dome_foundry as D
+N = D.INDEX  # the dome's place in the ring
 import domes
 import fittings
 import game
@@ -51,7 +52,7 @@ import tunnels
 import verify_station as V
 
 dome = L.DOMES[D.INDEX]
-assert B.STAGES["dome_4_inside"] is D.build and V.LIVE["foundry"] is D.check
+assert B.STAGES[f"dome_{N}_inside"] is D.build and V.LIVE["foundry"] is D.check
 assert "foundry" not in V.todos()
 assert not any(m.name == "stub_foundry" for m in B.modules())
 
@@ -198,7 +199,7 @@ for sign in (*D.PLAQUE_SIGNS, D.SWITCH_SIGN):
 # the stage against the fake client: the stub's post taken away, every
 # block where the plan has it, the shell and the pump engine left alone,
 # the entities summoned once, the same built twice
-stages = ["site", "dome_4", "tunnels", "dome_4_inside"]
+stages = ["site", f"dome_{N}", "tunnels", f"dome_{N}_inside"]
 rec = B.offline_build(stages=stages, force=False)
 assert f"kill @e[tag={game.stub_tag(D.INDEX)}]" in rec.commands
 for cell, block in blocks.everything().items():
@@ -217,9 +218,9 @@ count = lambda kind: sum(  # noqa: E731
 summoned = [count(k) for k in ("interaction", "text_display", "block_display")]
 assert summoned == [1, 4, 4], summoned
 assert len(D.summons(dome)) == 9
-assert "function station:dome/4/reset" in rec.commands
+assert f"function station:dome/{N}/reset" in rec.commands
 assert all(len(c.encode()) <= B.MAX_COMMAND for c in rec.commands)
-again = B.offline_build(stages=[*stages, "dome_4_inside"], force=False)
+again = B.offline_build(stages=[*stages, f"dome_{N}_inside"], force=False)
 assert again.world.dump() == rec.world.dump()
 """
     )
@@ -423,6 +424,7 @@ import build_station as B
 import automatons
 import datapack
 import dome_foundry as D
+N = D.INDEX  # the dome's place in the ring
 import fittings
 import game
 import station_layout as L
@@ -437,24 +439,27 @@ game.add_functions(pack, [D.MODULE])
 
 # the pack: the hooks the core calls, one way to solve, nothing aimed wide
 for hook in (*game.HOOKS, "died"):
-    assert f"dome/4/{hook}" in pack.functions, hook
-assert "dome/4/leave" not in pack.functions
+    assert f"dome/{N}/{hook}" in pack.functions, hook
+assert f"dome/{N}/leave" not in pack.functions
 calls = lambda path, name: any(  # noqa: E731
     line.endswith(f"function station:{name}") for line in pack.functions[path]
 )
-assert calls("dome/4/entered", "dome/4/enter") and calls("game/tick", "dome/4/tick")
-assert calls("dome/4/form", "dome/4/solo") and calls("dome/4/form", "dome/4/duo")
-assert calls("reset/all", "dome/4/reset") and calls("dome/4/left", "dome/4/empty")
-assert calls("dome/4/respawned", "dome/4/died")
-assert calls("dome/4/entered", "kit/foundry")  # the core's kit, not the room's
-mine = {n: ls for n, ls in pack.functions.items() if n.startswith("dome/4/")}
+assert calls(f"dome/{N}/entered", f"dome/{N}/enter")
+assert calls("game/tick", f"dome/{N}/tick")
+assert calls(f"dome/{N}/form", f"dome/{N}/solo")
+assert calls(f"dome/{N}/form", f"dome/{N}/duo")
+assert calls("reset/all", f"dome/{N}/reset")
+assert calls(f"dome/{N}/left", f"dome/{N}/empty")
+assert calls(f"dome/{N}/respawned", f"dome/{N}/died")
+assert calls(f"dome/{N}/entered", "kit/foundry")  # the core's kit, not the room's
+mine = {n: ls for n, ls in pack.functions.items() if n.startswith(f"dome/{N}/")}
 # a trip's title names every breaker of the stage, in one title
-assert not any("title" in line for i in range(3) for line in mine[f"dome/4/trip/{i}"])
-stage = "\n".join(mine["dome/4/trip_stage"])
+assert not any("title" in line for i in range(3) for line in mine[f"dome/{N}/trip/{i}"])
+stage = "\n".join(mine[f"dome/{N}/trip_stage"])
 assert "BREAKERS A AND B TRIPPED" in stage and "BREAKER C TRIPPED" in stage
 solvers = [n for n, ls in mine.items()
-           if any("function station:dome/4/solved" in line for line in ls)]
-assert solvers == ["dome/4/done"], solvers
+           if any(f"function station:dome/{N}/solved" in line for line in ls)]
+assert solvers == [f"dome/{N}/done"], solvers
 assert not V.function_problems(B.pack_files(pack))
 assert not V.name_problems({n: ls for n, ls in mine.items()})
 for name, lines in mine.items():
@@ -485,9 +490,10 @@ for name, lines in mine.items():
     for line in lines:
         assert not any(xyz in line for xyz in battery), (name, line)
         if D.LADLE_TAG in line:
-            assert name.startswith("dome/4/crane"), name
+            assert name.startswith(f"dome/{N}/crane"), name
         assert f"tag={D.ENTITY_TAG}]" not in line and f"tag={D.ENTITY_TAG}," not in line
-assert calls("dome/4/reset", "dome/4/rest") and calls("dome/4/empty", "dome/4/rest")
+assert calls(f"dome/{N}/reset", f"dome/{N}/rest")
+assert calls(f"dome/{N}/empty", f"dome/{N}/rest")
 assert len(D.logbook(place.frame).encode()) < B.MAX_COMMAND
 
 # the values of a level: gentle at 1, tuned at 5, hard at 10
@@ -523,7 +529,7 @@ def new(level=5, players=1):
     sim = Sim(pack, plan.everything())
     sim.put("#level", level)
     sim.function("difficulty/apply")
-    sim.put("#d4", 1)
+    sim.put(f"#d{N}", 1)
     come_in(sim, players)
     return sim
 
@@ -531,22 +537,22 @@ def new(level=5, players=1):
 def come_in(sim, players=1):
     # as the core does it: the first into an empty dome, then the form
     sim.players = players
-    sim.put("#occ4", players)
-    sim.put("#form4", min(players, 2))
+    sim.put(f"#occ{N}", players)
+    sim.put(f"#form{N}", min(players, 2))
     sim.put("#first", 1)
-    sim.function("dome/4/enter")
-    sim.function("dome/4/duo" if players > 1 else "dome/4/solo")
+    sim.function(f"dome/{N}/enter")
+    sim.function(f"dome/{N}/duo" if players > 1 else f"dome/{N}/solo")
 
 
 def leave(sim):
     # as the core does it, 3 s after the last player went
     sim.players = 0
-    sim.function("dome/4/left")
+    sim.function(f"dome/{N}/left")
 
 
 def tick(sim, ticks=1):
     for _ in range(ticks):
-        sim.function("dome/4/tick")
+        sim.function(f"dome/{N}/tick")
 
 
 def until(sim, done, limit=20000):
@@ -580,7 +586,7 @@ def as_built(sim):
     for name in ("state", "charge", "stage", "floor", "wait", "bus", "live"):
         assert sim.fdy(name) == 0, name
     assert sim.fdy("closed") == 3
-    assert not sim.mobs and sim.get("#bar4") == 0
+    assert not sim.mobs and sim.get(f"#bar{N}") == 0
 
 
 sim = new()
@@ -596,21 +602,23 @@ sim.difficulty = 0
 sim.blocks[place.switch] = ON
 tick(sim, D.STEP)
 assert sim.fdy("state") == 0 and sim.is_block(place.switch, OFF)
-assert "dome/4/refuse" in sim.calls and sim.get("#difficulty") == 0
+assert f"dome/{N}/refuse" in sim.calls and sim.get("#difficulty") == 0
 sim.difficulty = 1
 # the switch: the fight, its bossbar, the first wave after 5 s
 sim.blocks[place.switch] = ON
 tick(sim, D.STEP)
-assert sim.fdy("state") == 1 and sim.get("#bar4") == 1 and sim.get("#difficulty") == 1
+assert sim.fdy("state") == 1
+assert sim.get(f"#bar{N}") == 1
+assert sim.get("#difficulty") == 1
 sim.blocks[place.switch] = OFF  # (it will not go back)
 tick(sim, D.STEP)
 assert sim.is_block(place.switch, ON)
 assert alive(sim) == 0
-until(sim, lambda: "dome/4/warn" in sim.calls, D.FIRST)
+until(sim, lambda: f"dome/{N}/warn" in sim.calls, D.FIRST)
 assert all(sim.is_block(cell, LIT) for cell in place.telltales)
 warned = len(sim.calls)
 until(sim, lambda: alive(sim), D.WARN + 1)
-assert sim.calls.index("dome/4/cast") > warned - 5
+assert sim.calls.index(f"dome/{N}/cast") > warned - 5
 assert all(sim.is_block(cell, DARK) for cell in place.telltales)
 w = D.wave(5, 1, 0)
 cast = [alive(sim, kind) for kind in (STOKER, RIVETER, HUSK)]
@@ -672,30 +680,30 @@ tick(sim)
 assert sim.fdy("next") == five["gap"] * 3 // 4
 # a death costs a cell, and never more than the quarter in progress
 sim.put("#fdy.charge", 3 * D.QUARTER + 3 * D.CELL)
-sim.function("dome/4/died")
+sim.function(f"dome/{N}/died")
 assert sim.fdy("charge") == 3 * D.QUARTER + 3 * D.CELL - five["pen"]
 sim.put("#fdy.charge", 3 * D.QUARTER + 10)
-sim.function("dome/4/died")
+sim.function(f"dome/{N}/died")
 assert sim.fdy("charge") == 3 * D.QUARTER
 # the end: the twelfth cell
 steps = until(sim, lambda: sim.fdy("state") == 2)
-assert sim.get("#d4") == 2 and sim.calls.count("dome/4/solved") == 1
-assert not sim.mobs and mast(sim) == 4 * D.CELLS and sim.get("#bar4") == 0
+assert sim.get(f"#d{N}") == 2 and sim.calls.count(f"dome/{N}/solved") == 1
+assert not sim.mobs and mast(sim) == 4 * D.CELLS and sim.get(f"#bar{N}") == 0
 assert levers(sim) == [True] * 3 and sim.is_block(place.switch, ON)
 # its pump waits for its lever by the airlock
-assert sim.get("#t4") == 0 and sim.get("#t4.ready") == 1
+assert sim.get(f"#t{N}") == 0 and sim.get(f"#t{N}.ready") == 1
 assert sum(sim.is_block(cell, LIT) for cell in place.bus) < len(place.bus)
 tick(sim, 3 * len(place.bus) + 2)
 assert all(sim.is_block(cell, LIT) for cell in place.bus)
 # the charged room: nothing more is cast, and the switch stays thrown
-cast = sim.calls.count("dome/4/cast")
+cast = sim.calls.count(f"dome/{N}/cast")
 sim.blocks[place.switch] = OFF
 leave(sim)
 come_in(sim)
 tick(sim, 60 * 20)
-assert sim.calls.count("dome/4/cast") == cast and not sim.mobs
+assert sim.calls.count(f"dome/{N}/cast") == cast and not sim.mobs
 assert sim.fdy("state") == 2 and sim.is_block(place.switch, ON)
-assert mast(sim) == 4 * D.CELLS and sim.calls.count("dome/4/solved") == 1
+assert mast(sim) == 4 * D.CELLS and sim.calls.count(f"dome/{N}/solved") == 1
 
 # the whole fight, breakers closed as soon as they trip: about 160 s
 sim = new()
@@ -716,7 +724,7 @@ sim.blocks[place.switch] = ON
 for stage, pair in D.TRIP[2].items():
     until(sim, lambda: sim.fdy("stage") == stage)  # noqa: B023
     assert levers(sim) == [i not in pair for i in range(3)], (stage, levers(sim))
-    assert sim.get("#wave4.cap") in (None, D.wave(5, 2, stage)["cap"])
+    assert sim.get(f"#wave{N}.cap") in (None, D.wave(5, 2, stage)["cap"])
     sim.blocks[place.breakers[pair[0]].lever] = place.breakers[pair[0]].block(True)
     tick(sim, 5 * D.STEP)
     assert sim.fdy("charge") == stage * D.QUARTER  # one closed: not enough
@@ -725,7 +733,7 @@ for stage, pair in D.TRIP[2].items():
     assert sim.fdy("charge") > stage * D.QUARTER
 assert max(D.wave(5, 2, 3).values()) == D.wave(5, 2, 3)["cap"] == 10
 until(sim, lambda: sim.fdy("state") == 2)
-assert sim.get("#d4") == 2
+assert sim.get(f"#d{N}") == 2
 
 # a second player arriving changes nothing until the next trip and wave
 sim = new()
@@ -734,23 +742,23 @@ until(sim, lambda: sim.fdy("stage") == 1)
 assert levers(sim) == [False, True, True]
 before = (dict(sim.blocks), [set(m) for m in sim.mobs], sim.fdy("charge"))
 sim.players = 2
-sim.put("#occ4", 2)
-sim.put("#form4", 2)
-sim.function("dome/4/duo")
+sim.put(f"#occ{N}", 2)
+sim.put(f"#form{N}", 2)
+sim.function(f"dome/{N}/duo")
 assert (dict(sim.blocks), [set(m) for m in sim.mobs], sim.fdy("charge")) == before
 sim.blocks[a.lever] = a.block(True)
 until(sim, lambda: sim.fdy("stage") == 2)
 assert levers(sim) == [True, False, False]  # a pair: B and C
 # one of two leaves with a pair out: the second closes itself, at once
 sim.players = 1
-sim.put("#occ4", 1)
-sim.put("#form4", 1)
-sim.function("dome/4/solo")
+sim.put(f"#occ{N}", 1)
+sim.put(f"#form{N}", 1)
+sim.function(f"dome/{N}/solo")
 assert levers(sim) == [True, False, True] and sim.fdy("form") == 1
 assert sim.fdy("state") == 1 and sim.fdy("charge") == 2 * D.QUARTER
 # ... and with one out and one player, nothing is done for them
-sim.function("dome/4/duo")
-sim.function("dome/4/solo")
+sim.function(f"dome/{N}/duo")
+sim.function(f"dome/{N}/solo")
 assert levers(sim) == [True, False, True]
 
 # leaving in the fight is a checkpoint: the charge back to the last
@@ -764,7 +772,7 @@ assert sim.mobs and mast(sim) == 4 * 8
 leave(sim)
 assert (sim.fdy("state"), sim.fdy("charge"), sim.fdy("stage")) == (1, 2 * D.QUARTER, 2)
 assert sim.fdy("wait") == D.RESUME and levers(sim) == lamps(sim) == [True, True, False]
-assert sim.is_block(place.switch, ON) and not sim.mobs and sim.get("#bar4") == 0
+assert sim.is_block(place.switch, ON) and not sim.mobs and sim.get(f"#bar{N}") == 0
 assert mast(sim) == 4 * 6
 # (a level voted while the dome was left takes force when the fight goes on)
 sim.put("#level", 1)
@@ -774,7 +782,7 @@ assert sim.fdy("rate") == five["rate"]  # not set up anew
 tick(sim, D.RESUME - 1)
 assert sim.fdy("charge") == 2 * D.QUARTER and not sim.mobs and sim.fdy("wait") == 1
 tick(sim, 1 + D.STEP)
-assert sim.fdy("wait") == 0 and sim.get("#bar4") == 1
+assert sim.fdy("wait") == 0 and sim.get(f"#bar{N}") == 1
 assert {n: sim.fdy(n) for n in five} == D.scaled(1)
 assert sim.fdy("charge") == 2 * D.QUARTER  # C is still out
 sim.blocks[c.lever] = c.block(True)
@@ -782,7 +790,7 @@ tick(sim, 2 * D.STEP)
 assert sim.fdy("charge") > 2 * D.QUARTER
 sim.put("#level", 5)
 sim.function("difficulty/apply")
-sim.function("dome/4/scale")
+sim.function(f"dome/{N}/scale")
 assert not sim.mobs
 until(sim, lambda: sim.mobs, D.FIRST)
 # left again at once: no more is lost than the quarter in progress
@@ -797,7 +805,7 @@ assert levers(sim) == [True, True, False] and sim.fdy("charge") == 3 * D.QUARTER
 come_in(sim)
 sim.blocks[c.lever] = c.block(True)
 until(sim, lambda: sim.fdy("state") == 2)
-assert sim.get("#d4") == 2 and sim.calls.count("dome/4/solved") == 1
+assert sim.get(f"#d{N}") == 2 and sim.calls.count(f"dome/{N}/solved") == 1
 
 # an idle room left is put back as built; so is any room by the reset
 sim = new()
@@ -820,13 +828,13 @@ sim.blocks[place.lectern] = "minecraft:lectern[facing=south,has_book=false]"
 tick(sim, D.STEP)
 assert "Finch" in sim.blocks[place.lectern]  # a log taken is put back
 assert mast(sim) and levers(sim) != [True] * 3 and sim.fdy("form") == 2
-sim.function("dome/4/reset")
+sim.function(f"dome/{N}/reset")
 as_built(sim)
 assert sim.fdy("form") == 2  # (the form is the core's: two are still in)
-assert sim.get("#d4") == 1  # its own dome's room, not the game's progress
+assert sim.get(f"#d{N}") == 1  # its own dome's room, not the game's progress
 # the game's reset calls it, and after it an entry sets the room up anew
 sim.function("reset/all")
-assert sim.get("#d4") == 0
+assert sim.get(f"#d{N}") == 0
 as_built(sim)
 
 # the level's values are copied when the room is set up, not in a fight

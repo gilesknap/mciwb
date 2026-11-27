@@ -41,7 +41,7 @@ sees them.
   (the end nearest the door the way home comes in by): a dispenser at
   eye height, a copper bulb over it that is lit while a trophy waits, a
   text display ("YOUR TROPHY") and a button under it. See "The trophy".
-- **The sealed door** in the north: tunnel 7's mouth, dressed and left
+- **The sealed door** in the north: the last tunnel's mouth, dressed and left
   shut.
 - **The arrival point**: a brass pad round ``domes.entrance``, where the
   recall and a respawn put a player.
@@ -393,7 +393,7 @@ def map_cells() -> MapCells:
         shapes = {
             d.index: {
                 (places[d.index][0] + dk, places[d.index][1] + dh)
-                for dk, dh in _disc(d.radius / scale)
+                for dk, dh in _disc(max(d.radius / scale, 1))
             }
             for d in layout.DOMES
         }
@@ -1104,9 +1104,18 @@ def entities() -> tuple[str, ...]:
         low = min(h for _, h in m.shore)
         label(MAP, sk, low - 0.6, _t("the shore", "white"), 0.7)
         label(MAP, sk, low - 0.9, _t("(a long row)", "gray"), 0.5)
-    # the band of sea between the two rows of domes
+    # the legend: in the band of sea between the two rows of domes, or
+    # over the upper row if there is more open sea there (a wide ring
+    # drawn at a small scale)
     rows = sorted({h for _, h in m.places.values()})
+    hs = {i: [h for _, h in shape] for i, shape in m.shapes.items()}
+    upper = [i for i, (_, h) in m.places.items() if h == rows[-1]]
+    lower = [i for i, (_, h) in m.places.items() if h == rows[0]]
+    top = max(max(hs[i]) for i in upper)
+    between = min(min(hs[i]) for i in upper) - max(max(hs[i]) for i in lower) - 1
     band = (rows[0] + rows[-1]) / 2 + 0.5
+    if MAP.height - 1 - top > between:
+        band = (top + 1 + MAP.height) / 2 - 0.15
     ring = [k for k, _ in m.places.values()]
     mid = (min(ring) + max(ring)) / 2 + 0.5
     label(

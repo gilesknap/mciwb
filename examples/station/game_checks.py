@@ -535,7 +535,7 @@ def check_reset(ctx: Any) -> list[str]:
     want = dict.fromkeys(names, 0) | {"#d0": 1}
     expect(problems, "after the reset", scores(ctx, *names), want)
     for n in tunnels.LEVERED:
-        # (air, or the Flooded Dome's water: tunnel 3's is in its basin)
+        # (air, or the Flooded Dome's water: its tunnel's is in its basin)
         if ctx.is_block(tunnels.lever_cell(layout.TUNNELS[n]), "minecraft:lever"):
             problems.append(f"tunnel {n}: its lever is there after the reset")
     expect(problems, "the run's number", ctx.score("#runid"), (runid or 0) + 1)

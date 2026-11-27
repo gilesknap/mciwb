@@ -1,7 +1,7 @@
 """
-The Clockwork Maze (dome 6) of The Drowned Station: a three-storey brass
+The Clockwork Maze (dome ``INDEX``) of The Drowned Station: a three-storey brass
 cage whose gates and floors move with a clock. Its build stage
-(``dome_6_inside``), its datapack functions (``dome/6/...``) and its live
+(``dome_<n>_inside``), its datapack functions (``dome/<n>/...``) and its live
 check (``clockwork_maze``).
 
 **The one idea.** The clock has three hours, Green (I), Iron (II) and Gold
@@ -10,7 +10,7 @@ opens in (its lintel, and a numeral for those who cannot tell the
 colours), and everything moves when the bell strikes. A floor of grating
 is only there in its hours. Climb with the clock to the Regulator on the
 crown and throw it: the clock is tamed, every gate opens and stays open,
-and tunnel 6 pumps dry.
+and its tunnel pumps dry.
 
 **The puzzle** is the way up, and it is planned, not found. No cell has
 two gates of one hour, so every cell is a wait for a bell, and most have
@@ -99,7 +99,7 @@ still to come, ``fl`` the warning's flash.
 **Functions** (the core calls the hooks, see game.py): ``enter`` (the
 first into an unsolved room: ``arm``), ``tick`` (the log put back, then
 ``work``: ``clock`` -> ``gates`` -> ``mend`` -> ``floors`` -> ``lifts`` ->
-``keys``, which calls ``done``: ``station:dome/6/solved``, then ``restored``),
+``keys``, which calls ``done``: ``station:dome/<n>/solved``, then ``restored``),
 ``solo`` / ``duo`` (the two held gates' plates and signs, nothing else:
 a gate never shuts on anyone, so a change of form takes effect when the
 doorway is clear), ``empty`` (an unsolved room parked: the clock stopped
@@ -138,7 +138,7 @@ from domes import AIR, Cell, middle
 if TYPE_CHECKING:
     from station_layout import Dome
 
-INDEX = 6  # the Clockwork Maze's place in the ring
+INDEX = layout.index_of("maze")  # the Clockwork Maze's place in the ring
 OBJ = game.OBJ
 
 QUARTER = 30  # ticks a quarter at level 5: an hour is 6 s
@@ -2671,7 +2671,7 @@ def check(ctx: Any) -> list[str]:
     by an armour stand that the core counts (``game.STANDIN``), with a
     body and a weight, moved by teleport; the lever is thrown by setting
     the block as a hand would leave it. Leaves the room and its tunnel
-    reset, dome 6 as it was and no stand-in behind.
+    reset, the dome as it was and no stand-in behind.
 
     What the stand-ins cannot prove: that a player can walk a gate in the
     time an hour gives, read a plan, or see and tell the colours; the
@@ -2977,7 +2977,7 @@ def _check(ctx: Any, saved_level: dict[str, int | None]) -> list[str]:
     ctx.advance(6)
     expect("the lever thrown: solved", (solved(), get("free")), (True, 1))
     problems.extend(game_checks.pull_pump(ctx, INDEX))
-    expect("solved: tunnel 6", ctx.score(f"#t{INDEX}") in (1, 2), True)
+    expect("solved: its tunnel", ctx.score(f"#t{INDEX}") in (1, 2), True)
     ctx.advance(12)
     gates_read("solved", lambda g: False)
     out = [ctx.is_block(fr.at(*floor_places(fl)[4]), GRATE) for fl in FLOORS]
@@ -3147,7 +3147,9 @@ def _check(ctx: Any, saved_level: dict[str, int | None]) -> list[str]:
         problems.append("a logbook taken from the lectern was not put back")
     if not (get("q") and ctx.is_block(keys[0], PLATE) and get("form") == 2):
         problems.append("the room was not scrambled before the reset")
-    rest = [f"#d{n}" for n in range(8) if n != INDEX] + [f"#t{n}" for n in range(8)]
+    rest = [f"#d{d.index}" for d in layout.DOMES if d.index != INDEX] + [
+        f"#t{t.index}" for t in layout.TUNNELS
+    ]
     before = game_checks.scores(ctx, *rest)
     ctx.function(f"{base}/reset")
     ctx.set_score(f"#d{INDEX}", 0)  # locked, so that nothing runs after it
@@ -3171,7 +3173,7 @@ def _check(ctx: Any, saved_level: dict[str, int | None]) -> list[str]:
     for tag in PEND_TAGS:
         expect(f"the pendulum's {tag}, left", ctx.count(f"@e[tag={tag}]"), 1)
     got, want = tunnels.counts(ctx, tunnel), tunnels.expected(tunnel, 0)
-    expect("tunnel 6 left shut and flooded", got, want)
+    expect("its tunnel left shut and flooded", got, want)
     problems += [f"left: {p}" for p in domes.check_shell(ctx, dome, False)]
     left = ctx.count(f"@e[tag={S1}]") + ctx.count(f"@e[tag={S2}]")
     expect("stand-ins left behind", left, 0)

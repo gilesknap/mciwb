@@ -10,12 +10,15 @@ It is a self-contained example: nothing here imports another example. The
 blocks and the redstone are placed over RCON by mciwb; the game's logic is
 a datapack of functions that the build generates and installs.
 
-Where it stands: all eight domes are built and checked live (the shore
-and its boats, the dock, the lift, the Pump House, the Boiler Room, the
-Gearworks, the Flooded Dome, the Foundry, the Signal Room, the Clockwork
-Maze and the Engine), with all eight tunnels that pump dry, over the game
-core (who is playing, progress, the clock, kit and respawn, the vote,
-difficulty, reset). The Engine's second phase is written but switched off
+Where it stands: the ring has ten domes, and all ten are built and
+checked live (the shore and its boats, the dock, the lift, the Pump
+House, the Boiler Room, the Gearworks, the Cargo Hold, the Flooded Dome,
+the Foundry, Hull Breach, the Signal Room, the Clockwork Maze and the
+Engine) over the game core (who is playing, progress, the clock, kit and
+respawn, the vote, difficulty, reset); the two of round 3, the Cargo
+Hold and Hull Breach, stand where the Flooded Dome and the Foundry
+stood, which moved a column east. All
+ten tunnels pump dry. The Engine's second phase, the Master, is on
 (`PHASE_2` in `dome_boss.py`). Play-testing continues; PROGRESS.md says
 what it has found and what is still to do.
 
@@ -27,7 +30,7 @@ The station is laid out for one world, not any world: `ANCHOR` (63,
 the seed **4578111213919200824** (normal terrain). Make a world from that
 seed on a 26.3 server; the build and the datapack need 26.3.
 
-- **The build overwrites the box (23, 21, -229) to (303, 72, -77)**,
+- **The build overwrites the box (16, 21, -240) to (383, 72, -65)**,
   whatever is in it, and keeps it forceloaded for good.
 - **The `rules` stage sets world-wide game rules**: keep inventory on, mob
   griefing off, monster spawning off, fire spread off and block drops off
@@ -68,9 +71,10 @@ game logic. Pass `--server` and `--port` for a server that is not the
 | `fittings.py` | what every dome has: a frame to place things by, input posts and readers, gauges, displays, hints, machinery that runs by itself, signs and plaques, a lectern and its book, the recall post, lent and restricted items |
 | `automatons.py` | the mobs of the fights, made to the plan's rules: the three kinds, waves, leash and fence, a dome's bossbar, the difficulty |
 | `rooms.py` | offline checks of a room's plan: placement, walks, sight lines, inputs on gold, blocks with a meaning |
-| `shore.py`, `dome_start.py`, `dome_boiler.py`, `dome_gearworks.py`, `dome_flooded.py`, `dome_foundry.py`, `dome_signal.py`, `dome_maze.py`, `dome_boss.py` | the modules: the way in (shore, boats, dock, lift), then the eight domes in ring order: the Pump House, the Boiler Room, the Gearworks, the Flooded Dome, the Foundry, the Signal Room, the Clockwork Maze, the Engine |
+| `shore.py`, `dome_start.py`, `dome_boiler.py`, `dome_gearworks.py`, `dome_flooded.py`, `dome_foundry.py`, `dome_signal.py`, `dome_maze.py`, `dome_boss.py` | the modules: the way in (shore, boats, dock, lift), then the domes in ring order: the Pump House, the Boiler Room, the Gearworks, (the Cargo Hold), the Flooded Dome, the Foundry, (Hull Breach), the Signal Room, the Clockwork Maze, the Engine |
 | `game_checks.py` | the live checks of the game core, with stand-ins for players |
 | `build_station.py` | the build, stage by stage |
+| `resite.py` | what the build takes away when the ring changes under a station already built (the ring of eight before round 3), and the rollback to it |
 | `verify_station.py` | the checks: offline ones, and live ones over RCON |
 | `fake_client.py` | a fake RCON client and a simulated box of blocks, for building with no server |
 | `survey_site.py`, `render_layout.py`, `rig_mechanisms.py` | the tools of stage 0: the survey of the ocean, the plan drawn, each mechanism proved in a rig |
@@ -89,18 +93,29 @@ world, the layout and the datapack under construction.
 | `datapack` | the datapack installed in the world's `datapacks` folder and reloaded |
 | `rules` | the game rules of the plan; the mineshaft's two spawners removed |
 | `shore`, `dock` | the landing, its jetty and boats; the dock offshore |
-| `start_dome`, `dome_1` ... `dome_7` | each dome's empty, lit shell on its foundation, its mouths plugged with windowed brass doors |
+| `resite` | the sea put back where the previous ring (of eight) had a tunnel that this one has not: see `resite.py` |
+| `start_dome`, `dome_1` ... `dome_9` | each dome's empty, lit shell on its foundation, its mouths plugged with windowed brass doors |
 | `lift` | the lift from the dock down into the start dome (after that dome's shell, which would wipe its shaft) |
 | `start_dome_inside`, `dome_1_inside` | the Pump House; the Boiler Room |
-| `dome_3_inside` | the Flooded Dome (after `datapack`: it ends with the pack's `dome/3/reset`) |
-| `dome_4_inside` | the Foundry |
-| `dome_5_inside` | the Signal Room |
-| `dome_7_inside` | the Engine (phase 1, and phase 2, the Master, behind `PHASE_2` in `dome_boss.py`: on) |
-| `dome_6_inside` | the Clockwork Maze (after `datapack`: it ends with the pack's `dome/6/reset`; the gate plan and the lifts are in `dome_maze.py`) |
 | `dome_2_inside` | the Gearworks (after `datapack`: it ends with the pack's `dome/2/reset`) |
-| `tunnel_0` ... `tunnel_7` | each tunnel, flooded and shut, with its pump engine; the two that slope have stairs. `STAGES=tunnels` is short for all eight |
+| `dome_3_inside` | the Cargo Hold (after `datapack`; `dome_cargo.py`) |
+| `dome_6_inside` | Hull Breach (after `datapack`; `dome_hullbreach.py`) |
+| `dome_4_inside` | the Flooded Dome (after `datapack`: it ends with the pack's `dome/4/reset`) |
+| `dome_5_inside` | the Foundry |
+| `dome_7_inside` | the Signal Room |
+| `dome_8_inside` | the Clockwork Maze (after `datapack`: it ends with the pack's `dome/8/reset`; the gate plan and the lifts are in `dome_maze.py`) |
+| `dome_9_inside` | the Engine (phase 1, and phase 2, the Master, behind `PHASE_2` in `dome_boss.py`: on) |
+| `tunnel_0` ... `tunnel_9` | each tunnel, flooded and shut, with its pump engine; the two that slope have stairs. `STAGES=tunnels` is short for all ten |
 | `seabed` | last: the sea floor round the station dressed from the survey, with sea lanterns, reefs of coral, sea pickles and seagrass (what an earlier run placed taken away first; `seabed.py`) |
 | `seabed_water` | the station's box set to the warm-ocean biome from the sea floor up: lighter, turquoise water and tropical fish (a player online may need to rejoin to see it) |
+
+A dome's number is its place in the ring (`station_layout.index_of(key)`),
+which changes when the ring does: round 3 moved the Flooded Dome from 3 to
+4, the Foundry from 4 to 5, the Signal Room from 5 to 7, the Maze from 6 to
+8 and the Engine from 7 to 9. One more stage, `rollback`, runs only when
+`STAGES` names it: it takes away what the ring of ten has and the ring of
+eight had not, before a rebuild of the eight (PROGRESS.md, "Re-site
+runbook").
 
 A stage not written yet would say so and do nothing; every stage is
 written now. A shell stage wipes what is inside its dome (the pump
@@ -188,9 +203,8 @@ MODULE = game.Module(
 - **The builders' contract**: what a dome's module gets from the core,
   and what it must not do for itself.
   - *Until it exists*, its dome is a stub: a BYPASS lever by the exit
-    that solves the dome, so the ring always plays end to end. All eight
-    domes have their modules now, so no stub is built; the support stays
-    for a dome being rebuilt. The module's file replaces the stub; its
+    that solves the dome, so the ring always plays end to end. No dome is
+    a stub now. The module's file replaces the stub; its
     build stage runs `game.clear_stub_commands(dome)`.
   - *Two rules*: leaving a dome never costs more than the stage in
     progress; a change of form never shuts, removes or restarts
@@ -209,7 +223,7 @@ MODULE = game.Module(
   - *The level*: `#diff.count`, `.health`, `.damage`, `.timer`, `.seq`,
     percentages; copy what you need when the room is set up.
   - *Kits* are the core's alone: a shield and spectral arrows on entering
-    dome 4, brass armour and a sabre on entering dome 7. A dome lends
+    the Foundry, brass armour and a sabre on entering the Engine. A dome lends
     with `fittings.lend_line` and takes back with `take_back_line` in
     `leave` and `reset`.
   - *Fights* (`automatons.py`): the three kinds `STOKER`, `RIVETER`,
@@ -281,8 +295,8 @@ since the core's checks reset the game before and after.
 | --- | --- |
 | `forceloaded` | the station's box is forceloaded (expected), and what else is |
 | `rules` | the game rules, the difficulty Easy, the spawners gone |
-| `shell_0` ... `shell_7` | a dome: nothing inside or in its mouths wet (but where a module has registered water that is meant), no hole in shell or floor, ground under the floor, the sea above; while it is empty, the light at head height and no stray entities |
-| `tunnel_0` ... `tunnel_7` | a tunnel reset, opened, read at every state as its water falls layer by layer and its lamps come on, open and dry with both domes dry, reset and flooded again (`CHECKS=tunnels`: all eight) |
+| `shell_0` ... `shell_9` | a dome: nothing inside or in its mouths wet (but where a module has registered water that is meant), no hole in shell or floor, ground under the floor, the sea above; while it is empty, the light at head height and no stray entities |
+| `tunnel_0` ... `tunnel_9` | a tunnel reset, opened, read at every state as its water falls layer by layer and its lamps come on, open and dry with both domes dry, reset and flooded again (`CHECKS=tunnels`: all ten) |
 | `player_count` | the count, which dome a player is in, and each dome's own solo or duo form by who is in it, with the fall back to solo |
 | `vote` | both kinds of vote: proposed, counted, shown, running out, passing |
 | `difficulty` | the level taking force on entering a dome, the scaled values, the level kept through a reset |
@@ -294,7 +308,8 @@ since the core's checks reset the game before and after.
 | `fittings` | the torch clock, its lamp chase and pistons seen running; a gauge; a lever put back and held; a button read once; a plate that wants a player; a display; a lent item; a hint |
 | `ring` | the whole ring's progress walked by a stand-in from the master lever to the win (throwing a stub's BYPASS lever, if any dome were still a stub), and the reset |
 | `seabed_live` | a sample of the sea floor's plan read back (coral that has died is reported) and the water's biome inside the box |
-| `shore`, `dock`, `lift`, `start_dome`, `boiler_room`, `gearworks`, `flooded_dome`, `foundry`, `signal_room`, `clockwork_maze`, `boss` | the modules' own checks (see each module) |
+| `shore`, `dock`, `lift`, `start_dome`, `boiler_room`, `gearworks`, `flooded_dome`, `foundry`, `signal_room`, `clockwork_maze`, `boss`, `cargo_hold`, `hull_breach` | the modules' own checks (see each module) |
+| `hull_breach_rig` | only when named: the Breacher in the check cell by day or night, with two golems for prey (see `dome_hullbreach.rig`) |
 
 A check of a part not built would be listed as `TODO`, and a TODO is not
 a pass; none is left. Players are stood in for by armour stands

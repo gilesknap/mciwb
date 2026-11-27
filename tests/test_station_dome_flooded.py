@@ -45,6 +45,7 @@ sys.path.insert(0, ".")
 import build_station as B
 import datapack
 import dome_flooded as D
+N = D.INDEX  # the dome's place in the ring
 import domes
 import game
 import station_layout as L
@@ -234,7 +235,8 @@ class Sim:
                 store = (w[i + 3], w[i + 4])
                 i += 5
             elif k == "store":
-                i += 7  # (into storage: not kept)
+                # (into a bossbar or storage: not kept)
+                i += 5 if w[i + 2] == "bossbar" else 7
             elif k in ("if", "unless"):
                 kind = w[i + 1]
                 if kind == "score":
@@ -293,7 +295,7 @@ class Sim:
 class Ctx:
     """
     What a live check is given, over the simulation in place of a server:
-    the build's context as far as dome 3's check uses it. ``advance`` runs
+    the build's context as far as the dome's check uses it. ``advance`` runs
     the game's ticks as the core would for this one dome: who is in it (the
     stand-ins, by where they are), its hooks (enter with #first, solo, duo,
     empty) at the core's times, its tick, scheduled functions; and a plate
@@ -421,7 +423,7 @@ def simulated():
     two together"""
     dome = L.DOMES[D.INDEX]
     rec = B.offline_build(
-        stages=["site", "dome_3", "tunnels", "dome_3_inside"], force=False
+        stages=["site", f"dome_{N}", "tunnels", f"dome_{N}_inside"], force=False
     )
     pack = B.new_pack("t")
     sim = Sim(pack, rec.world)
@@ -440,6 +442,7 @@ def test_station_flooded_plan():
         r"""
 import build_station as B
 import dome_flooded as D
+N = D.INDEX  # the dome's place in the ring
 import domes
 import game
 import rooms
@@ -448,7 +451,7 @@ import tunnels
 import verify_station as V
 
 dome = L.DOMES[D.INDEX]
-assert B.STAGES["dome_3_inside"] is D.build and V.LIVE["flooded_dome"] is D.check
+assert B.STAGES[f"dome_{N}_inside"] is D.build and V.LIVE["flooded_dome"] is D.check
 assert "flooded_dome" not in V.todos()
 
 # the plan: nothing wrong with it; its cells inside the dome and off the
@@ -684,6 +687,7 @@ def test_station_flooded_build():
         r"""
 import build_station as B
 import dome_flooded as D
+N = D.INDEX  # the dome's place in the ring
 import domes
 import game
 import station_layout as L
@@ -697,7 +701,7 @@ b = D.room_blocks(dome)
 # the stage against the fake client: every block where the plan has it,
 # the basin full to the top layer and the hall dry, the dome's shell and
 # the pump engine left alone, the stub's bypass gone, the same built twice
-stages = ["site", "dome_3", "tunnels", "dome_3_inside"]
+stages = ["site", f"dome_{N}", "tunnels", f"dome_{N}_inside"]
 rec = B.offline_build(stages=stages, force=False)
 world = rec.world
 fixed, fluid = D.fixed_blocks(dome), D.fluid_blocks(dome)
@@ -732,13 +736,13 @@ summons = [c for c in rec.commands if c.startswith("summon")]
 assert sum("minecraft:interaction" in c for c in summons) == 1
 assert sum("minecraft:text_display" in c for c in summons) == 6
 assert all(D.ENTITY_TAG in c for c in summons)
-assert "function station:dome/3/reset" in rec.commands
+assert f"function station:dome/{N}/reset" in rec.commands
 # the tide clock's torch goes in after the rest of it; the beam engine has none
 torch = next(c for c, block in b.attached.items() if D.TORCH in block)
 placed = [i for i, c in enumerate(rec.commands) if D.TORCH in c]
 assert len(placed) == 1 and world.name_at(place.engine_torch) == domes.AIR
 assert all(i < placed[0] for i, c in enumerate(rec.commands) if "repeater" in c)
-again = B.offline_build(stages=[*stages, "dome_3_inside"], force=False)
+again = B.offline_build(stages=[*stages, f"dome_{N}_inside"], force=False)
 assert again.world.dump() == world.dump()
 
 # a room with a fault is not built
@@ -778,6 +782,7 @@ def test_station_flooded_pack():
 import build_station as B
 import datapack
 import dome_flooded as D
+N = D.INDEX  # the dome's place in the ring
 import domes
 import game
 import station_layout as L
@@ -790,24 +795,27 @@ place = D.room(dome)
 pack = datapack.Pack(stamp="t")
 game.add_functions(pack, [D.MODULE])
 own = datapack.Pack(stamp="t")
-D.functions(own)  # (the core adds functions of its own under dome/3/)
-mine = {n: lines for n, lines in own.functions.items() if n.startswith("dome/3/")}
+D.functions(own)  # (the core adds functions of its own under dome/<n>/)
+mine = {n: lines for n, lines in own.functions.items() if n.startswith(f"dome/{N}/")}
 assert all(pack.functions[n] == lines for n, lines in own.functions.items())
 for hook in game.HOOKS:
-    assert f"dome/3/{hook}" in mine, hook
-assert "dome/3/leave" not in mine and "dome/3/died" not in mine  # (nothing lent)
+    assert f"dome/{N}/{hook}" in mine, hook
+assert f"dome/{N}/leave" not in mine and f"dome/{N}/died" not in mine  # (nothing lent)
 calls = lambda path, name: any(  # noqa: E731
     line.endswith(f"function station:{name}") for line in pack.functions[path]
 )
-assert calls("dome/3/entered", "dome/3/enter") and calls("game/tick", "dome/3/tick")
-assert calls("dome/3/form", "dome/3/solo") and calls("dome/3/form", "dome/3/duo")
-assert calls("reset/all", "dome/3/reset") and calls("dome/3/left", "dome/3/empty")
+assert calls(f"dome/{N}/entered", f"dome/{N}/enter")
+assert calls("game/tick", f"dome/{N}/tick")
+assert calls(f"dome/{N}/form", f"dome/{N}/solo")
+assert calls(f"dome/{N}/form", f"dome/{N}/duo")
+assert calls("reset/all", f"dome/{N}/reset")
+assert calls(f"dome/{N}/left", f"dome/{N}/empty")
 solvers = [
     n
     for n, ls in mine.items()
-    if any("function station:dome/3/solved" in line for line in ls)
+    if any(f"function station:dome/{N}/solved" in line for line in ls)
 ]
-assert solvers == ["dome/3/done"], solvers
+assert solvers == [f"dome/{N}/done"], solvers
 assert not V.function_problems(B.pack_files(pack))
 for name, lines in mine.items():
     for line in lines:
@@ -818,41 +826,42 @@ for name, lines in mine.items():
 # the game's reset: tunnel 3 put back before the room is flooded round its
 # engine; the room's reset does all that ``empty`` does
 order = pack.functions["reset/all"]
-assert order.index("function station:tunnel/3/reset") < order.index(
-    "function station:dome/3/reset"
+assert order.index(f"function station:tunnel/{N}/reset") < order.index(
+    f"function station:dome/{N}/reset"
 )
-reset, empty = mine["dome/3/reset"], mine["dome/3/empty"]
-assert calls("dome/3/reset", "dome/3/zero") and calls("dome/3/reset", "dome/3/draw")
-assert calls("dome/3/reset", "dome/3/engine_off") and calls(
-    "dome/3/empty", "dome/3/engine_off"
+reset, empty = mine[f"dome/{N}/reset"], mine[f"dome/{N}/empty"]
+assert calls(f"dome/{N}/reset", f"dome/{N}/zero")
+assert calls(f"dome/{N}/reset", f"dome/{N}/draw")
+assert calls(f"dome/{N}/reset", f"dome/{N}/engine_off") and calls(
+    f"dome/{N}/empty", f"dome/{N}/engine_off"
 )
-assert calls("dome/3/draw", "dome/3/fixtures") and calls("dome/3/draw", "dome/3/gates")
-assert calls("dome/3/empty", "dome/3/fixtures") and calls(
-    "dome/3/empty", "dome/3/gates"
+assert calls(f"dome/{N}/draw", f"dome/{N}/fixtures")
+assert calls(f"dome/{N}/draw", f"dome/{N}/gates")
+assert calls(f"dome/{N}/empty", f"dome/{N}/fixtures") and calls(
+    f"dome/{N}/empty", f"dome/{N}/gates"
 )
 assert not any(
     "#fl.w " in line or "#fl.stage " in line or "#fl.pump " in line for line in empty
 )
 # the solo and duo hooks only say what is wanted: the change waits for swap
-assert mine["dome/3/solo"] == ["scoreboard players set #fl.want st 1"]
-assert mine["dome/3/duo"] == ["scoreboard players set #fl.want st 2"]
-assert any(
-    "#fl.ctl st matches 0" in line and "to_duo" in line for line in mine["dome/3/swap"]
-)
+assert mine[f"dome/{N}/solo"] == ["scoreboard players set #fl.want st 1"]
+assert mine[f"dome/{N}/duo"] == ["scoreboard players set #fl.want st 2"]
+swap = mine[f"dome/{N}/swap"]
+assert any("#fl.ctl st matches 0" in line and "to_duo" in line for line in swap)
 # the rig's two rules. Levers, plates and signs out before any water is
 # written; every layer's function writes each of its fittings, wet or dry;
 # no function of the room but those and the gates' touches the water
-draw = mine["dome/3/draw"]
-assert draw[0] == "function station:dome/3/fixtures_clear"
-assert len(mine["dome/3/fixtures_clear"]) == len(D.fixture_cells(dome)) == 15
+draw = mine[f"dome/{N}/draw"]
+assert draw[0] == f"function station:dome/{N}/fixtures_clear"
+assert len(mine[f"dome/{N}/fixtures_clear"]) == len(D.fixture_cells(dome)) == 15
 layers = D.layers(dome)
 for h, layer in layers.items():
-    wet_, dry = mine[f"dome/3/layer_{h}/wet"], mine[f"dome/3/layer_{h}/dry"]
-    assert any(f"function station:dome/3/layer_{h}/wet" in line for line in draw)
-    assert any(f"function station:dome/3/layer_{h}/dry" in line for line in draw)
+    wet_, dry = mine[f"dome/{N}/layer_{h}/wet"], mine[f"dome/{N}/layer_{h}/dry"]
+    assert any(f"function station:dome/{N}/layer_{h}/wet" in line for line in draw)
+    assert any(f"function station:dome/{N}/layer_{h}/dry" in line for line in draw)
     assert any(
-        f"matches {h} run function station:dome/3/layer_{h}/dry" in line
-        for line in mine["dome/3/layer_down"]
+        f"matches {h} run function station:dome/{N}/layer_{h}/dry" in line
+        for line in mine[f"dome/{N}/layer_down"]
     )
     for cell, block in layer.fittings.items():
         at = f"setblock {cell[0]} {cell[1]} {cell[2]} "
@@ -870,37 +879,37 @@ for h, layer in layers.items():
     assert dry.index(next(line for line in dry if line.startswith("fill"))) == len(
         layer.fittings
     )
-    assert f"check/dome/3/layer_{h}" in pack.functions
+    assert f"check/dome/{N}/layer_{h}" in pack.functions
 watery = {
     n
     for n, lines in mine.items()
     if any("minecraft:water" in line or "waterlogged" in line for line in lines)
 }
 assert watery == {
-    f"dome/3/layer_{h}/{how}" for h in layers for how in ("wet", "dry")
+    f"dome/{N}/layer_{h}/{how}" for h in layers for how in ("wet", "dry")
 } | {
-    "dome/3/gate_b/open",
-    "dome/3/gate_b/shut",
-    "dome/3/gate_c/open",
-    "dome/3/gate_c/shut",
-    "dome/3/gate_a/shut",
+    f"dome/{N}/gate_b/open",
+    f"dome/{N}/gate_b/shut",
+    f"dome/{N}/gate_c/open",
+    f"dome/{N}/gate_c/shut",
+    f"dome/{N}/gate_a/shut",
 }, watery
 assert max(len(lines) for lines in mine.values()) < 400
 # the machinery runs whether or not there is a puzzle, and no function of
 # the puzzle reads it; the beam engine's torch is the pack's
-tick = mine["dome/3/tick"]
+tick = mine[f"dome/{N}/tick"]
 at = lambda end: next(i for i, l in enumerate(tick) if l.endswith(end))  # noqa: E731
-assert at("function station:dome/3/deco") < at("function station:dome/3/step")
+assert at(f"function station:dome/{N}/deco") < at(f"function station:dome/{N}/step")
 machine = [D._xyz(c) for m in (place.engine, place.tide) for c in m.cells]
 machine += [D._xyz(c) for c in place.lamps]
 torch = D._xyz(place.engine_torch)
 for name, lines in mine.items():
-    if name.startswith("dome/3/deco") or "engine" in name:
+    if name.startswith(f"dome/{N}/deco") or "engine" in name:
         continue
     for line in lines:
         assert not any(f" {xyz} " in line for xyz in machine), (name, line)
 assert all(
-    torch in line for n in ("engine_on", "engine_off") for line in mine[f"dome/3/{n}"]
+    torch in line for n in ("engine_on", "engine_off") for line in mine[f"dome/{N}/{n}"]
 )
 # three hints, one a stage
 assert sum(n.endswith("/say") for n in mine) == 3
@@ -976,9 +985,9 @@ world.setblock(bb.lever, D.lever(bb.facing))
 world.setblock(c.gate[0], D.AIR)
 put(w=4, stage=1, form=2, ctl=1, pump=1, gate=1)
 assert differs(D.START)
-sim.run("dome/3/reset")
+sim.run(f"dome/{N}/reset")
 assert not differs(D.START), differs(D.START)[:5]
-assert (sim.time + 20, "dome/3/draw") in sim.queue  # (and once more a second on)
+assert (sim.time + 20, f"dome/{N}/draw") in sim.queue  # (and once more a second on)
 
 # draw: any state can follow any other, written whole from the scores
 jumps = [
@@ -1004,9 +1013,9 @@ for state in jumps:
         pump=state.pump,
         gate=state.gate,
     )
-    sim.run("dome/3/target")
+    sim.run(f"dome/{N}/target")
     put(t=sim.s["#fl.tt", "st"])
-    sim.run("dome/3/draw")
+    sim.run(f"dome/{N}/draw")
     assert not differs(state), (state, differs(state)[:5])
     assert sim.is_block(place.door[0], D.AIR) == (state.stage == 3)
 
@@ -1014,12 +1023,12 @@ for state in jumps:
 # the gates' bars with it, each state whole
 put(tgt=0)
 for w in range(D.TOP - 1, -1, -1):
-    sim.run("dome/3/layer_down")
+    sim.run(f"dome/{N}/layer_down")
     assert sim.s["#fl.w", "st"] == w and not differs(D.State(w=w)), (
         w,
         differs(D.State(w=w))[:5],
     )
-sim.run("dome/3/reset")
+sim.run(f"dome/{N}/reset")
 
 # the check's own counts, by its functions: right when the room is right
 # (full, and part drained with a gate open), wrong when it is not
@@ -1027,7 +1036,7 @@ ctx = Ctx(sim, dome)
 assert D.counts(ctx) == D.expected(dome) | {"ran": D.TOP}
 state = D.State(w=6, stage=1, pump=1, gate=1)
 put(w=6, stage=1, pump=1, gate=1)
-sim.run("dome/3/draw")
+sim.run(f"dome/{N}/draw")
 assert D.counts(ctx) == D.expected(dome, state) | {"ran": D.TOP}
 x, y, z = next(iter(D.layers(dome)[3].open))
 world.setblock((x, y, z), D.AIR)
@@ -1038,7 +1047,7 @@ assert D.counts(ctx)["fit"] == D.expected(dome, state)["fit"] - 1
 world.setblock(place.frame.at(D.DAM_F - 1, 0, 1), D.WATER)  # water in the hall
 assert any("wet" in p for p in domes.check_shell(ctx, dome, False))
 world.setblock(place.frame.at(D.DAM_F - 1, 0, 1), D.AIR)
-sim.run("dome/3/reset")
+sim.run(f"dome/{N}/reset")
 assert not domes.check_shell(ctx, dome, False)
 
 # the live check, worked from end to end against the simulation: the
@@ -1046,7 +1055,7 @@ assert not domes.check_shell(ctx, dome, False)
 # through, at rest part way, nobody shut in, duo, the form changing both
 # ways, leaving and coming back, the levels, the reset). Redstone does not
 # run here, so of its findings only those are left
-sim.s["#d3", "st"] = 0
+sim.s[f"#d{N}", "st"] = 0
 problems = D.check(ctx)
 left = [
     p for p in problems if "tide clock" not in p and "pistons while pumping" not in p
@@ -1054,7 +1063,7 @@ left = [
 assert not left, left
 assert len(problems) == 2, problems
 assert not sim.select(f"@e[tag={game.STANDIN}]") and not differs(D.START)
-assert sim.s["#d3", "st"] == 0 and sim.s["#fl.live", "st"] == 0
+assert sim.s[f"#d{N}", "st"] == 0 and sim.s["#fl.live", "st"] == 0
 told = [line for line in sim.other if line.startswith("tellraw")]
 assert any("plate now" in line for line in told) and any(
     "on a spring" in line for line in told
@@ -1065,7 +1074,7 @@ assert not any("hint" in line for line in told)  # (nobody dawdled)
 # a few paths the check does not take. A second player comes in while the
 # first is beyond the gate with the spring run out: the plate comes, and
 # the gate stays open for as long as the first is there
-sim.s["#d3", "st"] = 1
+sim.s[f"#d{N}", "st"] = 1
 sim.line(
     f"summon minecraft:armor_stand {D.middle(domes.entrance(dome)[:3])} "
     '{Tags:["st.standin","st.x1"]}'
@@ -1106,31 +1115,31 @@ assert not differs(D.START) and sim.s["#fl.pump", "st"] == 0
 # room (the core's tunnel check does) finds the basin dry a tick later,
 # 20 s before its doors open; a room found dry by a player is solved only
 # while the tunnel is pumping or open
-assert "station:dome/3/guard" in pack._tick
+assert f"station:dome/{N}/guard" in pack._tick
 sim.line("kill @e[tag=st.standin]")
 ctx.advance(80)
-assert sim.s["#occ3", "st"] == 0 and sim.s["#d3", "st"] == 0
-sim.run("tunnel/3/open")
+assert sim.s[f"#occ{N}", "st"] == 0 and sim.s[f"#d{N}", "st"] == 0
+sim.run(f"tunnel/{N}/open")
 ctx.tick()
 assert not differs(D.SOLVED), differs(D.SOLVED)[:5]
 assert D.counts(ctx) == D.expected(dome, D.SOLVED) | {"ran": D.TOP}
-doors = [x for _, x in domes.door_cells(dome, L.TUNNELS[3])]
+doors = [x for _, x in domes.door_cells(dome, L.TUNNELS[D.INDEX])]
 assert not any(sim.is_block(x, D.AIR) for x in doors)
-sim.run("tunnel/3/reset")
-sim.s["#d3", "st"] = 1
+sim.run(f"tunnel/{N}/reset")
+sim.s[f"#d{N}", "st"] = 1
 sim.line(
     f"summon minecraft:armor_stand {D.middle(domes.entrance(dome)[:3])} "
     '{Tags:["st.standin","st.x1"]}'
 )
 ctx.advance(14)
 # the tunnel shut again since (its check reset it): flooded, not solved
-assert sim.s["#d3", "st"] == 1 and sim.s["#t3", "st"] == 0
+assert sim.s[f"#d{N}", "st"] == 1 and sim.s[f"#t{N}", "st"] == 0
 assert sim.s["#fl.stage", "st"] == 0 and sim.s["#fl.w", "st"] == D.TOP
 assert sim.s["#fl.live", "st"] == 1
 # and with the tunnel pumping (the core's ring check calls ``solved``)
-sim.run("tunnel/3/open")
+sim.run(f"tunnel/{N}/open")
 ctx.advance(14)
-assert sim.s["#fl.w", "st"] == 0 and sim.s["#d3", "st"] == 2
+assert sim.s["#fl.w", "st"] == 0 and sim.s[f"#d{N}", "st"] == 2
 sim.line("kill @e[tag=st.standin]")
 sim.run("reset/all")
 assert not differs(D.START)

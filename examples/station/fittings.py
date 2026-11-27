@@ -706,8 +706,9 @@ def torch_clock(
 # that use it build it first and put the sea back after (``build_cell``,
 # ``remove_cell``).
 
-#: the number the checks' automatons, waves and hint go by: no dome's
-CHECK_INDEX = len(tunnels.layout.DOMES)
+#: the number the checks' automatons, waves and hint go by: no dome's, and
+#: far enough past the last that a ring that grows never reaches it
+CHECK_INDEX = 99
 #: the cell's inside: half its length along x and its width along z, and
 #: its height; its floor this far above the base floor (clear of the sea
 #: floor, under water)

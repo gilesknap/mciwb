@@ -748,7 +748,7 @@ def _check_lever(ctx: Any, tunnel: Tunnel) -> list[str]:
             ctx.is_block(engine[1, 2], f"{ENGINE_LAMP}[lit=true]"),
         )
 
-    # air, or water: tunnel 3's lever is in the Flooded Dome's basin
+    # air, or water: the Flooded Dome's tunnel's lever is in its basin
     if ctx.is_block(cell, "minecraft:lever"):
         problems.append(f"{name}: a lever at the lever's place before ready")
     ctx.setblock(cell, lever_block(tunnel, True))
