@@ -480,7 +480,7 @@ LOG_PAGES = [
     "stairs one step at a time. It was in no hurry.",
     "Three pumps will clear it: A, B and C, top to bottom. Each sits behind a "
     "sluice gate.\n\nOpen the sluice, then throw the pump. A pump moves water "
-    "only while its sluice is open.",
+    "only while its sluice is open. Work only what stands on brass.",
     "It has learned.\n\nIt moved every sluice handle away from its gate and "
     "put it on a spring. It knows I am one engineer. If two of you come, it "
     "will change the handles for plates.\n\nSo: throw the handle and run.",
@@ -659,9 +659,9 @@ def structure(dome: Dome) -> Blocks:
         fr,
         *PLAQUE,
         signs=(
-            ("FLOODED DOME", "Pumps A, B, C", "Work only what", "stands on brass"),
-            ("Open the sluice,", "then throw", "the pump."),
-            ("A pump runs", "only while its", "sluice is open."),
+            ("FLOODED DOME", "Three pumps:", "A, B and C.", ""),
+            ("EACH PUMP", "Open its sluice,", "then pull its", "pump lever."),
+            ("MIND", "A pump runs only", "while its sluice", "is open."),
         ),
     )
     b.solid |= solid

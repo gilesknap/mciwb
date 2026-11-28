@@ -112,23 +112,27 @@ layers = H.layers(dome)
 water = sum(len(layer.open) for layer in layers.values())
 assert 10000 < water < 14000, water
 sound = H.expected(dome, H.State(w=H.MAX))
-assert sound["water"] == water - 4 * 6 and sound["glass"] == 4 * 6  # low, mid
+assert sound["water"] == water - 4 * 8 and sound["glass"] == 4 * 8  # low, mid
 assert H.expected(dome, H.State(w=H.MAX, open=H.ALL_OPEN))["water"] == water
 some = H.State(w=0, open=frozenset({1}), patched=frozenset({2, 9}))
 got = H.expected(dome, some)  # an open hole is the sea whatever the level
-assert (got["source"], got["plate"], got["glass"]) == (4, 4, 4 * 4)
+assert (got["source"], got["plate"], got["glass"]) == (4, 4, 4 * 6)
 assert "air" not in H.steady(some) and "air" in H.steady(H.START)
 for layer in layers.values():
     for block in layer.fittings.values():
         assert H.DRY in block and H.holds_water(block), block
 assert not any(H._waterloggable(blk) for c, blk in b.solid.items() if c in basin)
 
-# the breaches: nine, three on each level, in frames of raw iron, each hole
-# touching two frame blocks with the room's own glass behind it (which a
-# burst floods) and a ring of glass round that to crack; the dressing
-# frames are finished iron, which no plate sticks to
-assert [br.level for br in place.breaches].count("low") == 3
-assert {br.level for br in place.breaches} == {"low", "mid", "high"}
+# the breaches: twelve, four on each level (two a side), in frames of raw
+# iron, each hole touching two frame blocks with the room's own glass
+# behind it (which a burst floods) and a ring of glass round that to
+# crack; no frame is only dressing
+assert [br.number for br in place.breaches] == list(range(1, 13))
+for level in ("low", "mid", "high"):
+    sides = [br.side for br in place.breaches if br.level == level]
+    assert sorted(sides) == [-1, -1, 1, 1], level
+assert not hasattr(place, "dressing")
+assert set(b.solid.values()).isdisjoint({"minecraft:iron_block"})
 for br in place.breaches:
     assert len(br.holes) == 4 and len(br.frame) == 12
     assert all(b.solid[c] == H.FRAME for c in br.frame)
@@ -153,18 +157,35 @@ for br in place.breaches:
     for blocks in (burst, patch):
         assert all(blocks[c] == H.SEA for c in br.flooded)
         assert all(blocks[c] == H.CRACKED for c in br.cracks)
-for br in place.dressing:
-    assert all(b.solid[c] == H.DRESS_FRAME for c in br.frame)
-    assert all(b.solid[c] == H.DRESS_PLATE for c in br.holes)
 assert not H.breach_problems(dome)
-# every stage's order: distinct breaches, the first two on two levels and
-# two sides; long enough for the most a level asks for, duo
+# every breach has a label of its own over it and a Breacher's casting
+# point of its own in front of it (on its feet: breach_problems)
+assert len({br.tag for br in place.breaches}) == 12
+assert len({br.label for br in place.breaches}) == 12
+assert len({br.spawn for br in place.breaches}) == 12
+assert place.points[:12] == tuple(br.spawn for br in place.breaches)
+# every stage's order: four breaches of its own, the first two on two
+# levels and two sides; the three orders are all twelve between them
 for order in H.ORDERS:
-    assert len(set(order)) == len(order) == 5
+    assert len(set(order)) == len(order) == H.STAGE_CAP == 4
     one, two = (place.breach(n) for n in order[:2])
     assert one.level != two.level and one.side != two.side
-for level, stages in H.BURSTS.items():
-    assert all(n + 1 <= 5 for n in stages)
+assert sorted(n for order in H.ORDERS for n in order) == list(range(1, 13))
+# no breach bursts twice in a run, at any level, solo or duo: a stage
+# bursts a run of its own order, never more than the order has (the cap,
+# which only levels 9 and 10 with two players meet)
+for level in game.LEVELS:
+    for form in (1, 2):
+        per_stage = H.stage_bursts(level, form)
+        want = tuple(n + form - 1 for n in H.BURSTS[level])
+        capped = level >= 9 and form == 2
+        assert (per_stage != want) == capped, (level, form)
+        assert all(1 <= n <= H.STAGE_CAP for n in per_stage)
+        burst = H.run_bursts(level, form)
+        assert len(burst) == sum(per_stage) == len(set(burst)), (level, form)
+assert set(game.LEVELS) == set(H.BURSTS) == set(range(1, 11))
+assert H.stage_bursts(10, 2) == (4, 4, 4) and H.stage_bursts(9, 2) == (4, 4, 4)
+assert len(H.run_bursts(5, 1)) == 7 and len(H.run_bursts(10, 1)) == 11
 
 # the inputs: the valve and the recall button, on brass with signs
 assert not rooms.input_problems(H.plan(dome), H.inputs(dome), floor=b.floor)
@@ -296,9 +317,10 @@ assert all('"' not in page and len(page) <= 256 for page in H.LOG_PAGES)
 assert all(len(c.encode()) < B.MAX_COMMAND for c in H.book_commands(dome))
 for sign in (*H.PLAQUE_SIGNS, H.VALVE_SIGN):
     assert len(sign) <= 4 and all(len(line) <= 15 for line in sign), sign
-assert len(H.labels(dome)) == 9 + 1 + 2
+assert len(H.labels(dome)) == 12 + 1 + 2
 # the BREACH labels three times the size, turning to the eye, no backing
-breach_labels = H.labels(dome)[len(H.room(dome).valve.summons) :][:9]
+breach_labels = H.labels(dome)[len(H.room(dome).valve.summons) :][:12]
+assert all(br.tag in c for br, c in zip(place.breaches, breach_labels, strict=True))
 for c in breach_labels:
     assert "scale:[3.0f,3.0f,3.0f]" in c and "background:0" in c, c
     assert 'billboard:"center"' in c, c
@@ -399,18 +421,45 @@ for br in H.room(dome).breaches:
     assert sum(H.SEA in line for line in burst) == 4
     assert sum("glass.break" in line for line in burst) == 2
     assert not any(H.WATER in line for line in fs[f"dome/{n}/hole/{br.number}/shut"])
-# every way out of a stage takes the sea out of every hole: the failure
-# and the pump-down by restore_stage, the others by shutting them all
+    # only sound glass bursts or cracks: a patch holds
+    assert "unless score #hb.b%d st matches 0 run return 0" % br.number in burst[0]
+# a patch stays: the reset shuts every hole; a failed stage (and its
+# pump-down, where a hole with a body in it waits) makes its own breaches
+# sound and no others; a stage held restores nothing; a test left has its
+# live stage's own breaches zeroed and drawn
 def calls(path, name):
     return any(line.endswith(pack.id(f"dome/{n}/{name}")) for line in fs[path])
 
 
-for name in ("checkpoint", "reset"):
-    for br in H.room(dome).breaches:
-        assert calls(f"dome/{n}/{name}", f"hole/{br.number}/shut"), name
-assert calls(f"dome/{n}/water/pumping", "restore_stage")
+for br in H.room(dome).breaches:
+    assert calls(f"dome/{n}/reset", f"hole/{br.number}/shut")
+    # solved: a breach still open made sound, a patch kept (till the reset)
+    b = f"#hb.b{br.number} st"
+    assert (f"execute if score {b} matches 1 run scoreboard players set {b} 0"
+            in fs[f"dome/{n}/restored"])
+    assert not any(line.endswith(f"set {b} 0") and "matches 1" not in line
+                   for line in fs[f"dome/{n}/restored"])
+restore = fs[f"dome/{n}/restore_stage"]
+assert len(restore) == 12
+for s, order in enumerate(H.ORDERS):
+    for i in order:
+        live = f"execute if score #hb.stage st matches {s}"
+        want = f"{live} unless score #hb.b{i} st matches 0 run function "
+        assert want + pack.id(f"dome/{n}/plug/{i}") in restore
+        zero = f"{live} run scoreboard players set #hb.b{i} st 0"
+        assert zero in fs[f"dome/{n}/checkpoint"]
+assert not any("hole/" in line for line in fs[f"dome/{n}/checkpoint"])
+pumping = [line for line in fs[f"dome/{n}/water/pumping"] if "restore_stage" in line]
+assert len(pumping) == 1 and "if score #hb.again st matches 1" in pumping[0]
+# pumping waits only on a failed stage's breaches: the patches held stay
+waits = [line for line in fs[f"dome/{n}/water/pumping"] if "return 0" in line]
+assert len(waits) == 12 and all("#hb.again st matches 1" in w for w in waits)
 assert calls(f"dome/{n}/fail", "restore_stage") and calls(f"dome/{n}/draw", "mop")
-assert calls(f"dome/{n}/empty", "checkpoint")
+assert not calls(f"dome/{n}/held", "restore_stage")
+assert calls(f"dome/{n}/empty", "checkpoint") and calls(f"dome/{n}/checkpoint", "draw")
+# a stage bursts no more than its four
+cap = "execute if score #hb.due st matches 5.. run scoreboard players set #hb.due st 4"
+assert cap in fs[f"dome/{n}/start_stage"]
 # no lever, button or sign is ever written into the basin by a function
 basin = H.basin(dome)
 for path, lines in fs.items():
@@ -890,7 +939,8 @@ for w in (1, 2, 3, 9, 4, 0, 6):
     assert wet_cells() == want, (w, len(wet_cells() ^ want))
 # a burst puts the sea in its hole whatever the level (over the walk in
 # the lower two cells) and in the hull behind; four plates patch it, the
-# sea still behind; restore_stage makes open and patched sound again
+# sea still behind; restore_stage makes the live stage's own, open and
+# patched, sound again, and leaves the patch of a stage held before
 sim.s["#hb.w", "st"] = 3
 sim.run(f"dome/{n}/draw")
 low = next(br for br in place.breaches if br.level == "low")
@@ -918,10 +968,26 @@ sim.run(f"dome/{n}/draw")
 assert all(rec.world.at(c) == H.PLATE for c in high.holes)
 assert all(rec.world.at(c) == H.SEA for c in high.flooded)
 assert all(rec.world.at(c) == "minecraft:water" for c in low.holes)
+assert {low.number, high.number} <= set(H.ORDERS[0])
+held = place.breach(H.ORDERS[1][0])
+sim.s["#hb.phase", "st"] = 0
+sim.run(f"dome/{n}/burst/{held.number}")
+for c in held.holes:
+    rec.world.setblock(c, H.PLATE)
+sim.s["#hb.phase", "st"] = 1
+sim.run(f"dome/{n}/read")
+assert sim.s[f"#hb.b{held.number}", "st"] == 2 and sim.s["#hb.stage", "st"] == 0
 sim.run(f"dome/{n}/restore_stage")
 for br in (low, high):
     assert all(rec.world.at(c) == H.GLASS for c in (*br.holes, *br.flooded, *br.cracks))
     assert sim.s[f"#hb.b{br.number}", "st"] == 0
+# the patch of another stage is kept, through the pump-down's redraw too,
+# and neither cracks nor bursts again
+for name in ("draw", "uncrack", f"crack/{held.number}/3", f"burst/{held.number}"):
+    sim.run(f"dome/{n}/{name}")
+    assert sim.s[f"#hb.b{held.number}", "st"] == 2, name
+    assert all(rec.world.at(c) == H.PLATE for c in held.holes), name
+    assert all(rec.world.at(c) == H.SEA for c in held.flooded), name
 # a crack begun and its burst struck off: sound again
 sim.run(f"dome/{n}/crack/{low.number}/2")
 sim.run(f"dome/{n}/uncrack")

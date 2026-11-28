@@ -441,7 +441,8 @@ for phase_2 in (False, True):
     assert gone in f[f"dome/{N}/reset"]
     # nothing reads, sets or kills the cylinders but their clocks' torches,
     # taken out at the win and put back by the reset; nothing kills by
-    # position, and nothing kills but the casing's own displays, by tag
+    # position, and nothing kills but the casing's own displays and the
+    # label of the fire door's lever, by tag
     torches = D.clock_torches(place)
     assert len(torches) == 2
     machine = set()
@@ -452,9 +453,11 @@ for phase_2 in (False, True):
         for line in lines:
             assert not any(f" {xyz} " in f"{line} " for xyz in cells), (name, line)
             if line.startswith("kill"):
-                assert phase_2 and "/casing/" in name, (name, line)
-                assert line == (
-                    "kill @e[type=minecraft:block_display,tag=" + D.CASE_TAG + "]"
+                assert phase_2 and ("/casing/" in name or "/fire/" in name), (
+                    name, line)
+                assert line in (
+                    "kill @e[type=minecraft:block_display,tag=" + D.CASE_TAG + "]",
+                    "kill @e[type=minecraft:text_display,tag=" + D.FIRE_TAG + "]",
                 ), line
             touched = any(f" {D._xyz(c)} " in f"{line} " for c in torches)
             allowed = (f"dome/{N}/won", f"dome/{N}/reset")
@@ -507,7 +510,34 @@ for phase_2 in (False, True):
     dress = f[f"dome/{N}/dress"]
     periods = [int(l.split()[-1]) for l in dress if l.split()[-4:-1] ==
                ["set", "#b7.per", "st"] and "#b7.shut" in l]
-    assert periods == [D.BEAT + D.BEAT_SLOWER, D.BEAT + 2 * D.BEAT_SLOWER]
+    assert periods == [D.BEAT + n * D.BEAT_SLOWER for n in (1, 2, 3)]
+    # a hatch on every level, each with the same smoke and the same sound;
+    # the round takes the upper ones twice; a hatch of the round is used
+    # only with a player on its own level in reach, and any hatch with a
+    # player in reach if the whole round finds none
+    assert len(place.hatches) == 6 and place.hatch_levels == (0, 0, 0, 0, 1, 2)
+    assert sorted(D.HATCH_ROUND) == [0, 1, 2, 3, 4, 4, 5, 5]
+    for i, hatch in enumerate(place.hatches):
+        at_ = f[f"dome/{N}/pour/at_{i}"]
+        assert any("large_smoke " + domes.middle(hatch, 1) in l for l in at_)
+        assert any("block.iron_trapdoor.open" in l and D._xyz(hatch) in l for l in at_)
+        assert f"st.home{i}" in " ".join(at_)
+        assert any(f"st.home{i}" in l and domes.middle(hatch) in l
+                   for l in f[f"dome/{N}/fence"])
+    tries = [l for l in f[f"dome/{N}/pour/try"] if "pour/at_" in l]
+    assert [int(l.rsplit("_", 1)[1]) for l in tries] == list(D.HATCH_ROUND)
+    for l in tries:
+        i = int(l.rsplit("_", 1)[1])
+        assert f"tag={D.LEVEL_TAG}{place.hatch_levels[i]}," in l
+        assert f"distance=..{D.NEAR}" in l
+    one = f[f"dome/{N}/pour/one"]
+    assert sum(l.endswith("pour/try") for l in one) == len(D.HATCH_ROUND)
+    assert one.index(f"function station:dome/{N}/pour/levels") < min(
+        i for i, l in enumerate(one) if l.endswith("pour/try"))
+    late = [l for l in one if "pour/at_" in l]
+    assert len(late) == 6 and not any(D.LEVEL_TAG in l for l in late)
+    assert all("#b7.cast st matches 0" in l for l in late)
+    assert len(f[f"dome/{N}/pour/levels"]) == 2 * len(D.LEVELS)
     # the ending: after the win the Engine winds down on a falling whine,
     # and a title says the station is saved and where home is
     end = f[f"dome/{N}/end/step"]
@@ -526,11 +556,56 @@ for phase_2 in (False, True):
 off, on = packs[False].functions, packs[True].functions
 # phase 2 is in the pack only with the switch on
 extra = sorted(set(on) - set(off))
-parts = ("breach/", "master/", "p3", "p4", "lights/", "casing/", "music/")
+parts = ("breach/", "master/", "p3", "p4", "lights/", "casing/", "music/", "fire/")
 assert extra
 assert all(n.startswith(tuple(f"dome/{N}/" + p for p in parts)) for n in extra)
 assert off[f"dome/{N}/all_shut"] == [f"function station:dome/{N}/won"]
-assert on[f"dome/{N}/all_shut"] == [f"function station:dome/{N}/breach/start"]
+# with it on, the third main does not start the breach: the fire door's
+# lever comes up, and only a pull of it does
+shut3 = on[f"dome/{N}/all_shut"]
+assert not any("breach/start" in l for l in shut3)
+assert shut3[0] == (
+    "execute unless score #b7.fire st matches 1 run function "
+    f"station:dome/{N}/fire/rise"
+)
+lever = place.fire_post.input
+assert shut3[1] == (
+    f"execute if score #b7.fire st matches 1 if block {D._xyz(lever)} "
+    f"minecraft:lever[powered=true] run function station:dome/{N}/fire/pulled"
+)
+assert "actionbar" in shut3[2] and D.FIRE_HINT in shut3[2]
+assert [l for l in on[f"dome/{N}/fire/pulled"] if "function" in l] == [
+    f"function station:dome/{N}/fire/gone", f"function station:dome/{N}/breach/start"]
+callers = [n for n, ls in on.items() if any(l.endswith("breach/start") for l in ls)]
+assert callers == [f"dome/{N}/fire/pulled"], callers
+rise = on[f"dome/{N}/fire/rise"]
+post = place.fire_post
+put = [l for l in rise if l.startswith("setblock") and not l.endswith("minecraft:air")]
+assert [l.split(" ", 4)[4].partition("[")[0] for l in put] == [
+    "minecraft:gold_block", "minecraft:lever", "minecraft:bamboo_sign"]
+sign = next(l for l in put if "sign" in l)
+assert all(text in sign for text in D.FIRE_SIGN)
+assert any(D.FIRE_HINT in l for l in rise) and any("title" in l for l in rise)
+assert any("particle minecraft:cloud" in l for l in rise)
+assert any("block.anvil.land" in l for l in rise)
+assert any(f"st.mob{N}" in l and "mob/remove" in l for l in rise)
+gone = on[f"dome/{N}/fire/gone"]
+cleared = [l.split(" ")[1:4] for l in gone if l.startswith("setblock")]
+assert {tuple(map(int, c)) for c in cleared} == post.cells
+# (what hangs on the post goes before the post, so that nothing drops)
+assert cleared[:2] == [D._xyz(c).split() for c in post.attached]
+assert any(l.startswith("kill") and D.FIRE_TAG in l for l in gone)
+assert f"function station:dome/{N}/fire/gone" in on[f"dome/{N}/reset"]
+# no automaton is cast while it stands
+assert (f"execute unless score #b7.fire st matches 1 run function "
+        f"station:dome/{N}/pour") in on[f"dome/{N}/p1"]
+# the lever faces the way in, on the centre line before the firebox: its
+# player looks along the frame's forward at the doors
+fr = place.frame
+assert post.input == fr.at(D.FIRE_POST_F - 1, 0, 1)
+assert place.fire_stand == fr.at(D.FIRE_POST_F - 2, 0, 1)
+assert f"facing={fr.facing(-1, 0)}" in post.attached[post.input]
+assert D.FIRE_POST_F < min(f_ for f_, _, _ in D.PLATE_LANDS) - 1
 for name, lines in off.items():
     if name.startswith(f"dome/{N}/"):
         text = " ".join(lines)
@@ -741,6 +816,7 @@ D.PHASE_2 = True
 #: fake client's world: scores, blocks, entities with tags and places. A
 #: command it does not know is an error, so nothing is passed over unseen.
 SIM = r'''
+import math
 import re
 
 IGNORED = ("particle", "playsound", "stopsound", "title", "tellraw", "bossbar",
@@ -1196,8 +1272,11 @@ def as_built(what):
     assert not mobs() and not sim.select("@e[tag=" + D.BOSS + "]", None), what
     assert not sim.select("@e[tag=" + D.CASE_TAG + "]", None), what
     assert sim.is_block(place.fire[0], D.COOL) and sim.is_block(place.fire[1], D.COOL)
-    for name in ("fin", "open", "mus", "an"):
+    for name in ("fin", "open", "mus", "an", "fire"):
         assert sim.b7(name) == 0, (what, name, sim.b7(name))
+    # no fire door's lever: its post, lever, sign and label are not there
+    assert all(sim.is_block(x, "minecraft:air") for x in place.fire_post.cells), what
+    assert not sim.select("@e[tag=" + D.FIRE_TAG + "]", None), what
 
 
 entrance = D.domes.entrance(dome)[:3]
@@ -1307,9 +1386,11 @@ steps(60)
 assert len(mobs()) == limit == sim.b7("cap"), (len(mobs()), limit)
 assert all(e["team"] == "st.automaton" and "st.new" not in e["tags"] for e in mobs())
 assert all(e["health"] >= 20 for e in mobs())
-# they come from more than one hatch, each with a player in reach
-homes = {t for e in mobs() for t in e["tags"] if t.startswith("st.home")}
-assert len(homes) >= 2
+# they come from more than one hatch, each with a player in reach, and all
+# from the hatches of the level the player is on: the floor's four
+homes = lambda: {int(t[-1]) for e in mobs() for t in e["tags"]  # noqa: E731
+                 if t.startswith("st.home")}
+assert len(homes()) >= 2 and homes() <= {0, 1, 2, 3}
 # one that gets into the pavilion is put back at its hatch
 mob = mobs()[0]
 sim.move(mob, entrance)
@@ -1335,6 +1416,35 @@ steps(80)
 assert len(mobs()) == D.cap(5, 1, 2)
 kinds = [next(t for t in e["tags"] if t.startswith("st.k.")) for e in mobs()]
 assert kinds.count("st.k.riveter") <= D.RIVETERS[1] and "st.k.husk" in kinds
+
+
+# ---- a hatch on each level: automatons are cast on the level a player is on
+def cast(n=40):
+    # the automatons cast afresh in so many steps: the hatches they came by
+    sim.entities[:] = [e for e in sim.entities if f"st.mob{N}" not in e["tags"]]
+    steps(n)
+    assert mobs()
+    return homes()
+
+
+fr = place.frame
+assert cast() == {4}  # on main B's deck: the gallery's hatch
+sim.move(p, c.stand)
+assert cast() == {5}  # on main C's platform: the high level's
+sim.move(p, place.back)
+assert cast() == {0, 1, 2, 3}  # on the floor: the plinth's four, in turn
+# on the gallery but out of reach of its hatch: any hatch in reach of them
+far = fr.at(-10, 22, D.GALLERY_H + 1)
+assert math.dist(far, place.hatches[4]) > D.NEAR > math.dist(far, place.hatches[1])
+sim.move(p, far)
+assert cast() and homes() <= {0, 1, 2, 3}
+# two players on two levels: each has automatons cast on their own
+sim.move(p, place.back)
+other = sim.player("p9", b.stand)
+assert cast(60) == {0, 1, 2, 3, 4}
+sim.entities.remove(other)
+steps(game.SOLO_AFTER + 2)
+assert sim.b7("form") == 1
 """
 
 END_PHASE_1 = (
@@ -1550,12 +1660,72 @@ yaws = lambda leaf: {e["yaw"] for e in case() if leaf.tag in e["tags"]}  # noqa:
 plate = lambda q: next(e for e in case() if q.tag in e["tags"])  # noqa: E731
 hot = lambda: sim.is_block(place.fire[0], D.HOT)  # noqa: E731
 
-# ---- the third main starts the breach: no win yet
-sim.move(p, place.porch[0])
+# ---- the third main does not start the breach: the fire door's lever comes
+# up before the Engine, with a title and a hint, and the automatons fall
+post = place.fire_post
+lever_on = D.fittings.lever(place.frame.facing(-1, 0), on=True)
+label = lambda: sim.select("@e[tag=" + D.FIRE_TAG + "]", None)  # noqa: E731
+up = lambda: [sim.is_block(x, block.partition("{")[0])  # noqa: E731
+              for x, block in {**post.solid, **post.attached}.items()]
+breached = lambda: f"dome/{N}/breach/start" in sim.called  # noqa: E731
+waiting = lambda: (sim.b7("phase"), sim.b7("fire"), sim.b7("shut"))  # noqa: E731
+sim.move(p, min(post.solid))  # (one who stands where the post comes up)
 q = sim.player("p2", c.stand)
 throw(c)
+assert mobs() and not any(up())
+since = len(sim.said)
 steps(D.FULL // D.WIND + 1)
+assert waiting() == (1, 1, 3) and sim.get(f"#d{N}") == 1 and not mobs()
+assert f"dome/{N}/won" not in sim.called and not breached()
+assert all(up()) and len(label()) == 1 and len(up()) == 3
+assert p["pos"] == (place.fire_stand[0] + 0.5, place.fire_stand[1],
+                    place.fire_stand[2] + 0.5)
+said = sim.said[since:]
+assert any(k == "title" and "FIRE DOOR lever" in v for k, v in said)
+assert any(k == "tellraw" and D.FIRE_HINT in v for k, v in said)
+assert any(k == "title" and "actionbar" in v and D.FIRE_HINT in v for k, v in said)
+assert not any(k == "title" and "THE MAINS ARE SHUT" in v for k, v in sim.said)
+# nothing of the breach yet: the doors are blocks, the lanterns bright, no bar
+assert gone() == [False] * 3 and not case() and sim.b7("open") == 0
+assert not any(sim.is_block(x, D.DIM) for x in D.floor_lights(dome))
+assert not sim.get(f"#bar{N}")
+# while it stands no automaton is cast, however long; the Engine's heart
+# beats its slowest; and it waits for as long as it takes
+steps(4 * D.GAP[1] + D.FIRST)
+assert not mobs() and waiting() == (1, 1, 3) and not breached()
+assert sim.b7("per") == D.BEAT + 3 * D.BEAT_SLOWER
+# a player who dies meanwhile changes nothing
+sim.move(q, entrance)
+sim.run(f"dome/{N}/died", q)
+steps(game.SOLO_AFTER + 2)
+assert waiting() == (1, 1, 3) and all(up()) and sim.b7("form") == 1
+# the dome emptied: the lever stays up, unthrown (one thrown as the last
+# player went starts nothing), and the mains stay shut
+sim.world.setblock(post.input, lever_on)
+leave_all()
+assert waiting() == (1, 1, 3) and all(up()) and len(label()) == 1 and not breached()
+assert sim.is_block(post.input, "minecraft:lever[powered=false]")
+assert [lamps(m.gauge) for m in place.mains] == [5, 5, 5]
+# back in: told what to do, nothing set up anew, and it still waits
+since = len(sim.said)
+p = enter("p1", entrance, first=1)
+told = [v for k, v in sim.said[since:] if k == "tellraw"]
+assert len(told) == 1 and D.FIRE_HINT in told[0] and told[0].startswith("@s ")
+q = enter("p2", entrance, first=0)
+steps(3)
+assert waiting() == (1, 1, 3) and sim.b7("rate") == D.WIND and not mobs()
+sim.move(q, c.stand)
+# the lever pulled (by either of them): post, lever, sign and label go at
+# once, and the breach starts: no win yet
+sim.move(p, place.porch[0])
+steps(2)
+assert waiting() == (1, 1, 3)
+sim.world.setblock(post.input, lever_on)
+steps(1)
 assert sim.b7("phase") == 2 and sim.get(f"#d{N}") == 1 and not mobs()
+assert sim.called.count(f"dome/{N}/breach/start") == 1
+assert sim.b7("fire") == 0 and not label()
+assert all(sim.is_block(x, "minecraft:air") for x in post.cells)
 assert f"dome/{N}/won" not in sim.called
 # one standing in the porch is put back from the doors
 assert p["pos"][0] == place.back[0] + 0.5
@@ -1770,8 +1940,11 @@ for name in ("la", "lb"):
 sim.put("shut", 2)
 sim.move(p2, c.stand)
 throw(c)
-steps(D.FULL // D.WIND + 3)
-assert sim.b7("phase") == 2 and sim.b7("open") == 1
+steps(D.FULL // D.WIND + 1)
+assert waiting() == (1, 1, 3) and all(up())
+sim.world.setblock(post.input, lever_on)
+steps(2)
+assert sim.b7("phase") == 2 and sim.b7("open") == 1 and not any(up())
 assert all(yaws(leaf) == {0} for leaf in halves)
 leave_all()
 assert sim.b7("phase") == 4 and gone() == [True] * 3 and not pair()
@@ -1785,6 +1958,23 @@ assert dim() == len(lights)
 sim.run(f"dome/{N}/reset")
 assert dim() == 0
 as_built("reset from the breach")
+
+# ---- the game's reset with the lever up: nothing of it is left
+leave_all()
+sim.scores[f"#d{N}", "st"] = 1
+p2 = enter("p1", entrance)
+for name in ("la", "lb", "lc"):
+    sim.put(name, 1)
+sim.put("shut", 3)
+sim.put("phase", 1)
+sim.move(p2, place.back)
+steps(1)
+assert waiting() == (1, 1, 3) and all(up()) and len(label()) == 1
+steps(1)
+assert len(label()) == 1  # (and it comes up once)
+sim.run(f"dome/{N}/reset")
+assert not any(up()) and not label()
+as_built("reset with the fire door's lever up")
 
 # ---- the escort, from level 6: an automaton or two beside him
 leave_all()

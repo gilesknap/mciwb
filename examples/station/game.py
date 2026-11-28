@@ -85,8 +85,9 @@ calls them; it never calls one that is not defined:
   the middle of a scan: ``#occ<n>``, ``#form<n>`` and ``#players`` are
   not yet this scan's;
 - ``dome/<n>/leave``: as a player who has just gone out of dome n: on
-  foot, by the recall, out of the game from it, or by the game's reset.
-  Take back what the dome lent;
+  foot, by the recall, out of the game from it, or by the game's reset;
+  and, every dome's, as one back from an earlier run (offline at its
+  reset). Take back what the dome lent;
 - ``dome/<n>/tick``: every tick while anyone in the game is in dome n;
 - ``dome/<n>/solo`` and ``dome/<n>/duo``: when the dome, open and not yet
   solved, gets its first player (after ``enter``, in the same scan), and
@@ -116,7 +117,8 @@ the dome last entered, or of a dome that opens while they play.
 ``st.kit`` and the run's number in ``st.kitrun``), on entering any dome,
 so a late joiner is kitted on arrival. Food and arrows are topped up
 whenever a kitted player has none. Two more kits add to it, each given
-once per player per run on entering its dome (``KITS``):
+once per player per run on entering its dome or any dome after it (one
+who fast travels past it is given it on arrival) (``KITS``):
 ``station:kit/foundry`` (the Foundry: a shield in the off hand, 32 spectral
 arrows) and ``station:kit/boss`` (the Engine: an unbreakable brass helm,
 cuirass and sabre). A module does not give them; it may give more of its
@@ -452,6 +454,8 @@ def _players(pack: dp.Pack, hooks: set[tuple[int, str]]) -> None:
     pack.function(
         "players/stale",
         [
+            # what any dome lent is taken back: they may have been in it
+            *(f"function {pack.id(f'dome/{n}/leave')}" for n in leavers),
             "clear @s",
             "tag @s remove st.kit",
             "scoreboard players reset @s st.dome",
@@ -543,11 +547,14 @@ def _players(pack: dp.Pack, hooks: set[tuple[int, str]]) -> None:
             f"execute unless score @s st.kitrun = #runid {OBJ} "
             f"run function {pack.id('kit/start')}",
         ]
-        if n in KITS:
-            entered.append(
-                f"execute unless score @s st.kit.{KITS[n]} = #runid {OBJ} "
-                f"run function {pack.id(f'kit/{KITS[n]}')}"
-            )
+        # every kit of this dome and those before it: one who fast travels
+        # past a kit's dome is given it on arrival
+        entered += [
+            f"execute unless score @s st.kit.{name} = #runid {OBJ} "
+            f"run function {pack.id(f'kit/{name}')}"
+            for k, name in sorted(KITS.items())
+            if k <= n
+        ]
         if (n, "enter") in hooks:
             # #first: this player is the first into an empty dome
             entered += [

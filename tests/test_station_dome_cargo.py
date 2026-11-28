@@ -131,17 +131,22 @@ assert D.INDEX in domes.ALLOWED
 seen = D.reach(dome, b)
 assert fr.at(-7, 0, 1) not in seen and fr.at(6, 0, 1) in seen
 assert fr.at(0, 3, D.HOUSE_TOP + 1) not in seen
-# the keys lie the way the crane goes, before the driver's platform (a
-# slab: the eye half a block over the deck's), in reach
-assert D.DRIVER[2] == 7 and D.DRIVER_EYE == D.DECK_H + 1.5 + 1.62
-assert "slab" in b.solid[fr.at(*D.DRIVER[:2], D.DECK_H + 1)]
+# the keys lie the way the crane goes, before the driver's platform (its
+# front row level with the deck, its back row a slab: the eye half a block
+# higher there), in reach from both
+assert D.DRIVER[2] == 6 and D.DRIVER_EYE == D.DECK_H + 1 + 1.62
+assert D.DRIVER_BACK[2] == 7 and D.DRIVER_BACK_EYE == D.DECK_H + 1.5 + 1.62
+assert D.DRIVER_BACK[0] == D.DRIVER[0] - 1
+assert fr.at(*D.DRIVER[:2], D.DECK_H + 1) not in b.solid
+assert "slab" in b.solid[fr.at(*D.DRIVER_BACK[:2], D.DECK_H + 1)]
 assert D.TRAVEL["FORE"][0] > D.TRAVEL["AFT"][0]
 assert D.TRAVEL["PORT"][1] < D.TRAVEL["STARBOARD"][1]
 assert D.HOOK["HOOK UP"][0] > D.HOOK["HOOK DOWN"][0]
-eye = (D.DRIVER[0] + 0.5, D.DRIVER[1], D.DRIVER_EYE)  # the platform's middle
-for f, r in {**D.TRAVEL, **D.HOOK}.values():
-    assert f > D.DRIVER[0]
-    assert math.dist(eye, (f + 0.5, r + 0.5, D.DECK_H + 1.1)) <= 4.5
+for (ef, er, _), eh in ((D.DRIVER, D.DRIVER_EYE), (D.DRIVER_BACK, D.DRIVER_BACK_EYE)):
+    eye = (ef + 0.5, er, eh)
+    for f, r in {**D.TRAVEL, **D.HOOK}.values():
+        assert f > D.DRIVER[0]
+        assert math.dist(eye, (f + 0.5, r + 0.5, D.DECK_H + 1.1)) <= 4.5
 posts = D.posts(fr)
 assert all("face=floor" in posts[k].attached[posts[k].input] for k in D.TRAVEL)
 assert "face=wall" in posts["UNDO"].attached[posts["UNDO"].input]

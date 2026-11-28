@@ -451,7 +451,8 @@ for cell, block in want.items():
 assert rec.world.at(S.LECTERN).count("Good luck") == 0  # a page a command
 summons = [c for c in rec.commands if c.startswith("summon ")]
 assert summons == list(S.entities()) and len(summons) > 40
-assert sum("minecraft:interaction" in c for c in summons) == 3
+travel = sum(len(b) for b in S.travel_boxes().values())
+assert sum("minecraft:interaction" in c for c in summons) == 3 + travel
 engine = set(tunnels.engine_cells(L.TUNNELS[0]).values())
 inside = domes.dome_cells(dome).interior
 assert all(rec.world.name_at(c) == AIR for c in inside - used - engine)
@@ -521,6 +522,221 @@ assert any("trophy/show" in l for l in f["dome/0/refresh"])
 book = S.lectern(S.PAGES)
 assert all(len(c.encode()) <= B.MAX_COMMAND for c in S.book_commands())
 assert S.TITLE in book and book.count('","') == len(S.PAGES) - 1
+"""
+    )
+
+
+def test_station_fast_travel():
+    run(
+        """
+import build_station as B
+import dome_start as S
+import domes
+import station_layout as L
+
+m = S.map_cells()
+boxes = S.travel_boxes()
+assert set(boxes) == {d.index for d in L.DOMES} - {S.N}
+face, right = S.MAP.face, S.MAP.right
+
+
+def aabb(pos, height):
+    x, y, z = pos
+    return (x - 0.5, y, z - 0.5), (x + 0.5, y + height, z + 0.5)
+
+
+def gap(point, box):
+    lo, hi = box
+    return sum(max(lo[a] - point[a], 0, point[a] - hi[a]) ** 2 for a in range(3)) ** 0.5
+
+
+def centre(c):
+    return (c[0] + 0.5, c[1] + 0.5, c[2] + 0.5)
+
+
+def inside(point, box):
+    lo, hi = box
+    return all(lo[a] < point[a] < hi[a] for a in range(3))
+
+
+# each a column of its dome's disc, over just that column's glass (the
+# disc exactly, no sea) and just proud of it
+glass = {d: {S.MAP.front(k, h) for k, h in m.shapes[d]} for d in boxes}
+every = []
+for d, columns in boxes.items():
+    assert len(columns) == len({k for k, _ in m.shapes[d]})
+    covered = set()
+    for pos, height in columns:
+        box = aabb(pos, height)
+        every.append((d, box))
+        mine = [c for c in glass[d] if inside(centre(c), box)]
+        assert mine and len(mine) == height, (d, pos)
+        covered |= set(mine)
+        a = 0 if face[0] else 2  # the axis out of the wall
+        sign = face[0] or face[1]
+        outer = box[1][a] if sign > 0 else box[0][a]
+        glass_face = mine[0][a] + (1 if sign > 0 else 0)
+        assert 0 < (outer - glass_face) * sign <= S.TRAVEL_PROUD + 1e-9, d
+    assert covered == glass[d], d
+# no two overlap, and none covers another dome's glass or the pin
+for i, (d, a) in enumerate(every):
+    for e, b in every[i + 1:]:
+        assert any(a[1][x] <= b[0][x] or b[1][x] <= a[0][x] for x in range(3)), (d, e)
+    for other, cells in glass.items():
+        if other != d:
+            assert not any(inside(centre(c), a) for c in cells), (d, other)
+    assert not inside(centre(S.MAP.front(*m.pin)), a)
+# from a standing eye at the map (the row of cells in front of the glass,
+# which the walk reaches), a ray to the face of each glass cell of a dome
+# meets that dome's box first, within the raised reach from the cell in
+# front of its column; and from anywhere along the row, a click on a dome
+# that is in reach is that dome's (no box steals another's)
+x, y, z, _ = domes.entrance(L.DOMES[S.N])
+walked = S.reach((x, y, z))
+reach = S.REACH + S.MAP_REACH
+assert reach <= 7
+
+
+def enters(eye, aim, box):
+    # how far along the ray from eye to aim it goes into box, or None
+    lo, hi = box
+    length = sum((aim[a] - eye[a]) ** 2 for a in range(3)) ** 0.5
+    t0, t1 = 0.0, float("inf")
+    for a in range(3):
+        step = (aim[a] - eye[a]) / length
+        if abs(step) < 1e-12:
+            if not lo[a] <= eye[a] <= hi[a]:
+                return None
+            continue
+        ta, tb = sorted(((lo[a] - eye[a]) / step, (hi[a] - eye[a]) / step))
+        t0, t1 = max(t0, ta), min(t1, tb)
+    return t0 if t0 <= t1 and t0 <= length else None
+
+
+row = sorted((k for k in range(S.MAP.width) if S.MAP.front(k, 1, 2) in walked))
+for d, cells in glass.items():
+    for c in cells:
+        cx, cy, cz = centre(c)
+        aim = (cx + 0.5 * face[0], cy, cz + 0.5 * face[1])  # its face
+        along = 0 if right[0] else 2
+        for k in row:
+            sx, sy, sz = S.MAP.front(k, 1, 2)
+            eye = (sx + 0.5, sy + S.EYE, sz + 0.5)
+            hits = [(enters(eye, aim, box), e) for e, box in every]
+            t, first = min(h for h in hits if h[0] is not None)
+            own = abs(centre(S.MAP.front(k, 1))[along] - aim[along]) < 0.01
+            if own:
+                assert first == d and t < reach - 0.05, (d, c, k, t)
+            elif t < reach:
+                assert first == d, (d, c, k, first)
+# the raised reach is for entities, in the Pump House alone: no other
+# dome (where the recall posts and every other interaction entity are) is
+# in reach of anywhere in it
+ph = L.DOMES[S.N]
+for other in L.DOMES:
+    if other.index != S.N:
+        dist = sum((p - q) ** 2 for p, q in zip(ph.floor_centre, other.floor_centre))
+        assert dist ** 0.5 - ph.radius - other.radius - 2 > reach + S.EYE, other.index
+# never round the eye of a player wherever they stand (pressed against the
+# glass included)
+for cx, cy, cz in walked:
+    for dx in (0.3, 0.7):
+        for dz in (0.3, 0.7):
+            eye = (cx + dx, cy + S.EYE, cz + dz)
+            assert not any(inside(eye, box) for _, box in every), (cx, cy, cz)
+
+# the sign: on the corner post, facing the room, short lines, read from
+# where a player stands under it
+solid, fit = S.blocks()
+sign = fit[S.TRAVEL_SIGN]
+assert f"wall_sign[facing={S._COMPASS[face]}]" in sign
+assert all(len(line) <= 15 for line in S.TRAVEL_TEXT) and len(S.TRAVEL_TEXT[0]) <= 12
+# a restored dome or an open one (with a partner in it): both are lit on
+# the map (froglights), a locked one is not
+assert "lit" in S.TRAVEL_TEXT[1].split() and "green" not in " ".join(S.TRAVEL_TEXT)
+assert "froglight" in S.DOME_LAMP[1] and "froglight" in S.DOME_LAMP[2]
+behind = (S.TRAVEL_SIGN[0] - face[0], S.TRAVEL_SIGN[1], S.TRAVEL_SIGN[2] - face[1])
+assert behind in solid
+sx, sy, sz = S.TRAVEL_SIGN
+assert (sx, sy - 2, sz) in walked and not S.walk_problems()
+
+# the pack: the tick takes up a click, the travel is run as who clicked
+pack = B.new_pack("t")
+f = pack.functions
+click = "execute as @e[type=minecraft:interaction,tag=st.ph.go] if data entity @s "
+assert click + "interaction run function station:dome/0/click/go" in f["dome/0/tick"]
+for d in boxes:
+    assert (f"execute if entity @s[tag=st.ph.go{d}] on target run function "
+            f"station:dome/0/travel/{d}") in f["dome/0/click/go"]
+assert f["dome/0/click/go"][-1] == "data remove entity @s interaction"
+assert any("tag=st.ph.go] run data remove" in l for l in f["dome/0/reset"])
+# the raised reach: added on coming in, taken off on going out by any way,
+# at the reset and for one back from an earlier run
+modifier = "attribute @s minecraft:entity_interaction_range modifier"
+assert f["dome/0/enter"] == [f"{modifier} add station:map 4 add_value"]
+assert f["dome/0/leave"] == [f"{modifier} remove station:map"]
+assert f["dome/0/entered"][-1] == "function station:dome/0/enter"
+assert f["dome/0/exited"][-1] == "function station:dome/0/leave"
+assert "function station:dome/0/leave" in f["players/stale"]
+assert ("execute as @a[scores={st.dome=0}] run function station:dome/0/leave"
+        in f["reset/all"])
+
+
+# the travel's lines, worked on scores: what it says, or where it puts @s
+def travel(d, scores, playing=True):
+    for line in f[f"dome/0/travel/{d}"]:
+        t = line.split(" ")
+        if t[0] != "execute":
+            continue
+        i, ok = 1, True
+        while ok and t[i] in ("if", "unless"):
+            want = t[i] == "if"
+            if t[i + 1] == "entity":
+                ok, i = (playing == want), i + 3
+                continue
+            value, span = scores.get(t[i + 2], 0), t[i + 5]
+            lo, _, hi = span.partition("..") if ".." in span else (span, "", span)
+            got = (lo == "" or value >= int(lo)) and (hi == "" or value <= int(hi))
+            ok, i = (got == want), i + 6
+        if not ok:
+            continue
+        rest = " ".join(t[i:])
+        if rest.startswith("run return run tellraw"):
+            return rest.split('text:"')[1].split('"')[0]
+        if rest == "run return 0":
+            return None
+        if rest.startswith("in minecraft:overworld run tp @s "):
+            return tuple(int(v) for v in rest.split(" ")[5:9])
+    raise AssertionError("fell through")
+
+
+for d in boxes:
+    name = L.DOMES[d].name
+    at = domes.entrance(L.DOMES[d])
+    run_on = {"#run": 1}
+    assert travel(d, {"#run": 0, f"#d{d}": 2}) == "Start the run first."
+    assert travel(d, {**run_on, f"#d{d}": 2}, playing=False) is None
+    assert travel(d, {**run_on, f"#d{d}": 2, "#vote.kind": 1}).startswith("A reset")
+    assert travel(d, {**run_on, "#vote.kind": 2, f"#d{d}": 2}) == at
+    assert travel(d, {**run_on, f"#d{d}": 0}) == "Not yet restored."
+    assert travel(d, {**run_on, f"#d{d}": 1}) == f"Nobody is in {name} yet."
+    assert travel(d, {**run_on, f"#d{d}": 1, f"#occ{d}": 1}) == at
+    assert travel(d, {"#run": 2, f"#d{d}": 2}) == at
+    # the arrival is the core's: the spot is inside dome d alone, so the
+    # next scan's locate leaves the Pump House and enters dome d (its
+    # respawn point, title, kits and enter hook), as a walk in does
+    x, y, z, _ = at
+    for other in L.DOMES:
+        cx, cy, cz = other.floor_centre
+        dist = ((x - cx) ** 2 + (y - cy) ** 2 + (z - cz) ** 2) ** 0.5
+        assert (dist <= other.radius + 1) == (other.index == d), (d, other.index)
+    assert f"{domes.sphere(L.DOMES[d])}] unless score @s st.dome matches {d} " \\
+        f"at @s run function station:dome/{d}/entered" in " ".join(f["players/locate"])
+    entered = f[f"dome/{d}/entered"]
+    assert f"spawnpoint @s {x} {y} {z} {at[3]} 0" in entered
+    assert any("kit/start" in l for l in entered)
+    if f"dome/{d}/enter" in f:
+        assert f"function station:dome/{d}/enter" in entered
 """
     )
 
@@ -784,10 +1000,17 @@ pack = B.new_pack("t")
 f = pack.functions
 # every tunnel is built: its states, and no stub
 assert all(f"tunnel/{n}/state_1" in f for n in range(len(B.station_layout.TUNNELS)))
-# the kits after the start kit, on entering their domes
-for n, name in game.KITS.items():
-    given = f"function station:kit/{name}"
-    assert any(line.endswith(given) for line in f[f"dome/{n}/entered"])
+# the kits after the start kit, on entering their domes or any dome after
+# them (a fast travel past the Foundry), once a run, in the domes' order
+for d in B.station_layout.DOMES:
+    lines = f[f"dome/{d.index}/entered"]
+    given = [line for line in lines if " run function station:kit/" in line
+             and "kit/start" not in line]
+    want = [name for n, name in sorted(game.KITS.items()) if n <= d.index]
+    assert given == [
+        f"execute unless score @s st.kit.{name} = #runid st "
+        f"run function station:kit/{name}" for name in want
+    ], d.index
 # the last dome is the win, and a module's win function is called
 last = len(B.station_layout.DOMES) - 1
 assert "function station:run/win" in f[f"dome/{last}/solved"]
