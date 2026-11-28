@@ -2798,8 +2798,13 @@ def summons(dome: Dome) -> list[str]:
 
 domes.allow(INDEX, "window", "the lighter lies between the doors")
 # the basin is water let into the floor: ``afloat_problems`` and the live
-# check look after those cells, the shell's check for holes leaves them
-domes.add_opening(INDEX, basin(layout.DOMES[INDEX]))
+# check look after those cells, the shell's check for holes leaves them;
+# and the landing steps: the game lets the basin's water into a step
+# beside it (it is laid dry, but stands waterlogged a tick later)
+_fr = frame(layout.DOMES[INDEX])
+domes.add_opening(
+    INDEX, basin(layout.DOMES[INDEX]) | {_fr.at(f, r, 0) for f, r in LANDINGS}
+)
 
 
 def over_water(dome: Dome) -> set[Cell]:
