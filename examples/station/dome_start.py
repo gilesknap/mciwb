@@ -56,10 +56,10 @@ input, and no reset touches it):
   whose level rises and falls, and **pipes overhead** from each tank and
   from over the north door to the shaft, with bulbs that light in turn
   towards it and lanterns hung under their joints (``overhead``).
-- **The governor**, north west, in a cage of copper bars with a grate for
-  a roof: a clock of repeaters round a redstone torch that works two
-  pistons, two lamps and a copper bulb, by itself, from the moment it is
-  built. Nothing of it can be reached or clicked.
+- **The governor**, north east (in the north west it hid the Wall of
+  Fame), in a cage of copper bars with a grate for a roof: a clock of
+  repeaters round a redstone torch that works two pistons, two lamps and
+  a copper bulb, by itself, from the moment it is built. Nothing of it can be reached or clicked.
 - The chase, the tanks' levels, the map's blinking pin and a bell every
   minute and a half are the datapack's (``dome/0/machine/...``), stepped
   by ``dome/0/tick``: they stand still when nobody is in the dome.
@@ -545,7 +545,7 @@ TANK_AT = ((16, -10), (-16, -10))  #: the tanks' middles
 TANK_TOP = 9
 GAUGE = range(2, TANK_TOP)  #: the heights of a tank's sight glass
 #: the cage round the governor: its corners (e, n), and its roof's height
-CAGE = ((-16, 5), (-12, 15))
+CAGE = ((12, 5), (16, 15))
 CAGE_ROOF = 5
 REPEATERS = 5  #: a row of the governor's clock
 
@@ -591,7 +591,7 @@ def gallery() -> Gallery:
     deck -= set(stairs)
     rails = deck - walk
     posts = {(e, n) for e in (-2, 2) for n in (9, 13)}
-    for angle in (40, 60, 78, 102, 120, 136):
+    for angle in (40, 60, 78, 102, 120, 140):
         a = math.radians(angle)
         spot = (round(19 * math.cos(a)), round(19 * math.sin(a)))
         if spot in rails and not in_cage(*spot):
