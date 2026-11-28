@@ -1591,7 +1591,7 @@ with three ramps; a high level 12 up (crown deck, catwalks, main C's
 platform up a one-wide railed stair, three ladders). Three steam mains:
 throw a main's lever and stand on its deck (cut copper) until its five
 lamps light; step off and it runs down. Automatons come one at a time
-from four hatches in the Engine's plinth once a lever is thrown, 3 to 5
+from four hatches in the Engine's plinth once a lever is thrown, 5 to 7
 alive at level 5 alone. Two players in the arena wind A and B only
 together. **The third main shut is the win**: the Engine stops, the way
 out lights, tunnel 7 pumps dry, and the core's `run/win` runs (best
@@ -2423,6 +2423,25 @@ Four changes the owner tried in the world, now in the build:
   each dome's middle block and in front of it. Under the upper row they
   were on the sea, and the corner domes' names were lost behind their
   tunnels' bulbs.
+
+## Round 6: the two-player play-test (28 Nov 2026)
+
+A change from a two-player play-test, applied live by a datapack reload
+and played before it went into the build:
+
+- **More automatons in the Engine** while the mains are wound: the cap
+  with no main shut is 5 alone and 8 for two (it was 3 and 5) at level 5,
+  one cast every 5 steps alone and every 4 for two (it was 10 and 7).
+
+To remember, not changed yet:
+
+- **Foundry two-player difficulty**: an early report of being overwhelmed
+  came from waiting at the breakers (the charge stands still while one is
+  out); to judge again in proper two-player play.
+- **The Flooded Dome's hint**: in its two-player form the pump runs only
+  while the plate is held, and the players let go before the water reached
+  the stage's target. Consider a hint, such as the gauge or a title "Hold
+  the plate until the water stops".
 
 ## Known problems / notes
 

@@ -307,8 +307,8 @@ SOLO_STEPS = game.SOLO_AFTER  # steps with fewer than two in the arena: solo
 # at level 5, scaled by the core's percentages (``scaled``)
 WIND = 100  # a step of winding: a lamp every 3 s
 DRAIN = 150  # a step left alone: a lamp every 2 s
-CAP = {1: 3, 2: 5}  # automatons alive at once with no main shut, by form
-GAP = {1: 10, 2: 7}  # steps between automatons, by form
+CAP = {1: 5, 2: 8}  # automatons alive at once with no main shut, by form
+GAP = {1: 5, 2: 4}  # steps between automatons, by form
 FIRST = 8  # steps from the first lever to the first automaton
 NEAR = 30  # a hatch is used with a player this close
 RIVETERS = {1: 2, 2: 3}  # the most Riveters alive, by form
