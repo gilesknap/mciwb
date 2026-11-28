@@ -355,6 +355,7 @@ has its rows in the table below):
 | 3 (round 4) | The Cargo Hold afloat (after the play-test of 28 Nov: "we are not in a ship!"; built from an offline plan and a ray-cast sketch): the water round her (does she read as afloat from the entrance, the dock walks and the pulpit; the red boot-topping at the waterline; the lanterns under the water at her bow and stern); fall in on purpose at her stern, her sides, her bow and between the bow's stairs, and get out (a step up anywhere, the four landing steps); over the side from the aft hold's notch into the water (no hurt?); nothing running or dripping anywhere after an hour. The list gauge: the brass arch on the deckhouse read from the driver's platform (the needle's swing smooth, to STARBOARD for starboard, the green and red marks at levels 1, 3 and 5, the kick into the red on a refused set-down, the creak near the limit: too often at levels 5 up, where it creaks at 1 ton?); the same from the bow; the bay names along the eaves; LIST and the limit on the status board; the notices at the heads of the pulpit's stairs. The driver's platform: the foot of each aft bay's nearest row is hidden from its middle (the offline check asks for it from the fore edge) | no |
 | 3 (round 3) | Hull Breach alone, Easy, level 5 (checked live with stand-ins only): a rivet plate in an adventure hand (on every face of a frame, into a hole under water, on nothing else); the stray clearing and the top-up; whether the room reads (the flood line, BREACH labels through water, the gauge, the board, the bar); the compressor seen working; the deepest patch at level 5; getting out of the water at every level; the solve and the walk to the pump lever |  no |
 | 3 (round 3) | Hull Breach's Breachers with a real player: the rig saw one throw 15 tridents at night at a golem on a dry floor, none pickable and none dropped, but go for nothing by day, not even a golem in the water. With a player: does it attack by day when you are in the water (the plaque's "in the water, mind the Breachers"); is the room much harder at night; a trident it throws into a wall or the floor swept; Water Breathing at levels 1 to 3; a player standing or swimming in an open hole holding off its repair after a failed stage |  no |
+| 3 (round 4) | Hull Breach's breaches as real water (built from the plan and the offline simulation; the streams are the game's own and no check can see a player in one): a breach cracking for three seconds before it bursts (seen and heard?); the stream of each level: on the floor, off a ledge, over the ring walk (does it push you off the walk or the ledge, and is that fair? does it ever carry you somewhere with no way out?); a plate set into a hole cell full of water, all four, and the stream stopping; the upper two cells of a high breach (air) plated; both halls dry whatever is open (the stream model says no water gets within four cells of the entry dam); the ladders and both stairs climbed with water coming down beside them; a patched breach (plates, water still behind in the hull) and the glass back after the pumps. The three tidies: round breach 8 and breach 9 on the ring walk; up a gantry ladder from the walk and off at the top; up the hall stair from its new corner landing | no |
 | 1 (round 3) | The ring of ten: the map wall's ten domes and their names read from the bay (drawn at a smaller scale; seen only in an offline render); "Domes x of 9" on the progress line; the craters round the moved Flooded Dome and Foundry and along tunnels 3 to 5 (the glass looking out on water, not ground; terraces natural?); the long tunnel 4 (32) walked; about 75 minutes for a whole run at level 5 |  no |
 
 ## Decisions and findings
@@ -1994,6 +1995,37 @@ Clockwork Maze's site (48 across, the exit straight ahead).
   it fights at night, which the contract accepted ("harder at night").
   Not shown: that by day it goes for a player in the water (the design's
   "in the water, mind the Breachers"): a play-test item.
+- Round 4, after the owner's play-test (28 Nov 2026): a breach is the
+  dome cracking. Sound, its 2 x 2 hole is a window of glass in the raw
+  iron frame. In its last three seconds it cracks (the hull's glass
+  behind the frame turns to tinted glass in three steps, with drips and
+  creaks), then bursts: the window shatters, the sea stands in the hole
+  as real water sources (all four cells; over the ring walk the lower
+  two, the upper two air) and in the hull behind as waterlogged
+  barriers, and the stream runs down the wall and over the decks. A
+  plate takes the place of the water in its cell; four patch the hole
+  (`b<i>` 2), the sea still behind them. A failed stage, the pump-down,
+  leaving, the reset and the solve make every breach sound glass again.
+  The first burst of a stage now comes three seconds in, after its
+  cracks. Proved on the plan (`stream_problems`, with a generous model
+  of the game's running water: down, and seven cells along from a source
+  or a landing): no stream at or behind the entry dam or in the exit
+  hall, none on anything it would wash away, all of it where the
+  layers' fills or `mop` take it away. Not proved: what the current does
+  to a player (the play-test list).
+- Round 4, the same day, three tidies. The ring walk went round each
+  high breach's frame by a deck one wide that met the walk only corner
+  to corner at one end of breach 8 and not at all at one end of breach
+  9: the deck is now carried out to the walk at both ends (the unit test
+  walks the whole ring at deck level). The gantry's two ladders from the
+  walk stood on the walk with their posts in its middle and came out
+  under the dome's glass, with no room to step off: they are now on
+  spurs in under the gantry, on hangers from its deck, and come up
+  through it; the two ribs in the gantry's line stop where it passes;
+  the walk's rail runs on round them. The hall stair's foot was in the
+  corner by the glass, where the hall is one wide, and could only be
+  stepped onto from the side: the flight now starts from a corner
+  landing one up, with a step up to it the way a player comes.
 - For the owner's bench and play-test: a rivet plate in an adventure hand
   (on every face of a frame, into a hole under water, on nothing else);
   the stray clearing and the top-up; the Breacher's trident on a player;

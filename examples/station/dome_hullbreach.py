@@ -12,10 +12,12 @@ glass dam and look down into a round pressure chamber: a copper test
 column in the middle with a red band nine up (the *flood line*, painted on
 both dams too), a ring walk round the chamber one block over that line, a
 gantry across the top with two caged perches and the caged compressor on
-the column's head, and round the walls twelve iron frames, each holding a
-square of copper plate. Three levels for players: the floor, three ledges
-(deck ``LEDGE_H``) under the middle breaches, and the ring walk (deck
-``WALK_H``), which is always dry; the gantry (``GANTRY_H``) above. Two
+the column's head, and round the walls twelve iron frames: nine round a
+window of the hull's glass (the breaches), three plated over long ago
+(dressing). Three levels for players: the floor, three ledges (deck
+``LEDGE_H``) under the middle breaches, and the ring walk (deck
+``WALK_H``), which the flood never reaches but the high breaches' streams
+run over; the gantry (``GANTRY_H``) above, which no water gets to. Two
 stairs and seven ladders climb out of the water at every level. The exit
 hall beyond the far dam is roofed with glass at the walk's height, and
 opens only by the dam door after the solve.
@@ -27,10 +29,18 @@ rivet plates stick only to the iron frames; keep above the red line.
   starts the test, refused on Peaceful.
 - A **stage** bursts its breaches one after another (``stag`` apart) in a
   fixed order (``ORDERS``) that pulls the players across the room and up
-  and down; a burst breaks the four plates of a 2 x 2 hole out of its
-  frame (``raw_iron_block``: a frame means "build here"), hangs a red
-  BREACH label over it and casts a Breacher in front of it. With two
-  players a stage has one more breach, and the first two burst together.
+  and down. A breach is a 2 x 2 window of glass in a frame
+  (``raw_iron_block``: a frame means "build here"). In its last three
+  seconds it cracks (``CRACK``: the hull's glass behind the frame turns
+  dark, ``tinted_glass``, two cells, six, all of it, with drips and
+  creaks), then it bursts: the window shatters and the sea stands in the
+  hole, real water (sources: all four cells, but over the ring walk the
+  lower two, the upper two air) that runs down the wall and over the
+  decks, and in the hull behind it (``SEA``: waterlogged barriers, which
+  show the water and let none through); a red BREACH label hangs over
+  it and a Breacher is cast in front of it. With two players a stage has
+  one more breach, and the first two burst together. The first burst of
+  a stage comes after its cracks, three seconds in.
 - Every step each open breach adds to ``flow``; at ``per`` a layer of
   water rises (the layer functions of the Flooded Dome, run upwards),
   never above ``MAX`` (the line). At the line with a breach open the
@@ -40,8 +50,16 @@ rivet plates stick only to the iron frames; keep above the red line.
   and the stage starts again. Stages held before are kept.
 - **Rivet plates** (``waxed_exposed_chiseled_copper``, placeable only on
   the frames) are lent on entering, topped up when gone, taken back on
-  leaving; four in a hole seal it. Plates put anywhere else round a frame
-  are cleared (``strays``).
+  leaving. A plate set in a hole cell takes the place of the water in it;
+  four in a hole seal it (patched: no source left, so its stream runs
+  out by itself; the sea stays in the hull behind the patch). Plates put
+  anywhere else round a frame are cleared (``strays``).
+- **The streams** are the game's own running water, so they are only
+  where ``stream`` says they can be (``stream_problems``): never at or
+  behind the entry dam, never in the exit hall, on nothing they would
+  wash away. The layers' fills take them away below the line and ``mop``
+  above it; every way out of a stage (held, failed, left, reset, solved)
+  makes every breach sound glass again, hull and all.
 - When a stage's last breach is sealed: the stage holds, the automatons
   are flushed out, the pumps (the compressor working on the gantry) take
   the water down, a breather, the next. After the third: the dome is
@@ -60,8 +78,8 @@ levels 1 to 3.
 testing, 2 solved; ``stage`` stages held (0 to 3); ``phase`` 0 breather,
 1 bursting, 2 at the line, 3 pumping down; ``w`` the top wet layer (the
 only record of the water); ``flow``; ``open``; ``b1`` .. ``b9`` each
-breach open (1) or sound; ``due`` bursts to come, ``idx`` the next in the
-order, ``next`` ticks to it; ``hold``; ``t`` ticks in the phase; ``form``
+breach sound (0), open (1) or patched (2); ``due`` bursts to come,
+``idx`` the next in the order, ``next`` ticks to it; ``hold``; ``t`` ticks in the phase; ``form``
 and ``want``; ``live``; ``wait`` (a test left: -1, or ticks to resume);
 ``again`` the live stage failed before; from the level (``scaled``): ``per``,
 ``stag``, ``hold0``, ``n1`` ``n2`` ``n3``, ``bcap``, ``rcap``, ``wb``.
@@ -83,7 +101,12 @@ over it); an escape at every level, with every breach open and with
 every breach sound (from every place a player can get to, air within
 ``MAX_DIVE`` moves, and from every place with air, a way to the entry
 hall that never goes under); no pits; every hole cell touching two frame
-blocks; no input, plate or sign in the basin.
+blocks, with glass of the room's own behind it; running water kept out
+of both halls and off everything it would wash away
+(``stream_problems``); no input, plate or sign in the basin. Not proved,
+for the play-test: what a stream's current does to a player in it (it
+pushes; nothing here is a fall that kills or a place with no way out,
+by ``walk_problems``' pits, which take any fall).
 """
 
 from __future__ import annotations
@@ -133,6 +156,11 @@ RESUME = 100  # from someone coming back to a left test going on
 NEAR = 16  # a breach casts again only with a player this near
 MAX_DIVE = 14  # moves under water a way out may ask for (the Flooded Dome's)
 DECO_PHASES = 6
+#: a breach cracks before it bursts: ticks before the burst of each stage
+CRACK = (60, 30, 6)
+FLOW = 7  # how far running water spreads on the level from where it lands
+#: what running water washes away
+WASHED = ("lever", "button", "torch", "redstone_wire", "repeater", "comparator")
 #: breaches a stage, solo, by level (duo: one more each)
 BURSTS = {
     1: (1, 2, 2),
@@ -219,6 +247,11 @@ PLATE = "minecraft:waxed_exposed_chiseled_copper"
 #: a frame that is only dressing: finished iron, which no plate sticks to
 DRESS_FRAME = "minecraft:iron_block"
 DRESS_PLATE = "minecraft:waxed_weathered_copper"
+#: a breach burst: the sea standing in the hull behind the hole (a full
+#: block that holds its own water: none of it runs out, none gets in),
+#: and the hull's glass cracked dark round it
+SEA = "minecraft:barrier[waterlogged=true]"
+CRACKED = "minecraft:tinted_glass"
 DRY, WET = "waterlogged=false", "waterlogged=true"
 ENTITY_TAG = "st.hb"  # everything this module summons
 STAGE_TAG = "st.hb.stage"
@@ -256,7 +289,8 @@ RECALL = (-19, -3, 1)  # the recall post: f, r, the side its button is on
 BOARD_R = -4  # the dam's gauge column (the test board)
 STAGE_LAMPS = ((-1, 6), (0, 6), (1, 6))  # r, h on the entry dam
 COLUMN = 1  # the test column's half width
-LADDER_R = 17  # the gantry's ladders, from the walk
+GANTRY_R = 16  # how far the gantry's bridge goes each way
+LADDER_R = 15  # the gantry's ladders, on spurs in from the walk
 PERCH = ((-5, -3), (9, 11))  # a Riveter's perch: f, and r on each side
 COMPRESSOR = (4, 0)  # the compressor's frame, on the gantry
 PILLARS = (30, 60, 120, 150, 210, 240, 300, 330)  # bearings under the walk
@@ -310,9 +344,6 @@ def basin(dome: Dome) -> frozenset[Cell]:
     return frozenset(out)
 
 
-domes.add_wet(INDEX, basin(layout.DOMES[INDEX]))
-
-
 # ---------------------------------------------------------------- the room
 
 
@@ -330,6 +361,8 @@ class Breach:
     holes: tuple[Cell, ...]  # the lower row first
     frame: tuple[Cell, ...]
     backing: frozenset[Cell]  # glass behind, out to the shell
+    flooded: tuple[Cell, ...]  # the backing right behind the holes
+    cracks: tuple[Cell, ...]  # the backing round those, behind the frame
     front: frozenset[Cell]  # the cells in front of the hole
     bay: frozenset[Cell]  # where a stray plate is cleared (not the holes)
     spawn: Cell  # a Breacher's feet, in front of the hole
@@ -342,6 +375,12 @@ class Breach:
     @property
     def name(self) -> str:
         return f"breach {self.number}"
+
+    @property
+    def sources(self) -> tuple[Cell, ...]:
+        """the hole cells the sea stands in while it is open: all four,
+        but over the ring walk the lower two (the upper two are air)"""
+        return self.holes[:2] if self.level == "high" else self.holes
 
 
 @dataclass(frozen=True)
@@ -388,8 +427,9 @@ def _box(a: Cell, b: Cell) -> set[Cell]:
 
 
 def _breach(dome: Dome, number: int, level: str, f0: int, side: int) -> Breach:
-    """a frame placed as far out as the dome's curve lets it, against the
-    shell, filled in behind with glass"""
+    """a frame placed as far out as the dome's curve lets it with the
+    room's own glass behind each hole cell (the hull that bursts), filled
+    in behind with glass out to the shell"""
     fr = frame(dome)
     inside = domes.dome_cells(dome).interior
     reserved = tunnels.reserved_cells(dome)
@@ -398,6 +438,9 @@ def _breach(dome: Dome, number: int, level: str, f0: int, side: int) -> Breach:
     for depth in range(dome.radius, 8, -1):
         cells = [fr.at(f, side * depth, h) for f in fs for h in hs]
         cells += [fr.at(f, side * (depth - 1), h) for f in fs for h in hs]
+        cells += [
+            fr.at(f, side * (depth + 1), h) for f in (f0, f0 + 1) for h in (h0, h0 + 1)
+        ]
         if all(c in inside and c not in reserved for c in cells):
             break
     else:
@@ -416,6 +459,16 @@ def _breach(dome: Dome, number: int, level: str, f0: int, side: int) -> Breach:
         for d in range(depth + 1, dome.radius + 1)
         if fr.at(f, side * d, h) in inside
     }
+    flooded = tuple(
+        fr.at(f, side * (depth + 1), h) for h in (h0, h0 + 1) for f in (f0, f0 + 1)
+    )
+    cracks = tuple(
+        c
+        for h in hs
+        for f in fs
+        for c in [fr.at(f, side * (depth + 1), h)]
+        if c in backing and c not in flooded
+    )
     front = frozenset(fr.at(f, side * (depth - 1), h) for f in fs for h in hs)
     bay = {
         fr.at(f, side * d, h)
@@ -440,6 +493,8 @@ def _breach(dome: Dome, number: int, level: str, f0: int, side: int) -> Breach:
         holes,
         ring,
         frozenset(backing),
+        flooded,
+        cracks,
         front,
         frozenset(bay),
         fr.at(f0, side * (depth - 1), spawn_h),
@@ -508,7 +563,7 @@ def room(dome: Dome) -> Room:
         tank_lamps=tuple(tank_lamps),
         vents=tuple(at(vf_, vr_, 1) for vf_, vr_ in VENTS),
         halls=halls,
-        gantry=(at(-6, -LADDER_R, GANTRY_H + 1), at(6, LADDER_R, GANTRY_H + 3)),
+        gantry=(at(-6, -GANTRY_R - 1, GANTRY_H + 1), at(6, GANTRY_R + 1, GANTRY_H + 3)),
     )
 
 
@@ -731,11 +786,18 @@ def structure(dome: Dome) -> Blocks:
     # -- the entry hall: the stair up the dam to the valve landing
     fs, foot, top = HALL_STAIR
     for f in fs:
-        for r in range(top, foot + 1):
+        for r in range(top, foot):
             h = 1 + foot - r
             b.parts[at(f, r, h)] = stairs(fr.facing(0, -1)).replace(f",{DRY}", "")
             for under in range(1, h):
                 b.solid[at(f, r, under)] = COPPER if under % 3 else EXPOSED_CUT
+    # its foot: the hall is one wide there, against the shell, so the
+    # flight starts from a corner landing one up, a step up from the hall
+    # the way a player comes
+    for f in (fs[0] - 1, *fs):
+        for r in range(foot, dome.radius):
+            put(b.solid, at(f, r, 1), CUT)
+    b.parts[at(fs[0] - 1, foot - 1, 1)] = stairs(fr.facing(0, 1)).replace(f",{DRY}", "")
     (lf0, lf1), (lr0, lr1) = LANDING
     for f in range(lf0, lf1 + 1):
         for r in range(lr0, lr1 + 1):
@@ -825,6 +887,15 @@ def structure(dome: Dome) -> Blocks:
                 for d in (br.depth - 1, br.depth):
                     c = at(f, br.side * d, WALK_H)
                     b.solid[c] = GRATE
+            # the walk goes round the frame by that deck: at each end the
+            # deck is carried out to the walk, so the way is never a
+            # squeeze between a rail and the frame's corner
+            for f in (br.f0 - 2, br.f0 + 3):
+                for d in range(br.depth - 1, dome.radius):
+                    c = at(f, br.side * d, WALK_H)
+                    if c in b.everything() or c not in usable:
+                        break
+                    b.solid[c] = GRATE
 
     # -- the ballast tanks, their lamps blinked by the pack
     for tf, tr in TANKS:
@@ -871,21 +942,30 @@ def structure(dome: Dome) -> Blocks:
                 f_, _, h_ = fr_of(fr, c)
                 if not ENTRY_F < f_ < EXIT_F and h_ <= WALK_H:
                     continue  # (the halls: their walls are their own)
+                if abs(f_) <= 2 and GANTRY_H <= h_ <= GANTRY_H + 2:
+                    continue  # (the gantry and its ladders' heads pass)
                 b.solid[c] = EXPOSED if fr_of(fr, c)[2] % 6 else LANTERN
 
     # -- the gantry: a bridge through the hub on the column's head, rails,
     # ladders up from the walk, two perches, the compressor's platform
     for f in range(-2, 3):
-        for r in range(-16, 17):
+        for r in range(-GANTRY_R, GANTRY_R + 1):
             hub = abs(f) <= COLUMN and abs(r) <= COLUMN
             b.solid[at(f, r, GANTRY_H)] = CHISELED if hub else GRATE
     b.solid.pop(at(0, -COLUMN - 1, GANTRY_H))  # the column's ladder
     for side in (1, -1):
+        # a ladder up from the walk: on a spur of the walk's deck, in
+        # under the gantry to where the dome's curve leaves room for a
+        # head at the ladder's top, on a hanger from the gantry's deck
+        r = LADDER_R
+        while at(0, side * r, WALK_H) not in b.solid:
+            b.solid[at(0, side * r, WALK_H)] = GRATE
+            r += 1
+        b.solid.pop(at(0, side * LADDER_R, GANTRY_H))
         for h in range(WALK_H + 1, GANTRY_H + 1):
-            b.parts[at(0, side * LADDER_R, h)] = ladder(fr.facing(0, -side))
-            post = at(0, side * (LADDER_R + 1), h)
-            if post in usable and post not in b.everything():
-                b.solid[post] = WEATHERED_CUT
+            b.parts[at(0, side * LADDER_R, h)] = ladder(fr.facing(-1, 0))
+        for h in range(WALK_H, GANTRY_H):
+            b.solid[at(1, side * LADDER_R, h)] = WEATHERED_CUT
         (pf0, pf1), (pr0, pr1) = PERCH
         for f in range(pf0 - 1, pf1 + 1):
             for r in range(pr0 - 1, pr1 + 2):
@@ -910,12 +990,12 @@ def structure(dome: Dome) -> Blocks:
                     b.parts[at(f, r, h)] = BARS
     # the bridge's rails, with a way into each perch and to each ladder
     for f in (-2, 2):
-        for r in range(-16, 17):
+        for r in range(-GANTRY_R, GANTRY_R + 1):
             perch = f == -2 and PERCH[1][0] <= abs(r) <= PERCH[1][1]
             c = at(f, r, GANTRY_H + 1)
             if not perch and c not in b.parts:
                 b.parts[c] = BARS
-    for r in (-16, 16):
+    for r in (-GANTRY_R, GANTRY_R):
         for f in (-2, -1, 1, 2):
             put(b.parts, at(f, r + (1 if r > 0 else -1), GANTRY_H + 1), BARS)
     # chains and lanterns under the gantry
@@ -935,7 +1015,9 @@ def structure(dome: Dome) -> Blocks:
 
 def rails(dome: Dome, b: Blocks) -> dict[Cell, str]:
     """iron bars along every open edge of the walk, the landing and the
-    crests, one up, but where a stair or a ladder comes up"""
+    crests, one up, but where a stair or a ladder comes up to it (its
+    top two treads, its top rung: the gantry's ladders go on up from the
+    walk, and the rail runs on round them)"""
     fr = frame(dome)
     at = fr.at
     inside = domes.dome_cells(dome).interior
@@ -949,7 +1031,8 @@ def rails(dome: Dome, b: Blocks) -> dict[Cell, str]:
     keep_open = set()
     for c, block in b.parts.items():
         f, r, h = fr_of(fr, c)
-        if ("stairs" in block or "ladder" in block) and h <= WALK_H + 1:
+        up = h == WALK_H if "ladder" in block else WALK_H - 1 <= h <= WALK_H
+        if ("stairs" in block or "ladder" in block) and up:
             keep_open |= {(f + df, r + dr) for df in (-1, 0, 1) for dr in (-1, 0, 1)}
     out = {}
     for f, r in deck:
@@ -1066,6 +1149,7 @@ class State:
     w: int = 0
     stage: int = 0
     open: frozenset[int] = frozenset()  # the breaches open
+    patched: frozenset[int] = frozenset()  # sealed with plates
     lit: int = 0  # the column's gauge (the water)
 
     @property
@@ -1078,23 +1162,28 @@ SOLVED = State(stage=3)
 ALL_OPEN = frozenset(range(1, len(SPECS) + 1))
 
 
-def hole_block(cell_h: int, state: State, is_open: bool) -> str:
-    if not is_open:
+def hole_block(br: Breach, cell: Cell, state: State) -> str:
+    """a hole cell: glass while the breach is sound, the sea (a source)
+    while it is open (air in the upper two over the ring walk), a plate
+    once it is patched"""
+    if br.number in state.patched:
         return PLATE
-    return WATER if cell_h <= state.w else AIR
+    if br.number in state.open:
+        return WATER if cell in br.sources else AIR
+    return GLASS
 
 
 def fixed_blocks(dome: Dome, state: State = START) -> dict[Cell, str]:
     """
     Every block of the room in a state, but the water and air of the
     basin's open cells (``fluid_blocks``): what stands still, the basin's
-    fittings wet or dry, the plates in the holes, the gauges, the stage
-    lamps, the dam door. (Not the compressor's torch, which is there while
+    fittings wet or dry, the holes (glass, the sea or plates) and the
+    hull behind them (sound, or flooded and cracked), the gauges, the
+    stage lamps, the dam door. (Not the compressor's torch, which is there while
     the pumps run.)
     """
     place = room(dome)
     b = room_blocks(dome)
-    fr = place.frame
     out = b.everything()
     for h, layer in layers(dome).items():
         for cell, block in layer.fittings.items():
@@ -1105,9 +1194,13 @@ def fixed_blocks(dome: Dome, state: State = START) -> dict[Cell, str]:
     for k, cell in enumerate(place.stage_lamps, 1):
         out[cell] = f"{BULB}[lit={'true' if k <= state.stage else 'false'}]"
     for br in place.breaches:
+        burst = br.number in state.open or br.number in state.patched
         for cell in br.holes:
-            h = fr_of(fr, cell)[2]
-            out[cell] = hole_block(h, state, br.number in state.open)
+            out[cell] = hole_block(br, cell, state)
+        for cell in br.flooded:
+            out[cell] = SEA if burst else GLASS
+        for cell in br.cracks:
+            out[cell] = CRACKED if burst else GLASS
     for cell in place.door:
         out[cell] = AIR if state.solved else CHISELED
     if state.solved:
@@ -1370,10 +1463,125 @@ def _waterloggable(block: str) -> bool:
     return any(w in block for w in WATERLOGGABLE)
 
 
+@cache
+def stream(dome: Dome) -> frozenset[Cell]:
+    """
+    Every cell running water can get to, the breaches' own sources
+    (``Breach.sources``) among them: worked out with every breach open and
+    the basin dry, which is the most it ever runs (with water standing in
+    the basin a stream stops at its surface: water over water only falls).
+    The game's rules, taken generously: water in a cell falls into the
+    cell below if that can hold it, and runs on from where it lands as
+    from a source; over a cell that cannot hold it, it spreads to the
+    side, ``FLOW`` cells from a source or a landing (here every way at
+    once; the game picks the nearest drop). A cell can hold running
+    water if it is inside the dome and empty, or holds something water
+    washes away (``WASHED``: ``stream_problems`` lets none of those be
+    reached); nothing else lets it in: full blocks, and bars, ladders,
+    stairs, chains and lanterns, which take water only from a bucket.
+    """
+    place = room(dome)
+    inside = domes.dome_cells(dome).interior
+    blocks = room_blocks(dome).everything()
+    blocks |= {c: block for c, block in engine_blocks(dome).items() if block != AIR}
+    shut = {c for br in place.breaches for c in br.frame} | set(place.door)
+    sources = {c for br in place.breaches for c in br.sources}
+
+    def holds(c: Cell) -> bool:
+        if c not in inside or c in shut:
+            return False
+        block = blocks.get(c)
+        return block is None or any(w in block for w in WASHED)
+
+    reach_ = dict.fromkeys(sources, 0)
+    edge = list(sources)
+    while edge:
+        x, y, z = c = edge.pop()
+        d = reach_[c]
+        to = []
+        if holds(below := (x, y - 1, z)):
+            to.append((below, 0))
+        if not to or c in sources:
+            to += [
+                ((x + dx, y, z + dz), d + 1)
+                for dx, dz in domes.COMPASS
+                if d < FLOW and holds((x + dx, y, z + dz))
+            ]
+        for cell, far in to:
+            if far < reach_.get(cell, FLOW + 1):
+                reach_[cell] = far
+                edge.append(cell)
+    return frozenset(reach_)
+
+
+@cache
+def mop_cells(dome: Dome) -> frozenset[Cell]:
+    """where running water can be above the flood line (the layers' own
+    fills take what is below it): ``mop`` clears these"""
+    fr = frame(dome)
+    return frozenset(c for c in stream(dome) if fr_of(fr, c)[2] > MAX)
+
+
+def wet_cells(dome: Dome) -> frozenset[Cell]:
+    """every cell of the dome that is wet on purpose in some state: the
+    basin, the streams, the sea in the hull behind a burst breach"""
+    place = room(dome)
+    behind = {c for br in place.breaches for c in br.flooded}
+    return basin(dome) | stream(dome) | behind
+
+
+try:
+    domes.add_wet(INDEX, wet_cells(layout.DOMES[INDEX]))
+except ValueError:  # (a plan that does not build: ``room_problems`` says)
+    domes.add_wet(INDEX, basin(layout.DOMES[INDEX]))
+
+
+def stream_problems(dome: Dome) -> list[str]:
+    """
+    Running water (``stream``) stays where it is harmless: none of it at
+    or behind the entry dam (the dam's crest, the valve landing, the
+    entry hall: the safe place to respawn) and none in the exit hall
+    under its roof; it reaches nothing it would wash away; and all of it
+    is where the room's own fills take it away again: below the line in
+    the basin's open cells, above it ``mop``'s.
+    """
+    place = room(dome)
+    fr = place.frame
+    blocks = room_blocks(dome).everything()
+    wet = stream(dome)
+    exit_hall = _box(*place.halls[1])
+    problems = []
+    if entry := [c for c in wet if fr_of(fr, c)[0] <= ENTRY_F]:
+        problems.append(
+            f"running water gets to the entry hall's side at {len(entry)} "
+            f"cells, e.g. (f, r, h) {fr_of(fr, min(entry))}"
+        )
+    if out := wet & exit_hall:
+        problems.append(
+            f"running water gets into the exit hall at {len(out)} cells, "
+            f"e.g. (f, r, h) {fr_of(fr, min(out))}"
+        )
+    for c in sorted(wet & set(blocks)):
+        problems.append(
+            f"running water washes away {_name(blocks[c])} at {fr_of(fr, c)}"
+        )
+    low = set().union(*(layer.open for layer in layers(dome).values()))
+    if stray := wet - low - mop_cells(dome):
+        problems.append(
+            f"running water at {len(stray)} cells no fill clears, e.g. "
+            f"(f, r, h) {fr_of(fr, min(stray))}"
+        )
+    return problems[:8]
+
+
 def breach_problems(dome: Dome) -> list[str]:
-    """every hole cell touches two frame blocks and has glass or the shell
-    behind it; every bay holds no other breach's hole, no input and no
-    sign; a Breacher is cast in the room, in front of its hole"""
+    """every hole cell touches two frame blocks and has the room's own
+    glass behind it, which a burst makes the sea (``SEA``: a full block
+    holding its own water); that glass and the ring of glass round it
+    behind the frame (``cracks``) are plain glass in the plan, and the
+    sea in it touches nothing but its hole, the shell and full blocks;
+    every bay holds no other breach's hole, no input and no sign; a
+    Breacher is cast in the room, in front of its hole"""
     place = room(dome)
     b = room_blocks(dome)
     cells = domes.dome_cells(dome)
@@ -1393,8 +1601,20 @@ def breach_problems(dome: Dome) -> list[str]:
             fr = place.frame
             nx, nz = fr.right[0] * br.side, fr.right[1] * br.side
             behind = (x + nx, y, z + nz)
-            if behind not in cells.shell and b.solid.get(behind) != GLASS:
-                problems.append(f"{br.name}: no glass behind a hole cell")
+            if behind not in br.flooded:
+                problems.append(f"{br.name}: no glass of its own behind a hole cell")
+        if len(br.cracks) < len(CRACK) * 2:
+            problems.append(f"{br.name}: only {len(br.cracks)} cells to crack")
+        for c in (*br.flooded, *br.cracks):
+            if b.solid.get(c) != GLASS or c in b.moving:
+                problems.append(f"{br.name}: its hull at {c} is not plain glass")
+        for x, y, z in br.flooded:
+            for dx, dy, dz in rooms.FACES:
+                side = (x + dx, y + dy, z + dz)
+                dry = side in cells.shell or side in cells.floor
+                dry |= side in b.solid and not _waterloggable(b.solid[side])
+                if side not in br.holes and not dry:
+                    problems.append(f"{br.name}: the sea behind it is open at {side}")
         if other := (br.bay & holes) - set(br.holes):
             problems.append(f"{br.name}: another hole in its bay at {min(other)}")
         for c in br.bay:
@@ -1489,6 +1709,7 @@ def _room_problems(dome: Dome) -> tuple[str, ...]:
     problems += rooms.window_problems(dome, plan(dome))
     problems += basin_problems(dome)
     problems += breach_problems(dome)
+    problems += stream_problems(dome)
     problems += headroom_problems(dome)
     problems += walk_problems(dome)
     problems += escape_problems(dome)
@@ -1497,7 +1718,9 @@ def _room_problems(dome: Dome) -> tuple[str, ...]:
 
 def forget() -> None:
     """drop what is remembered of the plan (for a test that changes it)"""
-    for remembered in (_room_blocks, layers, _still, _room_problems):
+    for remembered in (_room_blocks, layers, _still, _room_problems, stream):
+        remembered.cache_clear()
+    for remembered in (mop_cells,):
         remembered.cache_clear()
 
 
@@ -1599,7 +1822,7 @@ def build(ctx: Any) -> str:
                 ctx.setblock(cell, block)  # (signs; the book is below)
     for br in place.breaches:
         for cell in br.holes:
-            ctx.setblock(cell, PLATE)
+            ctx.setblock(cell, GLASS)
     ctx.fill_boxes(set(place.door), CHISELED)
     for command in book_commands(dome):
         ctx.cmd(command)
@@ -1614,7 +1837,8 @@ def build(ctx: Any) -> str:
         f"{dome.name}: {len(b.everything())} blocks: the entry hall (stair, valve "
         "landing, plaque, logbook, recall post, test board), two glass dams, "
         "the test column and its gauge, the ring walk, three ledges, two stairs "
-        "and seven ladders, nine breaches and three dressing frames, the gantry "
+        "and seven ladders, nine breaches (glass in iron frames) and three "
+        "dressing frames, the gantry "
         "with two perches and the compressor, the ballast tanks"
     )
 
@@ -1781,25 +2005,28 @@ def functions(pack: dp.Pack) -> None:
         ],
     )
 
-    # -- the breaches: open (by its layer), shut (plates), the labels
+    # -- the breaches: open (the sea in the holes and in the hull behind),
+    # patched (plates, the sea still behind), shut (sound glass); the
+    # cracks before a burst; the labels
+    glass_shards = "block{block_state:'minecraft:glass'}"
     for br in place.breaches:
         i = br.number
-        open_lines, burst_lines = [], []
-        for cell in br.holes:
-            h = fr_of(fr, cell)[2]
-            if h > MAX:
-                open_lines.append(_setblock(cell, AIR))
-                burst_lines.append(f"{_setblock(cell, AIR)} destroy")
-                continue
-            for wet_, block in ((True, WATER), (False, AIR)):
-                when = _is("w", f"{h}..") if wet_ else _not("w", f"{h}..")
-                open_lines.append(f"execute {when} run {_setblock(cell, block)}")
-                burst_lines.append(
-                    f"execute {when} run {_setblock(cell, block)} destroy"
-                )
-        pack.function(f"{base}/hole/{i}/open", open_lines)
+        wet_back = [_setblock(c, SEA) for c in br.flooded]
+        wet_back += [_setblock(c, CRACKED) for c in br.cracks]
+        sound_back = [
+            dp.fill(a, z, GLASS) for a, z in domes.boxes({*br.flooded, *br.cracks})
+        ]
+        sea = [
+            _setblock(cell, WATER if cell in br.sources else AIR) for cell in br.holes
+        ]
+        pack.function(f"{base}/hole/{i}/open", [*sea, *wet_back])
         pack.function(
-            f"{base}/hole/{i}/shut", [_setblock(cell, PLATE) for cell in br.holes]
+            f"{base}/hole/{i}/patch",
+            [*(_setblock(cell, PLATE) for cell in br.holes), *wet_back],
+        )
+        pack.function(
+            f"{base}/hole/{i}/shut",
+            [*(_setblock(cell, GLASS) for cell in br.holes), *sound_back],
         )
         mark = fittings.display_selector(br.tag)
         pack.function(
@@ -1818,17 +2045,55 @@ def functions(pack: dp.Pack) -> None:
         )
         x, y, z = br.holes[2]
         top = f"{x + 0.5} {y + 1.1} {z + 0.5}"
+        # the middle of the hole's face, on the room's side
+        nx, nz = fr.right[0] * br.side, fr.right[1] * br.side
+        (ax, ay, az), (bx, _, bz) = br.holes[0], br.holes[3]
+        face = (
+            f"{(ax + bx) / 2 + 0.5 - nx * 0.6:g} {ay + 1} "
+            f"{(az + bz) / 2 + 0.5 - nz * 0.6:g}"
+        )
+        # the cracks: two corners of the ring, four more, all of it
+        ring = br.cracks
+        parts = ((ring[0], ring[-1]), (*ring[1:3], *ring[-3:-1]), ring)
+        sound_ = (
+            [
+                sound("block.glass.hit", br.holes[0], 1.5, 0.7),
+                sound("entity.turtle.egg_crack", br.holes[0], 1.5, 0.5),
+                fx("dripping_water", face, "0.4 0.5 0.4", 0, 6),
+            ],
+            [
+                sound("block.glass.hit", br.holes[0], 2.5, 0.5),
+                sound("entity.turtle.egg_crack", br.holes[0], 2.5, 0.5),
+                fx("dripping_water", face, "0.5 0.6 0.5", 0, 14),
+                fx("falling_water", face, "0.4 0.5 0.4", 0, 6),
+            ],
+            [
+                sound("block.chain.break", br.holes[0], 2.5, 0.5),
+                fx("falling_water", face, "0.5 0.6 0.5", 0, 12),
+            ],
+        )
+        for k, (cells_, lines) in enumerate(zip(parts, sound_, strict=True), 1):
+            pack.function(
+                f"{base}/crack/{i}/{k}",
+                [
+                    f"execute {_not(f'b{i}', 0)} run return 0",
+                    *(_setblock(c, CRACKED) for c in cells_),
+                    *lines,
+                ],
+            )
         pack.function(
             f"{base}/burst/{i}",
             [
                 f"execute {_is(f'b{i}', 1)} run return 0",
                 _set(f"b{i}", 1),
-                *burst_lines,
+                *(f"{line} destroy" for line in sea),
+                *wet_back,
                 call(f"label/{i}/on"),
-                sound("block.glass.break", br.holes[0], 2, 0.6),
-                sound("entity.generic.explode", br.holes[0], 0.6, 1.4),
-                sound("block.anvil.land", br.holes[0], 1, 0.5),
-                fx("splash", top, "0.6 0.4 0.6", 0.3, 40),
+                sound("block.glass.break", br.holes[0], 3, 0.6),
+                sound("block.glass.break", br.holes[0], 3, 0.9),
+                sound("entity.generic.splash", br.holes[0], 2, 0.8),
+                fx(glass_shards, face, "0.7 0.7 0.7", 0.4, 120),
+                fx("splash", face, "0.7 0.7 0.7", 0.4, 60),
                 f"execute {_is('phase', '1..2')} run {call(f'cast_at/{i}')}",
                 *title(
                     "BREACH",
@@ -1839,10 +2104,11 @@ def functions(pack: dp.Pack) -> None:
             ],
         )
         bodies = dp.box_selector(min(br.holes), max(br.holes))
+        # four plates in: patched (the sea still behind them)
         pack.function(
             f"{base}/seal/{i}",
             [
-                _set(f"b{i}", 0),
+                _set(f"b{i}", 2),
                 call(f"label/{i}/off"),
                 sound("block.anvil.use", br.holes[0], 1.5, 1.2),
                 sound("block.note_block.bell", br.holes[0], 1.5, 1.4),
@@ -1865,20 +2131,38 @@ def functions(pack: dp.Pack) -> None:
         [
             line
             for br in place.breaches
+            for i in [br.number]
             for line in (
-                f"execute {_is(f'b{br.number}', 1)} run {call(f'hole/{br.number}/open')}",
-                f"execute {_not(f'b{br.number}', 1)} run {call(f'hole/{br.number}/shut')}",
-                f"execute {_is(f'b{br.number}', 1)} run {call(f'label/{br.number}/on')}",
-                f"execute {_not(f'b{br.number}', 1)} run "
-                + call(f"label/{br.number}/off"),
+                f"execute {_is(f'b{i}', 0)} run {call(f'hole/{i}/shut')}",
+                f"execute {_is(f'b{i}', 1)} run {call(f'hole/{i}/open')}",
+                f"execute {_is(f'b{i}', 2)} run {call(f'hole/{i}/patch')}",
+                f"execute {_is(f'b{i}', 1)} run {call(f'label/{i}/on')}",
+                f"execute {_not(f'b{i}', 1)} run {call(f'label/{i}/off')}",
             )
         ],
     )
+    # the stage's breaches, open or patched, made sound again
     pack.function(
         f"{base}/restore_stage",
         [
-            f"execute {_is(f'b{br.number}', 1)} run {call(f'plug/{br.number}')}"
+            f"execute {_not(f'b{br.number}', 0)} run {call(f'plug/{br.number}')}"
             for br in place.breaches
+        ],
+    )
+    # a sound breach that had begun to crack (a burst struck off)
+    pack.function(
+        f"{base}/uncrack",
+        [
+            f"execute {_is(f'b{br.number}', 0)} run {call(f'hole/{br.number}/shut')}"
+            for br in place.breaches
+        ],
+    )
+    # running water above the line taken away (below it the layers do)
+    pack.function(
+        f"{base}/mop",
+        [
+            dp.fill(a, z, AIR, f"replace {WATER}")
+            for a, z in domes.boxes(mop_cells(dome))
         ],
     )
 
@@ -1903,7 +2187,7 @@ def functions(pack: dp.Pack) -> None:
             f"execute {_is('w', f'{h}..')} run {call(f'layer_{h}/wet')}",
             f"execute {_not('w', f'{h}..')} run {call(f'layer_{h}/dry')}",
         ]
-    draw += [call("holes"), call("gauge"), call("door")]
+    draw += [call("mop"), call("holes"), call("gauge"), call("door")]
     pack.function(f"{base}/draw", draw)
 
     # -- the compressor: it runs while a torch is in its clock
@@ -1990,9 +2274,8 @@ def functions(pack: dp.Pack) -> None:
             ),
             _set("again", 0),
             sound("block.bell.use", column, 2, 0.6),
-            call("burst_next"),
-            f"execute {_is('form', 2)} run {call('burst_next')}",
-            _op("next", "=", "#hb.stag"),
+            # the first burst (two together with two players) after its cracks
+            _set("next", CRACK[0] + STEP),
             _op("cast", "=", "#hb.cgap"),
             _set("rclk", 0),
             call("riveters"),
@@ -2014,11 +2297,40 @@ def functions(pack: dp.Pack) -> None:
             f"scoreboard players remove {_s('due')} 1",
         ],
     )
+    # the breach to burst next cracks first (``CRACK``), the two that
+    # open a stage for two players both
+    for k in range(1, len(CRACK) + 1):
+        pack.function(
+            f"{base}/crack_next/{k}",
+            [
+                f"execute {_is('stage', s)} {_is('idx', j)} run {call(f'crack/{i}/{k}')}"
+                for s, order in enumerate(ORDERS)
+                for j, i in enumerate(order)
+            ]
+            + [
+                f"execute {_is('stage', s)} {_is('idx', 0)} {_is('form', 2)} "
+                f"run {call(f'crack/{order[1]}/{k}')}"
+                for s, order in enumerate(ORDERS)
+            ],
+        )
+    pack.function(
+        f"{base}/burst_due",
+        [
+            f"execute {_is('idx', 0)} {_is('form', 2)} run {call('burst_next')}",
+            call("burst_next"),
+        ],
+    )
     pack.function(
         f"{base}/bursts",
         [
             f"scoreboard players remove {_s('next')} {STEP}",
-            f"execute {_is('next', '..0')} {_is('due', '1..')} run {call('burst_next')}",
+            *(
+                f"execute {_is('due', '1..')} "
+                f"{_is('next', f'{before - STEP + 1}..{before}')} "
+                f"run {call(f'crack_next/{k}')}"
+                for k, before in enumerate(CRACK, 1)
+            ),
+            f"execute {_is('next', '..0')} {_is('due', '1..')} run {call('burst_due')}",
             f"execute {_is('next', '..0')} run {_op('next', '=', '#hb.stag')}",
         ],
     )
@@ -2143,6 +2455,7 @@ def functions(pack: dp.Pack) -> None:
             _set("phase", 3),
             _set("t", 0),
             _set("flow", 0),
+            call("uncrack"),
             call("pumps_on"),
             f"bossbar set {bar.id} color blue",
             call("gauge"),
@@ -2152,6 +2465,8 @@ def functions(pack: dp.Pack) -> None:
         f"{base}/pumped",
         [
             call("pumps_off"),
+            # (whatever was still running down, gone)
+            call("draw"),
             f"execute {_is('stage', '3..')} run return run {call('done')}",
             _set("phase", 0),
             _set("t", BREATHER),
@@ -2292,6 +2607,7 @@ def functions(pack: dp.Pack) -> None:
     pack.function(f"{base}/fence", fence)
 
     # -- stray plates round a frame cleared: to water or air by the layer
+    # (a stream it stood in runs back by itself)
     strays = []
     for br in place.breaches:
         rows: dict[int, set[Cell]] = {}
@@ -2322,8 +2638,8 @@ def functions(pack: dp.Pack) -> None:
             *automatons.sweep_lines(dome),
         ],
     )
-    # the spray over each open breach: falling water while its layer is
-    # dry, bubbles while it is wet, and a hiss
+    # the spray over each open breach (its stream is real water): a splash
+    # while its layer is dry, bubbles while it is wet, and a hiss
     spray = []
     for br in place.breaches:
         i = br.number
@@ -2332,8 +2648,6 @@ def functions(pack: dp.Pack) -> None:
         h = fr_of(fr, br.holes[2])[2]
         is_open = _is(f"b{i}", 1)
         spray += [
-            f"execute {is_open} {_not('w', f'{h}..')} run "
-            + fx("falling_water", top, "0.5 0.2 0.5", 0, 8),
             f"execute {is_open} {_not('w', f'{h}..')} run "
             + fx("splash", top, "0.5 0.3 0.5", 0.2, 10),
             f"execute {is_open} {_is('w', f'{h}..')} run "
@@ -2529,6 +2843,7 @@ def functions(pack: dp.Pack) -> None:
             _op("k", "-=", "#hb.idx"),
             f"execute if score {_s('k')} matches ..-1 run {_set('k', 0)}",
             _op("due", "<", "#hb.k"),
+            f"execute {_is('due', '..0')} run {call('uncrack')}",
             _set("form", 1),
             call("caps"),
             say("One engineer now: the rest of this stage's breaches hold."),
@@ -2583,8 +2898,8 @@ def functions(pack: dp.Pack) -> None:
 
 #: what ``station:check/dome/<n>/layer_<h>`` counts (``#hb_<name>`` in the
 #: checks' objective): open cells that are water, sources, air, air with
-#: water over it, plates (in the holes); fittings that are wet
-COUNTS = ("water", "source", "air", "under", "plate", "fit")
+#: water over it, plates and glass (in the holes); fittings that are wet
+COUNTS = ("water", "source", "air", "under", "plate", "glass", "fit")
 
 
 def _count(name: str) -> str:
@@ -2597,6 +2912,7 @@ domes.ROW_FAMILIES["hbasin"] = (
     f"execute if block ~%k ~ ~ {AIR} {_count('air')}",
     f"execute if block ~%k ~ ~ {AIR} if block ~%k ~1 ~ {WATER} {_count('under')}",
     f"execute if block ~%k ~ ~ {PLATE} {_count('plate')}",
+    f"execute if block ~%k ~ ~ {GLASS} {_count('glass')}",
 )
 domes.ROW_FAMILIES["hbasinfit"] = (
     f"execute positioned ~%k ~ ~ if predicate {domes.WET} {_count('fit')}",
@@ -2604,26 +2920,34 @@ domes.ROW_FAMILIES["hbasinfit"] = (
 
 
 def expected(dome: Dome, state: State = START) -> dict[str, int]:
-    """what the basin's count reads in a state"""
+    """what the basin's count reads in a state. With a breach open its
+    stream runs over the basin's dry cells, so how many of those are
+    water and how many air is not known: ``steady`` says which of the
+    counts are"""
     place = room(dome)
-    fr = place.frame
-    sound_holes = {
-        c for br in place.breaches if br.number not in state.open for c in br.holes
-    }
+    holes = {c: br for br in place.breaches for c in br.holes}
     out: dict[str, int] = dict.fromkeys(COUNTS, 0)
     for h, layer in layers(dome).items():
         for c in layer.open:
-            if c in sound_holes:
+            block = hole_block(holes[c], c, state) if c in holes else None
+            if block == GLASS:
+                out["glass"] += 1
+            elif block == PLATE:
                 out["plate"] += 1
-            elif h <= state.w:
+            elif block == WATER or h <= state.w:
                 out["water"] += 1
                 out["source"] += 1
             else:
                 out["air"] += 1
         if h <= state.w:
             out["fit"] += len(layer.fittings)
-    del fr
     return out
+
+
+def steady(state: State) -> tuple[str, ...]:
+    """the counts that ``expected`` knows in a state: all of them, but
+    with a breach open only the sources, the holes and the fittings"""
+    return ("source", "plate", "glass", "fit") if state.open else COUNTS
 
 
 # --------------------------------------------------------------- the check
@@ -2669,7 +2993,9 @@ def check(ctx: Any) -> list[str]:
     ``walk_problems``, on the plan alone); that a Breacher fights, throws
     its trident or targets anyone (the rig, ``hull_breach_rig``); Water
     Breathing on a player; anything aimed at players: titles, chat,
-    sounds, particles, the bossbar as seen.
+    sounds, particles, the bossbar as seen; where a breach's stream runs
+    and what it does to a player in it (``stream_problems``, on the plan
+    alone: here only that every state after it leaves no water behind).
     """
     game_checks.no_run(ctx)
     saved_level = game_checks.save_level(ctx)
@@ -2700,11 +3026,16 @@ def _check(ctx: Any) -> list[str]:
     def get(name: str) -> int:
         return ctx.score(f"#hb.{name}") or 0
 
-    def opened() -> frozenset[int]:
-        return frozenset(br.number for br in place.breaches if get(f"b{br.number}"))
+    def opened(what: int = 1) -> frozenset[int]:
+        return frozenset(
+            br.number for br in place.breaches if get(f"b{br.number}") == what
+        )
+
+    def patched() -> frozenset[int]:
+        return opened(2)
 
     def state() -> State:
-        return State(w=get("w"), stage=get("stage"), open=opened())
+        return State(w=get("w"), stage=get("stage"), open=opened(), patched=patched())
 
     outside = middle(tunnels.at(ctx.layout.TUNNELS[INDEX - 1], 8, 0, 1))
     entrance = middle(domes.entrance(dome)[:3])
@@ -2731,10 +3062,14 @@ def _check(ctx: Any) -> list[str]:
         ]
         if wrong:
             problems.append(f"{what}: {len(wrong)} blocks not as planned: {wrong[:6]}")
+        # (with a breach open, only what its stream cannot change)
+        names = (*steady(want), "ran")
+        got = counts(ctx)
+        should = expected(dome, want) | {"ran": MAX}
         expect(
             f"{what}: the basin's count",
-            counts(ctx),
-            expected(dome, want) | {"ran": MAX},
+            {name: got[name] for name in names},
+            {name: should[name] for name in names},
         )
 
     def plate(number: int) -> None:
@@ -2816,7 +3151,7 @@ def _check(ctx: Any) -> list[str]:
     expect("armed: the level's values", values, want_values)
     expect("armed: idle, live", (get("state"), get("live")), (0, 1))
 
-    # ---- the valve: the test starts, the first breach bursts
+    # ---- the valve: the test starts, the first breach cracks, then bursts
     first = ORDERS[0][0]
     ctx.setblock(place.valve.input, place.valve_on)
     ctx.advance(2 * STEP)
@@ -2825,9 +3160,31 @@ def _check(ctx: Any) -> list[str]:
         (get("state"), get("stage"), get("phase")),
         (1, 0, 1),
     )
-    expect("the first burst", opened(), frozenset({first}))
     br1 = place.breach(first)
-    expect("its holes open", all(ctx.is_block(c, AIR) for c in br1.holes), True)
+    got = (opened(), [ctx.is_block(c, CRACKED) for c in br1.cracks[:2]])
+    expect("the first breach cracking, not yet open", got, (frozenset(), [True, False]))
+    ctx.advance(CRACK[0] - CRACK[2])
+    expect(
+        "cracked through, not yet open",
+        (opened(), all(ctx.is_block(c, CRACKED) for c in br1.cracks)),
+        (frozenset(), True),
+    )
+    ctx.advance(CRACK[2] + 2 * STEP)
+    expect("the first burst", opened(), frozenset({first}))
+    expect(
+        "the sea in its holes",
+        [
+            ctx.is_block(c, f"{WATER}[level=0]" if c in br1.sources else AIR)
+            for c in br1.holes
+        ],
+        [True] * 4,
+    )
+    expect(
+        "the sea in the hull behind it, cracked round",
+        all(ctx.is_block(c, SEA) for c in br1.flooded)
+        and all(ctx.is_block(c, CRACKED) for c in br1.cracks),
+        True,
+    )
     text = ctx.data(f"entity {fittings.display_selector(br1.tag)} text")
     expect("its label reads BREACH", "BREACH" in text, True)
     if kind is not None:
@@ -2893,6 +3250,14 @@ def _check(ctx: Any) -> list[str]:
         plate(br.number)
     ctx.advance(2 * STEP)
     expect("sealed in time: no breach open", opened(), frozenset())
+    expect("every breach patched", patched(), ALL_OPEN)
+    high = next(br for br in place.breaches if br.level == "high")
+    expect(
+        "a patch: plates in the holes, the sea still behind them",
+        all(ctx.is_block(c, PLATE) for c in high.holes)
+        and all(ctx.is_block(c, SEA) for c in high.flooded),
+        True,
+    )
     # ---- the failure: one open, the hold run out, a body in a hole
     low = next(br for br in place.breaches if br.level == "low")
     ctx.set_score("#hb.due", 1)
@@ -2908,7 +3273,8 @@ def _check(ctx: Any) -> list[str]:
     expect("the pumps running", ctx.is_block(place.torch, TORCH), True)
     game_checks.stand_at(ctx, S1, entrance)
     ctx.advance(2 * STEP)
-    expect("plated the step after it is empty", get(f"b{low.number}"), 0)
+    expect("made sound the step after it is empty", get(f"b{low.number}"), 0)
+    expect("the patches made sound with it", patched(), frozenset())
     if not until(lambda: get("w") == 0, (MAX + 2) * PUMP_TICKS):
         problems.append(f"the pumps did not empty the room: w {get('w')}")
     ctx.advance(2 * STEP)
@@ -2916,6 +3282,7 @@ def _check(ctx: Any) -> list[str]:
     as_state("pumped dry")
     if not until(lambda: get("phase") == 1, BREATHER + 4 * STEP):
         problems.append("the stage did not start again after the breather")
+    until(opened, CRACK[0] + 4 * STEP)
     expect(
         "stage 1 again, its first breach",
         (get("stage"), opened()),
@@ -2960,10 +3327,11 @@ def _check(ctx: Any) -> list[str]:
         get("state"),
         get("wait"),
         get("w"),
-        opened(),
+        opened() | patched(),
         ctx.count(automatons.selector(INDEX)),
     )
     expect("left: waiting, dry, sound, no automatons", got, (1, -1, 0, frozenset(), 0))
+    as_state("left")
     expect(
         "the valve still thrown", ctx.is_block(place.valve.input, place.valve_on), True
     )
@@ -2972,6 +3340,7 @@ def _check(ctx: Any) -> list[str]:
     game_checks.stand_at(ctx, S2, entrance)
     ctx.advance(RESUME + 4 * STEP)
     expect("back: the stage going on", (get("wait"), get("phase")), (0, 1))
+    until(opened, CRACK[0] + 4 * STEP)
     expect("duo: two burst together", opened(), frozenset(ORDERS[0][:2]))
     expect("duo: the caps", (get("bcap"), get("rcap")), (want["bduo"], want["rduo"]))
     due = get("due")
@@ -2998,9 +3367,6 @@ def _check(ctx: Any) -> list[str]:
             problems.append(f"stage {stage + 1} not held: phase {get('phase')}")
         if stage < 2:
             ctx.set_score("#hb.t", 1)
-            ctx.advance(2 * STEP)
-            for br in place.breaches:
-                plate(br.number)
             ctx.advance(2 * STEP)
     expect("solved", (ctx.score(f"#d{INDEX}"), get("state")), (2, 2))
     problems += game_checks.pull_pump(ctx, INDEX)
