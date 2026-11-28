@@ -108,7 +108,8 @@ CLEAR_ROUND = 7
 @dataclass(frozen=True)
 class Kind:
     """a kind of automaton: its mob, name and dress, and its health and
-    ten times its melee damage at level 5 (see ``mob/dress``)"""
+    ten times its melee damage at level 5 (see ``mob/dress``); ``attributes``
+    are base values set in its summon (``("follow_range", 8.0)``)"""
 
     key: str
     entity: str
@@ -116,6 +117,7 @@ class Kind:
     equipment: tuple[tuple[str, str], ...]
     health: int
     damage: int
+    attributes: tuple[tuple[str, float], ...] = ()
 
     @property
     def tag(self) -> str:
@@ -148,6 +150,7 @@ BREACHER = Kind(
     (("head", COPPER["head"]), ("mainhand", "minecraft:trident")),
     20,
     30,
+    (("follow_range", 8.0),),  # notices players within 8 blocks only
 )
 
 
@@ -168,14 +171,15 @@ def summon(
     dome_index: int,
     equipment: dict[str, str] | None = None,
     tags: tuple[str, ...] = (),
+    attributes: tuple[tuple[str, float], ...] = (),
 ) -> str:
     """
     The command that summons an automaton (see the module docstring).
     ``entity`` is the mob (``minecraft:zombie``), ``where`` the ``x y z``
     (``domes.middle(cell)``), ``equipment`` slot -> item (``head``,
     ``chest``, ``legs``, ``feet``, ``mainhand``, ``offhand``: a suit such
-    as ``COPPER`` with a hand added). Dress it in the same tick
-    (``dress_line``).
+    as ``COPPER`` with a hand added), ``attributes`` (name, base) pairs
+    (``("follow_range", 8.0)``). Dress it in the same tick (``dress_line``).
     """
     kit = equipment or {}
     worn = ",".join(f'{slot}:{{id:"{item}",count:1}}' for slot, item in kit.items())
@@ -192,8 +196,11 @@ def summon(
         f"equipment:{{{worn}}}",
         f"drop_chances:{{{kept}}}",
     ]
+    bases = [f'{{id:"minecraft:{a}",base:{v}d}}' for a, v in attributes]
     if entity.removeprefix("minecraft:") in ZOMBIES:
-        nbt.append('attributes:[{id:"minecraft:spawn_reinforcements",base:0d}]')
+        bases.append('{id:"minecraft:spawn_reinforcements",base:0d}')
+    if bases:
+        nbt.append(f"attributes:[{','.join(bases)}]")
     return f"summon {entity} {where} {{{','.join(nbt)}}}"
 
 
@@ -208,6 +215,7 @@ def summon_kind(
         dome_index,
         dict(kind.equipment),
         (kind.tag, *tags),
+        kind.attributes,
     )
 
 

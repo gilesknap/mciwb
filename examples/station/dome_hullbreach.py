@@ -37,10 +37,11 @@ rivet plates stick only to the iron frames; keep above the red line.
   hole, real water (sources: all four cells, but over the ring walk the
   lower two, the upper two air) that runs down the wall and over the
   decks, and in the hull behind it (``SEA``: waterlogged barriers, which
-  show the water and let none through); a red BREACH label hangs over
-  it and a Breacher is cast in front of it. With two players a stage has
-  one more breach, and the first two burst together. The first burst of
-  a stage comes after its cracks, three seconds in.
+  show the water and let none through); a large red BREACH label
+  (scale 3, no backing) hangs over it and a Breacher is cast in front
+  of it. With two players a stage has one more breach, and the first two
+  burst together. The first burst of a stage comes after its cracks,
+  three seconds in.
 - Every step each open breach adds to ``flow``; at ``per`` a layer of
   water rises (the layer functions of the Flooded Dome, run upwards),
   never above ``MAX`` (the line). At the line with a breach open the
@@ -68,11 +69,13 @@ rivet plates stick only to the iron frames; keep above the red line.
 **The mobs** (automatons.py): Breachers (``automatons.BREACHER``, a
 drowned with a trident; the fallbacks are one switch, ``BREACHER_MODE``)
 cast at the breaches, up to a cap, and every ``CAST_GAP`` ticks at any
-open breach with a player near; Riveters fenced to the gantry. A halls
-fence sends any automaton found in either hall home, so the entry hall is
-always a safe place to respawn. Tridents stuck in blocks are swept.
-Nothing depends on a kill. Water Breathing for everyone in the test at
-levels 1 to 3.
+open breach with a player near; a Breacher notices players within 8
+blocks only (its ``follow_range``, set in its summon), so it fights at
+its breach and does not pelt the room from across the dome; Riveters
+fenced to the gantry. A halls fence sends any automaton found in either
+hall home, so the entry hall is always a safe place to respawn.
+Tridents stuck in blocks are swept. Nothing depends on a kill. Water
+Breathing for everyone in the test at levels 1 to 3.
 
 **State** (scores in ``st``, all ``#hb.<name>``): ``state`` 0 idle, 1
 testing, 2 solved; ``stage`` stages held (0 to 3); ``phase`` 0 breather,
@@ -216,6 +219,7 @@ BREACHER_MELEE = automatons.Kind(
     (("head", automatons.COPPER["head"]),),
     20,
     30,
+    automatons.BREACHER.attributes,
 )
 
 WATER = "minecraft:water"
@@ -1750,7 +1754,7 @@ def labels(dome: Dome) -> list[str]:
     for br in place.breaches:
         out.append(
             fittings.display(
-                (ENTITY_TAG, br.tag), br.label, 0, label_text(""), 1.0, "center"
+                (ENTITY_TAG, br.tag), br.label, 0, label_text(""), 3.0, "center"
             )
         )
     yaw = {"south": 0, "west": 90, "north": 180, "east": -90}[fr.facing(-1, 0)]
@@ -2499,7 +2503,9 @@ def functions(pack: dp.Pack) -> None:
     pack.function(
         f"{base}/temper",
         [
-            f"execute as {mobs} run attribute @s minecraft:follow_range base set 40",
+            # the Riveters' reach; a Breacher keeps its own (``Kind.attributes``)
+            f"execute as {automatons.selector(INDEX, f'tag=!{automatons.BREACHER.tag}')} "
+            "run attribute @s minecraft:follow_range base set 40",
             f"effect give {mobs} minecraft:fire_resistance 3600 0 true",
         ],
     )
@@ -3199,6 +3205,8 @@ def _check(ctx: Any) -> list[str]:
             got,
             {"IsBaby": "0", "CanPickUpLoot": "0", "PersistenceRequired": "1"},
         )
+        reply = ctx.cmd(f"attribute {mob} minecraft:follow_range base get", "is ")
+        expect(f"its follow range ({reply!r})", " 8.0" in reply, True)
         if kind is automatons.BREACHER:
             expect(
                 "its trident",

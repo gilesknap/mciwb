@@ -297,6 +297,18 @@ assert all(len(c.encode()) < B.MAX_COMMAND for c in H.book_commands(dome))
 for sign in (*H.PLAQUE_SIGNS, H.VALVE_SIGN):
     assert len(sign) <= 4 and all(len(line) <= 15 for line in sign), sign
 assert len(H.labels(dome)) == 9 + 1 + 2
+# the BREACH labels three times the size, turning to the eye, no backing
+breach_labels = H.labels(dome)[len(H.room(dome).valve.summons) :][:9]
+for c in breach_labels:
+    assert "scale:[3.0f,3.0f,3.0f]" in c and "background:0" in c, c
+    assert 'billboard:"center"' in c, c
+# a Breacher notices players within 8 blocks; no other kind's summon changes
+import automatons as A
+
+follow = '{id:"minecraft:follow_range",base:8.0d}'
+for kind in (A.BREACHER, H.BREACHER_MELEE):
+    assert follow in A.summon_kind(kind, "0 0 0", H.INDEX)
+assert all("follow_range" not in A.summon_kind(k, "0 0 0", H.INDEX) for k in A.KINDS)
 import dome_foundry
 
 assert "hull test chamber" in dome_foundry.LOG_PAGES[-1]
@@ -371,6 +383,9 @@ for hook in (*game.HOOKS, "leave", "died"):
     assert f"dome/{n}/{hook}" in fs, hook
 assert f"dome/{n}/guard" in fs and pack.id(f"dome/{n}/guard") in pack._tick
 assert not B.pack_problems()
+# the temper's follow range of 40 is the Riveters', never a Breacher's
+reach = [line for line in fs[f"dome/{n}/temper"] if "follow_range" in line]
+assert len(reach) == 1 and "tag=!st.k.breacher" in reach[0]
 for h in range(1, H.MAX + 1):
     assert f"dome/{n}/layer_{h}/wet" in fs and f"check/dome/{n}/layer_{h}" in fs
 for br in H.room(dome).breaches:
@@ -564,7 +579,14 @@ class Sim:
                 "inGround": "inGround:1b" in line
                 or (w[1] == "minecraft:trident" and "Motion:" in line),
                 "marker": "Marker:1b" in line,
+                "attrs": {
+                    k: float(v)
+                    for k, v in re.findall(r'id:"minecraft:(\w+)",base:([\d.]+)d', line)
+                },
             })
+        elif c == "attribute" and w[3:5] == ["base", "set"]:
+            for e in self.select(w[1], me):
+                e["attrs"][w[2].removeprefix("minecraft:")] = float(w[5])
         elif c == "kill":
             gone = self.select(w[1], me)
             self.ents = [e for e in self.ents if not any(e is g for g in gone)]
@@ -684,6 +706,10 @@ class Ctx:
         w = command.split(" ")
         if w[0] == "time":
             return "The time is 1000"
+        if w[0] == "attribute" and w[3:] == ["base", "get"]:
+            (e,) = self.sim.select(w[1])
+            name = w[2].removeprefix("minecraft:")
+            return f"Base value of attribute {name} for x is {e['attrs'][name]}"
         self.sim.line(command)
         return ""
 
