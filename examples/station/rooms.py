@@ -65,7 +65,17 @@ SENSITIVE = (
     "bell",
 )
 #: blocks one can see through, for sight lines
-CLEAR = ("glass", "bars", "grate", "chain", "lightning_rod", "air", "sign", "torch")
+CLEAR = (
+    "glass",
+    "bars",
+    "grate",
+    "chain",
+    "lightning_rod",
+    "air",
+    "sign",
+    "torch",
+    "barrier",
+)
 FACES = [(1, 0, 0), (-1, 0, 0), (0, 0, 1), (0, 0, -1), (0, 1, 0), (0, -1, 0)]
 
 #: block -> the index of the one dome it means something in
@@ -125,27 +135,36 @@ def room_problems(
     return problems
 
 
+#: how far a player may fall into water (it breaks any fall)
+WATER_DROP = 12
+
+
 def reach(
-    dome: Dome, start: Cell, solid, blocked=(), ladders=(), drop: int = 1
+    dome: Dome, start: Cell, solid, blocked=(), ladders=(), drop: int = 1, water=()
 ) -> set[Cell]:
     """
     The cells a player's feet can get to from ``start`` by walking.
     ``solid``: cells holding something to stand on (the dome's floor is
     added); ``blocked``: other cells a player cannot be in (a lantern, a
     bell, a cell kept shut); ``ladders``: cells holding a ladder, climbed
-    cell by cell; ``drop``: how far down a step off an edge may be.
+    cell by cell; ``drop``: how far down a step off an edge may be;
+    ``water``: cells of standing water one deep (a basin, which may be let
+    into the floor): a player can be in one with nothing underfoot, wades
+    from one to the next, climbs out by a step up, and may fall into one
+    from as high as ``WATER_DROP``. Nobody stands over water.
     """
     cells = domes.dome_cells(dome)
+    water = set(water)
     full = set(solid) | set(blocked)
-    ground = set(cells.floor) | set(solid)
+    ground = (set(cells.floor) - water) | set(solid)
     ladders = set(ladders)
 
     def free(cell: Cell) -> bool:
-        return cell in cells.interior and cell not in full
+        return (cell in cells.interior or cell in water) and cell not in full
 
     def stands(cell: Cell) -> bool:
         x, y, z = cell
-        held = (x, y - 1, z) in ground or cell in ladders
+        held = (x, y - 1, z) in ground or cell in ladders or cell in water
         return free(cell) and free((x, y + 1, z)) and held
 
     seen, edge = {start}, [start]
@@ -155,8 +174,10 @@ def reach(
         if (x, y, z) in ladders:
             moves += [(x, y + 1, z), (x, y - 1, z)]
         for dx, dz in ((1, 0), (-1, 0), (0, 1), (0, -1)):
-            for dy in (0, 1, *range(-1, -drop - 1, -1)):
+            for dy in (0, 1, *range(-1, -max(drop, WATER_DROP) - 1, -1)):
                 to = (x + dx, y + dy, z + dz)
+                if dy < -drop and to not in water:
+                    continue
                 head = (x, y + 2, z) if dy == 1 else (to[0], y + 1, to[2])
                 fall = all(free((to[0], h, to[2])) for h in range(to[1], y + 2))
                 if stands(to) and free(head) and (dy > 0 or fall):

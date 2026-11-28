@@ -131,12 +131,14 @@ assert D.INDEX in domes.ALLOWED
 seen = D.reach(dome, b)
 assert fr.at(-7, 0, 1) not in seen and fr.at(6, 0, 1) in seen
 assert fr.at(0, 3, D.HOUSE_TOP + 1) not in seen
-# the keys lie the way the crane goes, before the driver's step, in reach
-assert D.DRIVER[2] == 7
+# the keys lie the way the crane goes, before the driver's platform (a
+# slab: the eye half a block over the deck's), in reach
+assert D.DRIVER[2] == 7 and D.DRIVER_EYE == D.DECK_H + 1.5 + 1.62
+assert "slab" in b.solid[fr.at(*D.DRIVER[:2], D.DECK_H + 1)]
 assert D.TRAVEL["FORE"][0] > D.TRAVEL["AFT"][0]
 assert D.TRAVEL["PORT"][1] < D.TRAVEL["STARBOARD"][1]
 assert D.HOOK["HOOK UP"][0] > D.HOOK["HOOK DOWN"][0]
-eye = (D.DRIVER[0] + 0.5, D.DRIVER[1], D.DRIVER[2] + 1.62)  # the step's middle
+eye = (D.DRIVER[0] + 0.5, D.DRIVER[1], D.DRIVER_EYE)  # the platform's middle
 for f, r in {**D.TRAVEL, **D.HOOK}.values():
     assert f > D.DRIVER[0]
     assert math.dist(eye, (f + 0.5, r + 0.5, D.DECK_H + 1.1)) <= 4.5
@@ -173,6 +175,37 @@ assert len(D.ladders(b)) == D.NOTCH_H - 1
 f, r = D.AFT_LADDER
 assert fr.at(f, r + 1, D.NOTCH_H) not in b.solid  # the notch
 assert fr.at(f, r + 1, D.NOTCH_H - 1) in b.solid
+# afloat: the basin holds and lets go, and the check is honest: it flags
+# a basin with no bed, and one walled in
+assert not D.afloat_problems(dome)
+wet = D.basin(dome)
+assert wet <= domes.dome_cells(dome).floor and wet <= domes.OPENINGS[D.INDEX]
+assert all(b.floor[c] == D.WATER for c in wet)
+assert not D.over_water(dome) & seen  # no walk is through the water
+def bedless(d):
+    got = real(d)
+    got.bed.clear()
+    return got
+def walled(d):
+    got = real(d)
+    for x, y, z in wet:
+        for dx, dz in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+            if (x + dx, y, z + dz) not in wet:
+                got.solid.setdefault((x + dx, y + 1, z + dz), D.CUT)
+                got.solid.setdefault((x + dx, y + 2, z + dz), D.CUT)
+    return got
+D.room_blocks = bedless
+assert any("no bed" in p for p in D.afloat_problems(dome))
+D.room_blocks = walled
+assert any("no way out" in p for p in D.afloat_problems(dome))
+D.room_blocks = real
+# the list gauge: a needle a face, upright at none, to starboard for more
+assert "angle:0f" in D.needle_pose(fr, 0)
+assert D.needle_pose(fr, 2) != D.needle_pose(fr, -2)
+assert [D.zone_limit(j) for j in range(D.ZONES)] == [6, 5, 4, 3, 2, 1, 1, 2, 3, 4, 5, 6]
+plate = [fr.at(*p) for face in (-1, 1) for p in D.gauge_cells(face)]
+assert all(b.solid[c] == D.BRASS for c in plate)
+assert max(p[2] for p in D.gauge_cells(-1)) == D.HOUSE_TOP == 8
 # the deckhouse is what hides each hold: lower it and the pulpit sees
 real = D.room_blocks
 def low(d):
@@ -230,7 +263,21 @@ assert count("summon minecraft:interaction") == 1
 # labels of ten inputs, eight bay names, the gauges' words, the board,
 # docket, legend, three titles, the dark notice, the jam, her name twice
 assert count("summon minecraft:text_display") == 10 + 8 + 6 + 3 + 3 + 1 + 1 + 2
-assert count("summon minecraft:block_display") == 0  # the crane is the pack's
+# the crane is the pack's; the list gauges' marks, hubs and needles
+assert count("summon minecraft:block_display") == 2 * (D.ZONES + 2)
+# the basin: its bed under the floor, laid before any water
+for cell, block in b.bed.items():
+    assert rec.world.at(cell) == block, (cell, block)
+assert len(b.bed) >= len(D.basin(dome)) > 150
+def first(cell, block):
+    for i, c in enumerate(rec.commands):
+        w = c.split()
+        if w[0] == "fill" and w[7] == block:
+            lo, hi = [int(n) for n in w[1:4]], [int(n) for n in w[4:7]]
+            if all(a <= k <= z for a, k, z in zip(lo, cell, hi)):
+                return i
+x, y, z = min(D.basin(dome))
+assert first((x, y - 1, z), "minecraft:deepslate") < first((x, y, z), D.WATER)
 assert f"function station:dome/{D.INDEX}/reset" in rec.commands
 again = B.offline_build(stages=[*stages, f"dome_{D.INDEX}_inside"], force=False)
 assert again.world.dump() == rec.world.dump()
@@ -270,6 +317,7 @@ assert any(f"tp @s {q(-rx / 4)} ~ {q(-rz / 4)}" in x for x in trolley)
 assert any("tp @s ~ ~-0.25 ~" in x for x in F[f"{base}/crane/hook"])
 summon = "summon minecraft:block_display"
 displays = [x for ls in mine.values() for x in ls if summon in x]
+assert all("interpolation_duration" in x for x in F[f"{base}/trim/show"])
 assert displays and all("teleport_duration:1" in x for x in displays)
 make = F[f"{base}/crane/make"]
 assert sum("summon" in x for x in make) == D.PARTS + 2  # and two links
@@ -347,6 +395,13 @@ goto(2)
 call(f"{base}/press/down")
 assert (get("why"), get("hyto"), get("ta")) == (D.TRIM, 12, 6)
 assert get("flash") == D.FLASH_TICKS
+# the needle is kicked to where she would have gone, and comes back
+kick = [x for x in F[f"{base}/trim/flash"] if "data merge" in x]
+assert len(kick) == 2 * D.GAUGE_STOP + 1 and D.NEEDLE_TAG in kick[0]
+assert any(f"{base}/trim/show" in x and "flash" in x for x in F[f"{base}/tick"])
+assert any("She'd list too far to starboard" in x for x in F[f"{base}/bay/2/check"])
+said = " ".join(x.lower() for ls in mine.values() for x in ls)
+assert "heel" not in said and "trim lamp" not in said
 # back where it came from is always welcome
 goto(0)
 call(f"{base}/press/down")
