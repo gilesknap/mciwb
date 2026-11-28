@@ -85,8 +85,9 @@ calls them; it never calls one that is not defined:
   the middle of a scan: ``#occ<n>``, ``#form<n>`` and ``#players`` are
   not yet this scan's;
 - ``dome/<n>/leave``: as a player who has just gone out of dome n: on
-  foot, by the recall, out of the game from it, or by the game's reset.
-  Take back what the dome lent;
+  foot, by the recall, out of the game from it, or by the game's reset;
+  and, every dome's, as one back from an earlier run (offline at its
+  reset). Take back what the dome lent;
 - ``dome/<n>/tick``: every tick while anyone in the game is in dome n;
 - ``dome/<n>/solo`` and ``dome/<n>/duo``: when the dome, open and not yet
   solved, gets its first player (after ``enter``, in the same scan), and
@@ -453,6 +454,8 @@ def _players(pack: dp.Pack, hooks: set[tuple[int, str]]) -> None:
     pack.function(
         "players/stale",
         [
+            # what any dome lent is taken back: they may have been in it
+            *(f"function {pack.id(f'dome/{n}/leave')}" for n in leavers),
             "clear @s",
             "tag @s remove st.kit",
             "scoreboard players reset @s st.dome",

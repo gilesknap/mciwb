@@ -559,21 +559,25 @@ def inside(point, box):
     return all(lo[a] < point[a] < hi[a] for a in range(3))
 
 
-# each a column of its dome's disc, over its glass and just proud of it
+# each a column of its dome's disc, over just that column's glass (the
+# disc exactly, no sea) and just proud of it
 glass = {d: {S.MAP.front(k, h) for k, h in m.shapes[d]} for d in boxes}
 every = []
 for d, columns in boxes.items():
     assert len(columns) == len({k for k, _ in m.shapes[d]})
+    covered = set()
     for pos, height in columns:
         box = aabb(pos, height)
         every.append((d, box))
         mine = [c for c in glass[d] if inside(centre(c), box)]
-        assert mine, (d, pos)
+        assert mine and len(mine) == height, (d, pos)
+        covered |= set(mine)
         a = 0 if face[0] else 2  # the axis out of the wall
         sign = face[0] or face[1]
         outer = box[1][a] if sign > 0 else box[0][a]
         glass_face = mine[0][a] + (1 if sign > 0 else 0)
         assert 0 < (outer - glass_face) * sign <= S.TRAVEL_PROUD + 1e-9, d
+    assert covered == glass[d], d
 # no two overlap, and none covers another dome's glass or the pin
 for i, (d, a) in enumerate(every):
     for e, b in every[i + 1:]:
@@ -582,21 +586,59 @@ for i, (d, a) in enumerate(every):
         if other != d:
             assert not any(inside(centre(c), a) for c in cells), (d, other)
     assert not inside(centre(S.MAP.front(*m.pin)), a)
-# within reach of a player standing in front of each dome's columns (the
-# row of cells at the map, which the walk reaches), and never round the
-# eye of a player wherever they stand (pressed against the glass included)
+# from a standing eye at the map (the row of cells in front of the glass,
+# which the walk reaches), a ray to the face of each glass cell of a dome
+# meets that dome's box first, within the raised reach from the cell in
+# front of its column; and from anywhere along the row, a click on a dome
+# that is in reach is that dome's (no box steals another's)
 x, y, z, _ = domes.entrance(L.DOMES[S.N])
 walked = S.reach((x, y, z))
-for d, (lo, hi) in every:
-    along = 0 if right[0] else 2  # the axis along the wall
-    mid = (lo[along] + hi[along]) / 2
-    k = next(k for k in range(S.MAP.width)
-             if abs(centre(S.MAP.front(k, 1))[along] - mid) < 0.01)
-    stand = S.MAP.front(k, 1, 2)
-    assert stand in walked, (d, stand)
-    sx, sy, sz = stand
-    eye = (sx + 0.5, sy + S.EYE, sz + 0.5)
-    assert gap(eye, (lo, hi)) < S.REACH - 0.5, (d, gap(eye, (lo, hi)))
+reach = S.REACH + S.MAP_REACH
+assert reach <= 7
+
+
+def enters(eye, aim, box):
+    # how far along the ray from eye to aim it goes into box, or None
+    lo, hi = box
+    length = sum((aim[a] - eye[a]) ** 2 for a in range(3)) ** 0.5
+    t0, t1 = 0.0, float("inf")
+    for a in range(3):
+        step = (aim[a] - eye[a]) / length
+        if abs(step) < 1e-12:
+            if not lo[a] <= eye[a] <= hi[a]:
+                return None
+            continue
+        ta, tb = sorted(((lo[a] - eye[a]) / step, (hi[a] - eye[a]) / step))
+        t0, t1 = max(t0, ta), min(t1, tb)
+    return t0 if t0 <= t1 and t0 <= length else None
+
+
+row = sorted((k for k in range(S.MAP.width) if S.MAP.front(k, 1, 2) in walked))
+for d, cells in glass.items():
+    for c in cells:
+        cx, cy, cz = centre(c)
+        aim = (cx + 0.5 * face[0], cy, cz + 0.5 * face[1])  # its face
+        along = 0 if right[0] else 2
+        for k in row:
+            sx, sy, sz = S.MAP.front(k, 1, 2)
+            eye = (sx + 0.5, sy + S.EYE, sz + 0.5)
+            hits = [(enters(eye, aim, box), e) for e, box in every]
+            t, first = min(h for h in hits if h[0] is not None)
+            own = abs(centre(S.MAP.front(k, 1))[along] - aim[along]) < 0.01
+            if own:
+                assert first == d and t < reach - 0.05, (d, c, k, t)
+            elif t < reach:
+                assert first == d, (d, c, k, first)
+# the raised reach is for entities, in the Pump House alone: no other
+# dome (where the recall posts and every other interaction entity are) is
+# in reach of anywhere in it
+ph = L.DOMES[S.N]
+for other in L.DOMES:
+    if other.index != S.N:
+        dist = sum((p - q) ** 2 for p, q in zip(ph.floor_centre, other.floor_centre))
+        assert dist ** 0.5 - ph.radius - other.radius - 2 > reach + S.EYE, other.index
+# never round the eye of a player wherever they stand (pressed against the
+# glass included)
 for cx, cy, cz in walked:
     for dx in (0.3, 0.7):
         for dz in (0.3, 0.7):
@@ -628,6 +670,16 @@ for d in boxes:
             f"station:dome/0/travel/{d}") in f["dome/0/click/go"]
 assert f["dome/0/click/go"][-1] == "data remove entity @s interaction"
 assert any("tag=st.ph.go] run data remove" in l for l in f["dome/0/reset"])
+# the raised reach: added on coming in, taken off on going out by any way,
+# at the reset and for one back from an earlier run
+modifier = "attribute @s minecraft:entity_interaction_range modifier"
+assert f["dome/0/enter"] == [f"{modifier} add station:map 4 add_value"]
+assert f["dome/0/leave"] == [f"{modifier} remove station:map"]
+assert f["dome/0/entered"][-1] == "function station:dome/0/enter"
+assert f["dome/0/exited"][-1] == "function station:dome/0/leave"
+assert "function station:dome/0/leave" in f["players/stale"]
+assert ("execute as @a[scores={st.dome=0}] run function station:dome/0/leave"
+        in f["reset/all"])
 
 
 # the travel's lines, worked on scores: what it says, or where it puts @s

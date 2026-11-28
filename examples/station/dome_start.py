@@ -88,11 +88,18 @@ click ends in are ``dome/0/press/confirm``, ``dome/0/press/reset`` and
 **Fast travel.** A sign on the map's left corner post (``TRAVEL_SIGN``)
 says what it is. Over each dome of the map but the Pump House stands an
 invisible ``interaction`` entity a column of its disc (``travel_boxes``),
-just proud of the glass. Those of the upper row reach down to the top of
-the lower row, so a player standing at the map reaches every dome
-(``REACH``). A click runs ``dome/0/travel/<n>`` as the player who
-clicked, and only them: once the run is on, with no reset being voted on,
-if dome n is restored, or open with someone in it already (a late
+over just that column's glass and just proud of it. The upper row is out
+of a player's usual reach (``REACH``) from the floor, so while a player
+is in the Pump House their ``entity_interaction_range`` is raised by
+``MAP_REACH`` (a modifier, ``MAP_MODIFIER``, added in ``dome/0/enter``
+and taken off in ``dome/0/leave``, which the core runs on going out of
+the dome by any way, at the reset, and for one back from an earlier
+run). It is the reach for entities only (blocks have their own), and
+there is nothing in the dome a longer reach does harm with: no mobs, and
+the other three interaction entities (confirm, reset, trophy) count who
+clicked, wherever they stand; no other dome is within it. A click runs
+``dome/0/travel/<n>`` as the player who clicked, and only them: once
+the run is on, with no reset being voted on, if dome n is restored, or open with someone in it already (a late
 arrival joins the team), they are put on its entrance spot with a puff of
 particles and a chime; otherwise they are told why not. Nothing else is
 done to them: the next scan finds them in dome n as if they had walked in
@@ -474,6 +481,10 @@ def map_names() -> dict[int, tuple[float, float]]:
 #: (the ``entity_interaction_range`` attribute's default), and the eye's
 #: height over the feet
 REACH, EYE = 3.0, 1.62
+#: how much further a player reaches entities while in the Pump House, so
+#: that the map's upper row is in reach from the floor, and the attribute
+#: modifier's id
+MAP_REACH, MAP_MODIFIER = 4.0, "station:map"
 #: how far a fast-travel target stands out in front of the domes' glass
 TRAVEL_PROUD = 0.05
 #: the sign that says the map is for fast travel: on the corner post at
@@ -486,29 +497,24 @@ TRAVEL_TEXT = ("FAST TRAVEL", "Click a lit", "dome on the map", "to go there.")
 def travel_boxes() -> dict[int, tuple[tuple[tuple[float, float, float], int], ...]]:
     """
     The fast-travel targets: for each dome but the Pump House, an
-    interaction entity on each column of its disc, a block wide, from
-    just inside the glass to ``TRAVEL_PROUD`` in front of it (a player
-    pressed against the glass never has an eye in one). Each is the
-    middle of its base and its height. A dome of the lower row has them
-    over its own rows; one of the upper row from the top of the lower row
-    up, so that its lowest part is within ``REACH`` of a player standing
-    at the map.
+    interaction entity on each column of its disc, a block wide, over
+    just that column's glass, from just inside the glass to
+    ``TRAVEL_PROUD`` in front of it (a player pressed against the glass
+    never has an eye in one). Each is the middle of its base and its
+    height. The upper row is in reach from the floor with ``MAP_REACH``.
     """
     m = map_cells()
-    upper = {i for i, (_, h) in m.places.items() if h > (MAP_H[0] + MAP_H[1]) / 2}
-    lower_top = max(
-        h for i, shape in m.shapes.items() if i not in upper for _, h in shape
-    )
     out = {}
     for d in layout.DOMES:
         if d.index == N:
             continue
         shape = m.shapes[d.index]
-        high = max(h for _, h in shape) + 1
-        low = lower_top + 1 if d.index in upper else min(h for _, h in shape)
+        columns = {}
+        for k, h in shape:
+            columns.setdefault(k, []).append(h)
         out[d.index] = tuple(
-            (MAP.spot(k + 0.5, low, 1 + TRAVEL_PROUD), high - low)
-            for k in sorted({k for k, _ in shape})
+            (MAP.spot(k + 0.5, min(hs), 1 + TRAVEL_PROUD), len(hs))
+            for k, hs in sorted(columns.items())
         )
     return out
 
@@ -1629,6 +1635,12 @@ def functions(pack: dp.Pack) -> None:
         for name, _, _ in shown
     ]
     tick.append(fittings.click_line("st.ph.go", fid("click/go")))
+    # the map's upper row in reach while in the dome (see "Fast travel")
+    reach = "attribute @s minecraft:entity_interaction_range modifier"
+    pack.function(
+        f"{base}/enter", [f"{reach} add {MAP_MODIFIER} {MAP_REACH:g} add_value"]
+    )
+    pack.function(f"{base}/leave", [f"{reach} remove {MAP_MODIFIER}"])
     tick += [
         f"scoreboard players add #ph.t {OBJ} 1",
         f"execute if {score('#ph.t', '10..')} run function {fid('refresh')}",
