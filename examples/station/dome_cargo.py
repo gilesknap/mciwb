@@ -2825,7 +2825,7 @@ def summons(dome: Dome) -> list[str]:
     text(f + 1.0, r + 4.1, 9.2, (0, 1), "MANIFEST", colour="gold", scale=0.7)
     f, r, h = HOLD_TABLE
     # (a block nearer the driver than the title over it: there the table hid it)
-    text(f, r + 2.0, 6.6, (-1, 0), "", (DARK_TAG,), scale=0.6)
+    text(f - 0.02, r + 2.0, 6.6, (-1, 0), "", (DARK_TAG,), scale=0.6)
     u, v = bay_mid(next(b.shut for b in BANDS if b.shut is not None))
     text(u, v, 3.0, (-1, 0), "", (JAM_TAG,), scale=1.2, billboard="center")
     # her name on the bow, both sides, where her side is still straight
