@@ -100,6 +100,23 @@ for main in place.mains:
     assert blocks.solid[on] == D.BRASS
     assert "STEAM MAIN " + main.name in blocks.attached[main.sign]
     assert len(main.gauge) == D.LAMPS and len(main.telltales) == 4
+    # facing the Engine at the lever: the lever is on the side of its post
+    # away from the Engine, the gauge is a column just beyond the post and
+    # beside it (never against it or the lever: a lever works a bulb beside
+    # it), nearer the Engine, and its foot is in the valve body
+    post = rooms.carrier(main.lever, main.lever_off)
+    mid = dome.floor_centre
+    far = lambda c: abs(c[0] - mid[0]) + abs(c[2] - mid[2])  # noqa: E731
+    assert far(main.lever) > far(post) > far(main.gauge[0])
+    gx, gy, gz = main.gauge[0]
+    assert max(abs(gx - post[0]), abs(gz - post[2])) == 1
+    assert abs(gx - post[0]) + abs(gz - post[2]) == 2
+    assert all(c[0] == gx and c[2] == gz for c in main.gauge)
+    beside = {(gx + i, gy, gz + j) for i, j in ((1, 0), (-1, 0), (0, 1), (0, -1))}
+    body = (D.CUT, D.OXIDIZED, D.CHISELED)
+    assert sum(dress.solid.get(c) in body for c in beside) >= 2
+    # and the main's steam rises over the valve, in open air
+    assert main.steam not in blocks.above()
 # an input the room does not list, and one not on gold, are found
 extra = dict(blocks.above())
 spare = fr.at(-12, 12, 1)
@@ -169,11 +186,72 @@ def screened(dome):
     d = real(dome)
     d.solid[fr.at(0, 22, 2)] = D.COPPER  # before main A's gauge and telltales
     d.solid[fr.at(1, 22, 2)] = D.COPPER
-    d.solid[fr.at(2, 23, 2)] = D.COPPER
+    d.solid[fr.at(0, 23, 2)] = D.COPPER
     return d
 D.dressing_blocks = screened
 assert any("main A's deck" in p for p in D.sight_problems(dome))
 D.dressing_blocks = real
+
+# the casing (the doors as displays, from the breach): two halves of two
+# columns each and the middle column as plates, which are all the doors'
+# cells; shut, each half is exactly its cells; it opens outwards, before
+# the face, through no block, and leaves room to ride out between; the
+# plates land flat on open floor before the porch
+assert not D.casing_problems(dome)
+halves, loose = D.leaves(dome), D.plates(dome)
+cells = {c for leaf in halves for c, _ in leaf.parts}
+assert len(cells) == 20 and len(loose) == D.DOOR_H
+assert cells | set(place.door_columns[0]) == set(place.doors)
+assert all(place.doors[c] == b for leaf in halves for c, b in leaf.parts)
+assert halves[0].swing == -halves[1].swing and D.OPEN == 110 and D.SWING_TICKS == 60
+assert D.OUT * D.STEP == D.BLOW + D.SWING_TICKS and D.KNOCKS[-1] + 3 < D.BLOW
+fx, fz = fr.forward
+ox, oy, oz = dome.floor_centre
+ahead = lambda p: (p[0] - ox - 0.5) * fx + (p[2] - oz - 0.5) * fz  # noqa: E731
+for leaf in halves:
+    shut = D.leaf_points(leaf, 0)
+    opened = D.leaf_points(leaf, leaf.swing * D.OPEN)
+    assert max(ahead(p) for p in shut) < D.FACE_F + 0.5
+    assert min(ahead(p) for p in shut) > D.FACE_F - 0.5
+    assert max(ahead(p) for p in opened) < D.FACE_F - 0.4  # all of it before the face
+    assert min(ahead(p) for p in opened) > D.FACE_F - 3.2
+    wrong = D.leaf_points(leaf, -leaf.swing * D.OPEN)  # (inwards: into the firebox)
+    assert max(ahead(p) for p in wrong) > D.FACE_F + 1
+for plate in loose:
+    assert D.FACE_F - 0.5 < ahead(plate.on) < D.FACE_F - 0.5 + D.PLATE
+    assert ahead(plate.land) < D.PORCH_F[0] - 2 and plate.land[1] < oy + 1.2
+    assert plate.apex[1] > plate.on[1] and plate.block in (D.CHISELED, D.GRATE)
+summoned = D.casing_summons(dome, opened=False)
+assert len(summoned) == 25 and all(len(c.encode()) < 500 for c in summoned)
+assert all(c.count("{") == c.count("}") for c in summoned)
+assert all("Rotation:[0f,0f]" in c for c in summoned)
+flat = D.casing_summons(dome, opened=True)
+turns = [f"Rotation:[{leaf.swing * D.OPEN}f,0f]" for leaf in halves]
+assert sum(turn in c for c in flat for turn in turns) == 20
+# a fault is found: halves that open too far strike the plinth beside the
+# porch; halves that hardly open leave no room; a plate thrown at a cylinder
+keep = D.OPEN, D.PLATE_LANDS
+D.OPEN = 140
+assert any("degrees open" in p for p in D.casing_problems(dome))
+D.OPEN = 60
+assert any("no room to ride out" in p for p in D.casing_problems(dome))
+D.OPEN = keep[0]
+D.PLATE_LANDS = ((D.CYLINDER_F, D.CYLINDER_R, 0), *keep[1][1:])
+assert any("in a block" in p for p in D.casing_problems(dome))
+D.PLATE_LANDS = ((D.PORCH_F[0], 0, 0), *keep[1][1:])
+assert any("off the open floor" in p for p in D.casing_problems(dome))
+D.PLATE_LANDS = keep[1]
+assert not D.room_problems(dome)
+# the lights' wave at the ending: every dimmed lantern once, the first
+# sector on the side away from the way out, the last at it
+wave = D.light_wave(dome)
+assert len(wave) == D.WAVE and all(wave)
+assert sorted(c for sector in wave for c in sector) == sorted(D.floor_lights(dome))
+ux, uz = domes.outward(dome, L.TUNNELS[D.INDEX])
+out = lambda c: (c[0] - ox) * ux + (c[2] - oz) * uz  # noqa: E731
+assert max(out(c) for c in wave[0]) < min(out(c) for c in wave[-1])
+means = [sum(out(c) for c in sector) / len(sector) for sector in wave]
+assert means == sorted(means)
 # the stair to main C is one block wide and railed, so a ravager cannot
 # climb it; the ramps to the gallery are three wide
 stair = []
@@ -363,7 +441,7 @@ for phase_2 in (False, True):
     assert gone in f[f"dome/{N}/reset"]
     # nothing reads, sets or kills the cylinders but their clocks' torches,
     # taken out at the win and put back by the reset; nothing kills by
-    # position
+    # position, and nothing kills but the casing's own displays, by tag
     torches = D.clock_torches(place)
     assert len(torches) == 2
     machine = set()
@@ -373,7 +451,11 @@ for phase_2 in (False, True):
     for name, lines in mine.items():
         for line in lines:
             assert not any(f" {xyz} " in f"{line} " for xyz in cells), (name, line)
-            assert not line.startswith("kill"), (name, line)
+            if line.startswith("kill"):
+                assert phase_2 and "/casing/" in name, (name, line)
+                assert line == (
+                    "kill @e[type=minecraft:block_display,tag=" + D.CASE_TAG + "]"
+                ), line
             touched = any(f" {D._xyz(c)} " in f"{line} " for c in torches)
             allowed = (f"dome/{N}/won", f"dome/{N}/reset")
             assert not touched or name in allowed, (name, line)
@@ -391,11 +473,60 @@ for phase_2 in (False, True):
     for part in ("Stoker", "Riveter", "Slag Husk", "st.automaton", "station:mob/dress",
                  f"st.mob{N}", "st.home0", "IsBaby:0b"):
         assert part in spawn, part
+    # winding is heard: a bell a lamp, higher each time, and a lower note as
+    # each goes out; the fifth lamp is the chord of a main shut, with a
+    # clank, a jet from its relief valve and a shudder through the Engine
+    wind = f[f"dome/{N}/p1/wind"]
+    for main in place.mains:
+        k, at = main.key, D._xyz(main.lever)
+        rise = [l for l in wind if "note_block.bell" in l and f" {at} " in l]
+        fall = [l for l in wind if "note_block.bass" in l and f" {at} " in l]
+        assert [float(l.split()[-1]) for l in rise] == list(D.RISE)
+        assert [float(l.split()[-1]) for l in fall] == list(D.FALL)
+        assert list(D.RISE) == sorted(D.RISE) and list(D.FALL) == sorted(D.FALL)
+        assert all(f"#b7.l{k} st matches 0" in l for l in rise + fall)
+        shut = f[f"dome/{N}/main/shut_{k}"]
+        chord = [l for l in shut if "note_block.chime" in l]
+        assert [float(l.split()[-1]) for l in chord] == list(D.CHORD)
+        for part in ("block.anvil.land", "block.fire.extinguish", "minecraft:cloud",
+                     "campfire_signal_smoke", "entity.iron_golem.damage", "dust_plume"):
+            assert any(part in l for l in shut), part
+        assert f"scoreboard players set #b7.lmp{k} st 0" in f[f"dome/{N}/main/open_{k}"]
+        # an open main's steam and hiss weaken with each lamp
+        dress = f[f"dome/{N}/dress"]
+        mine_ = [l for l in dress if f"#b7.lmp{k} " in l]
+        puffs = [l for l in mine_ if "particle minecraft:cloud" in l]
+        hisses = [l for l in mine_ if "block.fire.extinguish" in l]
+        assert [int(l.split()[-1]) for l in puffs] == [n for n, _ in D.STEAM]
+        assert [float(l.split()[-2]) for l in hisses] == [v for _, v in D.STEAM]
+        assert len(D.STEAM) == D.LAMPS
+        assert list(D.STEAM) == sorted(D.STEAM, reverse=True)
+    # the Engine's heart is a piston's thump, slower with each main shut
+    beat = f[f"dome/{N}/beat"]
+    assert any("block.piston.extend" in l for l in beat)
+    dress = f[f"dome/{N}/dress"]
+    periods = [int(l.split()[-1]) for l in dress if l.split()[-4:-1] ==
+               ["set", "#b7.per", "st"] and "#b7.shut" in l]
+    assert periods == [D.BEAT + D.BEAT_SLOWER, D.BEAT + 2 * D.BEAT_SLOWER]
+    # the ending: after the win the Engine winds down on a falling whine,
+    # and a title says the station is saved and where home is
+    end = f[f"dome/{N}/end/step"]
+    whine = [float(l.split()[-1]) for l in end if "didgeridoo" in l]
+    assert len(whine) == D.WHINE and whine == sorted(whine, reverse=True)
+    assert whine[-1] >= 0.49  # (a pitch under a half is played as a half)
+    saved = " ".join(f[f"dome/{N}/end/title"])
+    assert "THE STATION IS SAVED" in saved and "Pump House" in saved
+    assert D.exit_name(dome) + " airlock" in saved
+    assert any(l.endswith(f"function station:dome/{N}/end/step") for l in dress)
+    waves = [l for l in end if "lights/wave_" in l]
+    assert len(waves) == (D.WAVE if phase_2 else 0)
+    assert D.end_steps(dome) == D.end_title_at() + len(place.way_out)
+    assert D.end_title_at() == D.WAVE_AT + (D.WAVE if phase_2 else 0) > D.WHINE
 
 off, on = packs[False].functions, packs[True].functions
 # phase 2 is in the pack only with the switch on
 extra = sorted(set(on) - set(off))
-parts = ("breach/", "master/", "p3", "p4", "lights/")
+parts = ("breach/", "master/", "p3", "p4", "lights/", "casing/", "music/")
 assert extra
 assert all(n.startswith(tuple(f"dome/{N}/" + p for p in parts)) for n in extra)
 assert off[f"dome/{N}/all_shut"] == [f"function station:dome/{N}/won"]
@@ -404,6 +535,7 @@ for name, lines in off.items():
     if name.startswith(f"dome/{N}/"):
         text = " ".join(lines)
         assert "ravager" not in text and "minecraft:generic" not in text, name
+        assert "block_display,tag=" + D.CASE_TAG not in text and D.MUSIC not in text
 # the pair: summoned here with the core's rules, on the automatons' team,
 # and not swept by the core as automatons are
 summon = D.master_summon(place.spot)
@@ -460,6 +592,90 @@ out = on[f"dome/{N}/master/out"]
 assert any("THE MASTER" in l for l in out) and any("ravager.roar" in l for l in out)
 assert any(l.startswith(f"execute store result bossbar station:d{N} value")
            for l in on[f"dome/{N}/breach/step"])
+# the Engine splits open: at the breach the casing's displays take the
+# doors' place; three knocks, each harder (the halves start, the plates are
+# pushed out, the fire flares, steam and sparks at the seams) and each let
+# back; then the blow (a boom that is only sound and particles), the plates
+# thrown, and the halves swung out a tick at a time to where they stand open
+put = on[f"dome/{N}/casing/put"]
+assert put[0].startswith("kill") and put[1:26] == D.casing_summons(dome, opened=False)
+assert f"function station:dome/{N}/face/open" in put
+assert f"function station:dome/{N}/casing/put" in start
+opened = on[f"dome/{N}/casing/open"]
+assert opened[1:26] == D.casing_summons(dome, opened=True)
+assert any(l.startswith("fill") and l.endswith(D.HOT) for l in opened)
+tick = on[f"dome/{N}/breach/tick"]
+assert any(l.endswith(f"function station:dome/{N}/breach/tick") and
+           "#b7.phase st matches 2 " in l for l in on[f"dome/{N}/tick"])
+halves = D.leaves(dome)
+for i, (at, degrees) in enumerate(zip(D.KNOCKS, D.BULGE)):
+    assert f"execute if score #b7.an st matches {at} run function " \
+        f"station:dome/{N}/breach/knock_{i}" in tick
+    assert f"execute if score #b7.an st matches {at + 3} run function " \
+        f"station:dome/{N}/breach/settle" in tick
+    knock = on[f"dome/{N}/breach/knock_{i}"]
+    for leaf in halves:
+        assert any(leaf.tag in l and l.endswith(f"tp @s ~ ~ ~ {leaf.swing * degrees} 0")
+                   for l in knock)
+    for part in ("minecraft:cloud", "campfire_signal_smoke", "minecraft:lava",
+                 "small_flame", "minecraft:flame", "attack_iron_door"):
+        assert any(part in l for l in knock), part
+assert list(D.BULGE) == sorted(D.BULGE)
+blow = on[f"dome/{N}/breach/blow"]
+for part in ("entity.generic.explode", "entity.warden.sonic_boom", "explosion_emitter"):
+    assert any(part in l for l in blow), part
+for name in ("breach/blow", "breach/tick", "breach/land", "casing/put", "casing/open"):
+    for line in on[f"dome/{N}/{name}"]:
+        assert "damage" not in line and "summon minecraft:tnt" not in line, line
+        assert "creeper" not in line and "fireball" not in line, line
+turned = {leaf.tag: 0 for leaf in halves}
+for line in tick:
+    for leaf in halves:
+        if leaf.tag in line:
+            span = re.search(r"matches (\\d+)\\.\\.(\\d+)", line)
+            lo, hi = int(span.group(1)), int(span.group(2))
+            assert D.BLOW < lo <= hi <= D.BLOW + D.SWING_TICKS
+            turned[leaf.tag] += (hi - lo + 1) * int(line.split()[-2].lstrip("~"))
+assert turned == {leaf.tag: leaf.swing * D.OPEN for leaf in halves}
+# all in valid sound ids of the game (read from the 26.3 client)
+SOUNDS = {
+    "block.anvil.land", "block.beacon.deactivate", "block.bell.use",
+    "block.copper_bulb.turn_on", "block.fire.extinguish", "block.iron_door.close",
+    "block.iron_door.open", "block.iron_trapdoor.open", "block.lava.extinguish",
+    "block.note_block.bass", "block.note_block.bell", "block.note_block.chime",
+    "block.note_block.didgeridoo", "block.piston.extend", "entity.generic.explode",
+    "entity.iron_golem.damage", "entity.iron_golem.step", "entity.ravager.roar",
+    "entity.warden.heartbeat", "entity.warden.sonic_boom", "entity.wither.spawn",
+    "entity.zombie.attack_iron_door", "music.dragon", "ui.toast.challenge_complete",
+}
+PARTICLES = {"cloud", "campfire_signal_smoke", "campfire_cosy_smoke", "lava", "flame",
+             "small_flame", "large_smoke", "smoke", "explosion_emitter", "dust_plume",
+             "poof"}
+for name, lines in on.items():
+    if name.startswith(f"dome/{N}/"):
+        for line in lines:
+            played = r"(?:playsound|stopsound \\S+ \\w+) minecraft:(\\S+)"
+            for sound in re.findall(played, line):
+                assert sound in SOUNDS, (name, sound)
+            for particle in re.findall(r"particle minecraft:(\\w+)", line):
+                assert particle in PARTICLES, (name, particle)
+# his music: begun as he comes out, to each player in the dome where they
+# stand, again when it has run out, and to one who comes in or dies; stopped
+# at the win, when the dome empties, on leaving and by the reset
+mine = on[f"dome/{N}/music/mine"]
+assert mine == [
+    f"stopsound @s record {D.MUSIC}", f"playsound {D.MUSIC} record @s ~ ~ ~ 1"]
+assert any(l.endswith(f"at @s run function station:dome/{N}/music/mine")
+           and players in l for l in on[f"dome/{N}/music/play"])
+assert any(l.endswith(f"function station:dome/{N}/music/play") for l in out)
+assert any(str(D.MUSIC_STEPS) in l and l.endswith("music/play")
+           for l in on[f"dome/{N}/p3"])
+for name in ("won", "reset", "p3/abandon"):
+    assert f"function station:dome/{N}/music/stop" in on[f"dome/{N}/{name}"], name
+assert f"stopsound @s record {D.MUSIC}" in on[f"dome/{N}/leave"]
+for name in ("enter", "died"):
+    assert any(l.endswith("music/mine") and "#b7.phase st matches 3" in l
+               for l in on[f"dome/{N}/{name}"]), name
 # the lanterns: the core's own in this dome's floor, none that touches the
 # room's redstone; dimmed to a copper bulb, back at the win and the reset
 lights = D.floor_lights(dome)
@@ -476,9 +692,23 @@ for x, y, z in lights:
 assert on[f"dome/{N}/lights/dim"] == [D._setblock(c, D.DIM) for c in lights]
 assert on[f"dome/{N}/lights/full"] == [
     D._setblock(c, "minecraft:sea_lantern") for c in lights]
-for name in (f"dome/{N}/won", f"dome/{N}/reset"):
-    assert f"function station:dome/{N}/lights/full" in on[name], name
+# (at the win they come back in the ending's wave, a sector a step)
+assert f"function station:dome/{N}/lights/full" in on[f"dome/{N}/reset"]
+assert not any("lights/" in line for line in on[f"dome/{N}/won"])
+for name in (f"dome/{N}/won", f"dome/{N}/reset", f"dome/{N}/end/step"):
     assert not any("lights/" in line for line in off[name]), name
+wave = D.light_wave(dome)
+for k, sector in enumerate(wave):
+    lines = on[f"dome/{N}/lights/wave_{k}"]
+    lit = [D._setblock(c, "minecraft:sea_lantern") for c in sector]
+    assert lines[:len(sector)] == lit
+    assert f"execute if score #b7.fin st matches {D.WAVE_AT + k} run function " \
+        f"station:dome/{N}/lights/wave_{k}" in on[f"dome/{N}/end/step"]
+# the fire at the back of the firebox: dull as built and after the reset,
+# alight from the blow, out at the win
+assert any(l.startswith("fill") and l.endswith(D.COOL) for l in on[f"dome/{N}/reset"])
+assert any(l.startswith("fill") and l.endswith(D.COOL) for l in on[f"dome/{N}/won"])
+assert f"function station:dome/{N}/casing/gone" in on[f"dome/{N}/reset"]
 # nobody stands where he comes out: the porch and the firebox are cleared
 # at every step of the breach and as he is summoned
 clear = f"function station:dome/{N}/breach/clear"
@@ -510,8 +740,8 @@ D.PHASE_2 = True
 SIM = r'''
 import re
 
-IGNORED = ("particle", "playsound", "title", "tellraw", "bossbar", "attribute",
-           "give", "damage", "spawnpoint", "item")
+IGNORED = ("particle", "playsound", "stopsound", "title", "tellraw", "bossbar",
+           "attribute", "give", "damage", "spawnpoint", "item")
 
 
 def split_selector(text):
@@ -813,19 +1043,26 @@ class Sim:
             kind, x, y, z, nbt = rest.split(" ", 4)
             team = re.search(r'Team:"([^"]+)"', nbt)
             first = True
+            turn = re.search(r"Rotation:\[(-?[\d.]+)f", nbt)
             for tags in re.findall(r"Tags:\[([^\]]*)\]", nbt):
                 rider = re.search(r'id:"([^"]+)",Tags:\[' + re.escape(tags), nbt)
                 e = self.add(rider.group(1) if rider and not first else kind,
                              (float(x), float(y), float(z)),
                              set(tags.replace('"', "").split(",")),
-                             team=team.group(1) if team else None, health=1, nbt=nbt)
+                             team=team.group(1) if team else None, health=1, nbt=nbt,
+                             yaw=float(turn.group(1)) if turn else 0.0)
                 first = False
             return 1
         if word == "tp":
             selector, tail = split_selector(rest)
-            if "~" not in tail:
-                for e in self.select(selector, me):
-                    e["pos"] = tuple(float(v) for v in tail.split(" ")[:3])
+            parts = tail.split(" ")
+            for e in self.select(selector, me):
+                if "~" not in "".join(parts[:3]):
+                    e["pos"] = tuple(float(v) for v in parts[:3])
+                if len(parts) == 5 and parts[3].startswith("~"):  # a turn
+                    e["yaw"] = e.get("yaw", 0.0) + float(parts[3][1:] or 0)
+                elif len(parts) == 5:
+                    e["yaw"] = float(parts[3])
             return None
         if word == "kill":
             for e in self.select(split_selector(rest)[0], me):
@@ -848,7 +1085,7 @@ class Sim:
             elif rest.startswith("merge block"):
                 _, _, x, y, z, nbt = rest.split(" ", 5)
                 self.said.append(((int(x), int(y), int(z)), nbt))
-            elif rest.startswith("modify entity"):
+            elif rest.startswith(("modify entity", "merge entity")):
                 self.said.append(("entity", rest))
             else:
                 raise ValueError(line)
@@ -858,7 +1095,7 @@ class Sim:
         if word == "team":
             return None
         if word in IGNORED:
-            if word in ("tellraw", "title"):
+            if word in ("tellraw", "title", "playsound", "stopsound"):
                 self.said.append((word, rest))
             return None
         raise ValueError(f"a command the interpreter does not know: {line}")
@@ -899,11 +1136,20 @@ sim.raiders = D.RAIDERS
 LIT = (D.BULB + "[lit=true]", D.GREEN_BULB + "[lit=true]")
 
 
-def steps(n=1):
-    for _ in range(n * D.STEP):
+def ticks(n=1):
+    for _ in range(n):
         # (the core's count of who is in the dome)
         sim.scores[f"#occ{{N}}", "st"] = len(sim.select("@e[tag=st.standin]", None))
         sim.run(f"dome/{{N}}/tick")
+
+
+def steps(n=1):
+    ticks(n * D.STEP)
+
+
+def heard(sound, since=0):
+    # the ``playsound`` lines of a sound since a place in what was said
+    return [v for k, v in sim.said[since:] if k == "playsound" and sound in v]
 
 
 def throw(main, on=True):
@@ -945,6 +1191,10 @@ def as_built(what):
     for name in ("phase", "shut", "ga", "gb", "gc", "la", "lb", "lc", "live", "out"):
         assert sim.b7(name) == 0, (what, name, sim.b7(name))
     assert not mobs() and not sim.select("@e[tag=" + D.BOSS + "]", None), what
+    assert not sim.select("@e[tag=" + D.CASE_TAG + "]", None), what
+    assert sim.is_block(place.fire[0], D.COOL) and sim.is_block(place.fire[1], D.COOL)
+    for name in ("fin", "open", "mus", "an"):
+        assert sim.b7(name) == 0, (what, name, sim.b7(name))
 
 
 entrance = D.domes.entrance(dome)[:3]
@@ -980,12 +1230,24 @@ sim.run("fight/difficulty")
 throw(a)
 steps(3)
 assert sim.b7("phase") == 1 and sim.b7("ga") == 0
-# on the deck it winds: a lamp every 3 s at level 5
+# the Engine's heart beats every second while no main is shut
+since = len(sim.said)
+steps(4 * D.BEAT)
+assert len(heard("block.piston.extend", since)) == 4
+# on the deck it winds: a lamp every 3 s at level 5, each with a bell's
+# note, the second higher than the first
+at = D._xyz(a.lever)
+notes = lambda kind: [  # noqa: E731
+    float(v.split()[-1]) for v in heard("note_block." + kind) if at in v]
+bells = lambda: notes("bell")  # noqa: E731
 sim.move(p, a.stand)
-steps(6)
-assert sim.b7("ga") == D.LAMP and lamps(a.gauge) == 1
+steps(5)
+assert bells() == []
+steps(1)
+assert sim.b7("ga") == D.LAMP and lamps(a.gauge) == 1 and bells() == [D.RISE[0]]
 steps(6)
 assert sim.b7("ga") == 2 * D.LAMP and lamps(a.gauge) == 2
+assert bells() == list(D.RISE[:2]) and sim.b7("lmpa") == 2
 # its telltales blink while it winds; the others' stay lit
 seen = set()
 for _ in range(4):
@@ -995,9 +1257,15 @@ for _ in range(4):
 assert seen == {0, 4}
 # off the deck it runs down a lamp every 2 s; back on, up from where it is
 sim.put("ga", 3 * D.LAMP)
+steps(1)  # (the third lamp's note)
+sim.put("ga", 3 * D.LAMP)
 sim.move(p, place.back)
+basses = lambda: notes("bass")  # noqa: E731
+assert basses() == []
 steps(4)
 assert sim.b7("ga") == 2 * D.LAMP and lamps(a.gauge) == 2
+# a lamp going out is heard too: a lower note (two lamps left)
+assert basses() == [D.FALL[2]]
 sim.move(p, a.stand)
 steps(1)
 assert sim.b7("ga") == 2 * D.LAMP + D.WIND
@@ -1005,10 +1273,22 @@ assert sim.b7("ga") == 2 * D.LAMP + D.WIND
 throw(a, False)
 steps(40)
 assert sim.b7("ga") == 0 and lamps(a.gauge) == 0 and sim.b7("la") == 0
-# held to the fifth lamp it is shut for good
+assert basses()[-1] == D.FALL[0] and basses() == sorted(basses(), reverse=True)
+# held to the fifth lamp it is shut for good: four more bells, rising, and
+# then the chord, the clank and the Engine's shudder
+since = len(sim.said)
 throw(a)
 steps(D.FULL // D.WIND)
 assert (sim.b7("la"), sim.b7("shut"), sim.b7("ga")) == (1, 1, D.FULL)
+rung = [float(v.split()[-1]) for v in heard("note_block.bell", since) if at in v]
+assert rung == [*D.RISE, D.CHORD[0]]
+assert len(heard("note_block.chime", since)) == len(D.CHORD)
+assert heard("block.anvil.land", since) and heard("entity.iron_golem.damage", since)
+# and its heart beats slower: every two and a half seconds
+steps(D.BEAT + D.BEAT_SLOWER)
+since = len(sim.said)
+steps(2 * (D.BEAT + D.BEAT_SLOWER))
+assert len(heard("block.piston.extend", since)) == 2
 assert sim.is_block(a.lever, "minecraft:air")
 assert all(sim.is_block(x, D.GREEN_BULB + "[lit=true]") for x in a.gauge)
 assert lamps(a.telltales) == 0 and lamps(b.telltales) == 4
@@ -1068,18 +1348,35 @@ assert sim.called.count(f"dome/{N}/won") == 1 and f"tunnel/{N}/ready" in sim.cal
 assert not mobs()
 # the win arms the Pump House's trophy dispenser
 assert sim.called.count("dome/0/trophy/arm") == 1
-# the Engine stops: eyes out, the governor run down, the way out lit
-assert lamps(place.eyes) == 0
-steps(len(place.way_out) + 2)
+# the Engine stops: eyes out; then the ending: it winds down on a falling
+# whine, and only then the title and the lamps of the way out, in a run
+assert lamps(place.eyes) == 0 and lamps(place.way_out) == 0
+assert not any(k == "title" and "SAVED" in v for k, v in sim.said)
+while sim.b7("fin") < D.WHINE:
+    steps(1)
+whine = [float(v.split()[-1]) for v in heard("didgeridoo")]
+assert len(whine) == D.WHINE and whine == sorted(whine, reverse=True)
+assert lamps(place.way_out) == 0
+assert not any(k == "title" and "SAVED" in v for k, v in sim.said)
+steps(D.end_title_at() - D.WHINE)
+assert any(k == "title" and "THE STATION IS SAVED" in v for k, v in sim.said)
+assert any(k == "title" and "Pump House" in v for k, v in sim.said)
+assert lamps(place.way_out) == 1
+steps(3)
+assert lamps(place.way_out) == 4
+steps(len(place.way_out))
 assert lamps(place.way_out) == len(place.way_out) and sim.b7("spin") == 0
+assert sim.b7("fin") == D.end_steps(dome)
 # nothing more happens, and nothing solves it twice
 steps(20)
 assert sim.called.count(f"dome/{N}/won") == 1 and not mobs()
-# a second entry into the solved room changes nothing
+# a second entry into the solved room changes nothing, and says nothing again
 leave_all()
+said = len(sim.said)
 p = enter("p1", entrance)
 steps(4)
 assert sim.b7("phase") == 5 and lamps(place.way_out) == len(place.way_out)
+assert not [k for k, _ in sim.said[said:] if k in ("title", "playsound")]
 
 # ---- reset: everything as built
 sim.run(f"dome/{N}/reset")
@@ -1243,6 +1540,12 @@ boss = "@e[tag=" + D.BOSS + "]"
 pair = lambda: sim.select(boss, None)  # noqa: E731
 gone = lambda: [all(sim.is_block(x, "minecraft:air") for x in col)  # noqa: E731
                 for col in place.door_columns]
+case = lambda: sim.select("@e[tag=" + D.CASE_TAG + "]", None)  # noqa: E731
+halves, loose = D.leaves(dome), D.plates(dome)
+cased = sum(len(leaf.parts) for leaf in halves) + len(loose)
+yaws = lambda leaf: {e["yaw"] for e in case() if leaf.tag in e["tags"]}  # noqa: E731
+plate = lambda q: next(e for e in case() if q.tag in e["tags"])  # noqa: E731
+hot = lambda: sim.is_block(place.fire[0], D.HOT)  # noqa: E731
 
 # ---- the third main starts the breach: no win yet
 sim.move(p, place.porch[0])
@@ -1259,28 +1562,66 @@ lights = D.floor_lights(dome)
 dim = lambda: sum(sim.is_block(x, D.DIM) for x in lights)  # noqa: E731
 assert dim() == len(lights) > 60 and sim.get(f"#bar{N}") == 1
 assert any(k == "title" and "THE MAINS ARE SHUT" in v for k, v in sim.said)
-# the doors are forced from the middle outwards
-order = [gone()]
-filling, walked = [], []
-for _ in range(D.BREACH[-1] + 1):
-    t = sim.b7("t") if sim.b7("phase") == 2 else None
-    if t == D.BREACH[1]:  # one who walks back to the doors is put out again
+# the Engine's casing: the doors' blocks are gone, and its displays stand
+# shut in their place, the fire behind them dull
+assert gone() == [True] * 3 and len(case()) == cased and sim.b7("open") == 1
+assert all(yaws(leaf) == {0} for leaf in halves) and not hot()
+assert all(plate(q)["pos"] == q.on for q in loose)
+first = {id(e) for e in case()}
+# the breach, a tick at a time: three knocks, the blow, the swing
+filling, walked, seen = [], [], {}
+while sim.b7("phase") == 2:
+    an = sim.b7("an")
+    if an == D.KNOCKS[1] + 5:  # one who walks back to the casing is put out again
         sim.move(p, place.porch[1])
         walked.append("porch")
-    if t == D.BREACH[-1] - 2:  # and one who walks into the open firebox
+    if an == D.BLOW + 25:  # and one who walks into the opening firebox
         sim.move(p, place.spot)
         walked.append("firebox")
-    steps(1)
-    assert p["pos"][0] == place.back[0] + 0.5
-    if t is not None:
+    ticks(1)
+    if sim.b7("tick") == 0:  # (a step was taken)
+        assert p["pos"][0] == place.back[0] + 0.5
         filling.append(sim.b7("pct"))
-    if gone() != order[-1]:
-        order.append(gone())
-assert order == [[False] * 3, [True, False, False], [True, True, False], [True] * 3]
+    turn = {leaf.tag: yaws(leaf) for leaf in halves}
+    seen[sim.b7("an")] = (turn, hot(), plate(loose[0])["pos"], plate(loose[0])["yaw"])
+    assert len(case()) == cased
 assert walked == ["porch", "firebox"]
 assert filling == sorted(filling) and 0 < filling[0] < filling[-1] == 100
+for at, degrees in zip(D.KNOCKS, D.BULGE):
+    # a knock: the halves start from their seats, outwards, the plates are
+    # pushed out and the fire flares; three ticks on all is let back
+    for an in (at, at + 2):
+        turn, fire, where, _ = seen[an]
+        assert turn == {leaf.tag: {leaf.swing * degrees} for leaf in halves}
+        assert fire and where == D.plate_bulged(dome, loose[0], degrees) != loose[0].on
+    for an in (at - 1, at + 3):
+        turn, fire, where, _ = seen[an]
+        assert turn == {leaf.tag: {0} for leaf in halves}
+        assert not fire and where == loose[0].on
+# the blow: the fire alight for good, the plates up and out, then down to
+# lie on the floor, turned as they fell
+assert seen[D.BLOW][1:3] == (True, loose[0].apex)
+assert seen[D.BLOW][0][halves[0].tag] == {0}
+assert seen[D.BLOW + D.PLATE_GLIDE - 1][2] == loose[0].apex
+assert seen[D.BLOW + D.PLATE_GLIDE][2:] == (loose[0].land, loose[0].yaw)
+assert sum(1 for k, v in sim.said if k == "entity" and "merge entity" in v
+           and "interpolation_duration" in v) == len(loose)
+assert heard("entity.generic.explode") and heard("entity.warden.sonic_boom")
+# the halves swing out, each tick further, never back, to where they stand
+# open: as the Master comes out, and not before
+right = halves[0]
+swing = [abs(next(iter(seen[an][0][right.tag])))
+         for an in range(D.BLOW, D.BLOW + D.SWING_TICKS + 1)]
+assert swing[0] == 0 and swing[-1] == D.OPEN and swing == sorted(swing)
+assert all(0 < b - a <= 3 for a, b in zip(swing, swing[1:]))
+assert max(seen) == D.BLOW + D.SWING_TICKS == D.OUT * D.STEP
+assert all(len(seen[an][0][leaf.tag]) == 1 for an in seen for leaf in halves)
+assert all(yaws(leaf) == {leaf.swing * D.OPEN} for leaf in halves)
+assert sim.b7("open") == 2 and hot() and {id(e) for e in case()} == first
 # the pair comes out: a ravager with the Master on it, on the team
 assert sim.b7("phase") == 3 and len(pair()) == 2
+# and his music begins
+assert sim.called.count(f"dome/{N}/music/play") == 1 and sim.b7("mus") >= 1
 kinds = sorted(e["type"] for e in pair())
 assert kinds == sorted(["minecraft:ravager", D.RIDER_MOB])
 assert all(
@@ -1297,7 +1638,23 @@ for e in pair():
     sim.entities.remove(e)
 steps(1)
 assert sim.b7("phase") == 3 and len(pair()) == 2 and sim.get(f"#d{N}") == 1
+# (the casing is left as it stands, and his music is not begun again)
+assert {id(e) for e in case()} == first
+assert sim.called.count(f"dome/{N}/music/play") == 1
 steps(D.EARLY + 2)
+# when it has run out it is played again; one who comes in hears it too
+sim.put("mus", D.MUSIC_STEPS - 1)
+steps(1)
+assert sim.called.count(f"dome/{N}/music/play") == 2 and sim.b7("mus") == 1
+since = len(sim.said)
+late = enter("p3", entrance, first=0)
+assert len(heard(D.MUSIC, since)) == 1
+stops = lambda: [v for k, v in sim.said[since:] if k == "stopsound"]  # noqa: E731
+assert stops() == ["@s record " + D.MUSIC]
+sim.run(f"dome/{N}/leave", late)
+assert stops() == ["@s record " + D.MUSIC] * 2
+sim.entities.remove(late)
+steps(game.SOLO_AFTER + 2)
 # wounded: the bar follows
 rav = sim.select("@e[tag=" + D.RAVAGER + "]", None)[0]
 rav["health"] = rav["health"] // 2
@@ -1330,6 +1687,8 @@ assert sim.b7("up") == 0 and sim.b7("vent") == 0
 leave_all()
 assert sim.b7("phase") == 4 and not pair() and gone() == [True] * 3
 assert dim() == len(lights) and sim.get(f"#bar{N}") == 0  # still dim, no bar
+# the casing stands open as it was, and the music is stopped
+assert {id(e) for e in case()} == first and sim.b7("open") == 2 and sim.b7("mus") == 0
 p = enter("p1", entrance, first=1)
 steps(D.ROAR + 4)
 assert sim.b7("phase") == 4 and not pair()  # in the pavilion: he waits
@@ -1338,6 +1697,7 @@ sim.move(p, place.spot)  # (into the open firebox itself: put out of it)
 steps(D.ROAR + 1)
 assert sim.b7("phase") == 3 and len(pair()) == 2 and sim.get(f"#bar{N}") == 1
 assert p["pos"][0] == place.back[0] + 0.5
+assert {id(e) for e in case()} == first and sim.b7("mus") >= 1
 solo = D.RAVAGER_HP + D.MASTER_HP
 assert sim.b7("hmax") == solo == sim.b7("hsum")
 
@@ -1356,11 +1716,33 @@ steps(1)
 assert sim.b7("phase") == 5 and sim.get(f"#d{N}") == 2 and sim.get("#run") == 2
 assert sim.called.count(f"dome/{N}/won") == 1 and f"tunnel/{N}/ready" in sim.called
 assert sim.called.count("dome/0/trophy/arm") == 1
-# the lanterns come back, the bar goes
-assert dim() == 0 and sim.get(f"#bar{N}") == 0
+# the bar goes, the music stops, the fire dies; the casing stays open
+assert sim.get(f"#bar{N}") == 0 and sim.b7("mus") == 0 and not hot()
+assert [v for k, v in sim.said if k == "stopsound"][-1].endswith("record " + D.MUSIC)
+assert {id(e) for e in case()} == first
+# the ending: the Engine winds down in the dim; then the lanterns come back
+# in a wave, a sector a step, from the side away from the way out round to
+# it; then the title, and the lamps of the way out in a run
+assert dim() == len(lights)
+while sim.b7("fin") < D.WAVE_AT - 1:
+    steps(1)
+assert dim() == len(lights) and len(heard("didgeridoo")) == D.WHINE
+back = []
+for _ in range(D.WAVE):
+    steps(1)
+    back.append(len(lights) - dim())
+assert back == sorted(set(back)) and back[-1] == len(lights) and len(back) == D.WAVE
+wave = D.light_wave(dome)
+assert back[0] == len(wave[0]) and back[-1] - back[-2] == len(wave[-1])
 assert all(sim.is_block(x, "minecraft:sea_lantern") for x in lights)
-steps(len(place.way_out) + 2)
-assert lamps(place.way_out) == len(place.way_out) and lamps(place.eyes) == 0
+assert not any(k == "title" and "SAVED" in v for k, v in sim.said)
+steps(1)
+assert any(k == "title" and "THE STATION IS SAVED" in v for k, v in sim.said)
+assert lamps(place.way_out) == 1 and lamps(place.eyes) == 0
+steps(len(place.way_out))
+assert lamps(place.way_out) == len(place.way_out)
+assert sim.b7("fin") == D.end_steps(dome)
+assert sim.called.count(f"dome/{N}/won") == 1
 
 # ---- reset: the doors shut again, the firebox empty
 sim.run(f"dome/{N}/reset")
@@ -1376,9 +1758,15 @@ sim.put("shut", 2)
 sim.move(p2, c.stand)
 throw(c)
 steps(D.FULL // D.WIND + 3)
-assert sim.b7("phase") == 2
+assert sim.b7("phase") == 2 and sim.b7("open") == 1
+assert all(yaws(leaf) == {0} for leaf in halves)
 leave_all()
 assert sim.b7("phase") == 4 and gone() == [True] * 3 and not pair()
+# the casing is put open at once: the halves out, the plates on the floor,
+# the fire alight
+assert sim.b7("open") == 2 and len(case()) == cased and hot()
+assert all(yaws(leaf) == {leaf.swing * D.OPEN} for leaf in halves)
+assert all(plate(q)["pos"] == q.land and plate(q)["yaw"] == q.yaw for q in loose)
 # and the game's reset from there: the lanterns back, the doors shut
 assert dim() == len(lights)
 sim.run(f"dome/{N}/reset")
@@ -1397,8 +1785,10 @@ for name in ("la", "lb", "lc"):
 sim.put("shut", 3)
 sim.put("phase", 2)
 sim.move(p3, place.back)
-steps(D.BREACH[-1] + 2)
+steps(D.OUT + 2)
+# (a breach that no ``breach/start`` began: the casing is put open as he comes)
 assert sim.b7("phase") == 3 and sim.b7("esc") == 1
+assert sim.b7("open") == 2 and len(case()) == cased
 steps(3 * D.GAP[1])
 assert len(mobs()) == 1
 """,
@@ -1601,6 +1991,8 @@ class Ctx:
         nbt = e.get("nbt", "")
         name = re.search(r"CustomName:(\\{[^}]*\\})", nbt)
         return {
+            "Rotation[0]": str(e.get("yaw", 0.0)) + "f",
+            "Pos[1]": str(e["pos"][1]) + "d",
             "Passengers": nbt,
             "active_effects": effects,
             "equipment": nbt[nbt.find("equipment:"):],

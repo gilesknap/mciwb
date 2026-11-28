@@ -9,9 +9,9 @@ automatons to move you off them; then (phase 2) fight what comes out of
 the firebox when the last one shuts.
 
 **The switch.** ``PHASE_2`` (below) is the one switch of this module, and
-it is on. On, the third main starts the breach: the firebox doors are
-forced from inside and the Master comes out on his ravager; the win is
-their death. Off, the fight ends when the third main shuts: that is the
+it is on. On, the third main starts the breach: the Engine's front casing
+splits open and the Master comes out on his ravager; the win is their
+death. Off, the fight ends when the third main shuts: that is the
 win. The room, the mains and phase 1 are the same either way, and phase
 2's functions are in the pack only when the switch is on, so that a line
 of theirs the game refuses cannot stop the pack that phase 1 needs. What
@@ -19,19 +19,51 @@ phase 2 assumes and no server has yet shown is listed at ``PHASE_2``.
 
 **Phase 2, in order.** *The breach* (7 s, no fighting): the automatons
 are gone; the lights fail (the lanterns in the floor dim to copper bulbs,
-``floor_lights``, and the players are given the Darkness effect for a few
-seconds); a title, "THE MAINS ARE SHUT"; the Master's red bossbar comes
-up empty and fills as he breaks out; knocking in the firebox; its doors
-are forced in three bangs from the middle outwards. Nobody can stand in
-the porch or the firebox meanwhile (``breach/clear``). *The Master*
-(``master/out``): Old Grinder, a ravager, comes out of the firebox with
-the Master on its back (``master_nbt``: a husk a quarter bigger than
-life, in the whole golden suit trimmed with copper, a golden axe, his
-name in gold over him); a title, "THE MASTER", a roar. The bar is their
-two healths added; their health is by who is in the dome when he comes
-out (170% for two, 50% more for each beyond) and by the level. The
-ravager dead, he fights on foot; both dead is the win: the bar goes, the
-lanterns come back, and the end is phase 1's own (``won``).
+``floor_lights``, and the players are given the Darkness effect until the
+blow); a title, "THE MAINS ARE SHUT"; the Master's red bossbar comes up
+empty and fills as he breaks out. The Engine splits open (see "The
+casing"): the firebox doors become its front casing, block displays that
+can move. Three knocks from inside, each harder: the casing's two halves
+start from their seats and its middle plates are pushed out, the fire
+behind flares through the gaps, steam jets from the seams and sparks
+fall. Then the blow (a boom of sound and particles: it hurts nobody and
+breaks nothing): the fire is alight for good, the middle plates are
+thrown out, turn over in the air and land on the floor before the porch,
+and the two halves swing out on their hinges over three seconds, flames
+in the gap. Nobody can stand in the porch or the firebox meanwhile
+(``breach/clear``). *The Master* (``master/out``), as the halves strike
+their stops: Old Grinder, a ravager, comes out through the gap with the
+Master on its back (``master_nbt``: a husk a quarter bigger than life,
+in the whole golden suit trimmed with copper, a golden axe, his name in
+gold over him); a title, "THE MASTER", a roar, and his music (``MUSIC``,
+to each player in the dome, played again when it runs out, stopped at
+the win, on leaving and by the reset). The bar is their two healths
+added; their health is by who is in the dome when he comes out (170% for
+two, 50% more for each beyond) and by the level. The ravager dead, he
+fights on foot; both dead is the win (``won``), and then *the ending*
+(``end/step``, phase 1's own too): the music stops and the fire dies;
+the Engine winds down (its last beats, each later and fainter, under a
+whine that falls a note a step; a last gasp of steam; the governor runs
+down to a stop); the lanterns come back in a wave round the dome, from
+the side away from the way out round both sides to it; a title, "THE
+STATION IS SAVED", which says where home is; and the lamps of the way
+out light in a run from the Engine to the airlock.
+
+**The casing** (``leaves``, ``plates``, ``casing_summons``). Until the
+breach the firebox doors are blocks. From the breach to the reset they
+are 25 block displays in the same places: two halves, each two columns
+of the doors' own blocks standing at its hinge (the outer front edge of
+the doorway), turned by turning the entities, a few degrees a tick; and
+the middle column as five thin plates, sent by ``tp`` and glided by
+their ``teleport_duration``. ``#b7.open`` is 0 while the doors are
+blocks, 1 while the displays are shut or moving, 2 when they stand
+open. Once open they stay open (through the fight, the win, and while
+he waits in phase 4); a dome emptied in mid breach has them put open at
+once (``casing/open``); only ``reset`` takes them away and puts the
+doors' blocks back. A display stops nobody and nothing: the doorway is
+five wide for the ravager whatever the eye sees; ``casing_problems``
+keeps the eye honest (the halves swing through no block and stand open
+with three blocks between them, the plates land on open floor).
 
 - *No outlasting him.* With nobody in the arena (all dead or in the
   pavilion) the pair cannot be hurt, and after ``mend`` they mend about
@@ -50,12 +82,24 @@ lanterns come back, and the end is phase 1's own (``won``).
 **A main** (``Main``: A on the floor to the right of the way in, B on the
 gallery to the left, over the way out, C on the high platform behind the
 Engine) is a real lever on a brass post with a sign (the room's only
-inputs: ``inputs``), a gauge of five lamps and a deck. It *winds* while
+inputs: ``inputs``), a gauge of five lamps and a deck. The lever is on the
+side of its post away from the Engine and the gauge stands in the valve
+body just beyond the post: a player pulling the lever looks across them
+at the Engine. (Its firebox is not in sight from any main: A and B see
+the casing's halves swing out side on, C nothing of it.) It *winds* while
 its lever is over and a player stands on its deck: a lamp every 3 s at
 level 5, and at the fifth it is shut for good: the lever is taken away,
 its gauge turns green, its telltales on the Engine's drum go out. Left
 alone it winds open again, a lamp every 2 s. Automatons cannot work
 levers: all they can do is move a player off a deck.
+
+Winding is heard. Each lamp lights with a bell's note, each higher than
+the last (``RISE``), and goes out with a lower one (``FALL``); the fifth
+is a chord, with the clank of the valve, a jet from its relief and a
+shudder through the Engine. An open main steams and hisses over its
+valve, less with each lamp (``STEAM``). The Engine's heart is a piston's
+thump, every second with no main shut and a second and a half slower
+for each one shut (``BEAT``).
 
 - *Solo form:* each main winds alone, in any order.
 - *Two-player form:* mains A and B wind only together, a player on each
@@ -94,7 +138,10 @@ since there were two; for each main x: ``g<x>`` its gauge (a lamp is
 winding this step; ``shut`` how many are shut; ``amb`` which of A and B
 waits for the other; ``t`` steps in the phase; ``next`` steps to the next
 automaton, ``cap`` the cap now, ``hatch`` the hatch last used; ``live`` 1
-once the room is set up; ``out`` the lamps of the way out lit. From the
+once the room is set up; ``out`` the lamps of the way out lit; ``lmp<x>``
+and ``was<x>`` the lamps of a gauge now and a step ago; ``an`` the ticks
+of the breach, ``open`` the casing (above), ``mus`` the steps of the
+music, ``fin`` the steps of the ending. From the
 level in force when an untouched room is first entered (``scaled``):
 ``rate``, ``drain``, ``cnt``, ``hp``, ``mend``, ``steam``.
 
@@ -102,10 +149,11 @@ level in force when an untouched room is first entered (``scaled``):
 
 - ``enter``: the first into a room with no main shut sets it up
   (``arm``: the level's values);
-- ``tick``: the governor turned, the hints, and every ``STEP`` ticks
-  ``step``: who is in the arena and the form, the machinery (``dress``),
-  then the function of the phase (``p0``, ``p1``, and with the switch
-  on ``breach/step``, ``p3``, ``p4``);
+- ``tick``: the governor turned, the casing moved (``breach/tick``), the
+  hints, and every ``STEP`` ticks ``step``: who is in the arena and the
+  form, the machinery (``dress``, and after the win the ending,
+  ``end/step``), then the function of the phase (``p0``, ``p1``, and
+  with the switch on ``breach/step``, ``p3``, ``p4``);
 - ``solo`` / ``duo``: a count of the arena at once;
 - ``leave`` / ``died``: the player is out of the arena;
 - ``empty``: the stage in progress put back (see "Leaving");
@@ -141,13 +189,14 @@ Machinery that works by itself, none of it an input and none of it read:
 - the *brow*: twelve lamps in the Engine's face that count the run's
   clock in binary, minutes over seconds. Nobody is told;
 - steam at each open main and from the chimney, and a heartbeat that
-  quickens as the mains shut.
+  slows as the mains shut.
 
 ``room_problems`` checks all of it with no server, and the build refuses
 a room that fails: every cell inside the dome and off the cells the
 tunnels reserve, every input on gold with a sign, every walk the fight
-needs clear at foot and head height with the firebox shut and open, and
-the gauges and telltales in sight from where they are needed. The
+needs clear at foot and head height with the firebox shut and open, the
+gauges and telltales in sight from where they are needed, and the casing
+as it opens in no block of the room. The
 pavilion stands between the entrance spot and the outgoing door's window
 on purpose (``domes.allow``, below): it is the antechamber.
 """
@@ -263,10 +312,32 @@ MASTER_AXE = "minecraft:golden_axe"
 TWO_PLAYERS, MORE_PLAYERS = 170, 50  # percent of health for two, and each more
 EARLY = 10  # steps: the pair lost sooner than this is no win
 ROAR = 6  # steps a player is in the arena before the Master comes out again
-BREACH = (4, 6, 8, 10, 14)  # steps: the knock, the doors' three bangs, out
+#: the breach, in ticks from the third main: the knocks (the casing bulges at
+#: each, by so many degrees), the blow (the middle plates fly, the halves
+#: start to swing), the swing (so many ticks at so many degrees a tick)
+KNOCKS, BULGE = (20, 40, 60), (3, 5, 8)
+BLOW = 80
+SWING = ((10, 3), (30, 2), (20, 1))
+SWING_TICKS = sum(n for n, _ in SWING)
+OPEN = sum(n * d for n, d in SWING)  # degrees the halves stand open at
+OUT = (BLOW + SWING_TICKS) // STEP  # steps: the Master comes out
+PLATE = 0.25  # the thickness of a plate of the casing's middle
+PLATE_GLIDE = 6  # ticks a plate takes to where it is sent (up, and then down)
+#: where the middle's plates land, the lowest first: forward, right, turned
+PLATE_LANDS = (
+    (-11.6, -1.7, 20),
+    (-13.2, 2.2, -35),
+    (-12.3, 0.3, 70),
+    (-14.7, -2.4, 15),
+    (-15.6, 1.4, -50),
+)
+#: the boss's music: a stereo track, so it is heard at one loudness wherever
+#: the player goes; played to each player at where they stand. Its length in
+#: steps, after which it is played again
+MUSIC, MUSIC_STEPS = "minecraft:music.dragon", 700
 VENT_AFTER, VENT_CYCLE, VENT_WARN, VENT_BLOW = 10, 28, 6, 14  # steps
 ESCORT_FROM = 110  # ``#diff.health`` from which the Master has an escort
-DARK = 8  # seconds of the Darkness effect when the mains shut
+DARK = 4  # seconds of the Darkness effect when the mains shut: gone by the blow
 #: what the floor's lanterns become while the Master is about: a dim lamp
 #: (light 8, where a sea lantern gives 15)
 DIM = "minecraft:waxed_weathered_copper_bulb[lit=true]"
@@ -292,7 +363,30 @@ TILES = "minecraft:deepslate_tiles"
 LADDER = "minecraft:ladder"
 LANTERN = "minecraft:lantern[hanging=true]"
 
+#: the fire at the back of the firebox: dull as built, alight from the breach
+COOL, HOT = "minecraft:red_nether_bricks", "minecraft:shroomlight"
+#: the notes of a gauge's lamps as they light (the fifth is the chord of a
+#: main shut) and as they go out, by the lamps left
+RISE = (0.63, 0.75, 0.84, 1.0)
+CHORD = (1.0, 1.26, 1.5)
+FALL = (0.5, 0.63, 0.75, 0.84)
+#: an open main's steam by the lamps of its gauge: particles a step, and how
+#: loud its hiss is
+STEAM = ((8, 0.6), (6, 0.45), (4, 0.3), (2, 0.2), (1, 0.1))
+HISS = 4  # steps between hisses
+BEAT, BEAT_SLOWER = 2, 3  # steps between the Engine's beats, and more a main shut
+#: the ending, in steps from the win: the last beats, the whine's falling
+#: notes, the last gasp of steam, the lights' wave (so many sectors, one a
+#: step, from the side away from the way out round to it), then the title
+#: and the lamps of the way out
+LAST_BEATS = (1, 3, 6, 10)
+WHINE = 10
+WAVE_AT, WAVE = 12, 8
+
 ENTITY_TAG = "st.b7"  # everything the build summons here
+CASE_TAG = "st.b7.case"  # the casing's displays: there from the breach to the reset
+LEAF_TAGS = ("st.b7.leaf0", "st.b7.leaf1")  # its halves: right, left
+PLATE_TAG = "st.b7.plate"  # its middle plates, numbered from the lowest
 RECALL_TAG = "st.recall7"
 GOVERNOR_TAG = "st.b7.gov"
 ARENA = "st.b7.arena"  # a player or stand-in in the dome and out of the pavilion
@@ -395,8 +489,11 @@ class Room:
     frame: Frame
     mains: tuple[Main, Main, Main]
     doors: dict[Cell, str]  # the firebox doors, as built
-    door_columns: tuple[tuple[Cell, ...], ...]  # by the order they are forced
+    #: the doors' columns, from the middle outwards: the casing's plates,
+    #: then its halves' inner and outer columns
+    door_columns: tuple[tuple[Cell, ...], ...]
     firebox: tuple[Cell, Cell]  # the corners of its inside
+    fire: tuple[Cell, Cell]  # the corners of its back wall: the fire
     spot: Cell  # where the Master comes out
     porch: tuple[Cell, Cell]  # the box in front of the doors
     back: Cell  # where one standing in the porch is put at the breach
@@ -508,8 +605,8 @@ def door_places() -> dict[FRH, str]:
 
 def engine_block(f: int, r: int, h: int, lining: bool) -> str:
     """the block of the Engine's shell at a place"""
-    if lining:  # the firebox: it glows at the back
-        return "minecraft:ochre_froglight" if f == FIREBOX_F[1] + 1 else STONE
+    if lining:  # the firebox: its fire is at the back (``Room.fire``)
+        return COOL if f == FIREBOX_F[1] + 1 else STONE
     if f == FACE_F and abs(r) == DOOR_R + 1 and h <= DOOR_H:
         return CUT  # the doors' jambs
     if h <= 2:
@@ -530,28 +627,39 @@ def engine_block(f: int, r: int, h: int, lining: bool) -> str:
 def _mains(fr: Frame) -> tuple[Main, Main, Main]:
     """the three mains: A on the floor, B on the gallery, C on the high
     platform. Each lever is on the side of its post away from the Engine,
-    so a player working it has the Engine, and what it sends, in view"""
+    and its gauge is a column of the valve body just beyond the post and
+    beside it: a player pulling the lever looks across the post at the
+    gauge, and over it at the main's telltales on the Engine's drum"""
     right, left = fr.facing(0, 1), fr.facing(0, -1)
     drum = ((0, DRUM), (0, -DRUM), (DRUM, 0), (-DRUM, 0))  # the faces
     # the post, the side of it the lever is on, the gauge, the amber lamp's
     # post, the deck's reach forward and right, where a player stands on
     # it, and where the gauge and telltales are read from
     spec = {
-        "a": ((2, 21), (0, 1), (-2, 21), (4, 21), (-3, 3), (22, 26), (0, 23), (3, 23)),
+        "a": ((2, 21), (0, 1), (1, 20), (4, 21), (-3, 3), (22, 26), (0, 23), (0, 24)),
         "b": (
             (2, -19),
             (0, -1),
-            (-2, -19),
+            (1, -18),
             (4, -19),
             (-3, 3),
             (-24, -20),
             (0, -21),
-            (3, -21),
+            (0, -21),
         ),
-        "c": ((15, -2), (1, 0), (15, 3), (15, -3), (16, 20), (-2, 2), (17, 0), (19, 0)),
+        "c": (
+            (15, -2),
+            (1, 0),
+            (14, -1),
+            (15, -3),
+            (16, 20),
+            (-2, 2),
+            (17, 0),
+            (18, 0),
+        ),
     }
     feet = {"a": 1, "b": GALLERY_H + 1, "c": HIGH_H + 1}
-    steam = {"a": (0, 21, 3), "b": (0, -19, 9), "c": (13, -2, 17)}
+    steam = {"a": (0, 20, 3), "b": (0, -18, 9), "c": (13, -2, 17)}  # over the valves
     where = {
         "a": f"on the floor to the {right}, under the gallery",
         "b": f"on the gallery to the {left}, over the way out",
@@ -640,6 +748,10 @@ def room(dome: Dome) -> Room:
         doors=doors,
         door_columns=columns,
         firebox=(fr.at(FIREBOX_F[0], -DOOR_R, 1), fr.at(FIREBOX_F[1], DOOR_R, DOOR_H)),
+        fire=(
+            fr.at(FIREBOX_F[1] + 1, -DOOR_R, 1),
+            fr.at(FIREBOX_F[1] + 1, DOOR_R, DOOR_H),
+        ),
         spot=fr.at(-3, 0, 1),
         porch=(fr.at(-10, -ARCH_R, 1), fr.at(PORCH_F[1], ARCH_R, 3)),
         back=fr.at(-16, 0, 1),
@@ -902,10 +1014,13 @@ def dressing_blocks(dome: Dome) -> Blocks:
             put((f, side * (CYLINDER_R - 1), 6), rod())
 
     # -- the mains' valve bodies (a lump of green copper with a wheel on the
-    # side its deck is on) and their pipes from the Engine
+    # side its deck is on; the main's gauge stands in it) and their pipes
+    # from the Engine. A's and B's are kept low on the side of the deck, so
+    # that a player at the lever sees the Engine's drum over them
     bodies = (
-        (rect((-1, 1), (19, 20)), range(1, 6), (0, 20, 3)),
-        (rect((-1, 1), (-18, -17)), range(7, 11), (0, -18, 8)),
+        (rect((-1, 1), (20, 20)), range(1, 3), (0, 20, 2)),
+        (rect((-1, 1), (19, 19)), range(1, 5), (0, 20, 2)),
+        (rect((-1, 1), (-18, -17)), range(7, 9), (0, -18, 8)),
         (rect((13, 14), (-3, -1)), range(HIGH_H, 17), (14, -2, 15)),
     )
     for places, heights, hub in bodies:
@@ -1187,6 +1302,7 @@ def room_problems(dome: Dome) -> list[str]:
     lights = domes.light_cells(dome)[0]
     if lost := set(b.floor) & lights:
         problems.append(f"{len(lost)} of the floor's lanterns are relaid")
+    problems += casing_problems(dome)
     return problems + walk_problems(dome) + sight_problems(dome)
 
 
@@ -1218,9 +1334,242 @@ def governor_summons(dome: Dome) -> list[str]:
     ]
 
 
+# ---------------------------------------------------------------- the casing
+# The firebox doors are blocks until the breach. From then until the reset
+# they are block displays, the Engine's front casing: two halves, each two
+# columns of the doors' own blocks standing at its hinge (the outer front
+# edge of the doorway), so that turning the entities swings the half out
+# like a door; and the middle column as five thin plates, which fly off and
+# lie on the floor before the porch. A display stops nobody: the doorway is
+# five wide whatever the eye says, and ``casing_problems`` keeps what the
+# eye sees honest (the open halves and the fallen plates in no block, and
+# room between the halves for what rides out).
+
+Point = tuple[float, float, float]
+
+
+def point(fr: Frame, f: float, r: float, up: float = 0) -> Point:
+    """a point of the frame: ``f`` forward and ``r`` right of the middle of
+    the floor (the middle of a cell is at whole numbers), ``up`` above the
+    floor's top"""
+    x, y, z = fr.origin
+    return (
+        round(x + 0.5 + f * fr.forward[0] + r * fr.right[0], 3),
+        round(y + 1 + up, 3),
+        round(z + 0.5 + f * fr.forward[1] + r * fr.right[1], 3),
+    )
+
+
+def turned(x: float, z: float, yaw: float) -> tuple[float, float]:
+    """a level offset of a display's model, as the game turns it for its
+    entity's yaw (degrees: 0 leaves it, 90 takes +z to -x)"""
+    c, s = math.cos(math.radians(yaw)), math.sin(math.radians(yaw))
+    return (x * c - z * s, x * s + z * c)
+
+
+@dataclass(frozen=True)
+class Leaf:
+    """a half of the casing"""
+
+    tag: str
+    hinge: Point  # where its displays stand: the foot of its hinge
+    swing: int  # the sign of the yaw that opens it
+    parts: tuple[tuple[Cell, str], ...]  # the doors' cells it is, their blocks
+
+
+@dataclass(frozen=True)
+class Plate:
+    """a loose plate of the casing's middle"""
+
+    tag: str
+    block: str
+    on: Point  # its middle: on the casing,
+    apex: Point  # at the top of its flight,
+    land: Point  # and lying on the floor,
+    yaw: int  # turned so
+
+
+def leaves(dome: Dome) -> tuple[Leaf, Leaf]:
+    """the casing's halves, right and left: each hinged a hair inside the
+    outer front edge of the doorway (in the porch's air, where the light
+    is the room's), opening outwards"""
+    place = room(dome)
+    fr = place.frame
+    found = []
+    for tag, side in zip(LEAF_TAGS, (1, -1), strict=True):
+        hinge = point(fr, FACE_F - 0.52, side * (DOOR_R + 0.48))
+        # the yaw of a quarter turn that takes its free edge out before the face
+        out = turned(-side * fr.right[0], -side * fr.right[1], 90)
+        swing = 1 if out[0] * fr.forward[0] + out[1] * fr.forward[1] < 0 else -1
+        cells = (
+            fr.at(FACE_F, side * r, h)
+            for r in range(1, DOOR_R + 1)
+            for h in range(1, DOOR_H + 1)
+        )
+        parts = tuple((cell, place.doors[cell]) for cell in cells)
+        found.append(Leaf(tag, hinge, swing, parts))
+    return (found[0], found[1])
+
+
+def plates(dome: Dome) -> tuple[Plate, ...]:
+    """the casing's middle column, as plates: where each is bolted, and
+    where the blow throws it"""
+    place = room(dome)
+    fr = place.frame
+    found = []
+    for i, (f, r, yaw) in enumerate(PLATE_LANDS):
+        h = i + 1
+        at = FACE_F - 0.5 + PLATE / 2
+        found.append(
+            Plate(
+                tag=f"{PLATE_TAG}{i}",
+                block=place.doors[fr.at(FACE_F, 0, h)],
+                on=point(fr, at, 0, h - 0.5),
+                apex=point(fr, (at + f) / 2, r / 2, h + 1.5),
+                land=point(fr, f, r, PLATE / 2 + 0.01),
+                yaw=yaw,
+            )
+        )
+    return tuple(found)
+
+
+def plate_bulged(dome: Dome, plate: Plate, degrees: int) -> Point:
+    """a plate's middle as a knock pushes it out"""
+    fx, fz = room(dome).frame.forward
+    x, y, z = plate.on
+    out = 0.04 * degrees
+    return (round(x - out * fx, 3), y, round(z - out * fz, 3))
+
+
+def plate_pose(fr: Frame, flat: bool) -> str:
+    """a plate's transformation, its entity at its middle: lying flat, or
+    stood on edge across the frame's forward (as it is bolted on)"""
+    half = (0.5, PLATE / 2, 0.5)
+    if flat:
+        move, turn = tuple(-v for v in half), "left_rotation:[0f,0f,0f,1f]"
+    else:
+        # a quarter turn about the frame's right: v -> a x v + a (a . v)
+        ax, az = fr.right
+        x, y, z = half
+        dot = ax * x + az * z
+        move = (-(-az * y + ax * dot), -(az * x - ax * z), -(ax * y + az * dot))
+        turn = f"left_rotation:{{axis:[{ax}f,0f,{az}f],angle:1.5708f}}"
+    listed = ",".join(f"{v:.3f}f" for v in move)
+    return (
+        f"transformation:{{translation:[{listed}],scale:[1f,{PLATE}f,1f],"
+        f"{turn},right_rotation:[0f,0f,0f,1f]}}"
+    )
+
+
+def _xyzf(p: Point) -> str:
+    return " ".join(f"{v:g}" for v in p)
+
+
+def casing_summons(dome: Dome, opened: bool) -> list[str]:
+    """the commands that summon the casing's displays: shut over the
+    doorway (as the breach finds it), or as the breach leaves it (the
+    halves open, the plates on the floor)"""
+    fr = room(dome).frame
+    found = []
+    for leaf in leaves(dome):
+        yaw = leaf.swing * OPEN if opened else 0
+        hx, hy, hz = leaf.hinge
+        for (x, y, z), block in leaf.parts:
+            found.append(
+                f"summon minecraft:block_display {_xyzf(leaf.hinge)} "
+                f'{{Tags:["{ENTITY_TAG}","{CASE_TAG}","{leaf.tag}"],'
+                f"Rotation:[{yaw}f,0f],teleport_duration:1,"
+                f"block_state:{fittings.block_state(block)},transformation:{{"
+                f"translation:[{x - hx:.2f}f,{y - hy:g}f,{z - hz:.2f}f],"
+                f"scale:[1f,1f,1f],{IDENTITY}}}}}"
+            )
+    for plate in plates(dome):
+        at, yaw = (plate.land, plate.yaw) if opened else (plate.on, 0)
+        found.append(
+            f"summon minecraft:block_display {_xyzf(at)} "
+            f'{{Tags:["{ENTITY_TAG}","{CASE_TAG}","{plate.tag}"],'
+            f"Rotation:[{yaw}f,0f],teleport_duration:{PLATE_GLIDE},"
+            f"block_state:{fittings.block_state(plate.block)},"
+            f"{plate_pose(fr, flat=opened)}}}"
+        )
+    return found
+
+
+def leaf_points(leaf: Leaf, yaw: float, inset: float = 0.05) -> list[Point]:
+    """points all through a half of the casing, turned to ``yaw``: the
+    corners, edges and middle of each of its blocks, a little inside them"""
+    hx, hy, hz = leaf.hinge
+    steps = (inset, 0.5, 1 - inset)
+    found = []
+    for (x, y, z), _ in leaf.parts:
+        for u in steps:
+            for w in steps:
+                dx, dz = turned(x - hx + u, z - hz + w, yaw)
+                found += [(hx + dx, y + v, hz + dz) for v in steps]
+    return found
+
+
+def casing_problems(dome: Dome) -> list[str]:
+    """what the casing's displays would show that the room does not allow:
+    a half that, shut, is not where the doors' blocks were; a half that
+    swings through a block, or out of the dome; halves that stand open
+    with less than a ravager's width and a half between them; a plate
+    that lands in a block, off the floor, on a deck or in the porch"""
+    place = room(dome)
+    fr = place.frame
+    b = room_blocks(dome, open_doors=True)
+    solid = set(b.everything()) | b.moving
+    inside = domes.dome_cells(dome).interior
+    floor = domes.dome_cells(dome).floor
+
+    def cell(p: Point) -> Cell:
+        return (math.floor(p[0]), math.floor(p[1]), math.floor(p[2]))
+
+    def right_of(p: Point) -> float:
+        x, _, z = fr.origin
+        return (p[0] - x - 0.5) * fr.right[0] + (p[2] - z - 0.5) * fr.right[1]
+
+    problems = []
+    for leaf in leaves(dome):
+        shut = {cell(p) for p in leaf_points(leaf, 0)}
+        if shut != {c for c, _ in leaf.parts}:
+            problems.append(f"the casing's half {leaf.tag}, shut, is not the doors")
+        for degrees in range(0, OPEN + 1, 5):
+            swept = {cell(p) for p in leaf_points(leaf, leaf.swing * degrees)}
+            if hit := swept & solid | (swept - inside):
+                problems.append(
+                    f"the casing's half {leaf.tag}, {degrees} degrees open, is in "
+                    f"{len(hit)} blocks: {min(hit)}"
+                )
+                break
+        gap = min(abs(right_of(p)) for p in leaf_points(leaf, leaf.swing * OPEN, 0))
+        if gap < 1.45:
+            problems.append(
+                f"the casing's half {leaf.tag} stands open {gap:.2f} from the "
+                "doorway's middle: no room to ride out"
+            )
+    keep_off = {
+        (x, y, z)
+        for a, z_ in ((place.porch), (place.firebox), *(m.deck for m in place.mains))
+        for x in range(min(a[0], z_[0]), max(a[0], z_[0]) + 1)
+        for y in range(min(a[1], z_[1]), max(a[1], z_[1]) + 1)
+        for z in range(min(a[2], z_[2]), max(a[2], z_[2]) + 1)
+    }
+    for plate in plates(dome):
+        for what, p in (("flies", plate.apex), ("lands", plate.land)):
+            at = cell(p)
+            if at in solid or at not in inside:
+                problems.append(f"the plate {plate.tag} {what} in a block: {at}")
+        at = cell(plate.land)
+        if _up(at, -1) not in floor or at in keep_off:
+            problems.append(f"the plate {plate.tag} lands off the open floor: {at}")
+    return problems
+
+
 def summons(dome: Dome) -> list[str]:
     """everything the build summons: the recall post's interaction, the
-    mains' labels, the governor"""
+    mains' labels, the governor (the casing's displays are the pack's:
+    there from the breach to the reset)"""
     place = room(dome)
     found = [
         fittings.summon_recall(
@@ -1343,6 +1692,34 @@ def floor_lights(dome: Dome) -> tuple[Cell, ...]:
     return tuple(sorted(lights - near - set(b.everything()) - b.clear))
 
 
+def end_title_at() -> int:
+    """the step of the ending at which its title comes: after the Engine
+    has wound down and (with phase 2) the lights' wave has gone round"""
+    return WAVE_AT + (WAVE if PHASE_2 else 0)
+
+
+def end_steps(dome: Dome) -> int:
+    """the steps the ending takes, to the last lamp of the way out"""
+    return end_title_at() + len(room(dome).way_out)
+
+
+def light_wave(dome: Dome) -> tuple[tuple[Cell, ...], ...]:
+    """the floor's lanterns the breach dimmed, in the sectors the ending
+    lights them by: the first on the side away from the way out, the last
+    round it, so that the wave runs round both sides of the dome and meets
+    at the way home"""
+    ux, uz = domes.outward(dome, layout.TUNNELS[dome.index])
+    ox, _, oz = dome.floor_centre
+    sectors: list[list[Cell]] = [[] for _ in range(WAVE)]
+    for cell in floor_lights(dome):
+        dx, dz = cell[0] - ox, cell[2] - oz
+        far = math.hypot(dx, dz) or 1
+        # 0 on the side away from the way out, 1 at it
+        turn = 1 - math.acos(max(-1, min(1, (dx * ux + dz * uz) / far))) / math.pi
+        sectors[min(WAVE - 1, int(turn * WAVE))].append(cell)
+    return tuple(tuple(sector) for sector in sectors)
+
+
 def rider_is_raider() -> bool:
     """whether the Master's mob is one the game itself lets a ravager
     fight under"""
@@ -1430,7 +1807,7 @@ def functions(pack: dp.Pack) -> None:
     boss = f"@e[tag={BOSS}]"
     heart = place.spot  # where the Engine's sounds come from
     torches = clock_torches(place)  # out at the win, back at the reset
-    pack.constants(OBJ, 2, 4, 8, 16, 32, 50, 60, 100)
+    pack.constants(OBJ, 2, 4, 8, 16, 32, 50, 60, 100, LAMP)
 
     def fid(name: str) -> str:
         return pack.id(f"{base}/{name}")
@@ -1582,6 +1959,8 @@ def functions(pack: dp.Pack) -> None:
                 _set(f"g{k}", 0),
                 _set(f"r{k}", 0),
                 _set(f"w{k}", 0),
+                _set(f"lmp{k}", 0),
+                _set(f"was{k}", 0),
                 *fittings.lever_put_lines(main.lever, main.lever_off),
                 *(_setblock(cell, f"{BULB}[lit=false]") for cell in main.gauge),
                 _setblock(main.amber, CUT),
@@ -1609,9 +1988,25 @@ def functions(pack: dp.Pack) -> None:
                     main.label, label_text(f"MAIN {name}: SHUT", "green")
                 ),
                 call("signs"),
+                # a heavy clank, and the fifth lamp's note: a chord
                 sound("block.iron_door.close", main.lever, 2, 0.6),
-                sound("block.fire.extinguish", main.steam, 2, 0.8),
-                f"particle minecraft:cloud {middle(main.steam, 0.5)} 0.5 0.5 0.5 0.05 40",
+                sound("block.anvil.land", main.lever, 2, 0.5),
+                *(sound("block.note_block.chime", main.lever, 3, p) for p in CHORD),
+                sound("block.note_block.bell", main.lever, 3, CHORD[0]),
+                # its relief valve blows off, and the Engine shudders: its
+                # telltales go out in a puff, dust falls from the crown, and
+                # the next beat is a long time coming
+                sound("block.fire.extinguish", main.steam, 3, 0.6),
+                f"particle minecraft:cloud {middle(main.steam, 0.5)} 0.3 1.2 0.3 0.12 80",
+                f"particle minecraft:campfire_signal_smoke {middle(main.steam, 1)} "
+                "0.2 0.5 0.2 0.02 10",
+                sound("entity.iron_golem.damage", heart, 3, 0.5),
+                f"particle minecraft:dust_plume {middle(place.governor)} 3 0.5 3 0.02 40",
+                *(
+                    f"particle minecraft:poof {middle(cell, 0.5)} 1 0.6 1 0.02 10"
+                    for cell in main.telltales
+                ),
+                _set("beat", 0),
                 f'tellraw {here} [{{text:"Main {name} is shut: ",color:"green"}},'
                 f'{{score:{{name:"#b7.shut",objective:"{OBJ}"}}}},{{text:" of 3."}}]',
                 start.progress,
@@ -1655,7 +2050,7 @@ def functions(pack: dp.Pack) -> None:
             _set("next", FIRST),
             _set("beat", 0),
             *title("THE ENGINE WAKES", "Hold the mains. Do not be moved."),
-            sound("entity.warden.heartbeat", heart, 3, 0.6),
+            sound("block.piston.extend", heart, 3, 0.5),
             sound("block.bell.use", heart, 3, 0.5),
             start.progress,
         ],
@@ -1696,6 +2091,23 @@ def functions(pack: dp.Pack) -> None:
             f"execute {_if(f'g{k}', '..-1')} run {_set(f'g{k}', 0)}",
             f"execute {is_open} {_if(f'g{k}', f'{FULL}..')} run {call(f'main/shut_{k}')}",
             f"execute {_if(f'l{k}', 0)} run {call(f'main/gauge_{k}')}",
+            # a note as each lamp lights, higher each time (the fifth is the
+            # chord of ``main/shut``), and a lower one as each goes out
+            _op(f"lmp{k}", "=", f"#b7.g{k}"),
+            _op(f"lmp{k}", "/=", f"#{LAMP}"),
+            *(
+                f"execute {is_open} {_if(f'lmp{k}', n)} "
+                f"if score {_s(f'was{k}')} matches ..{n - 1} run "
+                + sound("block.note_block.bell", main.lever, 2, RISE[n - 1])
+                for n in range(1, LAMPS)
+            ),
+            *(
+                f"execute {is_open} {_if(f'lmp{k}', n)} "
+                f"if score {_s(f'was{k}')} matches {n + 1}.. run "
+                + sound("block.note_block.bass", main.lever, 2, FALL[n])
+                for n in range(LAMPS - 1)
+            ),
+            _op(f"was{k}", "=", f"#b7.lmp{k}"),
         ]
     pack.function(f"{base}/p1/wind", wind)
 
@@ -1836,22 +2248,18 @@ def functions(pack: dp.Pack) -> None:
             _set("phase", 5),
             _set("t", 0),
             _set("out", 0),
+            _set("fin", 0),
             _set("down", len(SPEEDS) - 2),
             *(_set(name, 0) for name in ("wa", "wb", "wc", "ra", "rb", "rc", "amb")),
             automatons.remove_line(INDEX),
             remove_boss,
             bar.hide,
-            *([call("lights/full")] if PHASE_2 else []),
+            # the music stops and the fire dies; the Engine winds down, the
+            # lights come back and the way home is shown by ``end/step``
+            *([call("music/stop"), dp.fill(*place.fire, COOL)] if PHASE_2 else []),
             *(_setblock(cell, f"{BULB}[lit=false]") for cell in place.eyes),
             *(_setblock(cell, AIR) for cell in torches),
             sound("block.beacon.deactivate", heart, 3, 0.5),
-            sound("block.fire.extinguish", heart, 3, 0.5),
-            f"particle minecraft:cloud {middle(place.chimney)} 1 2 1 0.05 200",
-            say(
-                "The Engine is still. The way out is lit: go home by the "
-                f"{exit_name(dome)} airlock.",
-                "green",
-            ),
             f"function {pack.id(f'dome/{INDEX}/solved')}",
         ],
     )
@@ -1862,6 +2270,8 @@ def functions(pack: dp.Pack) -> None:
     dress = [
         _add("blink"),
         f"execute {_if('blink', '2..')} run {_set('blink', 0)}",
+        _add("hiss"),
+        f"execute {_if('hiss', f'{HISS}..')} run {_set('hiss', 0)}",
     ]
     for main in place.mains:
         k = main.key
@@ -1876,9 +2286,16 @@ def functions(pack: dp.Pack) -> None:
                 for cell in main.telltales
                 for line in _lamp(cell, _s("x"), lit, dark)
             ),
-            f"execute {_if(f'l{k}', 0)} {open_dome} run particle minecraft:cloud "
-            f"{middle(main.steam, 0.5)} 0.2 0.2 0.2 0.02 2",
         ]
+        # an open main steams and hisses, less with each lamp of its gauge
+        for n, (count, loud) in enumerate(STEAM):
+            wound = f"execute {_if(f'l{k}', 0)} {_if(f'lmp{k}', n)} {open_dome} "
+            dress += [
+                f"{wound}run particle minecraft:cloud "
+                f"{middle(main.steam, 0.5)} 0.2 0.2 0.2 0.02 {count}",
+                f"{wound}{_if('hiss', 0)} {_if('phase', '0..1')} run "
+                + sound("block.fire.extinguish", main.steam, loud, 1.4),
+            ]
     for which, main in ((1, place.mains[0]), (2, place.mains[1])):
         dress += [
             _set("x", 0),
@@ -1909,21 +2326,25 @@ def functions(pack: dp.Pack) -> None:
             f"execute {_if('phase', 5)} {_if('down', i)} run {_set('spin', SPEEDS[i])}"
             for i in range(1, len(SPEEDS) - 1)
         ),
-        # the heartbeat: quicker with each main shut
+        # the heartbeat, a piston's thump: slower with each main shut (in
+        # the breach and the fight it is drowned; its last beats are
+        # ``end/step``'s)
         _add("beat"),
         _set("per", 0),
-        f"execute {open_dome} {_if('phase', 0)} run {_set('per', 8)}",
-        f"execute {_if('phase', 1)} run {_set('per', 4)}",
-        f"execute {_if('phase', 1)} run {_op('per', '-=', '#b7.shut')}",
-        f"execute {_if('phase', 3)} run {_set('per', 2)}",
+        f"execute {open_dome} {_if('phase', '0..1')} run {_set('per', BEAT)}",
+        *(
+            f"execute {_if('phase', 1)} {_if('shut', n)} "
+            f"run {_set('per', BEAT + n * BEAT_SLOWER)}"
+            for n in (1, 2)
+        ),
         f"execute {_if('per', '1..')} if score {_s('beat')} >= {_s('per')} "
         f"run {call('beat')}",
         f"execute {_if('blink', 0)} run {call('brow')}",
         f"execute unless score {_s('phase')} matches 5 run particle "
         f"minecraft:campfire_cosy_smoke {middle(place.chimney)} 0.3 1 0.3 0.01 2",
-        # the lamps of the way out, one a step once it is over
-        f"execute {_if('phase', 5)} {_if('out', f'..{len(place.way_out) - 1}')} "
-        f"run {_add('out')}",
+        # over: the ending, a step at a time; the lamps of the way out
+        f"execute {_if('phase', 5)} {_if('fin', f'..{end_steps(dome) - 1}')} "
+        f"run {call('end/step')}",
         *fittings.gauge_lines(place.way_out, _s("out"), 1, lit, dark),
         f"execute if block {_xyz(place.lectern)} minecraft:lectern[has_book=false] "
         f"run {call('book')}",
@@ -1931,7 +2352,77 @@ def functions(pack: dp.Pack) -> None:
     pack.function(f"{base}/dress", dress)
     pack.function(
         f"{base}/beat",
-        [_set("beat", 0), sound("block.note_block.basedrum", heart, 3, 0.5)],
+        [
+            _set("beat", 0),
+            # watchful, it is heard from the pavilion; awake, all over the dome
+            f"execute {_if('phase', 0)} run "
+            + sound("block.piston.extend", heart, 1.5, 0.5),
+            f"execute {_if('phase', 1)} run "
+            + sound("block.piston.extend", heart, 3, 0.5),
+            f"execute {_if('phase', 1)} run "
+            + sound("entity.iron_golem.step", heart, 3, 0.5),
+        ],
+    )
+    # -- the ending, from the win (``#b7.fin`` counts its steps): the Engine
+    # winds down (its last beats, each later and fainter; a whine that falls
+    # a note a step; a last gasp of steam), the lights come back in a wave
+    # round the dome to the way out, then the title, and the lamps of the
+    # way out run from the Engine to the airlock
+    title_at = end_title_at()
+    last = len(place.way_out) - 1
+    end = [
+        _add("fin"),
+        *(
+            f"execute {_if('fin', n)} run "
+            + sound(
+                "block.piston.extend",
+                heart,
+                round(3 - 0.6 * i, 1),
+                round(0.6 - 0.03 * i, 2),
+            )
+            for i, n in enumerate(LAST_BEATS)
+        ),
+        *(
+            f"execute {_if('fin', n)} run "
+            + sound(
+                "block.note_block.didgeridoo", heart, 3, round(1.4 * 0.89 ** (n - 1), 2)
+            )
+            for n in range(1, WHINE + 1)
+        ),
+        f"execute {_if('fin', WHINE)} run "
+        + sound("block.fire.extinguish", heart, 3, 0.5),
+        f"execute {_if('fin', WHINE)} run particle minecraft:cloud "
+        f"{middle(place.chimney)} 1 2 1 0.05 200",
+    ]
+    if PHASE_2:
+        end += [
+            f"execute {_if('fin', WAVE_AT + k)} run {call(f'lights/wave_{k}')}"
+            for k in range(WAVE)
+        ]
+    end += [
+        f"execute {_if('fin', title_at)} run {call('end/title')}",
+        f"execute {_if('fin', f'{title_at}..')} {_if('out', f'..{last}')} "
+        f"run {_add('out')}",
+    ]
+    pack.function(f"{base}/end/step", end)
+    pack.function(
+        f"{base}/end/title",
+        [
+            f"title {here} times 10 100 20",
+            f"title {here} subtitle "
+            + label_text(
+                f"The way home is lit: the {exit_name(dome)} airlock, "
+                "back to the Pump House.",
+                "yellow",
+            ),
+            f"title {here} title " + label_text("THE STATION IS SAVED", "green"),
+            sound("ui.toast.challenge_complete", heart, 3, 1),
+            say(
+                "The Engine is still. The way out is lit: go home by the "
+                f"{exit_name(dome)} airlock.",
+                "green",
+            ),
+        ],
     )
     pack.function(f"{base}/book", [_setblock(place.lectern, logbook(dome))])
     # the brow: the run's clock in binary, minutes over seconds
@@ -1988,6 +2479,13 @@ def functions(pack: dp.Pack) -> None:
         f"{base}/tick",
         [
             f"execute {_if('spin', '1..')} run {call('gov/spin')}",
+            # the casing's animation runs by the tick (before the step, so
+            # that the halves stand open on the step the Master comes out)
+            *(
+                [f"execute {_if('phase', 2)} run {call('breach/tick')}"]
+                if PHASE_2
+                else []
+            ),
             f"execute {open_dome} {_if('phase', 0)} run {start.tick}",
             f"execute {_if('phase', 1)} {_if('amb', '1..')} run {pair.tick}",
             _add("tick"),
@@ -2009,13 +2507,25 @@ def functions(pack: dp.Pack) -> None:
             f"execute {open_dome} {_if('phase', 4)} run tellraw @s "
             '{text:"The firebox stands open. He is waiting for you.",'
             'color:"gray",italic:true}',
+            # one who comes in while he is out hears his music from its start
+            *(
+                [f"execute {_if('phase', 3)} run {call('music/mine')}"]
+                if PHASE_2
+                else []
+            ),
         ],
     )
     # the core's form follows who is in the dome; this room's follows who
     # is in the arena: the hooks only ask for a count at once
     pack.function(f"{base}/solo", [call("form/count")])
     pack.function(f"{base}/duo", [call("form/count")])
-    pack.function(f"{base}/leave", [f"tag @s remove {ARENA}"])
+    pack.function(
+        f"{base}/leave",
+        [
+            f"tag @s remove {ARENA}",
+            *([f"stopsound @s record {MUSIC}"] if PHASE_2 else []),
+        ],
+    )
     pack.function(
         f"{base}/died",
         [
@@ -2024,6 +2534,13 @@ def functions(pack: dp.Pack) -> None:
             f"tag @s remove {ARENA}",
             f"execute {open_dome} {_if('phase', '1..4')} run tellraw @s "
             '{text:"The Engine does not wait. Walk back in.",color:"gray",italic:true}',
+            # (whether a death stops a client's music no check here can say:
+            # the dead hear it from its start)
+            *(
+                [f"execute {_if('phase', 3)} run {call('music/mine')}"]
+                if PHASE_2
+                else []
+            ),
         ],
     )
     # the stage in progress put back when the dome empties: a main being
@@ -2063,7 +2580,7 @@ def functions(pack: dp.Pack) -> None:
     )
     zeroed = ("phase", "t", "shut", "amb", "pair", "next", "hatch", "n", "cast", "any")
     zeroed += ("live", "out", "down", "blink", "beat", "spin", "idle", "up", "vent")
-    zeroed += ("esc", "boss", "x")
+    zeroed += ("esc", "boss", "x", "fin", "an", "open", "mus", "hiss")
     lo, hi = place.firebox
     pack.function(
         f"{base}/reset",
@@ -2081,7 +2598,12 @@ def functions(pack: dp.Pack) -> None:
                 for c, block in torches.items()
             ),
             call("face/shut"),
-            *([call("lights/full")] if PHASE_2 else []),
+            *(
+                [call("casing/gone"), call("music/stop"), call("lights/full")]
+                if PHASE_2
+                else []
+            ),
+            dp.fill(*place.fire, COOL),
             dp.fill(lo, hi, AIR),
             automatons.remove_line(INDEX),
             call("signs"),
@@ -2110,8 +2632,8 @@ def _phase_2(
     doorway = place.door_columns[0][2]
     store = f"{game.STORE} b7"
     occ = f"#occ{INDEX}"
-    knock, *bangs, out = BREACH
-    pack.constants(OBJ, out)
+    fr = place.frame
+    pack.constants(OBJ, OUT)
     if not rider_is_raider():
         # a ravager fights by itself only under one of these (see RIDER_MOB)
         pack.tag("entity_type", RAIDERS_TAG, [RIDER_MOB])
@@ -2120,6 +2642,55 @@ def _phase_2(
     lights = floor_lights(dome)
     pack.function(f"{base}/lights/dim", [_setblock(c, DIM) for c in lights])
     pack.function(f"{base}/lights/full", [_setblock(c, domes.LIGHT) for c in lights])
+    # (at the ending they come back a sector a step, each with a higher note)
+    for k, sector in enumerate(light_wave(dome)):
+        pack.function(
+            f"{base}/lights/wave_{k}",
+            [
+                *(_setblock(c, domes.LIGHT) for c in sector),
+                sound("block.copper_bulb.turn_on", heart, 3, 1),
+                sound("block.note_block.chime", heart, 3, round(0.6 * 1.122**k, 2)),
+            ],
+        )
+
+    # -- the boss's music: to each player in the dome, at where they stand
+    pack.function(
+        f"{base}/music/mine",
+        [f"stopsound @s record {MUSIC}", f"playsound {MUSIC} record @s ~ ~ ~ 1"],
+    )
+    pack.function(
+        f"{base}/music/play",
+        [_set("mus", 1), f"execute as {here} at @s run {call('music/mine')}"],
+    )
+    pack.function(
+        f"{base}/music/stop", [_set("mus", 0), f"stopsound {here} record {MUSIC}"]
+    )
+
+    # -- the casing (see ``casing_summons``): its displays put over the
+    # doorway in place of the doors' blocks, put as the breach leaves them,
+    # and taken away. ``#b7.open``: 0 the doors are blocks, 1 the displays
+    # are shut or moving, 2 they stand open
+    case = f"@e[type=minecraft:block_display,tag={CASE_TAG}]"
+    pack.function(f"{base}/casing/gone", [f"kill {case}", _set("open", 0)])
+    pack.function(
+        f"{base}/casing/put",
+        [
+            f"kill {case}",
+            *casing_summons(dome, opened=False),
+            call("face/open"),
+            _set("open", 1),
+        ],
+    )
+    pack.function(
+        f"{base}/casing/open",
+        [
+            f"kill {case}",
+            *casing_summons(dome, opened=True),
+            call("face/open"),
+            dp.fill(*place.fire, HOT),
+            _set("open", 2),
+        ],
+    )
     # -- nobody stands in the doorway he comes out of: the porch and the
     # firebox, as one box
     corners = (*place.porch, *place.firebox)
@@ -2137,29 +2708,138 @@ def _phase_2(
         f"{base}/breach/start",
         [
             _set("phase", 2),
-            _set("t", 0),
+            # (the step that shuts the third main goes on to ``breach/step``,
+            # which counts it: the breach's steps are counted from the next)
+            _set("t", -1),
             *(_set(name, 0) for name in ("wa", "wb", "wc", "ra", "rb", "rc", "amb")),
+            _set("an", 0),
             automatons.remove_line(INDEX),
             call("breach/clear"),
+            call("casing/put"),
             call("lights/dim"),
             f"effect give {here} minecraft:darkness {DARK} 0 true",
             f"bossbar set {bar.id} value 0",
             bar.show,
-            *title("THE MAINS ARE SHUT", "Something is knocking in the firebox."),
+            *title("THE MAINS ARE SHUT", "Watch its face: something is breaking out."),
             sound("block.beacon.deactivate", heart, 3, 0.5),
             sound("entity.warden.heartbeat", heart, 3, 0.6),
-            say("The lamps fail. The firebox doors are moving.", "red"),
+            say("The lamps fail. The Engine's casing is moving.", "red"),
         ],
     )
-    for i, column in enumerate(place.door_columns):
+    # the casing's seams: down its middle, and along its top (particles
+    # spread along the world's axes)
+    seam = _xyzf(point(fr, FACE_F - 0.7, 0, DOOR_H / 2))
+    top = _xyzf(point(fr, FACE_F - 0.7, 0, DOOR_H + 0.2))
+    along = " ".join(f"{0.1 + 1.4 * abs(v):g}" for v in (fr.right[0], 0, fr.right[1]))
+    halves = leaves(dome)
+    loose = plates(dome)
+
+    def one(tag: str) -> str:
+        return f"@e[type=minecraft:block_display,tag={tag},limit=1]"
+
+    def half(leaf: Leaf) -> str:
+        return f"execute as @e[type=minecraft:block_display,tag={leaf.tag}] at @s run"
+
+    # a knock: the fire flares behind the casing, the halves start from
+    # their seats and the middle plates are pushed out, steam jets from the
+    # seams and sparks fall; ``breach/settle`` lets it all back, three
+    # ticks on. Each knock is harder than the last
+    for i, degrees in enumerate(BULGE):
+        hard = i + 1
         pack.function(
-            f"{base}/breach/bang_{i}",
+            f"{base}/breach/knock_{i}",
             [
-                *(_setblock(cell, AIR) for cell in column),
-                sound("entity.generic.explode", doorway, 3, 0.7 + 0.1 * i),
-                f"particle minecraft:large_smoke {middle(doorway)} 1.5 1.5 0.5 0.05 60",
+                sound("entity.zombie.attack_iron_door", doorway, 3, 0.5),
+                sound("block.anvil.land", doorway, hard, 0.5),
+                dp.fill(*place.fire, HOT),
+                *(
+                    f"{half(leaf)} tp @s ~ ~ ~ {leaf.swing * degrees} 0"
+                    for leaf in halves
+                ),
+                *(
+                    f"tp {one(plate.tag)} {_xyzf(plate_bulged(dome, plate, degrees))}"
+                    for plate in loose
+                ),
+                f"particle minecraft:cloud {seam} 0.1 2 0.1 0.08 {15 * hard}",
+                f"particle minecraft:cloud {top} {along} 0.08 {10 * hard}",
+                f"particle minecraft:campfire_signal_smoke {top} {along} 0.01 {4 * hard}",
+                f"particle minecraft:lava {seam} 0.1 1.5 0.1 0 {3 * hard}",
+                f"particle minecraft:small_flame {seam} 0.1 2 0.1 0.03 {10 * hard}",
+                f"particle minecraft:flame {seam} 0.1 2 0.1 0.02 {5 * hard}",
             ],
         )
+    pack.function(
+        f"{base}/breach/settle",
+        [
+            dp.fill(*place.fire, COOL),
+            *(f"{half(leaf)} tp @s ~ ~ ~ 0 0" for leaf in halves),
+            *(f"tp {one(plate.tag)} {_xyzf(plate.on)}" for plate in loose),
+        ],
+    )
+    # the blow: a boom that hurts nobody and breaks nothing (sounds and
+    # particles), the fire alight for good, and the middle plates thrown out
+    # and up, turning over as they go; ``breach/land`` drops them to the
+    # floor when they are at the top of their flight
+    blow = [
+        dp.fill(*place.fire, HOT),
+        sound("entity.generic.explode", doorway, 4, 0.6),
+        sound("entity.warden.sonic_boom", doorway, 4, 0.7),
+        sound("block.anvil.land", doorway, 3, 0.5),
+        f"particle minecraft:explosion_emitter {seam} 0 0 0 0 1",
+        f"particle minecraft:lava {seam} 0.5 2 0.5 0 40",
+        f"particle minecraft:flame {seam} 0.5 2 0.5 0.25 120",
+        f"particle minecraft:cloud {seam} 0.5 2 0.5 0.3 100",
+        f"particle minecraft:campfire_signal_smoke {top} {along} 0.03 20",
+    ]
+    for plate in loose:
+        blow += [
+            f"data merge entity {one(plate.tag)} {{start_interpolation:0,"
+            f"interpolation_duration:{2 * PLATE_GLIDE},"
+            f"{plate_pose(fr, flat=True)}}}",
+            f"tp {one(plate.tag)} {_xyzf(plate.apex)} {plate.yaw // 2} 0",
+        ]
+    pack.function(f"{base}/breach/blow", blow)
+    pack.function(
+        f"{base}/breach/land",
+        [f"tp {one(plate.tag)} {_xyzf(plate.land)} {plate.yaw} 0" for plate in loose],
+    )
+    # the breach by the tick (``#b7.an``: ticks since the third main)
+    tick = [_add("an")]
+    for i, at in enumerate(KNOCKS):
+        tick += [
+            f"execute {_if('an', at)} run {call(f'breach/knock_{i}')}",
+            f"execute {_if('an', at + 3)} run {call('breach/settle')}",
+        ]
+    tick += [
+        f"execute {_if('an', BLOW)} run {call('breach/blow')}",
+        f"execute {_if('an', BLOW + PLATE_GLIDE)} run {call('breach/land')}",
+        f"execute {_if('an', BLOW + 2 * PLATE_GLIDE)} run "
+        + sound("block.anvil.land", place.back, 2, 1.6),
+    ]
+    # the halves swing out on their hinges, fast and then slower (a turn a
+    # tick, each glided by the display's ``teleport_duration``), groaning,
+    # the fire's light and flames in the gap, and strike their stops
+    at = BLOW
+    for ticks, degrees in SWING:
+        tick += [
+            f"execute {_if('an', f'{at + 1}..{at + ticks}')} "
+            f"{half(leaf).removeprefix('execute ')} "
+            f"tp @s ~ ~ ~ ~{leaf.swing * degrees} ~"
+            for leaf in halves
+        ]
+        at += ticks
+    tick += [
+        f"execute {_if('an', BLOW + 1 + 20 * j)} run "
+        + sound("block.iron_door.open", doorway, 3, 0.5)
+        for j in range(SWING_TICKS // 20)
+    ]
+    tick += [
+        f"execute {_if('an', f'{BLOW}..{at}')} run particle minecraft:flame "
+        f"{seam} 0.8 2 0.8 0.04 3",
+        f"execute {_if('an', at)} run " + sound("block.anvil.land", doorway, 3, 0.6),
+        f"execute {_if('an', at)} {_if('open', 1)} run {_set('open', 2)}",
+    ]
+    pack.function(f"{base}/breach/tick", tick)
     pack.function(
         f"{base}/breach/step",
         [
@@ -2168,15 +2848,9 @@ def _phase_2(
             # the Master's bar fills as he breaks out
             _op("pct", "=", "#b7.t"),
             _op("pct", "*=", "#100"),
-            _op("pct", "/=", f"#{out}"),
+            _op("pct", "/=", f"#{OUT}"),
             bar.value_line(_s("pct")),
-            f"execute {_if('t', f'{knock}..{bangs[0] - 1}')} run "
-            + sound("entity.zombie.attack_iron_door", doorway, 3, 0.5),
-            *(
-                f"execute {_if('t', at)} run {call(f'breach/bang_{i}')}"
-                for i, at in enumerate(bangs)
-            ),
-            f"execute {_if('t', f'{out}..')} run {call('master/out')}",
+            f"execute {_if('t', f'{OUT}..')} run {call('master/out')}",
         ],
     )
 
@@ -2200,7 +2874,8 @@ def _phase_2(
         f"{base}/master/out",
         [
             f"execute as {boss} run function {pack.id('mob/remove')}",
-            call("face/open"),
+            # (the casing as the breach leaves it, if it is not so already)
+            f"execute unless score {_s('open')} matches 2 run {call('casing/open')}",
             call("breach/clear"),
             master_summon(place.spot),
             # two players: 170%; each one more: 50% more
@@ -2224,6 +2899,7 @@ def _phase_2(
             sound("entity.ravager.roar", heart, 3, 0.8),
             sound("entity.wither.spawn", heart, 2, 0.8),
             f"particle minecraft:flame {middle(doorway)} 1.5 1.5 0.5 0.1 80",
+            f"execute {_if('mus', 0)} run {call('music/play')}",
         ],
     )
     pack.function(
@@ -2302,6 +2978,9 @@ def _phase_2(
             f"execute {_if('boss', 0)} run {call('p3/gone')}",
             f"execute {_if('boss', 0)} run return 0",
             call("p3/health"),
+            # his music, again when it has run out
+            _add("mus"),
+            f"execute {_if('mus', f'{MUSIC_STEPS}..')} run {call('music/play')}",
             _op("pct", "=", "#b7.hsum"),
             _op("pct", "*=", "#100"),
             _op("pct", "/=", "#b7.hmax"),
@@ -2317,11 +2996,17 @@ def _phase_2(
             call("fence"),
         ],
     )
-    # the dome emptied in the breach or the fight: he goes, the doors stay
-    # open, and he comes out again at full health when a player is back
+    # the dome emptied in the breach or the fight: he goes, the casing
+    # stands open (put so at once, if the breach was not done), and he comes
+    # out again at full health when a player is back
     pack.function(
         f"{base}/p3/abandon",
-        [call("face/open"), _set("phase", 4), _set("t", 0)],
+        [
+            f"execute unless score {_s('open')} matches 2 run {call('casing/open')}",
+            call("music/stop"),
+            _set("phase", 4),
+            _set("t", 0),
+        ],
     )
     pack.function(
         f"{base}/p4",
@@ -2352,14 +3037,17 @@ def check(ctx: Any) -> list[str]:
     by setting the block or the entity as a hand would leave it. With
     ``PHASE_2`` off the third main is the win; on, the breach and the
     Master are worked too: the lanterns dimmed and the bar up at the
-    breach, the porch kept clear, the doors' order; the pair out, the
+    breach, the porch kept clear, the casing's displays in the doors'
+    place, a half of it read swinging open and a plate read to the floor;
+    the pair out, the
     Master's kit, trims, size and name read back, his mob among the game's
     raiders, their health; lost early and out again; a golem set before
     them and bitten by the ravager with the rider's blow at nothing; the
     ravager put out of the pavilion with its rider still up; Resistance
     and mending with nobody in the arena; the steam's cycle; the ravager
-    dead, the Master dead, the win, the lanterns back; the dome emptied in
-    the breach, and he out again whole.
+    dead, the Master dead, the win, the ending run to its last step and
+    the lanterns back; the dome emptied in the breach (the casing put open
+    at once), and he out again whole.
 
     It solves the last dome, which is the game's win: the run's scores are saved
     and put back, and ``#run.level`` is 0 while it runs so that no best
@@ -2370,8 +3058,12 @@ def check(ctx: Any) -> list[str]:
     thrown by hand, and a player's own body on a deck; a dead partner not
     counting in the arena (a stand-in does not die: it is moved to the
     pavilion); everything aimed at players: titles, chat, sounds,
-    particles, the bossbar, the Darkness at the breach, the steam's
-    ``damage``, the trophy sign given and placed; that automatons, or the
+    particles, the music (begun, begun again, stopped), the bossbar, the
+    Darkness at the breach, the steam's ``damage``, the trophy sign given
+    and placed; how the casing looks as it bulges, splits and swings (its
+    displays are counted, and one half's turn and one plate's height read:
+    that the halves swing outwards and not in, that the plates tumble and
+    lie flat, and how they are lit, only an eye can tell); that automatons, or the
     Master and his ravager, go for a player, find a way round the Engine
     and up the ramps, and fight fairly; how the Master looks (that his
     armour, trims and name are drawn, how he sits on the ravager at his
@@ -2422,6 +3114,21 @@ def _check(ctx: Any, saved: dict[str, int | None]) -> list[str]:
     mobs = automatons.selector(INDEX)
     lit_bulbs = (f"{BULB}[lit=true]", f"{GREEN_BULB}[lit=true]")
     torches = clock_torches(place)
+    case = f"@e[type=minecraft:block_display,tag={CASE_TAG}]"
+    half, loose = leaves(dome)[0], plates(dome)[0]
+    cased = sum(len(leaf.parts) for leaf in leaves(dome)) + len(plates(dome))
+
+    def number(what: str) -> float | None:
+        """a number of an entity's data (``Rotation[0]``, ``Pos[1]``)"""
+        m = re.match(r"-?[\d.]+", ctx.data(what))
+        return float(m.group(0)) if m else None
+
+    def half_yaw() -> float | None:
+        """how far the casing's right half is turned"""
+        return number(f"entity @e[tag={half.tag},limit=1] Rotation[0]")
+
+    def plate_height() -> float | None:
+        return number(f"entity @e[tag={loose.tag},limit=1] Pos[1]")
 
     def expect(what: str, got: Any, want: Any) -> None:
         game_checks.expect(problems, what, got, want)
@@ -2500,9 +3207,11 @@ def _check(ctx: Any, saved: dict[str, int | None]) -> list[str]:
         if wrong:
             problems.append(f"{what}: {len(wrong)} blocks not as built: {wrong[:6]}")
         names = ("phase", "shut", "ga", "gb", "gc", "la", "lb", "lc", "live", "out")
+        names += ("fin", "open", "mus")
         expect(
             f"{what}: the scores", {n: get(n) for n in names}, dict.fromkeys(names, 0)
         )
+        expect(f"{what}: the casing's displays", ctx.count(case), 0)
         expect(f"{what}: automatons", ctx.count(mobs), 0)
         expect(f"{what}: the Master and his mount", ctx.count(f"@e[tag={BOSS}]"), 0)
         if "Finch" not in ctx.data(f"block {_xyz(place.lectern)} Book"):
@@ -2582,7 +3291,13 @@ def _check(ctx: Any, saved: dict[str, int | None]) -> list[str]:
             ctx.score(f"#t{INDEX}") in (1, 2),
             True,
         )
-        steps(len(place.way_out) + 3)
+        # the ending, to its last step: the lanterns back, the fire out
+        steps(end_steps(dome) + 3)
+        expect(f"{what}: the ending run", get("fin"), end_steps(dome))
+        if PHASE_2:
+            expect(f"{what}: the floor's lanterns back", dimmed(), 0)
+            expect(f"{what}: the fire out", ctx.is_block(place.fire[0], COOL), True)
+            expect(f"{what}: the music stopped", get("mus"), 0)
         expect(
             f"{what}: the lamps of the way out",
             lamps(place.way_out),
@@ -2655,6 +3370,9 @@ def _check(ctx: Any, saved: dict[str, int | None]) -> list[str]:
     shown = lamps(a.gauge)
     if shown not in (gauge // LAMP, gauge // LAMP + 1):
         problems.append(f"main A's gauge shows {shown} lamps at {gauge}")
+    if get("lmpa") not in (gauge // LAMP, gauge // LAMP + 1):
+        problems.append(f"main A's lamps counted for their notes: {get('lmpa')}")
+    expect("the heartbeat, no main shut", get("per"), BEAT)
     expect(
         "A's telltale, winding",
         seen(a.telltales[0], f"{BULB}[lit=true]"),
@@ -2685,6 +3403,8 @@ def _check(ctx: Any, saved: dict[str, int | None]) -> list[str]:
         True,
     )
     expect("main A shut: the dome", ctx.score(f"#d{INDEX}"), 1)
+    steps(1)
+    expect("main A shut: the heartbeat slower", get("per"), BEAT + BEAT_SLOWER)
 
     # ---- the automatons: up to the cap and no further, put out of the
     # pavilion, another after one is lost
@@ -2735,25 +3455,33 @@ def _check(ctx: Any, saved: dict[str, int | None]) -> list[str]:
         expect("the breach: automatons", ctx.count(mobs), 0)
         expect("the breach: the floor's lanterns dimmed", dimmed(), len(lights))
         expect("the breach: the Master's bar shown", bar_shown(), True)
-        # one who walks into the porch while the doors go is put back
-        # (moved with no wait for a scan: the doors' order is timed below)
+        # the casing: the doors' blocks gone, its displays in their place
+        open_cells = sum(ctx.is_block(x, AIR) for x in place.doors)
+        expect("the breach: the doors' blocks gone", open_cells, len(place.doors))
+        expect("the breach: the casing's displays", ctx.count(case), cased)
+        # one who walks into the porch while the casing goes is put back
+        # (moved with no wait for a scan). A half of the casing is read as
+        # it goes: shut (or started by a knock), then swinging, then open;
+        # and a plate of its middle, from its place to the floor
         ctx.cmd(f"tp @e[tag={S1}] {middle(place.porch[0])}")
-        order = []
-        for _ in range(BREACH[-1] + 4):
-            gone = [
-                all(ctx.is_block(x, AIR) for x in col) for col in place.door_columns
-            ]
-            if not order or order[-1] != gone:
-                order.append(gone)
+        turns, heights = [], []
+        for _ in range(OUT + 4):
+            turns.append(abs(half_yaw() or 0))
+            heights.append(plate_height() or 0)
             steps(1)
-        want_order = [
-            [False] * 3,
-            [True, False, False],
-            [True, True, False],
-            [True] * 3,
-        ]
-        expect("the doors forced, by column", order, want_order)
+        expect(f"the casing's half, at first ({turns})", turns[0] <= max(BULGE), True)
+        swinging = [t for t in turns if max(BULGE) < t < OPEN]
+        expect(f"the casing's half seen swinging ({turns})", bool(swinging), True)
+        expect("the casing's half, open", turns[-1], OPEN)
+        expect("its swing, outwards", half_yaw(), half.swing * OPEN)
+        expect(f"a plate, bolted on ({heights})", heights[0], loose.on[1])
+        expect(f"a plate, on the floor ({heights})", heights[-1], loose.land[1])
         expect("the breach: the porch kept clear", ctx.count(in_porch), 0)
+        expect(
+            "the breach done: the casing", (get("open"), ctx.count(case)), (2, cased)
+        )
+        expect("the fire alight", ctx.is_block(place.fire[0], HOT), True)
+        expect("the Master's music begun", get("mus") >= 1, True)
         # the pair, out of the firebox, at the level's health
         ravager, rider = f"@e[tag={RAVAGER},limit=1]", f"@e[tag={RIDER},limit=1]"
         got = {
@@ -2794,6 +3522,7 @@ def _check(ctx: Any, saved: dict[str, int | None]) -> list[str]:
         got = {"phase": get("phase"), "pair": ctx.count(f"@e[tag={BOSS}]")}
         expect("the pair lost at once: out again", got, {"phase": 3, "pair": 2})
         expect("the pair lost at once: the dome", ctx.score(f"#d{INDEX}"), 1)
+        expect("the pair lost at once: the casing left open", ctx.count(case), cased)
         steps(EARLY + 2)
         # the ravager bites by itself with this rider up, as at the rig: a
         # golem that cannot move, of no team, set before them; the rider's
@@ -2861,7 +3590,6 @@ def _check(ctx: Any, saved: dict[str, int | None]) -> list[str]:
             problems.append(f"the bar after the ravager died: {before} to {get('pct')}")
         ctx.cmd(f"kill @e[tag={RIDER}]")
         steps(3)
-        expect("the Master dead: the floor's lanterns back", dimmed(), 0)
         expect("the Master dead: his bar hidden", bar_shown(), False)
     won("solo")
     # the tunnel home pumps dry and opens; the dome stays dry and whole
@@ -2910,6 +3638,9 @@ def _check(ctx: Any, saved: dict[str, int | None]) -> list[str]:
         expect("left in the breach", got, {"phase": 4, "pair": 0})
         open_cells = sum(ctx.is_block(x, AIR) for x in place.doors)
         expect("left in the breach: the doors open", open_cells, len(place.doors))
+        got = (get("open"), ctx.count(case), half_yaw())
+        want = (2, cased, half.swing * OPEN)
+        expect("left in the breach: the casing put open", got, want)
         stand(S1, entrance)
         steps(ROAR + 4)
         expect("back in the pavilion: he waits", get("phase"), 4)
