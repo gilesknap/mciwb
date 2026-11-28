@@ -85,6 +85,20 @@ soon as two stand at the same button to confirm a vote.) The functions a
 click ends in are ``dome/0/press/confirm``, ``dome/0/press/reset`` and
 ``dome/0/press/trophy``: run as a player in the game.
 
+**Fast travel.** A sign on the map's left corner post (``TRAVEL_SIGN``)
+says what it is. Over each dome of the map but the Pump House stands an
+invisible ``interaction`` entity a column of its disc (``travel_boxes``),
+just proud of the glass. Those of the upper row reach down to the top of
+the lower row, so a player standing at the map reaches every dome
+(``REACH``). A click runs ``dome/0/travel/<n>`` as the player who
+clicked, and only them: once the run is on, with no reset being voted on,
+if dome n is restored, or open with someone in it already (a late
+arrival joins the team), they are put on its entrance spot with a puff of
+particles and a chime; otherwise they are told why not. Nothing else is
+done to them: the next scan finds them in dome n as if they had walked in
+(respawn point, title, kits, the dome's ``enter`` hook), as for the
+recall.
+
 **The trophy.** At the win (``dome/0/trophy/arm``, a ``wins`` function of
 the core) every player in the game (and stand-in) is owed a trophy: tag
 ``DUE`` and the run's number in ``TROPHY_RUN``; the trophy's name ("Trophy:
@@ -454,6 +468,49 @@ def map_names() -> dict[int, tuple[float, float]]:
     the middle of its column along the wall and the height its text stands
     at (a little over the middle row's foot)"""
     return {i: (k + 0.5, h + 0.35) for i, (k, h) in map_cells().places.items()}
+
+
+#: how far a survival or adventure player reaches an entity, from the eye
+#: (the ``entity_interaction_range`` attribute's default), and the eye's
+#: height over the feet
+REACH, EYE = 3.0, 1.62
+#: how far a fast-travel target stands out in front of the domes' glass
+TRAVEL_PROUD = 0.05
+#: the sign that says the map is for fast travel: on the corner post at
+#: the map's left end, over a standing player's head
+TRAVEL_SIGN = MAP.front(0, 3, 2)
+TRAVEL_TEXT = ("FAST TRAVEL", "Click a green", "dome on the map", "to go there.")
+
+
+@cache
+def travel_boxes() -> dict[int, tuple[tuple[tuple[float, float, float], int], ...]]:
+    """
+    The fast-travel targets: for each dome but the Pump House, an
+    interaction entity on each column of its disc, a block wide, from
+    just inside the glass to ``TRAVEL_PROUD`` in front of it (a player
+    pressed against the glass never has an eye in one). Each is the
+    middle of its base and its height. A dome of the lower row has them
+    over its own rows; one of the upper row from the top of the lower row
+    up, so that its lowest part is within ``REACH`` of a player standing
+    at the map.
+    """
+    m = map_cells()
+    upper = {i for i, (_, h) in m.places.items() if h > (MAP_H[0] + MAP_H[1]) / 2}
+    lower_top = max(
+        h for i, shape in m.shapes.items() if i not in upper for _, h in shape
+    )
+    out = {}
+    for d in layout.DOMES:
+        if d.index == N:
+            continue
+        shape = m.shapes[d.index]
+        high = max(h for _, h in shape) + 1
+        low = lower_top + 1 if d.index in upper else min(h for _, h in shape)
+        out[d.index] = tuple(
+            (MAP.spot(k + 0.5, low, 1 + TRAVEL_PROUD), high - low)
+            for k in sorted({k for k, _ in shape})
+        )
+    return out
 
 
 def dial_lamp(level: int) -> Cell:
@@ -859,6 +916,7 @@ def blocks() -> tuple[dict[Cell, str], dict[Cell, str]]:
     fit[upper] = door("upper")
     # the sealed door
     solid.update(sealed_door_cells())
+    fit[TRAVEL_SIGN] = fittings.wall_sign(_COMPASS[MAP.face], *TRAVEL_TEXT)
 
     extra_solid, extra_fit = dressing()
     room = set(solid) | set(fit)
@@ -1065,7 +1123,8 @@ PRIZE_TEXT = (
 @cache
 def entities() -> tuple[str, ...]:
     """the summon commands of everything that is not a block: the text
-    displays (labels, names, clocks) and the three interaction entities"""
+    displays (labels, names, clocks), the three interaction entities over
+    buttons and the map's fast-travel targets"""
     blocks()  # the plan must stand before anything is put on it
     out = []
 
@@ -1259,6 +1318,10 @@ def entities() -> tuple[str, ...]:
     out.append(interaction("st.ph.confirm", CONFIRM))
     out.append(interaction("st.ph.reset", RESET))
     out.append(interaction("st.ph.trophy", PRIZE_BUTTON))
+    for i, boxes in travel_boxes().items():
+        for pos, height in boxes:
+            tags = (TAG, "st.ph.go", f"st.ph.go{i}")
+            out.append(fittings.interaction(pos, tags, 1, height))
     return tuple(out)
 
 
@@ -1424,6 +1487,46 @@ def functions(pack: dp.Pack) -> None:
         ]
         pack.function(f"{base}/click/{name}", lines)
 
+    # -- fast travel: a click on a dome of the map, answered as the player
+    # who clicked (see "Fast travel")
+    pack.function(
+        f"{base}/click/go",
+        [
+            f"execute at @s run {pressed}",
+            *(
+                f"execute if entity @s[tag=st.ph.go{i}] "
+                f"on target run function {fid(f'travel/{i}')}"
+                for i in travel_boxes()
+            ),
+            "data remove entity @s interaction",
+        ],
+    )
+    for i in travel_boxes():
+        d = layout.DOMES[i]
+        x, y, z, yaw = domes.entrance(d)
+        no = "execute if {} run return run tellraw @s {}"
+        pack.function(
+            f"{base}/travel/{i}",
+            [
+                "execute unless entity @s[tag=st.in] run return 0",
+                no.format(score("#run", "0"), _t("Start the run first.", "gray")),
+                no.format(
+                    score("#vote.kind", "1"), _t("A reset is being voted on.", "gray")
+                ),
+                no.format(score(f"#d{i}", "0"), _t("Not yet restored.", "gray")),
+                no.format(
+                    f"{score(f'#d{i}', '1')} unless {score(f'#occ{i}', '1..')}",
+                    _t(f"Nobody is in {d.name} yet.", "gray"),
+                ),
+                "execute at @s run particle minecraft:portal ~ ~1 ~ 0.3 0.6 0.3 0.5 60",
+                f"execute in minecraft:overworld run tp @s {x} {y} {z} {yaw} 0",
+                "execute at @s run particle minecraft:reverse_portal "
+                "~ ~1 ~ 0.3 0.6 0.3 0.05 60",
+                "execute at @s run playsound minecraft:block.amethyst_block.chime "
+                f"master {game.PLAYERS} ~ ~ ~ 1 1.2",
+            ],
+        )
+
     # -- what the scores say, shown
     m = map_cells()
     show = [
@@ -1525,6 +1628,7 @@ def functions(pack: dp.Pack) -> None:
         fittings.click_line(f"st.ph.{name}", fid(f"click/{name}"))
         for name, _, _ in shown
     ]
+    tick.append(fittings.click_line("st.ph.go", fid("click/go")))
     tick += [
         f"scoreboard players add #ph.t {OBJ} 1",
         f"execute if {score('#ph.t', '10..')} run function {fid('refresh')}",
@@ -1622,6 +1726,9 @@ def functions(pack: dp.Pack) -> None:
             *(_setblock(c, button(DIAL_WALL)) for c in (DOWN, UP, CONFIRM)),
             _setblock(RESET, button(CABINET)),
             _setblock(PRIZE_BUTTON, button(FAME)),
+            # a fast-travel click not yet taken up is dropped
+            "execute as @e[type=minecraft:interaction,tag=st.ph.go] "
+            "run data remove entity @s interaction",
             # the dispenser cleared: trophies not picked up, and those owed
             # (the Wall and the signs on it are never touched)
             f"kill @e[type=minecraft:item,tag={ITEM_TAG}]",
@@ -1773,6 +1880,7 @@ def check(ctx: Any) -> list[str]:
     # a piston's block, the lift's door)
     for cell in changing_cells() | {c for c, b in want.items() if BARS in b}:
         want[cell] = want[cell].partition("[")[0]
+    want[TRAVEL_SIGN] = want[TRAVEL_SIGN].partition("{")[0]  # its text, by eye
     problems += walk_problems()
     # nobody in the dome: the datapack's machinery stands still
     before = game_checks.scores(ctx, "#ph.c", "#ph.m")
@@ -1795,6 +1903,7 @@ def check(ctx: Any) -> list[str]:
         ("st.ph.confirm", 1),
         ("st.ph.reset", 1),
         ("st.ph.trophy", 1),
+        ("st.ph.go", sum(len(b) for b in travel_boxes().values())),
         (TAG, len(entities())),
     ):
         expect(problems, f"entities tagged {tag}", ctx.count(f"@e[tag={tag}]"), n)
@@ -1875,6 +1984,20 @@ def check(ctx: Any) -> list[str]:
     # -- the master lever: a player in the dome, the lever thrown
     game_checks.stand_in(ctx, "st.s1", N)
     expect(problems, "one in the Pump House", ctx.score(f"#occ{N}"), 1)
+    # fast travel: nowhere before the run starts
+    there = N + 1
+
+    def travel(i: int) -> tuple[int, int]:
+        """fast travel to dome i as the stand-in st.s1, a scan let pass:
+        is it in the Pump House, and in dome i by the core's count"""
+        game_checks.as_stand_in(ctx, "st.s1", f"dome/{N}/travel/{i}")
+        ctx.advance(game_checks.SCAN)
+        home = ctx.count(f"@e[tag=st.s1,{domes.sphere(DOME)}]")
+        return home, ctx.count(f"@e[tag=st.s1,scores={{st.dome={i}}}]")
+
+    ctx.set_score(f"#d{there}", 2)
+    expect(problems, "fast travel before the run starts", travel(there), (1, 0))
+    ctx.set_score(f"#d{there}", 0)
     machinery("with a player in the dome")
     ctx.setblock(LEVER, lever(True))
     ctx.advance(3)
@@ -1937,6 +2060,27 @@ def check(ctx: Any) -> list[str]:
             lamps(),
             dict.fromkeys(range(domes_n), state),
         )
+        if state == 1:  # open, and nobody there
+            expect(problems, "fast travel to an empty dome", travel(there), (1, 0))
+    # fast travel: a click by nobody taken up; refused to a locked dome;
+    # to a restored one, the stand-in on its entrance and counted in it
+    click = f"@e[type=minecraft:interaction,tag=st.ph.go{there},limit=1]"
+    ctx.cmd(
+        f"data modify entity {click} interaction set value "
+        "{player:[I;1,2,3,4],timestamp:0L}"
+    )
+    ctx.advance(3)
+    if ctx.data(f"entity {click} interaction"):
+        problems.append("a click on the map was not taken up by the tick")
+    locked = N + 2
+    ctx.set_score(f"#d{locked}", 0)
+    expect(problems, "fast travel to a locked dome", travel(locked), (1, 0))
+    ctx.set_score(f"#d{locked}", 2)
+    expect(problems, "fast travel to a restored dome", travel(there), (0, 1))
+    x, y, z, _ = domes.entrance(layout.DOMES[there])
+    near = f"x={x + 0.5},y={y},z={z + 0.5},distance=..1"
+    expect(problems, "on the entrance spot", ctx.count(f"@e[tag=st.s1,{near}]"), 1)
+    game_checks.stand_in(ctx, "st.s1", N)
     for state, shown in ((1, 0), (2, 1)):
         for t in layout.TUNNELS:
             if t.index != N:
