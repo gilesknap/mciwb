@@ -5,19 +5,32 @@ of the ring. Its build stage (``dome_<n>_inside``), its datapack functions
 
 **The one idea.** Starve the Engine of steam by winding shut its three
 steam mains, each on a different level of the dome, while it sends
-automatons to move you off them; then (phase 2) fight what comes out of
-the firebox when the last one shuts.
+automatons to move you off them; then (phase 2) pull the fire door's
+lever before its face, and fight what comes out of the firebox.
 
 **The switch.** ``PHASE_2`` (below) is the one switch of this module, and
-it is on. On, the third main starts the breach: the Engine's front casing
-splits open and the Master comes out on his ravager; the win is their
-death. Off, the fight ends when the third main shuts: that is the
+it is on. On, the third main brings up the fire door's lever, and its
+pull starts the breach: the Engine's front casing splits open and the
+Master comes out on his ravager; the win is their death. Off, the fight ends when the third main shuts: that is the
 win. The room, the mains and phase 1 are the same either way, and phase
 2's functions are in the pack only when the switch is on, so that a line
 of theirs the game refuses cannot stop the pack that phase 1 needs. What
 phase 2 assumes and no server has yet shown is listed at ``PHASE_2``.
 
-**Phase 2, in order.** *The breach* (7 s, no fighting): the automatons
+**Phase 2, in order.** *The fire door's lever* (``_fire_post``, ``fire/``;
+still phase 1, with ``#b7.fire`` 1): when the third main shuts nothing
+breaks out by itself. The automatons fall and no more are cast, the
+Engine's heart beats its slowest, and a lever on a brass post comes up
+(a puff, a clank) on the centre line before the firebox, beyond where the
+casing's plates will land, its lever and its sign ("FIRE DOOR / Pull to
+vent / the firebox.") on the side towards the way in: whoever pulls it is
+facing the Engine's opening. A title, a line of chat and the action bar
+say so until it is pulled, by anyone, however many are in the arena. It
+waits as long as it takes: through a death, and through the dome emptying
+(the lever stays up, put back unthrown; who comes back is told). Pulled,
+post, lever, sign and label go at once (so nothing of it stands where the
+breach plays, or before the eyes of who pulled it), and the breach starts.
+Only ``reset`` otherwise takes it away. *The breach* (7 s, no fighting): the automatons
 are gone; the lights fail (the lanterns in the floor dim to copper bulbs,
 ``floor_lights``, and the players are given the Darkness effect until the
 blow); a title, "THE MAINS ARE SHUT"; the Master's red bossbar comes up
@@ -120,14 +133,22 @@ and is taken at once.
 **Leaving** costs the gauge being wound and no more: when the dome
 empties in phase 1 (``empty``, 3 s after the last player went) the open
 mains' levers go back and their gauges empty, and the shut mains stay
-shut until the game's reset. In phase 2 the Master is removed and comes
+shut until the game's reset. With all three shut and the fire door's
+lever up, it stays up. In phase 2 the Master is removed and comes
 out again at full health when a player next walks into the arena.
 
 **Automatons** are the core's three kinds (automatons.py), one at a time
-from four hatches in the Engine's plinth, at a hatch with a player in
-reach of it, up to a cap that grows with each main shut; any that gets
-into the pavilion is put back at its hatch. Their dress, team, loot,
-count and removal are the core's.
+from six hatches, up to a cap that grows with each main shut: four
+notches in the Engine's plinth, on the floor, and one on each upper level
+(a trapdoor of iron in the deck: on the gallery beyond main B, and on the
+crown deck before main C's catwalk), so that they are cast on the level a
+player is on. The hatches are taken in a round (``HATCH_ROUND``: the upper
+two come up twice in it), and one is used only with a player in reach
+(``NEAR``) who is on its level (``LEVELS``, ``pour/levels``); if the whole
+round finds none (a player on a deck far from its hatch) any hatch with a
+player in reach is used. Any automaton that gets into the pavilion is put
+back at its hatch. None is cast while the fire door's lever stands. Their
+dress, team, loot, count and removal are the core's.
 
 **State** (scores in ``st``, all ``#b7.<name>``): ``phase`` 0 watchful,
 1 the mains, 2 the breach, 3 the Master, 4 the Master waiting (the dome
@@ -137,7 +158,9 @@ since there were two; for each main x: ``g<x>`` its gauge (a lamp is
 ``LAMP``), ``l<x>`` shut or not, ``r<x>`` ready this step, ``w<x>``
 winding this step; ``shut`` how many are shut; ``amb`` which of A and B
 waits for the other; ``t`` steps in the phase; ``next`` steps to the next
-automaton, ``cap`` the cap now, ``hatch`` the hatch last used; ``live`` 1
+automaton, ``cap`` the cap now, ``hatch`` the place in the hatches' round
+last tried; ``fire`` 1 while the fire door's lever stands (all three mains
+shut, phase 1 still); ``live`` 1
 once the room is set up; ``out`` the lamps of the way out lit; ``lmp<x>``
 and ``was<x>`` the lamps of a gauge now and a step ago; ``an`` the ticks
 of the breach, ``open`` the casing (above), ``mus`` the steps of the
@@ -169,7 +192,8 @@ round a centrepiece that goes from the floor to the glass:
   sides; the plaque, the logbook, the recall post), the Engine on its
   plinth with the firebox doors in its face at the back of a porch, main
   A under the gallery, nine columns, the lamps of the way out set in the
-  floor towards the exit airlock, three ramps;
+  floor towards the exit airlock, three ramps (and, from the third main
+  to its pull, the fire door's lever before the porch);
 - *the gallery*, a ring of copper grating on the columns six up, the
   pavilion's roof its balcony, main B on its inner edge;
 - *the high level*, twelve up: the crown deck round the Engine's drum,
@@ -195,8 +219,11 @@ Machinery that works by itself, none of it an input and none of it read:
 a room that fails: every cell inside the dome and off the cells the
 tunnels reserve, every input on gold with a sign, every walk the fight
 needs clear at foot and head height with the firebox shut and open, the
-gauges and telltales in sight from where they are needed, and the casing
-as it opens in no block of the room. The
+gauges and telltales in sight from where they are needed, the casing
+as it opens in no block of the room, each hatch a place an automaton can
+stand in and walk from to its level's main and no gap in a rail
+(``hatch_problems``), and the fire door's lever, which is no block of the
+room as built, fit to stand where it comes up (``fire_problems``). The
 pavilion stands between the entrance spot and the outgoing door's window
 on purpose (``domes.allow``, below): it is the antechamber.
 """
@@ -228,7 +255,8 @@ INDEX = layout.index_of("boss")  # the Engine's place in the ring
 OBJ = game.OBJ
 
 # ============================================================================
-# THE SWITCH. True: the third main starts the breach and phase 2 (the Master
+# THE SWITCH. True: the third main brings up the fire door's lever, whose
+# pull starts the breach and phase 2 (the Master
 # on his ravager). False: the room, the mains and phase 1, and the third main
 # shut is the win. The rig (PROGRESS, "Rig, second round") proved, against an
 # iron golem: a ravager with a vindicator up hunts and bites by itself with
@@ -312,7 +340,7 @@ MASTER_AXE = "minecraft:golden_axe"
 TWO_PLAYERS, MORE_PLAYERS = 170, 50  # percent of health for two, and each more
 EARLY = 10  # steps: the pair lost sooner than this is no win
 ROAR = 6  # steps a player is in the arena before the Master comes out again
-#: the breach, in ticks from the third main: the knocks (the casing bulges at
+#: the breach, in ticks from the pull of the fire door's lever: the knocks (the casing bulges at
 #: each, by so many degrees), the blow (the middle plates fly, the halves
 #: start to swing), the swing (so many ticks at so many degrees a tick)
 KNOCKS, BULGE = (20, 40, 60), (3, 5, 8)
@@ -361,6 +389,8 @@ STONE = "minecraft:polished_blackstone"
 BRICKS = "minecraft:polished_blackstone_bricks"
 TILES = "minecraft:deepslate_tiles"
 LADDER = "minecraft:ladder"
+#: a hatch of an upper level, in its deck: iron, which no hand opens
+HATCH = "minecraft:iron_trapdoor[half=top,open=false]"
 LANTERN = "minecraft:lantern[hanging=true]"
 
 #: the fire at the back of the firebox: dull as built, alight from the breach
@@ -390,6 +420,8 @@ PLATE_TAG = "st.b7.plate"  # its middle plates, numbered from the lowest
 RECALL_TAG = "st.recall7"
 GOVERNOR_TAG = "st.b7.gov"
 ARENA = "st.b7.arena"  # a player or stand-in in the dome and out of the pavilion
+LEVEL_TAG = "st.b7.lv"  # and the level they are on: ``st.b7.lv0`` the floor, ...
+FIRE_TAG = "st.b7.fire"  # the label of the fire door's lever
 BOSS, RAVAGER, RIDER = "st.b7.boss", "st.b7.rav", "st.b7.rider"
 #: the governor's turn a tick, in degrees: the speeds the pack uses
 SPEEDS = (2, 4, 6, 9, 12, 16, 24)
@@ -414,7 +446,16 @@ FACE_F = -6  # the plane of the Engine's face
 DOOR_R, DOOR_H = 2, 5  # the firebox doors: half their width, their height
 FIREBOX_F = (-5, -1)
 PORCH_F = (-8, -7)
-HATCHES = ((-6, -6), (-6, 6), (6, -6), (6, 6))
+HATCHES = ((-6, -6), (-6, 6), (6, -6), (6, 6))  # in the plinth, on the floor
+#: the hatches of the upper levels, each a trapdoor of iron in its deck:
+#: forward, right, and the level it is on (1 the gallery, 2 the high level)
+UPPER_HATCHES = ((13, -17, 1), (5, 5, 2))
+#: the hatches' round, by their place in ``Room.hatches``: the upper ones
+#: come up twice in it, the floor's once
+HATCH_ROUND = (0, 4, 1, 5, 2, 4, 3, 5)
+FIRE_POST_F = -17  # the fire door's lever: its post, on the centre line
+FIRE_SIGN = ("FIRE DOOR", "Pull to vent", "the firebox.")
+FIRE_HINT = "All mains shut. Pull the FIRE DOOR lever in front of the Engine."
 EYES_H, BROW_H = 7, (10, 9)  # the brow's rows: minutes over seconds
 BROW_R = (3, 2, 1, -1, -2, -3)  # its lamps, the lowest bit first
 CHIMNEY, CHIMNEY_H = (2, 0), (19, 26)
@@ -423,6 +464,11 @@ GOVERNOR_H = 21
 
 GALLERY_H, RING = 6, (19.0, 25.0)  # the gallery's deck and its ring's radii
 HIGH_H = 12  # the high level's deck
+#: the heights of the three levels (the floor, the gallery, the high level):
+#: where a player's feet are, on its deck and up to the next. The floor's
+#: is from the floor's own cells, so that a stand-in set down at the bottom
+#: face of the lowest cell (it has no height) is in it
+LEVELS = ((0, GALLERY_H), (GALLERY_H + 1, HIGH_H), (HIGH_H + 1, None))
 COLUMNS = (
     (-18, 13),
     (-18, -13),
@@ -497,7 +543,16 @@ class Room:
     spot: Cell  # where the Master comes out
     porch: tuple[Cell, Cell]  # the box in front of the doors
     back: Cell  # where one standing in the porch is put at the breach
-    hatches: tuple[Cell, ...]  # where automatons appear
+    #: where automatons appear: the four in the plinth, then the upper
+    #: levels'; the level each is on (0 the floor); the levels' boxes
+    hatches: tuple[Cell, ...]
+    hatch_levels: tuple[int, ...]
+    levels: tuple[tuple[Cell, Cell], ...]
+    #: the fire door's lever (there from the third main shut until it is
+    #: pulled): its post, its sign, where a player stands to pull it
+    fire_post: fittings.Post
+    fire_sign: Cell
+    fire_stand: Cell
     eyes: tuple[Cell, Cell]
     brow: tuple[tuple[Cell, ...], tuple[Cell, ...]]  # minutes, seconds: low bit first
     way_out: tuple[Cell, ...]
@@ -707,6 +762,39 @@ def _mains(fr: Frame) -> tuple[Main, Main, Main]:
     return (found[0], found[1], found[2])
 
 
+def _fire_post(fr: Frame) -> fittings.Post:
+    """the fire door's lever: a brass post two high on the centre line
+    before the firebox, the lever on its upper block and the sign on its
+    lower, both on the side towards the way in, so that the player who
+    pulls it faces the Engine's opening (and sees its eyes and brow over
+    the post). It is no block of the room as built: it comes up when the
+    third main shuts and goes down as the lever is pulled (``fire/rise``,
+    ``fire/gone``), so that nothing of it stands where the breach plays"""
+    facing = fr.facing(-1, 0)
+    foot = fr.at(FIRE_POST_F, 0, 1)
+    head = fr.at(FIRE_POST_F, 0, 2)
+    lever = fr.at(FIRE_POST_F - 1, 0, 2)
+    x, y, z = head
+    return fittings.Post(
+        solid={foot: BRASS, head: BRASS},
+        attached={
+            lever: fittings.lever(facing),
+            fr.at(FIRE_POST_F - 1, 0, 1): fittings.wall_sign(facing, *FIRE_SIGN),
+        },
+        summons=[
+            fittings.display(
+                (ENTITY_TAG, FIRE_TAG),
+                (x + 0.5, y + 1.25, z + 0.5),
+                0,
+                label_text(FIRE_SIGN[0]),
+                0.8,
+                "center",
+            )
+        ],
+        input=lever,
+    )
+
+
 def main_sign(name: str, state: str) -> tuple[str, ...]:
     """what a main's sign says: ``solo``, ``pair`` (it winds only with
     the other of A and B) or ``shut``"""
@@ -742,6 +830,9 @@ def room(dome: Dome) -> Room:
         for side in (1, -1)
     )
     reach = dome.radius
+    upper = tuple(
+        (fr.at(f, r, LEVELS[level][0]), level) for f, r, level in UPPER_HATCHES
+    )
     return Room(
         frame=fr,
         mains=_mains(fr),
@@ -755,7 +846,15 @@ def room(dome: Dome) -> Room:
         spot=fr.at(-3, 0, 1),
         porch=(fr.at(-10, -ARCH_R, 1), fr.at(PORCH_F[1], ARCH_R, 3)),
         back=fr.at(-16, 0, 1),
-        hatches=tuple(fr.at(f, r, 1) for f, r in HATCHES),
+        hatches=(*(fr.at(f, r, 1) for f, r in HATCHES), *(c for c, _ in upper)),
+        hatch_levels=(*(0 for _ in HATCHES), *(level for _, level in upper)),
+        levels=tuple(
+            (fr.at(-reach, -reach, lo), fr.at(reach, reach, hi or reach))
+            for lo, hi in LEVELS
+        ),
+        fire_post=(post := _fire_post(fr)),
+        fire_sign=next(c for c, b in post.attached.items() if "sign" in b),
+        fire_stand=fr.at(FIRE_POST_F - 2, 0, 1),
         eyes=(fr.at(FACE_F, -2, EYES_H), fr.at(FACE_F, 2, EYES_H)),
         brow=(
             tuple(fr.at(FACE_F, r, BROW_H[0]) for r in BROW_R),
@@ -830,7 +929,7 @@ def log_pages(dome: Dome) -> list[str]:
     fr = frame(dome)
     right, left = fr.facing(0, 1), fr.facing(0, -1)
     end = (
-        "Shut the third and he must come out."
+        "Shut all three, then pull the fire door: he must come out."
         if PHASE_2
         else "Shut the third and it stops."
     )
@@ -957,7 +1056,11 @@ def puzzle_blocks(dome: Dome) -> Blocks:
         for y in range(lo[1], hi[1] + 1)
         for z in range(min(lo[2], hi[2]), max(lo[2], hi[2]) + 1)
     }
-    b.clear |= set(place.hatches)
+    # the hatches: a notch in the plinth, or a trapdoor of iron in a deck
+    for cell, level in zip(place.hatches, place.hatch_levels, strict=True):
+        b.clear |= {cell, _up(cell)} if level else {cell}
+        if level:
+            b.solid[_up(cell, -1)] = HATCH
 
     # the lamps of the way out, in the floor
     for cell in place.way_out:
@@ -1282,12 +1385,152 @@ def sight_problems(dome: Dome) -> list[str]:
     return problems
 
 
+def _in_box(cell: Cell, corners: tuple[Cell, Cell]) -> bool:
+    lo, hi = corners
+    return all(
+        min(a, b) <= v <= max(a, b) for v, a, b in zip(cell, lo, hi, strict=True)
+    )
+
+
+def hatch_problems(dome: Dome) -> list[str]:
+    """each hatch is a place an automaton can be cast and leave, and no
+    trap: its cell (and the one over it) free, a block or the floor under
+    it, in the box of its level, out of the pavilion and off every main's
+    deck; walked to from the entrance, and from it the deck of its level's
+    main is walked to (a step of one up or down, as a player's). Every
+    level has one, and the round names them all"""
+    place = room(dome)
+    b = room_blocks(dome)
+    solid, blocked = _walkable(b)
+    floor = domes.dome_cells(dome).floor
+    full = set(b.everything()) | b.moving
+    from_door = rooms.reach(dome, domes.entrance(dome)[:3], solid, blocked)
+    problems = []
+    if set(HATCH_ROUND) != set(range(len(place.hatches))):
+        problems.append("the hatches' round does not name every hatch")
+    if set(place.hatch_levels) != set(range(len(LEVELS))):
+        problems.append("a level has no hatch")
+    for i, (cell, level) in enumerate(
+        zip(place.hatches, place.hatch_levels, strict=True)
+    ):
+        what = f"hatch {i} at {cell}"
+        main = place.mains[level]
+        if {cell, _up(cell)} & full:
+            problems.append(f"{what} is not clear for a mob to stand in")
+        under = _up(cell, -1)
+        if under not in floor and under not in b.solid:
+            problems.append(f"{what} has nothing under it")
+        if not _in_box(cell, place.levels[level]) or cell[1] != main.stand[1]:
+            problems.append(f"{what} is not on level {level}")
+        if _in_box(cell, place.fence):
+            problems.append(f"{what} is in the pavilion")
+        if any(_in_box(cell, m.deck) for m in place.mains):
+            problems.append(f"{what} is on a main's deck")
+        if cell not in from_door:
+            problems.append(f"{what} is not walked to from the entrance")
+        if main.stand not in rooms.reach(dome, cell, solid, blocked):
+            problems.append(f"no walk from {what} to main {main.name}'s deck")
+    for f, r, level in UPPER_HATCHES:
+        deck, rails = gallery() if level == 1 else high_level()[:2]
+        if (f, r) not in deck or (f, r) in rails:
+            problems.append(
+                f"the hatch at {f}, {r} is not within its deck: a gap in the rail"
+            )
+    return problems
+
+
+def fire_problems(dome: Dome) -> list[str]:
+    """the fire door's lever, as it stands from the third main shut until
+    it is pulled: in no block of the room and inside the dome, an input on
+    gold with a sign, on the centre line before the firebox and its lever
+    on the side towards the way in; on the plain floor (no lantern and no
+    lamp under its post, and the floor is not touched: nothing of it to
+    put back when the post goes); clear of the
+    porch, of where the breach puts a player back, of the casing's halves
+    as they swing and of where its plates fly and land; in nobody's way
+    (every walk of the room still clear with it standing); and from where
+    its player stands the Engine's eyes and brow are in sight over it, and
+    the whole middle of the firebox doors once it is gone"""
+    place = room(dome)
+    fr = place.frame
+    post = place.fire_post
+    try:
+        b = room_blocks(dome)
+        b.add(Blocks(solid=dict(post.solid), attached=dict(post.attached)))
+    except ValueError as e:
+        return [f"the fire door's lever: {e}"]
+    problems = fittings.placement_problems(dome, post.cells)
+    problems += rooms.room_problems(dome, b.above(), b.floor)
+    problems += rooms.input_problems(
+        b.above(), inputs(dome) | {post.input}, floor=b.floor
+    )
+    what = "the fire door's lever"
+    feet = sorted(post.solid)[0]
+    x, y, z = post.input
+    if any(c != fr.at(FIRE_POST_F, 0, c[1] - fr.origin[1]) for c in post.solid):
+        problems.append(f"{what} is not on the centre line")
+    if (x, feet[1], z) != fr.at(FIRE_POST_F - 1, 0, 1) or FIRE_POST_F >= PORCH_F[0]:
+        problems.append(f"{what} is not on the side of its post towards the way in")
+    under = _up(feet, -1)
+    lamps = domes.light_cells(dome)[0] | set(place.way_out)
+    if under not in domes.dome_cells(dome).floor or under in lamps:
+        problems.append(f"{what} is not on the plain floor")
+    played = {place.back, _up(place.back)}
+    for leaf in leaves(dome):
+        for degrees in range(0, OPEN + 1, 5):
+            played |= {
+                (math.floor(px), math.floor(py), math.floor(pz))
+                for px, py, pz in leaf_points(leaf, leaf.swing * degrees)
+            }
+    for plate in plates(dome):
+        played |= {
+            (math.floor(px + dx), math.floor(py), math.floor(pz + dz))
+            for px, py, pz in (plate.apex, plate.land)
+            for dx in (-0.7, 0, 0.7)
+            for dz in (-0.7, 0, 0.7)
+        }
+    if hit := {c for c in post.cells if c in played or _in_box(c, place.porch)}:
+        problems.append(f"{what} stands where the breach plays: {min(hit)}")
+    solid, blocked = _walkable(b)
+    targets = walks(dome) | {f"{what}": place.fire_stand}
+    problems += [
+        f"{what} standing: {p}"
+        for p in rooms.walk_problems(dome, solid, targets, blocked)
+    ]
+    for standing, plan, targets in (
+        (
+            "standing",
+            b,
+            {"the left eye": place.eyes[0], "the right eye": place.eyes[1]}
+            | {f"the brow's lamp at {c}": c for row in place.brow for c in row},
+        ),
+        (
+            "gone",
+            room_blocks(dome),
+            {f"the firebox doors at {c}": c for c in place.door_columns[0]},
+        ),
+    ):
+        seen = {
+            cell: block
+            for cell, block in plan.above().items()
+            if not any(word in _name(block) for word in SEE_PAST)
+        }
+        problems += [
+            f"{what} {standing}: {p}"
+            for p in rooms.sight_problems(
+                seen, {"its place": place.fire_stand}, targets
+            )
+        ]
+    return problems
+
+
 def room_problems(dome: Dome) -> list[str]:
     """the room's plan against its dome and the rules of rooms.py: every
     cell inside the dome and off the cells the tunnels reserve, the relaid
     floor in the floor, the inputs on gold with a sign and nothing beside
     them that redstone would work, the walks clear, what must be seen in
-    sight"""
+    sight, the hatches fit for automatons, and the fire door's lever (which
+    is no block of the room as built) fit to stand where it comes up"""
     try:
         b = room_blocks(dome)
     except ValueError as e:
@@ -1302,7 +1545,7 @@ def room_problems(dome: Dome) -> list[str]:
     lights = domes.light_cells(dome)[0]
     if lost := set(b.floor) & lights:
         problems.append(f"{len(lost)} of the floor's lanterns are relaid")
-    problems += casing_problems(dome)
+    problems += casing_problems(dome) + hatch_problems(dome) + fire_problems(dome)
     return problems + walk_problems(dome) + sight_problems(dome)
 
 
@@ -1914,9 +2157,11 @@ def functions(pack: dp.Pack) -> None:
         [
             _op("form", "=", "#b7.want"),
             call("signs"),
-            f"execute {open_dome} {_if('phase', '0..1')} {_if('form', 2)} run "
+            f"execute {open_dome} {_if('phase', '0..1')} {_if('form', 2)} "
+            f"unless score {_s('fire')} matches 1 run "
             + say("Two engineers in the arena: mains A and B wind only together."),
-            f"execute {open_dome} {_if('phase', 1)} {_if('form', 1)} run "
+            f"execute {open_dome} {_if('phase', 1)} {_if('form', 1)} "
+            f"unless score {_s('fire')} matches 1 run "
             + say("One engineer in the arena: each main winds alone."),
         ],
     )
@@ -2111,12 +2356,27 @@ def functions(pack: dp.Pack) -> None:
         ]
     pack.function(f"{base}/p1/wind", wind)
 
-    # -- the automatons: one at a time from a hatch with a player in reach
-    def near(cell: Cell) -> str:
+    # -- the automatons: one at a time from a hatch with a player in reach,
+    # and by choice a hatch of the level that player is on
+    def near(cell: Cell, level: int | None = None) -> str:
         x, y, z = cell
+        on = "" if level is None else f"tag={LEVEL_TAG}{level},"
         return (
-            f"if entity @e[tag={ARENA},x={x + 0.5},y={y},z={z + 0.5},distance=..{NEAR}]"
+            f"if entity @e[tag={ARENA},{on}x={x + 0.5},y={y},z={z + 0.5},"
+            f"distance=..{NEAR}]"
         )
+
+    pack.function(
+        f"{base}/pour/levels",
+        [
+            line
+            for n, band in enumerate(place.levels)
+            for line in (
+                f"tag @e[tag={LEVEL_TAG}{n}] remove {LEVEL_TAG}{n}",
+                f"tag @e[tag={ARENA},{box(band)}] add {LEVEL_TAG}{n}",
+            )
+        ],
+    )
 
     kinds = (automatons.STOKER, automatons.RIVETER, automatons.SLAG_HUSK)
     for i, hatch in enumerate(place.hatches):
@@ -2171,17 +2431,34 @@ def functions(pack: dp.Pack) -> None:
             f"execute {_if('form', 2)} run {_set('next', GAP[2])}",
         ],
     )
+    # the next of the round (``#b7.hatch``: the place in ``HATCH_ROUND``), if
+    # a player on its level is in reach of it
+    pack.function(
+        f"{base}/pour/try",
+        [
+            _add("hatch"),
+            f"execute {_if('hatch', f'{len(HATCH_ROUND)}..')} run {_set('hatch', 0)}",
+            *(
+                f"execute {_if('hatch', slot)} "
+                f"{near(place.hatches[i], place.hatch_levels[i])} "
+                f"run {call(f'pour/at_{i}')}"
+                for slot, i in enumerate(HATCH_ROUND)
+            ),
+        ],
+    )
     pack.function(
         f"{base}/pour/one",
         [
             call("pour/wait"),
-            _add("hatch"),
-            f"execute {_if('hatch', f'{len(place.hatches)}..')} run {_set('hatch', 0)}",
             _set("cast", 0),
-            # the next hatch round, if a player is in reach of it; else any
+            call("pour/levels"),
+            # round the hatches to the first with a player on its level in
+            # reach; if there is none (a player on a deck far from its
+            # hatch), any hatch with a player in reach of it
+            call("pour/try"),
             *(
-                f"execute {_if('hatch', i)} {near(hatch)} run {call(f'pour/at_{i}')}"
-                for i, hatch in enumerate(place.hatches)
+                f"execute {_if('cast', 0)} run {call('pour/try')}"
+                for _ in HATCH_ROUND[1:]
             ),
             *(
                 f"execute {_if('cast', 0)} {near(hatch)} run {call(f'pour/at_{i}')}"
@@ -2234,12 +2511,26 @@ def functions(pack: dp.Pack) -> None:
             _add("t"),
             call("p1/ready"),
             call("p1/wind"),
-            call("pour"),
+            # (no automaton is cast while the fire door's lever stands)
+            f"execute unless score {_s('fire')} matches 1 run {call('pour')}",
             call("fence"),
             f"execute {_if('shut', '3..')} run {call('all_shut')}",
         ],
     )
-    pack.function(f"{base}/all_shut", [call("breach/start" if PHASE_2 else "won")])
+    # the third main shut: the win; or, with phase 2, the fire door's lever
+    # comes up, and the breach starts when a hand pulls it
+    pack.function(
+        f"{base}/all_shut",
+        [
+            f"execute unless score {_s('fire')} matches 1 run {call('fire/rise')}",
+            f"execute {_if('fire', 1)} if block {_xyz(place.fire_post.input)} "
+            f"{thrown} run {call('fire/pulled')}",
+            f"execute {_if('fire', 1)} run title {here} actionbar "
+            + label_text(FIRE_HINT, "yellow"),
+        ]
+        if PHASE_2
+        else [call("won")],
+    )
 
     # -- the end: the one call of the core's ``solved``
     pack.function(
@@ -2326,7 +2617,8 @@ def functions(pack: dp.Pack) -> None:
             f"execute {_if('phase', 5)} {_if('down', i)} run {_set('spin', SPEEDS[i])}"
             for i in range(1, len(SPEEDS) - 1)
         ),
-        # the heartbeat, a piston's thump: slower with each main shut (in
+        # the heartbeat, a piston's thump: slower with each main shut, and
+        # slowest while the fire door's lever stands (in
         # the breach and the fight it is drowned; its last beats are
         # ``end/step``'s)
         _add("beat"),
@@ -2336,7 +2628,7 @@ def functions(pack: dp.Pack) -> None:
             # (and kept when a player leaves and comes back to phase 0)
             f"execute {open_dome} {_if('phase', '0..1')} {_if('shut', n)} "
             f"run {_set('per', BEAT + n * BEAT_SLOWER)}"
-            for n in (1, 2)
+            for n in (1, 2, 3)
         ),
         f"execute {_if('per', '1..')} if score {_s('beat')} >= {_s('per')} "
         f"run {call('beat')}",
@@ -2502,9 +2794,12 @@ def functions(pack: dp.Pack) -> None:
             # no main shut is set up with the level in force
             f"execute {open_dome} if score #first {OBJ} matches 1 {_if('phase', 0)} "
             f"{_if('shut', 0)} run {call('arm')}",
-            f"execute {open_dome} {_if('phase', '0..1')} run tellraw @s "
+            f"execute {open_dome} {_if('phase', '0..1')} "
+            f"unless score {_s('fire')} matches 1 run tellraw @s "
             '{text:"The Engine watches. The brass plaque says how to stop it.",'
             'color:"gray",italic:true}',
+            f"execute {open_dome} {_if('fire', 1)} run "
+            + say(FIRE_HINT, "yellow", "@s"),
             f"execute {open_dome} {_if('phase', 4)} run tellraw @s "
             '{text:"The firebox stands open. He is waiting for you.",'
             'color:"gray",italic:true}',
@@ -2550,6 +2845,16 @@ def functions(pack: dp.Pack) -> None:
     pack.function(
         f"{base}/p1/abandon",
         [
+            # with the fire door's lever up there is nothing to put back: it
+            # stands, not thrown, and whoever comes back can pull it
+            *(
+                [
+                    f"execute {_if('fire', 1)} run {call('fire/left')}",
+                    f"execute {_if('fire', 1)} run return 0",
+                ]
+                if PHASE_2
+                else []
+            ),
             *(
                 f"execute {_if(f'l{m.key}', 0)} run {call(f'main/open_{m.key}')}"
                 for m in place.mains
@@ -2597,7 +2902,7 @@ def functions(pack: dp.Pack) -> None:
     )
     zeroed = ("phase", "t", "shut", "amb", "pair", "next", "hatch", "n", "cast", "any")
     zeroed += ("live", "out", "down", "blink", "beat", "spin", "idle", "up", "vent")
-    zeroed += ("esc", "boss", "x", "fin", "an", "open", "mus", "hiss")
+    zeroed += ("esc", "boss", "x", "fin", "an", "open", "mus", "hiss", "fire")
     lo, hi = place.firebox
     pack.function(
         f"{base}/reset",
@@ -2616,7 +2921,12 @@ def functions(pack: dp.Pack) -> None:
             ),
             call("face/shut"),
             *(
-                [call("casing/gone"), call("music/stop"), call("lights/full")]
+                [
+                    call("fire/gone"),
+                    call("casing/gone"),
+                    call("music/stop"),
+                    call("lights/full"),
+                ]
                 if PHASE_2
                 else []
             ),
@@ -2719,14 +3029,66 @@ def _phase_2(
         [f"tp @e[tag=st.in,{box((low, top))}] {middle(place.back)}"],
     )
 
+    # -- the fire door's lever (see ``_fire_post``; ``#b7.fire`` is 1 while
+    # it stands): up when the third main shuts, with a puff and a clank, and
+    # the automatons fall where they stand; down, post and all, the moment
+    # it is pulled, so that nothing stands in the way of what follows or in
+    # the sight of whoever pulled it
+    post = place.fire_post
+    foot = sorted(post.solid)[0]
+    label = f"@e[type=minecraft:text_display,tag={FIRE_TAG}]"
+    gone = [
+        *(_setblock(c, AIR) for c in post.attached),
+        *(_setblock(c, AIR) for c in sorted(post.solid, reverse=True)),
+        f"kill {label}",
+    ]
+    pack.function(f"{base}/fire/gone", [*gone, _set("fire", 0)])
+    pack.function(
+        f"{base}/fire/rise",
+        [
+            *gone,
+            _set("fire", 1),
+            automatons.remove_line(INDEX),
+            # (nobody is left standing inside the post)
+            f"tp @e[tag=st.in,{box((foot, max(post.solid)))}] "
+            f"{middle(place.fire_stand)}",
+            *(_setblock(c, block) for c, block in sorted(post.solid.items())),
+            *(_setblock(c, block) for c, block in post.attached.items()),
+            *post.summons,
+            f"particle minecraft:cloud {middle(foot, 1)} 0.4 1 0.4 0.03 60",
+            sound("block.piston.extend", foot, 3, 0.6),
+            sound("block.anvil.land", foot, 2, 0.7),
+            sound("block.iron_door.close", foot, 2, 0.5),
+            *title("THE ENGINE FALTERS", "Pull the FIRE DOOR lever in front of it."),
+            say(FIRE_HINT),
+        ],
+    )
+    pack.function(
+        f"{base}/fire/pulled",
+        [
+            call("fire/gone"),
+            f"particle minecraft:cloud {middle(foot, 1)} 0.4 1 0.4 0.03 60",
+            sound("block.piston.extend", foot, 3, 0.5),
+            sound("block.iron_door.open", foot, 2, 0.6),
+            call("breach/start"),
+        ],
+    )
+    # the dome emptied with the lever up: it stays, put back unthrown (one
+    # thrown as the last player went would start the breach for nobody)
+    pack.function(
+        f"{base}/fire/left",
+        fittings.lever_put_lines(post.input, post.attached[post.input]),
+    )
+
     # -- the breach: the lights fail, the bar fills, and the doors are
     # forced from the middle outwards
     pack.function(
         f"{base}/breach/start",
         [
             _set("phase", 2),
-            # (the step that shuts the third main goes on to ``breach/step``,
-            # which counts it: the breach's steps are counted from the next)
+            # (the step the fire door's lever is pulled in goes on to
+            # ``breach/step``, which counts it: the breach's steps are
+            # counted from the next)
             _set("t", -1),
             *(_set(name, 0) for name in ("wa", "wb", "wc", "ra", "rb", "rc", "amb")),
             _set("an", 0),
@@ -2820,7 +3182,7 @@ def _phase_2(
         f"{base}/breach/land",
         [f"tp {one(plate.tag)} {_xyzf(plate.land)} {plate.yaw} 0" for plate in loose],
     )
-    # the breach by the tick (``#b7.an``: ticks since the third main)
+    # the breach by the tick (``#b7.an``: ticks since the lever was pulled)
     tick = [_add("an")]
     for i, at in enumerate(KNOCKS):
         tick += [
@@ -3052,8 +3414,10 @@ def check(ctx: Any) -> list[str]:
     entrance to come in, on a main's deck to hold it, in the pavilion to
     be out of the arena; a lever is thrown and the recall button clicked
     by setting the block or the entity as a hand would leave it. With
-    ``PHASE_2`` off the third main is the win; on, the breach and the
-    Master are worked too: the lanterns dimmed and the bar up at the
+    ``PHASE_2`` off the third main is the win; on, the fire door's lever
+    (up at the third main with no breach and no automatons, still up after
+    the dome empties, gone when it is pulled and at a reset with it up),
+    the breach and the Master are worked too: the lanterns dimmed and the bar up at the
     breach, the porch kept clear, the casing's displays in the doors'
     place, a half of it read swinging open and a plate read to the floor;
     the pair out, the
@@ -3071,8 +3435,15 @@ def check(ctx: Any) -> list[str]:
     time is touched. It resets its own dome and its own tunnel and nothing
     else, and leaves no stand-in behind.
 
+    The upper hatches: their trapdoors read, and with the stand-in on the
+    floor, on main B's deck and on main C's the automatons are cast at the
+    hatches of that level only.
+
     What stand-ins cannot prove (all in the play-test list): a lever
-    thrown by hand, and a player's own body on a deck; a dead partner not
+    thrown by hand (the fire door's too: that it is found, reached and
+    read, and what its player then sees), and a player's own body on a
+    deck; that an automaton cast on an upper deck walks off its trapdoor
+    to the player and does not fall or stand; a dead partner not
     counting in the arena (a stand-in does not die: it is moved to the
     pavilion); everything aimed at players: titles, chat, sounds,
     particles, the music (begun, begun again, stopped), the bossbar, the
@@ -3204,6 +3575,30 @@ def _check(ctx: Any, saved: dict[str, int | None]) -> list[str]:
         nearly(main)
         steps(5)
 
+    fire = place.fire_post
+    fire_label = f"@e[type=minecraft:text_display,tag={FIRE_TAG}]"
+
+    def fire_up() -> dict[str, Any]:
+        """the fire door's lever: its score, its blocks in place (of two
+        of brass, a lever not thrown and a sign), its label"""
+        blocks = {**fire.solid, **fire.attached}
+        return {
+            "fire": get("fire"),
+            "blocks": sum(
+                ctx.is_block(c, block.partition("{")[0]) for c, block in blocks.items()
+            ),
+            "air": sum(ctx.is_block(c, AIR) for c in blocks),
+            "label": ctx.count(fire_label),
+        }
+
+    fire_is_up = {"fire": 1, "blocks": 4, "air": 0, "label": 1}
+    fire_is_gone = {"fire": 0, "blocks": 0, "air": 4, "label": 0}
+
+    def pull() -> None:
+        """the fire door's lever pulled, as a hand would leave it"""
+        ctx.setblock(fire.input, fire.attached[fire.input].replace("=false", "=true"))
+        steps(2)
+
     def as_built(what: str) -> None:
         """every block of the room is as ``reset`` leaves it (a block of a
         clock that runs by itself: the same block, in whatever state; a
@@ -3223,6 +3618,7 @@ def _check(ctx: Any, saved: dict[str, int | None]) -> list[str]:
         wrong += [cell for cell in blocks.clear if not ctx.is_block(cell, AIR)]
         if wrong:
             problems.append(f"{what}: {len(wrong)} blocks not as built: {wrong[:6]}")
+        expect(f"{what}: no fire door's lever", fire_up(), fire_is_gone)
         names = ("phase", "shut", "ga", "gb", "gc", "la", "lb", "lc", "live", "out")
         names += ("fin", "open", "mus")
         expect(
@@ -3455,6 +3851,31 @@ def _check(ctx: Any, saved: dict[str, int | None]) -> list[str]:
     steps(GAP[1] + 3)
     expect("an automaton lost: another comes", ctx.count(mobs), limit)
 
+    # ---- a hatch on each level: with the stand-in on a main's deck the
+    # automatons are cast at the hatch of that level, and nowhere else
+    def cast_at(what: str, where: str, homes: set[int]) -> None:
+        ctx.cmd(f"kill {mobs}")
+        stand(S1, where)
+        for _ in range(20):
+            if ctx.count(mobs) >= 2:
+                break
+            steps(4)
+        by_home = {
+            i
+            for i in range(len(place.hatches))
+            if ctx.count(automatons.selector(INDEX, f"tag={automatons.home_tag(i)}"))
+        }
+        if not by_home or not by_home <= homes:
+            problems.append(f"{what}: automatons cast at hatches {sorted(by_home)}")
+
+    upper = {i for i, level in enumerate(place.hatch_levels) if level}
+    for i in sorted(upper):
+        under = _up(place.hatches[i], -1)
+        expect(f"hatch {i}: a trapdoor in the deck", ctx.is_block(under, HATCH), True)
+    cast_at("on the floor", floor, set(range(len(place.hatches))) - upper)
+    cast_at("on main B's deck", middle(b.stand, 0.5), {4})
+    cast_at("on main C's deck", middle(c.stand, 0.5), {5})
+
     # ---- B and C: the third main ends phase 1
     shut(S1, b)
     expect("main B shut", {"lb": get("lb"), "shut": get("shut")}, {"lb": 1, "shut": 2})
@@ -3466,8 +3887,41 @@ def _check(ctx: Any, saved: dict[str, int | None]) -> list[str]:
     steps(5)
     expect("main C shut", {"lc": get("lc"), "shut": get("shut")}, {"lc": 1, "shut": 3})
     if PHASE_2:
-        # the breach: no automatons, the lights dimmed, the bar up and
+        # the third main starts nothing: the fire door's lever comes up, the
+        # automatons fall and no more are cast, and it waits to be pulled
+        expect("all mains shut: the fire door's lever up", fire_up(), fire_is_up)
+        expect("all mains shut: the phase", get("phase"), 1)
+        expect("all mains shut: automatons", ctx.count(mobs), 0)
+        sign = ctx.data(f"block {_xyz(place.fire_sign)} front_text")
+        expect(f"the fire door's sign ({sign[:60]!r})", FIRE_SIGN[0] in sign, True)
+        expect(
+            "the lever up: the doors still blocks",
+            sum(ctx.is_block(x, AIR) for x in place.doors),
+            0,
+        )
+        stand(S1, floor)
+        steps(2 * GAP[1] + FIRST)
+        got = {"phase": get("phase"), "mobs": ctx.count(mobs), "dim": dimmed()}
+        expect("the lever up, 10 s on", got, {"phase": 1, "mobs": 0, "dim": 0})
+        expect("the lever up: the heartbeat", get("per"), BEAT + 3 * BEAT_SLOWER)
+        # the dome emptied: it stays up, and is there for whoever comes back
+        stand(S1, outside)
+        ctx.advance(game_checks.EMPTY + 2 * STEP)
+        expect("left with the lever up", fire_up(), fire_is_up)
+        expect(
+            "left with the lever up: the mains",
+            (get("phase"), get("shut")),
+            (1, 3),
+        )
+        stand(S1, entrance)
+        steps(3)
+        expect("back in with the lever up", fire_up(), fire_is_up)
+        # pulled: post, lever, sign and label go, and the breach starts:
+        # no automatons, the lights dimmed, the bar up and
         # filling, the doors forced from the middle out
+        stand(S1, middle(place.fire_stand))
+        pull()
+        expect("the lever pulled: all of it gone", fire_up(), fire_is_gone)
         expect("the breach: the phase", get("phase"), 2)
         expect("the breach: automatons", ctx.count(mobs), 0)
         expect("the breach: the floor's lanterns dimmed", dimmed(), len(lights))
@@ -3648,6 +4102,8 @@ def _check(ctx: Any, saved: dict[str, int | None]) -> list[str]:
         # emptied in the breach: he waits, and comes out at full health
         shut(S1, b)
         shut(S1, c)
+        expect("the lever up again", fire_up(), fire_is_up)
+        pull()
         expect("the breach again", get("phase"), 2)
         stand(S1, outside)
         ctx.advance(game_checks.EMPTY + 2 * STEP)
@@ -3667,6 +4123,14 @@ def _check(ctx: Any, saved: dict[str, int | None]) -> list[str]:
         expect("back in the arena: he comes out", got, {"phase": 3, "pair": 2})
         expect("he comes out at full health", get("hsum"), get("hmax"))
         expect("he waits and comes out: the lanterns still dim", dimmed(), len(lights))
+        # the game's reset with the lever up: nothing of it is left
+        unsolve()
+        come_in()
+        for main in (a, b, c):
+            shut(S1, main)
+        expect("the lever up, before a reset", fire_up(), fire_is_up)
+        unsolve()
+        expect("a reset with the lever up", fire_up(), fire_is_gone)
 
     # ---- two players: the form follows who is in the arena
     unsolve()
