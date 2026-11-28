@@ -1546,6 +1546,10 @@ HISTORY = 30  # moves UNDO can take back
 ASK_TICKS = 100  # RESET HOLD's second pull, within 5 s
 FLASH_TICKS = 10
 CREAK = "block.chest.open"  # low: her timbers
+#: playsound's volume over 1 is range, not loudness: a sound fades to
+#: nothing at 16 blocks a unit. The far hold is some 25 blocks from the
+#: pulpit or the bow, so the crane's sounds carry 48 and the room's 32
+LOUD, ROOM = 3, 2
 PARTY_TICKS = 40
 #: the hints: name -> (seconds at level 5, text)
 HINTS = {
@@ -1606,8 +1610,25 @@ def functions(pack: dp.Pack) -> None:
     def fn(name: str, lines: list[str]) -> None:
         pack.function(f"{base}/{name}", lines)
 
-    def sound(name: str, volume: float = 1, pitch: float = 1) -> str:
+    def sound(name: str, volume: float = ROOM, pitch: float = 1) -> str:
         return f"playsound minecraft:{name} block {here} {heart} {volume} {pitch}"
+
+    # the crane's sounds come from the part that makes them, so the
+    # driver and the banksman can follow it by ear
+    hook_at = f"at @e[type=minecraft:block_display,tag={SPREADER_TAG},limit=1]"
+    drum_at = f"at @e[type=minecraft:item_display,tag={DRUM_TAG},limit=1]"
+    bridge_at = (  # the girder over the middle of the hold
+        f"positioned {heart} at @e[type=minecraft:block_display,"
+        f"tag={B_TAG},tag=!{T_TAG},sort=nearest,limit=1]"
+    )
+
+    def sound_at(where: str, name: str, pitch: float, when: str = "") -> str:
+        return (
+            f"execute {when + ' ' if when else ''}{where} run playsound "
+            f"minecraft:{name} block {here} ~ ~ ~ {LOUD} {pitch}"
+        )
+
+    buzz = sound_at(hook_at, "block.note_block.bass", 0.5)  # refused
 
     def say(text: str, colour: str = "yellow") -> str:
         return f'tellraw {here} {{text:{fittings.snbt(text)},color:"{colour}"}}'
@@ -1755,8 +1776,9 @@ def functions(pack: dp.Pack) -> None:
             [
                 f"execute if {column(fr, i)} run {_set('why', CLEAR)}",
                 f"execute {_is('why', CLEAR)} run {say(f'Stand clear of bay {name}!', 'red')}",
-                f"execute {_is('why', CLEAR)} run "
-                + sound("block.note_block.didgeridoo", 1, 0.5),
+                sound_at(
+                    hook_at, "block.note_block.didgeridoo", 0.5, _is("why", CLEAR)
+                ),
             ],
         )
         # HOOK DOWN over this bay: the reasons it may not go, then where to.
@@ -1904,7 +1926,7 @@ def functions(pack: dp.Pack) -> None:
     )
     fn(
         "trim/flash",
-        [_set("flash", FLASH_TICKS), *needle_lines("ta", 4), sound(CREAK, 1, 0.5)],
+        [_set("flash", FLASH_TICKS), *needle_lines("ta", 4), sound(CREAK, ROOM, 0.5)],
     )
     fn(
         "trim/party",
@@ -1922,9 +1944,9 @@ def functions(pack: dp.Pack) -> None:
             _op("nnear", "=", "nlim"),
             f"scoreboard players add {_s('nnear')} 1",
             f"execute if score {_s('trim')} >= {_s('near')} run "
-            + sound(CREAK, 0.7, 0.6),
+            + sound(CREAK, ROOM, 0.6),
             f"execute if score {_s('trim')} <= {_s('nnear')} run "
-            + sound(CREAK, 0.7, 0.6),
+            + sound(CREAK, ROOM, 0.6),
         ],
     )
     # the stowage against the plan
@@ -2054,8 +2076,12 @@ def functions(pack: dp.Pack) -> None:
                 f"execute {_is('hd', -1)} {_is('j', i)} if {column(fr, i)} run {_set('wait', 1)}"
                 for i in range(len(BAYS))
             ),
-            f"execute {_is('wait', 1)} {_is('was', 0)} run "
-            + sound("block.note_block.didgeridoo", 1, 0.5),
+            sound_at(
+                hook_at,
+                "block.note_block.didgeridoo",
+                0.5,
+                f"{_is('wait', 1)} {_is('was', 0)}",
+            ),
             f"execute {_is('wait', 1)} {_is('was', 0)} run "
             + say("The hook waits: stand clear of the bay!", "red"),
             f"execute {_is('wait', 1)} run return 0",
@@ -2067,8 +2093,8 @@ def functions(pack: dp.Pack) -> None:
                 f"execute {_is('hd', 1)} {_is('hy', h)} run kill @e[tag=st.cargo.l{h + 1}]"
                 for h in range(1, UP)
             ),
-            f"execute {_is('hd', -1)} run " + sound("block.chain.place", 0.5, 0.7),
-            f"execute {_is('hd', 1)} run " + sound("block.chain.break", 0.5, 0.7),
+            sound_at(hook_at, "block.chain.place", 0.7, _is("hd", -1)),
+            sound_at(hook_at, "block.chain.break", 0.7, _is("hd", 1)),
         ],
     )
     turns = [
@@ -2086,8 +2112,12 @@ def functions(pack: dp.Pack) -> None:
             _op("q", "%=", "4"),
             *turns,
             f"execute if score {_s('hy')} = {_s('hyto')} run {_set('hd', 0)}",
-            f"execute if score {_s('hy')} = {_s('hyto')} run "
-            + sound("block.iron_door.close", 0.6, 0.8),
+            sound_at(
+                hook_at,
+                "block.iron_door.close",
+                0.8,
+                f"if score {_s('hy')} = {_s('hyto')}",
+            ),
         ],
     )
     # travel, only with the hook up and still: each glide keeps its way
@@ -2099,14 +2129,15 @@ def functions(pack: dp.Pack) -> None:
         [
             f"execute {_is('bp', 0)} if score {_s('rowto')} > {_s('row')} run {_set('bd', 1)}",
             f"execute {_is('bp', 0)} if score {_s('rowto')} < {_s('row')} run {_set('bd', -1)}",
-            f"execute {_is('bp', 0)} run " + sound("entity.minecart.riding", 0.4, 0.6),
+            sound_at(bridge_at, "entity.minecart.riding", 0.6, _is("bp", 0)),
             f"execute {_is('bd', 1)} as @e[tag={B_TAG}] at @s run " + _tp(*along),
             f"execute {_is('bd', -1)} as @e[tag={B_TAG}] at @s run "
             + _tp(-along[0], -along[1]),
             "scoreboard players add " + _s("bp") + " 1",
             f"execute {_is('bp', f'{BRIDGE_TICKS}..')} run {_op('row', '+=', 'bd')}",
-            f"execute {_is('bp', f'{BRIDGE_TICKS}..')} run "
-            + sound("block.anvil.place", 0.3, 0.6),
+            sound_at(
+                bridge_at, "block.piston.contract", 0.5, _is("bp", f"{BRIDGE_TICKS}..")
+            ),
             f"execute {_is('bp', f'{BRIDGE_TICKS}..')} run {_set('bp', 0)}",
         ],
     )
@@ -2115,14 +2146,19 @@ def functions(pack: dp.Pack) -> None:
         [
             f"execute {_is('tp', 0)} if score {_s('colto')} > {_s('col')} run {_set('td', 1)}",
             f"execute {_is('tp', 0)} if score {_s('colto')} < {_s('col')} run {_set('td', -1)}",
+            sound_at(drum_at, "block.grindstone.use", 1.5, _is("tp", 0)),
             f"execute {_is('td', 1)} as @e[tag={T_TAG}] at @s run " + _tp(*across),
             f"execute {_is('td', -1)} as @e[tag={T_TAG}] at @s run "
             + _tp(-across[0], -across[1]),
             "scoreboard players add " + _s("tp") + " 1",
             f"execute {_is('tp', f'{TROLLEY_TICKS}..')} run {_op('col', '+=', 'td')}",
-            f"execute {_is('tp', f'{TROLLEY_TICKS}..')} run "
-            + sound("block.chain.step", 0.6, 0.8),
             f"execute {_is('tp', f'{TROLLEY_TICKS}..')} run {_set('tp', 0)}",
+            sound_at(
+                drum_at,
+                "block.smithing_table.use",
+                0.7,
+                f"{_is('tp', 0)} if score {_s('col')} = {_s('colto')}",
+            ),
         ],
     )
     fn(
@@ -2178,7 +2214,7 @@ def functions(pack: dp.Pack) -> None:
     )
 
     # -- the buttons
-    clunk = sound("block.iron_trapdoor.close", 1, 0.5)
+    clunk = sound("block.iron_trapdoor.close", ROOM, 0.5)
     travel = [_set("down", 0), _set("hyto", UP)]
     fn(
         "press/fore",
@@ -2235,13 +2271,14 @@ def functions(pack: dp.Pack) -> None:
     fn(
         "refuse",
         [
-            sound("block.anvil.land", 0.5, 0.6),
+            buzz,
             call("trim/flash", _is("why", TRIM)),
         ],
     )
     fn("press/up", [_set("down", 0), _set("hyto", UP)])
     # GRAB and RELEASE: only with the hook still, down on a crate
-    not_on = say("The hook is not down on a crate.")
+    not_on = f"function {fid('not_on')}"
+    fn("not_on", [say("The hook is not down on a crate."), buzz])
     fn(
         "press/grab",
         [
@@ -2253,7 +2290,8 @@ def functions(pack: dp.Pack) -> None:
             f"execute {_is('why', NOT_ON)} run return run {not_on}",
             *each_bay("grab"),
             _set("hyto", UP),
-            sound("block.fire.extinguish", 0.6, 1.2),
+            sound_at(hook_at, "block.anvil.place", 1.0),
+            sound("block.fire.extinguish", ROOM, 1.2),
             f"particle minecraft:cloud {funnel} 0.3 0.5 0.3 0.02 12",
         ],
     )
@@ -2270,6 +2308,8 @@ def functions(pack: dp.Pack) -> None:
             *each_bay("clear"),
             f"execute {_is('why', CLEAR)} run return 0",
             *each_bay("release"),
+            sound_at(hook_at, "block.wood.place", 0.6),
+            sound_at(hook_at, "block.iron_trapdoor.open", 0.5),
             _set("load", 0),
             _set("hyto", UP),
             call("trim/count"),
@@ -2277,7 +2317,7 @@ def functions(pack: dp.Pack) -> None:
             f"execute unless score {_s('from')} = {_s('to')} run function {fid('trim/creak')}",
             f"execute unless score {_s('from')} = {_s('to')} run function {fid('moved')}",
             *each_bay("table", "from"),
-            sound("block.fire.extinguish", 0.6, 1.0),
+            sound("block.fire.extinguish", ROOM, 1.0),
             f"particle minecraft:cloud {funnel} 0.3 0.5 0.3 0.02 12",
             call("done"),
         ],
@@ -2327,7 +2367,7 @@ def functions(pack: dp.Pack) -> None:
             *each_bay("table", "ub"),
             *each_bay("puff", "ua"),
             *each_bay("puff", "ub"),
-            sound("block.fire.extinguish", 0.8, 0.8),
+            sound("block.fire.extinguish", ROOM, 0.8),
         ],
     )
     # (which bays the last move was between, without taking it off the ring)
@@ -2356,7 +2396,7 @@ def functions(pack: dp.Pack) -> None:
             f"execute {_is('why', CLEAR)} run return 0",
             call("putback/quiet"),
             *each_bay("puff", "from"),
-            sound("block.fire.extinguish", 0.8, 0.8),
+            sound("block.fire.extinguish", ROOM, 0.8),
         ],
     )
     fn(
@@ -2384,7 +2424,7 @@ def functions(pack: dp.Pack) -> None:
             f"execute {_is('ask', '1..')} run return run function {fid('reset/do')}",
             _set("ask", ASK_TICKS),
             say("RESET HOLD: pull again within 5 s to put every crate back."),
-            sound("block.note_block.bell", 1, 0.8),
+            sound("block.note_block.bell", ROOM, 0.8),
         ],
     )
     fn(
@@ -2399,7 +2439,7 @@ def functions(pack: dp.Pack) -> None:
             call("crane/make"),
             call("lay"),
             say("Every crate is back where it was.", "gray"),
-            sound("block.fire.extinguish", 1, 0.6),
+            sound("block.fire.extinguish", ROOM, 0.6),
         ],
     )
     # -- laying a manifest: the band from the level in force, its scores
