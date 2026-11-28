@@ -2453,10 +2453,15 @@ def functions(pack: dp.Pack) -> None:
             f"scoreboard players add {_s('t')} {STEP}",
             f"execute {_is('t', f'{PUMP_TICKS}..')} {_is('w', '1..')} run {call('fall')}",
             f"execute {_is('t', f'{PUMP_TICKS}..')} run {_set('t', 0)}",
-            # (not while a breach still waits on a body in its hole)
-            f"execute {_is('w', '..0')} "
-            + "".join(f"{_is(f'b{br.number}', 0)} " for br in place.breaches)
-            + f"run {call('pumped')}",
+            # (not while a failed stage's breach still waits on a body in
+            # its hole; the patches of the stages held before stay)
+            *(
+                f"execute {_is('again', 1)} {_is('stage', s)} {_not(f'b{i}', 0)} "
+                "run return 0"
+                for s, order in enumerate(ORDERS)
+                for i in order
+            ),
+            f"execute {_is('w', '..0')} run {call('pumped')}",
         ],
     )
     pack.function(

@@ -446,6 +446,9 @@ for s, order in enumerate(H.ORDERS):
 assert not any("hole/" in line for line in fs[f"dome/{n}/checkpoint"])
 pumping = [line for line in fs[f"dome/{n}/water/pumping"] if "restore_stage" in line]
 assert len(pumping) == 1 and "if score #hb.again st matches 1" in pumping[0]
+# pumping waits only on a failed stage's breaches: the patches held stay
+waits = [line for line in fs[f"dome/{n}/water/pumping"] if "return 0" in line]
+assert len(waits) == 12 and all("#hb.again st matches 1" in w for w in waits)
 assert calls(f"dome/{n}/fail", "restore_stage") and calls(f"dome/{n}/draw", "mop")
 assert not calls(f"dome/{n}/held", "restore_stage")
 assert calls(f"dome/{n}/empty", "checkpoint") and calls(f"dome/{n}/checkpoint", "draw")
