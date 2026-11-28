@@ -671,7 +671,7 @@ def weight_summon(f: int) -> str:
     return (
         f"summon minecraft:block_display {domes.middle((x, WEIGHT_Y[f], z))} "
         f'{{Tags:["{WEIGHT}"],teleport_duration:1,'
-        'block_state:{Name:"minecraft:waxed_chiseled_copper"},transformation:'
+        'block_state:"minecraft:waxed_chiseled_copper",transformation:'
         f"{{translation:[-0.4f,0f,-0.4f],scale:[0.8f,0.8f,0.8f],{IDENTITY}}}}}"
     )
 
@@ -702,7 +702,7 @@ def car_summons(f: int) -> list[str]:
     a block display for each block of its floor and roof"""
     return [
         f"summon minecraft:block_display {x}.0 {y}.0 {z}.0 "
-        f'{{Tags:["{CAR}"],teleport_duration:1,block_state:{{Name:"{GRATE}"}}}}'
+        f'{{Tags:["{CAR}"],teleport_duration:1,block_state:"{GRATE}"}}'
         for x, y, z in sorted(inside_cells(f, f) | inside_cells(f + ROOF, f + ROOF))
     ]
 

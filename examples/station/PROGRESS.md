@@ -327,6 +327,10 @@ has its rows in the table below):
 | 4 | The Engine's win: the Engine stopping, the way out lighting, tunnel 7's pump lever pulled and the tunnel pumping, the walk home to the trophy waiting in the Pump House's dispenser (named with the level and the time) |  no |
 | 4 | The Engine with two: A and B only together (the amber lamp blinking at the side that is ready, the chat hint), a partner in the pavilion not counting, one dying or leaving; the form's chat line at each change (too chatty?) |  no |
 | 4 | The Engine as a place: gauges, amber lamps and the drum's telltales read from each deck and the arch (through two decks of grating); headroom under main A's pipe and the gallery; the governor turning; the cylinders seen through their cages and stopping at the win; the heartbeat (too often?); the log's four pages fit; leaving for 3 s throws open levers back (the cheapest way to clear the automatons: does a child find it?) |  no |
+| 4 (finale) | The Engine's climax, reworked after the second play-test and built offline only (no server has run it): the breach as a player sees it. The casing's displays taking the doors' place (a flicker as the blocks go?); the three knocks (do the halves start outwards and the middle plates push out; is the fire's flare seen through the gaps); the blow (boom, particles; no damage); the plates flying, turning over and lying flat on the floor before the porch; the two halves swinging OUTWARDS on their hinges over 3 s (if they swing into the firebox, `Leaf.swing`'s sign is wrong); how the displays are lit beside the blocks; the ravager walking out between the open halves (it is not stopped by them: does it look as if it fits?); the Darkness now 4 s, gone by the blow. From main A and B the halves are seen side on, from main C not at all: is that enough? |  no |
+| 4 (finale) | The Engine's sounds: a bell's note as each lamp of a gauge lights, rising, and a lower note as each goes out; the chord, clank, steam jet and shudder as a main shuts; an open main's hiss every 2 s, fainter with each lamp (too much with three open?); the piston heartbeat, every 1 s, then 2.5 s, then 4 s as mains shut; the Master's music (`music.dragon` on the Jukebox/Note Blocks slider): does it start for everyone in the dome, carry on through a death (it is begun again for the one who died), stop at the win and on leaving, and begin again after its 5 min 50 s |  no |
+| 4 (finale) | The Engine's ending: after the Master dies the fire goes out and the music stops, a falling whine over 5 s with the last heartbeats, the governor running down, the lanterns coming back in a wave round the dome towards the way out (4 s), the title THE STATION IS SAVED, the lamps of the way out in a run to the airlock. Does it do the game justice; is anything still happening when the players have already left for the pump lever? |  no |
+| 4 (finale) | The mains' gauges now stand in their valve bodies just beyond the lever posts (A's and B's bodies lowered): pulling a lever, is the gauge in view beside the post and the drum's telltales over it? |  no |
 | 4 | Phase 2 (on; checked live 26 Nov 2026 with stand-ins: the Master's kit, trims, size and name read back, he counts as a raider, and the ravager bit a golem with him up): is his gold armour, its copper trim and his name drawn, does he sit right on the ravager at his size, does the ravager charge and bite a player under him. Then the breach (the dimmed floor, the Darkness, the bar filling, the doors), the fight, the columns as cover, the steam on the high level, whether the dim floor is too dark to fight in, the Master fighting on foot once the ravager dies |  no |
 | 2 | The Flooded Dome alone, Easy, level 5: the first sight through the dam (the standpipe's gauge readable at 17 blocks through glass and water; the cabins and the stairs going down into the water seen); finding pump A without the hint; the sluice line read as a countdown; the lever throwing itself back in front of you; are 22 / 32 / 28 s fair; at level 10 is "throw it twice" understood |  no |
 | 2 | The Flooded Dome's swims: stage B down the well, through the culvert, up the hatch with the gate open and shut, air left, the ladder out of the well; stage C the dive from the lower deck to the bars at the cabin's foot and up the hatch ladder, finding the gate; getting out of the water at every level (the two long ladders, each flight, a deck level with the surface); being in the water as a layer goes (any push, damage or suffocation); nothing spawns in the basin (fish, squid, drowned) |  no |
@@ -349,8 +353,14 @@ has its rows in the table below):
 | 3 (round 3) | The Cargo Hold read: iron and white wool told apart at 6 to 10 blocks; the tables (they can be climbed: does that matter?); the bay names and floor colours; the trim lamps and their band from both ends; the status board; the docket and the log's fourth page |  no |
 | 3 (round 3) | The Cargo Hold's blind half: the fore hold out of sight from the pulpit standing, jumping and on the tables, the aft hold from the bow (the offline check says so); the banksman's port on the right; is the dark table in the duo form fair or annoying; stand clear with a real player in a bay (the klaxon, the hook waiting); walking the fore hold among the stacks; about 6.5 minutes at level 5 for a first-time pair; the winch and rumble over a whole solve; the crane free after the solve |  no |
 | 3 (round 3) | The Cargo Hold's two bugs found live, by hand: at level 5 or 6 draw "Barrels of lamp oil" and see F1's bottom crate whole (an iron block) with no trapdoor over it; at level 9 or 10 the trapdoor jammed over F1, and gone after a reset; a reset (or a level change) while standing in the Cargo Hold, then walking back in: the hold laid for the new level, not the old |  no |
+| 3 (round 4) | After the first play-test (27 Nov): every block display was air on 26.3 (the crane, the ladle, the maze's hand, pendulum and lift cars, the governor, the shore lift's car and weight); the live check `displays` now finds none air, but whether each looks right is for the eye. The Cargo Hold's gantry walk: try to slip out at its four end corners (now closed) and to reach the pulpit's canopy or the deckhouse roof. | no |
+| 3 (round 4) | The Cargo Hold's new pulpit (the driver's step and the keys in the deck; built from an offline plan and a ray-cast sketch, no eye has seen it): the key names lying on the brass, upright as read from the step (top towards the bow), not mirrored, not flickering; every key pressed from the step, PORT and RELEASE from its far cell too (4.4 blocks, the reach is 4.5); the crate bottoms of the nearest bays through the glass deck and screen; the glass panes joined along the screen; the status board high over the screen, read from the step; keys and hold on one screen looking down, the crane and a crate in flight with a tilt up; UNDO beside the step (pressed by mistake?), RESET HOLD in the back corner (found?); the tables beside the window, a turn of the head; the bow's manifest table now at the rail to port of the banksman | no |
+| 3 (round 4) | The Cargo Hold's aft hold: try to get in (the screen before the keys is 5 high, glass; the tables stand against it; the pulpit's side rails can be reached from the plan table); if in, the ladder at its starboard aft corner, the notch in her side and the drop over the side into the basin (no hurt?); from the basin the notch out of reach; from the ladder or the notch a jump to a crate in A4 (the offline check allows a step and a drop, not a running jump). Known and left: a running jump from the fore hold's stair, or along the rail from the bow's table, onto a crate in the fore hold | no |
+| 3 (round 4) | The Cargo Hold afloat (after the play-test of 28 Nov: "we are not in a ship!"; built from an offline plan and a ray-cast sketch): the water round her (does she read as afloat from the entrance, the dock walks and the pulpit; the red boot-topping at the waterline; the lanterns under the water at her bow and stern); fall in on purpose at her stern, her sides, her bow and between the bow's stairs, and get out (a step up anywhere, the four landing steps); over the side from the aft hold's notch into the water (no hurt?); nothing running or dripping anywhere after an hour. The list gauge: the brass arch on the deckhouse read from the driver's platform (the needle's swing smooth, to STARBOARD for starboard, the green and red marks at levels 1, 3 and 5, the kick into the red on a refused set-down, the creak near the limit: too often at levels 5 up, where it creaks at 1 ton?); the same from the bow; the bay names along the eaves; LIST and the limit on the status board; the notices at the heads of the pulpit's stairs. The driver's platform: the foot of each aft bay's nearest row is hidden from its middle (the offline check asks for it from the fore edge) | no |
 | 3 (round 3) | Hull Breach alone, Easy, level 5 (checked live with stand-ins only): a rivet plate in an adventure hand (on every face of a frame, into a hole under water, on nothing else); the stray clearing and the top-up; whether the room reads (the flood line, BREACH labels through water, the gauge, the board, the bar); the compressor seen working; the deepest patch at level 5; getting out of the water at every level; the solve and the walk to the pump lever |  no |
 | 3 (round 3) | Hull Breach's Breachers with a real player: the rig saw one throw 15 tridents at night at a golem on a dry floor, none pickable and none dropped, but go for nothing by day, not even a golem in the water. With a player: does it attack by day when you are in the water (the plaque's "in the water, mind the Breachers"); is the room much harder at night; a trident it throws into a wall or the floor swept; Water Breathing at levels 1 to 3; a player standing or swimming in an open hole holding off its repair after a failed stage |  no |
+| 3 (round 4) | Hull Breach's breaches as real water (built from the plan and the offline simulation; the streams are the game's own and no check can see a player in one): a breach cracking for three seconds before it bursts (seen and heard?); the stream of each level: on the floor, off a ledge, over the ring walk (does it push you off the walk or the ledge, and is that fair? does it ever carry you somewhere with no way out?); a plate set into a hole cell full of water, all four, and the stream stopping; the upper two cells of a high breach (air) plated; both halls dry whatever is open (the stream model says no water gets within four cells of the entry dam); the ladders and both stairs climbed with water coming down beside them; a patched breach (plates, water still behind in the hull) and the glass back after the pumps. The three tidies: round breach 8 and breach 9 on the ring walk; up a gantry ladder from the walk and off at the top; up the hall stair from its new corner landing | no |
+| 3 (round 4) | Hull Breach's gantry anvils were found broken (air) once: probably worn out by use. Watch for it | no |
 | 1 (round 3) | The ring of ten: the map wall's ten domes and their names read from the bay (drawn at a smaller scale; seen only in an offline render); "Domes x of 9" on the progress line; the craters round the moved Flooded Dome and Foundry and along tunnels 3 to 5 (the glass looking out on water, not ground; terraces natural?); the long tunnel 4 (32) walked; about 75 minutes for a whole run at level 5 |  no |
 
 ## Decisions and findings
@@ -1990,6 +2000,37 @@ Clockwork Maze's site (48 across, the exit straight ahead).
   it fights at night, which the contract accepted ("harder at night").
   Not shown: that by day it goes for a player in the water (the design's
   "in the water, mind the Breachers"): a play-test item.
+- Round 4, after the owner's play-test (28 Nov 2026): a breach is the
+  dome cracking. Sound, its 2 x 2 hole is a window of glass in the raw
+  iron frame. In its last three seconds it cracks (the hull's glass
+  behind the frame turns to tinted glass in three steps, with drips and
+  creaks), then bursts: the window shatters, the sea stands in the hole
+  as real water sources (all four cells; over the ring walk the lower
+  two, the upper two air) and in the hull behind as waterlogged
+  barriers, and the stream runs down the wall and over the decks. A
+  plate takes the place of the water in its cell; four patch the hole
+  (`b<i>` 2), the sea still behind them. A failed stage, the pump-down,
+  leaving, the reset and the solve make every breach sound glass again.
+  The first burst of a stage now comes three seconds in, after its
+  cracks. Proved on the plan (`stream_problems`, with a generous model
+  of the game's running water: down, and seven cells along from a source
+  or a landing): no stream at or behind the entry dam or in the exit
+  hall, none on anything it would wash away, all of it where the
+  layers' fills or `mop` take it away. Not proved: what the current does
+  to a player (the play-test list).
+- Round 4, the same day, three tidies. The ring walk went round each
+  high breach's frame by a deck one wide that met the walk only corner
+  to corner at one end of breach 8 and not at all at one end of breach
+  9: the deck is now carried out to the walk at both ends (the unit test
+  walks the whole ring at deck level). The gantry's two ladders from the
+  walk stood on the walk with their posts in its middle and came out
+  under the dome's glass, with no room to step off: they are now on
+  spurs in under the gantry, on hangers from its deck, and come up
+  through it; the two ribs in the gantry's line stop where it passes;
+  the walk's rail runs on round them. The hall stair's foot was in the
+  corner by the glass, where the hall is one wide, and could only be
+  stepped onto from the side: the flight now starts from a corner
+  landing one up, with a step up to it the way a player comes.
 - For the owner's bench and play-test: a rivet plate in an adventure hand
   (on every face of a frame, into a hole under water, on nothing else);
   the stray clearing and the top-up; the Breacher's trident on a player;
@@ -2007,7 +2048,8 @@ a gantry crane; stow her to the manifest a crate at a time (never on a
 lighter one, three high, the trim within the band's limit). The crane is
 block displays all the time (bridge, trolley, hook and chain, a carried
 crate's eight), gliding a quarter block a tick by `tp` with
-`teleport_duration:1`; ten buttons and RESET HOLD's lever on the pulpit.
+`teleport_duration:1`; ten buttons and RESET HOLD's lever on the pulpit
+(as first built: see "The pulpit, round 4" below).
 
 - **Searches** (`puzzle`, `manifest_problems`, in `room_problems`): every
   manifest solvable in the table's moves (5, 7, 9, 10 to 11, 11 to 12),
@@ -2032,6 +2074,56 @@ crate's eight), gliding a quarter block a tick by `tp` with
   found two bugs in the pack (the tick re-arming the hold at a stale
   level after a reset; the hatch cutting F1's bottom crate in half) and
   passed once they were fixed ("Round 3 live").
+- **The pulpit, round 4** (27 Nov 2026, after the first play-test): the
+  buttons were on the fore faces of a wall of brass posts, pressed facing
+  aft with the hold behind the driver. Now the driver stands on a step at
+  the back of the pulpit and the eight keys are stone buttons lying on
+  brass in the deck before it (to the left PORT, FORE, STARBOARD with AFT
+  under FORE; to the right HOOK UP and GRAB over HOOK DOWN and RELEASE),
+  their names flat on the brass. Before the keys the deck and the top of
+  her transom are glass and the rail is a glass screen five high: from
+  the step the keys and every aft bay to its floor are in one view
+  (`sight_problems` from the step). UNDO is a button on a post
+  beside the step, RESET HOLD in the back starboard corner; the tables
+  stand either side of the window; the canopy is cut back to the step;
+  the status board is higher and larger. The bow's manifest table is at
+  the rail to port of the banksman. A waist-high desk in front was ruled
+  out: anything a block high before the driver hides every crate.
+- **The aft hold** has no stair (the companionway of the round before
+  came up through the deck where the keys now lie). `trap_problems` (with
+  `roam`: a slip between unjoined bars, standing on a rail, a step off
+  any edge) finds no way into it from the entrance with the pulpit's
+  tables climbed, and none onto the canopy now the gantry walk's end
+  rails close its corners. For whoever gets in all the same: a ladder at
+  its starboard aft corner to a notch in her side and a drop of three to
+  the dock, with no way back up (`rooms.reach` now climbs ladders and
+  takes a longer drop when asked). The unit test takes the ladder away,
+  and opens the corners, and wants the check to say so. Not modelled: a
+  running jump.
+  Built live the same night: `cargo_hold` and `displays` pass and the
+  whole verify is 57 of 57. The checks press the keys by setting each
+  button powered where it lies; they prove nothing of how the pulpit
+  looks or reads (the play-test rows above).
+- **Afloat** (28 Nov 2026, after the owner's play-test: the trim rule
+  made no sense for a ship on blocks). The dock is a basin now: water one
+  deep let into the dome's floor all round her (`basin`, registered with
+  `domes.add_opening`; a bed is laid under it; `afloat_problems` holds
+  it to: every side solid, nothing standing on it, a way out of every
+  cell, no walk through it). `rooms.reach` takes `water` (wade, step out,
+  fall in from any height). Her bottom is relaid in the floor and the
+  boot-topping is at the waterline. The log's lectern moved a block aft,
+  onto the walk. The trim lamps went: a **list gauge** on each face of the
+  deckhouse (a brass arch, a needle and twelve marks, block displays;
+  `trim/show`, `trim/band`, `trim/flash`, `trim/creak`), and the word is
+  LIST on every sign, message and board (the scores keep `trim`). Baked
+  in from the owner's hand edits: the driver's half-step platform (the
+  eye half a block lower: see the play-test row), the bell, the board a
+  block lower behind a barrier window in the screen (`rooms.CLEAR` knows
+  a barrier), the deckhouse a block lower (a crate on the hook is seen
+  over it; `blind_problems` still hides every stack), no chain on the
+  dock. The keys have no sign now: their names on the brass stand for it
+  (`room_problems` says so). Not done: a cut from the basin to the sea
+  gate.
 
 ## The sea floor (stages `seabed`, `seabed_water`)
 

@@ -97,7 +97,8 @@ assert any("means something" in p for p in found)
 # the basin: registered with the core as wet on purpose, between the dams
 # up to the line; the halls and the ways in hold none of it
 basin = H.basin(dome)
-assert domes.WET_OK[H.INDEX] == basin and "the test column" in domes.ALLOWED[H.INDEX]
+assert domes.WET_OK[H.INDEX] == H.wet_cells(dome) >= basin
+assert "the test column" in domes.ALLOWED[H.INDEX]
 assert {H.fr_of(fr, c)[2] for c in basin} == set(range(1, H.MAX + 1))
 assert all(H.ENTRY_F < H.fr_of(fr, c)[0] < H.EXIT_F for c in basin)
 core = {
@@ -106,19 +107,25 @@ core = {
     for lo, hi in part
     for x in range(lo[0], hi[0] + 1)
 }
-assert not core & basin and fr.at(-19, 0, 1) in core and fr.at(0, 10, 10) in core
+assert not core & basin and fr.at(-19, 0, 1) in core and fr.at(0, 8, 12) in core
 layers = H.layers(dome)
 water = sum(len(layer.open) for layer in layers.values())
 assert 10000 < water < 14000, water
-assert H.expected(dome, H.State(w=H.MAX))["water"] == water - 4 * 6  # low, mid
+sound = H.expected(dome, H.State(w=H.MAX))
+assert sound["water"] == water - 4 * 6 and sound["glass"] == 4 * 6  # low, mid
 assert H.expected(dome, H.State(w=H.MAX, open=H.ALL_OPEN))["water"] == water
+some = H.State(w=0, open=frozenset({1}), patched=frozenset({2, 9}))
+got = H.expected(dome, some)  # an open hole is the sea whatever the level
+assert (got["source"], got["plate"], got["glass"]) == (4, 4, 4 * 4)
+assert "air" not in H.steady(some) and "air" in H.steady(H.START)
 for layer in layers.values():
     for block in layer.fittings.values():
         assert H.DRY in block and H.holds_water(block), block
 assert not any(H._waterloggable(blk) for c, blk in b.solid.items() if c in basin)
 
 # the breaches: nine, three on each level, in frames of raw iron, each hole
-# touching two frame blocks with glass or the shell behind it; the dressing
+# touching two frame blocks with the room's own glass behind it (which a
+# burst floods) and a ring of glass round that to crack; the dressing
 # frames are finished iron, which no plate sticks to
 assert [br.level for br in place.breaches].count("low") == 3
 assert {br.level for br in place.breaches} == {"low", "mid", "high"}
@@ -128,6 +135,24 @@ for br in place.breaches:
     assert all(c not in b.everything() for c in br.holes)
     assert (br.level == "high") == (not set(br.holes) <= basin)
     assert br.spawn not in br.holes
+    assert len(br.flooded) == 4 and len(br.cracks) >= 6
+    assert all(b.solid[c] == H.GLASS for c in (*br.flooded, *br.cracks))
+    assert len(br.sources) == (2 if br.level == "high" else 4)
+    assert br.sources == br.holes[: len(br.sources)]  # the lower row first
+# a state's blocks: sound glass; open, the sea in the holes (over the walk
+# the lower two) and in the hull behind, cracked round; patched, plates
+sound_, burst, patch = (
+    H.fixed_blocks(dome, s_)
+    for s_ in (H.START, H.State(open=H.ALL_OPEN), H.State(patched=H.ALL_OPEN))
+)
+for br in place.breaches:
+    assert all(sound_[c] == H.GLASS for c in (*br.holes, *br.flooded, *br.cracks))
+    assert all(burst[c] == H.WATER for c in br.sources)
+    assert all(burst[c] == H.AIR for c in set(br.holes) - set(br.sources))
+    assert all(patch[c] == H.PLATE for c in br.holes)
+    for blocks in (burst, patch):
+        assert all(blocks[c] == H.SEA for c in br.flooded)
+        assert all(blocks[c] == H.CRACKED for c in br.cracks)
 for br in place.dressing:
     assert all(b.solid[c] == H.DRESS_FRAME for c in br.frame)
     assert all(b.solid[c] == H.DRESS_PLATE for c in br.holes)
@@ -152,6 +177,35 @@ for block in b.everything().values():
 # the proofs, each on its own, and what each one finds
 assert not H.basin_problems(dome) and not H.headroom_problems(dome)
 assert not H.walk_problems(dome) and not H.escape_problems(dome)
+# running water: from the sources, down and FLOW along; never at or behind
+# the entry dam, never under the exit hall's roof, washing nothing away
+wet = H.stream(dome)
+assert not H.stream_problems(dome)
+assert {c for br in place.breaches for c in br.sources} <= wet
+assert all(H.fr_of(fr, c)[0] > H.ENTRY_F for c in wet)
+assert all(H.fr_of(fr, c)[0] > H.ENTRY_F + 3 for c in H.mop_cells(dome))
+assert fr.at(0, 0, H.GANTRY_H + 1) not in wet  # nothing runs up
+assert any(H.fr_of(fr, c)[2] == 1 for c in wet)  # it falls to the floor
+assert any(H.fr_of(fr, c)[2] == H.WALK_H + 1 for c in wet)  # and wets the walk
+assert H.mop_cells(dome) == {c for c in wet if H.fr_of(fr, c)[2] > H.MAX}
+assert not wet & set(b.everything()) and wet <= domes.WET_OK[H.INDEX]
+# the ring walk goes on past every high breach, and the gantry's ladders
+# come out on its deck
+sh = H.shape(dome, H.START)
+deck = H.WALK_H + 1
+ring, edge = set(), [fr.at(H.ENTRY_F, 8, deck)]
+while edge:
+    c = edge.pop()
+    if c not in ring:
+        ring.add(c)
+        edge += [to for to in sh.moves(c, falls=False) if to[1] == c[1]]
+for br in place.breaches:
+    assert (br.spawn in ring) == (br.level == "high"), br.number
+for f, r in ((0, 19), (0, -19), (H.EXIT_F, 0), (H.VALVE[0] - 1, H.VALVE[1] + 1)):
+    assert fr.at(f, r, deck) in ring, (f, r)
+for side in (1, -1):
+    top = fr.at(0, side * H.LADDER_R, H.GANTRY_H)
+    assert fr.at(0, side * (H.LADDER_R - 1), H.GANTRY_H + 1) in sh.moves(top)
 real = H.structure
 
 
@@ -197,10 +251,31 @@ changed(
     ]
 )
 assert any("no way out" in p for p in H.walk_problems(dome))
-# a lever by a frame: in the bay
+# a lever by a frame: in the bay, and in the stream
 lever = "minecraft:lever[face=floor,facing=north,powered=false]"
 changed(lambda s: s.attached.update({place.breach(7).spawn: lever}))
 assert any("in its bay" in p for p in H.breach_problems(dome))
+assert any("washes away" in p for p in H.stream_problems(dome))
+# the hull behind a hole not plain glass
+changed(lambda s: s.solid.update({place.breach(2).flooded[0]: H.COPPER}))
+assert any("not plain glass" in p for p in H.breach_problems(dome))
+# a pane out of the exit hall's roof where breach 9's stream crosses it:
+# the rail that goes up round the gap keeps the stream out; with no rail
+# it falls into the hall
+roof = min(c for c in wet if H.fr_of(fr, c)[0] > H.EXIT_F)
+changed(lambda s: s.solid.pop((roof[0], roof[1] - 1, roof[2])))
+assert not H.stream_problems(dome)
+rails, H.rails = H.rails, lambda *_: {}
+H.forget()
+assert any("into the exit hall" in p for p in H.stream_problems(dome))
+H.rails = rails
+# water that ran four times as far along the walk would be on the entry
+# dam's crest, over the hall
+H.structure = real
+H.FLOW = 28
+H.forget()
+assert any("entry hall's side" in p for p in H.stream_problems(dome))
+H.FLOW = 7
 H.structure = real
 H.forget()
 assert not H.room_problems(dome)
@@ -222,6 +297,18 @@ assert all(len(c.encode()) < B.MAX_COMMAND for c in H.book_commands(dome))
 for sign in (*H.PLAQUE_SIGNS, H.VALVE_SIGN):
     assert len(sign) <= 4 and all(len(line) <= 15 for line in sign), sign
 assert len(H.labels(dome)) == 9 + 1 + 2
+# the BREACH labels three times the size, turning to the eye, no backing
+breach_labels = H.labels(dome)[len(H.room(dome).valve.summons) :][:9]
+for c in breach_labels:
+    assert "scale:[3.0f,3.0f,3.0f]" in c and "background:0" in c, c
+    assert 'billboard:"center"' in c, c
+# a Breacher notices players within 8 blocks; no other kind's summon changes
+import automatons as A
+
+follow = '{id:"minecraft:follow_range",base:8.0d}'
+for kind in (A.BREACHER, H.BREACHER_MELEE):
+    assert follow in A.summon_kind(kind, "0 0 0", H.INDEX)
+assert all("follow_range" not in A.summon_kind(k, "0 0 0", H.INDEX) for k in A.KINDS)
 import dome_foundry
 
 assert "hull test chamber" in dome_foundry.LOG_PAGES[-1]
@@ -260,7 +347,11 @@ for c in H.basin(dome):
     block = world.at(c) or ""
     assert not block.startswith("minecraft:water"), c
     assert "waterlogged=true" not in block, c
-assert all(world.at(c) == H.PLATE for br in place.breaches for c in br.holes)
+assert all(world.at(c) == H.GLASS for br in place.breaches for c in br.holes)
+assert not any(
+    (world.at(c) or "").startswith(("minecraft:barrier", H.CRACKED))
+    for c in domes.dome_cells(dome).interior
+)
 assert all(world.at(c) == H.CHISELED for c in place.door)
 for c in game.stub_post(dome).cells:
     assert (world.at(c) or H.AIR) == H.AIR or c in want, c
@@ -292,13 +383,35 @@ for hook in (*game.HOOKS, "leave", "died"):
     assert f"dome/{n}/{hook}" in fs, hook
 assert f"dome/{n}/guard" in fs and pack.id(f"dome/{n}/guard") in pack._tick
 assert not B.pack_problems()
+# the temper's follow range of 40 is the Riveters', never a Breacher's
+reach = [line for line in fs[f"dome/{n}/temper"] if "follow_range" in line]
+assert len(reach) == 1 and "tag=!st.k.breacher" in reach[0]
 for h in range(1, H.MAX + 1):
     assert f"dome/{n}/layer_{h}/wet" in fs and f"check/dome/{n}/layer_{h}" in fs
 for br in H.room(dome).breaches:
-    for name in ("burst", "seal", "plug", "cast_at", "hole"):
+    for name in ("burst", "seal", "plug", "cast_at", "hole", "crack"):
         assert any(p.startswith(f"dome/{n}/{name}/{br.number}") for p in fs), name
-# no lever, button, plate or sign is ever written into the basin by a
-# function; nothing waterlogged but by the layer functions
+    for name in ("open", "patch", "shut"):
+        assert f"dome/{n}/hole/{br.number}/{name}" in fs
+    burst = fs[f"dome/{n}/burst/{br.number}"]
+    wet = [line for line in burst if "setblock" in line and H.WATER in line]
+    assert len(wet) == (2 if br.level == "high" else 4), br.number
+    assert sum(H.SEA in line for line in burst) == 4
+    assert sum("glass.break" in line for line in burst) == 2
+    assert not any(H.WATER in line for line in fs[f"dome/{n}/hole/{br.number}/shut"])
+# every way out of a stage takes the sea out of every hole: the failure
+# and the pump-down by restore_stage, the others by shutting them all
+def calls(path, name):
+    return any(line.endswith(pack.id(f"dome/{n}/{name}")) for line in fs[path])
+
+
+for name in ("checkpoint", "reset"):
+    for br in H.room(dome).breaches:
+        assert calls(f"dome/{n}/{name}", f"hole/{br.number}/shut"), name
+assert calls(f"dome/{n}/water/pumping", "restore_stage")
+assert calls(f"dome/{n}/fail", "restore_stage") and calls(f"dome/{n}/draw", "mop")
+assert calls(f"dome/{n}/empty", "checkpoint")
+# no lever, button or sign is ever written into the basin by a function
 basin = H.basin(dome)
 for path, lines in fs.items():
     if not path.startswith(f"dome/{n}/"):
@@ -466,7 +579,14 @@ class Sim:
                 "inGround": "inGround:1b" in line
                 or (w[1] == "minecraft:trident" and "Motion:" in line),
                 "marker": "Marker:1b" in line,
+                "attrs": {
+                    k: float(v)
+                    for k, v in re.findall(r'id:"minecraft:(\w+)",base:([\d.]+)d', line)
+                },
             })
+        elif c == "attribute" and w[3:5] == ["base", "set"]:
+            for e in self.select(w[1], me):
+                e["attrs"][w[2].removeprefix("minecraft:")] = float(w[5])
         elif c == "kill":
             gone = self.select(w[1], me)
             self.ents = [e for e in self.ents if not any(e is g for g in gone)]
@@ -586,6 +706,10 @@ class Ctx:
         w = command.split(" ")
         if w[0] == "time":
             return "The time is 1000"
+        if w[0] == "attribute" and w[3:] == ["base", "get"]:
+            (e,) = self.sim.select(w[1])
+            name = w[2].removeprefix("minecraft:")
+            return f"Base value of attribute {name} for x is {e['attrs'][name]}"
         self.sim.line(command)
         return ""
 
@@ -764,15 +888,50 @@ for w in (1, 2, 3, 9, 4, 0, 6):
     }
     want -= {c for br in place.breaches for c in br.holes}
     assert wet_cells() == want, (w, len(wet_cells() ^ want))
-# a burst at a wet layer fills its hole with water; plugged, plates
+# a burst puts the sea in its hole whatever the level (over the walk in
+# the lower two cells) and in the hull behind; four plates patch it, the
+# sea still behind; restore_stage makes open and patched sound again
 sim.s["#hb.w", "st"] = 3
 sim.run(f"dome/{n}/draw")
 low = next(br for br in place.breaches if br.level == "low")
+high = next(br for br in place.breaches if br.level == "high")
 sim.s["#hb.phase", "st"] = 0
-sim.run(f"dome/{n}/burst/{low.number}")
+for br in (low, high):
+    sim.run(f"dome/{n}/crack/{br.number}/1")
+    assert [rec.world.at(c) for c in br.cracks].count(H.CRACKED) == 2
+    sim.run(f"dome/{n}/crack/{br.number}/3")
+    assert all(rec.world.at(c) == H.CRACKED for c in br.cracks)
+    assert all(rec.world.at(c) == H.GLASS for c in (*br.holes, *br.flooded))
+    sim.run(f"dome/{n}/burst/{br.number}")
+    assert all(rec.world.at(c) == "minecraft:water" for c in br.sources)
+    dry = set(br.holes) - set(br.sources)
+    assert all((rec.world.at(c) or H.AIR) == H.AIR for c in dry)
+    assert all(rec.world.at(c) == H.SEA for c in br.flooded)
+    sim.run(f"dome/{n}/crack/{br.number}/1")  # (no cracking an open one)
+for c in high.holes:
+    rec.world.setblock(c, H.PLATE)
+sim.s["#hb.state", "st"], sim.s["#hb.phase", "st"] = 1, 1
+sim.s["#hb.due", "st"] = 1
+sim.run(f"dome/{n}/read")
+assert sim.s["#hb.open", "st"] == 1 and sim.s[f"#hb.b{high.number}", "st"] == 2
+sim.run(f"dome/{n}/draw")
+assert all(rec.world.at(c) == H.PLATE for c in high.holes)
+assert all(rec.world.at(c) == H.SEA for c in high.flooded)
 assert all(rec.world.at(c) == "minecraft:water" for c in low.holes)
 sim.run(f"dome/{n}/restore_stage")
-assert all(rec.world.at(c) == H.PLATE for c in low.holes)
+for br in (low, high):
+    assert all(rec.world.at(c) == H.GLASS for c in (*br.holes, *br.flooded, *br.cracks))
+    assert sim.s[f"#hb.b{br.number}", "st"] == 0
+# a crack begun and its burst struck off: sound again
+sim.run(f"dome/{n}/crack/{low.number}/2")
+sim.run(f"dome/{n}/uncrack")
+assert all(rec.world.at(c) == H.GLASS for c in low.cracks)
+# a partner leaving mid-crack, with bursts still due: the crack goes too
+sim.run(f"dome/{n}/crack/{low.number}/2")
+sim.s["#hb.due", "st"], sim.s["#hb.form", "st"] = 3, 2
+sim.run(f"dome/{n}/strike")
+assert sim.s["#hb.form", "st"] == 1
+assert all(rec.world.at(c) == H.GLASS for c in low.cracks)
 sim.run(f"dome/{n}/reset")
 
 # the live check, from end to end

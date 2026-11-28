@@ -299,7 +299,7 @@ MACHINE: dict[int, frozenset[P]] = {
 }
 F_CELL: Node = (2, 3, 0)  # where the second held gate's plate is
 DOOR_PLATE: Place = (-13, 2, 1)
-FK_PLATE: Place = (5, -9, 7)
+FK_PLATE: Place = (4, -9, 7)  # within reach of its gate's sign
 KEY_PLATES: tuple[Place, Place] = ((0, -3, CROWN_H), (0, 3, CROWN_H))
 LEVER_POST: Place = (-4, 0, CROWN_H)
 
@@ -823,6 +823,35 @@ def gate_places(g: Gate) -> dict[str, tuple[Place, ...]]:
     }
 
 
+def gate_sign_at(g: Gate, reader: P) -> tuple[Place, P]:
+    """where a gate's sign goes, and the frame step it faces: on the wall
+    beside the doorway, one along from it away from the piston stack, at
+    head height, on the side of the wall ``reader`` (a place in the cell a
+    player reads it from) is on"""
+    along = (g.door[0] - g.piston[0]) // 2, (g.door[1] - g.piston[1]) // 2
+    across = abs(along[1]), abs(along[0])
+    side = (
+        1
+        if (reader[0] - g.door[0]) * across[0] + (reader[1] - g.door[1]) * across[1] > 0
+        else -1
+    )
+    out = across[0] * side, across[1] * side
+    f, r = g.door[0] + along[0] + out[0], g.door[1] + along[1] + out[1]
+    return (f, r, walk_h(g.deck) + 1), out
+
+
+def lift_gate(lift: Lift) -> Gate:
+    """the gate into a lift at its bottom"""
+    return next(g for g in GATES if g.kind == LIFT and g.deck == lift.low[0])
+
+
+def lift_sign_at(lift: Lift) -> tuple[Place, P]:
+    """a lift's sign: by its gate, on the side away from the lift"""
+    g = lift_gate(lift)
+    reader = 2 * g.door[0] - lift.mid[0], 2 * g.door[1] - lift.mid[1]
+    return gate_sign_at(g, reader)
+
+
 def lintel(g: Gate) -> tuple[str, str]:
     """a gate's lintel block and what its faces say"""
     if g.kind in (GREEN, IRON, GOLD):
@@ -926,7 +955,7 @@ def hand_summon(fr: fittings.Frame) -> str:
     return (
         f"summon minecraft:block_display {middle(fr.at(-12, 0, 9), 0.5)} "
         f'{{Tags:["{ENTITY_TAG}","{HAND_TAG}"],'
-        f'block_state:{{Name:"{HAND}"}},{hand(fr, 0)}}}'
+        f"block_state:{fittings.block_state(HAND)},{hand(fr, 0)}}}"
     )
 
 
@@ -980,7 +1009,10 @@ HELD_SIGNS = {
     DOOR: (("TOWER DOOR", "Alone, it", "stands open."), ("HELD GATE", "One on the", "plate. The", "other goes in.")),
     FK: (("GREEN GATE", "Alone, it", "opens in", "GREEN."), ("HELD GATE", "One on the", "plate. The", "other goes on.")),
 }  # fmt: skip
-SIGN_AT: dict[str, Place] = {DOOR: (-13, 3, 1), FK: (5, -7, 7)}
+FK_GATE = next(g for g in GATES if g.kind == FK)
+#: the F-to-K gate's sign on the wall by its doorway, read from F
+FK_SIGN, FK_SIGN_WAY = gate_sign_at(FK_GATE, cell_mid(F_CELL)[:2])
+SIGN_AT: dict[str, Place] = {DOOR: (-13, 3, 1), FK: FK_SIGN}
 PLAQUE = (-14, -4)
 LECTERN: Place = (-14, 4, 1)
 RECALL = (-18, 3, -1)
@@ -1186,8 +1218,11 @@ def room_blocks(
             put(b.attached, {fr.at(*at): PLATE})
         else:
             b.clear.add(fr.at(*at))
-        facing = back if kind == DOOR else ahead
-        sign = fittings.standing_sign(facing, *HELD_SIGNS[kind][form - 1])
+        text = HELD_SIGNS[kind][form - 1]
+        if kind == DOOR:
+            sign = fittings.standing_sign(back, *text)
+        else:
+            sign = fittings.wall_sign(fr.facing(*FK_SIGN_WAY), *text)
         put(b.attached, {fr.at(*SIGN_AT[kind]): sign})
     solid, attached = fittings.plaque_blocks(
         fr,
@@ -1204,9 +1239,12 @@ def room_blocks(
     solid, attached = fittings.recall_post_blocks(fr, *RECALL)
     put(b.solid, solid)
     put(b.attached, attached)
-    for at, text in (((9, -3, 1), "A"), ((1, 9, 7), "B")):
-        put(b.attached, {fr.at(*at): fittings.standing_sign(
-            back, f"LIFT {text}", "Its gate opens", "in GOLD.", "Stand on it.")})  # fmt: skip
+    for lift in LIFT_LIST:
+        if lift is RAM_LIFT:
+            continue
+        at, way = lift_sign_at(lift)
+        put(b.attached, {fr.at(*at): fittings.wall_sign(
+            fr.facing(*way), f"LIFT {lift.name.upper()}", "Its gate opens", "in GOLD.", "Stand on it.")})  # fmt: skip
     dress = dressing_blocks(dome)
     put(b.floor, dress.floor)
     put(b.solid, dress.solid)
@@ -1386,7 +1424,7 @@ def plan_summons(fr: fittings.Frame) -> list[str]:
             x, y, z = point(f, r, h)
             found.append(
                 f"summon minecraft:block_display {x:.3f} {y:.3f} {z:.3f} "
-                f'{{Tags:["{ENTITY_TAG}"],block_state:{{Name:"{block}"}},'
+                f'{{Tags:["{ENTITY_TAG}"],block_state:{fittings.block_state(block)},'
                 "transformation:{translation:[-0.2f,-0.2f,-0.2f],"
                 "scale:[0.4f,0.4f,0.4f],left_rotation:[0f,0f,0f,1f],"
                 "right_rotation:[0f,0f,0f,1f]}}"
@@ -1443,7 +1481,7 @@ def summons(dome: Dome) -> list[str]:
         found.append(
             f"summon minecraft:block_display {middle(fr.at(-12, 0, 9), 0.5)} "
             f'{{Tags:["{ENTITY_TAG}","{tag}"],'
-            f'block_state:{{Name:"{BRASS}"}},{pose}}}'
+            f"block_state:{fittings.block_state(BRASS)},{pose}}}"
         )
     return found + plan_summons(fr)
 
@@ -2306,7 +2344,7 @@ def functions(pack: dp.Pack) -> None:
                     *(
                         f"summon minecraft:block_display {x}.0 {y}.0 {z}.0 "
                         f'{{Tags:["{CAR_TAG}","{lift.car}"],teleport_duration:1,'
-                        f'block_state:{{Name:"{COPPER}"}}}}'
+                        f"block_state:{fittings.block_state(COPPER)}}}"
                         for x, _, z in sorted(cells)
                     ),
                     f"execute as {above(k)} at @s positioned ~ {y + 1.1} ~ "

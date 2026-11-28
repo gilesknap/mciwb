@@ -1,12 +1,13 @@
 """
 The Cargo Hold of The Drowned Station: a steam lighter, the *Marigold*,
-on her blocks in a dry dock, her cargo piled anyhow, and over her a brass
+afloat in the dock's basin, her cargo piled anyhow, and over her a brass
 gantry crane. Its build stage (``dome_<n>_inside``), its datapack
 functions (``dome/<n>/...``) and its live check (``cargo_hold``).
 
 **The one idea.** Stow her to the manifest on the chart table with the
 crane, a crate at a time, never setting a crate on a lighter one and
-never letting her heel past the green on the trim lamps. A sliding-block
+never letting her list past the green on the list gauge: she is afloat,
+and loaded unevenly she goes over. A sliding-block
 puzzle whose blocks are lifted; and the deckhouse hides half the hold
 from the crane's driver, so with a mate one drives and the other calls
 the fore hold from the bow.
@@ -16,13 +17,42 @@ from the entrance, r to the right (port is r < 0), h up from the floor.
 The hold is two rows of four bays (``BAYS``: A1 to A4 aft of the
 deckhouse at f -8 and -7, F1 to F4 fore of it at f 7 and 8), each a 2 x 2
 square with an aisle all round; a crate is 2 x 2 x 2 and a bay holds three.
-The deckhouse (f -4 to 4, solid to h 9) hides each hold from the other
-end. The pulpit (the crane's controls) is on her stern, the banksman's
-stand on her bow; a railed gantry walk runs round at h 10.
+The deckhouse (f -4 to 4, solid to h 8) hides each hold's stacks from
+the other end (a crate on the hook is seen over it). The pulpit (the crane's controls) is on her stern, the banksman's
+stand on her bow; a railed gantry walk runs round at h 10. On the pulpit
+the driver stands on a platform half a block high at its back
+(``DRIVER``) and looks forward and down: the keys at the feet, then a
+glass deck and a glass screen, the aft hold through them, the list gauge
+over it. Nobody gets into the aft hold (the screen is too high to climb
+from the tables); whoever does all the same leaves by a ladder at its
+starboard aft corner (``AFT_LADDER``), through a notch in her side and
+over it into the basin.
+
+**Afloat.** The basin (``basin``) is water one deep let into the dome's
+floor all round her (two wide along her sides and at her bow, one at her
+stern, before the entrance), on a bed laid under the floor; her bottom is
+relaid in the floor and her boot-topping is at the waterline. The stairs
+to the pulpit and the bow stand in it on piers, the mooring chains cross
+it. Every cell beside it in the floor is solid, so it cannot run
+(``afloat_problems``); the cells are registered as an opening of the
+floor, which the shell's check then leaves to this module's. Whoever
+falls in wades to an edge and steps out (the walks are level with its
+brim), or goes up the landing steps (``LANDINGS``). No walk the room
+asks for is through it (``reach`` keeps dry).
+
+**The list gauge** (``gauge_summons``): a brass arch on each face of the
+deckhouse with a needle on a pivot, block displays. The needle stands
+upright when she is level and leans to the heavy side, a step a ton,
+gliding (``trim/show``); the scale's marks are green to the band's limit
+and red past it (``trim/band``). A refused set-down kicks the needle to
+where she would have gone and lets it back (``trim/flash``); within a
+ton of the limit her timbers creak (``trim/creak``). The pack's names
+keep the older word, trim: on every sign, board and message it is her
+list.
 
 **The rules** (``Hold``): a crate is iron (3 tons), a barrel (2) or a
 bale of wool or hay (1). Never on a lighter one, three high at most, and
-the trim (starboard tons less port tons, a crate on the hook counted
+the list (``trim``: starboard tons less port tons, a crate on the hook counted
 where it came from) never past the band's limit. ``BANDS`` holds three
 manifests for each band of two levels (a start and a plan, and the fewest
 moves); one is drawn when the room is armed. ``manifest_problems`` runs
@@ -40,9 +70,12 @@ and taken at the start of each block up; the drum turns a quarter a
 block. A grabbed crate's blocks become displays that ride the hook (the
 lifts' leave), and blocks again where it is set down (their arrive).
 
-**The controls**, stone buttons on brass on the pulpit's desk: FORE, AFT,
-PORT, STARBOARD (travel: the hook goes up first), HOOK DOWN, HOOK UP,
-GRAB, RELEASE and UNDO; and RESET HOLD, a lever pulled twice in 5 s. A
+**The controls**: eight keys, stone buttons lying on brass let into the
+pulpit's deck before the driver's platform, in the ship's own directions. To
+the left hand a cross: PORT, FORE, STARBOARD in the far row and AFT under
+FORE (travel: the hook goes up first); to the right a square: HOOK UP and
+GRAB far, HOOK DOWN and RELEASE near. UNDO is a button on a post beside
+the platform; RESET HOLD, a lever pulled twice in 5 s, in the back corner. A
 set-down that breaks a rule is refused at HOOK DOWN, with its reason in
 chat (``why``: 1 full, 2 crush, 3 trim, 4 shut, 5 stand clear, 6 not on a
 crate); the hook never comes down into a bay with anyone in its column,
@@ -467,6 +500,10 @@ Place = tuple[int, int, int]  # f, r, h in the dome's frame
 
 BRASS = "minecraft:gold_block"
 BARS = "minecraft:iron_bars"
+PANE = "minecraft:glass_pane"
+BARRIER = "minecraft:barrier"  # a window with nothing in it, and still a wall
+WATER = tunnels.WATER
+GLASS = "minecraft:glass"
 GRATE = "minecraft:waxed_copper_grate"
 CUT = "minecraft:waxed_cut_copper"
 CHISELED = "minecraft:waxed_chiseled_copper"
@@ -480,12 +517,13 @@ HOLD_FLOOR = "minecraft:stripped_spruce_log[axis=y]"
 DOCK_WALK = "minecraft:polished_andesite"
 PILLAR = "minecraft:stripped_dark_oak_log[axis=y]"
 SLAB = "minecraft:waxed_cut_copper_slab[type=bottom]"
+PLATFORM = "minecraft:waxed_oxidized_cut_copper"
+PLATFORM_SLAB = "minecraft:waxed_oxidized_cut_copper_slab[type=bottom]"
 LANTERN = "minecraft:lantern[hanging=false]"
 HANGING = "minecraft:lantern[hanging=true]"
 BULB = "minecraft:waxed_copper_bulb"
 GREEN = "minecraft:lime_concrete"
 RED = "minecraft:red_concrete"
-FLASH = "minecraft:redstone_ore[lit=true]"
 STAIRS = "minecraft:waxed_cut_copper_stairs"
 CHAIN = "minecraft:iron_chain"
 HATCH = "minecraft:spruce_trapdoor"
@@ -517,6 +555,8 @@ BOARD_TAG = "st.cargo.board"
 DOCKET_TAG = "st.cargo.docket"
 DARK_TAG = "st.cargo.dark"
 JAM_TAG = "st.cargo.jam"
+NEEDLE_TAG = "st.cargo.needle"  # the list gauges' needles, one a face
+ZONE_TAG = "st.cargo.zone"  # the marks of their scales (and ``st.cargo.z<j>``)
 
 #: the hold: the two rows' cells along f, the four columns' along r
 BAY_F = ((-8, -7), (7, 8))
@@ -526,25 +566,55 @@ STEP = 4  # ticks a block of the hook's travel: a quarter block a tick
 BRIDGE_TICKS = 60  # ticks from one hold to the other: 15 blocks
 TROLLEY_TICKS = 12  # ticks from one column to the next: 3 blocks
 #: the deckhouse, solid: f, r and its top
-HOUSE_F, HOUSE_R, HOUSE_TOP = (-4, 4), 7, 9
-GAUGE_H = 7  # the trim lamps' height, on each face of the deckhouse
+HOUSE_F, HOUSE_R, HOUSE_TOP = (-4, 4), 7, 8
+#: the list gauge, a brass dial on each face of the deckhouse: its needle
+#: stands on a pivot at this height on her centre line, upright when she
+#: is level, and leans ``GAUGE_STEP`` degrees a ton to the heavy side, as
+#: her mast would; it is ``NEEDLE`` long, and stops at ``GAUGE_STOP`` tons
+GAUGE_PIVOT = 5.5
+NEEDLE = 2.9
+GAUGE_STEP = 14
+GAUGE_STOP = 6
+NEEDLE_TICKS = 15  # ticks of the needle's swing to a new list
 #: the pulpit (stern) and the bow: decks at h 5
 DECK_H = 5
 PULPIT_F = (-17, -11)
-DRIVER: Place = (-12, 0, 6)
+#: the driver's platform: half a block high, at the back of the pulpit,
+#: the keys before it; the driver stands on it and looks forward over
+#: them. ``DRIVER`` is the cell over its slab (where the walk checks have
+#: the feet); the eye is ``DRIVER_EYE`` up, the slab's top and 1.62
+PLATFORM_F, PLATFORM_R = (-16, -15), (-2, 1)
+DRIVER: Place = (PLATFORM_F[1], 0, 7)
+DRIVER_EYE = DECK_H + 1.5 + 1.62
 BANKSMAN: Place = (12, 0, 6)
-#: the desk: the buttons on posts at f -13, facing forward: name -> r
-TRAVEL = {"PORT": -6, "FORE": -5, "AFT": -4, "STARBOARD": -3}
-HOOK = {"HOOK DOWN": 3, "HOOK UP": 4, "GRAB": 5, "RELEASE": 6}
-UNDO_R = 8
-DESK_F = -13
-LEVER_AT: Place = (-16, 0, 6)  # RESET HOLD's post, the lever on its fore side
+#: the keys: stone buttons lying on brass let into the deck before the
+#: platform, in the ship's own directions (FORE the far row, PORT to the
+#: left): name -> (f, r)
+TRAVEL = {
+    "PORT": (-13, -3),
+    "FORE": (-13, -2),
+    "STARBOARD": (-13, -1),
+    "AFT": (-14, -2),
+}
+HOOK = {
+    "HOOK UP": (-13, 1),
+    "GRAB": (-13, 2),
+    "HOOK DOWN": (-14, 1),
+    "RELEASE": (-14, 2),
+}
+UNDO_AT: Place = (-16, 3, 6)  # UNDO's post, its button towards the platform
+LEVER_AT: Place = (-16, 7, 6)  # RESET HOLD's post, the lever on its fore side
+#: the window: the deck and the rail before the keys, and the top of her
+#: transom under them, are glass as far as this either side
+WINDOW_R = 4
+SCREEN_H = 10  # the rail before the keys is a glass screen, this high
+CANOPY_F = -15  # the canopy's fore edge: open sky over the driver's view
 #: the tables: (the f of the aft row, the r of A1's column, the lowest tier)
-PLAN_TABLE: Place = (-15, -8, 6)
-HOLD_TABLE: Place = (-15, 5, 6)
-BOW_TABLE: Place = (13, -5, 6)
+PLAN_TABLE: Place = (-13, -8, 6)
+HOLD_TABLE: Place = (-13, 4, 6)
+BOW_TABLE: Place = (12, -6, 6)
 PLAQUE = (-17, 0)
-LECTERN: Place = (-18, -3, 1)
+LECTERN: Place = (-19, -3, 1)
 RECALL = (-20, 7, -1)
 #: the donkey engine (a torch clock, caged) on the port dock by the bow
 DONKEY = (13, -14)
@@ -596,6 +666,35 @@ def footprint() -> set[tuple[int, int]]:
     }
 
 
+#: the dock's basin, let into the floor: she lies afloat in it, water one
+#: deep to this far fore and aft and either side of her centre line
+BASIN_F, BASIN_R = (-18, 18), 9
+#: landing steps out of the basin up to the dock walks: (f, r)
+LANDINGS = ((-9, -9), (3, -9), (-9, 9), (3, 9))
+
+
+def basin_places() -> set[tuple[int, int]]:
+    """the basin's water: all round her, but where the stairs to the
+    pulpit and the bow stand in it on their piers, and the landing steps"""
+    piers = {(f, r) for f, r, _ in (*PULPIT_STAIRS, *BOW_STAIRS)}
+    return (
+        {
+            (f, r)
+            for f in range(BASIN_F[0], BASIN_F[1] + 1)
+            for r in range(-BASIN_R, BASIN_R + 1)
+        }
+        - footprint()
+        - piers
+        - set(LANDINGS)
+    )
+
+
+def basin(dome: Dome) -> set[Cell]:
+    """the basin's cells (in the dome's floor), each a source of water"""
+    fr = frame(dome)
+    return {fr.at(f, r, 0) for f, r in basin_places()}
+
+
 def hold_floor() -> set[tuple[int, int]]:
     """the hold's floor: inside her sides, aft and fore of the deckhouse"""
     return {
@@ -608,6 +707,12 @@ def hold_floor() -> set[tuple[int, int]]:
 #: the stair from the bow down into the fore hold, along the starboard
 #: aisle: (f, r, h) of each step, highest first
 HOLD_STAIR = ((12, 6, 4), (11, 6, 3), (10, 6, 2), (9, 6, 1))
+#: the way out of the aft hold, for whoever gets in all the same: a ladder
+#: up her starboard side at its aft corner, far from the bays, to a notch
+#: in her side at h 4 (the top of the ladder's wall); from there it is
+#: over the side into the basin, and there is no way back up
+AFT_LADDER = (-10, 6)
+NOTCH_H = 4
 #: the stairs from the dock up to the pulpit and down from the bow
 PULPIT_STAIRS = tuple((f, r, f + 22) for r in (-5, -4, 4, 5) for f in range(-21, -16))
 BOW_STAIRS = tuple((f, r, 20 - f) for r in (-4, 4) for f in range(16, 20))
@@ -626,6 +731,9 @@ class Blocks:
     """every block of the room, as built and as ``reset`` leaves it"""
 
     floor: dict[Cell, str] = field(default_factory=dict)  # relaid floor
+    #: under the floor: the basin's bed (not the dome's, so not in
+    #: ``everything``)
+    bed: dict[Cell, str] = field(default_factory=dict)
     solid: dict[Cell, str] = field(default_factory=dict)
     attached: dict[Cell, str] = field(default_factory=dict)  # need a support
     clear: set[Cell] = field(default_factory=set)  # air, to be kept so
@@ -640,34 +748,135 @@ class Blocks:
 
 
 def gauge_cells(face: int) -> list[Place]:
-    """a face's trim lamps (-1 aft, 1 fore), for a heel of 5 to port
-    through 5 to starboard"""
+    """the brass plate of a face's list gauge (-1 aft, 1 fore): an arch
+    over the needle's pivot"""
     f = HOUSE_F[0] if face < 0 else HOUSE_F[1]
-    return [(f, k, GAUGE_H) for k in range(-5, 6)]
+    low = math.floor(GAUGE_PIVOT)
+    return [(f, r, h) for h in range(low, HOUSE_TOP) for r in range(-3, 4)] + [
+        (f, r, HOUSE_TOP) for r in range(-2, 3)
+    ]
 
 
-def desk() -> dict[str, tuple[Place, str]]:
-    """the desk's inputs: name -> (post's foot, the sign's first line)"""
-    found = {name: ((DESK_F, r, 6), name) for name, r in {**TRAVEL, **HOOK}.items()}
-    found["UNDO"] = ((DESK_F, UNDO_R, 6), "UNDO")
+def gauge_face(face: int, proud: float) -> float:
+    """the u of a face of the deckhouse, and a little out from it"""
+    return HOUSE_F[0] - proud if face < 0 else HOUSE_F[1] + 1 + proud
+
+
+def turned(
+    fr: fittings.Frame,
+    tons: float,
+    inner: float,
+    length: float,
+    width: float,
+    thick: float,
+) -> str:
+    """the transformation of a bar of a list gauge: a block display at the
+    needle's pivot, drawn as a bar from ``inner`` to ``inner + length``
+    out from the pivot, ``width`` across and ``thick`` through, standing
+    upright and turned to where the needle points at a list of ``tons``
+    (to the frame's right, starboard, for more than none)"""
+    (fx, fz), (rx, rz) = fr.forward, fr.right
+    sx, sz = abs(fx) * thick + abs(rx) * width, abs(fz) * thick + abs(rz) * width
+    angle = math.radians(GAUGE_STEP * tons)
+    # about the way she points, up towards the right: the axis (rz, 0, -rx).
+    # The bar's own middle of its inner end goes to the pivot
+    cx, cy, cz = sx / 2, -inner, sz / 2
+    cos, sin = math.cos(angle), math.sin(angle)
+    ax, az = rz, -rx
+    dot = ax * cx + az * cz
+    turn = (
+        cx * cos + (-az * cy) * sin + ax * dot * (1 - cos),
+        cy * cos + (az * cx - ax * cz) * sin,
+        cz * cos + (ax * cy) * sin + az * dot * (1 - cos),
+    )
+    moved = ",".join(f"{_num(-t)}f" for t in turn)
+    return (
+        f"transformation:{{translation:[{moved}],"
+        f"scale:[{_num(sx)}f,{_num(length)}f,{_num(sz)}f],"
+        f"left_rotation:{{axis:[{ax}f,0f,{az}f],angle:{_num(angle)}f}},"
+        "right_rotation:[0f,0f,0f,1f]}"
+    )
+
+
+def needle_pose(fr: fittings.Frame, tons: int) -> str:
+    """the needle's transformation at a list (it has a short tail)"""
+    return turned(fr, tons, -0.3, NEEDLE + 0.3, 0.16, 0.06)
+
+
+#: the scale's marks: one for each ton's width from ``-GAUGE_STOP`` to
+#: ``GAUGE_STOP``; mark j lies between j - GAUGE_STOP and the next ton,
+#: and is green while both are within the band's limit
+ZONES = 2 * GAUGE_STOP
+
+
+def zone_limit(j: int) -> int:
+    """the least limit at which mark j is green"""
+    return max(abs(j - GAUGE_STOP), abs(j + 1 - GAUGE_STOP))
+
+
+def gauge_summons(fr: fittings.Frame) -> list[str]:
+    """the list gauges' block displays, on both faces: the scale's marks
+    round the arch (red until ``trim/band`` says), a copper hub and the
+    needle, upright; all lit whatever the light"""
+    found = []
+
+    def bar(face: int, proud: float, block: str, tags, pose: str) -> None:
+        x, y, z = point(fr, gauge_face(face, proud), 0.5, GAUGE_PIVOT)
+        listed = ",".join(f'"{t}"' for t in (ENTITY_TAG, *tags))
+        found.append(
+            f"summon minecraft:block_display {_num(x)} {_num(y)} {_num(z)} "
+            f"{{Tags:[{listed}],brightness:{{sky:15,block:15}},"
+            f"block_state:{fittings.block_state(block)},{pose}}}"
+        )
+
+    for face in (-1, 1):
+        for j in range(ZONES):
+            pose = turned(fr, j + 0.5 - GAUGE_STOP, NEEDLE + 0.05, 0.22, 0.62, 0.04)
+            bar(face, 0.03, RED, (ZONE_TAG, f"st.cargo.z{j}"), pose)
+        bar(face, 0.14, COPPER, (), turned(fr, 0, -0.2, 0.4, 0.4, 0.08))
+        bar(face, 0.09, NEEDLE_BLOCK, (NEEDLE_TAG,), needle_pose(fr, 0))
     return found
 
 
-def posts(fr: fittings.Frame) -> dict[str, fittings.Post]:
-    """the desk's buttons and RESET HOLD's lever, each on its brass post"""
+NEEDLE_BLOCK = "minecraft:polished_blackstone"
+
+
+YAWS = {"south": 0, "west": 90, "north": 180, "east": -90}
+
+
+def key(fr: fittings.Frame, f: int, r: int, name: str) -> fittings.Post:
+    """a key of the desk: a stone button lying on a brass block let into
+    the deck, its name written flat on the brass at the driver's side,
+    black on the gold"""
     ahead = fr.facing(1, 0)
-    button = f"minecraft:stone_button[face=wall,facing={ahead},powered=false]"
-    found = {}
-    signs = {
-        "HOOK DOWN": ("HOOK", "DOWN"),
-        "HOOK UP": ("HOOK", "UP"),
-        "STARBOARD": ("STAR-", "BOARD"),
-        "UNDO": ("UNDO", "the last", "move"),
-    }
-    for name, (at, _) in desk().items():
-        found[name] = fittings.input_post(
-            fr.at(*at), ahead, button, signs.get(name, (name,)), name, (ENTITY_TAG,)
-        )
+    button = f"minecraft:stone_button[face=floor,facing={ahead},powered=false]"
+    yaw = YAWS[fr.facing(-1, 0)]
+    words = name.replace(" ", "\n")
+    label = fittings.display(
+        (ENTITY_TAG,),
+        point(fr, f + 0.06, r + 0.5, DECK_H + 1.01),
+        yaw,
+        fittings.label_text(words, "black", bold="true"),
+        0.45,
+        pitch=-90,
+    )
+    at = fr.at(f, r, DECK_H + 1)
+    return fittings.Post({fr.at(f, r, DECK_H): BRASS}, {at: button}, [label], at)
+
+
+def posts(fr: fittings.Frame) -> dict[str, fittings.Post]:
+    """the desk's keys, UNDO's button and RESET HOLD's lever on their
+    brass posts"""
+    ahead, port = fr.facing(1, 0), fr.facing(0, -1)
+    found = {name: key(fr, f, r, name) for name, (f, r) in {**TRAVEL, **HOOK}.items()}
+    found["UNDO"] = fittings.input_post(
+        fr.at(*UNDO_AT),
+        port,
+        f"minecraft:stone_button[face=wall,facing={port},powered=false]",
+        ("UNDO", "the last", "move"),
+        "UNDO",
+        (ENTITY_TAG,),
+    )
     found["RESET HOLD"] = fittings.input_post(
         fr.at(*LEVER_AT),
         ahead,
@@ -690,13 +899,13 @@ def logbook_pages(band: int | None, m: int) -> list[str]:
     before the room is armed)"""
     pages = [
         "Cargo Hold log\nO. Finch, Chief Engineer\n\nThe Marigold brought our "
-        "stores down through the sea gate every month. She is still here, on "
-        "her blocks. When the Engine took the station it swung the crane about "
+        "stores down through the sea gate every month. She is still here, "
+        "afloat in the dock. When the Engine took the station it swung the crane about "
         "like a toy and left her cargo anyhow.",
         "The next pump draws through her ballast tanks. Until she is stowed to "
         "the manifest and sits level, its cocks stay shut.\n\nNever set a crate "
         "on a lighter one: it crushes. Iron, then barrels, then bales. Three "
-        "high at most. Watch the trim lamps.",
+        "high at most. She is afloat: load her level, and watch the list gauge.",
         "The crane is worked from the pulpit. UNDO puts the last crate back. "
         "RESET HOLD puts them all back.\n\nWith a mate: one in the pulpit, one "
         "at the bow. The deckhouse hides the fore hold from the pulpit. The "
@@ -740,6 +949,7 @@ def room_blocks(dome: Dome) -> Blocks:
     ahead, back = fr.facing(1, 0), fr.facing(-1, 0)
     port, star = fr.facing(0, -1), fr.facing(0, 1)
     lights = domes.light_cells(dome)[0]
+    interior = domes.dome_cells(dome).interior
     ship = footprint()
 
     # -- the floor: the hold's tank top, each bay in its column's colour;
@@ -750,28 +960,50 @@ def room_blocks(dome: Dome) -> Blocks:
     for f, r in hold_floor():
         block = BAY_COLOUR[bays[f, r] % 4] if (f, r) in bays else HOLD_FLOOR
         put((f, r, 0), block, b.floor)
-    for f in range(-21, 21):
-        for r in (-9, -8, 8, 9):
-            if fr.at(f, r, 0) not in lights and (f, r) not in ship:
+    # her bottom, under her sides and ends; the basin she floats in, on a
+    # bed of the foundation's stone (the floor's lanterns there go down
+    # into it, under the water); the dock walks all round it, and the
+    # landing steps up to them
+    wet = basin_places()
+    for f, r in ship - hold_floor():
+        put((f, r, 0), KEEL, b.floor)
+    for f, r in wet:
+        put((f, r, 0), WATER, b.floor)
+        lit = fr.at(f, r, 0) in lights
+        b.bed[fr.at(f, r, -1)] = domes.LIGHT if lit else domes.FOUNDATION
+    in_floor = domes.dome_cells(dome).floor
+    for f in range(BASIN_F[0] - 3, BASIN_F[1] + 3):
+        for r in range(-BASIN_R - 2, BASIN_R + 3):
+            cell = fr.at(f, r, 0)
+            if (f, r) in ship or (f, r) in wet or cell not in in_floor:
+                continue
+            if cell not in lights:
                 put((f, r, 0), DOCK_WALK, b.floor)
+    for f, r in LANDINGS:
+        put(
+            (f, r, 0),
+            f"{STAIRS}[facing={star if r > 0 else port},half=bottom]",
+            b.floor,
+        )
+        b.bed[fr.at(f, r, -1)] = domes.FOUNDATION
     for i in range(4):
         put((-10, BAY_R[i][0], 0), "minecraft:sea_lantern", b.floor)
         put((10, BAY_R[i][1], 0), "minecraft:sea_lantern", b.floor)
 
-    # -- the hull: her sides and ends to h 4, the gunwale at h 5
+    # -- the hull: her sides and ends to h 4, the gunwale at h 5; her
+    # boot-topping at the waterline
     hold = hold_floor()
     for f, r in ship:
         inside = (f, r) in hold
         if inside:
             continue
         side = abs(r) == beam(f) or (f, r + 1) not in ship or (f, r - 1) not in ship
+        end = (f - 1, r) not in ship or (f + 1, r) not in ship
         for h in range(1, DECK_H):
             if HOUSE_F[0] <= f <= HOUSE_F[1]:
                 break  # the deckhouse is its own
             if h == 1:
-                block = KEEL
-            elif h == 2 and side:
-                block = BOOT
+                block = BOOT if side or end else KEEL
             elif side and f % 3 == 0:
                 block = CHISELED  # a frame, outside
             else:
@@ -785,6 +1017,14 @@ def room_blocks(dome: Dome) -> Blocks:
         for h in (6, 7):
             put((f, r, h), BARS)
 
+    # the way out of the aft hold: a ladder to a notch in her side
+    f, r = AFT_LADDER
+    for h in range(1, NOTCH_H):
+        stood((f, r, h), f"minecraft:ladder[facing={port}]")
+    for h in range(NOTCH_H, 8):
+        b.solid.pop(fr.at(f, r + 1, h))
+        b.clear.add(fr.at(f, r + 1, h))
+
     # -- the deckhouse: the engine casing, dark oak in riveted copper
     f0, f1 = HOUSE_F
     for f in range(f0, f1 + 1):
@@ -792,7 +1032,7 @@ def room_blocks(dome: Dome) -> Blocks:
             for h in range(1, HOUSE_TOP + 1):
                 edge = (f in (f0, f1)) + (abs(r) == HOUSE_R) + (h in (1, HOUSE_TOP))
                 if h == 1:
-                    block = KEEL
+                    block = BOOT if abs(r) == HOUSE_R else KEEL
                 elif edge >= 2:
                     block = CUT
                 elif h == HOUSE_TOP:
@@ -804,19 +1044,22 @@ def room_blocks(dome: Dome) -> Blocks:
                 else:
                     block = HOUSE
                 put((f, r, h), block)
+    # the list gauges' brass plates (the pack's displays are the rest)
     for face in (-1, 1):
-        for f, r, h in gauge_cells(face):
-            put((f, r, h), f"{BULB}[lit={'true' if r == 0 else 'false'}]")
-            put((f, r, h - 1), GREEN if abs(r) <= 2 else RED)
+        for place in gauge_cells(face):
+            put(place, BRASS)
     # the funnel through the roof, on the centre line where no crate passes
-    for h, block in ((10, COPPER), (11, BRASS), (12, COPPER), (13, GRATE)):
-        put((0, 0, h), block)
+    for up, block in enumerate((COPPER, BRASS, COPPER, GRATE)):
+        put((0, 0, HOUSE_TOP + 1 + up), block)
     # ventilator cowls on the roof, between the crates' columns
     for f, r in ((-2, -3), (2, 3), (-3, 6), (3, -6), (2, -3), (-2, 3)):
         put((f, r, HOUSE_TOP + 1), "minecraft:waxed_lightning_rod[facing=up]")
 
     # -- the pulpit: a deck at h 5 on her stern, its wings over the dock
-    # walks, railed, under a copper canopy; the desk, the tables, the lever
+    # walks, railed, a copper canopy over its back; the driver's platform,
+    # the keys in the deck before it, a glass deck and screen before them
+    # (clear, with nothing to see, straight before the board), the tables
+    # either side, the lever
     p0, p1 = PULPIT_F
     stair_tops = {(f, r) for f, r, h in PULPIT_STAIRS if h == DECK_H}
     for f in range(p0, p1 + 1):
@@ -824,17 +1067,39 @@ def room_blocks(dome: Dome) -> Blocks:
             if (f, r) in stair_tops:
                 continue
             front = f == p1
-            put((f, r, DECK_H), GRATE if front else DECK)
-            if front or f == p0 or abs(r) == 9:
+            window = f >= p1 - 1 and abs(r) <= WINDOW_R
+            put((f, r, DECK_H), GLASS if window else GRATE if front else DECK)
+            if front and abs(r) < 9:
+                # a glass screen, too high to be climbed or jumped from
+                # a table: nobody drops into the aft hold from here
+                for h in range(6, SCREEN_H + 1):
+                    put((f, r, h), BARRIER if abs(r) <= 1 and h >= 8 else PANE)
+            elif front or f == p0 or abs(r) == 9:
                 for h in (6, 7):
                     put((f, r, h), BARS)
-    for f in (p0, -12):
+    for r in range(-WINDOW_R, WINDOW_R + 1):
+        put((p1, r, DECK_H - 1), GLASS)  # the top of her transom
+    for f in (p0, CANOPY_F):
         for r in (-9, 9):
             for h in range(6, 10):
                 put((f, r, h), PILLAR)
-    for f in range(p0, -11):
+    for f in range(p0, CANOPY_F + 1):
         for r in range(-9, 10):
             put((f, r, 10), SLAB)
+    # the driver's platform, half a block up: green copper let into the
+    # deck, a slab on it
+    for f in range(PLATFORM_F[0], PLATFORM_F[1] + 1):
+        for r in range(PLATFORM_R[0], PLATFORM_R[1] + 1):
+            put((f, r, DECK_H), PLATFORM)
+            put((f, r, DECK_H + 1), PLATFORM_SLAB)
+    # a notice at the head of each pair of stairs
+    for r in (-4, 4):
+        stood(
+            (PLATFORM_F[1], r, 6),
+            fittings.standing_sign(
+                back, "She's afloat.", "Load her level,", "or she'll go", "over."
+            ),
+        )
     for table in (PLAN_TABLE, HOLD_TABLE):
         for i in range(len(BAYS)):
             f, r, _ = table_cell(table, i, 0)
@@ -846,11 +1111,11 @@ def room_blocks(dome: Dome) -> Blocks:
     for post in posts(fr).values():
         b.solid.update(post.solid)
         b.attached.update(post.attached)
-    stood((-16, -2, 6), f"minecraft:bell[attachment=floor,facing={port}]")
-    stood((-12, -8, 6), LANTERN)
-    stood((-12, 8, 6), LANTERN)
-    for r in (-6, 0, 6):
-        stood((-14, r, 9), HANGING)
+    stood((-16, -3, 6), f"minecraft:bell[attachment=floor,facing={port}]")
+    stood((-14, -8, 6), LANTERN)
+    stood((-14, 8, 6), LANTERN)
+    for r in (-6, 6):
+        stood((-16, r, 9), HANGING)
 
     # -- the bow: the banksman's stand, railed, its table and bell; a stair
     # down into the fore hold and two to the dock
@@ -921,10 +1186,11 @@ def room_blocks(dome: Dome) -> Blocks:
                     13 * side,
                 ) not in walk_stairs:
                     put((f, 13 * side, h), BARS)
-        for f in WALK_F:
-            for r in (11 * side, 12 * side):
+        for f in WALK_F:  # the ends, closing the corners of the rails
+            for r in range(10 * side, 14 * side, side):
                 for h in (11, 12):
-                    put((f + (1 if f > 0 else -1), r, h), BARS)
+                    if fr.at(end := f + (1 if f > 0 else -1), r, h) in interior:
+                        put((end, r, h), BARS)
     for f, r, h in WALK_STAIRS:
         put((f, r, h), f"{STAIRS}[facing={back},half=bottom]")
         for low in range(1, h):
@@ -936,8 +1202,9 @@ def room_blocks(dome: Dome) -> Blocks:
         if block == HANGING:
             b.attached[cell] = b.solid.pop(cell)
 
-    # -- the dock: mooring chains to copper bollards, a coal bunker and
-    # coiled chain, the donkey engine, the sea gate she came in by
+    # -- the dock: mooring chains to copper bollards across the water, a
+    # coal bunker, a tar tub and a slatted bin (no barrel: a barrel is
+    # cargo), the donkey engine, the sea gate she came in by
     axis = "x" if fr.right[0] else "z"
     along = "x" if fr.forward[0] else "z"
     for f in (-7, 7):
@@ -952,9 +1219,8 @@ def room_blocks(dome: Dome) -> Blocks:
             put((f, r, 1), "minecraft:coal_block")
             put((f, 13, 1), CUT)
         put((f, 10, 1), CUT)
-    for f in (-2, -1):
-        for r in (11, 12):
-            put((f, r, 1), f"{CHAIN}[axis={along}]")
+    put((-2, 11, 1), "minecraft:cauldron")
+    put((-1, 12, 1), "minecraft:composter")
     machine = donkey(fr)
     b.floor.update(machine.bed)
     b.solid.update(machine.solid)
@@ -1001,7 +1267,7 @@ def room_blocks(dome: Dome) -> Blocks:
     signs = (
         ("THE CARGO HOLD", "Stow the", "Marigold to the", "manifest."),
         ("Never set a", "crate on a", "lighter one.", ""),
-        ("Keep her trim", "lamps on the", "green.", ""),
+        ("She is afloat.", "Keep her list", "gauge in the", "green."),
     )
     solid, attached = fittings.plaque_blocks(fr, *PLAQUE, signs)
     b.solid.update(solid)
@@ -1098,16 +1364,6 @@ IRON_END = "minecraft:iron_block"
 PARTS = 19 + 6 + 3 + 1
 
 
-def _block_state(block: str) -> str:
-    name, _, rest = block.partition("[")
-    if not rest:
-        return f'{{Name:"{name}"}}'
-    props = ",".join(
-        f'{k}:"{v}"' for k, v in (p.split("=") for p in rest.rstrip("]").split(","))
-    )
-    return f'{{Name:"{name}",Properties:{{{props}}}}}'
-
-
 def _num(x: float) -> str:
     return f"{x:.4f}".rstrip("0").rstrip(".") if x != int(x) else f"{int(x)}"
 
@@ -1122,7 +1378,7 @@ def box_summon(fr: fittings.Frame, block: str, box: Box, tags: tuple[str, ...]) 
     scale = ",".join(f"{_num(s)}f" for s in size)
     return (
         f"summon minecraft:block_display {' '.join(_num(p) for p in lo)} "
-        f"{{Tags:[{listed}],teleport_duration:1,block_state:{_block_state(block)},"
+        f"{{Tags:[{listed}],teleport_duration:1,block_state:{fittings.block_state(block)},"
         f"transformation:{{translation:[0f,0f,0f],scale:[{scale}],{IDENTITY}}}}}"
     )
 
@@ -1289,6 +1545,7 @@ FULL, CRUSH, TRIM, SHUT, CLEAR, NOT_ON = 1, 2, 3, 4, 5, 6
 HISTORY = 30  # moves UNDO can take back
 ASK_TICKS = 100  # RESET HOLD's second pull, within 5 s
 FLASH_TICKS = 10
+CREAK = "block.chest.open"  # low: her timbers
 PARTY_TICKS = 40
 #: the hints: name -> (seconds at level 5, text)
 HINTS = {
@@ -1337,8 +1594,7 @@ def functions(pack: dp.Pack) -> None:
     pack.constants(OBJ, 2, 4, 8, 30, 100)
     (fx, fz), (rx, rz) = fr.forward, fr.right
     heart = " ".join(_num(p) for p in point(fr, 0, 0.5, 8))
-    funnel = " ".join(_num(p) for p in point(fr, 0.5, 0.5, 14))
-    bulbs = {face: [fr.at(*p) for p in gauge_cells(face)] for face in (-1, 1)}
+    funnel = " ".join(_num(p) for p in point(fr, 0.5, 0.5, HOUSE_TOP + 5))
 
     def fid(name: str) -> str:
         return pack.id(f"{base}/{name}")
@@ -1535,11 +1791,9 @@ def functions(pack: dp.Pack) -> None:
                 f"execute {_is('why', CRUSH)} run "
                 + say("That would crush the crate under it. Never on a lighter one."),
                 f"execute {_is('why', TRIM)} if score {_s('ta')} matches 1.. run "
-                + say(
-                    "She would heel too far to starboard. Keep the lamps on the green."
-                ),
+                + say("She'd list too far to starboard. Keep the needle in the green."),
                 f"execute {_is('why', TRIM)} if score {_s('ta')} matches ..-1 run "
-                + say("She would heel too far to port. Keep the lamps on the green."),
+                + say("She'd list too far to port. Keep the needle in the green."),
                 f"execute {_is('why', SHUT)} run "
                 + say(f"Bay {name}'s hatch is jammed."),
                 # where the spreader stops: on the top crate, or a crate above it
@@ -1613,39 +1867,64 @@ def functions(pack: dp.Pack) -> None:
             ),
         ],
     )
-    show = []
-    for face in (-1, 1):
-        for k, cell in zip(range(-5, 6), bulbs[face], strict=True):
-            show += [
-                f"execute {_is('trim', k)} run setblock {_xyz(cell)} {BULB}[lit=true]",
-                f"execute {_not('trim', k)} run setblock {_xyz(cell)} {BULB}[lit=false]",
-            ]
-    fn("trim/show", show)
-    band = []
-    for face in (-1, 1):
-        for k, (x, y, z) in zip(range(-5, 6), bulbs[face], strict=True):
-            under = (x, y - 1, z)
-            band += [
-                f"execute {_is('lim', f'{abs(k)}..')} run setblock {_xyz(under)} {GREEN}",
-                f"execute {_is('lim', f'..{abs(k) - 1}')} run setblock {_xyz(under)} {RED}",
-            ]
-    fn("trim/band", band)
-    # a refused set-down: the would-be lamp flashes red (or the end one)
-    flash = [_set("flash", FLASH_TICKS)]
-    for face in (-1, 1):
-        for k, cell in zip(range(-5, 6), bulbs[face], strict=True):
-            span = f"{k}" if abs(k) < 5 else ("5.." if k > 0 else "..-5")
-            flash.append(f"execute {_is('ta', span)} run setblock {_xyz(cell)} {FLASH}")
-    fn("trim/flash", flash)
+    # the list gauges: the needles swing to the list (``trim/show``), the
+    # scales' marks are green as far as the band's limit and red past it
+    # (``trim/band``); a refused set-down kicks the needles to where she
+    # would have gone, and the tick brings them back (``trim/flash``)
+    needles = f"@e[type=minecraft:block_display,tag={NEEDLE_TAG}]"
+
+    def needle_lines(score: str, ticks: int) -> list[str]:
+        found = []
+        for k in range(-GAUGE_STOP, GAUGE_STOP + 1):
+            span = f"{k}" if abs(k) < GAUGE_STOP else (f"{k}.." if k > 0 else f"..{k}")
+            found.append(
+                f"execute {_is(score, span)} as {needles} run data merge entity @s "
+                f"{{start_interpolation:0,interpolation_duration:{ticks},"
+                f"{needle_pose(fr, k)}}}"
+            )
+        return found
+
+    def zone_line(j: int, block: str, when: str = "") -> str:
+        return (
+            f"execute {when} as @e[type=minecraft:block_display,tag=st.cargo.z{j}] "
+            f"run data merge entity @s {{block_state:{fittings.block_state(block)}}}"
+        ).replace("execute  as", "execute as")
+
+    fn("trim/show", needle_lines("trim", NEEDLE_TICKS))
+    fn(
+        "trim/band",
+        [
+            line
+            for j in range(ZONES)
+            for line in (
+                zone_line(j, GREEN, _is("lim", f"{zone_limit(j)}..")),
+                zone_line(j, RED, _is("lim", f"..{zone_limit(j) - 1}")),
+            )
+        ],
+    )
+    fn(
+        "trim/flash",
+        [_set("flash", FLASH_TICKS), *needle_lines("ta", 4), sound(CREAK, 1, 0.5)],
+    )
     fn(
         "trim/party",
         [
             _set("party", PARTY_TICKS),
-            *(
-                f"setblock {_xyz(c)} {BULB}[lit=true]"
-                for face in (-1, 1)
-                for c in bulbs[face]
-            ),
+            *(zone_line(j, domes.LIGHT) for j in range(ZONES)),
+        ],
+    )
+    # her timbers creak when she is within a ton of the limit
+    fn(
+        "trim/creak",
+        [
+            _op("near", "=", "lim"),
+            f"scoreboard players remove {_s('near')} 1",
+            _op("nnear", "=", "nlim"),
+            f"scoreboard players add {_s('nnear')} 1",
+            f"execute if score {_s('trim')} >= {_s('near')} run "
+            + sound(CREAK, 0.7, 0.6),
+            f"execute if score {_s('trim')} <= {_s('nnear')} run "
+            + sound(CREAK, 0.7, 0.6),
         ],
     )
     # the stowage against the plan
@@ -1995,6 +2274,7 @@ def functions(pack: dp.Pack) -> None:
             _set("hyto", UP),
             call("trim/count"),
             call("trim/show"),
+            f"execute unless score {_s('from')} = {_s('to')} run function {fid('trim/creak')}",
             f"execute unless score {_s('from')} = {_s('to')} run function {fid('moved')}",
             *each_bay("table", "from"),
             sound("block.fire.extinguish", 0.6, 1.0),
@@ -2042,6 +2322,7 @@ def functions(pack: dp.Pack) -> None:
             f"scoreboard players remove {_s('moves')} 1",
             call("trim/count"),
             call("trim/show"),
+            call("trim/creak"),
             *each_bay("table", "ua"),
             *each_bay("table", "ub"),
             *each_bay("puff", "ua"),
@@ -2233,6 +2514,17 @@ def functions(pack: dp.Pack) -> None:
                 for k in KINDS
             ),
             f"execute store result {store}.moves int 1 run scoreboard players get {_s('moves')}",
+            f'data modify {store}.list set value "LEVEL"',
+            f"execute store result {store}.lim int 1 run scoreboard players get {_s('lim')}",
+            *(
+                f"execute {_is('trim', k)} run data modify {store}.list set value "
+                + (
+                    f'"LIST {abs(k)} {"PORT" if k < 0 else "STARBOARD"}"'
+                    if k
+                    else '"LEVEL"'
+                )
+                for k in range(-GAUGE_STOP + 1, GAUGE_STOP)
+            ),
             f"execute {_is('free', 0)} run function {fid('board/write')} with {store}",
             f"execute {_is('free', 1)} run function {fid('board/stowed')} with {store}",
         ],
@@ -2240,7 +2532,8 @@ def functions(pack: dp.Pack) -> None:
     status = (
         '{text:"HOOK OVER $(bay)\\n",color:"gold"},'
         '{text:"$(hook), $(load)\\n",color:"yellow"},'
-        '{text:"MOVES $(moves)",color:"gold"}'
+        '{text:"$(list) (LIMIT $(lim))\\n",color:"gold"},'
+        '{text:"MOVES $(moves)",color:"yellow"}'
     )
     fn("board/write", [f"$data modify entity {board} text set value [{status}]"])
     fn(
@@ -2276,7 +2569,6 @@ def functions(pack: dp.Pack) -> None:
             call("crane/mend"),
         ],
     )
-    ahead = fr.facing(1, 0)
     button_lines = []
     for name, post in posts(fr).items():
         if name == "RESET HOLD":
@@ -2288,7 +2580,7 @@ def functions(pack: dp.Pack) -> None:
                 pack,
                 path,
                 post.input,
-                f"minecraft:stone_button[face=wall,facing={ahead},powered=false]",
+                post.attached[post.input],
                 [
                     sound("block.stone_button.click_on", 0.6, 1),
                     f"function {fid(f'press/{press}')}",
@@ -2316,7 +2608,7 @@ def functions(pack: dp.Pack) -> None:
             f"execute {_is('flash', '1..')} run scoreboard players remove {_s('flash')} 1",
             call("trim/show", _is("flash", 1)),
             f"execute {_is('party', '1..')} run scoreboard players remove {_s('party')} 1",
-            call("trim/show", _is("party", 1)),
+            call("trim/band", _is("party", 1)),
             call("bell", _is("bells", "1..")),
             *(
                 f"execute {_is('free', 0)} {h.tick.removeprefix('execute ')}"
@@ -2359,6 +2651,8 @@ def functions(pack: dp.Pack) -> None:
             call("crane/make"),
             _set("ask", 0),
             _set("flash", 0),
+            # a celebration cut short: the scales' colours back (no tick will)
+            call("trim/band", _is("party", "1..")),
             _set("party", 0),
             _set("bells", 0),
             call("trim/show"),
@@ -2423,7 +2717,7 @@ def functions(pack: dp.Pack) -> None:
 def summons(dome: Dome) -> list[str]:
     """the commands that summon the room's entities but the crane (which
     the pack makes: ``crane/make``): the labels over the inputs, the bay
-    names and the gauges' words on the deckhouse, the status board, the
+    names, the list gauges and their words on the deckhouse, the status board, the
     docket and legend, the tables' titles and the dark table's notice,
     the jammed hatch's label, her name, the recall button's interaction"""
     fr = frame(dome)
@@ -2450,18 +2744,22 @@ def summons(dome: Dome) -> list[str]:
 
     for post in posts(fr).values():
         found += post.summons
+    # the bays' names along the deckhouse's eaves, over their columns
     for i, name in enumerate(BAYS):
         u, v = bay_mid(i)
         face = HOUSE_F[0] - 0.02 if i < 4 else HOUSE_F[1] + 1.02
         way = (-1, 0) if i < 4 else (1, 0)
-        text(face, v, 8.1, way, name, colour="gold", scale=1.2)
-    for face, way in ((HOUSE_F[0] - 0.02, (-1, 0)), (HOUSE_F[1] + 1.02, (1, 0))):
-        text(face, 0.5, 8.9, way, "TRIM", colour="gold", scale=0.8)
-        # the lamps run port (r -5) to starboard (r 5) on both faces
-        text(face, -6.5, 6.9, way, "PORT", scale=0.6)
-        text(face, 7.5, 6.9, way, "STARBOARD", scale=0.6)
-    # the status board over the pulpit's window, facing the driver
-    text(PULPIT_F[1] + 0.6, 0.5, 8.3, (-1, 0), "", (BOARD_TAG,), scale=0.8)
+        text(face, v, HOUSE_TOP + 1.05, way, name, colour="gold", scale=1.2)
+    for side, way in ((-1, (-1, 0)), (1, (1, 0))):
+        face = gauge_face(side, 0.02)
+        text(face, 0.5, GAUGE_PIVOT + 0.6, way, "LIST", colour="black", scale=1.0)
+        # port (r < 0) and starboard are the ship's on both faces
+        text(face, -3.7, HOUSE_TOP - 0.9, way, "PORT", scale=0.6)
+        text(face, 4.8, HOUSE_TOP - 0.9, way, "STARBOARD", scale=0.6)
+    found += gauge_summons(fr)
+    # the status board over the pulpit's screen, facing the driver, behind
+    # the screen's clear window
+    text(PULPIT_F[1] + 0.6, 0.5, 9.4, (-1, 0), "", (BOARD_TAG,), scale=1.2)
     # the docket and the legend on her stern, over the plaque
     stern = PULPIT_F[0] - 0.02
     text(stern, 0.5, 3.1, (-1, 0), "", (DOCKET_TAG,), scale=0.7)
@@ -2478,15 +2776,15 @@ def summons(dome: Dome) -> list[str]:
         f, r, h = table
         text(f + 1.0, r + 2.0, 9.2, (-1, 0), words, colour="gold", scale=0.7)
     f, r, h = BOW_TABLE
-    text(f + 1.0, r + 2.0, 9.2, (1, 0), "MANIFEST", colour="gold", scale=0.7)
+    text(f + 1.0, r + 4.1, 9.2, (0, 1), "MANIFEST", colour="gold", scale=0.7)
     f, r, h = HOLD_TABLE
     text(f + 1.0, r + 2.0, 6.6, (-1, 0), "", (DARK_TAG,), scale=0.6)
     u, v = bay_mid(next(b.shut for b in BANDS if b.shut is not None))
     text(u, v, 3.0, (-1, 0), "", (JAM_TAG,), scale=1.2, billboard="center")
-    # her name on the bow, both sides
+    # her name on the bow, both sides, where her side is still straight
     for side in (-1, 1):
         text(
-            13.5,
+            11.5,
             side * 7.52 + (0.5 if side > 0 else 0.5),
             3.4,
             (0, side),
@@ -2501,6 +2799,19 @@ def summons(dome: Dome) -> list[str]:
 # ------------------------------------------------------ the offline checks
 
 domes.allow(INDEX, "window", "the lighter lies between the doors")
+# the basin is water let into the floor: ``afloat_problems`` and the live
+# check look after those cells, the shell's check for holes leaves them;
+# and the landing steps: the game lets the basin's water into a step
+# beside it (it is laid dry, but stands waterlogged a tick later)
+_fr = frame(layout.DOMES[INDEX])
+domes.add_opening(
+    INDEX, basin(layout.DOMES[INDEX]) | {_fr.at(f, r, 0) for f, r in LANDINGS}
+)
+
+
+def over_water(dome: Dome) -> set[Cell]:
+    """the cells just over the basin: nobody stands there"""
+    return {(x, y + 1, z) for x, y, z in basin(dome)}
 
 
 def walks(dome: Dome) -> dict[str, Cell]:
@@ -2531,14 +2842,88 @@ def walks(dome: Dome) -> dict[str, Cell]:
 
 
 def reach(dome: Dome, b: Blocks, extra: dict[Cell, str] | None = None) -> set[Cell]:
-    """where a player's feet can get to from the entrance; nobody stands
-    on bars, a rail or a lantern"""
+    """where a player's feet can get to from the entrance, dry: nobody
+    stands on bars, a rail, the screen or a lantern, and nobody has to
+    wade the basin"""
     solid = {**b.solid, **(extra or {})}
     blocked = set(solid) | {
         c for c, block in b.attached.items() if "lantern" in block or "bell" in block
     }
-    blocked |= {(x, y + 1, z) for (x, y, z), block in solid.items() if block == BARS}
+    blocked |= {(x, y + 1, z) for (x, y, z), block in solid.items() if block in RAILS}
+    blocked |= over_water(dome)
     return rooms.reach(dome, domes.entrance(dome)[:3], solid, blocked)
+
+
+RAILS = (BARS, PANE, BARRIER)  # what nobody stands on
+
+
+def ladders(b: Blocks) -> set[Cell]:
+    return {c for c, block in b.attached.items() if "ladder" in block}
+
+
+def roam(
+    dome: Dome,
+    b: Blocks,
+    extra: dict[Cell, str] | None = None,
+    start: Cell | None = None,
+) -> set[Cell]:
+    """where a player's feet can get to from the entrance (or ``start``)
+    as ``reach``, and also by slipping diagonally between two bars that do
+    not join, by standing on bars, by climbing a ladder, and by stepping
+    off any edge (and a block aside on the way down): for the places
+    nobody must get to. The basin is taken as floor: whoever wades it is
+    a block lower than this has them, and gets to no more"""
+    solid = {**b.solid, **(extra or {})}
+    rungs = ladders(b)
+    full = set(solid) | {
+        c for c, block in b.attached.items() if "lantern" in block or "bell" in block
+    }
+    cells = domes.dome_cells(dome)
+    ground = set(cells.floor) | set(solid)
+    sides = ((1, 0), (-1, 0), (0, 1), (0, -1))
+
+    def free(c: Cell) -> bool:
+        x, y, z = c
+        return c in cells.interior and c not in full and (x, y + 1, z) not in full
+
+    def bars(c: Cell) -> bool:
+        x, y, z = c
+        return solid.get(c) == BARS and solid.get((x, y + 1, z)) == BARS
+
+    def drop(c: Cell) -> Cell:
+        x, y, z = c
+        while (x, y - 1, z) not in ground and (x, y, z) not in rungs:
+            y -= 1
+        return (x, y, z)
+
+    def moves(c: Cell):
+        x, y, z = c
+        if c in rungs and free((x, y + 1, z)):
+            yield (x, y + 1, z)
+        for dx, dz in sides:
+            for dy in (0, 1):
+                to = (x + dx, y + dy, z + dz)
+                if free(to) and (not dy or free((x, y + 1, z))):
+                    yield to
+                    break
+        for dx, dz in ((1, 1), (1, -1), (-1, 1), (-1, -1)):
+            to = (x + dx, y, z + dz)
+            if free(to) and bars((x + dx, y, z)) and bars((x, y, z + dz)):
+                yield to
+
+    start = start or domes.entrance(dome)[:3]
+    seen, edge = {start}, [start]
+    while edge:
+        for to in moves(edge.pop()):
+            x, y, z = to
+            landed = {drop(to)}
+            if (x, y - 1, z) not in ground:
+                aside = ((x + dx, y, z + dz) for dx, dz in sides)
+                landed |= {drop(a) for a in aside if free(a)}
+            for land in landed - seen:
+                seen.add(land)
+                edge.append(land)
+    return seen
 
 
 def walk_problems(dome: Dome) -> list[str]:
@@ -2567,11 +2952,19 @@ def _eye_hidden(
 
 
 def sight_problems(dome: Dome) -> list[str]:
-    """the driver sees every cell of every aft bay, the aft trim gauge and
-    the trolley at both stops; the banksman every fore bay cell and the
+    """the driver, from the platform's slab (the eye ``DRIVER_EYE`` up),
+    sees every cell of every aft bay, the aft list gauge's plate and the
+    trolley at both stops, and the top two rows of the plate over an aft
+    hold stowed three high. (From the middle of the platform the deck's
+    edge hides the foot of each bay's nearest row, the lower block of a
+    crate on the floor there: those eight cells are asked for from the
+    platform's fore edge, a step forward.) The the banksman every fore bay cell and the
     fore gauge; the gantry walk every bay (each from where it stands)"""
     fr = frame(dome)
-    blocks = room_blocks(dome).above()
+    # a key lies flat on the deck: it hides nothing
+    blocks = {
+        c: b for c, b in room_blocks(dome).above().items() if not rooms.is_input(b)
+    }
     c, vc = home()
 
     def trolley(row: int) -> dict[str, Cell]:
@@ -2591,13 +2984,29 @@ def sight_problems(dome: Dome) -> list[str]:
         }
 
     def gauge(face: int) -> dict[str, Cell]:
-        return {f"the trim lamp at {p}": fr.at(*p) for p in gauge_cells(face)}
+        return {f"the list gauge at {p}": fr.at(*p) for p in gauge_cells(face)}
 
-    problems = rooms.sight_problems(
-        blocks,
-        {"the driver": fr.at(*DRIVER)},
-        {**bays((0,)), **gauge(-1), **trolley(0), **trolley(1)},
-    )
+    eye = point(fr, DRIVER[0] + 0.5, DRIVER[1] + 0.5, DRIVER_EYE)
+    clear = rooms.opaque(blocks)
+    full = clear | {fr.at(*p) for i in range(4) for p in bay_cells(i)}
+    edge = point(fr, DRIVER[0] + 0.9, DRIVER[1] + 0.5, DRIVER_EYE)
+    foot = {fr.at(f, r, 1) for i in range(4) for f, r, _ in bay_cells(i, 0)}
+    foot = {c for c in foot if c in {fr.at(BAY_F[0][0], r, 1) for r in range(-9, 10)}}
+    problems = [
+        f"{what} is hidden from the driver"
+        for what, cell in {
+            **bays((0,)),
+            **gauge(-1),
+            **trolley(0),
+            **trolley(1),
+        }.items()
+        if _eye_hidden(edge if cell in foot else eye, cell, clear)
+    ]
+    problems += [
+        f"the list gauge at {p} is hidden from the driver by a full aft hold"
+        for p in gauge_cells(-1)
+        if p[2] >= HOUSE_TOP - 1 and _eye_hidden(eye, fr.at(*p), full)
+    ]
     problems += rooms.sight_problems(
         blocks, {"the banksman": fr.at(*BANKSMAN)}, {**bays((1,)), **gauge(1)}
     )
@@ -2665,10 +3074,15 @@ def blind_problems(dome: Dome) -> list[str]:
 
 
 def trap_problems(dome: Dome) -> list[str]:
-    """nobody climbs onto a crate or the deckhouse's roof: with every bay
-    one, two or three crates high, no crate's top is a place to stand;
-    and with every bay empty, every cell of the hold floor a player gets
-    to leads back to the entrance"""
+    """nobody gets onto a crate, the deckhouse's roof or the pulpit's
+    canopy, or into the aft hold: with every bay one, two or three crates
+    high and the pulpit's tables full, in steps, to be climbed (not the
+    bow's: the fore hold is walked in anyway), none of them is a
+    place to get to, even by a drop or a slip between bars (``roam``); nor
+    is a crate's top for whoever is in the aft hold all the same, by its
+    ladder; and with every bay empty, every cell of the hold floor leads
+    back to the entrance (``rooms.reach``, with the ladder and the drop
+    from its notch into the basin)"""
     fr = frame(dome)
     b = room_blocks(dome)
     problems = []
@@ -2676,6 +3090,16 @@ def trap_problems(dome: Dome) -> list[str]:
         fr.at(f, r, HOUSE_TOP + 1)
         for f in range(HOUSE_F[0], HOUSE_F[1] + 1)
         for r in range(-HOUSE_R, HOUSE_R + 1)
+    } | {
+        fr.at(f, r, 11) for f in range(PULPIT_F[0], PULPIT_F[1]) for r in range(-9, 10)
+    }
+    floor = {fr.at(f, r, 1) for f, r in hold_floor()}
+    aft = {fr.at(f, r, 1) for f, r in hold_floor() if f < 0}
+    tables = {
+        fr.at(*table_cell(table, i, t)): CRATE[IRON]
+        for table in (PLAN_TABLE, HOLD_TABLE)
+        for i in range(len(BAYS))
+        for t in range(1 + i % TIERS)
     }
     for n in range(1, TIERS + 1):
         crates = {
@@ -2684,7 +3108,7 @@ def trap_problems(dome: Dome) -> list[str]:
             for t in range(n)
             for p in bay_cells(i, t)
         }
-        seen = reach(dome, b, crates)
+        seen = roam(dome, b, {**crates, **tables})
         # every cell over the crates, up to the feet over a full bay
         tops = {
             fr.at(f, r, h)
@@ -2696,25 +3120,78 @@ def trap_problems(dome: Dome) -> list[str]:
             problems.append(
                 f"{n} high: {len(on)} cells on the crates or the roof, as {min(on)}"
             )
-    seen = reach(dome, b)
+        if on := seen & aft:
+            problems.append(f"{n} high: a way into the aft hold, to {min(on)}")
+        inside = roam(dome, b, crates, fr.at(AFT_LADDER[0], AFT_LADDER[1] - 1, 1))
+        if on := inside & tops:
+            problems.append(
+                f"{n} high: {len(on)} cells on the crates from the aft hold, "
+                f"as {min(on)}"
+            )
     start = domes.entrance(dome)[:3]
-    floor = {fr.at(f, r, 1) for f, r in hold_floor()} & seen
+    blocked = set(b.solid) | {
+        (x, y + 1, z) for (x, y, z), k in b.solid.items() if k in RAILS
+    }
+    wet = basin(dome)
     stuck = [
         c
         for c in sorted(floor)
         if start
-        not in rooms.reach(
-            dome,
-            c,
-            b.solid,
-            set(b.solid)
-            | {(x, y + 1, z) for (x, y, z), k in b.solid.items() if k == BARS},
-        )
+        not in rooms.reach(dome, c, b.solid, blocked, ladders(b), drop=3, water=wet)
     ]
     if stuck:
         problems.append(
             f"{len(stuck)} cells of the hold floor with no way out, as {stuck[0]}"
         )
+    return problems
+
+
+def afloat_problems(dome: Dome) -> list[str]:
+    """the basin holds and lets go: every cell of it is in the dome's
+    floor with a bed under it, and has beside it only more of the basin
+    or a block of the floor (the plan's, or the dome's own), so the water
+    has nowhere to run; nothing of the room is waterlogged or stands on
+    the water; and whoever is in it, anywhere, can wade and step out and
+    walk back to the entrance"""
+    fr = frame(dome)
+    b = room_blocks(dome)
+    wet = basin(dome)
+    in_floor = domes.dome_cells(dome).floor
+    problems = []
+    if stray := wet - in_floor:
+        problems.append(f"{len(stray)} cells of the basin not in the floor")
+    if bare := {(x, y - 1, z) for x, y, z in wet} - set(b.bed):
+        problems.append(f"{len(bare)} cells of the basin with no bed: {min(bare)}")
+    if any(b.floor.get(c) != WATER for c in wet):
+        problems.append("a cell of the basin is not water")
+    if spilt := {c for c, block in b.everything().items() if block == WATER} - wet:
+        problems.append(f"{len(spilt)} cells of water outside the basin")
+    open_to = {
+        (x + dx, y, z + dz)
+        for x, y, z in wet
+        for dx, dz in ((1, 0), (-1, 0), (0, 1), (0, -1))
+    } - wet
+    if leak := {c for c in open_to if c not in in_floor}:
+        problems.append(f"the basin is open at {min(leak)}")
+    if on := over_water(dome) & set(b.above()):
+        problems.append(f"{len(on)} blocks stand on the water, as {min(on)}")
+    blocked = set(b.solid) | {
+        (x, y + 1, z) for (x, y, z), k in b.solid.items() if k in RAILS
+    }
+    start = domes.entrance(dome)[:3]
+    out = rooms.reach(dome, start, b.solid, blocked, water=wet)
+    if missed := wet - out:
+        problems.append(f"{len(missed)} cells of the basin not fallen into")
+    # (walking is the same both ways but for a drop: so each cell's own way)
+    held = [
+        c
+        for c in sorted(wet)
+        if start not in rooms.reach(dome, c, b.solid, blocked, water=wet)
+    ]
+    if held:
+        problems.append(f"{len(held)} cells of the basin with no way out: {held[0]}")
+    if len(LANDINGS) != len({fr.at(f, r, 0) for f, r in LANDINGS} & set(b.floor)):
+        problems.append("a landing step is missing")
     return problems
 
 
@@ -2762,13 +3239,23 @@ def room_problems(dome: Dome) -> list[str]:
     """everything the build asks of the plan before it places a block"""
     b = room_blocks(dome)
     problems = rooms.room_problems(dome, b.above(), b.floor, b.clear)
-    problems += rooms.input_problems(b.above(), inputs(dome), floor=b.floor)
+    # a key has no sign: its name is written on its own brass (``key``)
+    made = posts(frame(dome))
+    unsigned = {
+        f"the input at {made[name].input} has no sign by it"
+        for name in (*TRAVEL, *HOOK)
+    }
+    problems += [
+        p
+        for p in rooms.input_problems(b.above(), inputs(dome), floor=b.floor)
+        if p not in unsigned
+    ]
     if set(b.floor) & set(b.above()) or set(b.solid) & set(b.attached):
         problems.append("a cell is given two blocks")
     problems += rooms.window_problems(dome, b.above())
     problems += gantry_problems(dome) + crane_problems(dome)
     problems += walk_problems(dome) + sight_problems(dome) + blind_problems(dome)
-    problems += trap_problems(dome) + dressing_problems(dome)
+    problems += trap_problems(dome) + afloat_problems(dome) + dressing_problems(dome)
     return problems + manifest_problems()
 
 
@@ -2791,6 +3278,10 @@ def build(ctx: Any) -> str:
     ctx.cmd(f"kill @e[tag={ENTITY_TAG}]")
     ctx.fill_boxes(cells.interior - engine, AIR)
     lectern = fr.at(*LECTERN)
+    # the basin's bed before its water, and her bottom and the dock walks
+    # before it too (``fill_boxes`` goes block by block, water after stone)
+    for block, where in sorted(domes.by_block(b.bed).items()):
+        ctx.fill_boxes(where, block)
     for part in (b.floor, b.solid):
         plain = {c: block for c, block in part.items() if "{" not in block}
         for block, where in sorted(domes.by_block(plain).items()):
@@ -2810,7 +3301,8 @@ def build(ctx: Any) -> str:
     ctx.advance(10)
     ctx.cmd(f"kill @e[type=minecraft:item,{domes.sphere(dome)}]")
     return (
-        f"{dome.name}: {len(b.everything())} blocks: the Marigold with her "
+        f"{dome.name}: {len(b.everything())} blocks: the Marigold afloat "
+        f"in {len(basin(dome))} of water, with her "
         "deckhouse, pulpit and bow, the gantry and its walk, the dock, the "
         "donkey engine and the sea gate, plaque, logbook, recall button"
     )
@@ -2828,8 +3320,10 @@ def check(ctx: Any) -> list[str]:
     Leaves the game reset and no stand-in behind.
 
     It does not prove what a player sees: the glide's look, the chain, the
-    tables and lamps read at a distance, the blind half, the sounds and
-    titles (all on the owner's play-test list).
+    tables and the list gauge read at a distance, the needle's swing, the
+    water round her, the blind half, the sounds and titles (all on the
+    owner's play-test list); nor that a player gets out of the basin (the
+    offline ``afloat_problems`` walks it).
     """
     game_checks.no_run(ctx)
     saved = game_checks.save_level(ctx)
@@ -2856,6 +3350,10 @@ def _check(ctx: Any) -> list[str]:
     def get(name: str) -> int | None:
         return ctx.score(f"#cargo.{name}")
 
+    eye_x, eye_y, eye_z = (
+        _num(p) for p in point(fr, DRIVER[0] + 0.5, DRIVER[1] + 0.5, DRIVER_EYE)
+    )
+
     def run(name: str) -> None:
         ctx.function(f"{base}/{name}")
 
@@ -2866,6 +3364,32 @@ def _check(ctx: Any) -> list[str]:
         got = ctx.data(f"entity @e[tag={tag},limit=1] Pos")
         found = [float(n) for n in re.findall(r"-?\d+(?:\.\d+)?(?=d)", got)]
         return tuple(found) if len(found) == 3 else None
+
+    def needle() -> int | None:
+        """the list the aft gauge's needle points at (where it is going),
+        in tons, from its turn about the way she points"""
+        got = ctx.data(
+            f"entity @e[tag={NEEDLE_TAG},limit=1,sort=nearest,"
+            f"x={eye_x},y={eye_y},z={eye_z}] transformation.left_rotation"
+        )
+        q = [float(n) for n in re.findall(r"-?\d+(?:\.\d+)?(?:[eE]-?\d+)?(?=f)", got)]
+        if len(q) != 4:
+            return None
+        along = q[0] * fr.right[1] - q[2] * fr.right[0]
+        return round(math.degrees(2 * math.atan2(along, q[3])) / GAUGE_STEP)
+
+    def zones() -> list[bool | None]:
+        """each mark of the scale: green (True), red, or neither"""
+        found: list[bool | None] = []
+        for j in range(ZONES):
+            got = ctx.data(f"entity @e[tag=st.cargo.z{j},limit=1] block_state")
+            found.append(
+                True if rooms.name(GREEN) in got else False if RED in got else None
+            )
+        return found
+
+    def band(limit: int) -> list[bool | None]:
+        return [zone_limit(j) <= limit for j in range(ZONES)]
 
     def settle(limit: int = 40) -> bool:
         """let the crane come to rest (``moving`` 0, no DOWN waiting)"""
@@ -2938,13 +3462,14 @@ def _check(ctx: Any) -> list[str]:
     # -- as built
     game_checks.fresh(ctx)
     b = room_blocks(dome)
+    dry = [c for c in sorted(basin(dome)) if not ctx.is_block(c, f"{WATER}[level=0]")]
+    expect("the basin: every cell a source of water", dry[:3], [])
+    soft = [c for c, block in sorted(b.bed.items()) if not ctx.is_block(c, block)]
+    expect("the basin's bed", soft[:3], [])
+    expect("the list gauges' needles", count(NEEDLE_TAG), 2)
+    expect("the list gauges' marks", count(ZONE_TAG), 2 * ZONES)
+    expect("the needle upright", needle(), 0)
     changing = dressing_cells(dome) | b.moving | {fr.at(*LECTERN)}
-    changing |= {
-        fr.at(f, r, h - d)
-        for face in (-1, 1)
-        for f, r, h in gauge_cells(face)
-        for d in (0, 1)
-    }
     wrong = [
         c
         for k, (c, block) in enumerate(sorted(b.everything().items()))
@@ -2953,6 +3478,10 @@ def _check(ctx: Any) -> list[str]:
         and not ctx.is_block(c, rooms.name(block))
     ]
     expect("blocks of the room as built (every fifth, and the inputs)", wrong[:3], [])
+    screen = fr.at(PULPIT_F[1], 0, SCREEN_H)
+    expect("the screen's clear window", ctx.is_block(screen, BARRIER), True)
+    slab = fr.at(*DRIVER[:2], DECK_H + 1)
+    expect("the driver's platform", ctx.is_block(slab, rooms.name(PLATFORM_SLAB)), True)
     expect("the crane's parts at home", count(PART_TAG), PARTS)
     expect("links of chain with the hook up", count(LINK_TAG), RAIL_H + 1 - UP)
     expect("crate displays", count(CRATE_TAG), 0)
@@ -2988,18 +3517,8 @@ def _check(ctx: Any) -> list[str]:
         cell = fr.at(*table_cell(HOLD_TABLE, 7, 0))
         want = rooms.name(CRATE[start[7][0]]) if start[7] else AIR
         expect(f"manifest {m + 1}: the hold table's F4", ctx.is_block(cell, want), True)
-        t = trim(start)
-        on = [
-            ctx.is_block(c, f"{BULB}[lit=true]")
-            for c in (fr.at(*p) for p in gauge_cells(-1))
-        ]
-        expect(f"manifest {m + 1}: the trim lamps", on, [k == t for k in range(-5, 6)])
-        band = [ctx.is_block(fr.at(f, r, h - 1), GREEN) for f, r, h in gauge_cells(1)]
-        expect(
-            f"manifest {m + 1}: the band markers",
-            band,
-            [abs(k) <= 2 for k in range(-5, 6)],
-        )
+        expect(f"manifest {m + 1}: the list gauge's needle", needle(), trim(start))
+        expect(f"manifest {m + 1}: the gauge's green and red", zones(), band(2))
         if MANIFEST_NAMES[m].split()[0] not in ctx.data(
             f"block {_xyz(fr.at(*LECTERN))} Book"
         ):
@@ -3080,10 +3599,7 @@ def _check(ctx: Any) -> list[str]:
     after[6], after[5] = (IRON,), (IRON, WOOL)
     expect("the hold's scores after a move", hold(), tuple(after))
     expect("the trim after it", get("trim"), trim(tuple(after)))
-    lamp_on = ctx.is_block(
-        fr.at(*gauge_cells(1)[5 + trim(tuple(after))]), f"{BULB}[lit=true]"
-    )
-    expect("the trim lamp after it", lamp_on, True)
+    expect("the needle after it", needle(), trim(tuple(after)))
     expect("the move counted", get("moves"), 1)
     expect(
         "the hold table's F2",
@@ -3116,6 +3632,13 @@ def _check(ctx: Any) -> list[str]:
             (get("why"), get("hy"), get("load")),
             (want, UP, BARREL),
         )
+        if what == "trim":
+            kicked = needle()
+            expect("refused: the needle kicks into the red", kicked, get("ta"))
+            ctx.advance(FLASH_TICKS + 2)
+            expect("and swings back", needle(), get("trim"))
+            if "LIST" not in ctx.data(f"entity @e[tag={BOARD_TAG},limit=1] text"):
+                problems.append("the status board does not say her list")
     # with a crate on the hook UNDO puts it back
     run("press/undo")
     expect("UNDO with a crate on the hook", (hold(), get("load")), (start, 0))
@@ -3247,12 +3770,7 @@ def _check(ctx: Any) -> list[str]:
     # -- levels 1 and 10; F1's hatch jammed at 9 and 10
     arm(1, 1)
     expect("level 1", (get("band"), get("lim"), get("shut")), (0, 5, -1))
-    f, r, h = gauge_cells(-1)[0]
-    expect(
-        "level 1: the band green to its end",
-        ctx.is_block(fr.at(f, r, h - 1), GREEN),
-        True,
-    )
+    expect("level 1: the gauge green to 5 tons, red past it", zones(), band(5))
     arm(10, 1)
     expect("level 10", (get("band"), get("lim"), get("shut")), (4, 2, 4))
     hatch = fr.at(*[c for c in bay_cells(4, 0) if c[2] == 1][0])

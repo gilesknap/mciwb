@@ -228,6 +228,20 @@ signs = " ".join(v for v in b.attached.values() if "sign" in v)
 for words in ("Each gate opens", "in its hour:", "I GREEN", "II IRON", "III GOLD",
               "Plan your", "way up."):
     assert words in signs, words
+# the lifts' and the F-to-K gate's signs: on the wall beside each doorway,
+# away from its pistons, read from the approach (as the owner placed them)
+lifts = {lift.name: lift for lift in D.LIFT_LIST}
+gate_signs = {
+    "LIFT A": (D.lift_sign_at(lifts["a"]), (136, 39, -184), "north"),
+    "LIFT B": (D.lift_sign_at(lifts["b"]), (144, 45, -196), "north"),
+    "LIFT C": (D.lift_sign_at(lifts["c"]), (140, 51, -186), "south"),
+    "GREEN GATE": ((D.FK_SIGN, D.FK_SIGN_WAY), (140, 45, -182), "west"),
+}
+for title, ((at, way), cell, facing) in gate_signs.items():
+    assert (fr.at(*at), fr.facing(*way)) == (cell, facing), title
+    sign = D.room_blocks(dome).attached[cell]
+    assert f"wall_sign[facing={facing}]" in sign and title in sign, (title, sign)
+assert D.SIGN_AT[D.FK] == D.FK_SIGN
 # the hand: from twelve o'clock clockwise, a twelfth of a turn a quarter
 assert D.hand_turn(0) == (0.0, 1.0) and abs(D.hand_turn(6)[0] - 1) < 1e-9
 assert D.HAND_TAG in D.hand_summon(fr) and "block_display" in D.hand_summon(fr)

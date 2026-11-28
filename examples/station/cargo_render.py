@@ -24,7 +24,8 @@ import domes  # noqa: E402
 import station_layout as L  # noqa: E402
 from PIL import Image, ImageDraw  # noqa: E402
 
-AIRS = {"air", "cave_air", "void_air"}  # block IDs the render leaves out
+# block IDs the render leaves out (a barrier is not seen)
+AIRS = {"air", "cave_air", "void_air", "barrier"}
 
 COLOURS = (
     ("gold_block", (232, 190, 60)),
@@ -73,6 +74,9 @@ COLOURS = (
     ("furnace", (90, 90, 95)),
     ("sign", (200, 180, 120)),
     ("glass", (200, 225, 240)),
+    ("water", (45, 95, 165)),
+    ("cauldron", (60, 60, 64)),
+    ("composter", (115, 85, 50)),
 )
 
 

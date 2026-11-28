@@ -447,6 +447,20 @@ def input_post(
 # ---------------------------------------------------------------- displays
 
 
+def block_state(block: str) -> str:
+    """a block display's ``block_state``, as SNBT, for a block such as
+    ``"minecraft:iron_chain[axis=y]"``: the bare id for a block in its
+    default state, else ``{id:...,properties:{...}}`` (1.21.x's
+    ``{Name:...,Properties:...}`` no longer loads: the display shows air)"""
+    name, _, rest = block.partition("[")
+    if not rest:
+        return f'"{name}"'
+    props = ",".join(
+        f'{k}:"{v}"' for k, v in (p.split("=") for p in rest.rstrip("]").split(","))
+    )
+    return f'{{id:"{name}",properties:{{{props}}}}}'
+
+
 def display(
     tags,
     pos: tuple[float, float, float],
@@ -454,17 +468,19 @@ def display(
     text: str,
     scale: float = 1.0,
     billboard: str = "fixed",
+    pitch: float = 0,
 ) -> str:
     """the command that summons a text display, its text (a component:
     ``label_text``) standing on ``pos``, lit whatever the light, flat and
     facing ``yaw`` (0 south, 90 west ...) or with ``billboard="center"``
-    turning to whoever looks"""
+    turning to whoever looks; ``pitch=-90`` lays it face up, its top
+    away from ``yaw``"""
     x, y, z = pos
     s = f"{scale}f"
     listed = ",".join(f'"{t}"' for t in tags)
     return (
         f"summon minecraft:text_display {x:.2f} {y:.2f} {z:.2f} "
-        f'{{Tags:[{listed}],Rotation:[{yaw}f,0f],billboard:"{billboard}",'
+        f'{{Tags:[{listed}],Rotation:[{yaw}f,{pitch}f],billboard:"{billboard}",'
         f"background:0,line_width:400,brightness:{{sky:15,block:15}},text:{text},"
         f"transformation:{{translation:[0f,0f,0f],scale:[{s},{s},{s}],"
         "left_rotation:[0f,0f,0f,1f],right_rotation:[0f,0f,0f,1f]}}"

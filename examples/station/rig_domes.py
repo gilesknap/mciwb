@@ -1662,7 +1662,7 @@ def x8_run(b: Bench, _: None) -> None:
     print("-- 8 displays", flush=True)
     c = off(b, 42, 2, 78)
     b.plot(off(b, 40, 0, 76), off(b, 46, 5, 82))
-    state = 'block_state:{Name:"minecraft:waxed_copper_block"}'
+    state = 'block_state:"minecraft:waxed_copper_block"'
     b.summon(
         "minecraft:block_display", c, f"{{{state},teleport_duration:1}}", "x8_turn"
     )

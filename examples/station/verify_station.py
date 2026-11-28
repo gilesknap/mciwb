@@ -364,6 +364,17 @@ def rules_check(ctx: B.Context) -> list[str]:
     return problems
 
 
+def displays_check(ctx: B.Context) -> list[str]:
+    """the station's block displays all show a block: one whose block_state
+    the server could not read (the 1.21 form, in 26.x) loads as air"""
+    shown = ctx.count("@e[type=minecraft:block_display]")
+    air = ctx.count(
+        '@e[type=minecraft:block_display,nbt={block_state:"minecraft:air"}]'
+    )
+    print(f"     block displays: {shown}, of which air: {air}")
+    return [f"{air} of {shown} block displays show air"] if air else []
+
+
 def shell_check(index: int) -> Callable[[B.Context], list[str]]:
     def check(ctx: B.Context) -> list[str]:
         inside = B.STAGES[f"{B.dome_stage_name(index)}_inside"]
@@ -383,6 +394,7 @@ def tunnel_check(index: int) -> Callable[[B.Context], list[str]]:
 LIVE: dict[str, Callable[[B.Context], list[str]]] = {
     "forceloaded": forceload_check,
     "rules": rules_check,
+    "displays": displays_check,
     **{f"shell_{i}": shell_check(i) for i in domes.BUILT},
     **{f"tunnel_{i}": tunnel_check(i) for i in tunnels.BUILT},
     "player_count": game_checks.check_players,
