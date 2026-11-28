@@ -2651,6 +2651,8 @@ def functions(pack: dp.Pack) -> None:
             call("crane/make"),
             _set("ask", 0),
             _set("flash", 0),
+            # a celebration cut short: the scales' colours back (no tick will)
+            call("trim/band", _is("party", "1..")),
             _set("party", 0),
             _set("bells", 0),
             call("trim/show"),
@@ -3160,7 +3162,7 @@ def afloat_problems(dome: Dome) -> list[str]:
         problems.append(f"{len(stray)} cells of the basin not in the floor")
     if bare := {(x, y - 1, z) for x, y, z in wet} - set(b.bed):
         problems.append(f"{len(bare)} cells of the basin with no bed: {min(bare)}")
-    if any(block != WATER for c, block in b.floor.items() if c in wet):
+    if any(b.floor.get(c) != WATER for c in wet):
         problems.append("a cell of the basin is not water")
     if spilt := {c for c, block in b.everything().items() if block == WATER} - wet:
         problems.append(f"{len(spilt)} cells of water outside the basin")

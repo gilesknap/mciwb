@@ -2333,7 +2333,8 @@ def functions(pack: dp.Pack) -> None:
         _set("per", 0),
         f"execute {open_dome} {_if('phase', '0..1')} run {_set('per', BEAT)}",
         *(
-            f"execute {_if('phase', 1)} {_if('shut', n)} "
+            # (and kept when a player leaves and comes back to phase 0)
+            f"execute {open_dome} {_if('phase', '0..1')} {_if('shut', n)} "
             f"run {_set('per', BEAT + n * BEAT_SLOWER)}"
             for n in (1, 2)
         ),
@@ -2589,6 +2590,9 @@ def functions(pack: dp.Pack) -> None:
             *(_setblock(c, lit) for c in place.way_out),
             _set("out", len(place.way_out)),
             _set("fin", end_steps(dome)),
+            # the governor stopped too (no room tick runs it down while empty)
+            _set("down", 0),
+            _set("spin", 0),
         ],
     )
     zeroed = ("phase", "t", "shut", "amb", "pair", "next", "hatch", "n", "cast", "any")

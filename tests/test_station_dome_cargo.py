@@ -269,15 +269,20 @@ assert count("summon minecraft:block_display") == 2 * (D.ZONES + 2)
 for cell, block in b.bed.items():
     assert rec.world.at(cell) == block, (cell, block)
 assert len(b.bed) >= len(D.basin(dome)) > 150
-def first(cell, block):
+def fills(cell, block):
+    found = []
     for i, c in enumerate(rec.commands):
         w = c.split()
         if w[0] == "fill" and w[7] == block:
             lo, hi = [int(n) for n in w[1:4]], [int(n) for n in w[4:7]]
             if all(a <= k <= z for a, k, z in zip(lo, cell, hi)):
-                return i
+                found.append(i)
+    return found
+# (the last write of the bed, not the dome shell's foundation before it)
 x, y, z = min(D.basin(dome))
-assert first((x, y - 1, z), "minecraft:deepslate") < first((x, y, z), D.WATER)
+assert max(fills((x, y - 1, z), "minecraft:deepslate")) < min(
+    fills((x, y, z), D.WATER)
+)
 assert f"function station:dome/{D.INDEX}/reset" in rec.commands
 again = B.offline_build(stages=[*stages, f"dome_{D.INDEX}_inside"], force=False)
 assert again.world.dump() == rec.world.dump()
