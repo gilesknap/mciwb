@@ -12,13 +12,13 @@ glass dam and look down into a round pressure chamber: a copper test
 column in the middle with a red band nine up (the *flood line*, painted on
 both dams too), a ring walk round the chamber one block over that line, a
 gantry across the top with two caged perches and the caged compressor on
-the column's head, and round the walls twelve iron frames: nine round a
-window of the hull's glass (the breaches), three plated over long ago
-(dressing). Three levels for players: the floor, three ledges (deck
+the column's head, and round the walls twelve iron frames, each round a
+window of the hull's glass (the breaches: four low, four in the middle,
+four high). Three levels for players: the floor, four ledges (deck
 ``LEDGE_H``) under the middle breaches, and the ring walk (deck
 ``WALK_H``), which the flood never reaches but the high breaches' streams
 run over; the gantry (``GANTRY_H``) above, which no water gets to. Two
-stairs and seven ladders climb out of the water at every level. The exit
+stairs and nine ladders climb out of the water at every level. The exit
 hall beyond the far dam is roofed with glass at the walk's height, and
 opens only by the dam door after the solve.
 
@@ -31,7 +31,8 @@ a breach is open, so seal them before it reaches the red line.
   Peaceful.
 - A **stage** bursts its breaches one after another (``stag`` apart) in a
   fixed order (``ORDERS``) that pulls the players across the room and up
-  and down. A breach is a 2 x 2 window of glass in a frame
+  and down: four breaches of its own to each stage, so no breach bursts
+  twice in a run. A breach is a 2 x 2 window of glass in a frame
   (``raw_iron_block``: a frame means "build here"). In its last three
   seconds it cracks (``CRACK``: the hull's glass behind the frame turns
   dark, ``tinted_glass``, two cells, six, all of it, with drips and
@@ -41,28 +42,32 @@ a breach is open, so seal them before it reaches the red line.
   decks, and in the hull behind it (``SEA``: waterlogged barriers, which
   show the water and let none through); a large red BREACH label
   (scale 3, no backing) hangs over it and a Breacher is cast in front
-  of it. With two players a stage has one more breach, and the first two
-  burst together. The first burst of a stage comes after its cracks,
-  three seconds in.
+  of it. With two players a stage has one more breach (never more than
+  its four, ``STAGE_CAP``), and the first two burst together. The first
+  burst of a stage comes after its cracks, three seconds in.
 - Every step each open breach adds to ``flow``; at ``per`` a layer of
   water rises (the layer functions of the Flooded Dome, run upwards),
   never above ``MAX`` (the line). At the line with a breach open the
   room warns and counts ``hold``: seal in time and the stage goes on; if
-  not the stage fails: the automatons go, the stage's breaches are made
-  sound again (never on a body in a hole), the pumps take the water down,
-  and the stage starts again. Stages held before are kept.
+  not the stage fails: the automatons go, the stage's own breaches are
+  made sound glass again (never on a body in a hole), the pumps take the
+  water down, and the stage starts again. Stages held before are kept,
+  and so are their patches.
 - **Rivet plates** (``waxed_exposed_chiseled_copper``, placeable only on
   the frames) are lent on entering, topped up when gone, taken back on
   leaving. A plate set in a hole cell takes the place of the water in it;
   four in a hole seal it (patched: no source left, so its stream runs
-  out by itself; the sea stays in the hull behind the patch). Plates put
-  anywhere else round a frame are cleared (``strays``).
+  out by itself; the sea stays in the hull behind the patch), and it
+  stays patched for the rest of the run. Plates put anywhere else round
+  a frame are cleared (``strays``).
 - **The streams** are the game's own running water, so they are only
   where ``stream`` says they can be (``stream_problems``): never at or
   behind the entry dam, never in the exit hall, on nothing they would
   wash away. The layers' fills take them away below the line and ``mop``
-  above it; every way out of a stage (held, failed, left, reset, solved)
-  makes every breach sound glass again, hull and all.
+  above it. A patch outlasts its stage, the pump-down and everyone
+  leaving; a stage failed or left mid-way has its own breaches made sound
+  glass again, hull and all (it is played again); ``reset`` and the solve
+  make every breach sound glass.
 - When a stage's last breach is sealed: the stage holds, the automatons
   are flushed out, the pumps (the compressor working on the gantry) take
   the water down, a breather, the next. After the third: the dome is
@@ -82,8 +87,9 @@ Breathing for everyone in the test at levels 1 to 3.
 **State** (scores in ``st``, all ``#hb.<name>``): ``state`` 0 idle, 1
 testing, 2 solved; ``stage`` stages held (0 to 3); ``phase`` 0 breather,
 1 bursting, 2 at the line, 3 pumping down; ``w`` the top wet layer (the
-only record of the water); ``flow``; ``open``; ``b1`` .. ``b9`` each
-breach sound (0), open (1) or patched (2); ``due`` bursts to come,
+only record of the water); ``flow``; ``open``; ``b1`` .. ``b12`` each
+breach sound (0), open (1) or patched (2: until the reset or the solve);
+``due`` bursts to come,
 ``idx`` the next in the order, ``next`` ticks to it; ``hold``; ``t`` ticks in the phase; ``form``
 and ``want``; ``live``; ``wait`` (a test left: -1, or ticks to resume);
 ``again`` the live stage failed before; from the level (``scaled``): ``per``,
@@ -207,8 +213,12 @@ RIVETER_CAP = {
 }
 WATER_BREATHING = range(1, 4)  # the levels that give it
 #: the order each stage bursts its breaches in; the first two are on two
-#: levels and two sides, and burst together with two players
-ORDERS = ((1, 4, 7, 5, 3), (8, 2, 5, 3, 6), (6, 3, 9, 2, 7))
+#: levels and two sides, and burst together with two players. No breach is
+#: in two stages, and a stage bursts no more than it has here
+#: (``stage_bursts``), so none bursts twice in a run: once sealed, a breach
+#: stays patched
+ORDERS = ((1, 4, 7, 10), (8, 2, 5, 11), (6, 3, 9, 12))
+STAGE_CAP = len(ORDERS[0])  # the most breaches a stage bursts
 
 #: The Breacher, and its fallbacks if the rig finds it wrong: ``trident``
 #: (the design), ``melee`` (a drowned with no trident) or ``none`` (no
@@ -250,9 +260,6 @@ TORCH = "minecraft:redstone_wall_torch"
 #: the two blocks that mean something here and nowhere else
 FRAME = "minecraft:raw_iron_block"
 PLATE = "minecraft:waxed_exposed_chiseled_copper"
-#: a frame that is only dressing: finished iron, which no plate sticks to
-DRESS_FRAME = "minecraft:iron_block"
-DRESS_PLATE = "minecraft:waxed_weathered_copper"
 #: a breach burst: the sea standing in the hull behind the hole (a full
 #: block that holds its own water: none of it runs out, none gets in),
 #: and the hull's glass cracked dark round it
@@ -276,9 +283,10 @@ SPECS = (
     (7, "high", 4, -1),
     (8, "high", -6, 1),
     (9, "high", 12, -1),
+    (10, "low", 12, 1),
+    (11, "mid", 3, -1),
+    (12, "high", 3, 1),
 )
-#: the frames that are only dressing, in the same terms
-DRESS_SPECS = (("low", 12, 1), ("mid", 3, -1), ("high", 3, 1))
 HOLE_H = {"low": 2, "mid": 6, "high": 12}  # the hole's lower row
 LEVEL_NAMES = {"low": "floor", "mid": "ledge", "high": "ring walk"}
 
@@ -360,8 +368,7 @@ def basin(dome: Dome) -> frozenset[Cell]:
 
 @dataclass(frozen=True)
 class Breach:
-    """a frame round a hole of 2 x 2 in a side wall (``number`` 0 for one
-    that is only dressing)"""
+    """a frame round a hole of 2 x 2 in a side wall"""
 
     number: int
     level: str
@@ -400,7 +407,6 @@ class Room:
 
     frame: Frame
     breaches: tuple[Breach, ...]
-    dressing: tuple[Breach, ...]
     gauge: tuple[Cell, ...]  # on the column's face, lowest first
     board: tuple[Cell, ...]  # the same on the entry dam
     stage_lamps: tuple[Cell, ...]
@@ -518,7 +524,6 @@ def room(dome: Dome) -> Room:
     fr = frame(dome)
     at = fr.at
     breaches = tuple(_breach(dome, *spec) for spec in SPECS)
-    dressing = tuple(_breach(dome, 0, *spec) for spec in DRESS_SPECS)
     vf, vr = VALVE
     # the lever and its sign face the stair up to the landing (+r)
     towards = fr.facing(0, 1)
@@ -559,7 +564,6 @@ def room(dome: Dome) -> Room:
     return Room(
         frame=fr,
         breaches=breaches,
-        dressing=dressing,
         gauge=tuple(at(-COLUMN, 0, h) for h in range(1, MAX + 1)),
         board=tuple(at(ENTRY_F, BOARD_R, h) for h in range(1, MAX + 1)),
         stage_lamps=tuple(at(ENTRY_F, sr, sh) for sr, sh in STAGE_LAMPS),
@@ -602,6 +606,21 @@ def scaled(level: int) -> dict[str, int]:
         "rduo": r_duo,
         "wb": int(level in WATER_BREATHING),
     }
+
+
+def stage_bursts(level: int, form: int) -> tuple[int, ...]:
+    """how many breaches each stage bursts at a level, for one player
+    (``form`` 1) or two (2: one more), never more than ``STAGE_CAP``"""
+    return tuple(min(n + form - 1, STAGE_CAP) for n in BURSTS[level])
+
+
+def run_bursts(level: int, form: int) -> list[int]:
+    """the breaches a run bursts, in order, every stage held first time"""
+    return [
+        number
+        for order, n in zip(ORDERS, stage_bursts(level, form), strict=True)
+        for number in order[:n]
+    ]
 
 
 # ----------------------------------------------------------- the words
@@ -883,10 +902,9 @@ def structure(dome: Dome) -> Blocks:
 
     # -- the breaches' frames, their backing; the ledges under the middle
     # ones, decks in front of the high ones
-    for br in (*place.breaches, *place.dressing):
-        frame_block = FRAME if br.number else DRESS_FRAME
+    for br in place.breaches:
         for c in br.frame:
-            b.solid[c] = frame_block
+            b.solid[c] = FRAME
         for c in br.backing:
             b.solid.setdefault(c, GLASS)
         if br.level == "mid":
@@ -898,9 +916,6 @@ def structure(dome: Dome) -> Blocks:
                         c = at(f, br.side * d, h)
                         if c in usable and (h < br.h0 or d > br.depth):
                             b.solid.setdefault(c, EXPOSED)
-        if not br.number:
-            for c in br.holes:
-                b.solid[c] = DRESS_PLATE
         if br.level == "mid":
             for f in range(br.f0 - 1, br.f0 + 2):
                 for d in range(br.depth - 3, br.depth):
@@ -1859,9 +1874,8 @@ def build(ctx: Any) -> str:
     return (
         f"{dome.name}: {len(b.everything())} blocks: the entry hall (stair, valve "
         "landing, plaque, logbook, recall post, test board), two glass dams, "
-        "the test column and its gauge, the ring walk, three ledges, two stairs "
-        "and seven ladders, nine breaches (glass in iron frames) and three "
-        "dressing frames, the gantry "
+        "the test column and its gauge, the ring walk, four ledges, two stairs "
+        "and nine ladders, twelve breaches (glass in iron frames), the gantry "
         "with two perches and the compressor, the ballast tanks"
     )
 
@@ -2107,7 +2121,8 @@ def functions(pack: dp.Pack) -> None:
         pack.function(
             f"{base}/burst/{i}",
             [
-                f"execute {_is(f'b{i}', 1)} run return 0",
+                # (only sound glass bursts: a patch holds)
+                f"execute {_not(f'b{i}', 0)} run return 0",
                 _set(f"b{i}", 1),
                 *(f"{line} destroy" for line in sea),
                 *wet_back,
@@ -2164,12 +2179,14 @@ def functions(pack: dp.Pack) -> None:
             )
         ],
     )
-    # the stage's breaches, open or patched, made sound again
+    # the live stage's own breaches, open or patched, made sound again
+    # (those of the stages held before stay patched)
     pack.function(
         f"{base}/restore_stage",
         [
-            f"execute {_not(f'b{br.number}', 0)} run {call(f'plug/{br.number}')}"
-            for br in place.breaches
+            f"execute {_is('stage', s)} {_not(f'b{i}', 0)} run {call(f'plug/{i}')}"
+            for s, order in enumerate(ORDERS)
+            for i in order
         ],
     )
     # a sound breach that had begun to crack (a burst struck off)
@@ -2276,6 +2293,7 @@ def functions(pack: dp.Pack) -> None:
                 for s in range(3)
             ),
             f"execute {_is('form', 2)} run scoreboard players add {_s('due')} 1",
+            f"execute {_is('due', f'{STAGE_CAP + 1}..')} run {_set('due', STAGE_CAP)}",
             *(_set(name, 0) for name in ("idx", "flow", "hold", "t", "klax", "wait")),
             _set("phase", 1),
             *(
@@ -2430,7 +2448,8 @@ def functions(pack: dp.Pack) -> None:
     pack.function(
         f"{base}/water/pumping",
         [
-            call("restore_stage"),
+            # (a failed stage's breach with a body in its hole waits)
+            f"execute {_is('again', 1)} run {call('restore_stage')}",
             f"scoreboard players add {_s('t')} {STEP}",
             f"execute {_is('t', f'{PUMP_TICKS}..')} {_is('w', '1..')} run {call('fall')}",
             f"execute {_is('t', f'{PUMP_TICKS}..')} run {_set('t', 0)}",
@@ -2504,7 +2523,8 @@ def functions(pack: dp.Pack) -> None:
         f"{base}/done",
         [f"function {pack.id(f'dome/{INDEX}/solved')}", call("restored")],
     )
-    # the room once solved: dry, sound, the dam door open, nothing lent
+    # the room once solved: dry, every breach sound glass again, the dam
+    # door open, nothing lent
     pack.function(
         f"{base}/restored",
         [
@@ -2834,9 +2854,15 @@ def functions(pack: dp.Pack) -> None:
     pack.function(
         f"{base}/checkpoint",
         [
-            # (the core has just removed the automatons; nobody is in)
-            *(call(f"hole/{br.number}/shut") for br in place.breaches),
-            *(_set(f"b{br.number}", 0) for br in place.breaches),
+            # (the core has just removed the automatons; nobody is in.)
+            # The live stage's own breaches sound again, as it starts again
+            # on coming back (``draw`` writes them); the patches of the
+            # stages held before stay
+            *(
+                f"execute {_is('stage', s)} run {_set(f'b{i}', 0)}"
+                for s, order in enumerate(ORDERS)
+                for i in order
+            ),
             *(_set(n, 0) for n in ("w", "flow", "due", "phase", "hold", "t")),
             _set("wait", -1),
             call("pumps_off"),
@@ -3290,10 +3316,16 @@ def _check(ctx: Any) -> list[str]:
         and all(ctx.is_block(c, SEA) for c in high.flooded),
         True,
     )
-    # ---- the failure: one open, the hold run out, a body in a hole
-    low = next(br for br in place.breaches if br.level == "low")
+    # a patch holds: it does not burst again
+    ctx.function(f"{base}/burst/{high.number}")
+    expect("a patched breach does not burst", get(f"b{high.number}"), 2)
+    # ---- the failure: one of the stage's own open (made sound and burst
+    # again), the hold run out, a body in a hole
+    own = frozenset(ORDERS[0])
+    low = next(br for br in place.breaches if br.level == "low" and br.number in own)
     ctx.set_score("#hb.due", 1)
     ctx.set_score("#hb.phase", 1)
+    ctx.function(f"{base}/plug/{low.number}")
     ctx.function(f"{base}/burst/{low.number}")
     # (half up: a marker's hitbox is a point, and one on the box's floor
     # is not in it)
@@ -3306,7 +3338,11 @@ def _check(ctx: Any) -> list[str]:
     game_checks.stand_at(ctx, S1, entrance)
     ctx.advance(2 * STEP)
     expect("made sound the step after it is empty", get(f"b{low.number}"), 0)
-    expect("the patches made sound with it", patched(), frozenset())
+    expect(
+        "the stage's own patches made sound with it, the others kept",
+        patched(),
+        ALL_OPEN - own,
+    )
     if not until(lambda: get("w") == 0, (MAX + 2) * PUMP_TICKS):
         problems.append(f"the pumps did not empty the room: w {get('w')}")
     ctx.advance(2 * STEP)
@@ -3359,10 +3395,16 @@ def _check(ctx: Any) -> list[str]:
         get("state"),
         get("wait"),
         get("w"),
-        opened() | patched(),
+        opened(),
+        patched(),
         ctx.count(automatons.selector(INDEX)),
     )
-    expect("left: waiting, dry, sound, no automatons", got, (1, -1, 0, frozenset(), 0))
+    expect(
+        "left: waiting, dry, the stage's own breaches sound, the other "
+        "patches kept, no automatons",
+        got,
+        (1, -1, 0, frozenset(), ALL_OPEN - own, 0),
+    )
     as_state("left")
     expect(
         "the valve still thrown", ctx.is_block(place.valve.input, place.valve_on), True
@@ -3389,6 +3431,7 @@ def _check(ctx: Any) -> list[str]:
         ctx.set_score("#hb.stage", stage)
         ctx.set_score("#hb.due", 0)
         ctx.set_score("#hb.phase", 1)
+        kept = opened() | patched()
         for number in opened():
             plate(number)
         ctx.advance(2 * STEP)
@@ -3398,6 +3441,12 @@ def _check(ctx: Any) -> list[str]:
         ):
             problems.append(f"stage {stage + 1} not held: phase {get('phase')}")
         if stage < 2:
+            expect(
+                f"stage {stage + 1} held and pumped down: every patch kept",
+                (opened(), patched()),
+                (frozenset(), kept),
+            )
+            as_state(f"stage {stage + 1} held")
             ctx.set_score("#hb.t", 1)
             ctx.advance(2 * STEP)
     expect("solved", (ctx.score(f"#d{INDEX}"), get("state")), (2, 2))
@@ -3434,6 +3483,9 @@ def _check(ctx: Any) -> list[str]:
     ctx.advance(2 * STEP)
     for number in (2, 5, 9):
         ctx.function(f"{base}/burst/{number}")
+    plate(5)
+    ctx.advance(2 * STEP)
+    expect("scrambled: one open breach patched", patched(), frozenset({5}))
     ctx.set_score("#hb.w", 7)
     ctx.function(f"{base}/draw")
     ctx.setblock(sorted(br1.front)[0], PLATE)
