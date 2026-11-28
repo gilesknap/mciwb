@@ -944,10 +944,17 @@ pack = B.new_pack("t")
 f = pack.functions
 # every tunnel is built: its states, and no stub
 assert all(f"tunnel/{n}/state_1" in f for n in range(len(B.station_layout.TUNNELS)))
-# the kits after the start kit, on entering their domes
-for n, name in game.KITS.items():
-    given = f"function station:kit/{name}"
-    assert any(line.endswith(given) for line in f[f"dome/{n}/entered"])
+# the kits after the start kit, on entering their domes or any dome after
+# them (a fast travel past the Foundry), once a run, in the domes' order
+for d in B.station_layout.DOMES:
+    lines = f[f"dome/{d.index}/entered"]
+    given = [line for line in lines if " run function station:kit/" in line
+             and "kit/start" not in line]
+    want = [name for n, name in sorted(game.KITS.items()) if n <= d.index]
+    assert given == [
+        f"execute unless score @s st.kit.{name} = #runid st "
+        f"run function station:kit/{name}" for name in want
+    ], d.index
 # the last dome is the win, and a module's win function is called
 last = len(B.station_layout.DOMES) - 1
 assert "function station:run/win" in f[f"dome/{last}/solved"]

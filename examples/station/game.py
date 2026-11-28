@@ -116,7 +116,8 @@ the dome last entered, or of a dome that opens while they play.
 ``st.kit`` and the run's number in ``st.kitrun``), on entering any dome,
 so a late joiner is kitted on arrival. Food and arrows are topped up
 whenever a kitted player has none. Two more kits add to it, each given
-once per player per run on entering its dome (``KITS``):
+once per player per run on entering its dome or any dome after it (one
+who fast travels past it is given it on arrival) (``KITS``):
 ``station:kit/foundry`` (the Foundry: a shield in the off hand, 32 spectral
 arrows) and ``station:kit/boss`` (the Engine: an unbreakable brass helm,
 cuirass and sabre). A module does not give them; it may give more of its
@@ -543,11 +544,14 @@ def _players(pack: dp.Pack, hooks: set[tuple[int, str]]) -> None:
             f"execute unless score @s st.kitrun = #runid {OBJ} "
             f"run function {pack.id('kit/start')}",
         ]
-        if n in KITS:
-            entered.append(
-                f"execute unless score @s st.kit.{KITS[n]} = #runid {OBJ} "
-                f"run function {pack.id(f'kit/{KITS[n]}')}"
-            )
+        # every kit of this dome and those before it: one who fast travels
+        # past a kit's dome is given it on arrival
+        entered += [
+            f"execute unless score @s st.kit.{name} = #runid {OBJ} "
+            f"run function {pack.id(f'kit/{name}')}"
+            for k, name in sorted(KITS.items())
+            if k <= n
+        ]
         if (n, "enter") in hooks:
             # #first: this player is the first into an empty dome
             entered += [
