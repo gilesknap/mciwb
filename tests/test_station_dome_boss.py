@@ -582,8 +582,7 @@ rise = on[f"dome/{N}/fire/rise"]
 post = place.fire_post
 put = [l for l in rise if l.startswith("setblock") and not l.endswith("minecraft:air")]
 assert [l.split(" ", 4)[4].partition("[")[0] for l in put] == [
-    "minecraft:gold_block", "minecraft:gold_block", "minecraft:lever",
-    "minecraft:bamboo_wall_sign"]
+    "minecraft:gold_block", "minecraft:lever", "minecraft:bamboo_sign"]
 sign = next(l for l in put if "sign" in l)
 assert all(text in sign for text in D.FIRE_SIGN)
 assert any(D.FIRE_HINT in l for l in rise) and any("title" in l for l in rise)
@@ -603,7 +602,7 @@ assert (f"execute unless score #b7.fire st matches 1 run function "
 # the lever faces the way in, on the centre line before the firebox: its
 # player looks along the frame's forward at the doors
 fr = place.frame
-assert post.input == fr.at(D.FIRE_POST_F - 1, 0, 2)
+assert post.input == fr.at(D.FIRE_POST_F - 1, 0, 1)
 assert place.fire_stand == fr.at(D.FIRE_POST_F - 2, 0, 1)
 assert f"facing={fr.facing(-1, 0)}" in post.attached[post.input]
 assert D.FIRE_POST_F < min(f_ for f_, _, _ in D.PLATE_LANDS) - 1
@@ -1678,7 +1677,7 @@ since = len(sim.said)
 steps(D.FULL // D.WIND + 1)
 assert waiting() == (1, 1, 3) and sim.get(f"#d{N}") == 1 and not mobs()
 assert f"dome/{N}/won" not in sim.called and not breached()
-assert all(up()) and len(label()) == 1 and len(up()) == 4
+assert all(up()) and len(label()) == 1 and len(up()) == 3
 assert p["pos"] == (place.fire_stand[0] + 0.5, place.fire_stand[1],
                     place.fire_stand[2] + 0.5)
 said = sim.said[since:]
