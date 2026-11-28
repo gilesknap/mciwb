@@ -23,8 +23,8 @@ sees them.
   pipe of copper bulbs, lit when it is pumped dry and dimly (``READY``)
   while its pump waits for its lever, the shore as a corner
   of land with the row out to it, and a blinking pin over the Pump House:
-  "you are here". The names, a title, a legend and which way is up are
-  text.
+  "you are here". Each dome's name stands in white over its middle, in
+  front of its blocks; a title, a legend and which way is up are text.
 - **The clock board**, the east wing of the map's bay: the run's time, the
   best time at the level in force, and the difficulty level.
 - **The difficulty dial**, the west wing: ten lamps lit up to the level
@@ -56,10 +56,10 @@ input, and no reset touches it):
   whose level rises and falls, and **pipes overhead** from each tank and
   from over the north door to the shaft, with bulbs that light in turn
   towards it and lanterns hung under their joints (``overhead``).
-- **The governor**, north west, in a cage of copper bars with a grate for
-  a roof: a clock of repeaters round a redstone torch that works two
-  pistons, two lamps and a copper bulb, by itself, from the moment it is
-  built. Nothing of it can be reached or clicked.
+- **The governor**, north east (in the north west it hid the Wall of
+  Fame), in a cage of copper bars with a grate for a roof: a clock of
+  repeaters round a redstone torch that works two pistons, two lamps and
+  a copper bulb, by itself, from the moment it is built. Nothing of it can be reached or clicked.
 - The chase, the tanks' levels, the map's blinking pin and a bell every
   minute and a half are the datapack's (``dome/0/machine/...``), stepped
   by ``dome/0/tick``: they stand still when nobody is in the dome.
@@ -449,21 +449,11 @@ def map_cells() -> MapCells:
     )
 
 
-def map_names() -> dict[int, tuple[float, float, bool]]:
-    """where each dome's name goes on the map: the middle of it along the
-    wall, the height its text stands at, and whether that is on the frame
-    (the lower domes: on the frame's bottom; the upper: on the sea under
-    them)"""
-    m = map_cells()
-    out = {}
-    for d in layout.DOMES:
-        k, h = m.places[d.index]
-        low = min(j for _, j in m.shapes[d.index])
-        if h > (MAP_H[0] + MAP_H[1]) / 2:
-            out[d.index] = (k + 0.5, low - 1 + 0.35, False)
-        else:
-            out[d.index] = (k + 0.5, 1.35, True)
-    return out
+def map_names() -> dict[int, tuple[float, float]]:
+    """where each dome's name goes on the map, over the dome's middle block:
+    the middle of its column along the wall and the height its text stands
+    at (a little over the middle row's foot)"""
+    return {i: (k + 0.5, h + 0.35) for i, (k, h) in map_cells().places.items()}
 
 
 def dial_lamp(level: int) -> Cell:
@@ -545,7 +535,7 @@ TANK_AT = ((16, -10), (-16, -10))  #: the tanks' middles
 TANK_TOP = 9
 GAUGE = range(2, TANK_TOP)  #: the heights of a tank's sight glass
 #: the cage round the governor: its corners (e, n), and its roof's height
-CAGE = ((-16, 5), (-12, 15))
+CAGE = ((12, 5), (16, 15))
 CAGE_ROOF = 5
 REPEATERS = 5  #: a row of the governor's clock
 
@@ -591,7 +581,7 @@ def gallery() -> Gallery:
     deck -= set(stairs)
     rails = deck - walk
     posts = {(e, n) for e in (-2, 2) for n in (9, 13)}
-    for angle in (40, 60, 78, 102, 120, 136):
+    for angle in (40, 60, 78, 102, 120, 140):
         a = math.radians(angle)
         spot = (round(19 * math.cos(a)), round(19 * math.sin(a)))
         if spot in rails and not in_cage(*spot):
@@ -1033,11 +1023,19 @@ def _t(text: str, color: str = "gold", **more: str) -> str:
 
 
 def display(
-    tag: str, pos, face: Vec, text: str, scale: float = 1.0, billboard: str = "fixed"
+    tag: str,
+    pos,
+    face: Vec,
+    text: str,
+    scale: float = 1.0,
+    billboard: str = "fixed",
+    shadow: bool = False,
 ) -> str:
     """the command that summons a text display flat on a wall facing
     ``face``, its text standing on ``pos``"""
-    return fittings.display((TAG, tag), pos, _YAW[face], text, scale, billboard)
+    return fittings.display(
+        (TAG, tag), pos, _YAW[face], text, scale, billboard, shadow=shadow
+    )
 
 
 def interaction(tag: str, cell: Cell) -> str:
@@ -1089,12 +1087,9 @@ def entities() -> tuple[str, ...]:
         )
     )
     for d in layout.DOMES:
-        k, y, on_frame = map_names()[d.index]
-        if on_frame:
-            spot, color = MAP.spot(k, y, proud), "black"
-        else:
-            spot, color = MAP.spot(k, y), "white"
-        out.append(display("st.ph.l", spot, MAP.face, _t(d.name, color), 0.8))
+        k, y = map_names()[d.index]
+        spot, name = MAP.spot(k, y, proud), _t(d.name, "white")
+        out.append(display("st.ph.l", spot, MAP.face, name, 0.8, shadow=True))
     pk, ph = m.pin
     side = -1 if m.route and m.route[0][0] > pk else 1  # away from the row out
     here = "YOU ARE HERE >" if side < 0 else "< YOU ARE HERE"

@@ -22,11 +22,13 @@ stairs and seven ladders climb out of the water at every level. The exit
 hall beyond the far dam is roofed with glass at the walk's height, and
 opens only by the dam door after the solve.
 
-**The one rule** (the plaque): water rises while any breach is open;
-rivet plates stick only to the iron frames; keep above the red line.
+**The one rule** (the plaque): pull the valve; seal the breaches with
+plates on the iron frames (they stick to nothing else); water rises while
+a breach is open, so seal them before it reaches the red line.
 
-- **TEST VALVE** (a lever on brass on the landing over the entry hall)
-  starts the test, refused on Peaceful.
+- **TEST VALVE** (a lever on brass on the landing over the entry hall,
+  on the side towards the stair up to it) starts the test, refused on
+  Peaceful.
 - A **stage** bursts its breaches one after another (``stag`` apart) in a
   fixed order (``ORDERS``) that pulls the players across the room and up
   and down. A breach is a 2 x 2 window of glass in a frame
@@ -285,7 +287,12 @@ STAIR_RS = ((13, 14), (-13, -14))  # the two basin stairs, right and left
 TANKS = ((7, 9), (-7, -9))  # the ballast tanks' middles
 VENTS = ((4, 5), (-5, 4), (5, -6), (-4, -5))
 LANDING = ((-19, -18), (-1, 2))  # the valve landing, deck at WALK_H
-HALL_STAIR = ((-19, -18), 12, 3)  # its places across, the foot's r, the top's r
+#: the entry hall's stair up to the valve landing, from the top down: its
+#: places across, the r of its lowest step and of its top (at WALK_H); and
+#: the flight back from its half landing to the hall's floor: its places
+#: across and the r of its foot (at h 1)
+HALL_STAIR = ((-19, -18), 7, 3)
+HALL_STAIR_2 = ((-21, -20), 4)
 VALVE = (-18, 0)  # the valve's post, on the landing
 PLAQUE = (-6, -20)  # the plaque: r of its wall, f of its middle sign
 LECTERN = (-21, -3)
@@ -510,15 +517,16 @@ def _breach(dome: Dome, number: int, level: str, f0: int, side: int) -> Breach:
 def room(dome: Dome) -> Room:
     fr = frame(dome)
     at = fr.at
-    back = fr.facing(-1, 0)
     breaches = tuple(_breach(dome, *spec) for spec in SPECS)
     dressing = tuple(_breach(dome, 0, *spec) for spec in DRESS_SPECS)
     vf, vr = VALVE
-    valve_on = fittings.lever(back, True)
-    valve_off = fittings.lever(back)
+    # the lever and its sign face the stair up to the landing (+r)
+    towards = fr.facing(0, 1)
+    valve_on = fittings.lever(towards, True)
+    valve_off = fittings.lever(towards)
     valve = fittings.input_post(
         at(vf, vr, WALK_H + 1),
-        back,
+        towards,
         valve_off,
         VALVE_SIGN,
         "TEST VALVE",
@@ -598,11 +606,11 @@ def scaled(level: int) -> dict[str, int]:
 
 # ----------------------------------------------------------- the words
 
-VALVE_SIGN = ("TEST VALVE", "Open it to", "start the", "hull test.")
+VALVE_SIGN = ("TEST VALVE", "Pull it to", "start the", "hull test.")
 PLAQUE_SIGNS = (
     ("HULL TEST", "Chamber", f"No. {INDEX}"),
-    ("Open the valve.", "Rivet every", "breach: plates", "stick to iron."),
-    ("Water rises", "while a breach", "is open. Keep", "above the red."),
+    ("Pull the VALVE.", "Seal breaches", "with plates on", "the iron frame."),
+    ("Water rises", "while a breach", "is open: seal", "before the red."),
 )
 LOG_TITLE, LOG_AUTHOR = "Hull Test log", "O. Finch"
 LOG_PAGES = [
@@ -612,11 +620,12 @@ LOG_PAGES = [
     "Tonight the plates on the outer ring are loose. Not sheared: the rivets "
     "drawn, one at a time, by a careful hand.\n\nI know that hand. I taught "
     "it.\n\nMarsh was here before me.",
-    "To pass the test:\n1. Open the TEST VALVE.\n2. Plates will blow. Rivet "
-    "new ones into each hole. They hold only in the iron frames.\n3. Hold all "
+    "To pass the test:\n1. Pull the TEST VALVE.\n2. Plates will blow. Seal "
+    "each hole with new ones. They hold only in the iron frames.\n3. Hold all "
     "three stages. The pumps do the rest.",
-    "Keep above the red line. Things came in with the sea, and they hunt in "
-    "the water.\n\nTwo of you? One rivets, one keeps the gantry quiet.\n\nThe "
+    "Seal them before the water reaches the red line. Things came in with the "
+    "sea, and they hunt in the water.\n\nTwo of you? One seals, one keeps the "
+    "gantry quiet.\n\nThe "
     "Signal Room is next. Something in there is sending, and it is not us.",
 ]
 PLATE_LORE = ("Sticks only to the", "iron frame of a breach.")
@@ -787,21 +796,33 @@ def structure(dome: Dome) -> Blocks:
         if f > EXIT_F and h == WALK_H:
             b.solid[c] = GLASS
 
-    # -- the entry hall: the stair up the dam to the valve landing
-    fs, foot, top = HALL_STAIR
+    # -- the entry hall: the stair up the dam to the valve landing, a
+    # switchback: from the landing down along +r to a half landing, and
+    # from there back along -r, on the places beside it, to the hall's
+    # floor (its foot in the open hall, not in the corner by the shell)
+    (fs, low, top), (fs2, foot) = HALL_STAIR, HALL_STAIR_2
+    half = WALK_H - (low - top) - 1  # the half landing's deck
     for f in fs:
-        for r in range(top, foot):
-            h = 1 + foot - r
+        for r in range(top, low + 1):
+            h = WALK_H - (r - top)
             b.parts[at(f, r, h)] = stairs(fr.facing(0, -1)).replace(f",{DRY}", "")
             for under in range(1, h):
                 b.solid[at(f, r, under)] = COPPER if under % 3 else EXPOSED_CUT
-    # its foot: the hall is one wide there, against the shell, so the
-    # flight starts from a corner landing one up, a step up from the hall
-    # the way a player comes
-    for f in (fs[0] - 1, *fs):
-        for r in range(foot, dome.radius):
-            put(b.solid, at(f, r, 1), CUT)
-    b.parts[at(fs[0] - 1, foot - 1, 1)] = stairs(fr.facing(0, 1)).replace(f",{DRY}", "")
+    for f in fs2:
+        for r in range(foot, low + 2):
+            h = r - foot + 1
+            b.parts[at(f, r, h)] = stairs(fr.facing(0, 1)).replace(f",{DRY}", "")
+            for under in range(1, h):
+                b.solid[at(f, r, under)] = COPPER
+    # the half landing, and the corner beyond it filled, so that it is no
+    # pocket: copper, decked with cut copper; and, beside the second
+    # flight's top, copper up to the deck (no headroom under the shell)
+    for f in range(fs2[1], fs[1] + 1):
+        for r in range(low + 1, dome.radius + 1):
+            for h in range(1, half + 1):
+                put(b.solid, at(f, r, h), CUT if h == half else COPPER)
+    for h in range(1, half + 1):
+        b.solid[at(fs2[0], low + 2, h)] = COPPER
     (lf0, lf1), (lr0, lr1) = LANDING
     for f in range(lf0, lf1 + 1):
         for r in range(lr0, lr1 + 1):
@@ -1636,7 +1657,7 @@ def walks(dome: Dome) -> dict[str, Cell]:
     place = room(dome)
     at = place.frame.at
     out = {
-        "the valve": at(VALVE[0] - 1, VALVE[1] + 1, WALK_H + 1),
+        "the valve": at(VALVE[0], VALVE[1] + 2, WALK_H + 1),
         "the logbook": at(LECTERN[0] - 1, LECTERN[1], 1),
         "the recall post": at(RECALL[0], RECALL[1] + 2 * RECALL[2], 1),
         "the gantry": at(0, 8, GANTRY_H + 1),
@@ -2266,7 +2287,8 @@ def functions(pack: dp.Pack) -> None:
                 f"execute {_is('stage', s)} {_is('again', 0)} run {line}"
                 for s in range(3)
                 for line in title(
-                    f"STAGE {s + 1}", "Rivet every breach. Keep above the red line."
+                    f"STAGE {s + 1}",
+                    "Seal every breach before the water reaches the red line.",
                 )
             ),
             *(

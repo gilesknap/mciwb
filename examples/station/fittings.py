@@ -469,19 +469,21 @@ def display(
     scale: float = 1.0,
     billboard: str = "fixed",
     pitch: float = 0,
+    shadow: bool = False,
 ) -> str:
     """the command that summons a text display, its text (a component:
     ``label_text``) standing on ``pos``, lit whatever the light, flat and
     facing ``yaw`` (0 south, 90 west ...) or with ``billboard="center"``
     turning to whoever looks; ``pitch=-90`` lays it face up, its top
-    away from ``yaw``"""
+    away from ``yaw``; ``shadow`` gives its text a drop shadow"""
     x, y, z = pos
     s = f"{scale}f"
     listed = ",".join(f'"{t}"' for t in tags)
+    shade = "shadow:1b," if shadow else ""
     return (
         f"summon minecraft:text_display {x:.2f} {y:.2f} {z:.2f} "
         f'{{Tags:[{listed}],Rotation:[{yaw}f,{pitch}f],billboard:"{billboard}",'
-        f"background:0,line_width:400,brightness:{{sky:15,block:15}},text:{text},"
+        f"background:0,line_width:400,{shade}brightness:{{sky:15,block:15}},text:{text},"
         f"transformation:{{translation:[0f,0f,0f],scale:[{s},{s},{s}],"
         "left_rotation:[0f,0f,0f,1f],right_rotation:[0f,0f,0f,1f]}}"
     )
