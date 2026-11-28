@@ -442,9 +442,9 @@ assert not D.room_problems(dome)
 
 # the values of a level: gentle at 1, tuned at 5, hard at 10
 one, five, ten = (D.scaled(level) for level in (1, 5, 10))
-assert five == {"n": 5, "period": 16, "on": 8, "wait": 160, "ear": 0}
-assert one == {"n": 3, "period": 19, "on": 11, "wait": 224, "ear": 0}
-assert ten == {"n": 8, "period": 12, "on": 4, "wait": 80, "ear": 1}
+assert five == {"n": 9, "period": 16, "on": 8, "wait": 160, "ear": 0}
+assert one == {"n": 7, "period": 19, "on": 11, "wait": 224, "ear": 0}
+assert ten == {"n": 12, "period": 12, "on": 4, "wait": 80, "ear": 1}
 before = D.scaled(1)
 for level in game.LEVELS:
     v = D.scaled(level)
@@ -656,11 +656,11 @@ def test_signal_room_solo():
 # -- a room never entered is as built; the first in arms it
 assert sim.sig("live") is None
 begin()
-assert sim.sig("live", "st", "round", "len", "lvl") == [1, 0, 1, 3, 5]
+assert sim.sig("live", "st", "round", "len", "lvl") == [1, 0, 1, 7, 5]
 assert sim.sig("form", "want") == [1, 1]
 assert sim.sig(*D.scaled(5)) == list(D.scaled(5).values())
 first = seq()
-assert len(first) == 5 and not D.sequence_problems(first)
+assert len(first) == 9 and not D.sequence_problems(first)
 assert sim.words == "NO LINE" and buttons(1)
 
 # -- no line: a key does nothing, and comes back out
@@ -711,7 +711,7 @@ press(2)  # a key while it sends is not an answer
 assert sim.sig("st") == 2 and not closed()
 for won in (1, 2, 3):
     sent = listen()
-    assert sent == first[: 2 + won], (sent, first)
+    assert sent == first[: 6 + won], (sent, first)
     assert sim.words == "ANSWER: KEY 1"
     for j, k in enumerate(sent):
         assert sim.sig("i") == j
@@ -722,7 +722,7 @@ for won in (1, 2, 3):
     tick()
     assert lit(place.line) == [j < won for j in range(3)]
     if won < 3:
-        assert sim.sig("st", "round", "len") == [4, won + 1, 3 + won]
+        assert sim.sig("st", "round", "len") == [4, won + 1, 7 + won]
         assert sim.words == f"RIGHT: LINE {won} OF 3"
         assert not sim.outside
 # solved: the one call, the fanfare, then a quiet room whose keys play
@@ -836,9 +836,9 @@ assert sim.is_block(place.line[0], f"{D.BULB}[lit=true]")
 press(D.CALL)
 assert sim.sig("st") == 0
 throw(place.aerial)
-assert sim.sig("st", "line", "round", "len") == [1, 1, 2, 4]
+assert sim.sig("st", "line", "round", "len") == [1, 1, 2, 8]
 press(D.CALL)
-assert listen() == first[:4]
+assert listen() == first[:8]
 
 # -- everyone leaves during a round: the round is dropped, and no more
 press(keys[0])
@@ -846,7 +846,7 @@ assert closed()
 sim.put(f"#form{N}", 0)
 sim.run(f"dome/{N}/empty")
 assert sim.sig("st", "pa", "pb", "live") == [1, 1, 1, 1]
-assert sim.sig("line", "round", "len") == [1, 2, 4]
+assert sim.sig("line", "round", "len") == [1, 2, 8]
 assert not closed() and sim.words == "READY: PRESS CALL"
 enter(1)
 form(1)
@@ -858,7 +858,7 @@ for k in listen():
     press(k)
 assert sim.sig("st", "line", "round") == [4, 2, 3]
 sim.run(f"dome/{N}/empty")
-assert sim.sig("st", "line", "round", "len") == [1, 2, 3, 5]
+assert sim.sig("st", "line", "round", "len") == [1, 2, 3, 9]
 # ... and with a contact closed in free play: it is opened
 enter(1)
 form(1)
@@ -870,20 +870,20 @@ assert not closed() and sim.sig("st") == 1
 # -- a new level takes force only for the first into an empty room
 level(10)
 enter(0)
-assert sim.sig("lvl", "n", "line") == [5, 5, 2] and seq() == first
+assert sim.sig("lvl", "n", "line") == [5, 9, 2] and seq() == first
 enter(1)
 # ... the rounds still to win, at the new level: the switches and the LINE
 # lamps kept (a vote never costs the rounds won)
 got = sim.sig("lvl", "line", "st", "live", "round", "len", "pa", "pb")
-assert got == [10, 2, 1, 1, 3, 8, 1, 1], got
+assert got == [10, 2, 1, 1, 3, 12, 1, 1], got
 assert sim.sig(*D.scaled(10)) == list(D.scaled(10).values())
-assert len(seq()) == 8 and not D.sequence_problems(seq()) and seq() != first
+assert len(seq()) == 12 and not D.sequence_problems(seq()) and seq() != first
 assert sim.is_block(place.aerial, D.switch(place, place.aerial, True))
 assert sim.words == "READY: PRESS CALL"
 # a room set up afresh at level 10
 sim.run(f"dome/{N}/reset")
 enter(1)
-assert sim.sig("lvl", "line", "st", "live", "round", "len") == [10, 0, 0, 1, 1, 6]
+assert sim.sig("lvl", "line", "st", "live", "round", "len") == [10, 0, 0, 1, 1, 10]
 assert not sim.is_block(place.aerial, D.switch(place, place.aerial, True))
 # at the highest level the first two rounds show their lamps and the
 # last is sent by the bells alone: the second contacts, never the first
@@ -893,7 +893,7 @@ press(D.CALL)
 for won in (1, 2):
     sim.put("#sig.ear1", 0)
     keys = listen()
-    assert keys == seq()[: 5 + won] and not any(sim.sig(f"ear{k}") for k in (2, 3, 4))
+    assert keys == seq()[: 9 + won] and not any(sim.sig(f"ear{k}") for k in (2, 3, 4))
     for k in keys:
         press(k)
 before = {k: sim.sig(f"on{k}") for k in (1, 2, 3, 4)}
@@ -907,7 +907,7 @@ while sim.sig("st") == 2:
     heard += sorted(rung() - set(heard[-1:]))
 assert before == {k: sim.sig(f"on{k}") for k in (1, 2, 3, 4)}
 assert sim.sig("tx") == D.sent(seq()) and not rung()
-assert sum(sim.sig(f"ear{k}") or 0 for k in (1, 2, 3, 4)) == 8
+assert sum(sim.sig(f"ear{k}") or 0 for k in (1, 2, 3, 4)) == 12
 for k in seq():  # the answer shows its lamps as ever
     press(k)
     assert closed() == {k} or sim.sig("st") == 6
@@ -919,14 +919,14 @@ sim.run(f"dome/{N}/reset")
 sim.put(f"#d{N}", 1)
 assert sim.sig("live") == 0
 tick()
-assert sim.sig("live", "len") == [1, 6]
+assert sim.sig("live", "len") == [1, 10]
 
 # -- the sequence's two rules, and that it differs from run to run
 level(10)
 rolls = set()
 for _ in range(300):
     sim.run(f"dome/{N}/roll")
-    assert not D.sequence_problems(seq()) and len(seq()) == 8, seq()
+    assert not D.sequence_problems(seq()) and len(seq()) == 12, seq()
     rolls.add(tuple(seq()))
 assert len(rolls) > 250
 firsts = {s[0] for s in rolls}

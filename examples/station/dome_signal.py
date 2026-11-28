@@ -54,11 +54,11 @@ and ``want`` the form the core last asked for; ``pa``, ``pb`` the
 switches; ``round`` (1 to 3), ``len`` its length, ``line`` the rounds
 won; ``i`` the place in the sequence being sent or awaited, ``t`` a
 countdown; ``last`` the key last taken in this answer (a key held or
-clicked twice is read once); ``s0`` .. ``s7`` the sequence; from the
-level (``scaled``):
-``n`` its full length, ``period`` and ``on`` (ticks between signals, and
-a lamp held on), ``wait`` (ticks allowed for each key), ``ear`` (the last
-round sent by bells alone).
+clicked twice is read once); ``s0`` .. ``s11`` the sequence (``MAX_N``);
+from the level (``scaled``): ``n`` its full length (``N`` scaled, plus
+``EXTRA``: 7 at level 1, 9 at 5, 12 at 10), ``period`` and ``on`` (ticks
+between signals, and a lamp held on), ``wait`` (ticks allowed for each
+key), ``ear`` (the last round sent by bells alone).
 
 **Functions** (the core calls the hooks, see game.py):
 
@@ -149,12 +149,15 @@ INDEX = layout.index_of("signal")  # the Signal Room's place in the ring
 OBJ = game.OBJ
 
 ROUNDS = 3
-MAX_N = 8  # the longest sequence (level 10)
+EXTRA = 4  # tones added at every level (play-test: too easy)
+MAX_N = 8 + EXTRA  # the longest sequence (level 10)
 CALL = 5  # the CALL key, as ``#sig.key`` has it (1 to 4: the signals)
 LEAD = 20  # ticks from CALL to the first signal
 PAUSE = 40  # ticks after an answer, right or wrong, before the next sending
-# at level 5, scaled by the core's percentages (``scaled``)
-N = 5  # the sequence's full length: the rounds are its first N-2, N-1, N
+# at level 5, scaled by the core's percentages (``scaled``); the sequence's
+# full length ``n`` is N scaled plus EXTRA, and the rounds are its first
+# n-2, n-1 and n keys (7, 8 and 9 at level 5)
+N = 5
 PERIOD = 16  # ticks between signals
 GAP = 8  # ticks of a period the lamp is not held on
 WAIT = 160  # ticks allowed for each key
@@ -416,7 +419,7 @@ def scaled(level: int) -> dict[str, int]:
     core = game.scaled(level)
     period = PERIOD * (core["#diff.timer"] + 100) // 200
     return {
-        "n": (N * core["#diff.seq"] + 50) // 100,
+        "n": (N * core["#diff.seq"] + 50) // 100 + EXTRA,
         "period": period,
         "on": period - GAP,
         "wait": WAIT * core["#diff.timer"] // 100,
@@ -1155,6 +1158,7 @@ def functions(pack: dp.Pack) -> None:
             _op("n", "*=", "#diff.seq"),
             _add("n", 50),
             _op("n", "/=", "#100"),
+            _add("n", EXTRA),
             _op("period", "=", "#diff.timer"),
             _add("period", 100),
             _op("period", "*=", f"#{PERIOD}"),
@@ -2269,7 +2273,7 @@ def check(ctx: Any) -> list[str]:
         )
         return get("st") != 2
 
-    until(by_ear, LEAD + 12 * get("period"), 1)
+    until(by_ear, LEAD + (get("n") + 2) * get("period") + 40, 1)
     heard = {s.k for s in place.signals if get(f"ear{s.k}")}
     expect("by ear: the round sent", get("tx"), sent(sequence()))
     got = (get("byear"), lamps, heard)

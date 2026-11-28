@@ -310,7 +310,7 @@ has its rows in the table below):
 | 1 | The recall button at the Boiler Room's door clicked by hand: it takes the player who clicked to the Pump House and nobody else; the click lands on the button from where a player stands |  no |
 | 1 | The Boiler Room's plaque, signs and log: readable, the right way round, the log's three pages fit; a log taken from the lectern is replaced within a second |  no |
 | 1 | Leaving the Boiler Room unsolved and coming back: it has put itself right (fires out, gauge dark, coal gone from the chutes). Is losing the fire by stepping back into the tunnel too harsh? |  no |
-| 3 | The Signal Room alone: are the plaque and the board's words enough to find both switches (the AERIAL SWITCH is up the mast, on the loft); 3, 4 and 5 signals at 0.8 s with 8 s a key at level 5: fair for a younger player and for an adult, or ground through by trial |  no |
+| 3 | The Signal Room alone: are the plaque and the board's words enough to find both switches (the AERIAL SWITCH is up the mast, on the loft); 7, 8 and 9 signals at 0.8 s with 8 s a key at level 5: fair for a younger player and for an adult, or ground through by trial |  no |
 | 3 | The Signal Room's keys by hand: a press read once and popping back; a click held down, or two quick clicks, taken as one key, not WRONG; a hand's press flips no bulb or lamp anywhere; the dull click of a dead key; the switches by hand |  no |
 | 3 | The Signal Board read: the four lamps told apart from the console, each wing and the entrance (place, coloured frame, glass), lit against unlit; the four bells told apart by ear, and the last round by bells alone at levels 8 to 10; the board's words the right way round and readable |  no |
 | 3 | The mast in front of the board: from the entrance and down the aisle's middle it hides the middle of the words and the LINE lamps (seen from the desks). Leave it, or a see-through lower mast, or the words moved? |  no |
@@ -1521,13 +1521,14 @@ of coloured concrete, a bell behind each), three LINE lamps, the words
 on a text display. Close the BATTERY and AERIAL SWITCHes, press CALL,
 answer the Engine's lamps and bells key for key; three rounds, each a
 signal longer, solve it. Solo at the main console; two players at the
-wing desks, a pair of keys each.
+wing desks, a pair of keys each. Every round is 4 signals longer than
+first built (`EXTRA`: a play-test found it a little too easy).
 
 | At level | Rounds (signals) | Between signals / lamp on | Time a key (duo: +2 s) | Last round |
 | --- | --- | --- | --- | --- |
-| 1 | 1, 2, 3 | 19 / 11 ticks | 11.2 s | lamps and bells |
-| 5 | 3, 4, 5 | 16 / 8 | 8 s | lamps and bells |
-| 10 | 6, 7, 8 | 12 / 4 | 4 s | bells alone (levels 8 to 10) |
+| 1 | 5, 6, 7 | 19 / 11 ticks | 11.2 s | lamps and bells |
+| 5 | 7, 8, 9 | 16 / 8 | 8 s | lamps and bells |
+| 10 | 10, 11, 12 | 12 / 4 | 4 s | bells alone (levels 8 to 10) |
 
 **What the live check (`CHECKS=signal_room`) proves**, with stand-ins
 and blocks set by command: every one of the 1073 blocks as built and
