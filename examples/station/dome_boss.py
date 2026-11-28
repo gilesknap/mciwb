@@ -2536,8 +2536,9 @@ def functions(pack: dp.Pack) -> None:
             '{text:"The Engine does not wait. Walk back in.",color:"gray",italic:true}',
             # (whether a death stops a client's music no check here can say:
             # the dead hear it from its start)
+            # (the core runs ``died`` with no position: the music at the player)
             *(
-                [f"execute {_if('phase', 3)} run {call('music/mine')}"]
+                [f"execute {_if('phase', 3)} at @s run {call('music/mine')}"]
                 if PHASE_2
                 else []
             ),
@@ -2575,7 +2576,19 @@ def functions(pack: dp.Pack) -> None:
                 if PHASE_2
                 else []
             ),
+            # the ending runs only while someone is in: left, it is finished
+            f"execute {_if('phase', 5)} {_if('fin', f'..{end_steps(dome) - 1}')} "
+            f"run {call('end/finish')}",
             call("signs"),
+        ],
+    )
+    pack.function(
+        f"{base}/end/finish",
+        [
+            *([call("lights/full")] if PHASE_2 else []),
+            *(_setblock(c, lit) for c in place.way_out),
+            _set("out", len(place.way_out)),
+            _set("fin", end_steps(dome)),
         ],
     )
     zeroed = ("phase", "t", "shut", "amb", "pair", "next", "hatch", "n", "cast", "any")

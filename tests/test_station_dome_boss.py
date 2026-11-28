@@ -676,6 +676,9 @@ assert f"stopsound @s record {D.MUSIC}" in on[f"dome/{N}/leave"]
 for name in ("enter", "died"):
     assert any(l.endswith("music/mine") and "#b7.phase st matches 3" in l
                for l in on[f"dome/{N}/{name}"]), name
+# (the core runs ``died`` with no position: it plays at the player)
+assert any(l.endswith(f"at @s run function station:dome/{N}/music/mine")
+           for l in on[f"dome/{N}/died"])
 # the lanterns: the core's own in this dome's floor, none that touches the
 # room's redstone; dimmed to a copper bulb, back at the win and the reset
 lights = D.floor_lights(dome)
@@ -1747,6 +1750,16 @@ assert sim.called.count(f"dome/{N}/won") == 1
 # ---- reset: the doors shut again, the firebox empty
 sim.run(f"dome/{N}/reset")
 as_built("reset after the Master")
+
+# ---- left in the dim, part way through the ending: it is finished at once
+sim.put("phase", 5)
+sim.put("fin", D.WAVE_AT + 1)
+sim.run(f"dome/{N}/lights/dim")
+leave_all()
+assert dim() == 0 and lamps(place.way_out) == len(place.way_out)
+assert sim.b7("out") == len(place.way_out) and sim.b7("fin") == D.end_steps(dome)
+sim.run(f"dome/{N}/reset")
+as_built("reset after an ending left")
 
 # ---- emptied in the breach itself: phase 4, the doors open
 leave_all()

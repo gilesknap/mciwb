@@ -1722,9 +1722,7 @@ def _room_problems(dome: Dome) -> tuple[str, ...]:
 
 def forget() -> None:
     """drop what is remembered of the plan (for a test that changes it)"""
-    for remembered in (_room_blocks, layers, _still, _room_problems, stream):
-        remembered.cache_clear()
-    for remembered in (mop_cells,):
+    for remembered in (_room_blocks, layers, _still, _room_problems, stream, mop_cells):
         remembered.cache_clear()
 
 
@@ -2849,7 +2847,8 @@ def functions(pack: dp.Pack) -> None:
             _op("k", "-=", "#hb.idx"),
             f"execute if score {_s('k')} matches ..-1 run {_set('k', 0)}",
             _op("due", "<", "#hb.k"),
-            f"execute {_is('due', '..0')} run {call('uncrack')}",
+            # (the breach cracking next is cracked again by ``crack_next``)
+            call("uncrack"),
             _set("form", 1),
             call("caps"),
             say("One engineer now: the rest of this stage's breaches hold."),

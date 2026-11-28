@@ -926,6 +926,12 @@ for br in (low, high):
 sim.run(f"dome/{n}/crack/{low.number}/2")
 sim.run(f"dome/{n}/uncrack")
 assert all(rec.world.at(c) == H.GLASS for c in low.cracks)
+# a partner leaving mid-crack, with bursts still due: the crack goes too
+sim.run(f"dome/{n}/crack/{low.number}/2")
+sim.s["#hb.due", "st"], sim.s["#hb.form", "st"] = 3, 2
+sim.run(f"dome/{n}/strike")
+assert sim.s["#hb.form", "st"] == 1
+assert all(rec.world.at(c) == H.GLASS for c in low.cracks)
 sim.run(f"dome/{n}/reset")
 
 # the live check, from end to end
