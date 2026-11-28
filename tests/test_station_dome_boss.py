@@ -277,9 +277,9 @@ assert one["rate"] > five["rate"] > ten["rate"] > 0
 assert 0 < one["drain"] < five["drain"] < ten["drain"]
 assert one["mend"] > five["mend"] > ten["mend"] > 0
 assert (one["steam"], five["steam"], ten["steam"]) == (1, 2, 3)
-assert [D.cap(5, 1, n) for n in range(3)] == [3, 4, 5]
-assert [D.cap(5, 2, n) for n in range(3)] == [5, 6, 7]
-assert D.cap(1, 1, 0) == 2 and D.cap(10, 2, 2) == 11
+assert [D.cap(5, 1, n) for n in range(3)] == [5, 6, 7]
+assert [D.cap(5, 2, n) for n in range(3)] == [8, 9, 10]
+assert D.cap(1, 1, 0) == 3 and D.cap(10, 2, 2) == 16
 for level in game.LEVELS:
     assert all(D.cap(level, form, 0) >= 1 for form in (1, 2))
 

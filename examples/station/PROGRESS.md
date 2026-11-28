@@ -323,7 +323,7 @@ has its rows in the table below):
 | 3 | Leaving the Foundry mid-fight: back within 3 s nothing changes; after that the charge falls to the last quarter, a breaker left out is still out, "the charge is where you left it" and 5 s to the fight; a level voted in the Pump House meanwhile takes force when it goes on |  no |
 | 3 | The Foundry as a place: the stairs now climb straight onto the gallery (no step up at the top); the stamp battery's cage now has a grating lid (hop the rail onto it and walk back: is that fine, or should the rail be higher?); light under the gallery and in the moulds; the ladle as a ladle, its pour; the mast read as a progress bar from the floor, gallery and top deck; sounds (bell, thunder) too loud or too often; the log's fourth page fits ("O.F." may be cut) |  no |
 | 3 | Dying in the Foundry: a cell lost (never below the quarter), no automaton on the respawn spot, the shield against Riveters |  no |
-| 4 | The Engine alone, Easy, level 5: is it plain from the plaque, the log and the signs what to do (throw a lever, stand on its copper deck till five lamps light)? Main A is on the floor under the gallery to the right, B on the gallery to the left, C up the one-wide stair behind the Engine. Is 3 to 5 automatons at once fair for a younger player; levels 1 and 10 |  no |
+| 4 | The Engine alone, Easy, level 5: is it plain from the plaque, the log and the signs what to do (throw a lever, stand on its copper deck till five lamps light)? Main A is on the floor under the gallery to the right, B on the gallery to the left, C up the one-wide stair behind the Engine. Is 5 to 7 automatons at once fair for a younger player; levels 1 and 10 |  no |
 | 4 | The Engine's automatons with a real player: do they come out of the hatch notches in the plinth, find a player round the Engine, up the ramps and the one-wide stair (each is set on the nearest player as it comes: does that work, or do they stand at the far hatches)? Do Riveters shoot into the pavilion while someone respawns or reads the log there (review 4: the dial would be no Riveter while someone is out of the arena)? |  no |
 | 4 | The Engine's win: the Engine stopping, the way out lighting, tunnel 7's pump lever pulled and the tunnel pumping, the walk home to the trophy waiting in the Pump House's dispenser (named with the level and the time) |  no |
 | 4 | The Engine with two: A and B only together (the amber lamp blinking at the side that is ready, the chat hint), a partner in the pavilion not counting, one dying or leaving; the form's chat line at each change (too chatty?) |  no |
@@ -1591,7 +1591,7 @@ with three ramps; a high level 12 up (crown deck, catwalks, main C's
 platform up a one-wide railed stair, three ladders). Three steam mains:
 throw a main's lever and stand on its deck (cut copper) until its five
 lamps light; step off and it runs down. Automatons come one at a time
-from four hatches in the Engine's plinth once a lever is thrown, 3 to 5
+from four hatches in the Engine's plinth once a lever is thrown, 5 to 7
 alive at level 5 alone. Two players in the arena wind A and B only
 together. **The third main shut is the win**: the Engine stops, the way
 out lights, tunnel 7 pumps dry, and the core's `run/win` runs (best
@@ -2423,6 +2423,25 @@ Four changes the owner tried in the world, now in the build:
   each dome's middle block and in front of it. Under the upper row they
   were on the sea, and the corner domes' names were lost behind their
   tunnels' bulbs.
+
+## Round 6: the two-player play-test (28 Nov 2026)
+
+A change from a two-player play-test, applied live by a datapack reload
+and played before it went into the build:
+
+- **More automatons in the Engine** while the mains are wound: the cap
+  with no main shut is 5 alone and 8 for two (it was 3 and 5) at level 5,
+  one cast every 5 steps alone and every 4 for two (it was 10 and 7).
+
+To remember, not changed yet:
+
+- **Foundry two-player difficulty**: an early report of being overwhelmed
+  came from waiting at the breakers (the charge stands still while one is
+  out); to judge again in proper two-player play.
+- **The Flooded Dome's hint**: in its two-player form the pump runs only
+  while the plate is held, and the players let go before the water reached
+  the stage's target. Consider a hint, such as the gauge or a title "Hold
+  the plate until the water stops".
 
 ## Known problems / notes
 
