@@ -22,9 +22,10 @@ still phase 1, with ``#b7.fire`` 1): when the third main shuts nothing
 breaks out by itself. The automatons fall and no more are cast, the
 Engine's heart beats its slowest, and a lever on a brass post comes up
 (a puff, a clank) on the centre line before the firebox, beyond where the
-casing's plates will land, its lever and its sign ("FIRE DOOR / Pull to
-vent / the firebox.") on the side towards the way in: whoever pulls it is
-facing the Engine's opening. A title, a line of chat and the action bar
+casing's plates will land: a post one block high, so as to hide nothing
+of the firebox doors, its lever on its face towards the way in and its
+sign ("FIRE DOOR / Pull to vent / the firebox.") standing on the floor
+beside the lever: whoever pulls it is facing the Engine's opening. A title, a line of chat and the action bar
 say so until it is pulled, by anyone, however many are in the arena. It
 waits as long as it takes: through a death, and through the dome emptying
 (the lever stays up, put back unthrown; who comes back is told). Pulled,
@@ -455,6 +456,7 @@ UPPER_HATCHES = ((13, -17, 1), (5, 5, 2))
 HATCH_ROUND = (0, 4, 1, 5, 2, 4, 3, 5)
 FIRE_POST_F = -17  # the fire door's lever: its post, on the centre line
 FIRE_SIGN = ("FIRE DOOR", "Pull to vent", "the firebox.")
+FIRE_SIGN_R = 1  # its sign, standing on the floor beside the lever
 FIRE_HINT = "All mains shut. Pull the FIRE DOOR lever in front of the Engine."
 EYES_H, BROW_H = 7, (10, 9)  # the brow's rows: minutes over seconds
 BROW_R = (3, 2, 1, -1, -2, -3)  # its lamps, the lowest bit first
@@ -763,23 +765,25 @@ def _mains(fr: Frame) -> tuple[Main, Main, Main]:
 
 
 def _fire_post(fr: Frame) -> fittings.Post:
-    """the fire door's lever: a brass post two high on the centre line
-    before the firebox, the lever on its upper block and the sign on its
-    lower, both on the side towards the way in, so that the player who
-    pulls it faces the Engine's opening (and sees its eyes and brow over
-    the post). It is no block of the room as built: it comes up when the
-    third main shuts and goes down as the lever is pulled (``fire/rise``,
-    ``fire/gone``), so that nothing of it stands where the breach plays"""
+    """the fire door's lever: a brass post one high on the centre line
+    before the firebox, the lever on its face towards the way in and its
+    sign standing on the floor beside the lever, facing the same way, so
+    that the player who pulls it faces the Engine's opening and sees over
+    the post the whole of the firebox doors, its eyes and its brow. It is
+    no block of the room as built: it comes up when the third main shuts
+    and goes down as the lever is pulled (``fire/rise``, ``fire/gone``),
+    so that nothing of it stands where the breach plays"""
     facing = fr.facing(-1, 0)
     foot = fr.at(FIRE_POST_F, 0, 1)
-    head = fr.at(FIRE_POST_F, 0, 2)
-    lever = fr.at(FIRE_POST_F - 1, 0, 2)
-    x, y, z = head
+    lever = fr.at(FIRE_POST_F - 1, 0, 1)
+    x, y, z = foot
     return fittings.Post(
-        solid={foot: BRASS, head: BRASS},
+        solid={foot: BRASS},
         attached={
             lever: fittings.lever(facing),
-            fr.at(FIRE_POST_F - 1, 0, 1): fittings.wall_sign(facing, *FIRE_SIGN),
+            fr.at(FIRE_POST_F - 1, FIRE_SIGN_R, 1): fittings.standing_sign(
+                facing, *FIRE_SIGN
+            ),
         },
         summons=[
             fittings.display(
@@ -1449,8 +1453,9 @@ def fire_problems(dome: Dome) -> list[str]:
     porch, of where the breach puts a player back, of the casing's halves
     as they swing and of where its plates fly and land; in nobody's way
     (every walk of the room still clear with it standing); and from where
-    its player stands the Engine's eyes and brow are in sight over it, and
-    the whole middle of the firebox doors once it is gone"""
+    its player stands the Engine's eyes and brow and the whole middle of
+    the firebox doors are in sight over it (it is one block high), and
+    the doors still once it is gone"""
     place = room(dome)
     fr = place.frame
     post = place.fire_post
@@ -1502,7 +1507,8 @@ def fire_problems(dome: Dome) -> list[str]:
             "standing",
             b,
             {"the left eye": place.eyes[0], "the right eye": place.eyes[1]}
-            | {f"the brow's lamp at {c}": c for row in place.brow for c in row},
+            | {f"the brow's lamp at {c}": c for row in place.brow for c in row}
+            | {f"the firebox doors at {c}": c for c in place.door_columns[0]},
         ),
         (
             "gone",
@@ -3579,8 +3585,8 @@ def _check(ctx: Any, saved: dict[str, int | None]) -> list[str]:
     fire_label = f"@e[type=minecraft:text_display,tag={FIRE_TAG}]"
 
     def fire_up() -> dict[str, Any]:
-        """the fire door's lever: its score, its blocks in place (of two
-        of brass, a lever not thrown and a sign), its label"""
+        """the fire door's lever: its score, its blocks in place (its
+        brass post, a lever not thrown and a sign), its label"""
         blocks = {**fire.solid, **fire.attached}
         return {
             "fire": get("fire"),
@@ -3591,8 +3597,9 @@ def _check(ctx: Any, saved: dict[str, int | None]) -> list[str]:
             "label": ctx.count(fire_label),
         }
 
-    fire_is_up = {"fire": 1, "blocks": 4, "air": 0, "label": 1}
-    fire_is_gone = {"fire": 0, "blocks": 0, "air": 4, "label": 0}
+    fire_blocks = len(fire.cells)
+    fire_is_up = {"fire": 1, "blocks": fire_blocks, "air": 0, "label": 1}
+    fire_is_gone = {"fire": 0, "blocks": 0, "air": fire_blocks, "label": 0}
 
     def pull() -> None:
         """the fire door's lever pulled, as a hand would leave it"""
