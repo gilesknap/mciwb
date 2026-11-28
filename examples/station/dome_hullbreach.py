@@ -66,8 +66,9 @@ a breach is open, so seal them before it reaches the red line.
   wash away. The layers' fills take them away below the line and ``mop``
   above it. A patch outlasts its stage, the pump-down and everyone
   leaving; a stage failed or left mid-way has its own breaches made sound
-  glass again, hull and all (it is played again); ``reset`` and the solve
-  make every breach sound glass.
+  glass again, hull and all (it is played again). The solve keeps the
+  patches (a breach still open is made sound glass); only ``reset`` makes
+  every breach sound glass again.
 - When a stage's last breach is sealed: the stage holds, the automatons
   are flushed out, the pumps (the compressor working on the gantry) take
   the water down, a breather, the next. After the third: the dome is
@@ -2528,15 +2529,19 @@ def functions(pack: dp.Pack) -> None:
         f"{base}/done",
         [f"function {pack.id(f'dome/{INDEX}/solved')}", call("restored")],
     )
-    # the room once solved: dry, every breach sound glass again, the dam
-    # door open, nothing lent
+    # the room once solved: dry, its patches kept (only the reset makes
+    # them glass again), any breach still open sound glass, the dam door
+    # open, nothing lent
     pack.function(
         f"{base}/restored",
         [
             _set("state", 2),
             _set("stage", 3),
             *(_set(n, 0) for n in ("phase", "w", "flow", "due", "wait", "hold")),
-            *(_set(f"b{br.number}", 0) for br in place.breaches),
+            *(
+                f"execute {_is(f'b{br.number}', 1)} run {_set(f'b{br.number}', 0)}"
+                for br in place.breaches
+            ),
             automatons.remove_line(INDEX),
             call("pumps_off"),
             call("draw"),
@@ -3430,8 +3435,8 @@ def _check(ctx: Any) -> list[str]:
         (get("form"), get("due")),
         (1, max(0, min(due, want["n1"] - 2))),
     )
-
     # ---- the end: every stage held
+    kept: frozenset[int] = frozenset()
     for stage in range(3):
         ctx.set_score("#hb.stage", stage)
         ctx.set_score("#hb.due", 0)
@@ -3456,7 +3461,9 @@ def _check(ctx: Any) -> list[str]:
             ctx.advance(2 * STEP)
     expect("solved", (ctx.score(f"#d{INDEX}"), get("state")), (2, 2))
     problems += game_checks.pull_pump(ctx, INDEX)
-    as_state("solved", SOLVED)
+    expect("solved: no breach open", opened(), frozenset())
+    # (its patches kept: only the reset makes them glass again)
+    as_state("solved", State(stage=3, patched=kept))
     second = ctx.count(automatons.selector(INDEX))
     come_in()
     expect(

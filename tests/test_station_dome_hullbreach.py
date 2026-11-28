@@ -433,7 +433,12 @@ def calls(path, name):
 
 for br in H.room(dome).breaches:
     assert calls(f"dome/{n}/reset", f"hole/{br.number}/shut")
-    assert f"scoreboard players set #hb.b{br.number} st 0" in fs[f"dome/{n}/restored"]
+    # solved: a breach still open made sound, a patch kept (till the reset)
+    b = f"#hb.b{br.number} st"
+    assert (f"execute if score {b} matches 1 run scoreboard players set {b} 0"
+            in fs[f"dome/{n}/restored"])
+    assert not any(line.endswith(f"set {b} 0") and "matches 1" not in line
+                   for line in fs[f"dome/{n}/restored"])
 restore = fs[f"dome/{n}/restore_stage"]
 assert len(restore) == 12
 for s, order in enumerate(H.ORDERS):
