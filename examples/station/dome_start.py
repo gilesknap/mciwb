@@ -59,7 +59,8 @@ input, and no reset touches it):
 - **The governor**, north east (in the north west it hid the Wall of
   Fame), in a cage of copper bars with a grate for a roof: a clock of
   repeaters round a redstone torch that works two pistons, two lamps and
-  a copper bulb, by itself, from the moment it is built. Nothing of it can be reached or clicked.
+  a copper bulb, by itself, from the moment it is built. Nothing of it
+  can be reached or clicked.
 - The chase, the tanks' levels, the map's blinking pin and a bell every
   minute and a half are the datapack's (``dome/0/machine/...``), stepped
   by ``dome/0/tick``: they stand still when nobody is in the dome.
@@ -97,11 +98,13 @@ the dome by any way, at the reset, and for one back from an earlier
 run). It is the reach for entities only (blocks have their own), and
 there is nothing in the dome a longer reach does harm with: no mobs, and
 the other three interaction entities (confirm, reset, trophy) count who
-clicked, wherever they stand; no other dome is within it. A click runs
+clicked, wherever they stand; no other dome is within it. It is also
+melee reach, so players in the dome could hit each other from further
+away; the game is co-op, so that is not guarded. A click runs
 ``dome/0/travel/<n>`` as the player who clicked, and only them: once
-the run is on, with no reset being voted on, if dome n is restored, or open with someone in it already (a late
-arrival joins the team), they are put on its entrance spot with a puff of
-particles and a chime; otherwise they are told why not. Nothing else is
+the run is on, with no reset being voted on, if dome n is restored, or
+open with someone in it already (a late arrival joins the team), they
+are put on its entrance spot with a puff of particles and a chime; otherwise they are told why not. Nothing else is
 done to them: the next scan finds them in dome n as if they had walked in
 (respawn point, title, kits, the dome's ``enter`` hook), as for the
 recall.
