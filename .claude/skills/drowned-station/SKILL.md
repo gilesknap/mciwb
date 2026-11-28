@@ -1,6 +1,6 @@
 ---
 name: drowned-station
-description: Work on The Drowned Station (examples/station), the mciwb adventure of ten glass domes under the sea - change a dome, build it into the live world, play-test with the owner, bake live hand edits back into the code, and run a round of parallel agents to a merged PR. Use when the user mentions the Drowned Station, a dome by name (Pump House, Boiler Room, Gearworks, Cargo Hold, Flooded Dome, Foundry, Hull Breach, Signal Room, Clockwork Maze, the Engine, the Switchboard), the station's datapack, its live checks or a play-test of it.
+description: Work on The Drowned Station (examples/station), the mciwb adventure of ten glass domes under the sea - change a dome, build it into the live world, play-test with the owner, bake live hand edits back into the code, and run a round of parallel agents to a merged PR. Use when the user mentions the Drowned Station, a dome by name (Pump House, Boiler Room, Gearworks, Cargo Hold, Flooded Dome, Foundry, Hull Breach, Signal Room, Clockwork Maze, the Engine), the station's datapack, its live checks or a play-test of it.
 ---
 
 # Working on The Drowned Station
@@ -16,8 +16,7 @@ Minecraft 26.x pitfalls see the `minecraft-26-datapack` skill.
 
 - **The ring.** `station_layout.RING` lists the domes in play order; a
   dome's index is its place (`layout.index_of("<key>")`, never a literal),
-  and tunnel n runs from dome n to n+1. A dome off the ring (a spur, such
-  as the Switchboard) is in `ALL_DOMES`, not `DOMES`.
+  and tunnel n runs from dome n to n+1.
 - **Frames, not world coordinates.** Every dome places things in its own
   frame (`fittings.frame(dome)`: f forward from the entrance, r right, h up
   from the floor). To turn a world position into a frame one (or back) use
@@ -28,8 +27,8 @@ Minecraft 26.x pitfalls see the `minecraft-26-datapack` skill.
   dome; scores `#d<n>` (0 locked, 1 open, 2 solved), `#t<n>` (tunnel: 0 wet,
   1 pumping, 2 dry), `#run`, `#secs`, `#level`, `#best<level>`.
 - **Two forms and ten levels.** Every dome has a solo and a two-player form
-  and scales by level through the core's percentages (`scaled()` in each
-  module). A change must keep both forms and all levels working.
+  and scales by level through the core's percentages (`game.scaled()`,
+  which most domes wrap in their own `scaled()`). A change must keep both forms and all levels working.
 - **Proofs.** Each module has offline proofs (`room_problems`, walk,
   reach, trap and sight checks, solvability searches) that the build runs,
   and a live check in `verify_station.py` that drives stand-ins through the

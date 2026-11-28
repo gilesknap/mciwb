@@ -74,8 +74,9 @@ client or server jar (it is unobfuscated: `javap` on the class, or the
 
 ## Commands and RCON
 
-- RCON commands over about 1446 bytes are dropped silently: keep function
-  lines and sent commands short.
+- An RCON command over about 1446 bytes makes the server drop the
+  connection: keep sent commands (and function lines) short, and refuse
+  longer ones before sending.
 - A `fill ... replace <block>` filter matches every state of that block.
 - `tick freeze` pauses the world (players can still move); `tick sprint N`
   runs N ticks fast, handy before reading a settled state.
