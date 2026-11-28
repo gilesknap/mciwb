@@ -602,7 +602,7 @@ HOOK = {
     "HOOK DOWN": (-14, 1),
     "RELEASE": (-14, 2),
 }
-UNDO_AT: Place = (-15, 3, 6)  # UNDO's post, its button towards the platform
+UNDO_AT: Place = (-16, 3, 6)  # UNDO's post, its button towards the platform
 LEVER_AT: Place = (-16, 7, 6)  # RESET HOLD's post, the lever on its fore side
 #: the window: the deck and the rail before the keys, and the top of her
 #: transom under them, are glass as far as this either side
@@ -2779,10 +2779,10 @@ def summons(dome: Dome) -> list[str]:
     text(f + 1.0, r + 2.0, 6.6, (-1, 0), "", (DARK_TAG,), scale=0.6)
     u, v = bay_mid(next(b.shut for b in BANDS if b.shut is not None))
     text(u, v, 3.0, (-1, 0), "", (JAM_TAG,), scale=1.2, billboard="center")
-    # her name on the bow, both sides
+    # her name on the bow, both sides, where her side is still straight
     for side in (-1, 1):
         text(
-            13.5,
+            11.5,
             side * 7.52 + (0.5 if side > 0 else 0.5),
             3.4,
             (0, side),
