@@ -2400,6 +2400,26 @@ chunks released). The re-site has since run in the world (27 Nov 2026,
 "Round 3 live"); the rollback has not. Old best times (`#best`, kept through a reset) were set on
 the ring of eight: the owner may want them cleared.
 
+## Visual tweaks (28 Nov 2026)
+
+Four changes the owner tried in the world, now in the build:
+
+- **The Pump House's governor** stands in the north-east corner: its cage
+  in the north west hid the Wall of Fame. The gallery post and deck
+  lantern the cage now covers are left out; the west ones it used to
+  take are built.
+- **Hull Breach's wording**: the plaque, the valve's sign, the stage
+  title and the log book say plainly what to do (pull the valve, seal
+  the breaches with plates on the iron frame, before the water reaches
+  the red).
+- **Hull Breach's entry stair** is a switchback, down from the valve's
+  landing to a half landing and back to the hall's floor; the TEST
+  VALVE's lever and sign face the stair.
+- **The station map's dome names** stand in white, with a shadow, over
+  each dome's middle block and in front of it. Under the upper row they
+  were on the sea, and the corner domes' names were lost behind their
+  tunnels' bulbs.
+
 ## Known problems / notes
 
 - The station's box stays forceloaded by design (see "Forceload").
