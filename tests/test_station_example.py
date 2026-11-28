@@ -609,6 +609,10 @@ solid, fit = S.blocks()
 sign = fit[S.TRAVEL_SIGN]
 assert f"wall_sign[facing={S._COMPASS[face]}]" in sign
 assert all(len(line) <= 15 for line in S.TRAVEL_TEXT) and len(S.TRAVEL_TEXT[0]) <= 12
+# a restored dome or an open one (with a partner in it): both are lit on
+# the map (froglights), a locked one is not
+assert "lit" in S.TRAVEL_TEXT[1].split() and "green" not in " ".join(S.TRAVEL_TEXT)
+assert "froglight" in S.DOME_LAMP[1] and "froglight" in S.DOME_LAMP[2]
 behind = (S.TRAVEL_SIGN[0] - face[0], S.TRAVEL_SIGN[1], S.TRAVEL_SIGN[2] - face[1])
 assert behind in solid
 sx, sy, sz = S.TRAVEL_SIGN

@@ -479,7 +479,7 @@ TRAVEL_PROUD = 0.05
 #: the sign that says the map is for fast travel: on the corner post at
 #: the map's left end, over a standing player's head
 TRAVEL_SIGN = MAP.front(0, 3, 2)
-TRAVEL_TEXT = ("FAST TRAVEL", "Click a green", "dome on the map", "to go there.")
+TRAVEL_TEXT = ("FAST TRAVEL", "Click a lit", "dome on the map", "to go there.")
 
 
 @cache
