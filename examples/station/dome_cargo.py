@@ -20,8 +20,9 @@ square with an aisle all round; a crate is 2 x 2 x 2 and a bay holds three.
 The deckhouse (f -4 to 4, solid to h 8) hides each hold's stacks from
 the other end (a crate on the hook is seen over it). The pulpit (the crane's controls) is on her stern, the banksman's
 stand on her bow; a railed gantry walk runs round at h 10. On the pulpit
-the driver stands on a platform half a block high at its back
-(``DRIVER``) and looks forward and down: the keys at the feet, then a
+the driver stands on a platform at its back, its front row level with
+the deck (``DRIVER``, by the keys) and its back row half a block higher
+(``DRIVER_BACK``), and looks forward and down: the keys at the feet, then a
 glass deck and a glass screen, the aft hold through them, the list gauge
 over it. Nobody gets into the aft hold (the screen is too high to climb
 from the tables); whoever does all the same leaves by a ladder at its
@@ -579,13 +580,17 @@ NEEDLE_TICKS = 15  # ticks of the needle's swing to a new list
 #: the pulpit (stern) and the bow: decks at h 5
 DECK_H = 5
 PULPIT_F = (-17, -11)
-#: the driver's platform: half a block high, at the back of the pulpit,
-#: the keys before it; the driver stands on it and looks forward over
-#: them. ``DRIVER`` is the cell over its slab (where the walk checks have
-#: the feet); the eye is ``DRIVER_EYE`` up, the slab's top and 1.62
+#: the driver's platform, at the back of the pulpit, the keys before it:
+#: its front row level with the deck, its back row a slab higher. The
+#: driver stands on either and looks forward over the keys: ``DRIVER``
+#: low by them, ``DRIVER_BACK`` high behind (where the walk checks have
+#: the feet), the eye ``DRIVER_EYE`` (or ``DRIVER_BACK_EYE``) up, 1.62
+#: over the feet
 PLATFORM_F, PLATFORM_R = (-16, -15), (-2, 1)
-DRIVER: Place = (PLATFORM_F[1], 0, 7)
-DRIVER_EYE = DECK_H + 1.5 + 1.62
+DRIVER: Place = (PLATFORM_F[1], 0, 6)
+DRIVER_EYE = DECK_H + 1 + 1.62
+DRIVER_BACK: Place = (PLATFORM_F[0], 0, 7)
+DRIVER_BACK_EYE = DECK_H + 1.5 + 1.62
 BANKSMAN: Place = (12, 0, 6)
 #: the keys: stone buttons lying on brass let into the deck before the
 #: platform, in the ship's own directions (FORE the far row, PORT to the
@@ -1086,12 +1091,13 @@ def room_blocks(dome: Dome) -> Blocks:
     for f in range(p0, CANOPY_F + 1):
         for r in range(-9, 10):
             put((f, r, 10), SLAB)
-    # the driver's platform, half a block up: green copper let into the
-    # deck, a slab on it
+    # the driver's platform: green copper let into the deck, a slab on
+    # its back row
     for f in range(PLATFORM_F[0], PLATFORM_F[1] + 1):
         for r in range(PLATFORM_R[0], PLATFORM_R[1] + 1):
             put((f, r, DECK_H), PLATFORM)
-            put((f, r, DECK_H + 1), PLATFORM_SLAB)
+            if f == PLATFORM_F[0]:
+                put((f, r, DECK_H + 1), PLATFORM_SLAB)
     # a notice at the head of each pair of stairs
     for r in (-4, 4):
         stood(
@@ -2861,6 +2867,7 @@ def walks(dome: Dome) -> dict[str, Cell]:
     lf, lr, _ = LECTERN
     places: dict[str, Place] = {
         "the driver's place": DRIVER,
+        "the driver's place behind": DRIVER_BACK,
         "the RESET HOLD lever": (LEVER_AT[0] + 1, LEVER_AT[1] + 1, 6),
         "the plan table": (PLAN_TABLE[0] - 1, PLAN_TABLE[1] + 1, 6),
         "the hold table": (HOLD_TABLE[0] - 1, HOLD_TABLE[1] + 2, 6),
@@ -2992,14 +2999,15 @@ def _eye_hidden(
 
 
 def sight_problems(dome: Dome) -> list[str]:
-    """the driver, from the platform's slab (the eye ``DRIVER_EYE`` up),
-    sees every cell of every aft bay, the aft list gauge's plate and the
-    trolley at both stops, and the top two rows of the plate over an aft
-    hold stowed three high. (From the middle of the platform the deck's
-    edge hides the foot of each bay's nearest row, the lower block of a
-    crate on the floor there: those eight cells are asked for from the
-    platform's fore edge, a step forward.) The the banksman every fore bay cell and the
-    fore gauge; the gantry walk every bay (each from where it stands)"""
+    """the driver sees the aft hold from the platform's two vantage
+    points: low by the keys (the eye ``DRIVER_EYE`` up, a step forward
+    from ``DRIVER``) every cell of every aft bay, the aft list gauge's
+    plate and the trolley at both stops; high behind (``DRIVER_BACK``,
+    the eye ``DRIVER_BACK_EYE`` up) the same but the bottom crate of each
+    aft bay, which the deck's edge hides. From both, the top two rows of
+    the plate over an aft hold stowed three high. The banksman every fore
+    bay cell and the fore gauge; the gantry walk every bay (each from
+    where it stands)"""
     fr = frame(dome)
     # a key lies flat on the deck: it hides nothing
     blocks = {
@@ -3026,27 +3034,33 @@ def sight_problems(dome: Dome) -> list[str]:
     def gauge(face: int) -> dict[str, Cell]:
         return {f"the list gauge at {p}": fr.at(*p) for p in gauge_cells(face)}
 
-    eye = point(fr, DRIVER[0] + 0.5, DRIVER[1] + 0.5, DRIVER_EYE)
     clear = rooms.opaque(blocks)
     full = clear | {fr.at(*p) for i in range(4) for p in bay_cells(i)}
-    edge = point(fr, DRIVER[0] + 0.9, DRIVER[1] + 0.5, DRIVER_EYE)
-    foot = {fr.at(f, r, 1) for i in range(4) for f, r, _ in bay_cells(i, 0)}
-    foot = {c for c in foot if c in {fr.at(BAY_F[0][0], r, 1) for r in range(-9, 10)}}
-    problems = [
-        f"{what} is hidden from the driver"
-        for what, cell in {
-            **bays((0,)),
-            **gauge(-1),
-            **trolley(0),
-            **trolley(1),
-        }.items()
-        if _eye_hidden(edge if cell in foot else eye, cell, clear)
-    ]
-    problems += [
-        f"the list gauge at {p} is hidden from the driver by a full aft hold"
-        for p in gauge_cells(-1)
-        if p[2] >= HOUSE_TOP - 1 and _eye_hidden(eye, fr.at(*p), full)
-    ]
+    bottom = {fr.at(*p) for i in range(4) for p in bay_cells(i, 0)}
+    problems: list[str] = []
+    for where, eye, hidden_ok in (
+        ("by the keys", point(fr, DRIVER[0] + 1.5, DRIVER[1] + 0.5, DRIVER_EYE), set()),
+        (
+            "behind",
+            point(fr, DRIVER_BACK[0] + 0.5, DRIVER_BACK[1] + 0.5, DRIVER_BACK_EYE),
+            bottom,
+        ),
+    ):
+        problems += [
+            f"{what} is hidden from the driver {where}"
+            for what, cell in {
+                **bays((0,)),
+                **gauge(-1),
+                **trolley(0),
+                **trolley(1),
+            }.items()
+            if cell not in hidden_ok and _eye_hidden(eye, cell, clear)
+        ]
+        problems += [
+            f"the list gauge at {p} is hidden from the driver {where} by a full aft hold"
+            for p in gauge_cells(-1)
+            if p[2] >= HOUSE_TOP - 1 and _eye_hidden(eye, fr.at(*p), full)
+        ]
     problems += rooms.sight_problems(
         blocks, {"the banksman": fr.at(*BANKSMAN)}, {**bays((1,)), **gauge(1)}
     )
@@ -3520,8 +3534,10 @@ def _check(ctx: Any) -> list[str]:
     expect("blocks of the room as built (every fifth, and the inputs)", wrong[:3], [])
     screen = fr.at(PULPIT_F[1], 0, SCREEN_H)
     expect("the screen's clear window", ctx.is_block(screen, BARRIER), True)
-    slab = fr.at(*DRIVER[:2], DECK_H + 1)
+    slab = fr.at(*DRIVER_BACK[:2], DECK_H + 1)
     expect("the driver's platform", ctx.is_block(slab, rooms.name(PLATFORM_SLAB)), True)
+    level = fr.at(*DRIVER[:2], DECK_H + 1)
+    expect("the platform's front row, level", ctx.is_block(level, AIR), True)
     expect("the crane's parts at home", count(PART_TAG), PARTS)
     expect("links of chain with the hook up", count(LINK_TAG), RAIL_H + 1 - UP)
     expect("crate displays", count(CRATE_TAG), 0)
